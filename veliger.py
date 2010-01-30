@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 '''
-CIFONAUTA_v0.4 - GUI
-Atualizado: 28 Jan 2010 09:29PM
+VELIGER_v0.4
+Atualizado: 29 Jan 2010 08:43PM
 
-Gerenciador do Banco de imagens do CEBIMar-USP
+Editor de Metadados do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
 
 Bruno C. Vellutini | organelas.com

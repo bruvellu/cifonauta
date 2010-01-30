@@ -3,7 +3,7 @@
 
 '''
 VELIGER_v0.4
-Atualizado: 30 Jan 2010 04:58PM
+Atualizado: 30 Jan 2010 05:18PM
 
 Editor de Metadados do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -876,20 +876,21 @@ def createMeta(pathtofile):
 		
 def imgGrab(folder):
 	'''
-	Busca recursivamente arquivos com extensão .jpg na pasta determinada.
+	Busca recursivamente arquivos com extensão jpg|JPG na pasta determinada.
 	'''
 	# Zera contador
 	n = 0
 
-	# Cria lista
+	# Cria listas
 	folder_imgs = []
+	ext_list = ['jpg', 'JPG']
 	
 	# Buscador de imagens em ação
 	print '\nIniciando o cifonauta!!!'
 	for root, dirs, files in os.walk(folder):
 		for fname in files:
-			s = string.find(fname, '.jpg')
-			if s >= 1:
+			extension = fname.split('.')[-1]
+			if extension in ext_list:
 				# Define o endereço do arquivo
 				fpath = os.path.join(root,fname)
 				

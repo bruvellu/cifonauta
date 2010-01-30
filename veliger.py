@@ -3,7 +3,7 @@
 
 '''
 VELIGER_v0.4
-Atualizado: 30 Jan 2010 05:26PM
+Atualizado: 30 Jan 2010 07:38PM
 
 Editor de Metadados do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -211,7 +211,6 @@ def back_cb(app, button):
 	'''
 	app['tabs'].focus_page(full_list)
 
-
 def clean_cb(app, button):
 	'''
 	Limpa entrada da tabela do CIFONAUTA, não remove entrada do banco de dados
@@ -237,6 +236,7 @@ def delete_cb(app, button):
 	'''
 	Remove entrada da tabela e do banco de dados
 	'''
+	# Confirmação da remoção
 	do = yesno('Remover a entrada do banco de dados?', yesdefault=False)
 	if do == True:
 		# Abrir banco de dados
@@ -358,14 +358,6 @@ def selectdb_cb(app, widget, name):
 def quit_cb(app, menuitem):
 	'''Sai do programa.'''
 	close(app_id='main')
-
-#	Agora que implementei a leitura da database no início do programa o cache ficou obsoleto
-#
-#	cache = open('cache', 'w')
-#	for item in app['table']:
-#		cache.write('%s\n' % item)
-#	cache.close()
-#	print 'Cache criado.'
 
 def openfile_cb(app, menuitem):
 	'''
@@ -828,7 +820,6 @@ def createMeta(pathtofile):
 	# Checando se o arquivo tem dados IPTC
 	if len(info.data) < 4:
 		print 'Imagem não tem dados IPTC!'
-#		raise Exception(info.error)
 
 	# Dicionário com metadados da imagem
 	meta = {}

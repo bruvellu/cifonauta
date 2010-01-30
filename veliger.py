@@ -3,7 +3,7 @@
 
 '''
 VELIGER_v0.4
-Atualizado: 29 Jan 2010 08:43PM
+Atualizado: 30 Jan 2010 04:58PM
 
 Editor de Metadados do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -11,12 +11,12 @@ Centro de Biologia Marinha da Universidade de São Paulo
 Bruno C. Vellutini | organelas.com
 '''
 
-import os, sys, string, subprocess
-import time
-import fileinput
+import os, sys, string, subprocess, time, fileinput
+from PIL import Image as pil_image
+import getopt
+from shutil import copy
 from iptcinfo import IPTCInfo
 from bsddb3 import db
-import getopt
 from eagle import *
 
 # ImageMagick e exiftool devem estar instalados no sistema
@@ -51,15 +51,15 @@ def selection_changed(app, widget, selected):
 		
 		# Define o tamanho do thumbnail
 		if wsize[0] >= 1335:
-			app['thumb'].image = 'imagens/thumbs/500px/%s' % app['table'].selected()[0][1][0]
+			app['thumb'].image = 'imagens/thumbs/500/%s' % app['table'].selected()[0][1][0]
 		elif wsize[0] < 1335 and wsize[0] >= 1235:
-			app['thumb'].image = 'imagens/thumbs/450px/%s' % app['table'].selected()[0][1][0]
+			app['thumb'].image = 'imagens/thumbs/450/%s' % app['table'].selected()[0][1][0]
 		elif wsize[0] < 1235 and wsize[0] >= 1135:
-			app['thumb'].image = 'imagens/thumbs/400px/%s' % app['table'].selected()[0][1][0]
+			app['thumb'].image = 'imagens/thumbs/400/%s' % app['table'].selected()[0][1][0]
 		elif wsize[0] < 1135 and wsize[0] >= 955:
-			app['thumb'].image = 'imagens/thumbs/300px/%s' % app['table'].selected()[0][1][0]
+			app['thumb'].image = 'imagens/thumbs/300/%s' % app['table'].selected()[0][1][0]
 		elif wsize[0] < 955:
-			app['thumb'].image = 'imagens/thumbs/250px/%s' % app['table'].selected()[0][1][0]
+			app['thumb'].image = 'imagens/thumbs/250/%s' % app['table'].selected()[0][1][0]
 		
 		# Passa os valores dos widgets da tabela para os campos de edição
 	#	app['nome'] = app['table'].selected()[0][1][0]
@@ -265,15 +265,15 @@ def thumb_gen(app, button):
 		wsize = app.get_window_size()
 	
 		if wsize[0] >= 1335:
-			app['thumb'].image = 'imagens/thumbs/500px/%s' % app['table'].selected()[0][1][0]
+			app['thumb'].image = 'imagens/thumbs/500/%s' % app['table'].selected()[0][1][0]
 		elif wsize[0] < 1335 and wsize[0] >= 1235:
-			app['thumb'].image = 'imagens/thumbs/450px/%s' % app['table'].selected()[0][1][0]
+			app['thumb'].image = 'imagens/thumbs/450/%s' % app['table'].selected()[0][1][0]
 		elif wsize[0] < 1235 and wsize[0] >= 1135:
-			app['thumb'].image = 'imagens/thumbs/400px/%s' % app['table'].selected()[0][1][0]
+			app['thumb'].image = 'imagens/thumbs/400/%s' % app['table'].selected()[0][1][0]
 		elif wsize[0] < 1135 and wsize[0] >= 955:
-			app['thumb'].image = 'imagens/thumbs/300px/%s' % app['table'].selected()[0][1][0]
+			app['thumb'].image = 'imagens/thumbs/300/%s' % app['table'].selected()[0][1][0]
 		elif wsize[0] < 955:
-			app['thumb'].image = 'imagens/thumbs/250px/%s' % app['table'].selected()[0][1][0]
+			app['thumb'].image = 'imagens/thumbs/250/%s' % app['table'].selected()[0][1][0]
 
 def edit_cb(app, button):
 	'''
@@ -287,15 +287,15 @@ def edit_cb(app, button):
 	wsize = app.get_window_size()
 	
 	if wsize[0] >= 1335:
-		app['thumb'].image = 'imagens/thumbs/500px/%s' % app['table'].selected()[0][1][0]
+		app['thumb'].image = 'imagens/thumbs/500/%s' % app['table'].selected()[0][1][0]
 	elif wsize[0] < 1335 and wsize[0] >= 1235:
-		app['thumb'].image = 'imagens/thumbs/450px/%s' % app['table'].selected()[0][1][0]
+		app['thumb'].image = 'imagens/thumbs/450/%s' % app['table'].selected()[0][1][0]
 	elif wsize[0] < 1235 and wsize[0] >= 1135:
-		app['thumb'].image = 'imagens/thumbs/400px/%s' % app['table'].selected()[0][1][0]
+		app['thumb'].image = 'imagens/thumbs/400/%s' % app['table'].selected()[0][1][0]
 	elif wsize[0] < 1135 and wsize[0] >= 955:
-		app['thumb'].image = 'imagens/thumbs/300px/%s' % app['table'].selected()[0][1][0]
+		app['thumb'].image = 'imagens/thumbs/300/%s' % app['table'].selected()[0][1][0]
 	elif wsize[0] < 955:
-		app['thumb'].image = 'imagens/thumbs/250px/%s' % app['table'].selected()[0][1][0]
+		app['thumb'].image = 'imagens/thumbs/250/%s' % app['table'].selected()[0][1][0]
 
 #	app['nome'] = app['table'].selected()[0][1][0]
 	app['titulo'] = app['table'].selected()[0][1][3]
@@ -540,7 +540,7 @@ def db_import(dbname):
 		# Cria a linha da tabela da interface
 		entry_meta = [
 				recdata['nome'],
-				Image(filename='imagens/thumbs/100px/%s' % recdata['nome']),
+				Image(filename='imagens/thumbs/100/%s' % recdata['nome']),
 				recdata['autor'],
 				recdata['titulo'],
 				recdata['legenda'],
@@ -604,12 +604,57 @@ def create_thumbs(fpath):
 	'''
 	Cria thumbnails de vários tamanhos para as fotos novas.
 	'''
-	try:
-		subprocess.call(['./thumb_gen.sh', fpath, thumbdir])
-	except IOError:
-		print '\nOcorreu algum erro durante a criação de thumbnails. Verifique se o ImageMagick está instalado.'
+	
+	print 'Iniciando o criador de thumbnails.'
+
+	# Lista com tamanhos dos tumbnails
+	sizes = [100, 250, 300, 400, 450, 500]
+	
+	# Checagem padrão
+	print '\nChecando se pastas existem...'
+	hasdir = os.path.isdir(thumbdir)
+	if hasdir == True:
+		for size in sizes:
+			each_thumbdir = os.path.join(thumbdir,str(size))
+			haseach_thumbdir = os.path.isdir(each_thumbdir)
+			if haseach_thumbdir == True:
+				continue
+			else:
+				os.mkdir(each_thumbdir)
 	else:
-		print '\nThumbs criados com sucesso!'
+		os.mkdir(thumbdir)
+		for size in sizes:
+			each_thumbdir = os.path.join(thumbdir,str(size))
+			os.mkdir(each_thumbdir)
+
+	print 'Pronto!'
+	
+	# Nome do arquivo
+	file = os.path.split(fpath)[1]
+	
+	# Para cada tamanho de thumb
+	for size in sizes:
+		pasta = os.path.join(thumbdir,str(size))
+		lista = os.listdir(pasta)
+		newthumb_path = os.path.join(pasta, file)
+		# Se o arquivo já existir, pular
+		if file in lista:
+			print 'Thumbs já existem.'
+			continue
+		# Se não, criar thumb
+		else:
+			# Copiar original para pasta
+			copy(fpath, pasta)
+			print '%s copiado para pasta %s' % (file, size)
+			try:
+				# Criar thumb
+				im = pil_image.open(newthumb_path)
+				dim = size, size
+				im.thumbnail(dim)
+				im.save(os.path.join(pasta, file), 'JPEG')
+				print 'Thumbnail criado!'
+			except:
+				print 'Não consegui criar o thumbnail...'
 
 def searchImgdb(fpath, timestamp):
 	'''
@@ -662,7 +707,7 @@ def searchImgdb(fpath, timestamp):
 			# Cria a lista para tabela da interface
 			entry_meta = [
 					recdata['nome'],
-					Image(filename='imagens/thumbs/100px/%s' % recdata['nome']),
+					Image(filename='imagens/thumbs/100/%s' % recdata['nome']),
 					recdata['autor'],
 					recdata['titulo'],
 					recdata['legenda'],
@@ -810,7 +855,7 @@ def createMeta(pathtofile):
 	# Cria a lista para tabela da interface
 	entry_meta = [
 			meta['nome'],
-			Image(filename='imagens/thumbs/100px/%s' % meta['nome']),
+			Image(filename='imagens/thumbs/100/%s' % meta['nome']),
 			meta['autor'],
 			meta['titulo'],
 			meta['legenda'],
@@ -873,9 +918,9 @@ def imgGrab(folder):
 #=== MAIN ===#
 
 # Diretório com as imagens
-srcdir = './imagens/source'
+srcdir = 'imagens/source'
 # Diretório com thumbnails
-thumbdir = './imagens/thumbs'
+thumbdir = 'imagens/thumbs'
 
 # Nome do arquivo com banco de dados
 dbname = 'database'

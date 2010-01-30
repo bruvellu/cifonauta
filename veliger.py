@@ -3,7 +3,7 @@
 
 '''
 VELIGER_v0.4
-Atualizado: 30 Jan 2010 05:18PM
+Atualizado: 30 Jan 2010 05:26PM
 
 Editor de Metadados do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -219,6 +219,18 @@ def clean_cb(app, button):
 	i = app['table'].selected()[0][0]
 	del app['table'][i]
 
+	# Limpa aba de edição
+	for meta in widgets:
+		if meta == 'thumb':
+			data = chr(128) * (30 * 30 * 3)
+			app[meta].image = Image(width=30, height=30, depth=24, data=data)
+		else:
+			app[meta] = ''
+	
+	# Desativa aba de edição
+	app['tabs'].get_page(1).set_inactive()
+
+	# Muda o foco para a aba inicial
 	app['tabs'].focus_page(full_list)
 
 def delete_cb(app, button):
@@ -240,6 +252,18 @@ def delete_cb(app, button):
 		i = app['table'].selected()[0][0]
 		del app['table'][i]
 		
+		# Limpa aba de edição
+		for meta in widgets:
+			if meta == 'thumb':
+				data = chr(128) * (30 * 30 * 3)
+				app[meta].image = Image(width=30, height=30, depth=24, data=data)
+			else:
+				app[meta] = ''
+				
+		# Desativa aba de edição
+		app['tabs'].get_page(1).set_inactive()
+		
+		# Muda o foco para a aba inicial		
 		app['tabs'].focus_page(full_list)
 	else:
 		pass

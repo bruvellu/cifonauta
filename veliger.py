@@ -3,7 +3,7 @@
 
 '''
 VELIGER_v0.4
-Atualizado: 01 Feb 2010 02:09PM
+Atualizado: 01 Feb 2010 02:21PM
 
 Editor de Metadados do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -245,7 +245,7 @@ def delete_cb(app, button):
 	'''
 	# Confirmação da remoção
 	do = yesno('Remover a entrada do banco de dados?', yesdefault=False)
-	if do == True:
+	if do:
 		# Abrir banco de dados
 		imgdb = db.DB()
 		imgdb.open(dbname)

@@ -3,7 +3,7 @@
 
 '''
 VELIGER_v0.4
-Atualizado: 01 Feb 2010 01:54PM
+Atualizado: 01 Feb 2010 02:09PM
 
 Editor de Metadados do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -48,7 +48,7 @@ def selection_changed(app, widget, selected):
 	Função que define o tamanho do thumbnail a ser colocado na aba de edição dos mestadados (baseado nas dimensões da janela), passa os metadados da tabela para esta aba e focaliza na mesma.
 	'''
 	# Evita que o programa tente redimensionar um thumbnail inexistente (quando a entrada é None - ocorre durante a limpeza da tabela)
-	if selected != None:
+	if selected is not None:
 
 		# Ativa aba de edição que está desativada por padrão
 		app['tabs'].get_page(1).set_active()
@@ -108,7 +108,7 @@ def save_meta(app, button):
 			# Lista com comando e argumentos
 			shell_call = ['exiftool', '-overwrite_original']
 			# Lista com keywords
-			if app['keywords'] != '' or app['keywords'] != None:
+			if app['keywords'] != '' or app['keywords'] is not None:
 				print 'Atualizando marcadores...'
 				keyword_list = app['keywords'].split(', ')
 				for keyword in keyword_list:
@@ -290,7 +290,7 @@ def thumb_gen(app, button):
 	Botão com o thumbnail. Clique nele para redimensionar o thumb de acordo com as dimensões da janela.
 	'''
 	# Redimensiona o thumbnail
-	if app['table'].selected() == None:
+	if app['table'].selected() is None:
 		pass
 	else:
 		wsize = app.get_window_size()
@@ -554,7 +554,7 @@ def db_import(dbname):
 		
 		# Converte valores dos metadados vazios (None) para string em branco
 		for k, v in recdata.iteritems():
-			if v == None:
+			if v is None:
 				v = u''
 				recdata[k] = v
 			else:
@@ -608,7 +608,7 @@ def db_import(dbname):
 	print 'Banco de dados importado.'
 	# Mostra mensagem na barra de status do programa
 	# FIXME implementar direito...
-	if app != None:
+	if app is not None:
 		global status
 		status = app.status_message(' %d imagens importadas, %d imagens duplicadas' % (m, n))
 		app.idle_add(idle_status_rm)
@@ -866,7 +866,7 @@ def createMeta(pathtofile):
 
 	# Converte valores dos metadados vazios (None) para string em branco
 	for k, v in meta.iteritems():
-		if v == None:
+		if v is None:
 			v = u''
 			meta[k] = v
 		else:

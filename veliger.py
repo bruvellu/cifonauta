@@ -3,7 +3,7 @@
 
 '''
 VELIGER_v0.4
-Atualizado: 30 Jan 2010 07:38PM
+Atualizado: 01 Feb 2010 01:54PM
 
 Editor de Metadados do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -11,12 +11,19 @@ Centro de Biologia Marinha da Universidade de São Paulo
 Bruno C. Vellutini | organelas.com
 '''
 
-import os, sys, string, subprocess, time, fileinput
-from PIL import Image as pil_image
+import os
+import sys
+import string
+import subprocess
+import time
+import fileinput
 import getopt
+
+from PIL import Image as pil_image
 from shutil import copy
-from iptcinfo import IPTCInfo
 from bsddb3 import db
+
+from iptcinfo import IPTCInfo
 from eagle import *
 
 # ImageMagick e exiftool devem estar instalados no sistema

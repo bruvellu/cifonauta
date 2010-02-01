@@ -3,7 +3,7 @@
 
 '''
 CIFONAUTA_v0.4
-Atualizado: 08 Jan 2010 06:36PM
+Atualizado: 01 Feb 2010 01:54PM
 
 Gerenciador do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -11,13 +11,18 @@ Centro de Biologia Marinha da Universidade de São Paulo
 Bruno C. Vellutini | organelas.com
 '''
 
-import os, sys, string, subprocess
+import os
+import sys
+import string
+import subprocess
 import time
 import fileinput
+import getopt
+
+from bsddb3 import db
+
 from iptcinfo import IPTCInfo
 import wordpresslib
-from bsddb3 import db
-import getopt
 from eagle import *
 
 

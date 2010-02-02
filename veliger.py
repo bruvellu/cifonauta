@@ -3,7 +3,7 @@
 
 '''
 VELIGER_v0.4
-Atualizado: 02 Feb 2010 05:24PM
+Atualizado: 02 Feb 2010 09:36PM
 
 Editor de Metadados do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -108,7 +108,7 @@ def save_meta(app, button):
     volta para a tabela, além de incluir a imagem na lista de fotos
     atualizadas.
     '''
-    if app['nome'] is not '':
+    if app['nome'] != '':
         # Salvar metadados novos usando o ExifTools
         print '\nSalvando metadados...'
         try:

@@ -3,7 +3,7 @@
 
 '''
 VELIGER_v0.4
-Atualizado: 02 Feb 2010 04:02PM
+Atualizado: 02 Feb 2010 05:24PM
 
 Editor de Metadados do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -45,9 +45,12 @@ def data_changed(app, widget, value):
 
 def selection_changed(app, widget, selected):
     '''
-    Função que define o tamanho do thumbnail a ser colocado na aba de edição dos mestadados (baseado nas dimensões da janela), passa os metadados da tabela para esta aba e focaliza na mesma.
+    Função que define o tamanho do thumbnail a ser colocado na aba de edição
+    dos mestadados (baseado nas dimensões da janela), passa os metadados da
+    tabela para esta aba e focaliza na mesma.
     '''
-    # Evita que o programa tente redimensionar um thumbnail inexistente (quando a entrada é None - ocorre durante a limpeza da tabela)
+    # Evita que o programa tente redimensionar um thumbnail inexistente (quando
+    # a entrada é None - ocorre durante a limpeza da tabela)
     if selected is not None:
 
         # Ativa aba de edição que está desativada por padrão
@@ -58,15 +61,20 @@ def selection_changed(app, widget, selected):
         
         # Define o tamanho do thumbnail
         if wsize[0] >= 1335:
-            app['thumb'].image = 'imagens/thumbs/500/%s' % app['table'].selected()[0][1][0]
+            app['thumb'].image = 'imagens/thumbs/500/%s' % \
+            app['table'].selected()[0][1][0]
         elif wsize[0] < 1335 and wsize[0] >= 1235:
-            app['thumb'].image = 'imagens/thumbs/450/%s' % app['table'].selected()[0][1][0]
+            app['thumb'].image = 'imagens/thumbs/450/%s' % \
+            app['table'].selected()[0][1][0]
         elif wsize[0] < 1235 and wsize[0] >= 1135:
-            app['thumb'].image = 'imagens/thumbs/400/%s' % app['table'].selected()[0][1][0]
+            app['thumb'].image = 'imagens/thumbs/400/%s' % \
+            app['table'].selected()[0][1][0]
         elif wsize[0] < 1135 and wsize[0] >= 955:
-            app['thumb'].image = 'imagens/thumbs/300/%s' % app['table'].selected()[0][1][0]
+            app['thumb'].image = 'imagens/thumbs/300/%s' % \
+            app['table'].selected()[0][1][0]
         elif wsize[0] < 955:
-            app['thumb'].image = 'imagens/thumbs/250/%s' % app['table'].selected()[0][1][0]
+            app['thumb'].image = 'imagens/thumbs/250/%s' % \
+            app['table'].selected()[0][1][0]
         
         # Passa os valores dos widgets da tabela para os campos de edição
         # app['nome'] = app['table'].selected()[0][1][0]
@@ -96,14 +104,34 @@ def selection_changed(app, widget, selected):
 
 def save_meta(app, button):
     '''
-    Salva os metadados na imagem usando o exiftool e repassa os valores de volta para a tabela, além de incluir a imagem na lista de fotos atualizadas.
+    Salva os metadados na imagem usando o exiftool e repassa os valores de
+    volta para a tabela, além de incluir a imagem na lista de fotos
+    atualizadas.
     '''
     if app['nome'] is not '':
         # Salvar metadados novos usando o ExifTools
         print '\nSalvando metadados...'
         try:
-            # Salva os metadados na imagem (sobrepondo os correspondentes originais)
-            subprocess.call(['exiftool', '-overwrite_original', '-City=%s' % app['cidade'], '-By-line=%s' % app['autor'], '-Province-State=%s' % app['estado'], '-Country-PrimaryLocationName=%s' % app['pais'], '-CopyrightNotice=%s' % app['direitos'], '-UsageTerms="Creative Commons BY-NC-SA"', '-ObjectName=%s' % app['titulo'], '-Caption-Abstract=%s' % app['legenda'], '-Sub-location=%s' % app['sublocal'], '-Headline=%s' % app['taxon'], '-OriginalTransmissionReference=%s' % app['spp'], '-SpecialInstructions=%s' % app['tamanho'], '-Source=%s' % app['especialista'], app['table'].selected()[0][1][15]])
+            # Salva os metadados na imagem (sobrepondo os correspondentes
+            # originais)
+            subprocess.call([
+                'exiftool',
+                '-overwrite_original',
+                '-City=%s' % app['cidade'],
+                '-By-line=%s' % app['autor'],
+                '-Province-State=%s' % app['estado'],
+                '-Country-PrimaryLocationName=%s' % app['pais'],
+                '-CopyrightNotice=%s' % app['direitos'],
+                '-UsageTerms="Creative Commons BY-NC-SA"',
+                '-ObjectName=%s' % app['titulo'],
+                '-Caption-Abstract=%s' % app['legenda'],
+                '-Sub-location=%s' % app['sublocal'],
+                '-Headline=%s' % app['taxon'],
+                '-OriginalTransmissionReference=%s' % app['spp'],
+                '-SpecialInstructions=%s' % app['tamanho'],
+                '-Source=%s' % app['especialista'],
+                app['table'].selected()[0][1][15]
+                ])
             # Loop para incluir os keywords individualmente.
             # Lista com comando e argumentos
             shell_call = ['exiftool', '-overwrite_original']
@@ -122,7 +150,8 @@ def save_meta(app, button):
             subprocess.call(shell_call)
             print 'Keywords adicionadas.'
         except IOError:
-            print '\nOcorreu algum erro. Verifique se o ExifTool está instalado.'
+            print '\nOcorreu algum erro. Verifique se o ExifTool está \
+                    instalado.'
         else:
             print 'Novos metadados salvos na imagem com sucesso!'
 
@@ -141,36 +170,41 @@ def save_meta(app, button):
         
         # Se o registro existir
         if rec:
-            print 'Bingo! Registro de %s encontrado.\n' % app['table'].selected()[0][1][0]
+            print 'Bingo! Registro de %s encontrado.\n' % \
+            app['table'].selected()[0][1][0]
             # Transformando a entrada do banco em dicionário
             recdata = eval(rec[1])
             
             # Define a data de modificação do arquivo
-            timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p', time.localtime(os.path.getmtime(app['table'].selected()[0][1][15])))
+            timestamp = time.strftime(
+                    '%d/%m/%Y %I:%M:%S %p',
+                    time.localtime(os.path.getmtime(app['table'].selected()[0][1][15]))
+                    )
             
             # Criar entrada com valores atualizados
             newRec = {
-                        'nome':recdata['nome'],
-                        'timestamp':timestamp,
-                        'postid':recdata['postid'],
-                        'titulo':app['titulo'],
-                        'keywords':app['keywords'].lower(),
-                        'autor':app['autor'],
-                        'cidade':app['cidade'],
-                        'sublocal':app['sublocal'],
-                        'estado':app['estado'],
-                        'pais':app['pais'],
-                        'taxon':app['taxon'],
-                        'direitos':app['direitos'],
-                        'legenda':app['legenda'],
-                        'spp':app['spp'],
-                        'tamanho':app['tamanho'],
-                        'especialista':app['especialista'],
-                        'www':recdata['www'],
-                        'mod':True
-                        }
+                    'nome':recdata['nome'],
+                    'timestamp':timestamp,
+                    'postid':recdata['postid'],
+                    'titulo':app['titulo'],
+                    'keywords':app['keywords'].lower(),
+                    'autor':app['autor'],
+                    'cidade':app['cidade'],
+                    'sublocal':app['sublocal'],
+                    'estado':app['estado'],
+                    'pais':app['pais'],
+                    'taxon':app['taxon'],
+                    'direitos':app['direitos'],
+                    'legenda':app['legenda'],
+                    'spp':app['spp'],
+                    'tamanho':app['tamanho'],
+                    'especialista':app['especialista'],
+                    'www':recdata['www'],
+                    'mod':True
+                    }
             
-            # Gravar entrada atualizada no banco de dados (transformada em string)
+            # Gravar entrada atualizada no banco de dados (transformada em
+            # string)
             imgdb.put(recdata['nome'],str(newRec))
 
         # Fechando o banco
@@ -198,7 +232,11 @@ def save_meta(app, button):
     updated = len(app['uptable'])
 
     if len(app['uptable']) == 0:
-        app['uptable'].append([app['table'].selected()[0][1][0],app['table'].selected()[0][1][1],app['table'].selected()[0][1][3]])
+        app['uptable'].append([
+            app['table'].selected()[0][1][0],
+            app['table'].selected()[0][1][1],
+            app['table'].selected()[0][1][3]
+            ])
     else:
         # Verifica duplicatas
         for item in app['uptable']:
@@ -206,7 +244,11 @@ def save_meta(app, button):
                 item[2] = app['table'].selected()[0][1][3]
                 break
         else:
-            app['uptable'].append([app['table'].selected()[0][1][0],app['table'].selected()[0][1][1],app['table'].selected()[0][1][3]])
+            app['uptable'].append([
+                app['table'].selected()[0][1][0],
+                app['table'].selected()[0][1][1],
+                app['table'].selected()[0][1][3]
+                ])
 
     print 'Pronto.'
 
@@ -263,7 +305,12 @@ def delete_cb(app, button):
         for meta in widgets:
             if meta == 'thumb':
                 data = chr(128) * (30 * 30 * 3)
-                app[meta].image = Image(width=30, height=30, depth=24, data=data)
+                app[meta].image = Image(
+                        width=30,
+                        height=30,
+                        depth=24,
+                        data=data
+                        )
             else:
                 app[meta] = ''
                 
@@ -277,7 +324,8 @@ def delete_cb(app, button):
 
 def format(app, table, row, col, value):
     '''
-    Função que formata as células da tabela principal para destacar campos a serem preenchidos
+    Função que formata as células da tabela principal para destacar campos a
+    serem preenchidos
     '''
     if value == '':
         if col == 2 or col == 3:
@@ -287,7 +335,8 @@ def format(app, table, row, col, value):
 
 def thumb_gen(app, button):
     '''
-    Botão com o thumbnail. Clique nele para redimensionar o thumb de acordo com as dimensões da janela.
+    Botão com o thumbnail. Clique nele para redimensionar o thumb de acordo com
+    as dimensões da janela.
     '''
     # Redimensiona o thumbnail
     if app['table'].selected() is None:
@@ -296,15 +345,20 @@ def thumb_gen(app, button):
         wsize = app.get_window_size()
     
         if wsize[0] >= 1335:
-            app['thumb'].image = 'imagens/thumbs/500/%s' % app['table'].selected()[0][1][0]
+            app['thumb'].image = 'imagens/thumbs/500/%s' % \
+            app['table'].selected()[0][1][0]
         elif wsize[0] < 1335 and wsize[0] >= 1235:
-            app['thumb'].image = 'imagens/thumbs/450/%s' % app['table'].selected()[0][1][0]
+            app['thumb'].image = 'imagens/thumbs/450/%s' % \
+            app['table'].selected()[0][1][0]
         elif wsize[0] < 1235 and wsize[0] >= 1135:
-            app['thumb'].image = 'imagens/thumbs/400/%s' % app['table'].selected()[0][1][0]
+            app['thumb'].image = 'imagens/thumbs/400/%s' % \
+            app['table'].selected()[0][1][0]
         elif wsize[0] < 1135 and wsize[0] >= 955:
-            app['thumb'].image = 'imagens/thumbs/300/%s' % app['table'].selected()[0][1][0]
+            app['thumb'].image = 'imagens/thumbs/300/%s' % \
+            app['table'].selected()[0][1][0]
         elif wsize[0] < 955:
-            app['thumb'].image = 'imagens/thumbs/250/%s' % app['table'].selected()[0][1][0]
+            app['thumb'].image = 'imagens/thumbs/250/%s' % \
+            app['table'].selected()[0][1][0]
 
 def edit_cb(app, button):
     '''
@@ -318,15 +372,20 @@ def edit_cb(app, button):
     wsize = app.get_window_size()
     
     if wsize[0] >= 1335:
-        app['thumb'].image = 'imagens/thumbs/500/%s' % app['table'].selected()[0][1][0]
+        app['thumb'].image = 'imagens/thumbs/500/%s' % \
+        app['table'].selected()[0][1][0]
     elif wsize[0] < 1335 and wsize[0] >= 1235:
-        app['thumb'].image = 'imagens/thumbs/450/%s' % app['table'].selected()[0][1][0]
+        app['thumb'].image = 'imagens/thumbs/450/%s' % \
+        app['table'].selected()[0][1][0]
     elif wsize[0] < 1235 and wsize[0] >= 1135:
-        app['thumb'].image = 'imagens/thumbs/400/%s' % app['table'].selected()[0][1][0]
+        app['thumb'].image = 'imagens/thumbs/400/%s' % \
+        app['table'].selected()[0][1][0]
     elif wsize[0] < 1135 and wsize[0] >= 955:
-        app['thumb'].image = 'imagens/thumbs/300/%s' % app['table'].selected()[0][1][0]
+        app['thumb'].image = 'imagens/thumbs/300/%s' % \
+        app['table'].selected()[0][1][0]
     elif wsize[0] < 955:
-        app['thumb'].image = 'imagens/thumbs/250/%s' % app['table'].selected()[0][1][0]
+        app['thumb'].image = 'imagens/thumbs/250/%s' % \
+        app['table'].selected()[0][1][0]
 
     # app['nome'] = app['table'].selected()[0][1][0]
     app['titulo'] = app['table'].selected()[0][1][3]
@@ -353,7 +412,8 @@ def pref_cb(app, menuitem):
     app.show_preferences_dialog()
 
 def selectdir_cb(app, widget, name):
-    '''Callback do botão para selecionar o diretório na janela de preferências.'''
+    '''Callback do botão para selecionar o diretório na janela de
+    preferências.'''
     #TODO funcionalidade incompleta
     app['srcdir'] = name
 
@@ -387,12 +447,16 @@ def openfile_cb(app, menuitem):
         for fpath in fpaths:
             # Checando por duplicatas
             for static_entry in static_list:
-                if duplicate_check(static_entry, os.path.split(fpath)[1]) == True:
+                if duplicate_check(
+                        static_entry,
+                        os.path.split(fpath)[1]
+                        ) == True:
                     n += 1
                     break
             else:
                 # Define a data de modificação do arquivo
-                timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p', time.localtime(os.path.getmtime(fpath)))
+                timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p',
+                            time.localtime(os.path.getmtime(fpath)))
                 
                 # Verifica se imagem está no banco de dados
                 entry = searchImgdb(fpath, timestamp)
@@ -403,13 +467,15 @@ def openfile_cb(app, menuitem):
 
         # FIXME Exibir mensagem na barra de status direito...
         global status
-        status = app.status_message(' %d imagens duplicadas, %d novas imagens' % (n, m))
+        status = app.status_message(
+                ' %d imagens duplicadas, %d novas imagens' % (n, m))
 
 def openfolder_cb(app, menuitem):
     '''
     Callback para a janela de seleção de pastas do menu.
 
-    Pega a pasta e procura dentro dela todos os arquivos terminados em .jpg. Para cada arquivo lê os metadados e joga na tabela.
+    Pega a pasta e procura dentro dela todos os arquivos terminados em .jpg.
+    Para cada arquivo lê os metadados e joga na tabela.
     '''
     # Inicia contadores (m=nova imagem, n=duplicada)
     m = 0
@@ -424,7 +490,8 @@ def openfolder_cb(app, menuitem):
         for table_entry in app['table']:
             static_list.append(table_entry)
 
-        # Extrai lista de imagens usando a função imgGrab e seus metadados usando a função createMeta (dentro da primeira)
+        # Extrai lista de imagens usando a função imgGrab e seus metadados
+        # usando a função createMeta (dentro da primeira)
         entries = imgGrab(folder)
 
         print 'Populando a tabela... isto pode levar alguns segundos.'
@@ -440,13 +507,15 @@ def openfolder_cb(app, menuitem):
                 
         # FIXME Exibir mensagem na barra de status direito...
         global status
-        status = app.status_message(' %d imagens duplicadas, %d novas imagens' % (n, m))
+        status = app.status_message(' %d imagens duplicadas, %d novas imagens'
+                % (n, m))
 
 def opendatabase_cb(app, menuitem):
     '''
     Callback para a janela de seleção de arquivos do menu.
 
-    Pega o caminho do arquivo de banco de dados e chama a função que lê as entradas e joga na tabela (db_import).
+    Pega o caminho do arquivo de banco de dados e chama a função que lê as
+    entradas e joga na tabela (db_import).
     '''
     database_name = app.file_chooser(0, filter='database*', multiple=False)
     
@@ -525,7 +594,8 @@ def filter_gui(text):
 
 def db_import(dbname):
     '''
-    Importa um banco de dados já existente (normalmente criado na sessão anterior).
+    Importa um banco de dados já existente (normalmente criado na sessão
+    anterior).
     '''
 
     # Contador
@@ -560,44 +630,44 @@ def db_import(dbname):
             else:
                 pass
     
-            # Cria a linha da tabela da interface
-            entry_meta = [
-                    recdata['nome'],
-                    Image(filename='imagens/thumbs/100/%s' % recdata['nome']),
-                    recdata['autor'],
-                    recdata['titulo'],
-                    recdata['legenda'],
-                    recdata['keywords'],
-                    recdata['sublocal'],
-                    recdata['cidade'],
-                    recdata['estado'],
-                    recdata['pais'],
-                    recdata['taxon'],
-                    recdata['spp'],
-                    recdata['tamanho'],
-                    recdata['especialista'],
-                    recdata['direitos'],
-                    os.path.join(srcdir, recdata['nome']),
-                    ]
-    
-            # Se programa estiver iniciando
-            if app is None:
-                full_table.append(entry_meta)
-            # Se não, fazer checagem de duplicatas
+        # Cria a linha da tabela da interface
+        entry_meta = [
+                recdata['nome'],
+                Image(filename='imagens/thumbs/100/%s' % recdata['nome']),
+                recdata['autor'],
+                recdata['titulo'],
+                recdata['legenda'],
+                recdata['keywords'],
+                recdata['sublocal'],
+                recdata['cidade'],
+                recdata['estado'],
+                recdata['pais'],
+                recdata['taxon'],
+                recdata['spp'],
+                recdata['tamanho'],
+                recdata['especialista'],
+                recdata['direitos'],
+                os.path.join(srcdir, recdata['nome']),
+                ]
+
+        # Se programa estiver iniciando
+        if app is None:
+            full_table.append(entry_meta)
+        # Se não, fazer checagem de duplicatas
+        else:
+            static_list = []
+            for table_entry in app['table']:
+                static_list.append(table_entry)
+            for static_entry in static_list:
+                if duplicate_check(static_entry, entry_meta[0]) == True:
+                    n += 1
+                    break
             else:
-                static_list = []
-                for table_entry in app['table']:
-                    static_list.append(table_entry)
-                for static_entry in static_list:
-                    if duplicate_check(static_entry, entry_meta[0]) == True:
-                        n += 1
-                        break
-                else:
-                    app['table'].append(entry_meta)
-                    m += 1
-    
-            #Pega próxima entrada do BD
-            rec = cursor.next()
+                app['table'].append(entry_meta)
+                m += 1
+
+        #Pega próxima entrada do BD
+        rec = cursor.next()
             
     # Fechando o cursor do banco de dados
     cursor.close()
@@ -610,12 +680,14 @@ def db_import(dbname):
     # FIXME implementar direito...
     if app is not None:
         global status
-        status = app.status_message(' %d imagens importadas, %d imagens duplicadas' % (m, n))
+        status = app.status_message(
+                ' %d imagens importadas, %d imagens duplicadas' % (m, n))
         app.idle_add(idle_status_rm)
 
 def duplicate_check(entry, filename):
     '''
-    Função que compara o nome do arquivo importado com o nome do arquivo presente no banco de dados.
+    Função que compara o nome do arquivo importado com o nome do arquivo
+    presente no banco de dados.
     '''
     entry_name = entry[0]
     if entry_name == filename:
@@ -681,11 +753,13 @@ def create_thumbs(fpath):
 
 def searchImgdb(fpath, timestamp):
     '''
-    Busca o registro da imagem no banco de dados procurando pelo nome do arquivo.
+    Busca o registro da imagem no banco de dados procurando pelo nome do
+    arquivo.
     
     Se encontrar, compara a data de modificação do arquivo e do registro.
 
-    Se as datas forem iguais pula para a próxima imagem, se forem diferentes atualiza o registro.
+    Se as datas forem iguais pula para a próxima imagem, se forem diferentes
+    atualiza o registro.
     '''
 
     print 'Verificando se a imagem está no banco de dados...'
@@ -713,24 +787,30 @@ def searchImgdb(fpath, timestamp):
         recdata = eval(rec[1])
 
         print 'Comparando a data de modificação do arquivo com o registro...'
-        if recdata['timestamp'] == timestamp:	# Se os timetamps forem iguais
+        if recdata['timestamp'] == timestamp:
+            # Se os timetamps forem iguais
             print
             print '\tBanco de dados\t\t  Arquivo'
             print '\t' + 2 * len(timestamp) * '-' + 4 * '-'
             print '\t%s\t= %s' % (recdata['timestamp'], timestamp)
             print
             if recdata['www'] == True and recdata['mod'] == False:
-                print 'Arquivo não mudou!' # Arquivo não foi modificado, nem precisa ser atualizado
+                # Arquivo não foi modificado, nem precisa ser atualizado
+                print 'Arquivo não mudou!'
             elif recdata['www'] == True and recdata['mod'] == True:
-                print 'Arquivo que está no site não está atualizado!' # Timestamp não foi modificado, mas imagem não foi carregada no site ainda
+                # Timestamp não foi modificado, mas imagem não foi carregada
+                # no site ainda
+                print 'Arquivo que está no site não está atualizado!'
             elif recdata['www'] == False:
-                print 'Arquivo não está no site!' # Imagem nunca foi carregado no site
+                print 'Arquivo não está no site!'
+                # Imagem nunca foi carregado no site
             
             entry_meta = []
             # Cria a lista para tabela da interface
             entry_meta = [
                         recdata['nome'],
-                        Image(filename='imagens/thumbs/100/%s' % recdata['nome']),
+                        Image(filename='imagens/thumbs/100/%s' %
+                            recdata['nome']),
                         recdata['autor'],
                         recdata['titulo'],
                         recdata['legenda'],
@@ -755,9 +835,11 @@ def searchImgdb(fpath, timestamp):
             print '\t%s\t!= %s' % (recdata['timestamp'], timestamp)
             print
             if recdata['www'] == True:
-                print 'Arquivo que está no site não está atualizado!' # Timestamp modificado, imagem do site não está atualizada
+                # Timestamp modificado, imagem do site não está atualizada
+                print 'Arquivo que está no site não está atualizado!'
             elif recdata['www'] == False:
-                print 'Arquivo não está no site!' # Imagem nunca foi carregada no site
+                # Imagem nunca foi carregada no site
+                print 'Arquivo não está no site!'
                 
             # Lê metadados e cria entrada da tabela
             entry = createMeta(fpath)
@@ -917,7 +999,8 @@ def imgGrab(folder):
                 fpath = os.path.join(root,fname)
                 
                 # Define a data de modificação do arquivo
-                timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p', time.localtime(os.path.getmtime(fpath)))
+                timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p',
+                        time.localtime(os.path.getmtime(fpath)))
                 
                 # Verifica se imagem está no banco de dados
                 entry = searchImgdb(fpath, timestamp)
@@ -928,7 +1011,7 @@ def imgGrab(folder):
                 # Contador
                 n += 1
         
-        else:	# Se o número máximo de imagens for atingido, finalizar programa
+        else:	# Se o número máximo de imagens for atingido, finalizar
             global status
             status = app.status_message(' %d fotos analisadas' % n)
             app.idle_add(idle_status_rm)
@@ -949,9 +1032,25 @@ thumbdir = 'imagens/thumbs'
 dbname = 'database'
 
 # Lista com nomes dos widgets
-widgets = ['thumb','autor','titulo','legenda','keywords','sublocal','cidade','estado','pais','taxon','spp','tamanho','especialista','direitos']
+widgets = [
+        'thumb',
+        'autor',
+        'titulo',
+        'legenda',
+        'keywords',
+        'sublocal',
+        'cidade',
+        'estado',
+        'pais',
+        'taxon',
+        'spp',
+        'tamanho',
+        'especialista',
+        'direitos'
+        ]
 
-# Inicia contador (FIXME Era pra ser integrado no buscador, mas ainda não implementado)
+# Inicia contador (FIXME Era pra ser integrado no buscador, mas ainda não
+# implementado)
 t0 = time.time()
 
 # Criar a instância do bd
@@ -985,13 +1084,17 @@ full_list = Tabs.Page(
         children=(
             # Entry(id='search_box', label='Busca:', callback=digittime_cb),
             Table(id='table', label='Tabela de Metadados', items=full_table,
-                headers=['Arquivo', 'Thumb', 'Autor', 'Título', 'Legenda', 'Keywords', 'Sublocal', 'Cidade', 'Estado', 'País', 'Táxon', 'Espécie', 'Tamanho', 'Especialista', 'Direitos', 'Path'],
+                headers=['Arquivo', 'Thumb', 'Autor', 'Título', 'Legenda',
+                    'Keywords', 'Sublocal', 'Cidade', 'Estado', 'País',
+                    'Táxon', 'Espécie', 'Tamanho', 'Especialista', 'Direitos',
+                    'Path'],
                 types=[str,Image,str,str,str,str,str,str,str,str,str,str,str,str,str,str],
                 selection_callback=selection_changed,
                 cell_format_func=format,
                 hidden_columns_indexes=[0,15],
                 ),
-            # Button(id='edit_button', label='Editar', active=False, callback=edit_cb),
+            # Button(id='edit_button', label='Editar', active=False,
+            # callback=edit_cb),
             ),
         )
 
@@ -1009,16 +1112,21 @@ edit_data = Tabs.Page(
                             Group(id='thumb_edit',
                                 border=False,
                                 children=(
-                                    Button(id='thumb', image=Image(width=30, height=30, depth=24, data=data), callback=thumb_gen)
+                                    Button(id='thumb', image=Image(width=30,
+                                        height=30, depth=24, data=data),
+                                        callback=thumb_gen)
                                     )
                                 ),
                             Group(id='main_meta',
                                 border=False,
                                 children=(
-                                    # Entry(id='nome', label='Arquivo:', editable=False),
-                                    # Entry(id='path', label='Local:', editable=False),
+                                    # Entry(id='nome', label='Arquivo:',
+                                    # editable=False),
+                                    # Entry(id='path', label='Local:',
+                                    # editable=False),
                                     Entry(id='titulo', label='Título:'),
-                                    Entry(id='legenda', label='Legenda:', multiline=True),
+                                    Entry(id='legenda', label='Legenda:',
+                                        multiline=True),
                                     Entry(id='keywords', label='Marcadores:'),
                                     Entry(id='autor', label='Autor:'),
                                     Entry(id='sublocal', label='Local:'),
@@ -1029,9 +1137,16 @@ edit_data = Tabs.Page(
                                     Entry(id='spp', label='Espécie:'),
                                     Selection(id='tamanho',
                                         label='Tamanho',
-                                        options=['<0,1 mm', '0,1 - 1,0 mm', '1,0 - 10 mm', '10 - 100 mm', '>100 mm']
+                                        options=[
+                                            '<0,1 mm',
+                                            '0,1 - 1,0 mm',
+                                            '1,0 - 10 mm',
+                                            '10 - 100 mm',
+                                            '>100 mm'
+                                            ]
                                         ),
-                                    Entry(id='especialista', label='Especialista:'),
+                                    Entry(id='especialista',
+                                        label='Especialista:'),
                                     Entry(id='direitos', label='Direitos:'),
                                     )
                                 )
@@ -1043,10 +1158,18 @@ edit_data = Tabs.Page(
                 horizontal=True,
                 border=False,
                 children=(
-                    Button(id='back_button', label='Voltar', active=True, callback=back_cb, expand_policy=ExpandPolicy.Horizontal()),
-                    Button(id='clean_button', label='Limpar', active=True, callback=clean_cb, expand_policy=ExpandPolicy.Horizontal()),
-                    Button(id='delete_button', label='Deletar', active=True, callback=delete_cb, expand_policy=ExpandPolicy.Horizontal()),
-                    Button(id='save_button', label='Salvar', active=False, callback=save_meta, expand_policy=ExpandPolicy.Horizontal())
+                    Button(id='back_button', label='Voltar', active=True,
+                        callback=back_cb,
+                        expand_policy=ExpandPolicy.Horizontal()),
+                    Button(id='clean_button', label='Limpar', active=True,
+                        callback=clean_cb,
+                        expand_policy=ExpandPolicy.Horizontal()),
+                    Button(id='delete_button', label='Deletar', active=True,
+                        callback=delete_cb,
+                        expand_policy=ExpandPolicy.Horizontal()),
+                    Button(id='save_button', label='Salvar', active=False,
+                        callback=save_meta,
+                        expand_policy=ExpandPolicy.Horizontal())
                     )
                 ),
             ),
@@ -1055,7 +1178,8 @@ edit_data = Tabs.Page(
 update_list = Tabs.Page(
         label=u'Modificadas',
         children=(
-            Table(id='uptable', label='Imagens atualizadas nesta sessão', items=updated_meta,
+            Table(id='uptable', label='Imagens atualizadas nesta sessão',
+                items=updated_meta,
                 headers=['Arquivo','Thumb', 'Título'],
                 types=[str,Image,str],
                 hidden_columns_indexes=[0],
@@ -1084,7 +1208,8 @@ app = App(
                         border=False,
                         horizontal=True,
                         children=(
-                            Entry(id='dbfile', label='Arquivo de banco de dados:'),
+                            Entry(id='dbfile',
+                                label='Arquivo de banco de dados:'),
                             OpenFileButton(callback=selectdb_cb),
                             )
                         )
@@ -1104,7 +1229,8 @@ app = App(
                 subitems=(
                     Menu.Item(label="Abrir arquivo", callback=openfile_cb),
                     Menu.Item(label="Abrir pasta", callback=openfolder_cb),
-                    Menu.Item(label="Importar banco de dados", callback=opendatabase_cb),
+                    Menu.Item(label="Importar banco de dados",
+                        callback=opendatabase_cb),
                     Menu.Separator(),
                     Menu.Item(label="Opções", active=False, callback=pref_cb),
                     Menu.Separator(),

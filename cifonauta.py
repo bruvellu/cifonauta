@@ -3,7 +3,7 @@
 
 '''
 CIFONAUTA_v0.4
-Atualizado: 02 Feb 2010 09:32PM
+Atualizado: 02 Feb 2010 10:03PM
 
 Gerenciador do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -100,7 +100,8 @@ def wpPostImg():
     # Seleciona o ID do blog
     wp.selectBlog(0)
 
-    # Executa a função para processar a imagem (redimensionar e inserir marca d'água)
+    # Executa a função para processar a imagem
+    # (redimensionar e inserir marca d'água)
     imgResize()
 
     # Cria objeto da imagem, usando o endereço da imagem processada web_fpath
@@ -115,14 +116,17 @@ def wpPostImg():
         post.customFields = cfields	# 'Custom fields' do post
         
         # Conteúdo do post
-        # FIXME É necessário inserir o 'imgSrc' no conteúdo do post para que a imagem seja anexada ao post, tentar contornar isso
-        post.description = "<a id='baixar' title='Creative Commons BY-NC-SA' href='%s'>Download</a>" % imageSrc
+        # FIXME É necessário inserir o 'imgSrc' no conteúdo do post para que a
+        # imagem seja anexada ao post, tentar contornar isso
+        post.description = "<a id='baixar' title='Creative Commons BY-NC-SA' \
+                            href='%s'>Download</a>" % imageSrc
 
         # Lidar com categorias vazias
         if category == None:
             pass
         else:
-            # Verificar se a categoria já existe no site e se não existir, criar
+            # Verificar se a categoria já existe no site e se não existir,
+            # criar
             print '\nVerificando se %s já existe...' % category
             if category == None:
                 print 'Categoria vazia.'
@@ -131,7 +135,8 @@ def wpPostImg():
                 print 'VIVA! A categoria ' + category + ' existe.'
                 post.categories = (wp.getCategoryIdFromName(category),)
             else:
-                print 'A categoria ' + category + ' não existe! Criando nova categoria...'
+                print 'A categoria ' + category + \
+                        ' não existe! Criando nova categoria...'
                 post.categories = (wp.newCategory(category),)
                 print category + ' criada com sucesso!'
         
@@ -172,20 +177,26 @@ def wpUpdatePost():
     print '\nComparando...'
     for k, v in cfieldsDic.iteritems():
         for custom in oldCustomFields:
-            if k != custom['key']:	# Se k do post for diferente do custom['key'], passar para o próximo
+            if k != custom['key']:
+                # Se k do post for diferente do custom['key'], próximo
                 pass
-            else:			# Se existir a 'key' no post, mas o 'value' da imagem nova for None (vazio),
+            else:
+                # Se existir a 'key' no post, mas 'value' da imagem for None
                 if v == None:
-                    print '"%s" está vazio, deletando o custom field do post!' % k
-                    # Passar apenas o id do customfield = deletar o custom field do post publicado
+                    print '"%s" está vazio, deletando custom field do post!' \
+                            % k
+                    # Passar apenas o id do customfield = deletar o
+                    # custom field do post publicado
                     delCF = {
                             'id': int(custom['id'])
                             }
                     # Inclui na lista
                     newCustomFields.append(delCF)
                     break
-                else:		# Caso o 'value' não esteja vazio, atualizar o custom field
-                    print '"%s" existe e será atualizada para: %s' % (custom['key'], v)
+                else:
+                    # Caso o 'value' não esteja vazio, atualizar o custom field
+                    print '"%s" existe e será atualizada para: %s' % \
+                            (custom['key'], v)
                     # Passar com o valor novo
                     upCF = {
                             'id' : int(custom['id']),
@@ -195,9 +206,13 @@ def wpUpdatePost():
                     # Inclui na lista
                     newCustomFields.append(upCF)
                     break
-        else:	# Se depois de comparar cada cfield com os do post e não encontrar um correspondente,
-            if v != None:	# e o value não for vazio
-                print '"%s" não existe e será adicionada com o valor: %s' % (k, v)
+        else:
+            # Se depois de comparar cada cfield com os do post e não encontrar
+            # um correspondente
+            if v != None:
+                # e o value não for vazio
+                print '"%s" não existe e será adicionada com o valor: %s' % \
+                        (k, v)
                 # criar um novo custom field no post publicado
                 newCF = {
                         'key': k,
@@ -208,7 +223,8 @@ def wpUpdatePost():
             
     print '\nCustom fields atualizados!\n'
 
-    # Executa a função para processar a imagem (redimensionar e inserir marca d'água)
+    # Executa a função para processar a imagem (redimensionar e inserir marca
+    # d'água)
     imgResize()
     
     print '\nCriando objeto para atualizar imagem...'
@@ -229,10 +245,13 @@ def wpUpdatePost():
         print 'Criado objeto com custom fields.'
 
         # Conteúdo do post
-        # FIXME É necessário inserir o 'imgSrc' no conteúdo do post para que a imagem seja anexada ao post, tentar contornar isso
-        post.description = "<a id='baixar' title='Creative Commons BY-NC-SA' href='%s'>Download</a>" % imageSrc
+        # FIXME É necessário inserir o 'imgSrc' no conteúdo do post para que a
+        # imagem seja anexada ao post, tentar contornar isso
+        post.description = "<a id='baixar' title='Creative Commons BY-NC-SA' \
+                href='%s'>Download</a>" % imageSrc
         
-        # Definir categoria, teoricamente não precisa verificar se existe ou não
+        # Definir categoria, teoricamente não precisa verificar se existe ou
+        # não
         post.categories = (wp.getCategoryIdFromName(category),)
         # Publicar o post no site
         print '\nAtualizando o post com a imagem...'
@@ -259,12 +278,16 @@ def imgResize():
     # Começa a processar a imagem usando o ImageMagick
     print '\nProcessando a imagem...'
     try:
-        # Converte para 72dpi, JPG qualidade 50 e redimensiona as imagens maiores que 640 (em altura ou largura)
-        subprocess.call(['convert', fpath, '-density', '72', '-format', 'jpg', '-quality', '50', '-resize', '640x640>', web_fpath])
+        # Converte para 72dpi, JPG qualidade 50 e redimensiona as imagens
+        # maiores que 640 (em altura ou largura)
+        subprocess.call(['convert',fpath,'-density','72','-format','jpg',
+            '-quality','50', '-resize', '640x640>', web_fpath])
         # Insere marca d'água no canto direito embaixo
-        subprocess.call(['composite', '-dissolve', '20', '-gravity', 'southeast', watermark, web_fpath, web_fpath])
+        subprocess.call(['composite', '-dissolve', '20', '-gravity',
+            'southeast', watermark, web_fpath, web_fpath])
     except IOError:
-        print '\nOcorreu algum erro na conversão da imagem. Verifique se o ImageMagick está instalado.'
+        print '\nOcorreu algum erro na conversão da imagem. Verifique se o \
+                ImageMagick está instalado.'
     else:
         print 'Imagem convertida com sucesso!'
 
@@ -272,9 +295,11 @@ def dbPut(www, mod, idpost):
     '''
     Cria ou atualiza registro no banco de dados.
 
-    Pega o id do post novo, do post que será atualizado ou um valor neutro (0) para imagens sem post.
+    Pega o id do post novo, do post que será atualizado ou um valor neutro (0)
+    para imagens sem post.
 
-    Usar www=True para imagens carregadas no site e False para imagens ainda não carregadas.
+    Usar www=True para imagens carregadas no site e False para imagens ainda
+    não carregadas.
     '''
 
     # Atualizar a data de modificação no registro do banco de dados
@@ -316,11 +341,13 @@ def dbPut(www, mod, idpost):
 
 def searchImgdb():
     '''
-    Busca o registro da imagem no banco de dados procurando pelo nome do arquivo.
+    Busca o registro da imagem no banco de dados procurando pelo nome do
+    arquivo.
     
     Se encontrar, compara a data de modificação do arquivo e do registro.
 
-    Se as datas forem iguais pula para a próxima imagem, se forem diferentes atualiza o registro.
+    Se as datas forem iguais pula para a próxima imagem, se forem diferentes
+    atualiza o registro.
     '''
 
     print 'Verificando se a imagem está no banco de dados...'
@@ -348,7 +375,8 @@ def searchImgdb():
         recdata = eval(rec[1])
 
         print 'Comparando a data de modificação do arquivo com o registro...'
-        if recdata['timestamp'] == timestamp:	# Se os timetamps forem iguais
+        if recdata['timestamp'] == timestamp:
+            # Se os timetamps forem iguais
             print
             print '\tBanco de dados\t\t  Arquivo'
             print '\t' + 2 * len(timestamp) * '-' + 4 * '-'
@@ -356,13 +384,17 @@ def searchImgdb():
             print
             if recdata['www'] == True and recdata['mod'] == False:
                 print 'Arquivo não mudou!'
-                return 0 		# Arquivo não foi modificado, nem precisa ser atualizado
+                # Arquivo não foi modificado, nem precisa ser atualizado
+                return 0 		
             elif recdata['www'] == True and recdata['mod'] == True:
-                print 'Timestamps iguais, mas arquivo modificado. Versão do site não está atualizada!'
-                return 1		# Timestamp não foi modificado, mas imagem foi carregada no site ainda
+                print 'Timestamps iguais, mas arquivo modificado. Versão do \
+                        site não está atualizada!'
+                # Timestamp não foi modificado, mas imagem foi carregada no site ainda
+                return 1
             elif recdata['www'] == False:
                 print 'Arquivo não está no site!'
-                return 2		# Imagem nunca foi carregado no site
+                # Imagem nunca foi carregado no site
+                return 2
         else:
             print
             print '\tBanco de dados\t\t   Arquivo'
@@ -371,10 +403,12 @@ def searchImgdb():
             print
             if recdata['www'] == True:
                 print 'Arquivo que está no site não está atualizado!'
-                return 1		# Timestamp modificado, imagem do site não está atualizada
+                # Timestamp modificado, imagem do site não está atualizada
+                return 1
             elif recdata['www'] == False:
                 print 'Arquivo não está no site!'
-                return 2		# Imagem nunca foi carregada no site
+                # Imagem nunca foi carregada no site
+                return 2
     else:
         print 'Registro não encontrado. Esta imagem não está online!'
         print 'Continuando...'
@@ -426,17 +460,17 @@ def createMeta():
     # Definindo as variáveis
     title = info.data['object name']			# 5
     keywords = info.data['keywords']			# 25
-    author = info.data['by-line']				# 80
+    author = info.data['by-line']			# 80
     city = info.data['city']				# 90
-    sublocation = info.data['sub-location']			# 92
+    sublocation = info.data['sub-location']		# 92
     state = info.data['province/state']			# 95
-    country = info.data['country/primary location name']	# 101
+    country = info.data['country/primary location name']# 101
     category = info.data['headline']			# 105
     copyright = info.data['copyright notice']		# 116
-    caption = info.data['caption/abstract']			# 120
+    caption = info.data['caption/abstract']		# 120
     spp = info.data['original transmission reference']	# 103
     scale = info.data['special instructions']		# 40
-    source = info.data['source']				# 115
+    source = info.data['source']			# 115
 
     # Impedindo que imagens sem título ou autor sejam carregadas no site
     # Escreve no arquivo log com o nome e problema
@@ -526,8 +560,10 @@ def imgGrab():
     print '\nIniciando o cifonauta!!!'
     for root, dirs, files in os.walk(srcdir):
         for fname in files:
+            # FIXME olhar veliger
             s = string.find(fname, '.jpg')
-            if s >=1 and n < n_max:		# Se encontrar imagem e não tiver atingido o número máximo começar o trabalho
+            if s >=1 and n < n_max:
+                # Se encontrar imagem e não tiver atingido o número máximo começar o trabalho
                 global fpath
                 global timestamp
 
@@ -535,7 +571,8 @@ def imgGrab():
                 fpath = os.path.join(root,fname)
                 
                 # Define a data de modificação do arquivo
-                timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p', time.localtime(os.path.getmtime(fpath)))
+                timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p',
+                        time.localtime(os.path.getmtime(fpath)))
                 
                 # Nome do diretório pai do arquivo
                 # dirname = os.path.split(root)[1]
@@ -548,63 +585,89 @@ def imgGrab():
 
                 # Procurar arquivo no banco de dados comparando timestamps
                 chkFile = searchImgdb()
-                # Criar os metadados e retorna falso se está faltando algum obrigatório
+                # Criar os metadados e retorna falso se está faltando algum
+                # obrigatório
                 chkMeta = createMeta()
 
-                if chkFile == 0:		# Se registro existir e timestamp for igual, www=True e mod=False
+                if chkFile == 0:
+                    # Se registro existir e timestamp for igual, www=True e mod=False
                     if force_update == True:
-                        print 'Arquivo não mudou, mas programa rodando com argumento -f. Atualização forçada.'
+                        print 'Arquivo não mudou, mas programa rodando com \
+                                argumento -f. Atualização forçada.'
                         wpUpdatePost()
                     else:
-                        print '\nREGISTRO EXISTE E ESTÁ ATUALIZADO NO SITE! PRÓXIMA IMAGEM...'
+                        print '\nREGISTRO EXISTE E ESTÁ ATUALIZADO NO SITE! \
+                                PRÓXIMA IMAGEM...'
                         pass
-                elif chkFile == 1:		# Se imagem do site não estiver atualizada
-                    if web_upload == True:	# Atualizar se -w tiver sido passado
-                        print '\nREGISTRO EXISTE, MAS IMAGEM NÃO ESTÁ ATUALIZADA.'
+                elif chkFile == 1:
+                    # Se imagem do site não estiver atualizada
+                    if web_upload == True:
+                        # Atualizar se -w tiver sido passado
+                        print '\nREGISTRO EXISTE, MAS IMAGEM NÃO ESTÁ \
+                                ATUALIZADA.'
                         print 'ARGUMENTO -w, ATUALIZANDO O POST...'
                         wpUpdatePost()
-                    else:			# Caso contrário, apenas atualizar bd
-                        print '\nREGISTRO EXISTE, IMAGEM DO SITE NÃO ATUALIZADA, MAS APENAS ATUALIZANDO O BANCO DE DADOS...'
+                    else:
+                        # Caso contrário, apenas atualizar bd
+                        print '\nREGISTRO EXISTE, IMAGEM DO SITE NÃO \
+                                ATUALIZADA, MAS APENAS ATUALIZANDO O BANCO DE \
+                                DADOS...' 
                         dbPut(True, True, recdata['postid'])
                         n_to += 1
                     n_up += 1
-                elif chkFile == 2:		# Se imagem não estiver no site
+                elif chkFile == 2:
+                    # Se imagem não estiver no site
                     if web_upload == True:
-                        if chkMeta == False:	# mas estiverem faltando metadados obrigatórios, registrar no log e pular
-                            print '\nREGISTRO EXISTE, MAS IMAGEM NÃO TEM METADADOS ESSENCIAIS. NÃO SERÁ CARREGADA.'
+                        if chkMeta == False:
+                            # mas estiverem faltando metadados obrigatórios,
+                            # registrar no log e pular
+                            print '\nREGISTRO EXISTE, MAS IMAGEM NÃO TEM \
+                                    METADADOS ESSENCIAIS. NÃO SERÁ CARREGADA.'
                             dbPut(False, True, 0)
                             n_to += 1
                             pass
                         else:
-                            print '\nREGISTRO EXISTE, MAS IMAGEM NÃO ESTÁ NO SITE.'
+                            print '\nREGISTRO EXISTE, MAS IMAGEM NÃO ESTÁ NO \
+                                    SITE.'
                             print 'ARGUMENTO -w, CRIANDO UM NOVO POST...'
                             wpPostImg()
                             n_new += 1
-                    else:			# Caso contrário, apenas atualizar bd
-                        print '\nREGISTRO EXISTE, MAS IMAGEM NÃO ESTÁ NO SITE. APENAS ATUALIZANDO O BANCO DE DADOS...'
+                    else:
+                        # Caso contrário, apenas atualizar bd
+                        print '\nREGISTRO EXISTE, MAS IMAGEM NÃO ESTÁ NO SITE.\
+                                APENAS ATUALIZANDO O BANCO DE DADOS...'
                         dbPut(False, True, 0)
                         n_to += 1
-                else:				# Se registro não existir
+                else:
+                    # Se registro não existir
                     if web_upload == True:
-                        if chkMeta == False:	# mas estiverem faltando metadados obrigatórios, registrar no log e pular
+                        if chkMeta == False:
+                            # mas estiverem faltando metadados obrigatórios,
+                            # registrar no log e pular
                             dbPut(False, True, 0)
                             n_to += 1
                             pass
-                        else:		# Do contrário, criar novo post com imagem!
+                        else:
+                            # Do contrário, criar novo post com imagem!
                             wpPostImg()
                             n_new += 1
-                    else:			# Se registro não existir registrar no bd:
+                    else:
+                        # Se registro não existir registrar no bd:
                         dbPut(False, True, 0)
                         n_to += 1
 
                         # if only_update == True:
-                        # Se registro não existir, mas programa no modo only-update, passa para a próxima
+                        # Se registro não existir, mas programa no modo
+                        # only-update, passa para a próxima
                         #   print 'Argumento "-u" utilizado:'
-                        #   print '\t%s não está online, mas não será carregada ao site.' % fname
+                        #   print '\t%s não está online, mas não será carregada
+                        #   ao site.' % fname
                         #   pass
 
-            else:		# Se o número máximo de imagens for atingido, finalizar programa
-                print '\n%d fotos analisadas! Execução do CIFONAUTA foi concluída, finalizando...' % n
+            else:
+                # Se o número máximo de imagens for atingido, finalizar programa
+                print '\n%d fotos analisadas! Execução do CIFONAUTA foi \
+                        concluída, finalizando...' % n
                 break
 
 def busca_gui(app, wid, text):
@@ -634,23 +697,31 @@ def usage():
     print 'Argumentos:'
     print '  -h, --help\n\tMostra este menu de ajuda.'
     print
-    print '  -n {n}, --n-max {n} (padrão=20)\n\tEspecifica um número máximo de imagens que o programa irá verificar.'
+    print '  -n {n}, --n-max {n} (padrão=20)\n\tEspecifica um número máximo de\
+            imagens que o programa irá verificar.'
     print
     print '  -i, --single-img\n\tVerifica uma única imagem.'
     print
-    print '  -g, --gui-mode\n\tInicia a interface gráfica após verificar as imagens.'
+    print '  -g, --gui-mode\n\tInicia a interface gráfica após verificar as \
+            imagens.'
     print
-    print '  -w, --web-upload\n\tRoda o programa no modo upload. As imagens serão carregadas para o site.'
+    print '  -w, --web-upload\n\tRoda o programa no modo upload. As imagens \
+            serão carregadas para o site.'
     print
-    print '  -f, --force-update\n\tRoda o programa fazendo a atualização forçada (leitura, upload para o site e registro no bd) das imagens que não foram modificadas (-w ativado por padrão).'
+    print '  -f, --force-update\n\tRoda o programa fazendo a atualização \
+            forçada (leitura, upload para o site e registro no bd) das imagens\
+            que não foram modificadas (-w ativado por padrão).'
     print
     print 'Exemplo:'
-    print '  python cifonauta.py -f -n 15\n\tFaz a atualização forçada das primeiras 15 imagens que o programa encontrar na pasta padrão (srcdir, especificada dentro do script).'
+    print '  python cifonauta.py -f -n 15\n\tFaz a atualização forçada das \
+            primeiras 15 imagens que o programa encontrar na pasta padrão \
+            (srcdir, especificada dentro do script).'
     print
 
 def main(argv):
     '''
-    Função principal do programa. Lê os argumentos se houver e chama as outras funções.
+    Função principal do programa. Lê os argumentos se houver e chama as outras
+    funções.
     '''
     # Lista de categorias presentes no site
     global catlist
@@ -671,7 +742,13 @@ def main(argv):
 
     # Verifica se argumentos foram passados com a execução do programa
     try:
-        opts, args = getopt.getopt(argv, 'higwfn:', ['help', 'single-img', 'gui-mode', 'web-upload', 'force-update', 'n='])
+        opts, args = getopt.getopt(argv, 'higwfn:', [
+            'help',
+            'single-img',
+            'gui-mode',
+            'web-upload',
+            'force-update',
+            'n='])
     except getopt.GetoptError:
         print 'Algo de errado nos argumentos...'
         usage()
@@ -699,19 +776,25 @@ def main(argv):
     
     # Imprime resumo do que o programa vai fazer
     if web_upload == True:
-        print '\n%d novas imagens serão verificadas e carregadas, se necessário.\n(argumento "-w" utilizado)\n' % n_max
+        print '\n%d novas imagens serão verificadas e carregadas, se \
+                necessário.\n(argumento "-w" utilizado)\n' % n_max
         # Objeto com lista de categorias
         catlist = []
         for c in getCatList():
             catlist.append(c.name)
     elif force_update == True:
-        print '\n%d imagens serão atualizadas de forma forçada.\n(argumento "-f" utilizado)\n' % n_max
+        print '\n%d imagens serão atualizadas de forma forçada.\n(argumento \
+                "-f" utilizado)\n' % n_max
     elif gui_mode == True:
-        print '\n%d imagens serão verificadas e registradas no banco de dados. A interface gráfica do usuário será iniciada em seguida\n(argumento "-g" utilizado)\n' % n_max
+        print '\n%d imagens serão verificadas e registradas no banco de dados.\
+                A interface gráfica do usuário será iniciada em seguida\n\
+                (argumento "-g" utilizado)\n' % n_max
     elif single_img == True:
-        print '\nImagem %s será analisada.\n(argumento "-i" utilizado)\n' % fname
+        print '\nImagem %s será analisada.\n(argumento "-i" utilizado)\n' % \
+                fname
     else:
-        print '\n%d imagens serão verificadas e registradas no banco de dados.\n' % n_max
+        print '\n%d imagens serão verificadas e registradas no banco de \
+                dados.\n' % n_max
 
     # Cria o arquivo log
     logname = 'log_%s' % time.strftime('%Y.%m.%d_%I:%M:%S', time.localtime())
@@ -749,30 +832,33 @@ def main(argv):
     
     rec = cursor.first()
     
-    lista.write('Arquivo|Timestamp|PostID|Autor|Título|Legenda|Keywords|Sublocal|Cidade|Estado|País|Táxon|Espécie|Tamanho|Especialista|Direitos|WWW|MOD\n')
+    lista.write('Arquivo|Timestamp|PostID|Autor|Título|Legenda|Keywords|\
+            Sublocal|Cidade|Estado|País|Táxon|Espécie|Tamanho|Especialista\
+            |Direitos|WWW|MOD\n')
     
     while rec:
         finaldata = eval(rec[1])
-        lista.write('%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n' % (
-            finaldata['nome'],
-            finaldata['timestamp'],
-            finaldata['postid'],
-            finaldata['autor'],
-            finaldata['titulo'],
-            finaldata['legenda'],
-            finaldata['keywords'],
-            finaldata['sublocal'],
-            finaldata['cidade'],
-            finaldata['estado'],
-            finaldata['pais'],
-            finaldata['taxon'],
-            finaldata['spp'],
-            finaldata['tamanho'],
-            finaldata['especialista'],
-            finaldata['direitos'],
-            finaldata['www'],
-            finaldata['mod']
-            ))
+        lista.write('%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\
+                |%s|%s\n' % (
+                    finaldata['nome'],
+                    finaldata['timestamp'],
+                    finaldata['postid'],
+                    finaldata['autor'],
+                    finaldata['titulo'],
+                    finaldata['legenda'],
+                    finaldata['keywords'],
+                    finaldata['sublocal'],
+                    finaldata['cidade'],
+                    finaldata['estado'],
+                    finaldata['pais'],
+                    finaldata['taxon'],
+                    finaldata['spp'],
+                    finaldata['tamanho'],
+                    finaldata['especialista'],
+                    finaldata['direitos'],
+                    finaldata['www'],
+                    finaldata['mod']
+                    ))
 
         tabgui.append([
             finaldata['nome'],
@@ -807,7 +893,8 @@ def main(argv):
     # Fechando o banco
     imgdb.close()
     
-    print '\nDe %d imagens verificadas, %d atualizadas e %d novas imagens carregadas no site' % (n, n_up, n_new)
+    print '\nDe %d imagens verificadas, %d atualizadas e %d novas imagens \
+            carregadas no site' % (n, n_up, n_new)
     print '%d imagens pendentes' % n_to
     t = int(time.time() - t0)
     if t > 60:
@@ -826,7 +913,11 @@ def main(argv):
                 center=(
                     Entry(id='search_box', label='Busca:', callback=busca_gui),
                     Table('table', 'Tabela de Metadados', tabgui,
-                        headers=['Arquivo', 'Thumb', 'Timestamp', 'PostID', 'Autor', 'Título', 'Legenda', 'Keywords', 'Sublocal', 'Cidade', 'Estado', 'País', 'Táxon', 'Espécie', 'Tamanho', 'Especialista', 'Direitos', 'WWW', 'MOD'],
+                        headers=['Arquivo', 'Thumb', 'Timestamp', 'PostID',
+                            'Autor', 'Título', 'Legenda', 'Keywords',
+                            'Sublocal', 'Cidade', 'Estado', 'País', 'Táxon',
+                            'Espécie', 'Tamanho', 'Especialista', 'Direitos',
+                            'WWW', 'MOD'],
                         editable=True,
                         repositioning=False,
                         expand_columns_indexes=None,
@@ -836,9 +927,6 @@ def main(argv):
                     )
                 )
         run()
-
-
-
 
 # Início do programa
 if __name__ == '__main__':

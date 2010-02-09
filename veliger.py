@@ -3,7 +3,7 @@
 
 '''
 VELIGER_v0.4
-Atualizado: 02 Feb 2010 09:36PM
+Atualizado: 09 Feb 2010 10:54AM
 
 Editor de Metadados do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -18,6 +18,7 @@ import subprocess
 import time
 import fileinput
 import getopt
+import pickle
 
 from PIL import Image as pil_image
 from shutil import copy
@@ -209,6 +210,12 @@ def save_meta(app, button):
 
         # Fechando o banco
         imgdb.close()
+
+        # Grava no arquivo Pickle
+        pic = open(picdb, 'a+b')
+        pickle.dump(newRec, pic)
+        pic.close()
+
         
         # Passa metadados novos pra tabela
         print 'Atualizando a tabela...'
@@ -424,6 +431,38 @@ def selectdb_cb(app, widget, name):
 
 def quit_cb(app, menuitem):
     '''Sai do programa.'''
+    cachepic = open(picdb, 'wb')
+    entries = []
+
+    for table_entry in app['table']:
+        entry = []
+        print 'Salvando:'
+        print
+        print table_entry
+        print
+        entry = [
+                table_entry[0],
+                'imagens/thumbs/100/%s' % table_entry[0],
+                table_entry[2],
+                table_entry[3],
+                table_entry[4],
+                table_entry[5],
+                table_entry[6],
+                table_entry[7],
+                table_entry[8],
+                table_entry[9],
+                table_entry[10],
+                table_entry[11],
+                table_entry[12],
+                table_entry[13],
+                table_entry[14],
+                table_entry[15],
+                ]
+        entries.append(entry)
+    pickle.dump(entries, cachepic)
+
+    cachepic.close()
+    
     close(app_id='main')
 
 def openfile_cb(app, menuitem):
@@ -683,6 +722,11 @@ def db_import(dbname):
         status = app.status_message(
                 ' %d imagens importadas, %d imagens duplicadas' % (m, n))
         app.idle_add(idle_status_rm)
+
+    # Pickle test
+    #picdata = open(picdb, 'r+b')
+    #pics = pickle.load(picdata)
+    #print pics
 
 def duplicate_check(entry, filename):
     '''
@@ -1031,6 +1075,9 @@ thumbdir = 'imagens/thumbs'
 # Nome do arquivo com banco de dados
 dbname = 'database'
 
+# Nome do arquivo Pickle
+picdb = 'pickle'
+
 # Lista com nomes dos widgets
 widgets = [
         'thumb',
@@ -1062,12 +1109,39 @@ imgdb.close()
 
 # Cria lista para tabela completa
 full_table = []
+picfile = open(picdb, 'rb')
+pics = pickle.load(picfile)
+try:
+    for pic in pics:
+        picentry = []
+        picentry = [
+                pic[0],
+                Image(filename=pic[1]),
+                pic[2],
+                pic[3],
+                pic[4],
+                pic[5],
+                pic[6],
+                pic[7],
+                pic[8],
+                pic[9],
+                pic[10],
+                pic[11],
+                pic[12],
+                pic[13],
+                pic[14],
+                pic[15],
+                ]
+        full_table.append(picentry)
+except:
+    print 'seilá...'
+
 
 # Define app para evitar conflito (func: db_import) na importação inicial do bd
 app = None
 
 # Importa banco de dados existente
-db_import(dbname)
+#db_import(dbname)
 
 # Lista para tabela com imagens atualizadas
 updated_meta = ''

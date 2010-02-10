@@ -3,7 +3,7 @@
 
 '''
 VELIGER_v0.4
-Atualizado: 10 Feb 2010 10:47AM
+Atualizado: 10 Feb 2010 11:13AM
 
 Editor de Metadados do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -332,7 +332,10 @@ def openfile_cb(app, menuitem):
                             time.localtime(os.path.getmtime(fpath)))
                 
                 # Verifica se imagem está no banco de dados
-                entry = searchImgdb(fpath, timestamp)
+                entry = createMeta(fpath)
+                
+                # Cria thumbnails
+                create_thumbs(fpath)
                 
                 app['table'].append(entry)
 
@@ -424,6 +427,7 @@ def db_import(dbname):
     '''
     Importa um banco de dados já existente, usado pelo cifonauta.
     '''
+    # TODO guardar para importação do banco de dados novo
 
     # Contador
     n = 0
@@ -588,6 +592,7 @@ def searchImgdb(fpath, timestamp):
     Se as datas forem iguais pula para a próxima imagem, se forem diferentes
     atualiza o registro.
     '''
+    # TODO guardar função para importar entradas do banco de dados novo
 
     print 'Verificando se a imagem está no banco de dados...'
     
@@ -743,17 +748,17 @@ def createMeta(pathtofile):
     # Definindo as variáveis
     title = info.data['object name']			# 5
     keywords = info.data['keywords']			# 25
-    author = info.data['by-line']				# 80
+    author = info.data['by-line']			# 80
     city = info.data['city']				# 90
-    sublocation = info.data['sub-location']			# 92
+    sublocation = info.data['sub-location']		# 92
     state = info.data['province/state']			# 95
-    country = info.data['country/primary location name']	# 101
+    country = info.data['country/primary location name']# 101
     category = info.data['headline']			# 105
     copyright = info.data['copyright notice']		# 116
-    caption = info.data['caption/abstract']			# 120
+    caption = info.data['caption/abstract']		# 120
     spp = info.data['original transmission reference']	# 103
     scale = info.data['special instructions']		# 40
-    source = info.data['source']				# 115
+    source = info.data['source']			# 115
 
     meta = {
             'nome' : fname,
@@ -774,6 +779,7 @@ def createMeta(pathtofile):
             }
 
     # Converte valores dos metadados vazios (None) para string em branco
+    # FIXME Checar se isso está funcionando...
     for k, v in meta.iteritems():
         if v is None:
             v = u''
@@ -830,7 +836,10 @@ def imgGrab(folder):
                         time.localtime(os.path.getmtime(fpath)))
                 
                 # Verifica se imagem está no banco de dados
-                entry = searchImgdb(fpath, timestamp)
+                entry = createMeta(fpath)
+
+                # Cria thumbnails
+                create_thumbs(fpath)
                 
                 # Adiciona à lista
                 folder_imgs.append(entry)
@@ -878,10 +887,6 @@ widgets = [
         'especialista',
         'direitos'
         ]
-
-# Inicia contador (FIXME Era pra ser integrado no buscador, mas ainda não
-# implementado)
-t0 = time.time()
 
 # Criar a instância do bd
 imgdb = db.DB()

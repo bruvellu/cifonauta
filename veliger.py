@@ -3,7 +3,7 @@
 
 '''
 VELIGER_v0.4
-Atualizado: 10 Feb 2010 11:13AM
+Atualizado: 10 Feb 2010 12:22PM
 
 Editor de Metadados do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -12,6 +12,7 @@ Bruno C. Vellutini | organelas.com
 '''
 
 import os
+import sys
 import subprocess
 import time
 import pickle
@@ -262,14 +263,12 @@ def quit_cb(app, menuitem):
     cachepic = open(picdb, 'wb')
     entries = []
 
+    print 'Salvando cache...',
+
     # Salva dados num formato acessível
     # FIXME definir melhor jeito de salvar a pasta thumbs
     for table_entry in app['table']:
         entry = []
-        print 'Salvando:'
-        print
-        print table_entry
-        print
         entry = [
                 table_entry[0],
                 'imagens/thumbs/100/%s' % table_entry[0],
@@ -295,6 +294,8 @@ def quit_cb(app, menuitem):
 
     # Fecha imagem
     cachepic.close()
+
+    print 'pronto!'
     
     # Fecha programa
     close(app_id='main')
@@ -422,6 +423,20 @@ def cleartable_cb(app, menuitem):
     app['tabs'].focus_page(full_list)
 
 #=== BACKEND ===#
+
+class flushfile(object):
+    '''
+    Simplesmente para tirar o buffer do print, assim rola juntar prints
+    diferentes na mesma linha. Só pra ficar bonitinho... meio inútil.
+    '''
+    def __init__(self, f):
+        self.f = f
+    def write(self, x):
+        self.f.write(x)
+        self.f.flush()
+
+# Redefine o stdout para ser flushed após print
+sys.stdout = flushfile(sys.stdout)
 
 def db_import(dbname):
     '''
@@ -897,32 +912,41 @@ imgdb.close()
 
 # Cria lista para tabela completa
 full_table = []
-picfile = open(picdb, 'rb')
-pics = pickle.load(picfile)
+
+# Leitura do cache, salvo pelo Pickle
 try:
-    for pic in pics:
-        picentry = []
-        picentry = [
-                pic[0],
-                Image(filename=pic[1]),
-                pic[2],
-                pic[3],
-                pic[4],
-                pic[5],
-                pic[6],
-                pic[7],
-                pic[8],
-                pic[9],
-                pic[10],
-                pic[11],
-                pic[12],
-                pic[13],
-                pic[14],
-                pic[15],
-                ]
-        full_table.append(picentry)
+    picfile = open(picdb, 'rb')
+    pics = pickle.load(picfile)
+    picfile.close()
+    try:
+        print 'Lendo cache das entradas...',
+        for pic in pics:
+            picentry = []
+            picentry = [
+                    pic[0],
+                    Image(filename=pic[1]),
+                    pic[2],
+                    pic[3],
+                    pic[4],
+                    pic[5],
+                    pic[6],
+                    pic[7],
+                    pic[8],
+                    pic[9],
+                    pic[10],
+                    pic[11],
+                    pic[12],
+                    pic[13],
+                    pic[14],
+                    pic[15],
+                    ]
+            full_table.append(picentry)
+        print 'pronto!'
+    except:
+        print 'Erro na importação das entradas...'
 except:
-    print 'seilá...'
+    f = open(picdb, 'wb')
+    f.close()
 
 # Define app para evitar conflito (func: db_import) na importação inicial do bd
 app = None

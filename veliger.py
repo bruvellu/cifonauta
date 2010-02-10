@@ -3,7 +3,7 @@
 
 '''
 VELIGER_v0.4
-Atualizado: 09 Feb 2010 10:54AM
+Atualizado: 10 Feb 2010 10:47AM
 
 Editor de Metadados do Banco de imagens do CEBIMar-USP
 Centro de Biologia Marinha da Universidade de São Paulo
@@ -12,12 +12,8 @@ Bruno C. Vellutini | organelas.com
 '''
 
 import os
-import sys
-import string
 import subprocess
 import time
-import fileinput
-import getopt
 import pickle
 
 from PIL import Image as pil_image
@@ -156,69 +152,8 @@ def save_meta(app, button):
         else:
             print 'Novos metadados salvos na imagem com sucesso!'
 
-        print '\nVerificando se a imagem está no banco de dados...'
-        
-        # Abrir e/ou criar arquivo do banco de dados
-        imgdb = db.DB()
-        imgdb.open(dbname)
-        
-        # Ativando o cursor
-        cursor = imgdb.cursor()
-        # Buscando o registro com o nome do arquivo
-        rec = cursor.set(app['table'].selected()[0][1][0])
-        # Fechando o cursor
-        cursor.close()
-        
-        # Se o registro existir
-        if rec:
-            print 'Bingo! Registro de %s encontrado.\n' % \
-            app['table'].selected()[0][1][0]
-            # Transformando a entrada do banco em dicionário
-            recdata = eval(rec[1])
-            
-            # Define a data de modificação do arquivo
-            timestamp = time.strftime(
-                    '%d/%m/%Y %I:%M:%S %p',
-                    time.localtime(os.path.getmtime(app['table'].selected()[0][1][15]))
-                    )
-            
-            # Criar entrada com valores atualizados
-            newRec = {
-                    'nome':recdata['nome'],
-                    'timestamp':timestamp,
-                    'postid':recdata['postid'],
-                    'titulo':app['titulo'],
-                    'keywords':app['keywords'].lower(),
-                    'autor':app['autor'],
-                    'cidade':app['cidade'],
-                    'sublocal':app['sublocal'],
-                    'estado':app['estado'],
-                    'pais':app['pais'],
-                    'taxon':app['taxon'],
-                    'direitos':app['direitos'],
-                    'legenda':app['legenda'],
-                    'spp':app['spp'],
-                    'tamanho':app['tamanho'],
-                    'especialista':app['especialista'],
-                    'www':recdata['www'],
-                    'mod':True
-                    }
-            
-            # Gravar entrada atualizada no banco de dados (transformada em
-            # string)
-            imgdb.put(recdata['nome'],str(newRec))
-
-        # Fechando o banco
-        imgdb.close()
-
-        # Grava no arquivo Pickle
-        pic = open(picdb, 'a+b')
-        pickle.dump(newRec, pic)
-        pic.close()
-
-        
         # Passa metadados novos pra tabela
-        print 'Atualizando a tabela...'
+        print '\nAtualizando a tabela...'
         app['table'].selected()[0][1][3] = app['titulo']
         app['table'].selected()[0][1][4] = app['legenda']
         app['table'].selected()[0][1][5] = app['keywords'].lower()
@@ -235,28 +170,6 @@ def save_meta(app, button):
     else:
         print 'Vazio!'
     
-    # Atualiza lista de imagens modificadas
-    updated = len(app['uptable'])
-
-    if len(app['uptable']) == 0:
-        app['uptable'].append([
-            app['table'].selected()[0][1][0],
-            app['table'].selected()[0][1][1],
-            app['table'].selected()[0][1][3]
-            ])
-    else:
-        # Verifica duplicatas
-        for item in app['uptable']:
-            if item[0] == app['table'].selected()[0][1][0]:
-                item[2] = app['table'].selected()[0][1][3]
-                break
-        else:
-            app['uptable'].append([
-                app['table'].selected()[0][1][0],
-                app['table'].selected()[0][1][1],
-                app['table'].selected()[0][1][3]
-                ])
-
     print 'Pronto.'
 
     app['tabs'].focus_page(full_list)
@@ -269,7 +182,7 @@ def back_cb(app, button):
 
 def clean_cb(app, button):
     '''
-    Limpa entrada da tabela do CIFONAUTA, não remove entrada do banco de dados
+    Limpa entrada da tabela do CIFONAUTA
     '''
     i = app['table'].selected()[0][0]
     del app['table'][i]
@@ -288,47 +201,6 @@ def clean_cb(app, button):
     # Muda o foco para a aba inicial
     app['tabs'].focus_page(full_list)
 
-def delete_cb(app, button):
-    '''
-    Remove entrada da tabela e do banco de dados
-    '''
-    # Confirmação da remoção
-    do = yesno('Remover a entrada do banco de dados?', yesdefault=False)
-    if do:
-        # Abrir banco de dados
-        imgdb = db.DB()
-        imgdb.open(dbname)
-        
-        # Remove entrada do banco de dados
-        imgdb.delete(app['table'].selected()[0][1][0])
-        
-        # Fechar banco de dados
-        imgdb.close()
-        
-        i = app['table'].selected()[0][0]
-        del app['table'][i]
-        
-        # Limpa aba de edição
-        for meta in widgets:
-            if meta == 'thumb':
-                data = chr(128) * (30 * 30 * 3)
-                app[meta].image = Image(
-                        width=30,
-                        height=30,
-                        depth=24,
-                        data=data
-                        )
-            else:
-                app[meta] = ''
-                
-        # Desativa aba de edição
-        app['tabs'].get_page(1).set_inactive()
-        
-        # Muda o foco para a aba inicial		
-        app['tabs'].focus_page(full_list)
-    else:
-        pass
-
 def format(app, table, row, col, value):
     '''
     Função que formata as células da tabela principal para destacar campos a
@@ -345,6 +217,8 @@ def thumb_gen(app, button):
     Botão com o thumbnail. Clique nele para redimensionar o thumb de acordo com
     as dimensões da janela.
     '''
+    # FIXME algum jeito de redimensionar automaticamente?
+    # FIXME descobrir widget correto pra colocar a imagem
     # Redimensiona o thumbnail
     if app['table'].selected() is None:
         pass
@@ -367,53 +241,6 @@ def thumb_gen(app, button):
             app['thumb'].image = 'imagens/thumbs/250/%s' % \
             app['table'].selected()[0][1][0]
 
-def edit_cb(app, button):
-    '''
-    Abre o editor de metadados da imagem selecionada.
-
-    Atualmente desativado, a função selection já faz esse papel.
-    '''
-    #TODO Apagar definitivamente?
-    app['tabs'].get_page(1).set_active()
-    
-    wsize = app.get_window_size()
-    
-    if wsize[0] >= 1335:
-        app['thumb'].image = 'imagens/thumbs/500/%s' % \
-        app['table'].selected()[0][1][0]
-    elif wsize[0] < 1335 and wsize[0] >= 1235:
-        app['thumb'].image = 'imagens/thumbs/450/%s' % \
-        app['table'].selected()[0][1][0]
-    elif wsize[0] < 1235 and wsize[0] >= 1135:
-        app['thumb'].image = 'imagens/thumbs/400/%s' % \
-        app['table'].selected()[0][1][0]
-    elif wsize[0] < 1135 and wsize[0] >= 955:
-        app['thumb'].image = 'imagens/thumbs/300/%s' % \
-        app['table'].selected()[0][1][0]
-    elif wsize[0] < 955:
-        app['thumb'].image = 'imagens/thumbs/250/%s' % \
-        app['table'].selected()[0][1][0]
-
-    # app['nome'] = app['table'].selected()[0][1][0]
-    app['titulo'] = app['table'].selected()[0][1][3]
-    app['legenda'] = app['table'].selected()[0][1][4]
-    app['keywords'] = app['table'].selected()[0][1][5]
-    app['autor'] = app['table'].selected()[0][1][2]
-    app['sublocal'] = app['table'].selected()[0][1][6]
-    app['cidade'] = app['table'].selected()[0][1][7]
-    app['estado'] = app['table'].selected()[0][1][8]
-    app['pais'] = app['table'].selected()[0][1][9]
-    app['taxon'] = app['table'].selected()[0][1][10]
-    app['spp'] = app['table'].selected()[0][1][11]
-    app['tamanho'] = app['table'].selected()[0][1][12]
-    app['especialista'] = app['table'].selected()[0][1][13]
-    app['direitos'] = app['table'].selected()[0][1][14]
-    # app['path'] = app['table'].selected()[0][1][15]
-
-    app['save_button'].active = True
-    
-    app['tabs'].focus_page(edit_data)
-
 def pref_cb(app, menuitem):
     '''Abre a janela com as preferências.'''
     app.show_preferences_dialog()
@@ -430,10 +257,13 @@ def selectdb_cb(app, widget, name):
     app['dbfile'] = name
 
 def quit_cb(app, menuitem):
-    '''Sai do programa.'''
+    '''Sai do programa salvando a lista de imagens da tabela.'''
+    # Abre o arquivo de cache
     cachepic = open(picdb, 'wb')
     entries = []
 
+    # Salva dados num formato acessível
+    # FIXME definir melhor jeito de salvar a pasta thumbs
     for table_entry in app['table']:
         entry = []
         print 'Salvando:'
@@ -459,10 +289,14 @@ def quit_cb(app, menuitem):
                 table_entry[15],
                 ]
         entries.append(entry)
+        
+    # Joga lista de entradas para o Pickle
     pickle.dump(entries, cachepic)
 
+    # Fecha imagem
     cachepic.close()
     
+    # Fecha programa
     close(app_id='main')
 
 def openfile_cb(app, menuitem):
@@ -584,57 +418,11 @@ def cleartable_cb(app, menuitem):
     # Muda o foco para a aba inicial
     app['tabs'].focus_page(full_list)
 
-def digittime_cb(app, widget, text):
-    '''
-    Tentativa de inserir um timer para o buscador... não implementado ainda.
-    '''
-    # TODO
-    if len(text) < 4:
-        pass
-    else:
-        global t0
-        global t
-        
-        t1 = time.time()
-        
-        t = t1 - t0
-        
-        while t < 1 or t > 20:
-            print t
-            break
-        else:
-            print app, widget, text
-            filter_gui(text)
-        
-        t0 = time.time()
-
-def filter_gui(text):
-    '''
-    Filtro do buscador. Não implementado ainda.
-    '''
-    # TODO Buscador
-    del app['table'][:]
-    for entry in full_table:
-        if(
-                    text.lower() in str(entry[2]).lower() or
-                    text.lower() in str(entry[3]).lower() or
-                    text.lower() in str(entry[4]).lower() or
-                    text.lower() in str(entry[5]).lower() or
-                    text.lower() in str(entry[6]).lower() or
-                    text.lower() in str(entry[7]).lower() or
-                    text.lower() in str(entry[9]).lower() or
-                    text.lower() in str(entry[10]).lower() or
-                    text.lower() in str(entry[11]).lower() or
-                    text.lower() in str(entry[13]).lower()
-                    ):
-                app['table'].append(entry)
-
 #=== BACKEND ===#
 
 def db_import(dbname):
     '''
-    Importa um banco de dados já existente (normalmente criado na sessão
-    anterior).
+    Importa um banco de dados já existente, usado pelo cifonauta.
     '''
 
     # Contador
@@ -722,11 +510,6 @@ def db_import(dbname):
         status = app.status_message(
                 ' %d imagens importadas, %d imagens duplicadas' % (m, n))
         app.idle_add(idle_status_rm)
-
-    # Pickle test
-    #picdata = open(picdb, 'r+b')
-    #pics = pickle.load(picdata)
-    #print pics
 
 def duplicate_check(entry, filename):
     '''
@@ -1136,7 +919,6 @@ try:
 except:
     print 'seilá...'
 
-
 # Define app para evitar conflito (func: db_import) na importação inicial do bd
 app = None
 
@@ -1238,25 +1020,10 @@ edit_data = Tabs.Page(
                     Button(id='clean_button', label='Limpar', active=True,
                         callback=clean_cb,
                         expand_policy=ExpandPolicy.Horizontal()),
-                    Button(id='delete_button', label='Deletar', active=True,
-                        callback=delete_cb,
-                        expand_policy=ExpandPolicy.Horizontal()),
                     Button(id='save_button', label='Salvar', active=False,
                         callback=save_meta,
                         expand_policy=ExpandPolicy.Horizontal())
                     )
-                ),
-            ),
-        )
-
-update_list = Tabs.Page(
-        label=u'Modificadas',
-        children=(
-            Table(id='uptable', label='Imagens atualizadas nesta sessão',
-                items=updated_meta,
-                headers=['Arquivo','Thumb', 'Título'],
-                types=[str,Image,str],
-                hidden_columns_indexes=[0],
                 ),
             ),
         )
@@ -1320,7 +1087,7 @@ app = App(
         center=(
                 Tabs(
                     id='tabs',
-                    children=(full_list, edit_data, update_list)
+                    children=(full_list, edit_data)
                     ),
                 ),
         data_changed_callback=data_changed,

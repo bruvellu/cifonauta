@@ -1,430 +1,616 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+# VELIGER
+# Copyleft 2010 - Bruno C. Vellutini | organelas.com
+# 
+# TODO Inserir licença.
+#
+# Atualizado: 05 Mar 2010 03:21PM
+'''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
-'''
-VELIGER_v0.4
-Atualizado: 10 Feb 2010 12:22PM
-
-Editor de Metadados do Banco de imagens do CEBIMar-USP
-Centro de Biologia Marinha da Universidade de São Paulo
-
-Bruno C. Vellutini | organelas.com
+Escrever uma explicação.
+Centro de Biologia Marinha da Universidade de São Paulo.
 '''
 
 import os
 import sys
+import operator
 import subprocess
 import time
 import pickle
 
 from PIL import Image as pil_image
 from shutil import copy
-from bsddb3 import db
-
 from iptcinfo import IPTCInfo
-from eagle import *
 
-# ImageMagick e exiftool devem estar instalados no sistema
-# Além de poder executar bash script
-# TODO Diminuir e integrar dependências, possível?
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
-#=== GUI_BACKEND ===#
-
-def idle_status_rm(self):
-    app.remove_status_message(status)
-
-def data_changed(app, widget, value):
-    '''
-    Monitora as mudanças nos valores da tabela principal.
-
-    Não faz nada, por enquanto.
-    '''
-    pass
-
-def selection_changed(app, widget, selected):
-    '''
-    Função que define o tamanho do thumbnail a ser colocado na aba de edição
-    dos mestadados (baseado nas dimensões da janela), passa os metadados da
-    tabela para esta aba e focaliza na mesma.
-    '''
-    # Evita que o programa tente redimensionar um thumbnail inexistente (quando
-    # a entrada é None - ocorre durante a limpeza da tabela)
-    if selected is not None:
-
-        # Ativa aba de edição que está desativada por padrão
-        app['tabs'].get_page(1).set_active()
-        
-        # Cria variável com a dimensão da janela
-        wsize = app.get_window_size()
-        
-        # Define o tamanho do thumbnail
-        if wsize[0] >= 1335:
-            app['thumb'].image = 'imagens/thumbs/500/%s' % \
-            app['table'].selected()[0][1][0]
-        elif wsize[0] < 1335 and wsize[0] >= 1235:
-            app['thumb'].image = 'imagens/thumbs/450/%s' % \
-            app['table'].selected()[0][1][0]
-        elif wsize[0] < 1235 and wsize[0] >= 1135:
-            app['thumb'].image = 'imagens/thumbs/400/%s' % \
-            app['table'].selected()[0][1][0]
-        elif wsize[0] < 1135 and wsize[0] >= 955:
-            app['thumb'].image = 'imagens/thumbs/300/%s' % \
-            app['table'].selected()[0][1][0]
-        elif wsize[0] < 955:
-            app['thumb'].image = 'imagens/thumbs/250/%s' % \
-            app['table'].selected()[0][1][0]
-        
-        # Passa os valores dos widgets da tabela para os campos de edição
-        # app['nome'] = app['table'].selected()[0][1][0]
-        app['titulo'] = app['table'].selected()[0][1][3]
-        app['legenda'] = app['table'].selected()[0][1][4]
-        app['keywords'] = app['table'].selected()[0][1][5]
-        app['autor'] = app['table'].selected()[0][1][2]
-        app['sublocal'] = app['table'].selected()[0][1][6]
-        app['cidade'] = app['table'].selected()[0][1][7]
-        app['estado'] = app['table'].selected()[0][1][8]
-        app['pais'] = app['table'].selected()[0][1][9]
-        app['taxon'] = app['table'].selected()[0][1][10]
-        app['spp'] = app['table'].selected()[0][1][11]
-        app['tamanho'] = app['table'].selected()[0][1][12]
-        app['especialista'] = app['table'].selected()[0][1][13]
-        app['direitos'] = app['table'].selected()[0][1][14]
-        # app['path'] = app['table'].selected()[0][1][15]
-    
-        # Ativa o botão de salvar
-        app['save_button'].active = True
-        
-        # Muda o foco para a aba de edição
-        app['tabs'].focus_page(edit_data)
-    
-        # app['edit_button'].active = True
+__author__ = 'Bruno Vellutini'
+__copyright__ = 'Copyright 2010, CEBIMar-USP'
+__credits__ = 'Bruno C. Vellutini'
+__license__ = 'DEFINIR'
+__version__ = '0.5'
+__maintainer__ = 'Bruno Vellutini'
+__email__ = 'organelas at gmail dot com'
+__status__ = 'Development'
 
 
-def save_meta(app, button):
-    '''
-    Salva os metadados na imagem usando o exiftool e repassa os valores de
-    volta para a tabela, além de incluir a imagem na lista de fotos
-    atualizadas.
-    '''
-    if app['nome'] != '':
-        # Salvar metadados novos usando o ExifTools
-        print '\nSalvando metadados...'
-        try:
-            # Salva os metadados na imagem (sobrepondo os correspondentes
-            # originais)
-            subprocess.call([
-                'exiftool',
-                '-overwrite_original',
-                '-City=%s' % app['cidade'],
-                '-By-line=%s' % app['autor'],
-                '-Province-State=%s' % app['estado'],
-                '-Country-PrimaryLocationName=%s' % app['pais'],
-                '-CopyrightNotice=%s' % app['direitos'],
-                '-UsageTerms="Creative Commons BY-NC-SA"',
-                '-ObjectName=%s' % app['titulo'],
-                '-Caption-Abstract=%s' % app['legenda'],
-                '-Sub-location=%s' % app['sublocal'],
-                '-Headline=%s' % app['taxon'],
-                '-OriginalTransmissionReference=%s' % app['spp'],
-                '-SpecialInstructions=%s' % app['tamanho'],
-                '-Source=%s' % app['especialista'],
-                app['table'].selected()[0][1][15]
-                ])
-            # Loop para incluir os keywords individualmente.
-            # Lista com comando e argumentos
-            shell_call = ['exiftool', '-overwrite_original']
-            # Lista com keywords
-            if app['keywords'] != '' or app['keywords'] is not None:
-                print 'Atualizando marcadores...'
-                keyword_list = app['keywords'].split(', ')
-                for keyword in keyword_list:
-                    shell_call.append('-Keywords=%s' % keyword.lower())
+class MainWindow(QMainWindow):
+    def __init__(self):
+        QMainWindow.__init__(self)
+
+        # Definições
+        global mainWidget
+        mainWidget = MainTable(data_list, header)
+        self.model = mainWidget.model
+        # Dock com thumbnail
+        self.dockThumb = DockThumb()
+        self.dockWidgetRight = QDockWidget('Thumbnail', self)
+        self.dockWidgetRight.setAllowedAreas(
+                Qt.LeftDockWidgetArea |
+                Qt.RightDockWidgetArea
+                )
+        self.dockWidgetRight.setWidget(self.dockThumb)
+        # Dock com editor de metadados
+        self.dockEditor = DockEditor()
+        self.dockWidgetBottom = QDockWidget('Editor', self)
+        self.dockWidgetBottom.setAllowedAreas(
+                Qt.TopDockWidgetArea |
+                Qt.BottomDockWidgetArea
+                )
+        self.dockWidgetBottom.setWidget(self.dockEditor)
+
+        # Atribuições da MainWindow
+        self.setCentralWidget(mainWidget)
+        self.setWindowTitle(u'VÉLIGER - Editor de Metadados')
+        self.setWindowIcon(QIcon('./icons/python.svg'))
+        self.setToolTip('Tabela com todas as entradas')
+        self.statusBar().showMessage('Ready to Rock!', 2000)
+        self.menubar = self.menuBar()
+
+        # Menu
+        self.exit = QAction(QIcon('./icons/system-shutdown.png'), 'Sair', self)
+        self.exit.setShortcut('Ctrl+Q')
+        self.exit.setStatusTip('Fechar o programa')
+        self.connect(self.exit, SIGNAL('triggered()'), SLOT('close()'))
+
+        self.openFile = QAction(QIcon('./icons/document-open.png'), 'Abrir arquivo(s)', self)
+        self.openFile.setShortcut('Ctrl+O')
+        self.openFile.setStatusTip('Abrir imagens')
+        self.connect(self.openFile, SIGNAL('triggered()'), self.openDialog)
+
+        self.openDir = QAction(QIcon('./icons/folder-new.png'), 'Abrir pasta(s)', self)
+        self.openDir.setShortcut('Ctrl+D')
+        self.openDir.setStatusTip('Abrir pasta')
+        self.connect(self.openDir, SIGNAL('triggered()'), self.openDirDialog)
+
+        self.delRow = QAction(QIcon('./icons/edit-delete.png'), 'Deletar entrada(s)', self)
+        self.delRow.setShortcut('Ctrl+W')
+        self.delRow.setStatusTip('Deletar entrada')
+        self.connect(self.delRow, SIGNAL('triggered()'), self.delcurrent)
+
+        self.saveFile = QAction(QIcon('./icons/document-save.png'), 'Salvar metadados', self)
+        self.saveFile.setShortcut('Ctrl+S')
+        self.saveFile.setStatusTip('Salvar metadados')
+        self.connect(self.saveFile, SIGNAL('triggered()'),
+                self.dockEditor.saveData)
+        salvo = lambda: self.changeStatus(u'Alterações salvas!')
+        self.saveFile.triggered.connect(salvo)
+
+        self.arquivo = self.menubar.addMenu('&Arquivo')
+        self.arquivo.addAction(self.openFile)
+        self.arquivo.addAction(self.openDir)
+        self.arquivo.addAction(self.saveFile)
+        self.arquivo.addSeparator()
+        self.arquivo.addAction(self.exit)
+
+        self.editar = self.menubar.addMenu('&Editar')
+        self.editar.addAction(self.delRow)
+
+        # Toolbar
+        self.toolbar = self.addToolBar('Ações')
+        self.toolbar.addAction(self.openFile)
+        self.toolbar.addAction(self.openDir)
+        self.toolbar.addAction(self.saveFile)
+        self.toolbar.addAction(self.delRow)
+        self.toolbar = self.addToolBar('Sair')
+        self.toolbar.addAction(self.exit)
+
+        # Docks
+        self.addDockWidget(Qt.RightDockWidgetArea, self.dockWidgetRight)
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.dockWidgetBottom)
+
+        # Fill Editor
+        #self.onClicked = lambda: self.changeStatus('lala')
+        #self.connect(
+        #    self.mainWidget.selectionModel,
+        #    SIGNAL('selectionChanged(QItemSelection, QItemSelection)'),
+        #    self,
+        #    self.onClicked())
+
+        self.resize(1000, 780)
+
+    def changeStatus(self, status, duration=2000):
+        self.statusBar().showMessage(status, duration)
+
+    def openDialog(self):
+        filepaths = QFileDialog.getOpenFileNames(self, 'Selecione imagem(ns)',
+                './', 'Images (*.jpg)')
+        n_all = len(filepaths)
+        n_new = 0
+        n_dup = 0
+        self.changeStatus(u'Importando %d imagens...' % n_all)
+        for filepath in filepaths:
+            entrymeta = self.createMeta(filepath)
+            isduplicate = self.matchfinder(entrymeta)
+            if isduplicate is False:
+                self.model.insertRows(0, 1, QModelIndex(), entrymeta)
+                n_new += 1
             else:
-                print 'Marcadores em branco, deletando na imagem...'
-                shell_call.append('-Keywords=')
-            # Adicionando o endereço do arquivo ao comando
-            shell_call.append(app['table'].selected()[0][1][15])
-            # Executando o exiftool para adicionar as keywords
-            subprocess.call(shell_call)
-            print 'Keywords adicionadas.'
-        except IOError:
-            print '\nOcorreu algum erro. Verifique se o ExifTool está \
-                    instalado.'
-        else:
-            print 'Novos metadados salvos na imagem com sucesso!'
+                n_dup += 1
+                pass
+        self.changeStatus(
+                u'%d imagens verificadas, %d importadas e %d duplicadas' % \
+                        (n_all, n_new, n_dup))
 
-        # Passa metadados novos pra tabela
-        print '\nAtualizando a tabela...'
-        app['table'].selected()[0][1][3] = app['titulo']
-        app['table'].selected()[0][1][4] = app['legenda']
-        app['table'].selected()[0][1][5] = app['keywords'].lower()
-        app['table'].selected()[0][1][2] = app['autor']
-        app['table'].selected()[0][1][6] = app['sublocal']
-        app['table'].selected()[0][1][7] = app['cidade']
-        app['table'].selected()[0][1][8] = app['estado']
-        app['table'].selected()[0][1][9] = app['pais']
-        app['table'].selected()[0][1][10] = app['taxon']
-        app['table'].selected()[0][1][11] = app['spp']
-        app['table'].selected()[0][1][12] = app['tamanho']
-        app['table'].selected()[0][1][13] = app['especialista']
-        app['table'].selected()[0][1][14] = app['direitos']
-    else:
-        print 'Vazio!'
-    
-    print 'Pronto.'
+    def openDirDialog(self):
+        folder = QFileDialog.getExistingDirectory(
+                self,
+                'Selecione uma pasta',
+                './',
+                QFileDialog.ShowDirsOnly
+                )
+        print folder
 
-    app['tabs'].focus_page(full_list)
+    def createMeta(self, filepath):
+        '''Define as variáveis extraídas dos metadados (IPTC) da imagem.
 
-def back_cb(app, button):
-    '''
-    Botão na aba de edição para voltar à tabela
-    '''
-    app['tabs'].focus_page(full_list)
+        Usa a biblioteca do arquivo iptcinfo.py.
+        '''
 
-def clean_cb(app, button):
-    '''
-    Limpa entrada da tabela do CIFONAUTA
-    '''
-    i = app['table'].selected()[0][0]
-    del app['table'][i]
+        filename = os.path.basename(str(filepath))
 
-    # Limpa aba de edição
-    for meta in widgets:
-        if meta == 'thumb':
-            data = chr(128) * (30 * 30 * 3)
-            app[meta].image = Image(width=30, height=30, depth=24, data=data)
-        else:
-            app[meta] = ''
-    
-    # Desativa aba de edição
-    app['tabs'].get_page(1).set_inactive()
+        print 'Lendo os metadados de %s e criando variáveis.' % filename
+        
+        # Criar objeto com metadados
+        info = IPTCInfo(filepath)
+        
+        # Checando se o arquivo tem dados IPTC
+        if len(info.data) < 4:
+            print 'Imagem não tem dados IPTC!'
 
-    # Muda o foco para a aba inicial
-    app['tabs'].focus_page(full_list)
+        # Definindo as variáveis                            # IPTC
+        title = info.data['object name']                    # 5
+        keywords = info.data['keywords']                    # 25
+        author = info.data['by-line']                       # 80
+        city = info.data['city']                            # 90
+        sublocation = info.data['sub-location']             # 92
+        state = info.data['province/state']                 # 95
+        country = info.data['country/primary location name']# 101
+        category = info.data['headline']                    # 105
+        copyright = info.data['copyright notice']           # 116
+        caption = info.data['caption/abstract']             # 120
+        spp = info.data['original transmission reference']  # 103
+        scale = info.data['special instructions']           # 40
+        source = info.data['source']                        # 115
 
-def format(app, table, row, col, value):
-    '''
-    Função que formata as células da tabela principal para destacar campos a
-    serem preenchidos
-    '''
-    if value == '':
-        if col == 2 or col == 3:
-            return Table.CellFormat(bgcolor='red')
-        else:
-            return Table.CellFormat(bgcolor='yellow')
+        entrymeta = []
 
-def thumb_gen(app, button):
-    '''
-    Botão com o thumbnail. Clique nele para redimensionar o thumb de acordo com
-    as dimensões da janela.
-    '''
-    # FIXME algum jeito de redimensionar automaticamente?
-    # FIXME descobrir widget correto pra colocar a imagem
-    # Redimensiona o thumbnail
-    if app['table'].selected() is None:
-        pass
-    else:
-        wsize = app.get_window_size()
-    
-        if wsize[0] >= 1335:
-            app['thumb'].image = 'imagens/thumbs/500/%s' % \
-            app['table'].selected()[0][1][0]
-        elif wsize[0] < 1335 and wsize[0] >= 1235:
-            app['thumb'].image = 'imagens/thumbs/450/%s' % \
-            app['table'].selected()[0][1][0]
-        elif wsize[0] < 1235 and wsize[0] >= 1135:
-            app['thumb'].image = 'imagens/thumbs/400/%s' % \
-            app['table'].selected()[0][1][0]
-        elif wsize[0] < 1135 and wsize[0] >= 955:
-            app['thumb'].image = 'imagens/thumbs/300/%s' % \
-            app['table'].selected()[0][1][0]
-        elif wsize[0] < 955:
-            app['thumb'].image = 'imagens/thumbs/250/%s' % \
-            app['table'].selected()[0][1][0]
-
-def pref_cb(app, menuitem):
-    '''Abre a janela com as preferências.'''
-    app.show_preferences_dialog()
-
-def selectdir_cb(app, widget, name):
-    '''Callback do botão para selecionar o diretório na janela de
-    preferências.'''
-    #TODO funcionalidade incompleta
-    app['srcdir'] = name
-
-def selectdb_cb(app, widget, name):
-    '''Callback do botão para selecionar o arquivo de banco de dados.'''
-    #TODO funcionalidade incompleta
-    app['dbfile'] = name
-
-def quit_cb(app, menuitem):
-    '''Sai do programa salvando a lista de imagens da tabela.'''
-    # Abre o arquivo de cache
-    cachepic = open(picdb, 'wb')
-    entries = []
-
-    print 'Salvando cache...',
-
-    # Salva dados num formato acessível
-    # FIXME definir melhor jeito de salvar a pasta thumbs
-    for table_entry in app['table']:
-        entry = []
-        entry = [
-                table_entry[0],
-                'imagens/thumbs/100/%s' % table_entry[0],
-                table_entry[2],
-                table_entry[3],
-                table_entry[4],
-                table_entry[5],
-                table_entry[6],
-                table_entry[7],
-                table_entry[8],
-                table_entry[9],
-                table_entry[10],
-                table_entry[11],
-                table_entry[12],
-                table_entry[13],
-                table_entry[14],
-                table_entry[15],
+        # Cria a lista para tabela da interface
+        entrymeta = [
+                str(filepath),
+                title,
+                caption,
+                ', '.join(keywords),
+                category,
+                spp,
+                source,
+                author,
+                copyright,
+                scale,
+                sublocation,
+                city,
+                state,
+                country,
                 ]
-        entries.append(entry)
-        
-    # Joga lista de entradas para o Pickle
-    pickle.dump(entries, cachepic)
 
-    # Fecha imagem
-    cachepic.close()
-
-    print 'pronto!'
-    
-    # Fecha programa
-    close(app_id='main')
-
-def openfile_cb(app, menuitem):
-    '''
-    Callback para a janela de seleção de arquivos do menu.
-
-    Pega o caminho do(s) arquivo(s), lê os metadados e joga na tabela.
-    '''
-    # Inicia contadores (m=nova imagem, n=duplicada)
-    m = 0
-    n = 0
-    
-    # Seleção de arquivos
-    fpaths = app.file_chooser(0, filter='*.jpg', multiple=True)
-
-    # Se arquivo(s) for(em) selecionado(s) executar
-    if fpaths:
-        static_list = []
-        for table_entry in app['table']:
-            static_list.append(table_entry)
-        for fpath in fpaths:
-            # Checando por duplicatas
-            for static_entry in static_list:
-                if duplicate_check(
-                        static_entry,
-                        os.path.split(fpath)[1]
-                        ) == True:
-                    n += 1
-                    break
-            else:
-                # Define a data de modificação do arquivo
-                timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p',
-                            time.localtime(os.path.getmtime(fpath)))
-                
-                # Verifica se imagem está no banco de dados
-                entry = createMeta(fpath)
-                
-                # Cria thumbnails
-                create_thumbs(fpath)
-                
-                app['table'].append(entry)
-
-                m += 1
-
-        # FIXME Exibir mensagem na barra de status direito...
-        global status
-        status = app.status_message(
-                ' %d imagens duplicadas, %d novas imagens' % (n, m))
-
-def openfolder_cb(app, menuitem):
-    '''
-    Callback para a janela de seleção de pastas do menu.
-
-    Pega a pasta e procura dentro dela todos os arquivos terminados em .jpg.
-    Para cada arquivo lê os metadados e joga na tabela.
-    '''
-    # Inicia contadores (m=nova imagem, n=duplicada)
-    m = 0
-    n = 0
-    
-    folder = app.file_chooser(2)
-    
-    # Se alguma pasta for selecionada
-    if folder:
-        # Cria list estática com entradas da tabela para verificar duplicatas
-        static_list = []
-        for table_entry in app['table']:
-            static_list.append(table_entry)
-
-        # Extrai lista de imagens usando a função imgGrab e seus metadados
-        # usando a função createMeta (dentro da primeira)
-        entries = imgGrab(folder)
-
-        print 'Populando a tabela... isto pode levar alguns segundos.'
-        for entry in entries:
-            # Verificando entradas duplicadas
-            for static_entry in static_list:
-                if duplicate_check(static_entry, entry[0]) == True:
-                    n += 1
-                    break
-            else:
-                app['table'].append(entry)
-                m += 1
-                
-        # FIXME Exibir mensagem na barra de status direito...
-        global status
-        status = app.status_message(' %d imagens duplicadas, %d novas imagens'
-                % (n, m))
-
-def opendatabase_cb(app, menuitem):
-    '''
-    Callback para a janela de seleção de arquivos do menu.
-
-    Pega o caminho do arquivo de banco de dados e chama a função que lê as
-    entradas e joga na tabela (db_import).
-    '''
-    database_name = app.file_chooser(0, filter='database*', multiple=False)
-    
-    # Se algum arquivo for selecionado executar a função
-    if database_name:
-        db_import(database_name)
-
-def cleartable_cb(app, menuitem):
-    '''
-    Limpa tabela com lista de imagens e desativa aba de edição de metadados.
-    '''
-    # Limpa tabela
-    t = app['table']
-    t.clear()
-    
-    # Limpa aba de edição
-    for meta in widgets:
-        if meta == 'thumb':
-            data = chr(128) * (30 * 30 * 3)
-            app[meta].image = Image(width=30, height=30, depth=24, data=data)
+        # Converte valores dos metadados vazios (None) para string em branco
+        # FIXME Checar se isso está funcionando direito...
+        for index in [index for index, field in enumerate(entrymeta) if \
+                field is None]:
+            field = u''
+            entrymeta[index] = field
         else:
-            app[meta] = ''
+            pass
+
+        return entrymeta
+
+    def matchfinder(self, entry):
+        index = self.model.index(0, 0, QModelIndex())
+        value = os.path.basename(str(entry[0]))
+        matches = self.model.match(index, 0, value, -1, Qt.MatchContains)
+        if len(matches) > 0:
+            return True
+        else:
+            return False
+
+    def delcurrent(self):
+        indexes = mainWidget.selectionModel.selectedRows()
+        if indexes:
+            n_del = 0
+            # Cria lista com linhas a serem deletadas
+            indexes = [index.row() for index in indexes]
+            # Ordem decrescente previne contra o erro 'out of range'
+            # na hora de deletar diversas entradas
+            indexes.sort()
+            indexes.reverse()
+            for index in indexes:
+                self.model.removeRows(index, 1, QModelIndex())
+                n_del += 1
+            self.changeStatus(u'%d entradas deletadas' % n_del)
+        else:
+            self.changeStatus(u'Nenhuma entrada selecionada')
+
+    def closeEvent(self, event):
+        reply = QMessageBox.question(
+                self,
+                u'Atenção!',
+                u'Você está certo disso?',
+                QMessageBox.Yes,
+                QMessageBox.No
+                )
+
+        if reply == QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
+
+
+class MainTable(QTableView):
+    def __init__(self, data_list, header, *args):
+        QTableView.__init__(self, *args)
+
+        self.header = header
+        self.mydata = data_list
+
+        self.model = TableModel(self, self.mydata, self.header)
+        self.setModel(self.model)
+        
+        self.nrows = self.model.rowCount(self.model)
+        self.ncols = self.model.columnCount(self.model)
+
+        self.selectionModel = self.selectionModel()
+        self.selectionModel.clearSelection()
+
+        #topLeft = self.model.index(0, 0, QModelIndex())
+        #bottomRight = self.model.index(0, self.ncols-1, QModelIndex())
+        #selection = QItemSelection(topLeft, bottomRight)
+        #self.selectionModel.select(selection, QItemSelectionModel.Select)
+        #indexes = self.selectionModel.selectedIndexes()
+
+        vh = self.verticalHeader()
+        vh.setVisible(False)
+
+        hh = self.horizontalHeader()
+        hh.setStretchLastSection(True)
+
+        self.resizeColumnsToContents()
+        self.setAlternatingRowColors(True)
+        self.setSelectionBehavior(self.SelectRows)
+        self.setSortingEnabled(True)
+        self.hideColumn(0)
+
+        self.connect(
+                self,
+                SIGNAL('selectionChanged(QItemSelection, QItemSelection)'),
+                self.updateSelection
+                )
+
+        self.connect(
+                self.selectionModel,
+                SIGNAL('currentChanged(QModelIndex, QModelIndex)'),
+                self.changeCurrent
+                )
+
+        # Não funcionou ainda, fazer a edição da tabela refletir nos campos
+        #self.connect(
+        #        self.selectionModel,
+        #        SIGNAL('dataChanged(index, index)'),
+        #        self.changeCurrent
+        #        )
+
+    def updateSelection(self, selected, deselected):
+        items = selected.indexes()
+
+        for index in items:
+            text = '%s, %s' % (index.row(), index.column())
+            print text
+
+        items = deselected.indexes()
+
+        for index in items:
+            text = '%s, %s' % (index.row(), index.column())
+            print text
+
+    def changeCurrent(self, current, previous):
+        #print current.row(), current.column()
+        values = []
+        for col in xrange(self.ncols):
+            index = self.model.index(current.row(), col, QModelIndex())
+            value = self.model.data(index, Qt.DisplayRole)
+            values.append((index, value.toString()))
+        self.emit(SIGNAL('thisIsCurrent(values)'), values)
+
+
+class TableModel(QAbstractTableModel):
+    def __init__(self, parent, mydata, header, *args):
+        QAbstractTableModel.__init__(self, parent, *args)
+        self.mydata = mydata
+        self.header = header
+
+    def rowCount(self, parent):
+        return len(self.mydata)
+
+    def columnCount(self, parent):
+        return len(self.mydata[0])
+
+    def data(self, index, role):
+        if not index.isValid():
+            return QVariant()
+        elif role != Qt.DisplayRole and role != Qt.EditRole:
+            return QVariant()
+        return QVariant(self.mydata[index.row()][index.column()])
+        #elif index.column() == 0:
+            #return QVariant(os.path.basename(str(
+                #self.mydata[index.row()][index.column()])))
+            #icon = QPixmap(self.mydata[index.row()][0])
+            #scaledIcon = icon.scaled(30, 30, Qt.KeepAspectRatio, Qt.FastTransformation)
+            #return QIcon(scaledIcon)
+        
+    def headerData(self, col, orientation, role):
+        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+            return QVariant(self.header[col])
+        return QVariant()
+
+    def flags(self, index):
+        if not index.isValid():
+            return Qt.ItemIsEnabled
+        return QAbstractItemModel.flags(self, index) | Qt.ItemIsEditable
+
+    def setData(self, index, value, role):
+        if index.isValid() and role == Qt.EditRole:
+            try:
+                self.mydata[index.row()][index.column()] = value.toString()
+            except:
+                self.mydata[index.row()][index.column()] = value
+            self.emit(SIGNAL('dataChanged(index, index)'))
+            return True
+        return False
     
-    # Desativa aba de edição
-    app['tabs'].get_page(1).set_inactive()
+    def sort(self, col, order):
+        """sort table by given column number col"""
+        self.emit(SIGNAL("layoutAboutToBeChanged()"))
+        self.mydata = sorted(self.mydata, key=operator.itemgetter(col))
+        if order == Qt.DescendingOrder:
+            self.mydata.reverse()
+        self.emit(SIGNAL("layoutChanged()"))
 
-    # Muda o foco para a aba inicial
-    app['tabs'].focus_page(full_list)
+    def insertRows(self, position, rows, parent, entry):
+        self.beginInsertRows(parent, position, position+rows-1)
+        for row in xrange(rows):
+            self.mydata.append(entry)
+        self.endInsertRows()
+        return True
 
-#=== BACKEND ===#
+    def removeRows(self, position, rows, parent):
+        self.beginRemoveRows(parent, position, position+rows-1)
+        for row in xrange(rows):
+            self.mydata.pop(position)
+        self.endRemoveRows()
+        return True
 
-class flushfile(object):
+
+class DockEditor(QWidget):
+    def __init__(self):
+        QWidget.__init__(self)
+
+        varnames = [
+                ['title', 'caption', 'tags'],
+                ['taxon', 'spp', 'source', 'author', 'rights'],
+                ['size', 'location', 'city', 'state', 'country']
+                ]
+
+        labels = [
+                [u'Título', u'Legenda', u'Marcadores'],
+                [u'Táxon', u'Espécie', u'Especialista', u'Autor', u'Direitos'],
+                [u'Tamanho', u'Local', u'Cidade', u'Estado', u'País']
+                ]
+
+        self.sizes = [
+                '',
+                '<0,1 mm',
+                '0,1 - 1,0 mm',
+                '1,0 - 10 mm',
+                '10 - 100 mm',
+                '>100 mm'
+                ]
+
+        self.hbox = QHBoxLayout()
+        self.setLayout(self.hbox)
+
+        e = 'Edit'
+
+        for box in varnames:
+            box_index = varnames.index(box)
+            box_layid = 'form' + str(box_index)
+            box_id = 'wid' + str(box_index)
+            setattr(self, box_layid, QFormLayout())
+            setattr(self, box_id, QWidget())
+            for var in box:
+                var_index = box.index(var)
+                setattr(self, var, QLabel('&' + labels[box_index][var_index] + ':'))
+                if var == 'caption':
+                    setattr(self, var + e, QTextEdit())
+                    self.captionEdit.setTabChangesFocus(True)
+                elif var == 'size':
+                    setattr(self, var + e, QComboBox())
+                    eval('self.' + var + e + '.addItems(self.sizes)')
+                else:
+                    setattr(self, var + e, QLineEdit())
+                label = eval('self.' + var)
+                edit = eval('self.' + var + e)
+                label.setBuddy(edit)
+                if box_index == 0:
+                    self.form0.addRow(label, edit)
+                elif box_index == 1:
+                    self.form1.addRow(label, edit)
+                elif box_index == 2:
+                    self.form2.addRow(label, edit)
+            eval('self.' + box_id + '.setLayout(self.' + box_layid + ')')
+            self.hbox.addWidget(eval('self.' + box_id))
+
+        self.setMaximumHeight(180)
+
+        self.connect(
+                mainWidget,
+                SIGNAL('thisIsCurrent(values)'),
+                self.setCurrent
+                )
+
+        #self.connect(
+        #        self.titleEdit,
+        #        SIGNAL('textEdited(QString)'),
+        #        self.updateData
+        #        )
+
+    #def updateData(self, text):
+    #    print text
+    #    mainWidget.model.setData(self.values[2][0], text, Qt.EditRole)
+
+    def setCurrent(self, values):
+        self.titleEdit.setText(values[1][1])
+        self.captionEdit.setText(values[2][1])
+        self.tagsEdit.setText(values[3][1])
+        self.taxonEdit.setText(values[4][1])
+        self.sppEdit.setText(values[5][1])
+        self.sourceEdit.setText(values[6][1])
+        self.authorEdit.setText(values[7][1])
+        self.rightsEdit.setText(values[8][1])
+        for interval in self.sizes:
+            if values[9][1] == interval:
+                idx = self.sizes.index(interval)
+                self.sizeEdit.setCurrentIndex(idx)
+            else:
+                pass
+        self.locationEdit.setText(values[10][1])
+        self.cityEdit.setText(values[11][1])
+        self.stateEdit.setText(values[12][1])
+        self.countryEdit.setText(values[13][1])
+        self.values = values
+
+    def saveData(self):
+        mainWidget.model.setData(self.values[1][0], self.titleEdit.text(),
+                Qt.EditRole)
+        mainWidget.model.setData(self.values[2][0], self.captionEdit.toPlainText(),
+                Qt.EditRole)
+        mainWidget.model.setData(self.values[3][0], self.tagsEdit.text(),
+                Qt.EditRole)
+        mainWidget.model.setData(self.values[4][0], self.taxonEdit.text(),
+                Qt.EditRole)
+        mainWidget.model.setData(self.values[5][0], self.sppEdit.text(),
+                Qt.EditRole)
+        mainWidget.model.setData(self.values[6][0], self.sourceEdit.text(),
+                Qt.EditRole)
+        mainWidget.model.setData(self.values[7][0], self.authorEdit.text(),
+                Qt.EditRole)
+        mainWidget.model.setData(self.values[8][0], self.rightsEdit.text(),
+                Qt.EditRole)
+        mainWidget.model.setData(self.values[9][0], self.sizeEdit.currentText(),
+                Qt.EditRole)
+        mainWidget.model.setData(self.values[10][0], self.locationEdit.text(),
+                Qt.EditRole)
+        mainWidget.model.setData(self.values[11][0], self.cityEdit.text(),
+                Qt.EditRole)
+        mainWidget.model.setData(self.values[12][0], self.stateEdit.text(),
+                Qt.EditRole)
+        mainWidget.model.setData(self.values[13][0], self.countryEdit.text(),
+                Qt.EditRole)
+        mainWidget.setFocus(Qt.OtherFocusReason)
+        print 'Salvo!'
+
+
+class DockThumb(QWidget):
+    def __init__(self):
+        QWidget.__init__(self)
+
+        self.setMaximumWidth(400)
+
+        self.vbox = QVBoxLayout()
+
+        self.filename = 'vellutini_clypeaster.jpg'
+        self.timestamp = '20/04/2009 10:34'
+        self.filepath = './img/migotto_arbacia1.jpg'
+
+        self.pic = QPixmap(self.filepath)
+       
+        self.thumb = QLabel('')
+        self.name = QLabel(self.filename)
+        self.timestamp = QLabel(self.timestamp)
+
+        self.thumb.setMaximumSize(400, 350)
+        self.thumb.setMinimumSize(100, 100)
+
+        self.thumb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        self.thumb.setAlignment(Qt.AlignHCenter)
+        self.originalPic = self.pic.scaled(self.thumb.width(), self.thumb.height(),
+                Qt.KeepAspectRatio, Qt.FastTransformation)
+
+        self.vbox.addWidget(self.thumb)
+        self.vbox.addWidget(self.name)
+        self.vbox.addWidget(self.timestamp)
+        self.vbox.addStretch(1)
+
+        self.thumb.setPixmap(self.originalPic)
+
+        self.setLayout(self.vbox)
+
+        QPixmapCache.setCacheLimit(81920)
+
+        self.connect(
+                mainWidget,
+                SIGNAL('thisIsCurrent(values)'),
+                self.setCurrent
+                )
+    
+    def setCurrent(self, values):
+        filename = os.path.basename(str(values[0][1]))
+        self.name.setText(filename)
+        self.originalPic = QPixmap()
+        if not QPixmapCache.find(filename, self.originalPic):
+            self.pic.load(values[0][1])
+            self.originalPic = self.pic.scaled(self.thumb.maximumSize(),
+                    Qt.KeepAspectRatio, Qt.FastTransformation)
+            print 'Criando cache da imagem %s...' % filename,
+            QPixmapCache.insert(filename, self.originalPic)
+            print 'pronto!'
+        else:
+            pass
+        self.updateThumb()
+
+    def resizeEvent(self, event):
+        event.accept()
+        self.updateThumb()
+
+    def updateThumb(self):
+        scaledPic = self.originalPic.scaled(self.size(),
+                Qt.KeepAspectRatio, Qt.FastTransformation)
+        self.thumb.setPixmap(scaledPic)
+
+
+class FlushFile(object):
     '''
     Simplesmente para tirar o buffer do print, assim rola juntar prints
     diferentes na mesma linha. Só pra ficar bonitinho... meio inútil.
@@ -435,690 +621,70 @@ class flushfile(object):
         self.f.write(x)
         self.f.flush()
 
-# Redefine o stdout para ser flushed após print
-sys.stdout = flushfile(sys.stdout)
-
-def db_import(dbname):
-    '''
-    Importa um banco de dados já existente, usado pelo cifonauta.
-    '''
-    # TODO guardar para importação do banco de dados novo
-
-    # Contador
-    n = 0
-    m = 0
-
-    # Abrir e/ou criar arquivo do banco de dados
-    imgdb = db.DB()
-    imgdb.open(dbname, db.DB_BTREE, db.DB_READ_UNCOMMITTED)
-    
-    # Cria lista que gerará a tabela da interface gráfica
-    entry_meta = []
-    
-    # Ativando o cursor
-    cursor = imgdb.cursor()
-    
-    # Pega a primeira entrada do BD
-    rec = cursor.first()
-
-    print 'Importando banco de dados... Isto pode levar alguns segundos.'
-    
-    while rec:
-        # Transforma string do BD em um dicionário
-        # FIXME Avaliar questão da segurança ao usar o 'eval'
-        recdata = eval(rec[1])
-        
-        # Converte valores dos metadados vazios (None) para string em branco
-        for k, v in recdata.iteritems():
-            if v is None:
-                v = u''
-                recdata[k] = v
-            else:
-                pass
-    
-        # Cria a linha da tabela da interface
-        entry_meta = [
-                recdata['nome'],
-                Image(filename='imagens/thumbs/100/%s' % recdata['nome']),
-                recdata['autor'],
-                recdata['titulo'],
-                recdata['legenda'],
-                recdata['keywords'],
-                recdata['sublocal'],
-                recdata['cidade'],
-                recdata['estado'],
-                recdata['pais'],
-                recdata['taxon'],
-                recdata['spp'],
-                recdata['tamanho'],
-                recdata['especialista'],
-                recdata['direitos'],
-                os.path.join(srcdir, recdata['nome']),
-                ]
-
-        # Se programa estiver iniciando
-        if app is None:
-            full_table.append(entry_meta)
-        # Se não, fazer checagem de duplicatas
-        else:
-            static_list = []
-            for table_entry in app['table']:
-                static_list.append(table_entry)
-            for static_entry in static_list:
-                if duplicate_check(static_entry, entry_meta[0]) == True:
-                    n += 1
-                    break
-            else:
-                app['table'].append(entry_meta)
-                m += 1
-
-        #Pega próxima entrada do BD
-        rec = cursor.next()
-            
-    # Fechando o cursor do banco de dados
-    cursor.close()
-    
-    # Fechando o banco
-    imgdb.close()
-
-    print 'Banco de dados importado.'
-    # Mostra mensagem na barra de status do programa
-    # FIXME implementar direito...
-    if app is not None:
-        global status
-        status = app.status_message(
-                ' %d imagens importadas, %d imagens duplicadas' % (m, n))
-        app.idle_add(idle_status_rm)
-
-def duplicate_check(entry, filename):
-    '''
-    Função que compara o nome do arquivo importado com o nome do arquivo
-    presente no banco de dados.
-    '''
-    entry_name = entry[0]
-    if entry_name == filename:
-        return True
-    else:
-        return False
-
-def create_thumbs(fpath):
-    '''
-    Cria thumbnails de vários tamanhos para as fotos novas.
-    '''
-    
-    print 'Iniciando o criador de thumbnails.'
-
-    # Lista com tamanhos dos tumbnails
-    sizes = [100, 250, 300, 400, 450, 500]
-    
-    # Checagem padrão
-    print '\nChecando se pastas existem...'
-    hasdir = os.path.isdir(thumbdir)
-    if hasdir == True:
-        for size in sizes:
-            each_thumbdir = os.path.join(thumbdir,str(size))
-            haseach_thumbdir = os.path.isdir(each_thumbdir)
-            if haseach_thumbdir == True:
-                continue
-            else:
-                os.mkdir(each_thumbdir)
-    else:
-        os.mkdir(thumbdir)
-        for size in sizes:
-            each_thumbdir = os.path.join(thumbdir,str(size))
-            os.mkdir(each_thumbdir)
-
-    print 'Pronto!'
-    
-    # Nome do arquivo
-    file = os.path.split(fpath)[1]
-    
-    # Para cada tamanho de thumb
-    for size in sizes:
-        pasta = os.path.join(thumbdir,str(size))
-        lista = os.listdir(pasta)
-        newthumb_path = os.path.join(pasta, file)
-        # Se o arquivo já existir, pular
-        if file in lista:
-            print 'Thumbs já existem.'
-            continue
-        # Se não, criar thumb
-        else:
-            # Copiar original para pasta
-            copy(fpath, pasta)
-            print '%s copiado para pasta %s' % (file, size)
-            try:
-                # Criar thumb
-                im = pil_image.open(newthumb_path)
-                dim = size, size
-                im.thumbnail(dim)
-                im.save(os.path.join(pasta, file), 'JPEG')
-                print 'Thumbnail criado!'
-            except:
-                print 'Não consegui criar o thumbnail...'
-
-def searchImgdb(fpath, timestamp):
-    '''
-    Busca o registro da imagem no banco de dados procurando pelo nome do
-    arquivo.
-    
-    Se encontrar, compara a data de modificação do arquivo e do registro.
-
-    Se as datas forem iguais pula para a próxima imagem, se forem diferentes
-    atualiza o registro.
-    '''
-    # TODO guardar função para importar entradas do banco de dados novo
-
-    print 'Verificando se a imagem está no banco de dados...'
-    
-    # Obtém nome do arquivo
-    fname = os.path.basename(fpath)
-
-    # Abrir e/ou criar arquivo do banco de dados
-    imgdb = db.DB()
-    imgdb.open(dbname, db.DB_BTREE, db.DB_READ_UNCOMMITTED)
-    
-    # Ativando o cursor
-    cursor = imgdb.cursor()
-    # Buscando o registro com o nome do arquivo
-    rec = cursor.set(fname)
-    # Fechando o cursor
-    cursor.close()
-    # Fechando o banco
-    imgdb.close()
-
-    # Se o registro existir
-    if rec:
-        print 'Bingo! Registro de %s encontrado.\n' % fname
-        # Transformando a entrada do banco em dicionário
-        recdata = eval(rec[1])
-
-        print 'Comparando a data de modificação do arquivo com o registro...'
-        if recdata['timestamp'] == timestamp:
-            # Se os timetamps forem iguais
-            print
-            print '\tBanco de dados\t\t  Arquivo'
-            print '\t' + 2 * len(timestamp) * '-' + 4 * '-'
-            print '\t%s\t= %s' % (recdata['timestamp'], timestamp)
-            print
-            if recdata['www'] == True and recdata['mod'] == False:
-                # Arquivo não foi modificado, nem precisa ser atualizado
-                print 'Arquivo não mudou!'
-            elif recdata['www'] == True and recdata['mod'] == True:
-                # Timestamp não foi modificado, mas imagem não foi carregada
-                # no site ainda
-                print 'Arquivo que está no site não está atualizado!'
-            elif recdata['www'] == False:
-                print 'Arquivo não está no site!'
-                # Imagem nunca foi carregado no site
-            
-            entry_meta = []
-            # Cria a lista para tabela da interface
-            entry_meta = [
-                        recdata['nome'],
-                        Image(filename='imagens/thumbs/100/%s' %
-                            recdata['nome']),
-                        recdata['autor'],
-                        recdata['titulo'],
-                        recdata['legenda'],
-                        recdata['keywords'],
-                        recdata['sublocal'],
-                        recdata['cidade'],
-                        recdata['estado'],
-                        recdata['pais'],
-                        recdata['taxon'],
-                        recdata['spp'],
-                        recdata['tamanho'],
-                        recdata['especialista'],
-                        recdata['direitos'],
-                        fpath
-                        ]
-            
-            return entry_meta
-        else:
-            print
-            print '\tBanco de dados\t\t   Arquivo'
-            print '\t' + 2 * len(timestamp) * '-' + 4 * '-'
-            print '\t%s\t!= %s' % (recdata['timestamp'], timestamp)
-            print
-            if recdata['www'] == True:
-                # Timestamp modificado, imagem do site não está atualizada
-                print 'Arquivo que está no site não está atualizado!'
-            elif recdata['www'] == False:
-                # Imagem nunca foi carregada no site
-                print 'Arquivo não está no site!'
-                
-            # Lê metadados e cria entrada da tabela
-            entry = createMeta(fpath)
-            return entry
-    else:
-        print 'Registro não encontrado!'
-        print 'Continuando...'
-        
-        create_thumbs(fpath)
-    
-        # Lê metadados e cria entrada da tabela
-        entry = createMeta(fpath)
-
-        # Criar entrada com valores atualizados
-        newRec = {
-                    'nome':fname,
-                    'timestamp':timestamp,
-                    'postid':0,
-                    'titulo':entry[3],
-                    'keywords':entry[5],
-                    'autor':entry[2],
-                    'cidade':entry[7],
-                    'sublocal':entry[6],
-                    'estado':entry[8],
-                    'pais':entry[9],
-                    'taxon':entry[10],
-                    'direitos':entry[14],
-                    'legenda':entry[4],
-                    'spp':entry[11],
-                    'tamanho':entry[12],
-                    'especialista':entry[13],
-                    'www':False,
-                    'mod':False
-                    }
-        
-        # Atualizar a data de modificação no registro do banco de dados
-        print '\nAtualizando o banco de dados...'
-        
-        # Abrir banco de dados
-        imgdb = db.DB()
-        imgdb.open(dbname)
-        
-        # Gravar entrada atualizada no banco de dados (transformada em string)
-        imgdb.put(fname,str(newRec))
-        
-        # Fechar banco de dados
-        imgdb.close()
-        
-        print 'Registro no banco de dados atualizado!'
-        
-        return entry
-
-def createMeta(pathtofile):
-    '''
-    Define as variáveis extraídas dos metadados (IPTC) da imagem.
-
-    Usa a biblioteca do arquivo iptcinfo.py.
-    '''
-
-    fname = os.path.basename(pathtofile)
-
-    print 'Lendo os metadados de %s e criando variáveis.' % fname
-    
-    # Criar objeto com metadados
-    info = IPTCInfo(pathtofile)
-    
-    # Checando se o arquivo tem dados IPTC
-    if len(info.data) < 4:
-        print 'Imagem não tem dados IPTC!'
-
-    # Dicionário com metadados da imagem
-    meta = {}
-    
-    # Definindo as variáveis
-    title = info.data['object name']			# 5
-    keywords = info.data['keywords']			# 25
-    author = info.data['by-line']			# 80
-    city = info.data['city']				# 90
-    sublocation = info.data['sub-location']		# 92
-    state = info.data['province/state']			# 95
-    country = info.data['country/primary location name']# 101
-    category = info.data['headline']			# 105
-    copyright = info.data['copyright notice']		# 116
-    caption = info.data['caption/abstract']		# 120
-    spp = info.data['original transmission reference']	# 103
-    scale = info.data['special instructions']		# 40
-    source = info.data['source']			# 115
-
-    meta = {
-            'nome' : fname,
-            'titulo' : title,
-            'keywords' : ', '.join(keywords),
-            'autor' : author,
-            'legenda' : caption,
-            'sublocal' : sublocation,
-            'cidade' : city,
-            'estado' : state,
-            'pais' : country,
-            'taxon' : category,
-            'spp' : spp,
-            'tamanho' : scale,
-            'especialista' : source,
-            'direitos' : copyright,
-            'path' : pathtofile
-            }
-
-    # Converte valores dos metadados vazios (None) para string em branco
-    # FIXME Checar se isso está funcionando...
-    for k, v in meta.iteritems():
-        if v is None:
-            v = u''
-            meta[k] = v
-        else:
-            pass
-    
-    entry_meta = []
-
-    # Cria a lista para tabela da interface
-    entry_meta = [
-            meta['nome'],
-            Image(filename='imagens/thumbs/100/%s' % meta['nome']),
-            meta['autor'],
-            meta['titulo'],
-            meta['legenda'],
-            meta['keywords'],
-            meta['sublocal'],
-            meta['cidade'],
-            meta['estado'],
-            meta['pais'],
-            meta['taxon'],
-            meta['spp'],
-            meta['tamanho'],
-            meta['especialista'],
-            meta['direitos'],
-            meta['path']
-            ]
-
-    return entry_meta
-            
-def imgGrab(folder):
-    '''
-    Busca recursivamente arquivos com extensão jpg|JPG na pasta determinada.
-    '''
-    # Zera contador
-    n = 0
-
-    # Cria listas
-    folder_imgs = []
-    ext_list = ['jpg', 'JPG']
-    
-    # Buscador de imagens em ação
-    print '\nIniciando o cifonauta!!!'
-    for root, dirs, files in os.walk(folder):
-        for fname in files:
-            extension = fname.split('.')[-1]
-            if extension in ext_list:
-                # Define o endereço do arquivo
-                fpath = os.path.join(root,fname)
-                
-                # Define a data de modificação do arquivo
-                timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p',
-                        time.localtime(os.path.getmtime(fpath)))
-                
-                # Verifica se imagem está no banco de dados
-                entry = createMeta(fpath)
-
-                # Cria thumbnails
-                create_thumbs(fpath)
-                
-                # Adiciona à lista
-                folder_imgs.append(entry)
-                
-                # Contador
-                n += 1
-        
-        else:	# Se o número máximo de imagens for atingido, finalizar
-            global status
-            status = app.status_message(' %d fotos analisadas' % n)
-            app.idle_add(idle_status_rm)
-            break
-        
-    # Retorna a lista de imagens com seus metadados
-    return folder_imgs
-
-
 #=== MAIN ===#
 
-# Diretório com as imagens
-srcdir = 'imagens/source'
-# Diretório com thumbnails
-thumbdir = 'imagens/thumbs'
+class InitPs():
+    '''
+    Inicia variáveis e parâmetros globais do programa antes de iniciar a
+    interface gráfica.
+    '''
+    def __init__(self):
+        global picdb
+        global header
+        global data_list
 
-# Nome do arquivo com banco de dados
-dbname = 'database'
-
-# Nome do arquivo Pickle
-picdb = 'pickle'
-
-# Lista com nomes dos widgets
-widgets = [
-        'thumb',
-        'autor',
-        'titulo',
-        'legenda',
-        'keywords',
-        'sublocal',
-        'cidade',
-        'estado',
-        'pais',
-        'taxon',
-        'spp',
-        'tamanho',
-        'especialista',
-        'direitos'
-        ]
-
-# Criar a instância do bd
-imgdb = db.DB()
-
-# Abrir e/ou criar arquivo do banco de dados
-imgdb.open(dbname, db.DB_BTREE, db.DB_CREATE)
-imgdb.close()
-
-# Cria lista para tabela completa
-full_table = []
-
-# Leitura do cache, salvo pelo Pickle
-try:
-    picfile = open(picdb, 'rb')
-    pics = pickle.load(picfile)
-    picfile.close()
-    try:
-        print 'Lendo cache das entradas...',
-        for pic in pics:
-            picentry = []
-            picentry = [
-                    pic[0],
-                    Image(filename=pic[1]),
-                    pic[2],
-                    pic[3],
-                    pic[4],
-                    pic[5],
-                    pic[6],
-                    pic[7],
-                    pic[8],
-                    pic[9],
-                    pic[10],
-                    pic[11],
-                    pic[12],
-                    pic[13],
-                    pic[14],
-                    pic[15],
+        # Redefine o stdout para ser flushed após print
+        sys.stdout = FlushFile(sys.stdout)
+        
+        # Nome do arquivo Pickle
+        picdb = 'initcache'
+        
+        # Cabeçalho horizontal da tabela principal
+        header = [
+                u'Arquivo', u'Título', u'Legenda', u'Marcadores',
+                u'Táxon', u'Espécie', u'Especialista', u'Autor', u'Direitos',
+                u'Tamanho', u'Local', u'Cidade', u'Estado', u'País'
+                ]
+        
+        data_list = [
+                [
+                    u'./img/migotto_bolinopsis_vitrea03.jpg',
+                    u'Larva legal',
+                    u'Essa larvinha da hora',
+                    u'microscópio, bentônico, larva',
+                    u'Echinodermata',
+                    u'Sentus eliquios',
+                    u'Aquieles',
+                    u'Autor',
+                    u'Nelas',
+                    u'>100 mm',
+                    u'Praia do Carvoeiro',
+                    u'São Pedro',
+                    u'São Paulo',
+                    u'Brasil'
+                    ],
+                [
+                    u'./img/migotto_echiura01.jpg',
+                    u'Larva chata',
+                    u'Essa larvinha já deu hora',
+                    u'microscópio, bentônico, larva',
+                    u'Echinodermata',
+                    None,
+                    u'Aquieles',
+                    u'Autora',
+                    u'Nelas',
+                    u'>100 mm',
+                    u'',
+                    u'São Pita',
+                    u'São Paulo',
+                    u'Brasil',
                     ]
-            full_table.append(picentry)
-        print 'pronto!'
-    except:
-        print 'Erro na importação das entradas...'
-except:
-    f = open(picdb, 'wb')
-    f.close()
+                ]
 
-# Define app para evitar conflito (func: db_import) na importação inicial do bd
-app = None
+if __name__ == '__main__':
+    initps = InitPs()
+    app = QApplication(sys.argv)
+    main = MainWindow()
 
-# Importa banco de dados existente
-#db_import(dbname)
-
-# Lista para tabela com imagens atualizadas
-updated_meta = ''
-
-# Imagem padrão
-data = chr(128) * (30 * 30 * 3)
-
-#=== GUI_FRONTEND ===#
-
-print 'Iniciando a interface do usuário...'
-
-full_list = Tabs.Page(
-        label=u'Imagens selecionadas',
-        children=(
-            # Entry(id='search_box', label='Busca:', callback=digittime_cb),
-            Table(id='table', label='Tabela de Metadados', items=full_table,
-                headers=['Arquivo', 'Thumb', 'Autor', 'Título', 'Legenda',
-                    'Keywords', 'Sublocal', 'Cidade', 'Estado', 'País',
-                    'Táxon', 'Espécie', 'Tamanho', 'Especialista', 'Direitos',
-                    'Path'],
-                types=[str,Image,str,str,str,str,str,str,str,str,str,str,str,str,str,str],
-                selection_callback=selection_changed,
-                cell_format_func=format,
-                hidden_columns_indexes=[0,15],
-                ),
-            # Button(id='edit_button', label='Editar', active=False,
-            # callback=edit_cb),
-            ),
-        )
-
-edit_data = Tabs.Page(
-        label=u'Metadados',
-        active=False,
-        children=(
-            Group(id='soft_data',
-                border=False,
-                children=(
-                    Group(id='soft_meta',
-                        horizontal=True,
-                        border=False,
-                        children=(
-                            Group(id='thumb_edit',
-                                border=False,
-                                children=(
-                                    Button(id='thumb', image=Image(width=30,
-                                        height=30, depth=24, data=data),
-                                        callback=thumb_gen)
-                                    )
-                                ),
-                            Group(id='main_meta',
-                                border=False,
-                                children=(
-                                    # Entry(id='nome', label='Arquivo:',
-                                    # editable=False),
-                                    # Entry(id='path', label='Local:',
-                                    # editable=False),
-                                    Entry(id='titulo', label='Título:'),
-                                    Entry(id='legenda', label='Legenda:',
-                                        multiline=True),
-                                    Entry(id='keywords', label='Marcadores:'),
-                                    Entry(id='autor', label='Autor:'),
-                                    Entry(id='sublocal', label='Local:'),
-                                    Entry(id='cidade', label='Cidade:'),
-                                    Entry(id='estado', label='Estado:'),
-                                    Entry(id='pais', label='País:'),
-                                    Entry(id='taxon', label='Táxon:'),
-                                    Entry(id='spp', label='Espécie:'),
-                                    Selection(id='tamanho',
-                                        label='Tamanho',
-                                        options=[
-                                            '<0,1 mm',
-                                            '0,1 - 1,0 mm',
-                                            '1,0 - 10 mm',
-                                            '10 - 100 mm',
-                                            '>100 mm'
-                                            ]
-                                        ),
-                                    Entry(id='especialista',
-                                        label='Especialista:'),
-                                    Entry(id='direitos', label='Direitos:'),
-                                    )
-                                )
-                            ),
-                        ),
-                    ),
-                ),
-            Group(id='menu',
-                horizontal=True,
-                border=False,
-                children=(
-                    Button(id='back_button', label='Voltar', active=True,
-                        callback=back_cb,
-                        expand_policy=ExpandPolicy.Horizontal()),
-                    Button(id='clean_button', label='Limpar', active=True,
-                        callback=clean_cb,
-                        expand_policy=ExpandPolicy.Horizontal()),
-                    Button(id='save_button', label='Salvar', active=False,
-                        callback=save_meta,
-                        expand_policy=ExpandPolicy.Horizontal())
-                    )
-                ),
-            ),
-        )
-
-app = App(
-        id='main',
-        title='CIFONAUTA - Gerenciador de metadados',
-        window_size=(1000, 950),
-        statusbar=True,
-        preferences=(# Não implementado ainda
-            Group(id='dirdb',
-                label='Diretório e banco de dados',
-                children=(
-                    Group(id='dir',
-                        border=False,
-                        horizontal=True,
-                        children=(
-                            Entry(id='srcdir', label='Diretório fonte:'),
-                            SelectFolderButton(callback=selectdir_cb),
-                            )
-                        ),
-                    Group(id='db',
-                        border=False,
-                        horizontal=True,
-                        children=(
-                            Entry(id='dbfile',
-                                label='Arquivo de banco de dados:'),
-                            OpenFileButton(callback=selectdb_cb),
-                            )
-                        )
-                    ),
-                ),
-            Group(id='wpopt',
-                label='WordPress',
-                children=(
-                    Entry(id='wp', label='Servidor XML-RPC:'),
-                    Entry(id='login', label='Usuário:'),
-                    Password(id='senha', label='Senha:')
-                    ),
-                ),
-            ),
-        menu=(
-            Menu.Submenu(label='Arquivo',
-                subitems=(
-                    Menu.Item(label="Abrir arquivo", callback=openfile_cb),
-                    Menu.Item(label="Abrir pasta", callback=openfolder_cb),
-                    Menu.Item(label="Importar banco de dados",
-                        callback=opendatabase_cb),
-                    Menu.Separator(),
-                    Menu.Item(label="Opções", active=False, callback=pref_cb),
-                    Menu.Separator(),
-                    Menu.Item(label="Sair", callback=quit_cb),
-                    ),
-                ),
-            Menu.Submenu(label='Editar',
-                subitems=(
-                    Menu.Item(label="Limpar tabela", callback=cleartable_cb),
-                    ),
-                ),
-            ),
-        center=(
-                Tabs(
-                    id='tabs',
-                    children=(full_list, edit_data)
-                    ),
-                ),
-        data_changed_callback=data_changed,
-        )
-run()
+    main.show()
+    sys.exit(app.exec_())

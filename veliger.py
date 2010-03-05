@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 05 Mar 2010 03:21PM
+# Atualizado: 05 Mar 2010 04:42PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -138,22 +138,23 @@ class MainWindow(QMainWindow):
     def openDialog(self):
         filepaths = QFileDialog.getOpenFileNames(self, 'Selecione imagem(ns)',
                 './', 'Images (*.jpg)')
-        n_all = len(filepaths)
-        n_new = 0
-        n_dup = 0
-        self.changeStatus(u'Importando %d imagens...' % n_all)
-        for filepath in filepaths:
-            entrymeta = self.createMeta(filepath)
-            isduplicate = self.matchfinder(entrymeta)
-            if isduplicate is False:
-                self.model.insertRows(0, 1, QModelIndex(), entrymeta)
-                n_new += 1
-            else:
-                n_dup += 1
-                pass
-        self.changeStatus(
-                u'%d imagens verificadas, %d importadas e %d duplicadas' % \
-                        (n_all, n_new, n_dup))
+        if filepaths:
+            n_all = len(filepaths)
+            n_new = 0
+            n_dup = 0
+            self.changeStatus(u'Importando %d imagens...' % n_all)
+            for filepath in filepaths:
+                entrymeta = self.createMeta(filepath)
+                isduplicate = self.matchfinder(entrymeta)
+                if isduplicate is False:
+                    self.model.insertRows(0, 1, QModelIndex(), entrymeta)
+                    n_new += 1
+                else:
+                    n_dup += 1
+                    pass
+            self.changeStatus(
+                    u'%d imagens verificadas, %d importadas e %d duplicadas' % \
+                            (n_all, n_new, n_dup))
 
     def openDirDialog(self):
         folder = QFileDialog.getExistingDirectory(
@@ -162,8 +163,54 @@ class MainWindow(QMainWindow):
                 './',
                 QFileDialog.ShowDirsOnly
                 )
-        print folder
+        if folder:
+            self.imgGrab(str(folder))
 
+    def imgGrab(self, folder):
+        '''
+        Busca recursivamente arquivos com extensão jpg|JPG na pasta determinada.
+        '''
+        # Zera contadores
+        n_all = 0
+        n_new = 0
+        n_dup = 0
+
+        # Tupla para o endswith()
+        extensions = ('jpg', 'JPG', 'jpeg', 'JPEG')
+        
+        # Buscador de imagens em ação
+        for root, dirs, files in os.walk(folder):
+            for filename in files:
+                print filename
+                if filename.endswith(extensions):
+                    # Define o endereço do arquivo
+                    filepath = os.path.join(root, filename)
+                    
+                    # Define a data de modificação do arquivo
+                    timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p',
+                            time.localtime(os.path.getmtime(filepath)))
+                    
+                    # Verifica se imagem está no banco de dados
+                    entrymeta = self.createMeta(filepath)
+
+                    # Checa por duplicatas na tabela
+                    isduplicate = self.matchfinder(entrymeta)
+                    if isduplicate is False:
+                        self.model.insertRows(0, 1, QModelIndex(), entrymeta)
+                        n_new += 1
+                    else:
+                        n_dup += 1
+                        pass
+
+                    # Contador
+                    n_all += 1
+            
+            else:	# Se o número máximo de imagens for atingido, finalizar
+                self.changeStatus(
+                        u'%d imagens verificadas, %d importadas e %d duplicadas' % \
+                                (n_all, n_new, n_dup))
+                break
+            
     def createMeta(self, filepath):
         '''Define as variáveis extraídas dos metadados (IPTC) da imagem.
 

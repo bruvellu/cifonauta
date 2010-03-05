@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 05 Mar 2010 04:42PM
+# Atualizado: 05 Mar 2010 07:31PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -99,6 +99,10 @@ class MainWindow(QMainWindow):
         salvo = lambda: self.changeStatus(u'Alterações salvas!')
         self.saveFile.triggered.connect(salvo)
 
+        self.delAll = QAction(QIcon('./icons/edit-delete.png'), 'Limpar tabela', self)
+        self.delAll.setStatusTip('Deletar todas as entradas')
+        self.connect(self.delAll, SIGNAL('triggered()'), self.cleartable)
+
         self.arquivo = self.menubar.addMenu('&Arquivo')
         self.arquivo.addAction(self.openFile)
         self.arquivo.addAction(self.openDir)
@@ -107,7 +111,7 @@ class MainWindow(QMainWindow):
         self.arquivo.addAction(self.exit)
 
         self.editar = self.menubar.addMenu('&Editar')
-        self.editar.addAction(self.delRow)
+        self.editar.addAction(self.delAll)
 
         # Toolbar
         self.toolbar = self.addToolBar('Ações')
@@ -142,19 +146,22 @@ class MainWindow(QMainWindow):
             n_all = len(filepaths)
             n_new = 0
             n_dup = 0
+            t0 = time.time()
             self.changeStatus(u'Importando %d imagens...' % n_all)
             for filepath in filepaths:
-                entrymeta = self.createMeta(filepath)
-                isduplicate = self.matchfinder(entrymeta)
+                filename = os.path.basename(str(filepath))
+                isduplicate = self.matchfinder(filename)
                 if isduplicate is False:
+                    entrymeta = self.createMeta(filepath)
                     self.model.insertRows(0, 1, QModelIndex(), entrymeta)
                     n_new += 1
                 else:
                     n_dup += 1
                     pass
-            self.changeStatus(
-                    u'%d imagens verificadas, %d importadas e %d duplicadas' % \
-                            (n_all, n_new, n_dup))
+            t1 = time.time()
+            t = t1 - t0
+            self.changeStatus(u'%d imagens analisadas em %.2f s,' % (n_all, t) +
+                    u' %d novas e %d duplicadas' % (n_new, n_dup), 10000)
 
     def openDirDialog(self):
         folder = QFileDialog.getExistingDirectory(
@@ -177,25 +184,20 @@ class MainWindow(QMainWindow):
 
         # Tupla para o endswith()
         extensions = ('jpg', 'JPG', 'jpeg', 'JPEG')
+
+        t0 = time.time()
         
         # Buscador de imagens em ação
         for root, dirs, files in os.walk(folder):
             for filename in files:
-                print filename
                 if filename.endswith(extensions):
-                    # Define o endereço do arquivo
-                    filepath = os.path.join(root, filename)
-                    
-                    # Define a data de modificação do arquivo
-                    timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p',
-                            time.localtime(os.path.getmtime(filepath)))
-                    
-                    # Verifica se imagem está no banco de dados
-                    entrymeta = self.createMeta(filepath)
-
                     # Checa por duplicatas na tabela
-                    isduplicate = self.matchfinder(entrymeta)
+                    isduplicate = self.matchfinder(filename)
                     if isduplicate is False:
+                        filepath = os.path.join(root, filename)
+                        timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p',
+                                time.localtime(os.path.getmtime(filepath)))                    
+                        entrymeta = self.createMeta(filepath)
                         self.model.insertRows(0, 1, QModelIndex(), entrymeta)
                         n_new += 1
                     else:
@@ -206,9 +208,10 @@ class MainWindow(QMainWindow):
                     n_all += 1
             
             else:	# Se o número máximo de imagens for atingido, finalizar
-                self.changeStatus(
-                        u'%d imagens verificadas, %d importadas e %d duplicadas' % \
-                                (n_all, n_new, n_dup))
+                t1 = time.time()
+                t = t1 - t0
+                self.changeStatus(u'%d imagens analisadas em %.2f s,' % (n_all, t) +
+                        u' %d novas e %d duplicadas' % (n_new, n_dup), 10000)
                 break
             
     def createMeta(self, filepath):
@@ -243,11 +246,15 @@ class MainWindow(QMainWindow):
         scale = info.data['special instructions']           # 40
         source = info.data['source']                        # 115
 
+        # Criando timestamp
+        timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p',
+                time.localtime(os.path.getmtime(filepath)))
+
         entrymeta = []
 
         # Cria a lista para tabela da interface
         entrymeta = [
-                str(filepath),
+                unicode(str(filepath)),
                 title,
                 caption,
                 ', '.join(keywords),
@@ -261,6 +268,7 @@ class MainWindow(QMainWindow):
                 city,
                 state,
                 country,
+                timestamp,
                 ]
 
         # Converte valores dos metadados vazios (None) para string em branco
@@ -274,10 +282,13 @@ class MainWindow(QMainWindow):
 
         return entrymeta
 
-    def matchfinder(self, entry):
+    def matchfinder(self, candidate):
         index = self.model.index(0, 0, QModelIndex())
-        value = os.path.basename(str(entry[0]))
-        matches = self.model.match(index, 0, value, -1, Qt.MatchContains)
+        if isinstance(candidate, str):
+            matches = self.model.match(index, 0, candidate, -1, Qt.MatchContains)
+        elif isinstance(candidate, list):
+            value = os.path.basename(str(entry[0]))
+            matches = self.model.match(index, 0, value, -1, Qt.MatchContains)
         if len(matches) > 0:
             return True
         else:
@@ -300,11 +311,19 @@ class MainWindow(QMainWindow):
         else:
             self.changeStatus(u'Nenhuma entrada selecionada')
 
+    def cleartable(self):
+        rows = self.model.rowCount(self.model)
+        if rows > 0:
+            self.model.removeRows(0, rows, QModelIndex())
+            self.changeStatus(u'%d entradas deletadas' % rows)
+        else:
+            self.changeStatus(u'Nenhuma entrada selecionada')
+
     def closeEvent(self, event):
         reply = QMessageBox.question(
                 self,
                 u'Atenção!',
-                u'Você está certo disso?',
+                u'O programa será finalizado.\nVocê está certo disso?',
                 QMessageBox.Yes,
                 QMessageBox.No
                 )
@@ -331,23 +350,22 @@ class MainTable(QTableView):
         self.selectionModel = self.selectionModel()
         self.selectionModel.clearSelection()
 
-        #topLeft = self.model.index(0, 0, QModelIndex())
-        #bottomRight = self.model.index(0, self.ncols-1, QModelIndex())
-        #selection = QItemSelection(topLeft, bottomRight)
-        #self.selectionModel.select(selection, QItemSelectionModel.Select)
-        #indexes = self.selectionModel.selectedIndexes()
-
         vh = self.verticalHeader()
         vh.setVisible(False)
 
         hh = self.horizontalHeader()
         hh.setStretchLastSection(True)
 
+        # TODO Estudar o melhor jeito de chamar.
+        # Também pode ser no singular com index.
+        #self.resizeColumnsToContents()
+
         self.resizeColumnsToContents()
         self.setAlternatingRowColors(True)
         self.setSelectionBehavior(self.SelectRows)
         self.setSortingEnabled(True)
         self.hideColumn(0)
+        self.hideColumn(14)
 
         self.connect(
                 self,
@@ -596,22 +614,17 @@ class DockThumb(QWidget):
 
         self.vbox = QVBoxLayout()
 
-        self.filename = 'vellutini_clypeaster.jpg'
-        self.timestamp = '20/04/2009 10:34'
-        self.filepath = './img/migotto_arbacia1.jpg'
-
-        self.pic = QPixmap(self.filepath)
+        self.pic = QPixmap()
        
-        self.thumb = QLabel('')
-        self.name = QLabel(self.filename)
-        self.timestamp = QLabel(self.timestamp)
-
-        self.thumb.setMaximumSize(400, 350)
-        self.thumb.setMinimumSize(100, 100)
+        self.thumb = QLabel()
+        self.name = QLabel()
+        self.timestamp = QLabel()
 
         self.thumb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-
+        self.thumb.setMaximumSize(400, 350)
+        self.thumb.setMinimumSize(100, 100)
         self.thumb.setAlignment(Qt.AlignHCenter)
+
         self.originalPic = self.pic.scaled(self.thumb.width(), self.thumb.height(),
                 Qt.KeepAspectRatio, Qt.FastTransformation)
 
@@ -634,7 +647,9 @@ class DockThumb(QWidget):
     
     def setCurrent(self, values):
         filename = os.path.basename(str(values[0][1]))
-        self.name.setText(filename)
+        self.name.setText(unicode(filename))
+        timestamp = values[14][1]
+        self.timestamp.setText(timestamp)
         self.originalPic = QPixmap()
         if not QPixmapCache.find(filename, self.originalPic):
             self.pic.load(values[0][1])
@@ -668,7 +683,9 @@ class FlushFile(object):
         self.f.write(x)
         self.f.flush()
 
+
 #=== MAIN ===#
+
 
 class InitPs():
     '''
@@ -690,7 +707,8 @@ class InitPs():
         header = [
                 u'Arquivo', u'Título', u'Legenda', u'Marcadores',
                 u'Táxon', u'Espécie', u'Especialista', u'Autor', u'Direitos',
-                u'Tamanho', u'Local', u'Cidade', u'Estado', u'País'
+                u'Tamanho', u'Local', u'Cidade', u'Estado', u'País',
+                u'Timestamp'
                 ]
         
         data_list = [
@@ -708,7 +726,8 @@ class InitPs():
                     u'Praia do Carvoeiro',
                     u'São Pedro',
                     u'São Paulo',
-                    u'Brasil'
+                    u'Brasil',
+                    u'12 de janeiro',
                     ],
                 [
                     u'./img/migotto_echiura01.jpg',
@@ -725,6 +744,7 @@ class InitPs():
                     u'São Pita',
                     u'São Paulo',
                     u'Brasil',
+                    u'05 de novembro',
                     ]
                 ]
 

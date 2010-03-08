@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 08 Mar 2010 12:01PM
+# Atualizado: 08 Mar 2010 02:15PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -379,6 +379,12 @@ class MainTable(QTableView):
                 self.changeCurrent
                 )
 
+        self.connect(
+                self.model,
+                SIGNAL('dataChanged(index)'),
+                self.dataWatcher
+                )
+
         # Não funcionou ainda, fazer a edição da tabela refletir nos campos
         #self.connect(
         #        self.selectionModel,
@@ -388,25 +394,33 @@ class MainTable(QTableView):
 
     def updateSelection(self, selected, deselected):
         items = selected.indexes()
+        print items
 
-        for index in items:
-            text = '%s, %s' % (index.row(), index.column())
-            print text
+        #for index in items:
+        #    text = '%s, %s' % (index.row(), index.column())
+        #    #print text
 
-        items = deselected.indexes()
+        #items = deselected.indexes()
 
-        for index in items:
-            text = '%s, %s' % (index.row(), index.column())
-            print text
+        #for index in items:
+        #    text = '%s, %s' % (index.row(), index.column())
+        #    #print text
 
     def changeCurrent(self, current, previous):
-        #print current.row(), current.column()
         values = []
         for col in xrange(self.ncols):
             index = self.model.index(current.row(), col, QModelIndex())
             value = self.model.data(index, Qt.DisplayRole)
             values.append((index, value.toString()))
         self.emit(SIGNAL('thisIsCurrent(values)'), values)
+
+    def dataWatcher(self, index):
+        print 'ALO'
+        print index.row(), index.column()
+        columns = self.selectionModel.selectedColumns(index.row())
+        for column in columns:
+            value = self.model.data(column, Qt.DisplayRole)
+            print value.toString()
 
 
 class TableModel(QAbstractTableModel):
@@ -450,7 +464,7 @@ class TableModel(QAbstractTableModel):
                 self.mydata[index.row()][index.column()] = value.toString()
             except:
                 self.mydata[index.row()][index.column()] = value
-            self.emit(SIGNAL('dataChanged(index, index)'))
+            self.emit(SIGNAL('dataChanged(index)'), index)
             return True
         return False
     

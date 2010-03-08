@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 08 Mar 2010 02:15PM
+# Atualizado: 08 Mar 2010 03:27PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -43,7 +43,7 @@ class MainWindow(QMainWindow):
 
         # Definições
         global mainWidget
-        mainWidget = MainTable(data_list, header)
+        mainWidget = MainTable(datalist, header)
         self.model = mainWidget.model
         # Dock com thumbnail
         self.dockThumb = DockThumb()
@@ -327,19 +327,28 @@ class MainWindow(QMainWindow):
                 QMessageBox.Yes,
                 QMessageBox.No
                 )
-
         if reply == QMessageBox.Yes:
             event.accept()
+            self.cachetable()
         else:
             event.ignore()
 
+    def cachetable(self):
+        '''Sai do programa salvando a lista de imagens da tabela.'''
+        tablecache = open(picdb, 'wb')
+        entries = mainWidget.model.mydata
+        print 'Salvando cache...',
+        pickle.dump(entries, tablecache)
+        tablecache.close()
+        print 'pronto!'
+
 
 class MainTable(QTableView):
-    def __init__(self, data_list, header, *args):
+    def __init__(self, datalist, header, *args):
         QTableView.__init__(self, *args)
 
         self.header = header
-        self.mydata = data_list
+        self.mydata = datalist
 
         self.model = TableModel(self, self.mydata, self.header)
         self.setModel(self.model)
@@ -756,13 +765,10 @@ class InitPs():
     def __init__(self):
         global picdb
         global header
-        global data_list
+        global datalist
 
         # Redefine o stdout para ser flushed após print
         sys.stdout = FlushFile(sys.stdout)
-        
-        # Nome do arquivo Pickle
-        picdb = 'initcache'
         
         # Cabeçalho horizontal da tabela principal
         header = [
@@ -772,42 +778,21 @@ class InitPs():
                 u'Timestamp'
                 ]
         
-        data_list = [
-                [
-                    u'./img/migotto_bolinopsis_vitrea03.jpg',
-                    u'Larva legal',
-                    u'Essa larvinha da hora',
-                    u'microscópio, bentônico, larva',
-                    u'Echinodermata',
-                    u'Sentus eliquios',
-                    u'Aquieles',
-                    u'Autor',
-                    u'Nelas',
-                    u'>100 mm',
-                    u'Praia do Carvoeiro',
-                    u'São Pedro',
-                    u'São Paulo',
-                    u'Brasil',
-                    u'12 de janeiro',
-                    ],
-                [
-                    u'./img/migotto_echiura01.jpg',
-                    u'Larva chata',
-                    u'Essa larvinha já deu hora',
-                    u'microscópio, bentônico, larva',
-                    u'Echinodermata',
-                    None,
-                    u'Aquieles',
-                    u'Autora',
-                    u'Nelas',
-                    u'>100 mm',
-                    u'',
-                    u'São Pita',
-                    u'São Paulo',
-                    u'Brasil',
-                    u'05 de novembro',
-                    ]
-                ]
+        # Nome do arquivo Pickle
+        picdb = 'tablecache'
+        # Leitura do cache, salvo pelo Pickle
+        try:
+            tablecache = open(picdb, 'rb')
+            datalist = pickle.load(tablecache)
+            tablecache.close()
+        except:
+            f = open(picdb, 'wb')
+            f.close()
+            datalist = [[
+                u'', u'', u'', u'', u'',
+                u'', u'', u'', u'', u'',
+                u'', u'', u'', u'', u'',
+                ],]
 
 if __name__ == '__main__':
     initps = InitPs()

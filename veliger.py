@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 05 Mar 2010 07:31PM
+# Atualizado: 08 Mar 2010 12:01PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -368,7 +368,7 @@ class MainTable(QTableView):
         self.hideColumn(14)
 
         self.connect(
-                self,
+                self.selectionModel,
                 SIGNAL('selectionChanged(QItemSelection, QItemSelection)'),
                 self.updateSelection
                 )
@@ -576,6 +576,53 @@ class DockEditor(QWidget):
         self.values = values
 
     def saveData(self):
+        # Salvar metadados novos usando o ExifTools
+        print '\nSalvando metadados...'
+        try:
+            # Salva os metadados na imagem (sobrepondo os correspondentes
+            # originais)
+            subprocess.call([
+                'exiftool',
+                '-overwrite_original',
+                '-City=%s' % self.cityEdit.text(),
+                '-By-line=%s' % self.authorEdit.text(),
+                '-Province-State=%s' % self.stateEdit.text(),
+                '-Country-PrimaryLocationName=%s' % self.countryEdit.text(),
+                '-CopyrightNotice=%s' % self.rightsEdit.text(),
+                '-UsageTerms="Creative Commons BY-NC-SA"',
+                '-ObjectName=%s' % self.titleEdit.text(),
+                '-Caption-Abstract=%s' % self.captionEdit.toPlainText(),
+                '-Sub-location=%s' % self.locationEdit.text(),
+                '-Headline=%s' % self.taxonEdit.text(),
+                '-OriginalTransmissionReference=%s' % self.sppEdit.text(),
+                '-SpecialInstructions=%s' % self.sizeEdit.currentText(),
+                '-Source=%s' % self.sourceEdit.text(),
+                self.values[0][1]
+                ])
+            # Loop para incluir os keywords individualmente.
+            # Lista com comando e argumentos
+            shell_call = ['exiftool', '-overwrite_original']
+            # Lista com keywords
+            if self.tagsEdit.text() == '' or self.tagsEdit.text() is None:
+                print 'Marcadores em branco, deletando na imagem...'
+                shell_call.append('-Keywords=')
+            else:
+                print 'Atualizando marcadores...'
+                keywords = self.tagsEdit.text().split(', ')
+                for keyword in keywords:
+                    keyword = str(keyword)
+                    shell_call.append('-Keywords=%s' % keyword.lower())
+            # Adicionando o endereço do arquivo ao comando
+            shell_call.append(self.values[0][1])
+            # Executando o exiftool para adicionar as keywords
+            subprocess.call(shell_call)
+        except IOError:
+            print '\nOcorreu algum erro. Verifique se o ExifTool está \
+                    instalado.'
+        else:
+            print '\nNovos metadados salvos na imagem com sucesso!'
+
+        # Atualizando a tabela
         mainWidget.model.setData(self.values[1][0], self.titleEdit.text(),
                 Qt.EditRole)
         mainWidget.model.setData(self.values[2][0], self.captionEdit.toPlainText(),

@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 09 Mar 2010 01:56PM
+# Atualizado: 09 Mar 2010 08:12PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -53,6 +53,14 @@ class MainWindow(QMainWindow):
                 Qt.RightDockWidgetArea
                 )
         self.dockWidgetRight.setWidget(self.dockThumb)
+        # Dock com lista de updates
+        self.dockList = DockChanged()
+        self.dockWidgetRight2 = QDockWidget('Entradas modificadas', self)
+        self.dockWidgetRight2.setAllowedAreas(
+                Qt.LeftDockWidgetArea |
+                Qt.RightDockWidgetArea
+                )
+        self.dockWidgetRight2.setWidget(self.dockList)
         # Dock com editor de metadados
         self.dockEditor = DockEditor()
         self.dockWidgetBottom = QDockWidget('Editor', self)
@@ -135,7 +143,10 @@ class MainWindow(QMainWindow):
 
         # Docks
         self.addDockWidget(Qt.RightDockWidgetArea, self.dockWidgetRight)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.dockWidgetRight2)
         self.addDockWidget(Qt.BottomDockWidgetArea, self.dockWidgetBottom)
+        self.tabifyDockWidget(self.dockWidgetRight, self.dockWidgetRight2)
+        #self.setCorner(Qt.BottomRightCorner, Qt.RightDockWidgetArea)
 
         # Fill Editor
         #self.onClicked = lambda: self.changeStatus('lala')
@@ -785,20 +796,19 @@ class DockThumb(QWidget):
     def __init__(self):
         QWidget.__init__(self)
 
-        self.setMaximumWidth(400)
-
+        self.setMaximumWidth(300)
         self.vbox = QVBoxLayout()
-
         self.pic = QPixmap()
-       
         self.thumb = QLabel()
         self.name = QLabel()
         self.timestamp = QLabel()
 
         self.thumb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.thumb.setMaximumSize(400, 350)
+        self.thumb.setMaximumSize(300, 300)
         self.thumb.setMinimumSize(100, 100)
         self.thumb.setAlignment(Qt.AlignHCenter)
+
+        self.name.setWordWrap(True)
 
         #self.originalPic = self.pic.scaled(self.thumb.width(), self.thumb.height(),
         #        Qt.KeepAspectRatio, Qt.FastTransformation)
@@ -812,6 +822,8 @@ class DockThumb(QWidget):
 
         self.setLayout(self.vbox)
 
+        #XXX omitir enquanto o insert abaixo não funcionar
+        #self.pixcache = {}
         QPixmapCache.setCacheLimit(81920)
 
         self.connect(
@@ -825,13 +837,18 @@ class DockThumb(QWidget):
         self.name.setText(unicode(filename))
         timestamp = values[14][1]
         self.timestamp.setText(timestamp)
-        self.originalPic = QPixmap()
-        if not QPixmapCache.find(filename, self.originalPic):
+
+        #XXX omitir enquanto o insert abaixo não funcionar
+        #if filename not in self.pixcache.keys():
+        #    self.pixcache[filename] = ''
+
+        # Tenta abrir o cache
+        if not QPixmapCache.find(filename, self.pic):
             self.pic.load(values[0][1])
-            self.originalPic = self.pic.scaled(self.thumb.maximumSize(),
+            self.pic = self.pic.scaled(self.thumb.maximumSize(),
                     Qt.KeepAspectRatio, Qt.FastTransformation)
             print 'Criando cache da imagem %s...' % filename,
-            QPixmapCache.insert(filename, self.originalPic)
+            QPixmapCache.insert(filename, self.pic)
             print 'pronto!'
         else:
             pass
@@ -842,9 +859,68 @@ class DockThumb(QWidget):
         self.updateThumb()
 
     def updateThumb(self):
-        scaledPic = self.originalPic.scaled(self.size(),
-                Qt.KeepAspectRatio, Qt.FastTransformation)
-        self.thumb.setPixmap(scaledPic)
+        if self.pic.isNull():
+            pass
+        else:
+            scaledpic = self.pic.scaled(self.size(),
+                    Qt.KeepAspectRatio, Qt.FastTransformation)
+            self.thumb.setPixmap(scaledpic)
+
+
+class DockChanged(QWidget):
+    def __init__(self):
+        QWidget.__init__(self)
+
+        list = []
+
+        model = ListModel(self, list)
+
+        view = QListView()
+        view.setModel(model)
+        view.setAlternatingRowColors(True)
+
+        self.vbox = QVBoxLayout()
+        self.vbox.addWidget(view)
+        self.setLayout(self.vbox)
+
+        #self.setMaximumWidth(300)
+        #self.vbox.addWidget(self.name)
+        #self.vbox.addWidget(self.timestamp)
+        #self.vbox.addStretch(1)
+
+
+    def resizeEvent(self, event):
+        event.accept()
+
+
+class ListModel(QAbstractListModel):
+    def __init__(self, parent, list, *args):
+        QAbstractListModel.__init__(self, parent, *args)
+        self.list = list
+
+    def rowCount(self, parent):
+        return len(self.list)
+
+    def data(self, index, role):
+        if not index.isValid():
+            return QVariant()
+        elif role != Qt.DisplayRole:
+            return QVariant()
+        return QVariant(self.list[index.row()])
+
+    def insertRows(self, position, rows, parent, entry):
+        self.beginInsertRows(parent, position, position+rows-1)
+        for row in xrange(rows):
+            self.list.append(entry)
+        self.endInsertRows()
+        return True
+
+    def removeRows(self, position, rows, parent):
+        self.beginRemoveRows(parent, position, position+rows-1)
+        for row in xrange(rows):
+            self.list.pop(position)
+        self.endRemoveRows()
+        return True
 
 
 class FlushFile(object):

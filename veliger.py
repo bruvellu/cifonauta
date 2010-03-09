@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 08 Mar 2010 09:52PM
+# Atualizado: 09 Mar 2010 01:56PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -103,6 +103,14 @@ class MainWindow(QMainWindow):
         self.delAll.setStatusTip('Deletar todas as entradas')
         self.connect(self.delAll, SIGNAL('triggered()'), self.cleartable)
 
+        self.toggleThumb = self.dockWidgetRight.toggleViewAction()
+        self.toggleThumb.setShortcut('Shift+T')
+        self.toggleThumb.setStatusTip('Esconde ou mostra o dock com thumbnails')
+
+        self.toggleEditor = self.dockWidgetBottom.toggleViewAction()
+        self.toggleEditor.setShortcut('Shift+E')
+        self.toggleEditor.setStatusTip('Esconde ou mostra o dock com thumbnails')
+
         self.arquivo = self.menubar.addMenu('&Arquivo')
         self.arquivo.addAction(self.openFile)
         self.arquivo.addAction(self.openDir)
@@ -112,6 +120,9 @@ class MainWindow(QMainWindow):
 
         self.editar = self.menubar.addMenu('&Editar')
         self.editar.addAction(self.delAll)
+        self.editar.addSeparator()
+        self.editar.addAction(self.toggleThumb)
+        self.editar.addAction(self.toggleEditor)
 
         # Toolbar
         self.toolbar = self.addToolBar('Ações')
@@ -369,13 +380,16 @@ class MainTable(QTableView):
         # Também pode ser no singular com index.
         #self.resizeColumnsToContents()
 
-        self.resizeColumnsToContents()
         self.setAlternatingRowColors(True)
         self.setSelectionBehavior(self.SelectRows)
         self.setSortingEnabled(True)
         self.hideColumn(0)
         self.hideColumn(14)
         self.selecteditems = []
+
+        #self.delegate = QItemDelegate(self)
+
+        #self.setItemDelegate(self.delegate)
 
         self.connect(
                 self.selectionModel,
@@ -453,6 +467,10 @@ class MainTable(QTableView):
             value = self.model.data(column, Qt.DisplayRole)
             print value.toString()
 
+    #def paintEvent(self, event):
+    #    print 'Algo foi pintado!'
+    #    event.accept()
+
 
 class TableModel(QAbstractTableModel):
     def __init__(self, parent, mydata, header, *args):
@@ -469,7 +487,8 @@ class TableModel(QAbstractTableModel):
     def data(self, index, role):
         if not index.isValid():
             return QVariant()
-        elif role != Qt.DisplayRole and role != Qt.EditRole:
+        elif role != Qt.DisplayRole and role != Qt.EditRole and \
+                role != Qt.BackgroundRole:
             return QVariant()
         return QVariant(self.mydata[index.row()][index.column()])
         #elif index.column() == 0:
@@ -495,6 +514,9 @@ class TableModel(QAbstractTableModel):
             self.mydata[index.row()][index.column()] = value.toString()
             self.emit(SIGNAL('dataChanged(index, value, oldvalue)'), index, value, oldvalue)
             return True
+        elif index.isValid() and role == Qt.BackgroundRole:
+            print 'Será?'
+            return QVariant(QColor(Qt.yellow))
         return False
     
     def sort(self, col, order):
@@ -644,7 +666,7 @@ class DockEditor(QWidget):
             self.countryEdit.setText(value.toString())
 
         # Colorir
-        mainWidget.model.setColor(index, Qt.BackgroundRole)
+        mainWidget.model.setData(index, value.toString(), Qt.BackgroundRole)
         print 'Coloriu?'
 
     def setCurrent(self, values):
@@ -778,15 +800,15 @@ class DockThumb(QWidget):
         self.thumb.setMinimumSize(100, 100)
         self.thumb.setAlignment(Qt.AlignHCenter)
 
-        self.originalPic = self.pic.scaled(self.thumb.width(), self.thumb.height(),
-                Qt.KeepAspectRatio, Qt.FastTransformation)
+        #self.originalPic = self.pic.scaled(self.thumb.width(), self.thumb.height(),
+        #        Qt.KeepAspectRatio, Qt.FastTransformation)
 
         self.vbox.addWidget(self.thumb)
         self.vbox.addWidget(self.name)
         self.vbox.addWidget(self.timestamp)
         self.vbox.addStretch(1)
 
-        self.thumb.setPixmap(self.originalPic)
+        #self.thumb.setPixmap(self.originalPic)
 
         self.setLayout(self.vbox)
 

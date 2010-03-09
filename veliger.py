@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 08 Mar 2010 03:27PM
+# Atualizado: 08 Mar 2010 09:52PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -334,7 +334,7 @@ class MainWindow(QMainWindow):
             event.ignore()
 
     def cachetable(self):
-        '''Sai do programa salvando a lista de imagens da tabela.'''
+        '''Salva a lista de imagens da tabela.'''
         tablecache = open(picdb, 'wb')
         entries = mainWidget.model.mydata
         print 'Salvando cache...',
@@ -375,6 +375,7 @@ class MainTable(QTableView):
         self.setSortingEnabled(True)
         self.hideColumn(0)
         self.hideColumn(14)
+        self.selecteditems = []
 
         self.connect(
                 self.selectionModel,
@@ -391,7 +392,7 @@ class MainTable(QTableView):
         self.connect(
                 self.model,
                 SIGNAL('dataChanged(index)'),
-                self.dataWatcher
+                self.datawatcher
                 )
 
         # Não funcionou ainda, fazer a edição da tabela refletir nos campos
@@ -402,8 +403,27 @@ class MainTable(QTableView):
         #        )
 
     def updateSelection(self, selected, deselected):
-        items = selected.indexes()
-        print items
+        # TODO Descobrir o melhor jeito de lidar com seleção múltipla.
+        # Aqui estou gerenciando uma lista de índices (self.selecteditems) de
+        # cada ítem selecionado, mas ele não está adicionando ranges quando uso
+        # o SHIFT, apenas os ítens clicados FIXME.
+        deselectedindexes = deselected.indexes()
+        if not deselectedindexes:
+            selectedindexes = selected.indexes()
+            self.selecteditems.append(selectedindexes)
+            #value = self.model.data(items[1], Qt.DisplayRole)
+            #print value.toString()
+        else:
+            del self.selecteditems[:]
+            selectedindexes = selected.indexes()
+            self.selecteditems.append(selectedindexes)
+
+        # Criando valores efetivamente da entrada selecionada.
+        values = []
+        for index in selectedindexes:
+            value = self.model.data(index, Qt.DisplayRole)
+            values.append((index, value.toString()))
+        self.emit(SIGNAL('thisIsCurrent(values)'), values)
 
         #for index in items:
         #    text = '%s, %s' % (index.row(), index.column())
@@ -416,14 +436,16 @@ class MainTable(QTableView):
         #    #print text
 
     def changeCurrent(self, current, previous):
+        # XXX Serve pra rastrear índices individuais, estava usando para criar
+        # a seleção. O que fazer agora com esse resto de código?
         values = []
         for col in xrange(self.ncols):
             index = self.model.index(current.row(), col, QModelIndex())
             value = self.model.data(index, Qt.DisplayRole)
             values.append((index, value.toString()))
-        self.emit(SIGNAL('thisIsCurrent(values)'), values)
+        #self.emit(SIGNAL('thisIsCurrent(values)'), values)
 
-    def dataWatcher(self, index):
+    def datawatcher(self, index):
         print 'ALO'
         print index.row(), index.column()
         columns = self.selectionModel.selectedColumns(index.row())
@@ -469,11 +491,9 @@ class TableModel(QAbstractTableModel):
 
     def setData(self, index, value, role):
         if index.isValid() and role == Qt.EditRole:
-            try:
-                self.mydata[index.row()][index.column()] = value.toString()
-            except:
-                self.mydata[index.row()][index.column()] = value
-            self.emit(SIGNAL('dataChanged(index)'), index)
+            oldvalue = self.mydata[index.row()][index.column()]
+            self.mydata[index.row()][index.column()] = value.toString()
+            self.emit(SIGNAL('dataChanged(index, value, oldvalue)'), index, value, oldvalue)
             return True
         return False
     
@@ -484,6 +504,12 @@ class TableModel(QAbstractTableModel):
         if order == Qt.DescendingOrder:
             self.mydata.reverse()
         self.emit(SIGNAL("layoutChanged()"))
+
+    def setColor(self, index, role):
+        print index, role
+        if index.isValid() and role == Qt.BackgroundRole:
+            print 'Será?'
+            return QVariant(QColor(Qt.yellow))
 
     def insertRows(self, position, rows, parent, entry):
         self.beginInsertRows(parent, position, position+rows-1)
@@ -567,6 +593,12 @@ class DockEditor(QWidget):
                 self.setCurrent
                 )
 
+        self.connect(
+                mainWidget.model,
+                SIGNAL('dataChanged(index, value, oldvalue)'),
+                self.setsingle
+                )
+
         #self.connect(
         #        self.titleEdit,
         #        SIGNAL('textEdited(QString)'),
@@ -576,6 +608,44 @@ class DockEditor(QWidget):
     #def updateData(self, text):
     #    print text
     #    mainWidget.model.setData(self.values[2][0], text, Qt.EditRole)
+
+    def setsingle(self, index, value, oldvalue):
+        print index.row(), index.column(), value.toString(), oldvalue
+        if index.column() == 1:
+            self.titleEdit.setText(value.toString())
+        elif index.column() == 2:
+            self.captionEdit.setText(value.toString())
+        elif index.column() == 3:
+            self.tagsEdit.setText(value.toString())
+        elif index.column() == 4:
+            self.taxonEdit.setText(value.toString())
+        elif index.column() == 5:
+            self.sppEdit.setText(value.toString())
+        elif index.column() == 6:
+            self.sourceEdit.setText(value.toString())
+        elif index.column() == 7:
+            self.authorEdit.setText(value.toString())
+        elif index.column() == 8:
+            self.rightsEdit.setText(value.toString())
+        elif index.column() == 9:
+            for interval in self.sizes:
+                if value.toString() == interval:
+                    idx = self.sizes.index(interval)
+                    self.sizeEdit.setCurrentIndex(idx)
+                else:
+                    pass
+        elif index.column() == 10:
+            self.locationEdit.setText(value.toString())
+        elif index.column() == 11:
+            self.cityEdit.setText(value.toString())
+        elif index.column() == 12:
+            self.stateEdit.setText(value.toString())
+        elif index.column() == 13:
+            self.countryEdit.setText(value.toString())
+
+        # Colorir
+        mainWidget.model.setColor(index, Qt.BackgroundRole)
+        print 'Coloriu?'
 
     def setCurrent(self, values):
         self.titleEdit.setText(values[1][1])
@@ -646,31 +716,44 @@ class DockEditor(QWidget):
             print '\nNovos metadados salvos na imagem com sucesso!'
 
         # Atualizando a tabela
-        mainWidget.model.setData(self.values[1][0], self.titleEdit.text(),
+        mainWidget.model.setData(self.values[1][0],
+                QVariant(self.titleEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[2][0], self.captionEdit.toPlainText(),
+        mainWidget.model.setData(self.values[2][0],
+                QVariant(self.captionEdit.toPlainText()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[3][0], self.tagsEdit.text(),
+        mainWidget.model.setData(self.values[3][0],
+                QVariant(self.tagsEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[4][0], self.taxonEdit.text(),
+        mainWidget.model.setData(self.values[4][0],
+                QVariant(self.taxonEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[5][0], self.sppEdit.text(),
+        mainWidget.model.setData(self.values[5][0],
+                QVariant(self.sppEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[6][0], self.sourceEdit.text(),
+        mainWidget.model.setData(self.values[6][0],
+                QVariant(self.sourceEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[7][0], self.authorEdit.text(),
+        mainWidget.model.setData(self.values[7][0],
+                QVariant(self.authorEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[8][0], self.rightsEdit.text(),
+        mainWidget.model.setData(self.values[8][0],
+                QVariant(self.rightsEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[9][0], self.sizeEdit.currentText(),
+        mainWidget.model.setData(self.values[9][0],
+                QVariant(self.sizeEdit.currentText()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[10][0], self.locationEdit.text(),
+        mainWidget.model.setData(self.values[10][0],
+                QVariant(self.locationEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[11][0], self.cityEdit.text(),
+        mainWidget.model.setData(self.values[11][0],
+                QVariant(self.cityEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[12][0], self.stateEdit.text(),
+        mainWidget.model.setData(self.values[12][0],
+                QVariant(self.stateEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[13][0], self.countryEdit.text(),
+        mainWidget.model.setData(self.values[13][0],
+                QVariant(self.countryEdit.text()),
                 Qt.EditRole)
         mainWidget.setFocus(Qt.OtherFocusReason)
         print 'Salvo!'

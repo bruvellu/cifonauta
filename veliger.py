@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 10 Mar 2010 01:55PM
+# Atualizado: 10 Mar 2010 06:18PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -178,6 +178,11 @@ class MainWindow(QMainWindow):
         if len(matches) == 1:
             match = matches[0]
             mainWidget.selectRow(match.row())
+        elif len(matches) == 0:
+            mainWidget.selectionModel.clearSelection()
+            mainWidget.emitlost(filename)
+            self.changeStatus(u'%s não foi encontrada, importe-a novamente' %
+                    filename, 10000)
 
     def commitmeta(self, entries):
         for entry in entries:
@@ -402,14 +407,48 @@ class MainWindow(QMainWindow):
             n_del = 0
             # Cria lista com linhas a serem deletadas
             indexes = [index.row() for index in indexes]
-            # Ordem decrescente previne contra o erro 'out of range'
-            # na hora de deletar diversas entradas
-            indexes.sort()
-            indexes.reverse()
-            for index in indexes:
-                self.model.removeRows(index, 1, QModelIndex())
-                n_del += 1
-            self.changeStatus(u'%d entradas deletadas' % n_del)
+            unsaved = []
+            for row in indexes:
+                index = mainWidget.model.index(row, 0, QModelIndex())
+                filepath = mainWidget.model.data(index, Qt.DisplayRole)
+                filename = os.path.basename(str(filepath.toString()))
+                if filename in self.dockList.mylist:
+                    unsaved.append(filename)
+                else:
+                    continue
+            if len(unsaved) > 0:
+                warning = QMessageBox.warning(
+                        self,
+                        u'Atenção!',
+                        u'As alterações não foram gravadas nas imagens.' +
+                        '\nDeseja apagá-las mesmo assim?',
+                        QMessageBox.Yes,
+                        QMessageBox.No)
+                if warning == QMessageBox.Yes:
+                    for filename in unsaved:
+                        mainWidget.emitlost(filename)
+                    # Ordem decrescente previne contra o erro 'out of range'
+                    # na hora de deletar diversas entradas
+                    indexes.sort()
+                    indexes.reverse()
+                    for index in indexes:
+                        self.model.removeRows(index, 1, QModelIndex())
+                        n_del += 1
+                    self.changeStatus(u'%d entradas deletadas' % n_del)
+                else:
+                    self.changeStatus(
+                            u'Nenhuma entrada apagada, grave as alterações',
+                            10000
+                            )
+            else:
+                # Ordem decrescente previne contra o erro 'out of range'
+                # na hora de deletar diversas entradas
+                indexes.sort()
+                indexes.reverse()
+                for index in indexes:
+                    self.model.removeRows(index, 1, QModelIndex())
+                    n_del += 1
+                self.changeStatus(u'%d entradas deletadas' % n_del)
         else:
             self.changeStatus(u'Nenhuma entrada selecionada')
 
@@ -519,6 +558,9 @@ class MainTable(QTableView):
 
     def emitsaved(self):
         self.emit(SIGNAL('savedToFile()'))
+
+    def emitlost(self, filename):
+        self.emit(SIGNAL('delentry(filename)'), filename)
 
     def updateSelection(self, selected, deselected):
         # TODO Descobrir o melhor jeito de lidar com seleção múltipla.
@@ -977,6 +1019,12 @@ class DockChanged(QWidget):
                 self.clearlist
                 )
 
+        self.connect(
+                mainWidget,
+                SIGNAL('delentry(filename)'),
+                self.delentry
+                )
+
     def sync_setselection(self, selected, deselected):
         indexes = selected.indexes()
         if indexes:
@@ -1001,6 +1049,12 @@ class DockChanged(QWidget):
                 self.model.insertRows(0, 1, QModelIndex(), filename)
             else:
                 pass
+
+    def delentry(self, filename):
+        matches = self.matchfinder(filename)
+        if len(matches) == 1:
+            match = matches[0]
+            self.model.removeRows(match.row(), 1, QModelIndex())
 
     def clearlist(self):
         rows = self.model.rowCount(self.model)

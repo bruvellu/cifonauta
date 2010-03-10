@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 09 Mar 2010 08:12PM
+# Atualizado: 10 Mar 2010 01:57AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -156,7 +156,72 @@ class MainWindow(QMainWindow):
         #    self,
         #    self.onClicked())
 
+        self.connect(
+                self.dockList,
+                SIGNAL('commitMeta(entries)'),
+                self.commitmeta
+                )
+
         self.resize(1000, 780)
+
+    def commitmeta(self, entries):
+        for entry in entries:
+            index = self.model.index(0, 0, QModelIndex())
+            matches = self.model.match(index, 0, entry, -1,
+                    Qt.MatchContains)
+            if len(matches) == 1:
+                values = []
+                match = matches[0]
+                for col in xrange(mainWidget.ncols):
+                    index = self.model.index(match.row(), col, QModelIndex())
+                    value = self.model.data(index, Qt.DisplayRole)
+                    values.append(unicode(value.toString()))
+                self.exiftool(values)
+                filename = os.path.basename(values[0])
+        mainWidget.emitsaved()
+                
+
+    def exiftool(self, values):
+        filename = os.path.basename(values[0])
+        self.changeStatus(u'Gravando metadados em %s...' % filename)
+        try:
+            # Salva os metadados na imagem
+            shellcall = [
+                    'exiftool',
+                    '-overwrite_original',
+                    '-ObjectName=%s' % values[1],
+                    '-Caption-Abstract=%s' % values[2],
+                    '-Headline=%s' % values[4],
+                    '-OriginalTransmissionReference=%s' % values[5],
+                    '-Source=%s' % values[6],
+                    '-By-line=%s' % values[7],
+                    '-CopyrightNotice=%s' % values[8],
+                    '-SpecialInstructions=%s' % values[9],
+                    '-Sub-location=%s' % values[10],
+                    '-City=%s' % values[11],
+                    '-Province-State=%s' % values[12],
+                    '-Country-PrimaryLocationName=%s' % values[13],
+                    '-UsageTerms="Creative Commons BY-NC-SA"',
+                    ]
+            # Lista com keywords
+            if values[3] == '' or values[3] is None:
+                print 'Marcadores em branco, deletando na imagem...'
+                shellcall.append('-Keywords=')
+            else:
+                print 'Atualizando marcadores...'
+                keywords = values[3].split(', ')
+                for keyword in keywords:
+                    shellcall.append('-Keywords=%s' % keyword.lower())
+            # Adicionando o endereço do arquivo ao comando
+            shellcall.append(values[0])
+            # Executando o exiftool para adicionar as keywords
+            subprocess.call(shellcall)
+        except IOError:
+            print '\nOcorreu algum erro. Verifique se o ExifTool está \
+                    instalado.'
+        else:
+            print '\nNovos metadados salvos na imagem com sucesso!'
+
 
     def changeStatus(self, status, duration=2000):
         self.statusBar().showMessage(status, duration)
@@ -420,12 +485,16 @@ class MainTable(QTableView):
                 self.datawatcher
                 )
 
+
         # Não funcionou ainda, fazer a edição da tabela refletir nos campos
         #self.connect(
         #        self.selectionModel,
         #        SIGNAL('dataChanged(index, index)'),
         #        self.changeCurrent
         #        )
+
+    def emitsaved(self):
+        self.emit(SIGNAL('savedToFile()'))
 
     def updateSelection(self, selected, deselected):
         # TODO Descobrir o melhor jeito de lidar com seleção múltipla.
@@ -525,9 +594,6 @@ class TableModel(QAbstractTableModel):
             self.mydata[index.row()][index.column()] = value.toString()
             self.emit(SIGNAL('dataChanged(index, value, oldvalue)'), index, value, oldvalue)
             return True
-        elif index.isValid() and role == Qt.BackgroundRole:
-            print 'Será?'
-            return QVariant(QColor(Qt.yellow))
         return False
     
     def sort(self, col, order):
@@ -676,10 +742,6 @@ class DockEditor(QWidget):
         elif index.column() == 13:
             self.countryEdit.setText(value.toString())
 
-        # Colorir
-        mainWidget.model.setData(index, value.toString(), Qt.BackgroundRole)
-        print 'Coloriu?'
-
     def setCurrent(self, values):
         self.titleEdit.setText(values[1][1])
         self.captionEdit.setText(values[2][1])
@@ -702,52 +764,6 @@ class DockEditor(QWidget):
         self.values = values
 
     def saveData(self):
-        # Salvar metadados novos usando o ExifTools
-        print '\nSalvando metadados...'
-        try:
-            # Salva os metadados na imagem (sobrepondo os correspondentes
-            # originais)
-            subprocess.call([
-                'exiftool',
-                '-overwrite_original',
-                '-City=%s' % self.cityEdit.text(),
-                '-By-line=%s' % self.authorEdit.text(),
-                '-Province-State=%s' % self.stateEdit.text(),
-                '-Country-PrimaryLocationName=%s' % self.countryEdit.text(),
-                '-CopyrightNotice=%s' % self.rightsEdit.text(),
-                '-UsageTerms="Creative Commons BY-NC-SA"',
-                '-ObjectName=%s' % self.titleEdit.text(),
-                '-Caption-Abstract=%s' % self.captionEdit.toPlainText(),
-                '-Sub-location=%s' % self.locationEdit.text(),
-                '-Headline=%s' % self.taxonEdit.text(),
-                '-OriginalTransmissionReference=%s' % self.sppEdit.text(),
-                '-SpecialInstructions=%s' % self.sizeEdit.currentText(),
-                '-Source=%s' % self.sourceEdit.text(),
-                self.values[0][1]
-                ])
-            # Loop para incluir os keywords individualmente.
-            # Lista com comando e argumentos
-            shell_call = ['exiftool', '-overwrite_original']
-            # Lista com keywords
-            if self.tagsEdit.text() == '' or self.tagsEdit.text() is None:
-                print 'Marcadores em branco, deletando na imagem...'
-                shell_call.append('-Keywords=')
-            else:
-                print 'Atualizando marcadores...'
-                keywords = self.tagsEdit.text().split(', ')
-                for keyword in keywords:
-                    keyword = str(keyword)
-                    shell_call.append('-Keywords=%s' % keyword.lower())
-            # Adicionando o endereço do arquivo ao comando
-            shell_call.append(self.values[0][1])
-            # Executando o exiftool para adicionar as keywords
-            subprocess.call(shell_call)
-        except IOError:
-            print '\nOcorreu algum erro. Verifique se o ExifTool está \
-                    instalado.'
-        else:
-            print '\nNovos metadados salvos na imagem com sucesso!'
-
         # Atualizando a tabela
         mainWidget.model.setData(self.values[1][0],
                 QVariant(self.titleEdit.text()),
@@ -796,7 +812,7 @@ class DockThumb(QWidget):
     def __init__(self):
         QWidget.__init__(self)
 
-        self.setMaximumWidth(300)
+        self.setMaximumWidth(400)
         self.vbox = QVBoxLayout()
         self.pic = QPixmap()
         self.thumb = QLabel()
@@ -804,7 +820,7 @@ class DockThumb(QWidget):
         self.timestamp = QLabel()
 
         self.thumb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.thumb.setMaximumSize(300, 300)
+        self.thumb.setMaximumSize(400, 350)
         self.thumb.setMinimumSize(100, 100)
         self.thumb.setAlignment(Qt.AlignHCenter)
 
@@ -871,16 +887,22 @@ class DockChanged(QWidget):
     def __init__(self):
         QWidget.__init__(self)
 
-        list = []
+        self.list = []
 
-        model = ListModel(self, list)
+        self.model = ListModel(self, self.list)
 
-        view = QListView()
-        view.setModel(model)
-        view.setAlternatingRowColors(True)
+        self.view = QListView()
+        self.view.setModel(self.model)
+        self.view.selectionModel = self.view.selectionModel()
+        self.view.setAlternatingRowColors(True)
+
+        self.savebutton = QPushButton('&Gravar', self)
+        self.savebutton.setShortcut('Ctrl+Shift+S')
+        #self.savebutton.setDisabled(True)
 
         self.vbox = QVBoxLayout()
-        self.vbox.addWidget(view)
+        self.vbox.addWidget(self.view)
+        self.vbox.addWidget(self.savebutton)
         self.setLayout(self.vbox)
 
         #self.setMaximumWidth(300)
@@ -888,6 +910,58 @@ class DockChanged(QWidget):
         #self.vbox.addWidget(self.timestamp)
         #self.vbox.addStretch(1)
 
+        self.connect(
+                mainWidget.model,
+                SIGNAL('dataChanged(index, value, oldvalue)'),
+                self.insertentry
+                )
+
+        self.connect(
+                self.savebutton,
+                SIGNAL('clicked()'),
+                self.saveselected
+                )
+
+        self.connect(
+                mainWidget,
+                SIGNAL('savedToFile()'),
+                self.clearlist
+                )
+
+    def saveselected(self):
+        print self.list
+        self.emit(SIGNAL('commitMeta(entries)'), self.list)
+
+    def insertentry(self, index, value, oldvalue):
+        if value == oldvalue:
+            pass
+        else:
+            index = mainWidget.model.index(index.row(), 0, QModelIndex())
+            filepath = mainWidget.model.data(index, Qt.DisplayRole)
+            filename = os.path.basename(str(filepath.toString()))
+            matches = self.matchfinder(filename)
+            if len(matches) == 0:
+                self.model.insertRows(0, 1, QModelIndex(), filename)
+            else:
+                pass
+
+    def clearlist(self):
+        rows = self.model.rowCount(self.model)
+        if rows > 0:
+            self.model.removeRows(0, rows, QModelIndex())
+        else:
+            print 'Nada pra deletar.'
+
+        #matches = self.matchfinder(filename)
+        #if len(matches) == 1:
+        #    match = matches[0]
+        #    self.model.removeRows(match.row(), 1, QModelIndex())
+        #    print '%s deletado' % filename
+
+    def matchfinder(self, candidate):
+        index = self.model.index(0, 0, QModelIndex())
+        matches = self.model.match(index, 0, candidate, -1, Qt.MatchExactly)
+        return matches
 
     def resizeEvent(self, event):
         event.accept()

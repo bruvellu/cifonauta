@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 10 Mar 2010 12:16PM
+# Atualizado: 10 Mar 2010 01:05PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -123,6 +123,7 @@ class MainWindow(QMainWindow):
         self.arquivo.addAction(self.openFile)
         self.arquivo.addAction(self.openDir)
         self.arquivo.addAction(self.saveFile)
+        self.arquivo.addAction(self.delRow)
         self.arquivo.addSeparator()
         self.arquivo.addAction(self.exit)
 
@@ -436,11 +437,17 @@ class MainWindow(QMainWindow):
 
     def cachetable(self):
         '''Salva a lista de imagens da tabela.'''
-        tablecache = open(picdb, 'wb')
+        tablecache = open(tablepickle, 'wb')
         entries = mainWidget.model.mydata
         print 'Salvando cache...',
         pickle.dump(entries, tablecache)
         tablecache.close()
+        print 'pronto!'
+        listcache = open(listpickle, 'wb')
+        entries = self.dockList.mylist
+        print 'Salvando cache...',
+        pickle.dump(entries, listcache)
+        listcache.close()
         print 'pronto!'
 
 
@@ -757,25 +764,26 @@ class DockEditor(QWidget):
             self.countryEdit.setText(value.toString())
 
     def setCurrent(self, values):
-        self.titleEdit.setText(values[1][1])
-        self.captionEdit.setText(values[2][1])
-        self.tagsEdit.setText(values[3][1])
-        self.taxonEdit.setText(values[4][1])
-        self.sppEdit.setText(values[5][1])
-        self.sourceEdit.setText(values[6][1])
-        self.authorEdit.setText(values[7][1])
-        self.rightsEdit.setText(values[8][1])
-        for interval in self.sizes:
-            if values[9][1] == interval:
-                idx = self.sizes.index(interval)
-                self.sizeEdit.setCurrentIndex(idx)
-            else:
-                pass
-        self.locationEdit.setText(values[10][1])
-        self.cityEdit.setText(values[11][1])
-        self.stateEdit.setText(values[12][1])
-        self.countryEdit.setText(values[13][1])
-        self.values = values
+        if values:
+            self.titleEdit.setText(values[1][1])
+            self.captionEdit.setText(values[2][1])
+            self.tagsEdit.setText(values[3][1])
+            self.taxonEdit.setText(values[4][1])
+            self.sppEdit.setText(values[5][1])
+            self.sourceEdit.setText(values[6][1])
+            self.authorEdit.setText(values[7][1])
+            self.rightsEdit.setText(values[8][1])
+            for interval in self.sizes:
+                if values[9][1] == interval:
+                    idx = self.sizes.index(interval)
+                    self.sizeEdit.setCurrentIndex(idx)
+                else:
+                    pass
+            self.locationEdit.setText(values[10][1])
+            self.cityEdit.setText(values[11][1])
+            self.stateEdit.setText(values[12][1])
+            self.countryEdit.setText(values[13][1])
+            self.values = values
 
     def saveData(self):
         # Atualizando a tabela
@@ -863,26 +871,27 @@ class DockThumb(QWidget):
                 )
     
     def setCurrent(self, values):
-        filename = os.path.basename(str(values[0][1]))
-        self.name.setText(unicode(filename))
-        timestamp = values[14][1]
-        self.timestamp.setText(timestamp)
+        if values:
+            filename = os.path.basename(str(values[0][1]))
+            self.name.setText(unicode(filename))
+            timestamp = values[14][1]
+            self.timestamp.setText(timestamp)
 
-        #XXX omitir enquanto o insert abaixo não funcionar
-        #if filename not in self.pixcache.keys():
-        #    self.pixcache[filename] = ''
+            #XXX omitir enquanto o insert abaixo não funcionar
+            #if filename not in self.pixcache.keys():
+            #    self.pixcache[filename] = ''
 
-        # Tenta abrir o cache
-        if not QPixmapCache.find(filename, self.pic):
-            self.pic.load(values[0][1])
-            self.pic = self.pic.scaled(self.thumb.maximumSize(),
-                    Qt.KeepAspectRatio, Qt.FastTransformation)
-            print 'Criando cache da imagem %s...' % filename,
-            QPixmapCache.insert(filename, self.pic)
-            print 'pronto!'
-        else:
-            pass
-        self.updateThumb()
+            # Tenta abrir o cache
+            if not QPixmapCache.find(filename, self.pic):
+                self.pic.load(values[0][1])
+                self.pic = self.pic.scaled(self.thumb.maximumSize(),
+                        Qt.KeepAspectRatio, Qt.FastTransformation)
+                print 'Criando cache da imagem %s...' % filename,
+                QPixmapCache.insert(filename, self.pic)
+                print 'pronto!'
+            else:
+                pass
+            self.updateThumb()
 
     def resizeEvent(self, event):
         event.accept()
@@ -901,9 +910,9 @@ class DockChanged(QWidget):
     def __init__(self):
         QWidget.__init__(self)
 
-        self.list = []
+        self.mylist = updatelist
 
-        self.model = ListModel(self, self.list)
+        self.model = ListModel(self, self.mylist)
 
         self.view = QListView()
         self.view.setModel(self.model)
@@ -963,8 +972,8 @@ class DockChanged(QWidget):
             self.emit(SIGNAL('syncselection(filename)'), filename)
 
     def saveselected(self):
-        print self.list
-        self.emit(SIGNAL('commitMeta(entries)'), self.list)
+        print self.mylist
+        self.emit(SIGNAL('commitMeta(entries)'), self.mylist)
 
     def insertentry(self, index, value, oldvalue):
         if value == oldvalue:
@@ -1004,29 +1013,29 @@ class DockChanged(QWidget):
 class ListModel(QAbstractListModel):
     def __init__(self, parent, list, *args):
         QAbstractListModel.__init__(self, parent, *args)
-        self.list = list
+        self.mylist = list
 
     def rowCount(self, parent):
-        return len(self.list)
+        return len(self.mylist)
 
     def data(self, index, role):
         if not index.isValid():
             return QVariant()
         elif role != Qt.DisplayRole:
             return QVariant()
-        return QVariant(self.list[index.row()])
+        return QVariant(self.mylist[index.row()])
 
     def insertRows(self, position, rows, parent, entry):
         self.beginInsertRows(parent, position, position+rows-1)
         for row in xrange(rows):
-            self.list.append(entry)
+            self.mylist.append(entry)
         self.endInsertRows()
         return True
 
     def removeRows(self, position, rows, parent):
         self.beginRemoveRows(parent, position, position+rows-1)
         for row in xrange(rows):
-            self.list.pop(position)
+            self.mylist.pop(position)
         self.endRemoveRows()
         return True
 
@@ -1052,9 +1061,11 @@ class InitPs():
     interface gráfica.
     '''
     def __init__(self):
-        global picdb
+        global tablepickle
+        global listpickle
         global header
         global datalist
+        global updatelist
 
         # Redefine o stdout para ser flushed após print
         sys.stdout = FlushFile(sys.stdout)
@@ -1068,20 +1079,31 @@ class InitPs():
                 ]
         
         # Nome do arquivo Pickle
-        picdb = 'tablecache'
+        tablepickle = 'tablecache'
         # Leitura do cache, salvo pelo Pickle
         try:
-            tablecache = open(picdb, 'rb')
+            tablecache = open(tablepickle, 'rb')
             datalist = pickle.load(tablecache)
             tablecache.close()
         except:
-            f = open(picdb, 'wb')
+            f = open(tablepickle, 'wb')
             f.close()
             datalist = [[
                 u'', u'', u'', u'', u'',
                 u'', u'', u'', u'', u'',
                 u'', u'', u'', u'', u'',
                 ],]
+        # Nome do arquivo Pickle
+        listpickle = 'listcache'
+        # Leitura do cache, salvo pelo Pickle
+        try:
+            listcache = open(listpickle, 'rb')
+            updatelist = pickle.load(listcache)
+            listcache.close()
+        except:
+            f = open(listpickle, 'wb')
+            f.close()
+            updatelist = []
 
 if __name__ == '__main__':
     initps = InitPs()

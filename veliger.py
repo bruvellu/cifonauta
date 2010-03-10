@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 10 Mar 2010 01:39PM
+# Atualizado: 10 Mar 2010 01:43PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -892,6 +892,11 @@ class DockThumb(QWidget):
             else:
                 pass
         elif values and values[0][1] == '':
+            self.pic = QPixmap()
+            self.name.clear()
+            self.timestamp.clear()
+            self.thumb.clear()
+        else:
             self.pic = QPixmap()
             self.name.clear()
             self.timestamp.clear()

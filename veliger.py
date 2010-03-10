@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 10 Mar 2010 01:57AM
+# Atualizado: 10 Mar 2010 12:16PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -162,7 +162,21 @@ class MainWindow(QMainWindow):
                 self.commitmeta
                 )
 
+        self.connect(
+                self.dockList,
+                SIGNAL('syncselection(filename)'),
+                self.setselection
+                )
+
         self.resize(1000, 780)
+
+    def setselection(self, filename):
+        index = self.model.index(0, 0, QModelIndex())
+        matches = self.model.match(index, 0, filename, -1,
+                Qt.MatchContains)
+        if len(matches) == 1:
+            match = matches[0]
+            mainWidget.selectRow(match.row())
 
     def commitmeta(self, entries):
         for entry in entries:
@@ -896,6 +910,12 @@ class DockChanged(QWidget):
         self.view.selectionModel = self.view.selectionModel()
         self.view.setAlternatingRowColors(True)
 
+        self.clearselection = QAction('Limpar seleção', self)
+        self.clearselection.setShortcut('Esc')
+        self.clear = lambda: self.view.selectionModel.clearSelection()
+        self.clearselection.triggered.connect(self.clear)
+        self.addAction(self.clearselection)
+
         self.savebutton = QPushButton('&Gravar', self)
         self.savebutton.setShortcut('Ctrl+Shift+S')
         #self.savebutton.setDisabled(True)
@@ -917,6 +937,12 @@ class DockChanged(QWidget):
                 )
 
         self.connect(
+                self.view.selectionModel,
+                SIGNAL('selectionChanged(QItemSelection, QItemSelection)'),
+                self.sync_setselection
+                )
+
+        self.connect(
                 self.savebutton,
                 SIGNAL('clicked()'),
                 self.saveselected
@@ -927,6 +953,14 @@ class DockChanged(QWidget):
                 SIGNAL('savedToFile()'),
                 self.clearlist
                 )
+
+    def sync_setselection(self, selected, deselected):
+        indexes = selected.indexes()
+        if indexes:
+            index = indexes[0]
+            filename = self.model.data(index, Qt.DisplayRole)
+            filename = filename.toString()
+            self.emit(SIGNAL('syncselection(filename)'), filename)
 
     def saveselected(self):
         print self.list

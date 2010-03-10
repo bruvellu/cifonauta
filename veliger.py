@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 10 Mar 2010 06:18PM
+# Atualizado: 10 Mar 2010 06:32PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -453,12 +453,31 @@ class MainWindow(QMainWindow):
             self.changeStatus(u'Nenhuma entrada selecionada')
 
     def cleartable(self):
-        rows = self.model.rowCount(self.model)
-        if rows > 0:
-            self.model.removeRows(0, rows, QModelIndex())
-            self.changeStatus(u'%d entradas deletadas' % rows)
+        if len(self.dockList.mylist) == 0:
+            rows = self.model.rowCount(self.model)
+            if rows > 0:
+                self.model.removeRows(0, rows, QModelIndex())
+                self.changeStatus(u'%d entradas deletadas' % rows)
+            else:
+                self.changeStatus(u'Nenhuma entrada selecionada')
         else:
-            self.changeStatus(u'Nenhuma entrada selecionada')
+            warning = QMessageBox.warning(
+                    self,
+                    u'Atenção!',
+                    u'As alterações não foram gravadas nas imagens.' +
+                    '\nDeseja apagá-las mesmo assim?',
+                    QMessageBox.Yes,
+                    QMessageBox.No)
+            if warning == QMessageBox.Yes:
+                rows = self.model.rowCount(self.model)
+                if rows > 0:
+                    self.model.removeRows(0, rows, QModelIndex())
+                    mainWidget.emitsaved()
+                    self.changeStatus(u'%d entradas deletadas' % rows)
+                else:
+                    self.changeStatus(u'Nenhuma entrada selecionada')
+
+
 
     def closeEvent(self, event):
         reply = QMessageBox.question(

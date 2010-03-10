@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 10 Mar 2010 01:05PM
+# Atualizado: 10 Mar 2010 01:39PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -871,7 +871,7 @@ class DockThumb(QWidget):
                 )
     
     def setCurrent(self, values):
-        if values:
+        if values and values[0][1] != '':
             filename = os.path.basename(str(values[0][1]))
             self.name.setText(unicode(filename))
             timestamp = values[14][1]
@@ -891,7 +891,12 @@ class DockThumb(QWidget):
                 print 'pronto!'
             else:
                 pass
-            self.updateThumb()
+        elif values and values[0][1] == '':
+            self.pic = QPixmap()
+            self.name.clear()
+            self.timestamp.clear()
+            self.thumb.clear()
+        self.updateThumb()
 
     def resizeEvent(self, event):
         event.accept()
@@ -899,6 +904,7 @@ class DockThumb(QWidget):
 
     def updateThumb(self):
         if self.pic.isNull():
+            self.thumb.setText(u'Imagem indisponível')
             pass
         else:
             scaledpic = self.pic.scaled(self.size(),

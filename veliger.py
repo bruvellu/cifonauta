@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 10 Mar 2010 01:43PM
+# Atualizado: 10 Mar 2010 01:55PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -483,6 +483,9 @@ class MainTable(QTableView):
         self.hideColumn(0)
         self.hideColumn(14)
         self.selecteditems = []
+
+        if self.nrows == 1 and self.mydata[0][0] == '':
+            self.model.removeRows(0, 1, QModelIndex())
 
         #self.delegate = QItemDelegate(self)
 
@@ -1096,6 +1099,12 @@ class InitPs():
             tablecache = open(tablepickle, 'rb')
             datalist = pickle.load(tablecache)
             tablecache.close()
+            if not datalist:
+                datalist.append([
+                    u'', u'', u'', u'', u'',
+                    u'', u'', u'', u'', u'',
+                    u'', u'', u'', u'', u'',
+                    ])
         except:
             f = open(tablepickle, 'wb')
             f.close()

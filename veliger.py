@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 11 Mar 2010 03:20PM
+# Atualizado: 11 Mar 2010 03:47PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -577,6 +577,7 @@ class MainWindow(QMainWindow):
 
 
 class MainTable(QTableView):
+    '''Tabela principal com entradas.'''
     def __init__(self, datalist, header, *args):
         QTableView.__init__(self, *args)
 
@@ -585,23 +586,20 @@ class MainTable(QTableView):
 
         self.model = TableModel(self, self.mydata, self.header)
         self.setModel(self.model)
+        self.selectionModel = self.selectionModel()
+        self.selectionModel.clearSelection()
         
         self.nrows = self.model.rowCount(self.model)
         self.ncols = self.model.columnCount(self.model)
 
-        self.selectionModel = self.selectionModel()
-        self.selectionModel.clearSelection()
-
         vh = self.verticalHeader()
         vh.setVisible(False)
-
         hh = self.horizontalHeader()
         hh.setStretchLastSection(True)
 
         # TODO Estudar o melhor jeito de chamar.
         # Também pode ser no singular com index.
         #self.resizeColumnsToContents()
-
         self.setAlternatingRowColors(True)
         self.setSelectionBehavior(self.SelectRows)
         self.setSortingEnabled(True)
@@ -609,51 +607,40 @@ class MainTable(QTableView):
         self.hideColumn(14)
         self.selecteditems = []
 
+        # Para limpar entrada dumb na inicialização
         if self.nrows == 1 and self.mydata[0][0] == '':
             self.model.removeRows(0, 1, QModelIndex())
-
-        #self.delegate = QItemDelegate(self)
-
-        #self.setItemDelegate(self.delegate)
 
         self.connect(
                 self.selectionModel,
                 SIGNAL('selectionChanged(QItemSelection, QItemSelection)'),
-                self.updateSelection
-                )
+                self.update_selection)
 
         self.connect(
                 self.selectionModel,
                 SIGNAL('currentChanged(QModelIndex, QModelIndex)'),
-                self.changeCurrent
-                )
-
-        self.connect(
-                self.model,
-                SIGNAL('dataChanged(index)'),
-                self.datawatcher
-                )
-
-
-        # Não funcionou ainda, fazer a edição da tabela refletir nos campos
-        #self.connect(
-        #        self.selectionModel,
-        #        SIGNAL('dataChanged(index, index)'),
-        #        self.changeCurrent
-        #        )
+                self.changecurrent)
 
     def emitsaved(self):
+        '''Emite aviso que os metadados foram gravados nos arquivos.'''
         self.emit(SIGNAL('savedToFile()'))
 
     def emitlost(self, filename):
+        '''Emite aviso para remover entrada da lista de modificados.'''
         self.emit(SIGNAL('delentry(filename)'), filename)
 
-    def updateSelection(self, selected, deselected):
+    def update_selection(self, selected, deselected):
+        '''Pega a entrada selecionada, extrai os valores envia para editor.
+
+        Os valores são enviados através de um sinal.
+        '''
         # TODO Descobrir o melhor jeito de lidar com seleção múltipla.
-        # Aqui estou gerenciando uma lista de índices (self.selecteditems) de
+        # FIXME Aqui estou gerenciando uma lista de índices (self.selecteditems) de
         # cada ítem selecionado, mas ele não está adicionando ranges quando uso
-        # o SHIFT, apenas os ítens clicados FIXME.
+        # o SHIFT, apenas os ítens clicados.
         deselectedindexes = deselected.indexes()
+        # Se nenhum índice for deselecionado inclui na lista de selecionados.
+        # XXX Isso é acochambro, ainda não funciona direito.
         if not deselectedindexes:
             selectedindexes = selected.indexes()
             self.selecteditems.append(selectedindexes)
@@ -671,17 +658,8 @@ class MainTable(QTableView):
             values.append((index, value.toString()))
         self.emit(SIGNAL('thisIsCurrent(values)'), values)
 
-        #for index in items:
-        #    text = '%s, %s' % (index.row(), index.column())
-        #    #print text
-
-        #items = deselected.indexes()
-
-        #for index in items:
-        #    text = '%s, %s' % (index.row(), index.column())
-        #    #print text
-
-    def changeCurrent(self, current, previous):
+    def changecurrent(self, current, previous):
+        '''Identifica a célula selecionada.'''
         # XXX Serve pra rastrear índices individuais, estava usando para criar
         # a seleção. O que fazer agora com esse resto de código?
         values = []
@@ -690,18 +668,6 @@ class MainTable(QTableView):
             value = self.model.data(index, Qt.DisplayRole)
             values.append((index, value.toString()))
         #self.emit(SIGNAL('thisIsCurrent(values)'), values)
-
-    def datawatcher(self, index):
-        print 'ALO'
-        print index.row(), index.column()
-        columns = self.selectionModel.selectedColumns(index.row())
-        for column in columns:
-            value = self.model.data(column, Qt.DisplayRole)
-            print value.toString()
-
-    #def paintEvent(self, event):
-    #    print 'Algo foi pintado!'
-    #    event.accept()
 
 
 class TableModel(QAbstractTableModel):

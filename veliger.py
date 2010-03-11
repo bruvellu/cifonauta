@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 11 Mar 2010 01:44PM
+# Atualizado: 11 Mar 2010 03:20PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -451,6 +451,14 @@ class MainWindow(QMainWindow):
         return matches
 
     def delcurrent(self):
+        '''Deleta a(s) entrada(s) selecionada(s) da tabela.
+        
+        Verifica se a entrada a ser deletada está na lista de imagens
+        modificadas. Se estiver, chama janela para o usuário decidir se quer
+        apagar a entrada mesmo sem as modificações terem sido gravadas na
+        imagem. Caso a resposta seja positiva a entrada será apagada e retirada
+        da lista de imagens modificadas.
+        '''
         indexes = mainWidget.selectionModel.selectedRows()
         if indexes:
             n_del = 0
@@ -460,11 +468,12 @@ class MainWindow(QMainWindow):
             for row in indexes:
                 index = mainWidget.model.index(row, 0, QModelIndex())
                 filepath = mainWidget.model.data(index, Qt.DisplayRole)
-                filename = os.path.basename(str(filepath.toString()))
+                filename = os.path.basename(unicode(filepath.toString()))
                 if filename in self.dockUnsaved.mylist:
                     unsaved.append(filename)
                 else:
                     continue
+            #TODO Tem algum jeito de melhorar esse função?
             if len(unsaved) > 0:
                 warning = QMessageBox.warning(
                         self,
@@ -502,6 +511,11 @@ class MainWindow(QMainWindow):
             self.changeStatus(u'Nenhuma entrada selecionada')
 
     def cleartable(self):
+        '''Remove todas as entradas da tabela.
+
+        Antes de deletar checa se existem imagens não-salvas na lista.
+        '''
+        # Ver se não dá pra melhorar...
         if len(self.dockUnsaved.mylist) == 0:
             rows = self.model.rowCount(self.model)
             if rows > 0:
@@ -526,7 +540,28 @@ class MainWindow(QMainWindow):
                 else:
                     self.changeStatus(u'Nenhuma entrada selecionada')
 
+    def cachetable(self):
+        '''Salva estado atual dos dados em arquivos externos.
+        
+        Cria backup dos conteúdos da tabela e da lista de imagens modificadas.
+        '''
+        print 'Salvando cache...',
+        self.changeStatus(u'Salvando cache...')
+        # Tabela
+        tablecache = open(tablepickle, 'wb')
+        entries = mainWidget.model.mydata
+        pickle.dump(entries, tablecache)
+        tablecache.close()
+        # Lista
+        listcache = open(listpickle, 'wb')
+        entries = self.dockUnsaved.mylist
+        pickle.dump(entries, listcache)
+        listcache.close()
+        print 'pronto!'
+        self.changeStatus(u'Salvando cache... pronto!')
+
     def closeEvent(self, event):
+        '''O que fazer quando o programa for fechado.'''
         reply = QMessageBox.question(
                 self,
                 u'Atenção!',
@@ -539,21 +574,6 @@ class MainWindow(QMainWindow):
             self.cachetable()
         else:
             event.ignore()
-
-    def cachetable(self):
-        '''Salva a lista de imagens da tabela.'''
-        tablecache = open(tablepickle, 'wb')
-        entries = mainWidget.model.mydata
-        print 'Salvando cache...',
-        pickle.dump(entries, tablecache)
-        tablecache.close()
-        print 'pronto!'
-        listcache = open(listpickle, 'wb')
-        entries = self.dockUnsaved.mylist
-        print 'Salvando cache...',
-        pickle.dump(entries, listcache)
-        listcache.close()
-        print 'pronto!'
 
 
 class MainTable(QTableView):

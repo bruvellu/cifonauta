@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 11 Mar 2010 12:45PM
+# Atualizado: 11 Mar 2010 01:11PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -77,7 +77,6 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(mainWidget)
         self.setWindowTitle(u'VÉLIGER - Editor de Metadados')
         self.setWindowIcon(QIcon(u'./icons/python.svg'))
-        self.setToolTip(u'Tabela com todas as entradas')
         self.statusBar().showMessage(u'Pronto para editar!', 2000)
         self.menubar = self.menuBar()
 
@@ -92,7 +91,7 @@ class MainWindow(QMainWindow):
                 u'Abrir arquivo(s)', self)
         self.openFile.setShortcut('Ctrl+O')
         self.openFile.setStatusTip(u'Abrir imagens')
-        self.connect(self.openFile, SIGNAL('triggered()'), self.openDialog)
+        self.connect(self.openFile, SIGNAL('triggered()'), self.openfile_dialog)
 
         self.openDir = QAction(QIcon(u'./icons/folder-new.png'),
                 u'Abrir pasta(s)', self)
@@ -291,10 +290,15 @@ class MainWindow(QMainWindow):
             return stdout
 
     def changeStatus(self, status, duration=2000):
+        '''Muda a mensagem de status da janela principal.'''
         self.statusBar().showMessage(status, duration)
 
-    def openDialog(self):
-        filepaths = QFileDialog.getOpenFileNames(self, 'Selecione imagem(ns)',
+    def openfile_dialog(self):
+        '''Abre janela para escolher arquivos.
+
+        Para selecionar arquivo(s) terminados em .jpg.
+        '''
+        filepaths = QFileDialog.getOpenFileNames(self, 'Selecionar imagem(ns)',
                 './', 'Images (*.jpg)')
         if filepaths:
             n_all = len(filepaths)
@@ -304,8 +308,8 @@ class MainWindow(QMainWindow):
             self.changeStatus(u'Importando %d imagens...' % n_all)
             for filepath in filepaths:
                 filename = os.path.basename(str(filepath))
-                isduplicate = self.matchfinder(filename)
-                if isduplicate is False:
+                matches = self.matchfinder(filename)
+                if len(matches) == 0:
                     entrymeta = self.createMeta(filepath)
                     self.model.insertRows(0, 1, QModelIndex(), entrymeta)
                     n_new += 1
@@ -346,8 +350,8 @@ class MainWindow(QMainWindow):
             for filename in files:
                 if filename.endswith(extensions):
                     # Checa por duplicatas na tabela
-                    isduplicate = self.matchfinder(filename)
-                    if isduplicate is False:
+                    matches = self.matchfinder(filename)
+                    if len(matches) == 0:
                         filepath = os.path.join(root, filename)
                         timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p',
                                 time.localtime(os.path.getmtime(filepath)))                    
@@ -443,10 +447,7 @@ class MainWindow(QMainWindow):
         elif isinstance(candidate, list):
             value = os.path.basename(str(entry[0]))
             matches = self.model.match(index, 0, value, -1, Qt.MatchContains)
-        if len(matches) > 0:
-            return True
-        else:
-            return False
+        return matches
 
     def delcurrent(self):
         indexes = mainWidget.selectionModel.selectedRows()

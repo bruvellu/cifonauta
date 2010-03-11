@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 11 Mar 2010 10:28AM
+# Atualizado: 11 Mar 2010 12:45PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -38,87 +38,102 @@ __status__ = 'Development'
 
 
 class MainWindow(QMainWindow):
+    '''Janela principal do programa.
+
+    Inicia as instâncias dos outros componentes e aguarda interação do usuário.
+    '''
     def __init__(self):
         QMainWindow.__init__(self)
-
         # Definições
         global mainWidget
         mainWidget = MainTable(datalist, header)
         self.model = mainWidget.model
         # Dock com thumbnail
         self.dockThumb = DockThumb()
-        self.dockWidgetRight = QDockWidget('Thumbnail', self)
-        self.dockWidgetRight.setAllowedAreas(
+        self.thumbDockWidget = QDockWidget(u'Thumbnail', self)
+        self.thumbDockWidget.setAllowedAreas(
                 Qt.LeftDockWidgetArea |
                 Qt.RightDockWidgetArea
                 )
-        self.dockWidgetRight.setWidget(self.dockThumb)
+        self.thumbDockWidget.setWidget(self.dockThumb)
         # Dock com lista de updates
-        self.dockList = DockChanged()
-        self.dockWidgetRight2 = QDockWidget('Entradas modificadas', self)
-        self.dockWidgetRight2.setAllowedAreas(
+        self.dockUnsaved = DockUnsaved()
+        self.unsavedDockWidget = QDockWidget(u'Entradas modificadas', self)
+        self.unsavedDockWidget.setAllowedAreas(
                 Qt.LeftDockWidgetArea |
                 Qt.RightDockWidgetArea
                 )
-        self.dockWidgetRight2.setWidget(self.dockList)
+        self.unsavedDockWidget.setWidget(self.dockUnsaved)
         # Dock com editor de metadados
         self.dockEditor = DockEditor()
-        self.dockWidgetBottom = QDockWidget('Editor', self)
-        self.dockWidgetBottom.setAllowedAreas(
+        self.editorDockWidget = QDockWidget(u'Editor', self)
+        self.editorDockWidget.setAllowedAreas(
                 Qt.TopDockWidgetArea |
                 Qt.BottomDockWidgetArea
                 )
-        self.dockWidgetBottom.setWidget(self.dockEditor)
+        self.editorDockWidget.setWidget(self.dockEditor)
 
         # Atribuições da MainWindow
         self.setCentralWidget(mainWidget)
         self.setWindowTitle(u'VÉLIGER - Editor de Metadados')
-        self.setWindowIcon(QIcon('./icons/python.svg'))
-        self.setToolTip('Tabela com todas as entradas')
-        self.statusBar().showMessage('Ready to Rock!', 2000)
+        self.setWindowIcon(QIcon(u'./icons/python.svg'))
+        self.setToolTip(u'Tabela com todas as entradas')
+        self.statusBar().showMessage(u'Pronto para editar!', 2000)
         self.menubar = self.menuBar()
 
-        # Menu
-        self.exit = QAction(QIcon('./icons/system-shutdown.png'), 'Sair', self)
+        # Ações do menu
+        self.exit = QAction(QIcon(u'./icons/system-shutdown.png'),
+                u'Sair', self)
         self.exit.setShortcut('Ctrl+Q')
-        self.exit.setStatusTip('Fechar o programa')
+        self.exit.setStatusTip(u'Fechar o programa')
         self.connect(self.exit, SIGNAL('triggered()'), SLOT('close()'))
 
-        self.openFile = QAction(QIcon('./icons/document-open.png'), 'Abrir arquivo(s)', self)
+        self.openFile = QAction(QIcon(u'./icons/document-open.png'),
+                u'Abrir arquivo(s)', self)
         self.openFile.setShortcut('Ctrl+O')
-        self.openFile.setStatusTip('Abrir imagens')
+        self.openFile.setStatusTip(u'Abrir imagens')
         self.connect(self.openFile, SIGNAL('triggered()'), self.openDialog)
 
-        self.openDir = QAction(QIcon('./icons/folder-new.png'), 'Abrir pasta(s)', self)
+        self.openDir = QAction(QIcon(u'./icons/folder-new.png'),
+                u'Abrir pasta(s)', self)
         self.openDir.setShortcut('Ctrl+D')
-        self.openDir.setStatusTip('Abrir pasta')
+        self.openDir.setStatusTip(u'Abrir pasta')
         self.connect(self.openDir, SIGNAL('triggered()'), self.openDirDialog)
 
-        self.delRow = QAction(QIcon('./icons/edit-delete.png'), 'Deletar entrada(s)', self)
+        self.delRow = QAction(QIcon(u'./icons/edit-delete.png'),
+                u'Deletar entrada(s)', self)
         self.delRow.setShortcut('Ctrl+W')
-        self.delRow.setStatusTip('Deletar entrada')
+        self.delRow.setStatusTip(u'Deletar entrada')
         self.connect(self.delRow, SIGNAL('triggered()'), self.delcurrent)
 
-        self.saveFile = QAction(QIcon('./icons/document-save.png'), 'Salvar metadados', self)
+        self.saveFile = QAction(QIcon(u'./icons/document-save.png'),
+                u'Salvar metadados', self)
         self.saveFile.setShortcut('Ctrl+S')
-        self.saveFile.setStatusTip('Salvar metadados')
+        self.saveFile.setStatusTip(u'Salvar metadados')
         self.connect(self.saveFile, SIGNAL('triggered()'),
                 self.dockEditor.saveData)
         salvo = lambda: self.changeStatus(u'Alterações salvas!')
         self.saveFile.triggered.connect(salvo)
 
-        self.delAll = QAction(QIcon('./icons/edit-delete.png'), 'Limpar tabela', self)
-        self.delAll.setStatusTip('Deletar todas as entradas')
+        self.delAll = QAction(QIcon(u'./icons/edit-delete.png'),
+                u'Limpar tabela', self)
+        self.delAll.setStatusTip(u'Deletar todas as entradas')
         self.connect(self.delAll, SIGNAL('triggered()'), self.cleartable)
 
-        self.toggleThumb = self.dockWidgetRight.toggleViewAction()
+        # Toggle dock widgets
+        self.toggleThumb = self.thumbDockWidget.toggleViewAction()
         self.toggleThumb.setShortcut('Shift+T')
-        self.toggleThumb.setStatusTip('Esconde ou mostra o dock com thumbnails')
+        self.toggleThumb.setStatusTip(u'Esconde ou mostra o dock com thumbnails')
 
-        self.toggleEditor = self.dockWidgetBottom.toggleViewAction()
+        self.toggleEditor = self.editorDockWidget.toggleViewAction()
         self.toggleEditor.setShortcut('Shift+E')
-        self.toggleEditor.setStatusTip('Esconde ou mostra o dock com thumbnails')
+        self.toggleEditor.setStatusTip(u'Esconde ou mostra o dock com o editor')
 
+        self.toggleUnsaved = self.unsavedDockWidget.toggleViewAction()
+        self.toggleUnsaved.setShortcut('Shift+U')
+        self.toggleUnsaved.setStatusTip(u'Esconde ou mostra o dock com modificadas')
+
+        # Menu
         self.arquivo = self.menubar.addMenu('&Arquivo')
         self.arquivo.addAction(self.openFile)
         self.arquivo.addAction(self.openDir)
@@ -132,6 +147,7 @@ class MainWindow(QMainWindow):
         self.editar.addSeparator()
         self.editar.addAction(self.toggleThumb)
         self.editar.addAction(self.toggleEditor)
+        self.editar.addAction(self.toggleUnsaved)
 
         # Toolbar
         self.toolbar = self.addToolBar('Ações')
@@ -143,28 +159,20 @@ class MainWindow(QMainWindow):
         self.toolbar.addAction(self.exit)
 
         # Docks
-        self.addDockWidget(Qt.RightDockWidgetArea, self.dockWidgetRight)
-        self.addDockWidget(Qt.RightDockWidgetArea, self.dockWidgetRight2)
-        self.addDockWidget(Qt.BottomDockWidgetArea, self.dockWidgetBottom)
-        self.tabifyDockWidget(self.dockWidgetRight, self.dockWidgetRight2)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.thumbDockWidget)
+        self.addDockWidget(Qt.RightDockWidgetArea, self.unsavedDockWidget)
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.editorDockWidget)
+        self.tabifyDockWidget(self.thumbDockWidget, self.unsavedDockWidget)
         #self.setCorner(Qt.BottomRightCorner, Qt.RightDockWidgetArea)
 
-        # Fill Editor
-        #self.onClicked = lambda: self.changeStatus('lala')
-        #self.connect(
-        #    self.mainWidget.selectionModel,
-        #    SIGNAL('selectionChanged(QItemSelection, QItemSelection)'),
-        #    self,
-        #    self.onClicked())
-
         self.connect(
-                self.dockList,
+                self.dockUnsaved,
                 SIGNAL('commitMeta(entries)'),
                 self.commitmeta
                 )
 
         self.connect(
-                self.dockList,
+                self.dockUnsaved,
                 SIGNAL('syncselection(filename)'),
                 self.setselection
                 )
@@ -172,6 +180,12 @@ class MainWindow(QMainWindow):
         self.resize(1000, 780)
 
     def setselection(self, filename):
+        '''Sincroniza seleção entre lista e tabela principal.
+
+        Pega a seleção da lista de imagens modificadas e procura a linha
+        correspondente na tabela principal. Se o item não for encontrado o item
+        na lista é apagado.
+        '''
         index = self.model.index(0, 0, QModelIndex())
         matches = self.model.match(index, 0, filename, -1,
                 Qt.MatchContains)
@@ -185,6 +199,13 @@ class MainWindow(QMainWindow):
                     filename, 10000)
 
     def commitmeta(self, entries):
+        '''Grava os metadados modificados na imagem.
+        
+        Pega lista de imagens modificadas, procura entrada na tabela principal
+        e retorna os metadados. Chama função que gravará estes metadados na
+        imagem. Chama função que emitirá o sinal avisando a gravação foi
+        completada com sucesso.        
+        '''
         for entry in entries:
             index = self.model.index(0, 0, QModelIndex())
             matches = self.model.match(index, 0, entry, -1,
@@ -196,16 +217,39 @@ class MainWindow(QMainWindow):
                     index = self.model.index(match.row(), col, QModelIndex())
                     value = self.model.data(index, Qt.DisplayRole)
                     values.append(unicode(value.toString()))
-                self.exiftool(values)
                 filename = os.path.basename(values[0])
-        mainWidget.emitsaved()
-                
+                self.changeStatus(u'Gravando metadados em %s...' % filename)
+                write = self.exiftool(values)
+                if write == 0:
+                    self.changeStatus(u'%s atualizado!' % filename)
+                    continue
+                else:
+                    break
+        if write == 0:
+            mainWidget.emitsaved()
+        else:
+            self.changeStatus(u'%s deu erro!' % filename, 5000)
+            critical = QMessageBox()
+            critical.setWindowTitle(u'Erro de gravação!')
+            critical.setText(u'Metadados não foram gravados.')
+            critical.setInformativeText(
+                    u'%s pode ter mudado de local, nome ou ' % filename +
+                    'estar protegido contra gravação. Tente importá-lo ' +
+                    'novamente. O arquivo será retirado da lista de ' +
+                    'imagens modificadas.')
+            critical.setIcon(QMessageBox.Critical)
+            critical.exec_()
+            mainWidget.emitlost(filename)
+            #TODO deletar entrada da tabela principal tb?
 
     def exiftool(self, values):
-        filename = os.path.basename(values[0])
-        self.changeStatus(u'Gravando metadados em %s...' % filename)
+        '''Grava os metadados no arquivo.
+
+        Usa subprocesso para chamar o exiftool, que gravará os metadados
+        modificados na imagem.
+        '''
+        #TODO Como funcionará no Windows? Será que o PIL pode substituir?
         try:
-            # Salva os metadados na imagem
             shellcall = [
                     'exiftool',
                     '-overwrite_original',
@@ -225,23 +269,26 @@ class MainWindow(QMainWindow):
                     ]
             # Lista com keywords
             if values[3] == '' or values[3] is None:
-                print 'Marcadores em branco, deletando na imagem...'
                 shellcall.append('-Keywords=')
             else:
-                print 'Atualizando marcadores...'
                 keywords = values[3].split(', ')
                 for keyword in keywords:
                     shellcall.append('-Keywords=%s' % keyword.lower())
-            # Adicionando o endereço do arquivo ao comando
             shellcall.append(values[0])
-            # Executando o exiftool para adicionar as keywords
-            subprocess.call(shellcall)
+            # Executando o comando completo
+            stdout = subprocess.call(shellcall)
         except IOError:
-            print '\nOcorreu algum erro. Verifique se o ExifTool está \
-                    instalado.'
+            print '\nOcorreu algum erro. ',
+            print 'Verifique se o ExifTool está instalado.'
+            self.changeStatus(u'ERRO: Verifique se o exiftool está instalado',
+                    10000)
+            critical = QMessageBox()
+            critical.setWindowTitle(u'Erro!')
+            critical.setText(u'Verifique se o exiftool está instalado.')
+            critical.setIcon(QMessageBox.Critical)
+            critical.exec_()
         else:
-            print '\nNovos metadados salvos na imagem com sucesso!'
-
+            return stdout
 
     def changeStatus(self, status, duration=2000):
         self.statusBar().showMessage(status, duration)
@@ -412,7 +459,7 @@ class MainWindow(QMainWindow):
                 index = mainWidget.model.index(row, 0, QModelIndex())
                 filepath = mainWidget.model.data(index, Qt.DisplayRole)
                 filename = os.path.basename(str(filepath.toString()))
-                if filename in self.dockList.mylist:
+                if filename in self.dockUnsaved.mylist:
                     unsaved.append(filename)
                 else:
                     continue
@@ -453,7 +500,7 @@ class MainWindow(QMainWindow):
             self.changeStatus(u'Nenhuma entrada selecionada')
 
     def cleartable(self):
-        if len(self.dockList.mylist) == 0:
+        if len(self.dockUnsaved.mylist) == 0:
             rows = self.model.rowCount(self.model)
             if rows > 0:
                 self.model.removeRows(0, rows, QModelIndex())
@@ -476,8 +523,6 @@ class MainWindow(QMainWindow):
                     self.changeStatus(u'%d entradas deletadas' % rows)
                 else:
                     self.changeStatus(u'Nenhuma entrada selecionada')
-
-
 
     def closeEvent(self, event):
         reply = QMessageBox.question(
@@ -502,7 +547,7 @@ class MainWindow(QMainWindow):
         tablecache.close()
         print 'pronto!'
         listcache = open(listpickle, 'wb')
-        entries = self.dockList.mylist
+        entries = self.dockUnsaved.mylist
         print 'Salvando cache...',
         pickle.dump(entries, listcache)
         listcache.close()
@@ -981,7 +1026,7 @@ class DockThumb(QWidget):
             self.thumb.setPixmap(scaledpic)
 
 
-class DockChanged(QWidget):
+class DockUnsaved(QWidget):
     def __init__(self):
         QWidget.__init__(self)
 

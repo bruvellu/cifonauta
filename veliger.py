@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 10 Mar 2010 06:32PM
+# Atualizado: 11 Mar 2010 10:19AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -1062,7 +1062,7 @@ class DockChanged(QWidget):
         else:
             index = mainWidget.model.index(index.row(), 0, QModelIndex())
             filepath = mainWidget.model.data(index, Qt.DisplayRole)
-            filename = os.path.basename(str(filepath.toString()))
+            filename = os.path.basename(unicode(filepath.toString()))
             matches = self.matchfinder(filename)
             if len(matches) == 0:
                 self.model.insertRows(0, 1, QModelIndex(), filename)

@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 11 Mar 2010 03:47PM
+# Atualizado: 11 Mar 2010 04:01PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -311,7 +311,7 @@ class MainWindow(QMainWindow):
                 matches = self.matchfinder(filename)
                 if len(matches) == 0:
                     entrymeta = self.createMeta(filepath)
-                    self.model.insertRows(0, 1, QModelIndex(), entrymeta)
+                    self.model.insert_rows(0, 1, QModelIndex(), entrymeta)
                     n_new += 1
                 else:
                     n_dup += 1
@@ -361,7 +361,7 @@ class MainWindow(QMainWindow):
                         timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p',
                                 time.localtime(os.path.getmtime(filepath)))                    
                         entrymeta = self.createMeta(filepath)
-                        self.model.insertRows(0, 1, QModelIndex(), entrymeta)
+                        self.model.insert_rows(0, 1, QModelIndex(), entrymeta)
                         n_new += 1
                     else:
                         n_dup += 1
@@ -490,7 +490,7 @@ class MainWindow(QMainWindow):
                     indexes.sort()
                     indexes.reverse()
                     for index in indexes:
-                        self.model.removeRows(index, 1, QModelIndex())
+                        self.model.remove_rows(index, 1, QModelIndex())
                         n_del += 1
                     self.changeStatus(u'%d entradas deletadas' % n_del)
                 else:
@@ -504,7 +504,7 @@ class MainWindow(QMainWindow):
                 indexes.sort()
                 indexes.reverse()
                 for index in indexes:
-                    self.model.removeRows(index, 1, QModelIndex())
+                    self.model.remove_rows(index, 1, QModelIndex())
                     n_del += 1
                 self.changeStatus(u'%d entradas deletadas' % n_del)
         else:
@@ -517,9 +517,9 @@ class MainWindow(QMainWindow):
         '''
         # Ver se não dá pra melhorar...
         if len(self.dockUnsaved.mylist) == 0:
-            rows = self.model.rowCount(self.model)
+            rows = self.model.rowcount(self.model)
             if rows > 0:
-                self.model.removeRows(0, rows, QModelIndex())
+                self.model.remove_rows(0, rows, QModelIndex())
                 self.changeStatus(u'%d entradas deletadas' % rows)
             else:
                 self.changeStatus(u'Nenhuma entrada selecionada')
@@ -532,9 +532,9 @@ class MainWindow(QMainWindow):
                     QMessageBox.Yes,
                     QMessageBox.No)
             if warning == QMessageBox.Yes:
-                rows = self.model.rowCount(self.model)
+                rows = self.model.rowcount(self.model)
                 if rows > 0:
-                    self.model.removeRows(0, rows, QModelIndex())
+                    self.model.remove_rows(0, rows, QModelIndex())
                     mainWidget.emitsaved()
                     self.changeStatus(u'%d entradas deletadas' % rows)
                 else:
@@ -589,8 +589,8 @@ class MainTable(QTableView):
         self.selectionModel = self.selectionModel()
         self.selectionModel.clearSelection()
         
-        self.nrows = self.model.rowCount(self.model)
-        self.ncols = self.model.columnCount(self.model)
+        self.nrows = self.model.rowcount(self.model)
+        self.ncols = self.model.columncount(self.model)
 
         vh = self.verticalHeader()
         vh.setVisible(False)
@@ -609,7 +609,7 @@ class MainTable(QTableView):
 
         # Para limpar entrada dumb na inicialização
         if self.nrows == 1 and self.mydata[0][0] == '':
-            self.model.removeRows(0, 1, QModelIndex())
+            self.model.remove_rows(0, 1, QModelIndex())
 
         self.connect(
                 self.selectionModel,
@@ -671,71 +671,76 @@ class MainTable(QTableView):
 
 
 class TableModel(QAbstractTableModel):
+    '''Modelo dos dados.'''
     def __init__(self, parent, mydata, header, *args):
         QAbstractTableModel.__init__(self, parent, *args)
         self.mydata = mydata
         self.header = header
 
-    def rowCount(self, parent):
+    def rowcount(self, parent):
+        '''Conta as linhas.'''
         return len(self.mydata)
 
-    def columnCount(self, parent):
+    def columncount(self, parent):
+        '''Conta as colunas.'''
         return len(self.mydata[0])
 
     def data(self, index, role):
+        '''Transforma dados brutos em elementos da tabela.'''
         if not index.isValid():
             return QVariant()
         elif role != Qt.DisplayRole and role != Qt.EditRole and \
                 role != Qt.BackgroundRole:
             return QVariant()
         return QVariant(self.mydata[index.row()][index.column()])
-        #elif index.column() == 0:
-            #return QVariant(os.path.basename(str(
-                #self.mydata[index.row()][index.column()])))
-            #icon = QPixmap(self.mydata[index.row()][0])
-            #scaledIcon = icon.scaled(30, 30, Qt.KeepAspectRatio, Qt.FastTransformation)
-            #return QIcon(scaledIcon)
         
-    def headerData(self, col, orientation, role):
+    def headerdata(self, col, orientation, role):
+        '''Constrói cabeçalho da tabela.'''
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             return QVariant(self.header[col])
         return QVariant()
 
     def flags(self, index):
+        '''Indicadores do estado de cada ítem.'''
         if not index.isValid():
             return Qt.ItemIsEnabled
         return QAbstractItemModel.flags(self, index) | Qt.ItemIsEditable
 
-    def setData(self, index, value, role):
+    def setdata(self, index, value, role):
+        '''Salva alterações nos dados a partir da edição da tabela.'''
         if index.isValid() and role == Qt.EditRole:
             oldvalue = self.mydata[index.row()][index.column()]
             self.mydata[index.row()][index.column()] = value.toString()
-            self.emit(SIGNAL('dataChanged(index, value, oldvalue)'), index, value, oldvalue)
+            self.emit(SIGNAL('dataChanged(index, value, oldvalue)'),
+                    index, value, oldvalue)
             return True
         return False
     
     def sort(self, col, order):
-        """sort table by given column number col"""
-        self.emit(SIGNAL("layoutAboutToBeChanged()"))
+        '''Ordena entradas a partir de valores de determinada coluna'''
+        self.emit(SIGNAL('layoutAboutToBeChanged()'))
         self.mydata = sorted(self.mydata, key=operator.itemgetter(col))
         if order == Qt.DescendingOrder:
             self.mydata.reverse()
-        self.emit(SIGNAL("layoutChanged()"))
+        self.emit(SIGNAL('layoutChanged()'))
 
-    def setColor(self, index, role):
+    def setcolor(self, index, role):
+        '''Pinta células da tabela.'''
+        #FIXME Não funciona.
         print index, role
         if index.isValid() and role == Qt.BackgroundRole:
-            print 'Será?'
             return QVariant(QColor(Qt.yellow))
 
-    def insertRows(self, position, rows, parent, entry):
+    def insert_rows(self, position, rows, parent, entry):
+        '''Insere entrada na tabela.'''
         self.beginInsertRows(parent, position, position+rows-1)
         for row in xrange(rows):
             self.mydata.append(entry)
         self.endInsertRows()
         return True
 
-    def removeRows(self, position, rows, parent):
+    def remove_rows(self, position, rows, parent):
+        '''Remove entrada da tabela.'''
         self.beginRemoveRows(parent, position, position+rows-1)
         for row in xrange(rows):
             self.mydata.pop(position)
@@ -824,7 +829,7 @@ class DockEditor(QWidget):
 
     #def updateData(self, text):
     #    print text
-    #    mainWidget.model.setData(self.values[2][0], text, Qt.EditRole)
+    #    mainWidget.model.setdata(self.values[2][0], text, Qt.EditRole)
 
     def setsingle(self, index, value, oldvalue):
         print index.row(), index.column(), value.toString(), oldvalue
@@ -884,43 +889,43 @@ class DockEditor(QWidget):
 
     def saveData(self):
         # Atualizando a tabela
-        mainWidget.model.setData(self.values[1][0],
+        mainWidget.model.setdata(self.values[1][0],
                 QVariant(self.titleEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[2][0],
+        mainWidget.model.setdata(self.values[2][0],
                 QVariant(self.captionEdit.toPlainText()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[3][0],
+        mainWidget.model.setdata(self.values[3][0],
                 QVariant(self.tagsEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[4][0],
+        mainWidget.model.setdata(self.values[4][0],
                 QVariant(self.taxonEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[5][0],
+        mainWidget.model.setdata(self.values[5][0],
                 QVariant(self.sppEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[6][0],
+        mainWidget.model.setdata(self.values[6][0],
                 QVariant(self.sourceEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[7][0],
+        mainWidget.model.setdata(self.values[7][0],
                 QVariant(self.authorEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[8][0],
+        mainWidget.model.setdata(self.values[8][0],
                 QVariant(self.rightsEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[9][0],
+        mainWidget.model.setdata(self.values[9][0],
                 QVariant(self.sizeEdit.currentText()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[10][0],
+        mainWidget.model.setdata(self.values[10][0],
                 QVariant(self.locationEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[11][0],
+        mainWidget.model.setdata(self.values[11][0],
                 QVariant(self.cityEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[12][0],
+        mainWidget.model.setdata(self.values[12][0],
                 QVariant(self.stateEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setData(self.values[13][0],
+        mainWidget.model.setdata(self.values[13][0],
                 QVariant(self.countryEdit.text()),
                 Qt.EditRole)
         mainWidget.setFocus(Qt.OtherFocusReason)
@@ -1098,7 +1103,7 @@ class DockUnsaved(QWidget):
             filename = os.path.basename(unicode(filepath.toString()))
             matches = self.matchfinder(filename)
             if len(matches) == 0:
-                self.model.insertRows(0, 1, QModelIndex(), filename)
+                self.model.insert_rows(0, 1, QModelIndex(), filename)
             else:
                 pass
 
@@ -1106,19 +1111,19 @@ class DockUnsaved(QWidget):
         matches = self.matchfinder(filename)
         if len(matches) == 1:
             match = matches[0]
-            self.model.removeRows(match.row(), 1, QModelIndex())
+            self.model.remove_rows(match.row(), 1, QModelIndex())
 
     def clearlist(self):
-        rows = self.model.rowCount(self.model)
+        rows = self.model.rowcount(self.model)
         if rows > 0:
-            self.model.removeRows(0, rows, QModelIndex())
+            self.model.remove_rows(0, rows, QModelIndex())
         else:
             print 'Nada pra deletar.'
 
         #matches = self.matchfinder(filename)
         #if len(matches) == 1:
         #    match = matches[0]
-        #    self.model.removeRows(match.row(), 1, QModelIndex())
+        #    self.model.remove_rows(match.row(), 1, QModelIndex())
         #    print '%s deletado' % filename
 
     def matchfinder(self, candidate):
@@ -1135,7 +1140,7 @@ class ListModel(QAbstractListModel):
         QAbstractListModel.__init__(self, parent, *args)
         self.mylist = list
 
-    def rowCount(self, parent):
+    def rowcount(self, parent):
         return len(self.mylist)
 
     def data(self, index, role):
@@ -1145,14 +1150,14 @@ class ListModel(QAbstractListModel):
             return QVariant()
         return QVariant(self.mylist[index.row()])
 
-    def insertRows(self, position, rows, parent, entry):
+    def insert_rows(self, position, rows, parent, entry):
         self.beginInsertRows(parent, position, position+rows-1)
         for row in xrange(rows):
             self.mylist.append(entry)
         self.endInsertRows()
         return True
 
-    def removeRows(self, position, rows, parent):
+    def remove_rows(self, position, rows, parent):
         self.beginRemoveRows(parent, position, position+rows-1)
         for row in xrange(rows):
             self.mylist.pop(position)

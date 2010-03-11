@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 11 Mar 2010 10:19AM
+# Atualizado: 11 Mar 2010 10:28AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -20,7 +20,7 @@ import subprocess
 import time
 import pickle
 
-from PIL import Image as pil_image
+from PIL import Image
 from shutil import copy
 from iptcinfo import IPTCInfo
 

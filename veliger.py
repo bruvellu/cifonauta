@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 11 Mar 2010 04:01PM
+# Atualizado: 11 Mar 2010 04:16PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -110,7 +110,7 @@ class MainWindow(QMainWindow):
         self.saveFile.setShortcut('Ctrl+S')
         self.saveFile.setStatusTip(u'Salvar metadados')
         self.connect(self.saveFile, SIGNAL('triggered()'),
-                self.dockEditor.saveData)
+                self.dockEditor.savedata)
         salvo = lambda: self.changeStatus(u'Alterações salvas!')
         self.saveFile.triggered.connect(salvo)
 
@@ -749,6 +749,7 @@ class TableModel(QAbstractTableModel):
 
 
 class DockEditor(QWidget):
+    '''Dock com campos para edição dos metadados.'''
     def __init__(self):
         QWidget.__init__(self)
 
@@ -757,13 +758,11 @@ class DockEditor(QWidget):
                 ['taxon', 'spp', 'source', 'author', 'rights'],
                 ['size', 'location', 'city', 'state', 'country']
                 ]
-
         labels = [
                 [u'Título', u'Legenda', u'Marcadores'],
                 [u'Táxon', u'Espécie', u'Especialista', u'Autor', u'Direitos'],
                 [u'Tamanho', u'Local', u'Cidade', u'Estado', u'País']
                 ]
-
         self.sizes = [
                 '',
                 '<0,1 mm',
@@ -812,7 +811,7 @@ class DockEditor(QWidget):
         self.connect(
                 mainWidget,
                 SIGNAL('thisIsCurrent(values)'),
-                self.setCurrent
+                self.setcurrent
                 )
 
         self.connect(
@@ -821,17 +820,8 @@ class DockEditor(QWidget):
                 self.setsingle
                 )
 
-        #self.connect(
-        #        self.titleEdit,
-        #        SIGNAL('textEdited(QString)'),
-        #        self.updateData
-        #        )
-
-    #def updateData(self, text):
-    #    print text
-    #    mainWidget.model.setdata(self.values[2][0], text, Qt.EditRole)
-
     def setsingle(self, index, value, oldvalue):
+        '''Atualiza campo de edição correspondente quando dado é alterado.'''
         print index.row(), index.column(), value.toString(), oldvalue
         if index.column() == 1:
             self.titleEdit.setText(value.toString())
@@ -865,7 +855,8 @@ class DockEditor(QWidget):
         elif index.column() == 13:
             self.countryEdit.setText(value.toString())
 
-    def setCurrent(self, values):
+    def setcurrent(self, values):
+        '''Atualiza campos de edição quando entrada é selecionada na tabela.'''
         if values:
             self.titleEdit.setText(values[1][1])
             self.captionEdit.setText(values[2][1])
@@ -887,8 +878,8 @@ class DockEditor(QWidget):
             self.countryEdit.setText(values[13][1])
             self.values = values
 
-    def saveData(self):
-        # Atualizando a tabela
+    def savedata(self):
+        '''Salva valores dos campos para a tabela.'''
         mainWidget.model.setdata(self.values[1][0],
                 QVariant(self.titleEdit.text()),
                 Qt.EditRole)
@@ -969,10 +960,10 @@ class DockThumb(QWidget):
         self.connect(
                 mainWidget,
                 SIGNAL('thisIsCurrent(values)'),
-                self.setCurrent
+                self.setcurrent
                 )
     
-    def setCurrent(self, values):
+    def setcurrent(self, values):
         if values and values[0][1] != '':
             filename = os.path.basename(str(values[0][1]))
             self.name.setText(unicode(filename))

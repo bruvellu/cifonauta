@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 11 Mar 2010 01:11PM
+# Atualizado: 11 Mar 2010 01:44PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -97,7 +97,7 @@ class MainWindow(QMainWindow):
                 u'Abrir pasta(s)', self)
         self.openDir.setShortcut('Ctrl+D')
         self.openDir.setStatusTip(u'Abrir pasta')
-        self.connect(self.openDir, SIGNAL('triggered()'), self.openDirDialog)
+        self.connect(self.openDir, SIGNAL('triggered()'), self.opendir_dialog)
 
         self.delRow = QAction(QIcon(u'./icons/edit-delete.png'),
                 u'Deletar entrada(s)', self)
@@ -321,7 +321,11 @@ class MainWindow(QMainWindow):
             self.changeStatus(u'%d imagens analisadas em %.2f s,' % (n_all, t) +
                     u' %d novas e %d duplicadas' % (n_new, n_dup), 10000)
 
-    def openDirDialog(self):
+    def opendir_dialog(self):
+        '''Abre janela para selecionar uma pasta.
+        
+        Chama a função para varrer a pasta selecionada.
+        '''
         folder = QFileDialog.getExistingDirectory(
                 self,
                 'Selecione uma pasta',
@@ -329,13 +333,15 @@ class MainWindow(QMainWindow):
                 QFileDialog.ShowDirsOnly
                 )
         if folder:
-            self.imgGrab(str(folder))
+            self.imgfinder(str(folder))
 
-    def imgGrab(self, folder):
+    def imgfinder(self, folder):
+        '''Busca recursivamente imagens na pasta selecionada.
+        
+        É possível definir as extensões a serem procuradas. Quando um arquivo é
+        encontrado ele verifica se já está na tabela. Se não estiver, ele chama
+        a função para extrair os metadados e insere uma nova entrada.
         '''
-        Busca recursivamente arquivos com extensão jpg|JPG na pasta determinada.
-        '''
-        # Zera contadores
         n_all = 0
         n_new = 0
         n_dup = 0
@@ -349,7 +355,6 @@ class MainWindow(QMainWindow):
         for root, dirs, files in os.walk(folder):
             for filename in files:
                 if filename.endswith(extensions):
-                    # Checa por duplicatas na tabela
                     matches = self.matchfinder(filename)
                     if len(matches) == 0:
                         filepath = os.path.join(root, filename)
@@ -361,10 +366,7 @@ class MainWindow(QMainWindow):
                     else:
                         n_dup += 1
                         pass
-
-                    # Contador
                     n_all += 1
-            
             else:	# Se o número máximo de imagens for atingido, finalizar
                 t1 = time.time()
                 t = t1 - t0
@@ -375,16 +377,13 @@ class MainWindow(QMainWindow):
     def createMeta(self, filepath):
         '''Define as variáveis extraídas dos metadados (IPTC) da imagem.
 
-        Usa a biblioteca do arquivo iptcinfo.py.
+        Usa a biblioteca do arquivo iptcinfo.py e retorna lista com valores.
         '''
-
         filename = os.path.basename(str(filepath))
-
-        print 'Lendo os metadados de %s e criando variáveis.' % filename
-        
+        self.changeStatus('Lendo os metadados de %s e criando variáveis...' %
+                filename)
         # Criar objeto com metadados
         info = IPTCInfo(filepath)
-        
         # Checando se o arquivo tem dados IPTC
         if len(info.data) < 4:
             print 'Imagem não tem dados IPTC!'
@@ -407,9 +406,6 @@ class MainWindow(QMainWindow):
         # Criando timestamp
         timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p',
                 time.localtime(os.path.getmtime(filepath)))
-
-        entrymeta = []
-
         # Cria a lista para tabela da interface
         entrymeta = [
                 unicode(str(filepath)),
@@ -428,7 +424,6 @@ class MainWindow(QMainWindow):
                 country,
                 timestamp,
                 ]
-
         # Converte valores dos metadados vazios (None) para string em branco
         # FIXME Checar se isso está funcionando direito...
         for index in [index for index, field in enumerate(entrymeta) if \
@@ -441,6 +436,12 @@ class MainWindow(QMainWindow):
         return entrymeta
 
     def matchfinder(self, candidate):
+        '''Verifica se entrada já está na tabela.
+
+        O candidato pode ser o nome do arquivo (string) ou a entrada
+        selecionada da tabela (lista). Retorna uma lista com duplicatas ou
+        lista vazia caso nenhuma seja encontrada.
+        '''
         index = self.model.index(0, 0, QModelIndex())
         if isinstance(candidate, str):
             matches = self.model.match(index, 0, candidate, -1, Qt.MatchContains)

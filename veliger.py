@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 12 Mar 2010 12:57AM
+# Atualizado: 12 Mar 2010 02:45AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -433,7 +433,33 @@ class MainWindow(QMainWindow):
         else:
             pass
 
+        self.createthumbs(filepath)
+
         return entrymeta
+
+    def createthumbs(self, filepath):
+        '''Cria thumbnails para as fotos novas.'''
+
+        size = 400, 400
+        hasdir = os.path.isdir(thumbdir)
+        if hasdir is True:
+            pass
+        else:
+            os.mkdir(thumbdir)
+        filename = os.path.basename(str(filepath))
+        thumbs = os.listdir(thumbdir)
+        thumbpath = os.path.join(thumbdir, filename)
+        if filename in thumbs:
+            pass
+        else:
+            copy(unicode(filepath), thumbdir)
+            self.changeStatus('%s copiado para %s' % (filename, thumbdir))
+            try:
+                im = Image.open(thumbpath)
+                im.thumbnail(size, Image.ANTIALIAS)
+                im.save(thumbpath, 'JPEG')
+            except IOError:
+                print 'Não consegui criar o thumbnail...'
 
     def matchfinder(self, candidate):
         '''Verifica se entrada já está na tabela.
@@ -951,7 +977,7 @@ class DockThumb(QWidget):
         self.timestamp = QLabel()
 
         self.thumb.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.thumb.setMaximumSize(400, 350)
+        self.thumb.setMaximumWidth(400)
         self.thumb.setMinimumSize(100, 100)
         self.thumb.setAlignment(Qt.AlignHCenter)
 
@@ -980,12 +1006,12 @@ class DockThumb(QWidget):
                 )
 
     def pixmapcache(self, filepath):
-        filename = os.path.basename(str(filepath))
+        '''Cria cache para thumbnail.'''
+        filename = os.path.basename(unicode(filepath))
+        thumbpath = os.path.join(thumbdir, filename)
         # Tenta abrir o cache
         if not QPixmapCache.find(filename, self.pic):
-            self.pic.load(filepath)
-            self.pic = self.pic.scaled(self.thumb.maximumSize(),
-                    Qt.KeepAspectRatio, Qt.FastTransformation)
+            self.pic.load(thumbpath)
             print 'Criando cache da imagem %s...' % filename,
             QPixmapCache.insert(filename, self.pic)
             print 'pronto!'
@@ -1029,9 +1055,12 @@ class DockThumb(QWidget):
             self.thumb.setText(u'Imagem indisponível')
             pass
         else:
-            scaledpic = self.pic.scaled(self.size(),
+            scaledpic = self.pic.scaled(self.width(),
+                    self.height()-self.name.height()-self.timestamp.height()-19,
                     Qt.KeepAspectRatio, Qt.FastTransformation)
             self.thumb.setPixmap(scaledpic)
+
+        print self.height(), self.thumb.height(), self.name.height(), self.timestamp.height()
 
     def resizeEvent(self, event):
         '''Lida com redimensionamento do thumbnail.'''
@@ -1223,6 +1252,9 @@ class InitPs():
         global header
         global datalist
         global updatelist
+        global thumbdir
+
+        thumbdir = './thumbs'
 
         # Redefine o stdout para ser flushed após print
         sys.stdout = FlushFile(sys.stdout)

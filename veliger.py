@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 12 Mar 2010 02:59AM
+# Atualizado: 12 Mar 2010 10:24AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -154,6 +154,8 @@ class MainWindow(QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.unsavedDockWidget)
         self.addDockWidget(Qt.BottomDockWidgetArea, self.editorDockWidget)
         self.tabifyDockWidget(self.thumbDockWidget, self.unsavedDockWidget)
+        self.setTabPosition(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea,
+                QTabWidget.North)
         #self.setCorner(Qt.BottomRightCorner, Qt.RightDockWidgetArea)
 
         self.connect(

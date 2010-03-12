@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 11 Mar 2010 09:42PM
+# Atualizado: 11 Mar 2010 10:01PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -172,7 +172,7 @@ class MainWindow(QMainWindow):
 
         self.connect(
                 self.dockUnsaved,
-                SIGNAL('syncselection(filename)'),
+                SIGNAL('syncSelection(filename)'),
                 self.setselection
                 )
 
@@ -627,7 +627,7 @@ class MainTable(QTableView):
 
     def emitlost(self, filename):
         '''Emite aviso para remover entrada da lista de modificados.'''
-        self.emit(SIGNAL('delentry(filename)'), filename)
+        self.emit(SIGNAL('delEntry(filename)'), filename)
 
     def update_selection(self, selected, deselected):
         '''Pega a entrada selecionada, extrai os valores envia para editor.
@@ -1013,11 +1013,16 @@ class DockThumb(QWidget):
 
 
 class DockUnsaved(QWidget):
+    '''Exibe lista com imagens modificadas.
+
+    Utiliza dados do modelo em lista. Qualquer imagem modificada será
+    adicionada à lista. Seleção na lista seleciona entrada na tabela. Gravar
+    salva metadados de cada ítem da lista nas respectivas imagens.
+    '''
     def __init__(self):
         QWidget.__init__(self)
 
         self.mylist = updatelist
-
         self.model = ListModel(self, self.mylist)
 
         self.view = QListView()
@@ -1040,11 +1045,6 @@ class DockUnsaved(QWidget):
         self.vbox.addWidget(self.savebutton)
         self.setLayout(self.vbox)
 
-        #self.setMaximumWidth(300)
-        #self.vbox.addWidget(self.name)
-        #self.vbox.addWidget(self.timestamp)
-        #self.vbox.addStretch(1)
-
         self.connect(
                 mainWidget.model,
                 SIGNAL('dataChanged(index, value, oldvalue)'),
@@ -1060,7 +1060,7 @@ class DockUnsaved(QWidget):
         self.connect(
                 self.savebutton,
                 SIGNAL('clicked()'),
-                self.saveselected
+                self.writeselected
                 )
 
         self.connect(
@@ -1071,23 +1071,29 @@ class DockUnsaved(QWidget):
 
         self.connect(
                 mainWidget,
-                SIGNAL('delentry(filename)'),
+                SIGNAL('delEntry(filename)'),
                 self.delentry
                 )
 
     def sync_setselection(self, selected, deselected):
+        '''Sincroniza seleção da tabela com a seleção da lista.'''
         indexes = selected.indexes()
         if indexes:
             index = indexes[0]
             filename = self.model.data(index, Qt.DisplayRole)
             filename = filename.toString()
-            self.emit(SIGNAL('syncselection(filename)'), filename)
+            self.emit(SIGNAL('syncSelection(filename)'), filename)
 
-    def saveselected(self):
-        print self.mylist
+    def writeselected(self):
+        '''Emite sinal para gravar metadados na imagem.'''
         self.emit(SIGNAL('commitMeta(entries)'), self.mylist)
 
     def insertentry(self, index, value, oldvalue):
+        '''Insere entrada na lista.
+        
+        Checa se a modificação não foi nula (valor atual == valor anterior) e
+        se a entrada é duplicada.
+        '''
         if value == oldvalue:
             pass
         else:
@@ -1101,30 +1107,28 @@ class DockUnsaved(QWidget):
                 pass
 
     def delentry(self, filename):
+        '''Remove entrada da lista.'''
         matches = self.matchfinder(filename)
         if len(matches) == 1:
             match = matches[0]
             self.model.remove_rows(match.row(), 1, QModelIndex())
 
     def clearlist(self):
+        '''Remove todas as entradas da lista.'''
         rows = self.model.rowcount(self.model)
         if rows > 0:
             self.model.remove_rows(0, rows, QModelIndex())
         else:
             print 'Nada pra deletar.'
 
-        #matches = self.matchfinder(filename)
-        #if len(matches) == 1:
-        #    match = matches[0]
-        #    self.model.remove_rows(match.row(), 1, QModelIndex())
-        #    print '%s deletado' % filename
-
     def matchfinder(self, candidate):
+        '''Buscador de duplicatas.'''
         index = self.model.index(0, 0, QModelIndex())
         matches = self.model.match(index, 0, candidate, -1, Qt.MatchExactly)
         return matches
 
     def resizeEvent(self, event):
+        '''Lida com redimensionamentos.'''
         event.accept()
 
 

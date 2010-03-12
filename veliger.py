@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 12 Mar 2010 11:52AM
+# Atualizado: 12 Mar 2010 05:45PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -619,7 +619,12 @@ class MainTable(QTableView):
 
         # TODO Estudar o melhor jeito de chamar.
         # Também pode ser no singular com index.
-        #self.resizeColumnsToContents()
+        self.cols_resized = [1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+        for col in self.cols_resized:
+            self.resizeColumnToContents(col)
+        self.setColumnWidth(1, 250)
+        self.setColumnWidth(2, 200)
+        self.setColumnWidth(3, 250)
         self.setAlternatingRowColors(True)
         self.setSelectionBehavior(self.SelectRows)
         self.setSortingEnabled(True)
@@ -631,10 +636,10 @@ class MainTable(QTableView):
         if self.nrows == 1 and self.mydata[0][0] == '':
             self.model.remove_rows(0, 1, QModelIndex())
 
-        self.connect(
-                self.selectionModel,
-                SIGNAL('selectionChanged(QItemSelection, QItemSelection)'),
-                self.update_selection)
+        #self.connect(
+        #        self.selectionModel,
+        #        SIGNAL('selectionChanged(QItemSelection, QItemSelection)'),
+        #        self.update_selection)
 
         self.connect(
                 self.selectionModel,
@@ -653,6 +658,12 @@ class MainTable(QTableView):
                 self.editmultiple
                 )
 
+        self.connect(
+                self.model,
+                SIGNAL('dataChanged(index, value, oldvalue)'),
+                self.resizecols
+                )
+
     def editmultiple(self, index, value, oldvalue):
         '''Edita outras linhas selecionadas.'''
         rows = self.selectionModel.selectedRows()
@@ -661,8 +672,11 @@ class MainTable(QTableView):
                 self.selectionModel.clearSelection()
                 index = self.model.index(row.row(), index.column(), QModelIndex())
                 self.model.setData(index, value, Qt.EditRole)
-        print 'Múltiplo?'
 
+    def resizecols(self, index):
+        '''Ajusta largura das colunas da tabela.'''
+        if index.column() in self.cols_resized:
+            self.resizeColumnToContents(index.column())
 
     def outputrows(self, toprow):
         '''Identifica linhas dentro do campo de visão da tabela.'''
@@ -689,13 +703,8 @@ class MainTable(QTableView):
 
         Os valores são enviados através de um sinal.
         '''
-        # TODO Descobrir o melhor jeito de lidar com seleção múltipla.
-        # FIXME Aqui estou gerenciando uma lista de índices (self.selecteditems) de
-        # cada ítem selecionado, mas ele não está adicionando ranges quando uso
-        # o SHIFT, apenas os ítens clicados.
+        #TODO Função obsoleta, ver se tem algo para aproveitar.
         deselectedindexes = deselected.indexes()
-        # Se nenhum índice for deselecionado inclui na lista de selecionados.
-        # XXX Isso é acochambro, ainda não funciona direito.
         if not deselectedindexes:
             selectedindexes = selected.indexes()
             self.selecteditems.append(selectedindexes)
@@ -703,24 +712,24 @@ class MainTable(QTableView):
             del self.selecteditems[:]
             selectedindexes = selected.indexes()
             self.selecteditems.append(selectedindexes)
-
         # Criando valores efetivamente da entrada selecionada.
         values = []
         for index in selectedindexes:
             value = self.model.data(index, Qt.DisplayRole)
             values.append((index, value.toString()))
-        self.emit(SIGNAL('thisIsCurrent(values)'), values)
+        #self.emit(SIGNAL('thisIsCurrent(values)'), values)
 
     def changecurrent(self, current, previous):
-        '''Identifica a célula selecionada.'''
-        # XXX Serve pra rastrear índices individuais, estava usando para criar
-        # a seleção. O que fazer agora com esse resto de código?
+        '''Identifica a célula selecionada, extrai valores e envia para editor.
+
+        Os valores são enviados através de um sinal.
+        '''
         values = []
         for col in xrange(self.ncols):
             index = self.model.index(current.row(), col, QModelIndex())
             value = self.model.data(index, Qt.DisplayRole)
             values.append((index, value.toString()))
-        #self.emit(SIGNAL('thisIsCurrent(values)'), values)
+        self.emit(SIGNAL('thisIsCurrent(values)'), values)
 
 
 class TableModel(QAbstractTableModel):

@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 11 Mar 2010 10:01PM
+# Atualizado: 11 Mar 2010 10:03PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -1133,14 +1133,17 @@ class DockUnsaved(QWidget):
 
 
 class ListModel(QAbstractListModel):
+    '''Modelo com lista de imagens modificadas.'''
     def __init__(self, parent, list, *args):
         QAbstractListModel.__init__(self, parent, *args)
         self.mylist = list
 
     def rowcount(self, parent):
+        '''Conta linhas.'''
         return len(self.mylist)
 
     def data(self, index, role):
+        '''Cria elementos da lista a partir dos dados.'''
         if not index.isValid():
             return QVariant()
         elif role != Qt.DisplayRole:
@@ -1148,6 +1151,7 @@ class ListModel(QAbstractListModel):
         return QVariant(self.mylist[index.row()])
 
     def insert_rows(self, position, rows, parent, entry):
+        '''Insere linhas.'''
         self.beginInsertRows(parent, position, position+rows-1)
         for row in xrange(rows):
             self.mylist.append(entry)
@@ -1155,6 +1159,7 @@ class ListModel(QAbstractListModel):
         return True
 
     def remove_rows(self, position, rows, parent):
+        '''Remove linhas.'''
         self.beginRemoveRows(parent, position, position+rows-1)
         for row in xrange(rows):
             self.mylist.pop(position)

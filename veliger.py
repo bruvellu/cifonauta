@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 11 Mar 2010 10:06PM
+# Atualizado: 12 Mar 2010 12:57AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -310,7 +310,7 @@ class MainWindow(QMainWindow):
                 filename = os.path.basename(str(filepath))
                 matches = self.matchfinder(filename)
                 if len(matches) == 0:
-                    entrymeta = self.createMeta(filepath)
+                    entrymeta = self.createmeta(filepath)
                     self.model.insert_rows(0, 1, QModelIndex(), entrymeta)
                     n_new += 1
                 else:
@@ -360,7 +360,7 @@ class MainWindow(QMainWindow):
                         filepath = os.path.join(root, filename)
                         timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p',
                                 time.localtime(os.path.getmtime(filepath)))                    
-                        entrymeta = self.createMeta(filepath)
+                        entrymeta = self.createmeta(filepath)
                         self.model.insert_rows(0, 1, QModelIndex(), entrymeta)
                         n_new += 1
                     else:
@@ -374,13 +374,13 @@ class MainWindow(QMainWindow):
                         u' %d novas e %d duplicadas' % (n_new, n_dup), 10000)
                 break
             
-    def createMeta(self, filepath):
+    def createmeta(self, filepath):
         '''Define as variáveis extraídas dos metadados (IPTC) da imagem.
 
         Usa a biblioteca do arquivo iptcinfo.py e retorna lista com valores.
         '''
         filename = os.path.basename(str(filepath))
-        self.changeStatus('Lendo os metadados de %s e criando variáveis...' %
+        self.changeStatus(u'Lendo os metadados de %s e criando variáveis...' %
                 filename)
         # Criar objeto com metadados
         info = IPTCInfo(filepath)
@@ -517,7 +517,7 @@ class MainWindow(QMainWindow):
         '''
         # Ver se não dá pra melhorar...
         if len(self.dockUnsaved.mylist) == 0:
-            rows = self.model.rowcount(self.model)
+            rows = self.model.rowCount(self.model)
             if rows > 0:
                 self.model.remove_rows(0, rows, QModelIndex())
                 self.changeStatus(u'%d entradas deletadas' % rows)
@@ -532,7 +532,7 @@ class MainWindow(QMainWindow):
                     QMessageBox.Yes,
                     QMessageBox.No)
             if warning == QMessageBox.Yes:
-                rows = self.model.rowcount(self.model)
+                rows = self.model.rowCount(self.model)
                 if rows > 0:
                     self.model.remove_rows(0, rows, QModelIndex())
                     mainWidget.emitsaved()
@@ -589,8 +589,8 @@ class MainTable(QTableView):
         self.selectionModel = self.selectionModel()
         self.selectionModel.clearSelection()
         
-        self.nrows = self.model.rowcount(self.model)
-        self.ncols = self.model.columncount(self.model)
+        self.nrows = self.model.rowCount(self.model)
+        self.ncols = self.model.columnCount(self.model)
 
         vh = self.verticalHeader()
         vh.setVisible(False)
@@ -621,6 +621,24 @@ class MainTable(QTableView):
                 SIGNAL('currentChanged(QModelIndex, QModelIndex)'),
                 self.changecurrent)
 
+        self.connect(
+                self.verticalScrollBar(),
+                SIGNAL('valueChanged(int)'),
+                self.outputrows
+                )
+
+    def outputrows(self, toprow):
+        '''Identifica linhas dentro do campo de visão da tabela.'''
+        pass
+        #TODO Está funcionando, só precisa ver se vale a pena usar...
+        #bottomrow = self.verticalHeader().visualIndexAt(self.height())
+        #rows = xrange(toprow, bottomrow)
+        #for row in rows:
+        #    index = self.model.index(row, 0, QModelIndex())
+        #    filepath = self.model.data(index, Qt.DisplayRole)
+        #    filepath = unicode(filepath.toString())
+        #    self.emit(SIGNAL('visibleRow(filepath)'), filepath)
+
     def emitsaved(self):
         '''Emite aviso que os metadados foram gravados nos arquivos.'''
         self.emit(SIGNAL('savedToFile()'))
@@ -644,8 +662,6 @@ class MainTable(QTableView):
         if not deselectedindexes:
             selectedindexes = selected.indexes()
             self.selecteditems.append(selectedindexes)
-            #value = self.model.data(items[1], Qt.DisplayRole)
-            #print value.toString()
         else:
             del self.selecteditems[:]
             selectedindexes = selected.indexes()
@@ -677,11 +693,11 @@ class TableModel(QAbstractTableModel):
         self.mydata = mydata
         self.header = header
 
-    def rowcount(self, parent):
+    def rowCount(self, parent):
         '''Conta as linhas.'''
         return len(self.mydata)
 
-    def columncount(self, parent):
+    def columnCount(self, parent):
         '''Conta as colunas.'''
         return len(self.mydata[0])
 
@@ -694,7 +710,7 @@ class TableModel(QAbstractTableModel):
             return QVariant()
         return QVariant(self.mydata[index.row()][index.column()])
         
-    def headerdata(self, col, orientation, role):
+    def headerData(self, col, orientation, role):
         '''Constrói cabeçalho da tabela.'''
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
             return QVariant(self.header[col])
@@ -706,7 +722,7 @@ class TableModel(QAbstractTableModel):
             return Qt.ItemIsEnabled
         return QAbstractItemModel.flags(self, index) | Qt.ItemIsEditable
 
-    def setdata(self, index, value, role):
+    def setData(self, index, value, role):
         '''Salva alterações nos dados a partir da edição da tabela.'''
         if index.isValid() and role == Qt.EditRole:
             oldvalue = self.mydata[index.row()][index.column()]
@@ -880,47 +896,46 @@ class DockEditor(QWidget):
 
     def savedata(self):
         '''Salva valores dos campos para a tabela.'''
-        mainWidget.model.setdata(self.values[1][0],
+        mainWidget.model.setData(self.values[1][0],
                 QVariant(self.titleEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setdata(self.values[2][0],
+        mainWidget.model.setData(self.values[2][0],
                 QVariant(self.captionEdit.toPlainText()),
                 Qt.EditRole)
-        mainWidget.model.setdata(self.values[3][0],
+        mainWidget.model.setData(self.values[3][0],
                 QVariant(self.tagsEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setdata(self.values[4][0],
+        mainWidget.model.setData(self.values[4][0],
                 QVariant(self.taxonEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setdata(self.values[5][0],
+        mainWidget.model.setData(self.values[5][0],
                 QVariant(self.sppEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setdata(self.values[6][0],
+        mainWidget.model.setData(self.values[6][0],
                 QVariant(self.sourceEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setdata(self.values[7][0],
+        mainWidget.model.setData(self.values[7][0],
                 QVariant(self.authorEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setdata(self.values[8][0],
+        mainWidget.model.setData(self.values[8][0],
                 QVariant(self.rightsEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setdata(self.values[9][0],
+        mainWidget.model.setData(self.values[9][0],
                 QVariant(self.sizeEdit.currentText()),
                 Qt.EditRole)
-        mainWidget.model.setdata(self.values[10][0],
+        mainWidget.model.setData(self.values[10][0],
                 QVariant(self.locationEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setdata(self.values[11][0],
+        mainWidget.model.setData(self.values[11][0],
                 QVariant(self.cityEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setdata(self.values[12][0],
+        mainWidget.model.setData(self.values[12][0],
                 QVariant(self.stateEdit.text()),
                 Qt.EditRole)
-        mainWidget.model.setdata(self.values[13][0],
+        mainWidget.model.setData(self.values[13][0],
                 QVariant(self.countryEdit.text()),
                 Qt.EditRole)
         mainWidget.setFocus(Qt.OtherFocusReason)
-        print 'Salvo!'
 
 
 class DockThumb(QWidget):
@@ -957,6 +972,26 @@ class DockThumb(QWidget):
                 SIGNAL('thisIsCurrent(values)'),
                 self.setcurrent
                 )
+
+        self.connect(
+                mainWidget,
+                SIGNAL('visibleRow(filepath)'),
+                self.pixmapcache
+                )
+
+    def pixmapcache(self, filepath):
+        filename = os.path.basename(str(filepath))
+        # Tenta abrir o cache
+        if not QPixmapCache.find(filename, self.pic):
+            self.pic.load(filepath)
+            self.pic = self.pic.scaled(self.thumb.maximumSize(),
+                    Qt.KeepAspectRatio, Qt.FastTransformation)
+            print 'Criando cache da imagem %s...' % filename,
+            QPixmapCache.insert(filename, self.pic)
+            print 'pronto!'
+        else:
+            pass
+        return self.pic
     
     def setcurrent(self, values):
         '''Mostra thumbnail, nome e data de modificação da imagem.
@@ -975,15 +1010,7 @@ class DockThumb(QWidget):
             #    self.pixcache[filename] = ''
 
             # Tenta abrir o cache
-            if not QPixmapCache.find(filename, self.pic):
-                self.pic.load(values[0][1])
-                self.pic = self.pic.scaled(self.thumb.maximumSize(),
-                        Qt.KeepAspectRatio, Qt.FastTransformation)
-                print 'Criando cache da imagem %s...' % filename,
-                QPixmapCache.insert(filename, self.pic)
-                print 'pronto!'
-            else:
-                pass
+            self.pic = self.pixmapcache(values[0][1])
         elif values and values[0][1] == '':
             self.pic = QPixmap()
             self.name.clear()
@@ -1038,7 +1065,8 @@ class DockUnsaved(QWidget):
 
         self.savebutton = QPushButton('&Gravar', self)
         self.savebutton.setShortcut('Ctrl+Shift+S')
-        #self.savebutton.setDisabled(True)
+        if not self.model.mylist:
+            self.savebutton.setDisabled(True)
 
         self.vbox = QVBoxLayout()
         self.vbox.addWidget(self.view)
@@ -1103,6 +1131,7 @@ class DockUnsaved(QWidget):
             matches = self.matchfinder(filename)
             if len(matches) == 0:
                 self.model.insert_rows(0, 1, QModelIndex(), filename)
+                self.savebutton.setEnabled(True)
             else:
                 pass
 
@@ -1112,12 +1141,15 @@ class DockUnsaved(QWidget):
         if len(matches) == 1:
             match = matches[0]
             self.model.remove_rows(match.row(), 1, QModelIndex())
+            if not self.model.mylist:
+                self.savebutton.setDisabled(True)
 
     def clearlist(self):
         '''Remove todas as entradas da lista.'''
-        rows = self.model.rowcount(self.model)
+        rows = self.model.rowCount(self.model)
         if rows > 0:
             self.model.remove_rows(0, rows, QModelIndex())
+            self.savebutton.setDisabled(True)
         else:
             print 'Nada pra deletar.'
 
@@ -1138,7 +1170,7 @@ class ListModel(QAbstractListModel):
         QAbstractListModel.__init__(self, parent, *args)
         self.mylist = list
 
-    def rowcount(self, parent):
+    def rowCount(self, parent):
         '''Conta linhas.'''
         return len(self.mylist)
 

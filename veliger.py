@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 12 Mar 2010 10:24AM
+# Atualizado: 12 Mar 2010 11:52AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -608,7 +608,7 @@ class MainTable(QTableView):
         self.setModel(self.model)
         self.selectionModel = self.selectionModel()
         self.selectionModel.clearSelection()
-        
+
         self.nrows = self.model.rowCount(self.model)
         self.ncols = self.model.columnCount(self.model)
 
@@ -646,6 +646,23 @@ class MainTable(QTableView):
                 SIGNAL('valueChanged(int)'),
                 self.outputrows
                 )
+
+        self.connect(
+                self.model,
+                SIGNAL('dataChanged(index, value, oldvalue)'),
+                self.editmultiple
+                )
+
+    def editmultiple(self, index, value, oldvalue):
+        '''Edita outras linhas selecionadas.'''
+        rows = self.selectionModel.selectedRows()
+        if len(rows) > 1:
+            for row in rows:
+                self.selectionModel.clearSelection()
+                index = self.model.index(row.row(), index.column(), QModelIndex())
+                self.model.setData(index, value, Qt.EditRole)
+        print 'Múltiplo?'
+
 
     def outputrows(self, toprow):
         '''Identifica linhas dentro do campo de visão da tabela.'''

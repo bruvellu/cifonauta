@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 11 Mar 2010 10:03PM
+# Atualizado: 11 Mar 2010 10:06PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -1168,9 +1168,10 @@ class ListModel(QAbstractListModel):
 
 
 class FlushFile(object):
-    '''
-    Simplesmente para tirar o buffer do print, assim rola juntar prints
-    diferentes na mesma linha. Só pra ficar bonitinho... meio inútil.
+    '''Tira o buffer do print.
+
+    Assim rola juntar prints diferentes na mesma linha. Só pra ficar
+    bonitinho... meio inútil.
     '''
     def __init__(self, f):
         self.f = f
@@ -1183,10 +1184,7 @@ class FlushFile(object):
 
 
 class InitPs():
-    '''
-    Inicia variáveis e parâmetros globais do programa antes de iniciar a
-    interface gráfica.
-    '''
+    '''Inicia variáveis e parâmetros globais do programa.'''
     def __init__(self):
         global tablepickle
         global listpickle
@@ -1205,9 +1203,8 @@ class InitPs():
                 u'Timestamp'
                 ]
         
-        # Nome do arquivo Pickle
+        # Nome do arquivo Pickle para tabela
         tablepickle = 'tablecache'
-        # Leitura do cache, salvo pelo Pickle
         try:
             tablecache = open(tablepickle, 'rb')
             datalist = pickle.load(tablecache)
@@ -1226,9 +1223,8 @@ class InitPs():
                 u'', u'', u'', u'', u'',
                 u'', u'', u'', u'', u'',
                 ],]
-        # Nome do arquivo Pickle
+        # Nome do arquivo Pickle para lista
         listpickle = 'listcache'
-        # Leitura do cache, salvo pelo Pickle
         try:
             listcache = open(listpickle, 'rb')
             updatelist = pickle.load(listcache)

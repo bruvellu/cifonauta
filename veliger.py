@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 11 Mar 2010 04:16PM
+# Atualizado: 11 Mar 2010 09:42PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -924,6 +924,7 @@ class DockEditor(QWidget):
 
 
 class DockThumb(QWidget):
+    '''Dock para mostrar o thumbnail da imagem selecionada.'''
     def __init__(self):
         QWidget.__init__(self)
 
@@ -939,18 +940,12 @@ class DockThumb(QWidget):
         self.thumb.setMinimumSize(100, 100)
         self.thumb.setAlignment(Qt.AlignHCenter)
 
-        self.name.setWordWrap(True)
-
-        #self.originalPic = self.pic.scaled(self.thumb.width(), self.thumb.height(),
-        #        Qt.KeepAspectRatio, Qt.FastTransformation)
-
         self.vbox.addWidget(self.thumb)
         self.vbox.addWidget(self.name)
         self.vbox.addWidget(self.timestamp)
         self.vbox.addStretch(1)
 
-        #self.thumb.setPixmap(self.originalPic)
-
+        self.name.setWordWrap(True)
         self.setLayout(self.vbox)
 
         #XXX omitir enquanto o insert abaixo não funcionar
@@ -964,6 +959,11 @@ class DockThumb(QWidget):
                 )
     
     def setcurrent(self, values):
+        '''Mostra thumbnail, nome e data de modificação da imagem.
+
+        Captura sinal com valores, tenta achar imagem no cache e exibe
+        informações.
+        '''
         if values and values[0][1] != '':
             filename = os.path.basename(str(values[0][1]))
             self.name.setText(unicode(filename))
@@ -996,11 +996,8 @@ class DockThumb(QWidget):
             self.thumb.clear()
         self.updateThumb()
 
-    def resizeEvent(self, event):
-        event.accept()
-        self.updateThumb()
-
     def updateThumb(self):
+        '''Atualiza thumbnail.'''
         if self.pic.isNull():
             self.thumb.setText(u'Imagem indisponível')
             pass
@@ -1008,6 +1005,11 @@ class DockThumb(QWidget):
             scaledpic = self.pic.scaled(self.size(),
                     Qt.KeepAspectRatio, Qt.FastTransformation)
             self.thumb.setPixmap(scaledpic)
+
+    def resizeEvent(self, event):
+        '''Lida com redimensionamento do thumbnail.'''
+        event.accept()
+        self.updateThumb()
 
 
 class DockUnsaved(QWidget):

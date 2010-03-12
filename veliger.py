@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 12 Mar 2010 02:45AM
+# Atualizado: 12 Mar 2010 02:59AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -51,18 +51,10 @@ class MainWindow(QMainWindow):
         # Dock com thumbnail
         self.dockThumb = DockThumb()
         self.thumbDockWidget = QDockWidget(u'Thumbnail', self)
-        self.thumbDockWidget.setAllowedAreas(
-                Qt.LeftDockWidgetArea |
-                Qt.RightDockWidgetArea
-                )
         self.thumbDockWidget.setWidget(self.dockThumb)
         # Dock com lista de updates
         self.dockUnsaved = DockUnsaved()
         self.unsavedDockWidget = QDockWidget(u'Entradas modificadas', self)
-        self.unsavedDockWidget.setAllowedAreas(
-                Qt.LeftDockWidgetArea |
-                Qt.RightDockWidgetArea
-                )
         self.unsavedDockWidget.setWidget(self.dockUnsaved)
         # Dock com editor de metadados
         self.dockEditor = DockEditor()
@@ -1056,11 +1048,9 @@ class DockThumb(QWidget):
             pass
         else:
             scaledpic = self.pic.scaled(self.width(),
-                    self.height()-self.name.height()-self.timestamp.height()-19,
+                    self.height()-65,
                     Qt.KeepAspectRatio, Qt.FastTransformation)
             self.thumb.setPixmap(scaledpic)
-
-        print self.height(), self.thumb.height(), self.name.height(), self.timestamp.height()
 
     def resizeEvent(self, event):
         '''Lida com redimensionamento do thumbnail.'''

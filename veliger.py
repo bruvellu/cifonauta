@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 12 Mar 2010 05:45PM
+# Atualizado: 12 Mar 2010 09:14PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -229,10 +229,15 @@ class MainWindow(QMainWindow):
                     u'%s pode ter mudado de local, nome ou ' % filename +
                     'estar protegido contra gravação. Tente importá-lo ' +
                     'novamente. O arquivo será retirado da lista de ' +
-                    'imagens modificadas.')
+                    'imagens modificadas. Deseja deletar a entrada da ' +
+                    'tabela principal também?')
             critical.setIcon(QMessageBox.Critical)
+            critical.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             critical.exec_()
+            self.setselection(filename)
             mainWidget.emitlost(filename)
+            if critical == QMessageBox.Yes:
+                self.delcurrent()
             #TODO deletar entrada da tabela principal tb?
 
     def exiftool(self, values):
@@ -301,7 +306,8 @@ class MainWindow(QMainWindow):
             t0 = time.time()
             self.changeStatus(u'Importando %d imagens...' % n_all)
             for filepath in filepaths:
-                filename = os.path.basename(str(filepath))
+                filename = os.path.basename(unicode(filepath))
+                print filename
                 matches = self.matchfinder(filename)
                 if len(matches) == 0:
                     entrymeta = self.createmeta(filepath)
@@ -373,7 +379,7 @@ class MainWindow(QMainWindow):
 
         Usa a biblioteca do arquivo iptcinfo.py e retorna lista com valores.
         '''
-        filename = os.path.basename(str(filepath))
+        filename = os.path.basename(unicode(filepath))
         self.changeStatus(u'Lendo os metadados de %s e criando variáveis...' %
                 filename)
         # Criar objeto com metadados
@@ -402,7 +408,7 @@ class MainWindow(QMainWindow):
                 time.localtime(os.path.getmtime(filepath)))
         # Cria a lista para tabela da interface
         entrymeta = [
-                unicode(str(filepath)),
+                filepath,
                 title,
                 caption,
                 ', '.join(keywords),
@@ -463,11 +469,11 @@ class MainWindow(QMainWindow):
         lista vazia caso nenhuma seja encontrada.
         '''
         index = self.model.index(0, 0, QModelIndex())
-        if isinstance(candidate, str):
-            matches = self.model.match(index, 0, candidate, -1, Qt.MatchContains)
-        elif isinstance(candidate, list):
-            value = os.path.basename(str(entry[0]))
+        if isinstance(candidate, list):
+            value = os.path.basename(unicode(entry[0]))
             matches = self.model.match(index, 0, value, -1, Qt.MatchContains)
+        else:
+            matches = self.model.match(index, 0, candidate, -1, Qt.MatchContains)
         return matches
 
     def delcurrent(self):

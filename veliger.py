@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 12 Mar 2010 09:14PM
+# Atualizado: 14 Mar 2010 03:54PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -212,7 +212,7 @@ class MainWindow(QMainWindow):
                     values.append(unicode(value.toString()))
                 filename = os.path.basename(values[0])
                 self.changeStatus(u'Gravando metadados em %s...' % filename)
-                write = self.exiftool(values)
+                write = self.writemeta(values)
                 if write == 0:
                     self.changeStatus(u'%s atualizado!' % filename)
                     continue
@@ -239,6 +239,46 @@ class MainWindow(QMainWindow):
             if critical == QMessageBox.Yes:
                 self.delcurrent()
             #TODO deletar entrada da tabela principal tb?
+
+    def writemeta(self, values):
+        '''Grava os metadados no arquivo.'''
+        print 'Começando a gravar metadados pelo IPTCinfo...'
+        # Criar objeto com metadados
+        info = IPTCInfo(values[0])
+        try:
+            info.data['object name'] = values[1]                    # title
+            info.data['caption/abstract'] = values[2]               # caption
+            info.data['headline'] = values[4]                       # category
+            info.data['original transmission reference'] = values[5]# spp
+            info.data['source'] = values[6]                         # source
+            info.data['by-line'] = values[7]                        # author
+            info.data['copyright notice'] = values[8]               # copyright
+            info.data['special instructions'] = values[9]           # scale
+            info.data['sub-location'] = values[10]                  # sublocation
+            info.data['city'] = values[11]                          # city
+            info.data['province/state'] = values[12]                # state
+            info.data['country/primary location name'] = values[13] # country
+
+            # Lista com keywords
+            if values[3] == '' or values[3] is None:
+                info.keywords = []                                  # keywords
+            else:
+                keywords = values[3].split(', ')
+                for keyword in keywords:
+                    keyword = keyword.lower()
+                info.data['keywords'] = keywords                    # keywords
+            info.save()
+        except IOError:
+            print '\nOcorreu algum erro. '
+            self.changeStatus(u'ERRO!', 10000)
+            critical = QMessageBox()
+            critical.setWindowTitle(u'Erro!')
+            critical.setText(u'Verifique se o IPTCinfo está bem.')
+            critical.setIcon(QMessageBox.Critical)
+            critical.exec_()
+        else:
+            print 'Gravado, sem erros.'
+            return 0
 
     def exiftool(self, values):
         '''Grava os metadados no arquivo.
@@ -383,7 +423,7 @@ class MainWindow(QMainWindow):
         self.changeStatus(u'Lendo os metadados de %s e criando variáveis...' %
                 filename)
         # Criar objeto com metadados
-        info = IPTCInfo(filepath)
+        info = IPTCInfo(filepath, True)
         # Checando se o arquivo tem dados IPTC
         if len(info.data) < 4:
             print 'Imagem não tem dados IPTC!'

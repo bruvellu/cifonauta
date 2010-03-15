@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# VELIGER
+# VÉLIGER
 # Copyleft 2010 - Bruno C. Vellutini | organelas.com
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 14 Mar 2010 03:54PM
+# Atualizado: 15 Mar 2010 08:43AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -264,8 +264,7 @@ class MainWindow(QMainWindow):
                 info.keywords = []                                  # keywords
             else:
                 keywords = values[3].split(', ')
-                for keyword in keywords:
-                    keyword = keyword.lower()
+                keywords = [keyword.lower() for keyword in keywords]
                 info.data['keywords'] = keywords                    # keywords
             info.save()
         except IOError:
@@ -414,7 +413,7 @@ class MainWindow(QMainWindow):
                         u' %d novas e %d duplicadas' % (n_new, n_dup), 10000)
                 break
             
-    def createmeta(self, filepath):
+    def createmeta(self, filepath, charset='utf-8'):
         '''Define as variáveis extraídas dos metadados (IPTC) da imagem.
 
         Usa a biblioteca do arquivo iptcinfo.py e retorna lista com valores.
@@ -818,7 +817,11 @@ class TableModel(QAbstractTableModel):
         '''Salva alterações nos dados a partir da edição da tabela.'''
         if index.isValid() and role == Qt.EditRole:
             oldvalue = self.mydata[index.row()][index.column()]
-            self.mydata[index.row()][index.column()] = value.toString()
+            if index.column() == 3:
+                self.mydata[index.row()][index.column()] = unicode(
+                        value.toString()).lower()
+            else:
+                self.mydata[index.row()][index.column()] = value.toString()
             self.emit(SIGNAL('dataChanged(index, value, oldvalue)'),
                     index, value, oldvalue)
             return True
@@ -995,7 +998,7 @@ class DockEditor(QWidget):
                 QVariant(self.captionEdit.toPlainText()),
                 Qt.EditRole)
         mainWidget.model.setData(self.values[3][0],
-                QVariant(self.tagsEdit.text()),
+                QVariant(unicode(self.tagsEdit.text()).lower()),
                 Qt.EditRole)
         mainWidget.model.setData(self.values[4][0],
                 QVariant(self.taxonEdit.text()),

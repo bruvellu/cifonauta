@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 15 Mar 2010 10:32AM
+# Atualizado: 15 Mar 2010 10:41AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -54,7 +54,7 @@ class MainWindow(QMainWindow):
         self.thumbDockWidget.setWidget(self.dockThumb)
         # Dock com lista de updates
         self.dockUnsaved = DockUnsaved()
-        self.unsavedDockWidget = QDockWidget(u'Entradas modificadas', self)
+        self.unsavedDockWidget = QDockWidget(u'Modificadas', self)
         self.unsavedDockWidget.setWidget(self.dockUnsaved)
         # Dock com editor de metadados
         self.dockEditor = DockEditor()
@@ -162,7 +162,7 @@ class MainWindow(QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.thumbDockWidget)
         self.addDockWidget(Qt.RightDockWidgetArea, self.unsavedDockWidget)
         self.addDockWidget(Qt.BottomDockWidgetArea, self.editorDockWidget)
-        self.tabifyDockWidget(self.thumbDockWidget, self.unsavedDockWidget)
+        self.tabifyDockWidget(self.unsavedDockWidget, self.thumbDockWidget)
         self.setTabPosition(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea,
                 QTabWidget.North)
         #self.setCorner(Qt.BottomRightCorner, Qt.RightDockWidgetArea)
@@ -293,7 +293,7 @@ class MainWindow(QMainWindow):
 
     def writemeta(self, values):
         '''Grava os metadados no arquivo.'''
-        print 'Gravando metadados pelo IPTCinfo...',
+        print 'Gravando metadados pelo IPTCinfo...'
         # Criar objeto com metadados
         info = IPTCInfo(values[0])
         try:

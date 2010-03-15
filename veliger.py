@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 15 Mar 2010 08:43AM
+# Atualizado: 15 Mar 2010 10:32AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -111,6 +111,14 @@ class MainWindow(QMainWindow):
         self.delAll.setStatusTip(u'Deletar todas as entradas')
         self.connect(self.delAll, SIGNAL('triggered()'), self.cleartable)
 
+        self.convertChar = QAction(QIcon(u'./icons/document-import.png'),
+                u'Converte codificação dos metadados', self)
+        self.convertChar.setStatusTip(
+                u'Converter metadados das imagens selecionadas de Latin-1' +
+                ' para UTF-8, use com cautela')
+        self.connect(self.convertChar, SIGNAL('triggered()'),
+                self.charconverter)
+
         # Toggle dock widgets
         self.toggleThumb = self.thumbDockWidget.toggleViewAction()
         self.toggleThumb.setShortcut('Shift+T')
@@ -135,6 +143,7 @@ class MainWindow(QMainWindow):
 
         self.editar = self.menubar.addMenu('&Editar')
         self.editar.addAction(self.delAll)
+        self.editar.addAction(self.convertChar)
         self.editar.addSeparator()
         self.editar.addAction(self.toggleThumb)
         self.editar.addAction(self.toggleEditor)
@@ -171,6 +180,49 @@ class MainWindow(QMainWindow):
                 )
 
         self.resize(1000, 780)
+
+    def charconverter(self):
+        '''Converte codificação de Latin-1 para UTF-8.
+
+        Pega a seleção da lista de imagens modificadas e procura a linha
+        correspondente na tabela principal. Se o item não for encontrado o item
+        na lista é apagado.
+        '''
+
+        critical = QMessageBox.critical(self,
+                u'Cuidado!',
+                u'As imagens selecionadas serão convertidas! ' +
+                u'Selecione apenas imagens que estejam com problemas na' +
+                ' codificação de caracteres especiais (ç, à, ã, á)!' +
+                ' Se nenhuma entrada estiver selecionada todas as imagens da' +
+                ' tabela serão convertidas! Faça um backup das suas imagens' +
+                ' antes de executar a conversão (é sério). Deseja prosseguir e converter' +
+                ' os metadados da imagem de Latin-1 para UTF-8?',
+                QMessageBox.Yes,
+                QMessageBox.No)
+        if critical == QMessageBox.Yes:
+            entries = []
+            n_all = 0
+            indexes = mainWidget.selectionModel.selectedRows()
+            if indexes:
+                indexes = [index.row() for index in indexes]
+                for row in indexes:
+                    index = mainWidget.model.index(row, 0, QModelIndex())
+                    filepath = mainWidget.model.data(index, Qt.DisplayRole)
+                    entries.append(unicode(filepath.toString()))
+                self.delcurrent()
+            else:
+                for entry in self.model.mydata:
+                    entries.append(entry[0])
+                self.cleartable()
+            for filepath in entries:
+                entrymeta = self.createmeta(filepath, 'latin-1')
+                self.model.insert_rows(0, 1, QModelIndex(), entrymeta)
+                self.writemeta(entrymeta)
+                n_all += 1
+            self.changeStatus(u'Metadados de %d figuras convertidos para UTF-8')
+        else:
+            self.changeStatus(u'Nenhuma imagem foi modificada')
 
     def setselection(self, filename):
         '''Sincroniza seleção entre lista e tabela principal.
@@ -238,11 +290,10 @@ class MainWindow(QMainWindow):
             mainWidget.emitlost(filename)
             if critical == QMessageBox.Yes:
                 self.delcurrent()
-            #TODO deletar entrada da tabela principal tb?
 
     def writemeta(self, values):
         '''Grava os metadados no arquivo.'''
-        print 'Começando a gravar metadados pelo IPTCinfo...'
+        print 'Gravando metadados pelo IPTCinfo...',
         # Criar objeto com metadados
         info = IPTCInfo(values[0])
         try:
@@ -276,7 +327,7 @@ class MainWindow(QMainWindow):
             critical.setIcon(QMessageBox.Critical)
             critical.exec_()
         else:
-            print 'Gravado, sem erros.'
+            print 'pronto!'
             return 0
 
     def exiftool(self, values):
@@ -422,7 +473,7 @@ class MainWindow(QMainWindow):
         self.changeStatus(u'Lendo os metadados de %s e criando variáveis...' %
                 filename)
         # Criar objeto com metadados
-        info = IPTCInfo(filepath, True)
+        info = IPTCInfo(filepath, True, charset)
         # Checando se o arquivo tem dados IPTC
         if len(info.data) < 4:
             print 'Imagem não tem dados IPTC!'
@@ -544,7 +595,7 @@ class MainWindow(QMainWindow):
                         self,
                         u'Atenção!',
                         u'As alterações não foram gravadas nas imagens.' +
-                        '\nDeseja apagá-las mesmo assim?',
+                        ' Deseja apagá-las mesmo assim?',
                         QMessageBox.Yes,
                         QMessageBox.No)
                 if warning == QMessageBox.Yes:

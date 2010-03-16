@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 16 Mar 2010 02:14PM
+# Atualizado: 16 Mar 2010 02:39PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -197,6 +197,8 @@ class MainWindow(QMainWindow):
                 )
 
         self.resize(1000, 780)
+        self.move(200, 0)
+        self.readsettings()
 
     def charconverter(self):
         '''Converte codificação de Latin-1 para UTF-8.
@@ -707,6 +709,24 @@ class MainWindow(QMainWindow):
         print 'pronto!'
         self.changeStatus(u'Salvando backup... pronto!')
 
+    def readsettings(self):
+        '''Lê o estado anterior do aplicativo durante a inicialização.'''
+        settings = QSettings()
+
+        settings.beginGroup('main')
+        self.resize(settings.value('size', QSize(1000, 780)).toSize())
+        self.move(settings.value('position', QPoint(200, 0)).toPoint())
+        settings.endGroup()
+
+    def writesettings(self):
+        '''Salva estado atual do aplicativo.'''
+        settings = QSettings()
+
+        settings.beginGroup('main')
+        settings.setValue('size', self.size())
+        settings.setValue('position', self.pos())
+        settings.endGroup()
+
     def closeEvent(self, event):
         '''O que fazer quando o programa for fechado.'''
         reply = QMessageBox.question(
@@ -717,8 +737,9 @@ class MainWindow(QMainWindow):
                 QMessageBox.No
                 )
         if reply == QMessageBox.Yes:
-            event.accept()
             self.cachetable()
+            self.writesettings()
+            event.accept()
         else:
             event.ignore()
 

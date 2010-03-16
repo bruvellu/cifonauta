@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 16 Mar 2010 02:39PM
+# Atualizado: 16 Mar 2010 05:32PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -196,8 +196,6 @@ class MainWindow(QMainWindow):
                 self.setselection
                 )
 
-        self.resize(1000, 780)
-        self.move(200, 0)
         self.readsettings()
 
     def charconverter(self):
@@ -322,7 +320,7 @@ class MainWindow(QMainWindow):
             info.data['object name'] = values[1]                    # title
             info.data['caption/abstract'] = values[2]               # caption
             info.data['headline'] = values[4]                       # category
-            info.data['original transmission reference'] = values[5]# spp
+            info.data['original transmission reference'] = values[5]# sp
             info.data['source'] = values[6]                         # source
             info.data['by-line'] = values[7]                        # author
             info.data['copyright notice'] = values[8]               # copyright
@@ -518,7 +516,7 @@ class MainWindow(QMainWindow):
         category = info.data['headline']                    # 105
         copyright = info.data['copyright notice']           # 116
         caption = info.data['caption/abstract']             # 120
-        spp = info.data['original transmission reference']  # 103
+        sp = info.data['original transmission reference']  # 103
         scale = info.data['special instructions']           # 40
         source = info.data['source']                        # 115
 
@@ -532,7 +530,7 @@ class MainWindow(QMainWindow):
                 caption,
                 ', '.join(keywords),
                 category,
-                spp,
+                sp,
                 source,
                 author,
                 copyright,
@@ -714,7 +712,7 @@ class MainWindow(QMainWindow):
         settings = QSettings()
 
         settings.beginGroup('main')
-        self.resize(settings.value('size', QSize(1000, 780)).toSize())
+        self.resize(settings.value('size', QSize(1000, 740)).toSize())
         self.move(settings.value('position', QPoint(200, 0)).toPoint())
         settings.endGroup()
 
@@ -969,7 +967,7 @@ class DockEditor(QWidget):
 
         varnames = [
                 ['title', 'caption', 'tags'],
-                ['taxon', 'spp', 'source', 'author', 'rights'],
+                ['taxon', 'sp', 'source', 'author', 'rights'],
                 ['size', 'location', 'city', 'state', 'country']
                 ]
         labels = [
@@ -1019,6 +1017,26 @@ class DockEditor(QWidget):
                     self.form2.addRow(label, edit)
             eval('self.' + box_id + '.setLayout(self.' + box_layid + ')')
             self.hbox.addWidget(eval('self.' + box_id))
+            #TODO setminimumwidth
+
+        #self.tagsEdit.setText(values[3][1])
+        self.autolists = AutoLists()
+
+        self.completer = QCompleter(self.autolists.taxa, self)
+        self.completer.setCaseSensitivity(Qt.CaseInsensitive)
+        self.completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
+        self.completer.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
+        self.taxonEdit.setCompleter(self.completer)
+
+        #self.spEdit.setText(values[5][1])
+        #self.sourceEdit.setText(values[6][1])
+        #self.authorEdit.setText(values[7][1])
+        #self.rightsEdit.setText(values[8][1])
+        #self.sizeEdit.setCurrentIndex(idx)
+        #self.locationEdit.setText(values[10][1])
+        #self.cityEdit.setText(values[11][1])
+        #self.stateEdit.setText(values[12][1])
+        #self.countryEdit.setText(values[13][1])
 
         self.setMaximumHeight(180)
 
@@ -1046,7 +1064,7 @@ class DockEditor(QWidget):
         elif index.column() == 4:
             self.taxonEdit.setText(value.toString())
         elif index.column() == 5:
-            self.sppEdit.setText(value.toString())
+            self.spEdit.setText(value.toString())
         elif index.column() == 6:
             self.sourceEdit.setText(value.toString())
         elif index.column() == 7:
@@ -1076,7 +1094,7 @@ class DockEditor(QWidget):
             self.captionEdit.setText(values[2][1])
             self.tagsEdit.setText(values[3][1])
             self.taxonEdit.setText(values[4][1])
-            self.sppEdit.setText(values[5][1])
+            self.spEdit.setText(values[5][1])
             self.sourceEdit.setText(values[6][1])
             self.authorEdit.setText(values[7][1])
             self.rightsEdit.setText(values[8][1])
@@ -1107,7 +1125,7 @@ class DockEditor(QWidget):
                 QVariant(self.taxonEdit.text()),
                 Qt.EditRole)
         mainWidget.model.setData(self.values[5][0],
-                QVariant(self.sppEdit.text()),
+                QVariant(self.spEdit.text()),
                 Qt.EditRole)
         mainWidget.model.setData(self.values[6][0],
                 QVariant(self.sourceEdit.text()),
@@ -1134,6 +1152,38 @@ class DockEditor(QWidget):
                 QVariant(self.countryEdit.text()),
                 Qt.EditRole)
         mainWidget.setFocus(Qt.OtherFocusReason)
+
+
+class AutoLists():
+    def __init__(self):
+        self.autopickle = 'autocomplete'
+        try:
+            self.autocomplete = open(self.autopickle, 'rb')
+            self.autolists = pickle.load(self.autocomplete)
+            self.autocomplete.close()
+        except:
+            f = open(self.autopickle, 'wb')
+            self.autolists = {
+                    'tags': [],
+                    'taxa': [],
+                    'spp': [],
+                    'sources': [],
+                    'authors': [],
+                    'rights': [],
+                    'sizes': [],
+                    'locations': [],
+                    'cities': [],
+                    'states': [],
+                    'countries': [],
+                    }
+            pickle.dump(self.autolists, f)                    
+            f.close()
+        for k, v in self.autolists.iteritems():
+            if v:
+                v.sort()
+                setattr(self, k, QStringList(v))
+            else:
+                setattr(self, k, QStringList())
 
 
 class DockThumb(QWidget):
@@ -1470,9 +1520,9 @@ class InitPs():
 if __name__ == '__main__':
     initps = InitPs()
     app = QApplication(sys.argv)
-    app.setOrganizationName('CEBIMar-USP')
-    app.setOrganizationDomain('www.usp.br/cbm')
-    app.setApplicationName('VÉLIGER')
+    app.setOrganizationName(u'CEBIMar-USP')
+    app.setOrganizationDomain(u'www.usp.br/cbm')
+    app.setApplicationName(u'VÉLIGER')
     main = MainWindow()
 
     main.show()

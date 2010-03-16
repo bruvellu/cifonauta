@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 16 Mar 2010 05:32PM
+# Atualizado: 16 Mar 2010 06:17PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -1019,24 +1019,37 @@ class DockEditor(QWidget):
             self.hbox.addWidget(eval('self.' + box_id))
             #TODO setminimumwidth
 
-        #self.tagsEdit.setText(values[3][1])
+        # Inicia valores para o autocomplete
         self.autolists = AutoLists()
 
-        self.completer = QCompleter(self.autolists.taxa, self)
-        self.completer.setCaseSensitivity(Qt.CaseInsensitive)
-        self.completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
-        self.completer.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
+        #self.tagsEdit.setText(values[3][1])
+
+        self.completer = MainCompleter(self.autolists.taxa, self)
         self.taxonEdit.setCompleter(self.completer)
 
-        #self.spEdit.setText(values[5][1])
-        #self.sourceEdit.setText(values[6][1])
-        #self.authorEdit.setText(values[7][1])
-        #self.rightsEdit.setText(values[8][1])
-        #self.sizeEdit.setCurrentIndex(idx)
-        #self.locationEdit.setText(values[10][1])
-        #self.cityEdit.setText(values[11][1])
-        #self.stateEdit.setText(values[12][1])
-        #self.countryEdit.setText(values[13][1])
+        self.completer = MainCompleter(self.autolists.spp, self)
+        self.spEdit.setCompleter(self.completer)
+
+        self.completer = MainCompleter(self.autolists.sources, self)
+        self.sourceEdit.setCompleter(self.completer)
+
+        self.completer = MainCompleter(self.autolists.authors, self)
+        self.authorEdit.setCompleter(self.completer)
+
+        self.completer = MainCompleter(self.autolists.rights, self)
+        self.rightsEdit.setCompleter(self.completer)
+
+        self.completer = MainCompleter(self.autolists.locations, self)
+        self.locationEdit.setCompleter(self.completer)
+
+        self.completer = MainCompleter(self.autolists.cities, self)
+        self.cityEdit.setCompleter(self.completer)
+
+        self.completer = MainCompleter(self.autolists.states, self)
+        self.stateEdit.setCompleter(self.completer)
+
+        self.completer = MainCompleter(self.autolists.countries, self)
+        self.countryEdit.setCompleter(self.completer)
 
         self.setMaximumHeight(180)
 
@@ -1170,7 +1183,6 @@ class AutoLists():
                     'sources': [],
                     'authors': [],
                     'rights': [],
-                    'sizes': [],
                     'locations': [],
                     'cities': [],
                     'states': [],
@@ -1184,6 +1196,20 @@ class AutoLists():
                 setattr(self, k, QStringList(v))
             else:
                 setattr(self, k, QStringList())
+
+
+class MainCompleter(QCompleter):
+    '''Autocomplete principal.'''
+    def __init__(self, list, parent):
+        QCompleter.__init__(self, list, parent)
+
+        model = QStringListModel()
+        model.setStringList(list)
+
+        self.setModel(model)
+        self.setCaseSensitivity(Qt.CaseInsensitive)
+        self.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
+        self.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
 
 
 class DockThumb(QWidget):

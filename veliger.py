@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 16 Mar 2010 12:06PM
+# Atualizado: 16 Mar 2010 01:27PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -26,6 +26,8 @@ from iptcinfo import IPTCInfo
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
+import recursos
 
 __author__ = 'Bruno Vellutini'
 __copyright__ = 'Copyright 2010, CEBIMar-USP'
@@ -68,36 +70,36 @@ class MainWindow(QMainWindow):
         # Atribuições da MainWindow
         self.setCentralWidget(mainWidget)
         self.setWindowTitle(u'VÉLIGER - Editor de Metadados')
-        self.setWindowIcon(QIcon(u'./icons/python.svg'))
+        self.setWindowIcon(QIcon(u':/appicon.svg'))
         self.statusBar().showMessage(u'Pronto para editar!', 2000)
         self.menubar = self.menuBar()
 
         # Ações do menu
-        self.exit = QAction(QIcon(u'./icons/system-shutdown.png'),
+        self.exit = QAction(QIcon(u':/desligar.png'),
                 u'Sair', self)
         self.exit.setShortcut('Ctrl+Q')
         self.exit.setStatusTip(u'Fechar o programa')
         self.connect(self.exit, SIGNAL('triggered()'), SLOT('close()'))
 
-        self.openFile = QAction(QIcon(u'./icons/document-open.png'),
+        self.openFile = QAction(QIcon(u':/arquivo.png'),
                 u'Abrir arquivo(s)', self)
         self.openFile.setShortcut('Ctrl+O')
         self.openFile.setStatusTip(u'Abrir imagens')
         self.connect(self.openFile, SIGNAL('triggered()'), self.openfile_dialog)
 
-        self.openDir = QAction(QIcon(u'./icons/folder-new.png'),
+        self.openDir = QAction(QIcon(u':/pasta.png'),
                 u'Abrir pasta(s)', self)
         self.openDir.setShortcut('Ctrl+D')
         self.openDir.setStatusTip(u'Abrir pasta')
         self.connect(self.openDir, SIGNAL('triggered()'), self.opendir_dialog)
 
-        self.delRow = QAction(QIcon(u'./icons/edit-delete.png'),
+        self.delRow = QAction(QIcon(u':/deletar.png'),
                 u'Deletar entrada(s)', self)
         self.delRow.setShortcut('Ctrl+W')
         self.delRow.setStatusTip(u'Deletar entrada')
         self.connect(self.delRow, SIGNAL('triggered()'), self.delcurrent)
 
-        self.saveFile = QAction(QIcon(u'./icons/document-save.png'),
+        self.saveFile = QAction(QIcon(u':/salvar.png'),
                 u'Salvar metadados', self)
         self.saveFile.setShortcut('Ctrl+S')
         self.saveFile.setStatusTip(u'Salvar metadados')
@@ -106,7 +108,7 @@ class MainWindow(QMainWindow):
         salvo = lambda: self.changeStatus(u'Alterações salvas!')
         self.saveFile.triggered.connect(salvo)
 
-        self.writeMeta = QAction(QIcon(u'./icons/document-save-as.png'),
+        self.writeMeta = QAction(QIcon(u':/gravar.png'),
                 u'Gravar metadados', self)
         self.writeMeta.setShortcut('Ctrl+Shift+S')
         self.writeMeta.setStatusTip(u'Gravar metadados na imagem')
@@ -116,12 +118,12 @@ class MainWindow(QMainWindow):
                 u'Metadados gravados na(s) imagem(ns)')
         self.writeMeta.triggered.connect(salvo)
 
-        self.delAll = QAction(QIcon(u'./icons/edit-delete.png'),
+        self.delAll = QAction(QIcon(u':/deletar.png'),
                 u'Limpar tabela', self)
         self.delAll.setStatusTip(u'Deletar todas as entradas')
         self.connect(self.delAll, SIGNAL('triggered()'), self.cleartable)
 
-        self.convertChar = QAction(QIcon(u'./icons/document-import.png'),
+        self.convertChar = QAction(QIcon(u':/conversor.png'),
                 u'Converte codificação dos metadados', self)
         self.convertChar.setStatusTip(
                 u'Converter metadados das imagens selecionadas de Latin-1' +

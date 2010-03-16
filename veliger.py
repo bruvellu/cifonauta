@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 16 Mar 2010 01:27PM
+# Atualizado: 16 Mar 2010 02:14PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -1449,6 +1449,9 @@ class InitPs():
 if __name__ == '__main__':
     initps = InitPs()
     app = QApplication(sys.argv)
+    app.setOrganizationName('CEBIMar-USP')
+    app.setOrganizationDomain('www.usp.br/cbm')
+    app.setApplicationName('VÉLIGER')
     main = MainWindow()
 
     main.show()

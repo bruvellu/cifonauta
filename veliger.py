@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 16 Mar 2010 11:21AM
+# Atualizado: 16 Mar 2010 12:06PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -106,6 +106,16 @@ class MainWindow(QMainWindow):
         salvo = lambda: self.changeStatus(u'Alterações salvas!')
         self.saveFile.triggered.connect(salvo)
 
+        self.writeMeta = QAction(QIcon(u'./icons/document-save-as.png'),
+                u'Gravar metadados', self)
+        self.writeMeta.setShortcut('Ctrl+Shift+S')
+        self.writeMeta.setStatusTip(u'Gravar metadados na imagem')
+        self.connect(self.writeMeta, SIGNAL('triggered()'),
+                self.dockUnsaved.writeselected)
+        salvo = lambda: self.changeStatus(
+                u'Metadados gravados na(s) imagem(ns)')
+        self.writeMeta.triggered.connect(salvo)
+
         self.delAll = QAction(QIcon(u'./icons/edit-delete.png'),
                 u'Limpar tabela', self)
         self.delAll.setStatusTip(u'Deletar todas as entradas')
@@ -139,15 +149,20 @@ class MainWindow(QMainWindow):
         self.arquivo.addAction(self.saveFile)
         self.arquivo.addAction(self.delRow)
         self.arquivo.addSeparator()
+        self.arquivo.addAction(self.writeMeta)
+        self.arquivo.addSeparator()
         self.arquivo.addAction(self.exit)
 
         self.editar = self.menubar.addMenu('&Editar')
         self.editar.addAction(self.delAll)
-        self.editar.addAction(self.convertChar)
         self.editar.addSeparator()
         self.editar.addAction(self.toggleThumb)
         self.editar.addAction(self.toggleEditor)
         self.editar.addAction(self.toggleUnsaved)
+        self.editar.addSeparator()
+        self.editar.addAction(self.convertChar)
+
+        self.ajuda = self.menubar.addMenu('&Ajuda')
 
         # Toolbar
         self.toolbar = self.addToolBar('Ações')
@@ -251,45 +266,48 @@ class MainWindow(QMainWindow):
         imagem. Chama função que emitirá o sinal avisando a gravação foi
         completada com sucesso.        
         '''
-        for entry in entries:
-            index = self.model.index(0, 0, QModelIndex())
-            matches = self.model.match(index, 0, entry, -1,
-                    Qt.MatchContains)
-            if len(matches) == 1:
-                values = []
-                match = matches[0]
-                for col in xrange(mainWidget.ncols):
-                    index = self.model.index(match.row(), col, QModelIndex())
-                    value = self.model.data(index, Qt.DisplayRole)
-                    values.append(unicode(value.toString()))
-                filename = os.path.basename(values[0])
-                self.changeStatus(u'Gravando metadados em %s...' % filename)
-                write = self.writemeta(values)
-                if write == 0:
-                    self.changeStatus(u'%s atualizado!' % filename)
-                    continue
-                else:
-                    break
-        if write == 0:
-            mainWidget.emitsaved()
+        if entries:
+            for entry in entries:
+                index = self.model.index(0, 0, QModelIndex())
+                matches = self.model.match(index, 0, entry, -1,
+                        Qt.MatchContains)
+                if len(matches) == 1:
+                    values = []
+                    match = matches[0]
+                    for col in xrange(mainWidget.ncols):
+                        index = self.model.index(match.row(), col, QModelIndex())
+                        value = self.model.data(index, Qt.DisplayRole)
+                        values.append(unicode(value.toString()))
+                    filename = os.path.basename(values[0])
+                    self.changeStatus(u'Gravando metadados em %s...' % filename)
+                    write = self.writemeta(values)
+                    if write == 0:
+                        self.changeStatus(u'%s atualizado!' % filename)
+                        continue
+                    else:
+                        break
+            if write == 0:
+                mainWidget.emitsaved()
+            else:
+                self.changeStatus(u'%s deu erro!' % filename, 5000)
+                critical = QMessageBox()
+                critical.setWindowTitle(u'Erro de gravação!')
+                critical.setText(u'Metadados não foram gravados.')
+                critical.setInformativeText(
+                        u'%s pode ter mudado de local, nome ou ' % filename +
+                        'estar protegido contra gravação. Tente importá-lo ' +
+                        'novamente. O arquivo será retirado da lista de ' +
+                        'imagens modificadas. Deseja deletar a entrada da ' +
+                        'tabela principal também?')
+                critical.setIcon(QMessageBox.Critical)
+                critical.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+                critical.exec_()
+                self.setselection(filename)
+                mainWidget.emitlost(filename)
+                if critical == QMessageBox.Yes:
+                    self.delcurrent()
         else:
-            self.changeStatus(u'%s deu erro!' % filename, 5000)
-            critical = QMessageBox()
-            critical.setWindowTitle(u'Erro de gravação!')
-            critical.setText(u'Metadados não foram gravados.')
-            critical.setInformativeText(
-                    u'%s pode ter mudado de local, nome ou ' % filename +
-                    'estar protegido contra gravação. Tente importá-lo ' +
-                    'novamente. O arquivo será retirado da lista de ' +
-                    'imagens modificadas. Deseja deletar a entrada da ' +
-                    'tabela principal também?')
-            critical.setIcon(QMessageBox.Critical)
-            critical.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            critical.exec_()
-            self.setselection(filename)
-            mainWidget.emitlost(filename)
-            if critical == QMessageBox.Yes:
-                self.delcurrent()
+            self.changeStatus(u'Lista de entradas modificadas está vazia')
 
     def writemeta(self, values):
         '''Grava os metadados no arquivo.'''
@@ -1222,7 +1240,6 @@ class DockUnsaved(QWidget):
         self.addAction(self.clearselection)
 
         self.savebutton = QPushButton('&Gravar', self)
-        self.savebutton.setShortcut('Ctrl+Shift+S')
         if not self.model.mylist:
             self.savebutton.setDisabled(True)
 

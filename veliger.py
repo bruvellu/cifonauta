@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 15 Mar 2010 10:41AM
+# Atualizado: 16 Mar 2010 11:21AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -327,7 +327,8 @@ class MainWindow(QMainWindow):
             critical.setIcon(QMessageBox.Critical)
             critical.exec_()
         else:
-            print 'pronto!'
+            # Salva cache
+            self.cachetable()
             return 0
 
     def exiftool(self, values):
@@ -376,6 +377,8 @@ class MainWindow(QMainWindow):
             critical.setIcon(QMessageBox.Critical)
             critical.exec_()
         else:
+            # Salva cache
+            self.cachetable()
             return stdout
 
     def changeStatus(self, status, duration=2000):
@@ -410,6 +413,8 @@ class MainWindow(QMainWindow):
             t = t1 - t0
             self.changeStatus(u'%d imagens analisadas em %.2f s,' % (n_all, t) +
                     u' %d novas e %d duplicadas' % (n_new, n_dup), 10000)
+        # Salva cache
+        self.cachetable()
 
     def opendir_dialog(self):
         '''Abre janela para selecionar uma pasta.
@@ -463,6 +468,8 @@ class MainWindow(QMainWindow):
                 self.changeStatus(u'%d imagens analisadas em %.2f s,' % (n_all, t) +
                         u' %d novas e %d duplicadas' % (n_new, n_dup), 10000)
                 break
+        # Salva cache
+        self.cachetable()
             
     def createmeta(self, filepath, charset='utf-8'):
         '''Define as variáveis extraídas dos metadados (IPTC) da imagem.
@@ -476,7 +483,7 @@ class MainWindow(QMainWindow):
         info = IPTCInfo(filepath, True, charset)
         # Checando se o arquivo tem dados IPTC
         if len(info.data) < 4:
-            print 'Imagem não tem dados IPTC!'
+            print '%s não tem dados IPTC!' % filename
 
         # Definindo as variáveis                            # IPTC
         title = info.data['object name']                    # 5
@@ -625,6 +632,8 @@ class MainWindow(QMainWindow):
                 self.changeStatus(u'%d entradas deletadas' % n_del)
         else:
             self.changeStatus(u'Nenhuma entrada selecionada')
+        # Salva cache
+        self.cachetable()
 
     def cleartable(self):
         '''Remove todas as entradas da tabela.
@@ -655,14 +664,16 @@ class MainWindow(QMainWindow):
                     self.changeStatus(u'%d entradas deletadas' % rows)
                 else:
                     self.changeStatus(u'Nenhuma entrada selecionada')
+        # Salva cache
+        self.cachetable()
 
     def cachetable(self):
         '''Salva estado atual dos dados em arquivos externos.
         
         Cria backup dos conteúdos da tabela e da lista de imagens modificadas.
         '''
-        print 'Salvando cache...',
-        self.changeStatus(u'Salvando cache...')
+        print 'Backup...',
+        self.changeStatus(u'Salvando backup...')
         # Tabela
         tablecache = open(tablepickle, 'wb')
         entries = mainWidget.model.mydata
@@ -674,7 +685,7 @@ class MainWindow(QMainWindow):
         pickle.dump(entries, listcache)
         listcache.close()
         print 'pronto!'
-        self.changeStatus(u'Salvando cache... pronto!')
+        self.changeStatus(u'Salvando backup... pronto!')
 
     def closeEvent(self, event):
         '''O que fazer quando o programa for fechado.'''

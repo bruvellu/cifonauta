@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 17 Mar 2010 12:30PM
+# Atualizado: 17 Mar 2010 05:54PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -48,9 +48,11 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         # Definições
         global mainWidget
+        global options
         mainWidget = MainTable(datalist, header)
         self.model = mainWidget.model
-        self.autolists = AutoLists(autolists)
+        self.automodels = AutoModels(autolists)
+        options = PrefDialog(self)
         # Dock com thumbnail
         self.dockThumb = DockThumb()
         self.thumbDockWidget = QDockWidget(u'Thumbnail', self)
@@ -209,7 +211,7 @@ class MainWindow(QMainWindow):
 
     def openpref_dialog(self):
         '''Abre janela de opções.'''
-        self.options = PrefDialog(self)
+        options.exec_()
 
     def charconverter(self):
         '''Converte codificação de Latin-1 para UTF-8.
@@ -717,6 +719,16 @@ class MainWindow(QMainWindow):
         entries = self.dockUnsaved.mylist
         pickle.dump(entries, listcache)
         listcache.close()
+        # Completes 
+        autocache = open(autopickle, 'wb')
+        for k, v in autolists.iteritems():
+            comps = []
+            list = eval('self.automodels.' + k + '.stringList()')
+            for i in list:
+                comps.append(i)
+            autolists[k] = comps
+        pickle.dump(autolists, autocache)
+        autocache.close()
         print 'pronto!'
         self.changeStatus(u'Salvando backup... pronto!')
 
@@ -759,7 +771,7 @@ class PrefDialog(QDialog):
     def __init__(self, parent):
         QDialog.__init__(self, parent)
 
-        self.autolists = parent.autolists
+        self.automodels = parent.automodels
 
         self.geral = PrefsGerais()
         self.autocomplete = EditCompletion(self)
@@ -784,22 +796,37 @@ class PrefDialog(QDialog):
 
         self.setWindowTitle(u'Opções')
 
-        self.exec_()
-
     def emitrebuild(self):
-        self.emit(SIGNAL('rebuildcomplete()'))
+        print 'Rebuilding?'
+        self.emit(SIGNAL('rebuildcomplete(models)'), self.automodels)
 
 
 class EditCompletion(QWidget):
     def __init__(self, parent):
         QWidget.__init__(self, parent)
 
-        self.autolists = parent.autolists
+        self.lists = [
+                u'Marcadores',
+                u'Taxa',
+                u'Espécies',
+                u'Especialistas',
+                u'Autores',
+                u'Direitos',
+                u'Locais',
+                u'Cidades',
+                u'Estados',
+                u'Países',
+                ]
+        self.automenu = QComboBox()
+        self.automenu.addItems(self.lists)
 
-        self.model = QStringListModel(self.autolists.taxa)
+        self.model = parent.automodels.tags
         self.view = QListView()
         self.view.setModel(self.model)
         self.view.setAlternatingRowColors(True)
+
+        #self.view = self.buildview()
+        self.automodels = parent.automodels
 
         self.buttonbox = QGroupBox()
         self.insert = QPushButton(u'&Inserir', self)
@@ -810,9 +837,67 @@ class EditCompletion(QWidget):
         self.buttonbox.setLayout(self.buttonhbox)
 
         self.viewvbox = QVBoxLayout()
+        self.viewvbox.addWidget(self.automenu)
         self.viewvbox.addWidget(self.view)
         self.viewvbox.addWidget(self.buttonbox)
         self.setLayout(self.viewvbox)
+
+        self.connect(self.insert, SIGNAL('clicked()'),
+                self.insertrow)
+        self.connect(self.remove, SIGNAL('clicked()'),
+                self.removerow)
+        self.connect(self.automenu, SIGNAL('currentIndexChanged(QString)'),
+                self.buildview)
+        self.connect(self.model, SIGNAL('dataChanged(topLeft, bottomRight)'), self.sortmodel)
+
+    def sortmodel(self, topLeft, bottomRight):
+        '''Ordena dados do modelo.'''
+        print 'Ordenando...'
+        self.model.sort(0)
+
+    def buildview(self, list):
+        '''Gera view do modelo escolhido.'''
+        if list == u'Marcadores':
+            print list
+            self.model = self.automodels.tags
+        elif list == u'Taxa':
+            print list
+            self.model = self.automodels.taxa
+        elif list == u'Espécies':
+            print list
+            self.model = self.automodels.spp
+        elif list == u'Especialistas':
+            print list
+            self.model = self.automodels.sources
+        elif list == u'Autores':
+            print list
+            self.model = self.automodels.authors
+        elif list == u'Direitos':
+            print list
+            self.model = self.automodels.rights
+        elif list == u'Locais':
+            print list
+            self.model = self.automodels.locations
+        elif list == u'Cidades':
+            print list
+            self.model = self.automodels.cities
+        elif list == u'Estados':
+            print list
+            self.model = self.automodels.states
+        elif list == u'Países':
+            print list
+            self.model = self.automodels.countries
+        self.view.setModel(self.model)
+
+    def insertrow(self):
+        '''Insere linha no modelo.'''
+        self.model.insertRows(0, 1, QModelIndex())
+        
+    def removerow(self):
+        '''Remove linha do modelo.'''
+        indexes = self.view.selectedIndexes()
+        for index in indexes:
+            self.model.removeRows(index.row(), 1, QModelIndex())
         
 
 class PrefsGerais(QWidget):
@@ -1098,8 +1183,7 @@ class DockEditor(QWidget):
             #TODO setminimumwidth
 
         # Inicia valores para o autocomplete
-        self.autolists = parent.autolists
-        self.autolistgen()
+        self.autolistgen(parent.automodels)
 
         self.setMaximumHeight(180)
 
@@ -1116,42 +1200,42 @@ class DockEditor(QWidget):
                 )
 
         self.connect(
-                mainWidget,
-                SIGNAL('rebuildcomplete)'),
+                options,
+                SIGNAL('rebuildcomplete(models)'),
                 self.autolistgen
                 )
 
-    def autolistgen(self):
+    def autolistgen(self, models):
         '''Gera autocompletadores dos campos.'''
         print 'Importando listas de autocompleção...'
 
         #self.tagsEdit.setText(values[3][1])
 
-        self.completer = MainCompleter(self.autolists.taxa, self)
+        self.completer = MainCompleter(models.taxa.stringList(), self)
         self.taxonEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(self.autolists.spp, self)
+        self.completer = MainCompleter(models.spp.stringList(), self)
         self.spEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(self.autolists.sources, self)
+        self.completer = MainCompleter(models.sources.stringList(), self)
         self.sourceEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(self.autolists.authors, self)
+        self.completer = MainCompleter(models.authors.stringList(), self)
         self.authorEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(self.autolists.rights, self)
+        self.completer = MainCompleter(models.rights.stringList(), self)
         self.rightsEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(self.autolists.locations, self)
+        self.completer = MainCompleter(models.locations.stringList(), self)
         self.locationEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(self.autolists.cities, self)
+        self.completer = MainCompleter(models.cities.stringList(), self)
         self.cityEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(self.autolists.states, self)
+        self.completer = MainCompleter(models.states.stringList(), self)
         self.stateEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(self.autolists.countries, self)
+        self.completer = MainCompleter(models.countries.stringList(), self)
         self.countryEdit.setCompleter(self.completer)
 
     def setsingle(self, index, value, oldvalue):
@@ -1256,16 +1340,15 @@ class DockEditor(QWidget):
         mainWidget.setFocus(Qt.OtherFocusReason)
 
 
-class AutoLists():
+class AutoModels():
     def __init__(self, list):
         self.autolists = list
         for k, v in self.autolists.iteritems():
-            print k, v
             if v:
                 v.sort()
-                setattr(self, k, QStringList(v))
+                setattr(self, k, QStringListModel(v))
             else:
-                setattr(self, k, QStringList())
+                setattr(self, k, QStringListModel())
 
 
 class MainCompleter(QCompleter):

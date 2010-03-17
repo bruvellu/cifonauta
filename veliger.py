@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 16 Mar 2010 06:17PM
+# Atualizado: 17 Mar 2010 12:30PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -50,6 +50,7 @@ class MainWindow(QMainWindow):
         global mainWidget
         mainWidget = MainTable(datalist, header)
         self.model = mainWidget.model
+        self.autolists = AutoLists(autolists)
         # Dock com thumbnail
         self.dockThumb = DockThumb()
         self.thumbDockWidget = QDockWidget(u'Thumbnail', self)
@@ -59,7 +60,7 @@ class MainWindow(QMainWindow):
         self.unsavedDockWidget = QDockWidget(u'Modificadas', self)
         self.unsavedDockWidget.setWidget(self.dockUnsaved)
         # Dock com editor de metadados
-        self.dockEditor = DockEditor()
+        self.dockEditor = DockEditor(self)
         self.editorDockWidget = QDockWidget(u'Editor', self)
         self.editorDockWidget.setAllowedAreas(
                 Qt.TopDockWidgetArea |
@@ -131,6 +132,12 @@ class MainWindow(QMainWindow):
         self.connect(self.convertChar, SIGNAL('triggered()'),
                 self.charconverter)
 
+        self.openPref = QAction(QIcon(u':/options.png'),
+                u'Opções', self)
+        self.openPref.setStatusTip(u'Abrir opções do programa')
+        self.connect(self.openPref, SIGNAL('triggered()'),
+                self.openpref_dialog)
+
         # Toggle dock widgets
         self.toggleThumb = self.thumbDockWidget.toggleViewAction()
         self.toggleThumb.setShortcut('Shift+T')
@@ -163,6 +170,8 @@ class MainWindow(QMainWindow):
         self.editar.addAction(self.toggleUnsaved)
         self.editar.addSeparator()
         self.editar.addAction(self.convertChar)
+        self.editar.addSeparator()
+        self.editar.addAction(self.openPref)
 
         self.ajuda = self.menubar.addMenu('&Ajuda')
 
@@ -197,6 +206,10 @@ class MainWindow(QMainWindow):
                 )
 
         self.readsettings()
+
+    def openpref_dialog(self):
+        '''Abre janela de opções.'''
+        self.options = PrefDialog(self)
 
     def charconverter(self):
         '''Converte codificação de Latin-1 para UTF-8.
@@ -742,6 +755,71 @@ class MainWindow(QMainWindow):
             event.ignore()
 
 
+class PrefDialog(QDialog):
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
+
+        self.autolists = parent.autolists
+
+        self.geral = PrefsGerais()
+        self.autocomplete = EditCompletion(self)
+
+        self.tabwidget = QTabWidget()
+        self.tabwidget.addTab(self.geral, u'&Gerais')
+        self.tabwidget.addTab(self.autocomplete, u'&Autocompletador')
+
+        self.buttons = QDialogButtonBox(
+                QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+
+        self.connect(self.buttons, SIGNAL('accepted()'), self,
+                SLOT('accept()'))
+        self.connect(self.buttons, SIGNAL('accepted()'), self.emitrebuild)
+        self.connect(self.buttons, SIGNAL('rejected()'), self,
+                SLOT('reject()'))
+
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.tabwidget)
+        self.layout.addWidget(self.buttons)
+        self.setLayout(self.layout)
+
+        self.setWindowTitle(u'Opções')
+
+        self.exec_()
+
+    def emitrebuild(self):
+        self.emit(SIGNAL('rebuildcomplete()'))
+
+
+class EditCompletion(QWidget):
+    def __init__(self, parent):
+        QWidget.__init__(self, parent)
+
+        self.autolists = parent.autolists
+
+        self.model = QStringListModel(self.autolists.taxa)
+        self.view = QListView()
+        self.view.setModel(self.model)
+        self.view.setAlternatingRowColors(True)
+
+        self.buttonbox = QGroupBox()
+        self.insert = QPushButton(u'&Inserir', self)
+        self.remove = QPushButton(u'&Remover', self)
+        self.buttonhbox = QHBoxLayout()
+        self.buttonhbox.addWidget(self.remove)
+        self.buttonhbox.addWidget(self.insert)
+        self.buttonbox.setLayout(self.buttonhbox)
+
+        self.viewvbox = QVBoxLayout()
+        self.viewvbox.addWidget(self.view)
+        self.viewvbox.addWidget(self.buttonbox)
+        self.setLayout(self.viewvbox)
+        
+
+class PrefsGerais(QWidget):
+    def __init__(self):
+        QWidget.__init__(self)
+
+
 class MainTable(QTableView):
     '''Tabela principal com entradas.'''
     def __init__(self, datalist, header, *args):
@@ -962,8 +1040,8 @@ class TableModel(QAbstractTableModel):
 
 class DockEditor(QWidget):
     '''Dock com campos para edição dos metadados.'''
-    def __init__(self):
-        QWidget.__init__(self)
+    def __init__(self, parent):
+        QWidget.__init__(self, parent)
 
         varnames = [
                 ['title', 'caption', 'tags'],
@@ -1020,7 +1098,32 @@ class DockEditor(QWidget):
             #TODO setminimumwidth
 
         # Inicia valores para o autocomplete
-        self.autolists = AutoLists()
+        self.autolists = parent.autolists
+        self.autolistgen()
+
+        self.setMaximumHeight(180)
+
+        self.connect(
+                mainWidget,
+                SIGNAL('thisIsCurrent(values)'),
+                self.setcurrent
+                )
+
+        self.connect(
+                mainWidget.model,
+                SIGNAL('dataChanged(index, value, oldvalue)'),
+                self.setsingle
+                )
+
+        self.connect(
+                mainWidget,
+                SIGNAL('rebuildcomplete)'),
+                self.autolistgen
+                )
+
+    def autolistgen(self):
+        '''Gera autocompletadores dos campos.'''
+        print 'Importando listas de autocompleção...'
 
         #self.tagsEdit.setText(values[3][1])
 
@@ -1050,20 +1153,6 @@ class DockEditor(QWidget):
 
         self.completer = MainCompleter(self.autolists.countries, self)
         self.countryEdit.setCompleter(self.completer)
-
-        self.setMaximumHeight(180)
-
-        self.connect(
-                mainWidget,
-                SIGNAL('thisIsCurrent(values)'),
-                self.setcurrent
-                )
-
-        self.connect(
-                mainWidget.model,
-                SIGNAL('dataChanged(index, value, oldvalue)'),
-                self.setsingle
-                )
 
     def setsingle(self, index, value, oldvalue):
         '''Atualiza campo de edição correspondente quando dado é alterado.'''
@@ -1168,29 +1257,10 @@ class DockEditor(QWidget):
 
 
 class AutoLists():
-    def __init__(self):
-        self.autopickle = 'autocomplete'
-        try:
-            self.autocomplete = open(self.autopickle, 'rb')
-            self.autolists = pickle.load(self.autocomplete)
-            self.autocomplete.close()
-        except:
-            f = open(self.autopickle, 'wb')
-            self.autolists = {
-                    'tags': [],
-                    'taxa': [],
-                    'spp': [],
-                    'sources': [],
-                    'authors': [],
-                    'rights': [],
-                    'locations': [],
-                    'cities': [],
-                    'states': [],
-                    'countries': [],
-                    }
-            pickle.dump(self.autolists, f)                    
-            f.close()
+    def __init__(self, list):
+        self.autolists = list
         for k, v in self.autolists.iteritems():
+            print k, v
             if v:
                 v.sort()
                 setattr(self, k, QStringList(v))
@@ -1338,7 +1408,7 @@ class DockUnsaved(QWidget):
         self.clearselection.triggered.connect(self.clear)
         self.addAction(self.clearselection)
 
-        self.savebutton = QPushButton('&Gravar', self)
+        self.savebutton = QPushButton(u'&Gravar', self)
         if not self.model.mylist:
             self.savebutton.setDisabled(True)
 
@@ -1494,12 +1564,14 @@ class InitPs():
     def __init__(self):
         global tablepickle
         global listpickle
+        global autopickle
         global header
         global datalist
         global updatelist
+        global autolists
         global thumbdir
 
-        thumbdir = './thumbs'
+        thumbdir = 'thumbs'
 
         # Redefine o stdout para ser flushed após print
         sys.stdout = FlushFile(sys.stdout)
@@ -1542,6 +1614,29 @@ class InitPs():
             f = open(listpickle, 'wb')
             f.close()
             updatelist = []
+
+        # Nome do arquivo Pickle para autocomplete
+        autopickle = 'autocomplete'
+        try:
+            autocomplete = open(autopickle, 'rb')
+            autolists = pickle.load(autocomplete)
+            autocomplete.close()
+        except:
+            f = open(autopickle, 'wb')
+            autolists = {
+                    'tags': [],
+                    'taxa': [],
+                    'spp': [],
+                    'sources': [],
+                    'authors': [],
+                    'rights': [],
+                    'locations': [],
+                    'cities': [],
+                    'states': [],
+                    'countries': [],
+                    }
+            pickle.dump(autolists, f)                    
+            f.close()
 
 if __name__ == '__main__':
     initps = InitPs()

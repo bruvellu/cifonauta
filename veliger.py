@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 17 Mar 2010 05:54PM
+# Atualizado: 18 Mar 2010 01:02AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -53,6 +53,13 @@ class MainWindow(QMainWindow):
         self.model = mainWidget.model
         self.automodels = AutoModels(autolists)
         options = PrefDialog(self)
+        #TODO Tagcomplete
+        self.tageditor = CompleterLineEdit(QLineEdit)
+        self.tagcompleter = TagCompleter(self.automodels.tags,
+                self.tageditor)
+        self.tagcompleter.setCaseSensitivity(Qt.CaseInsensitive)
+        #self.tagcompleter.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
+        self.tagcompleter.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
         # Dock com thumbnail
         self.dockThumb = DockThumb()
         self.thumbDockWidget = QDockWidget(u'Thumbnail', self)
@@ -206,6 +213,12 @@ class MainWindow(QMainWindow):
                 SIGNAL('syncSelection(filename)'),
                 self.setselection
                 )
+        #TODO Tagcomplete
+        self.connect(self.tageditor,
+                SIGNAL('text_changed(PyQt_PyObject, PyQt_PyObject)'),
+                self.tagcompleter.update)
+        self.connect(self.tagcompleter, SIGNAL('activated(QString)'),
+                self.tageditor.complete_text)
 
         self.readsettings()
 
@@ -797,7 +810,6 @@ class PrefDialog(QDialog):
         self.setWindowTitle(u'Opções')
 
     def emitrebuild(self):
-        print 'Rebuilding?'
         self.emit(SIGNAL('rebuildcomplete(models)'), self.automodels)
 
 
@@ -825,7 +837,6 @@ class EditCompletion(QWidget):
         self.view.setModel(self.model)
         self.view.setAlternatingRowColors(True)
 
-        #self.view = self.buildview()
         self.automodels = parent.automodels
 
         self.buttonbox = QGroupBox()
@@ -848,44 +859,28 @@ class EditCompletion(QWidget):
                 self.removerow)
         self.connect(self.automenu, SIGNAL('currentIndexChanged(QString)'),
                 self.buildview)
-        self.connect(self.model, SIGNAL('dataChanged(topLeft, bottomRight)'), self.sortmodel)
-
-    def sortmodel(self, topLeft, bottomRight):
-        '''Ordena dados do modelo.'''
-        print 'Ordenando...'
-        self.model.sort(0)
 
     def buildview(self, list):
         '''Gera view do modelo escolhido.'''
         if list == u'Marcadores':
-            print list
             self.model = self.automodels.tags
         elif list == u'Taxa':
-            print list
             self.model = self.automodels.taxa
         elif list == u'Espécies':
-            print list
             self.model = self.automodels.spp
         elif list == u'Especialistas':
-            print list
             self.model = self.automodels.sources
         elif list == u'Autores':
-            print list
             self.model = self.automodels.authors
         elif list == u'Direitos':
-            print list
             self.model = self.automodels.rights
         elif list == u'Locais':
-            print list
             self.model = self.automodels.locations
         elif list == u'Cidades':
-            print list
             self.model = self.automodels.cities
         elif list == u'Estados':
-            print list
             self.model = self.automodels.states
         elif list == u'Países':
-            print list
             self.model = self.automodels.countries
         self.view.setModel(self.model)
 
@@ -1147,6 +1142,9 @@ class DockEditor(QWidget):
                 '>100 mm'
                 ]
 
+        self.tageditor = parent.tageditor
+        self.tagcompleter = parent.tagcompleter
+
         self.hbox = QHBoxLayout()
         self.setLayout(self.hbox)
 
@@ -1167,6 +1165,8 @@ class DockEditor(QWidget):
                 elif var == 'size':
                     setattr(self, var + e, QComboBox())
                     eval('self.' + var + e + '.addItems(self.sizes)')
+                elif var == 'tags':
+                    setattr(self, var + e, self.tageditor)
                 else:
                     setattr(self, var + e, QLineEdit())
                 label = eval('self.' + var)
@@ -1207,35 +1207,37 @@ class DockEditor(QWidget):
 
     def autolistgen(self, models):
         '''Gera autocompletadores dos campos.'''
-        print 'Importando listas de autocompleção...'
+        #print 'Importando listas de autocompleção...'
 
+        #TODO Tagcomplete
         #self.tagsEdit.setText(values[3][1])
+        self.tagcompleter.setWidget(self.tageditor)
 
-        self.completer = MainCompleter(models.taxa.stringList(), self)
+        self.completer = MainCompleter(models.taxa, self)
         self.taxonEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(models.spp.stringList(), self)
+        self.completer = MainCompleter(models.spp, self)
         self.spEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(models.sources.stringList(), self)
+        self.completer = MainCompleter(models.sources, self)
         self.sourceEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(models.authors.stringList(), self)
+        self.completer = MainCompleter(models.authors, self)
         self.authorEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(models.rights.stringList(), self)
+        self.completer = MainCompleter(models.rights, self)
         self.rightsEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(models.locations.stringList(), self)
+        self.completer = MainCompleter(models.locations, self)
         self.locationEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(models.cities.stringList(), self)
+        self.completer = MainCompleter(models.cities, self)
         self.cityEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(models.states.stringList(), self)
+        self.completer = MainCompleter(models.states, self)
         self.stateEdit.setCompleter(self.completer)
 
-        self.completer = MainCompleter(models.countries.stringList(), self)
+        self.completer = MainCompleter(models.countries, self)
         self.countryEdit.setCompleter(self.completer)
 
     def setsingle(self, index, value, oldvalue):
@@ -1353,16 +1355,59 @@ class AutoModels():
 
 class MainCompleter(QCompleter):
     '''Autocomplete principal.'''
-    def __init__(self, list, parent):
-        QCompleter.__init__(self, list, parent)
-
-        model = QStringListModel()
-        model.setStringList(list)
+    def __init__(self, model, parent):
+        QCompleter.__init__(self, model, parent)
 
         self.setModel(model)
         self.setCaseSensitivity(Qt.CaseInsensitive)
-        self.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
+        #self.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
         self.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
+
+#TODO Tagcomplete
+class TagCompleter(QCompleter):
+    def __init__(self, model, parent):
+        QCompleter.__init__(self, model, parent)
+        self.model = model
+
+    def update(self, text_tags, completion_prefix):
+        #tags = self.list.difference(text_tags)
+        #model = QStringListModel(tags, self)
+        self.setModel(self.model)
+
+        self.setCompletionPrefix(completion_prefix)
+        if completion_prefix.strip() != '':
+            self.complete()
+
+#TODO Tagcomplete
+class CompleterLineEdit(QLineEdit):
+    def __init__(self, *args):
+        QLineEdit.__init__(self)
+
+        self.connect(self, SIGNAL('textChanged(QString)'), self.text_changed)
+
+    def text_changed(self, text):
+        all_text = unicode(text)
+        text = all_text[:self.cursorPosition()]
+        prefix = text.split(',')[-1].strip()
+
+        text_tags = []
+        for t in all_text.split(','):
+            t1 = unicode(t).strip()
+            if t1 != '':
+                text_tags.append(t)
+        text_tags = list(set(text_tags))
+
+        self.emit(SIGNAL('text_changed(PyQt_PyObject, PyQt_PyObject)'),
+            text_tags, prefix)
+
+    def complete_text(self, text):
+        cursor_pos = self.cursorPosition()
+        before_text = unicode(self.text())[:cursor_pos]
+        after_text = unicode(self.text())[cursor_pos:]
+        prefix_len = len(before_text.split(',')[-1].strip())
+        self.setText('%s%s, %s' % (before_text[:cursor_pos - prefix_len], text,
+            after_text))
+        self.setCursorPosition(cursor_pos - prefix_len + len(text) + 2)
 
 
 class DockThumb(QWidget):

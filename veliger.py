@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 18 Mar 2010 06:17PM
+# Atualizado: 18 Mar 2010 07:16PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -364,7 +364,7 @@ class MainWindow(QMainWindow):
             else:
                 keywords = values[3].split(',')
                 keywords = [keyword.lower().strip() for keyword in keywords if
-                        keyword != '']
+                        keyword.strip() != '']
                 info.data['keywords'] = list(set(keywords))         # keywords
             info.save()
         except IOError:
@@ -545,7 +545,7 @@ class MainWindow(QMainWindow):
         category = info.data['headline']                    # 105
         copyright = info.data['copyright notice']           # 116
         caption = info.data['caption/abstract']             # 120
-        sp = info.data['original transmission reference']  # 103
+        sp = info.data['original transmission reference']   # 103
         scale = info.data['special instructions']           # 40
         source = info.data['source']                        # 115
 
@@ -570,14 +570,18 @@ class MainWindow(QMainWindow):
                 country,
                 timestamp,
                 ]
-        # Converte valores dos metadados vazios (None) para string em branco
-        # FIXME Checar se isso está funcionando direito...
-        for index in [index for index, field in enumerate(entrymeta) if \
-                field is None]:
-            field = u''
-            entrymeta[index] = field
+        if entrymeta[3] != '':
+            entrymeta[3] = entrymeta[3] + ', '
         else:
             pass
+        # Converte valores dos metadados vazios (None) para string em branco
+        # FIXME Checar se isso está funcionando direito...
+        #for index in [index for index, field in enumerate(entrymeta) if \
+        #        field is None]:
+        #    field = u''
+        #    entrymeta[index] = field
+        #else:
+        #    pass
 
         self.createthumbs(filepath)
 

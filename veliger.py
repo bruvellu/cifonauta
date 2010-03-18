@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 18 Mar 2010 01:02AM
+# Atualizado: 18 Mar 2010 11:09AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -58,7 +58,7 @@ class MainWindow(QMainWindow):
         self.tagcompleter = TagCompleter(self.automodels.tags,
                 self.tageditor)
         self.tagcompleter.setCaseSensitivity(Qt.CaseInsensitive)
-        #self.tagcompleter.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
+        self.tagcompleter.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
         self.tagcompleter.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
         # Dock com thumbnail
         self.dockThumb = DockThumb()
@@ -781,6 +781,7 @@ class MainWindow(QMainWindow):
 
 
 class PrefDialog(QDialog):
+    '''Janela de preferências.'''
     def __init__(self, parent):
         QDialog.__init__(self, parent)
 
@@ -810,10 +811,18 @@ class PrefDialog(QDialog):
         self.setWindowTitle(u'Opções')
 
     def emitrebuild(self):
+        '''Emite sinal com modelos atualizados e ordenados.'''
+        models = dir(self.automodels)
+        excludes = ['__doc__', '__init__', '__module__', 'autolists']
+        for ex in excludes:
+            models.remove(ex)
+        for model in models:
+            eval('self.automodels.' + model + '.sort(0)')
         self.emit(SIGNAL('rebuildcomplete(models)'), self.automodels)
 
 
 class EditCompletion(QWidget):
+    '''Editor dos valores para autocompletar campos de edição.'''
     def __init__(self, parent):
         QWidget.__init__(self, parent)
 
@@ -896,6 +905,7 @@ class EditCompletion(QWidget):
         
 
 class PrefsGerais(QWidget):
+    '''Opções gerais do programa.'''
     def __init__(self):
         QWidget.__init__(self)
 
@@ -1343,6 +1353,7 @@ class DockEditor(QWidget):
 
 
 class AutoModels():
+    '''Cria modelos para autocompletar campos de edição.'''
     def __init__(self, list):
         self.autolists = list
         for k, v in self.autolists.iteritems():
@@ -1360,7 +1371,7 @@ class MainCompleter(QCompleter):
 
         self.setModel(model)
         self.setCaseSensitivity(Qt.CaseInsensitive)
-        #self.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
+        self.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
         self.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
 
 #TODO Tagcomplete

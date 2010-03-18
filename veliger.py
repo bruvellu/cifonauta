@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 18 Mar 2010 11:09AM
+# Atualizado: 18 Mar 2010 06:17PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -362,9 +362,10 @@ class MainWindow(QMainWindow):
             if values[3] == '' or values[3] is None:
                 info.keywords = []                                  # keywords
             else:
-                keywords = values[3].split(', ')
-                keywords = [keyword.lower() for keyword in keywords]
-                info.data['keywords'] = keywords                    # keywords
+                keywords = values[3].split(',')
+                keywords = [keyword.lower().strip() for keyword in keywords if
+                        keyword != '']
+                info.data['keywords'] = list(set(keywords))         # keywords
             info.save()
         except IOError:
             print '\nOcorreu algum erro. '
@@ -1376,6 +1377,7 @@ class MainCompleter(QCompleter):
 
 #TODO Tagcomplete
 class TagCompleter(QCompleter):
+    '''Completador de marcadores.'''
     def __init__(self, model, parent):
         QCompleter.__init__(self, model, parent)
         self.model = model
@@ -1391,6 +1393,7 @@ class TagCompleter(QCompleter):
 
 #TODO Tagcomplete
 class CompleterLineEdit(QLineEdit):
+    '''Editor especial para marcadores.'''
     def __init__(self, *args):
         QLineEdit.__init__(self)
 

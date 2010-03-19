@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 19 Mar 2010 03:21PM
+# Atualizado: 19 Mar 2010 04:35PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -52,7 +52,9 @@ class MainWindow(QMainWindow):
         mainWidget = MainTable(datalist, header)
         self.model = mainWidget.model
         self.automodels = AutoModels(autolists)
-        options = PrefDialog(self)
+        options = PrefsDialog(self)
+        self.help = ManualDialog(self)
+        self.about = AboutDialog(self)
         # Tagcompleter
         self.tageditor = CompleterLineEdit(QLineEdit)
         self.tagcompleter = TagCompleter(self.automodels.tags,
@@ -147,6 +149,18 @@ class MainWindow(QMainWindow):
         self.connect(self.openPref, SIGNAL('triggered()'),
                 self.openpref_dialog)
 
+        self.openManual = QAction(QIcon(u':/manual.png'),
+                u'Manual', self)
+        self.openManual.setStatusTip(u'Abrir manual de instruções do programa')
+        self.connect(self.openManual, SIGNAL('triggered()'),
+                self.openmanual_dialog)
+
+        self.openAbout = QAction(QIcon(u':/sobre.png'),
+                u'Sobre', self)
+        self.openAbout.setStatusTip(u'Sobre o programa')
+        self.connect(self.openAbout, SIGNAL('triggered()'),
+                self.openabout_dialog)
+
         # Toggle dock widgets
         self.toggleThumb = self.thumbDockWidget.toggleViewAction()
         self.toggleThumb.setShortcut('Shift+T')
@@ -183,6 +197,9 @@ class MainWindow(QMainWindow):
         self.editar.addAction(self.openPref)
 
         self.ajuda = self.menubar.addMenu('&Ajuda')
+        self.ajuda.addAction(self.openManual)
+        self.ajuda.addSeparator()
+        self.ajuda.addAction(self.openAbout)
 
         # Toolbar
         self.toolbar = self.addToolBar('Ações')
@@ -225,6 +242,14 @@ class MainWindow(QMainWindow):
     def openpref_dialog(self):
         '''Abre janela de opções.'''
         options.exec_()
+
+    def openmanual_dialog(self):
+        '''Abre janela do manual de instruções.'''
+        self.help.exec_()
+
+    def openabout_dialog(self):
+        '''Abre janela sobre o programa.'''
+        self.about.exec_()
 
     def charconverter(self):
         '''Converte codificação de Latin-1 para UTF-8.
@@ -787,7 +812,19 @@ class MainWindow(QMainWindow):
             event.ignore()
 
 
-class PrefDialog(QDialog):
+class ManualDialog(QDialog):
+    '''Janela do manual de instruções.'''
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
+
+
+class AboutDialog(QDialog):
+    '''Janela com informações sobre o programa.'''
+    def __init__(self, parent):
+        QDialog.__init__(self, parent)
+
+
+class PrefsDialog(QDialog):
     '''Janela de preferências.'''
     def __init__(self, parent):
         QDialog.__init__(self, parent)

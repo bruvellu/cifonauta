@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 19 Mar 2010 11:13AM
+# Atualizado: 19 Mar 2010 11:36AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -254,7 +254,7 @@ class MainWindow(QMainWindow):
                 for row in indexes:
                     index = mainWidget.model.index(row, 0, QModelIndex())
                     filepath = mainWidget.model.data(index, Qt.DisplayRole)
-                    entries.append(unicode(filepath.toString()))
+                    entries.append(filepath.toString())
                 self.delcurrent()
             else:
                 for entry in self.model.mydata:
@@ -577,12 +577,12 @@ class MainWindow(QMainWindow):
             pass
         # Converte valores dos metadados vazios (None) para string em branco
         # FIXME Checar se isso está funcionando direito...
-        #for index in [index for index, field in enumerate(entrymeta) if \
-        #        field is None]:
-        #    field = u''
-        #    entrymeta[index] = field
-        #else:
-        #    pass
+        for index in [index for index, field in enumerate(entrymeta) if \
+                field is None]:
+            field = u''
+            entrymeta[index] = field
+        else:
+            pass
 
         self.createthumbs(filepath)
 

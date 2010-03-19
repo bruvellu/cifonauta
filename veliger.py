@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 18 Mar 2010 07:16PM
+# Atualizado: 19 Mar 2010 11:13AM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -53,7 +53,7 @@ class MainWindow(QMainWindow):
         self.model = mainWidget.model
         self.automodels = AutoModels(autolists)
         options = PrefDialog(self)
-        #TODO Tagcomplete
+        # Tagcompleter
         self.tageditor = CompleterLineEdit(QLineEdit)
         self.tagcompleter = TagCompleter(self.automodels.tags,
                 self.tageditor)
@@ -213,7 +213,7 @@ class MainWindow(QMainWindow):
                 SIGNAL('syncSelection(filename)'),
                 self.setselection
                 )
-        #TODO Tagcomplete
+
         self.connect(self.tageditor,
                 SIGNAL('text_changed(PyQt_PyObject, PyQt_PyObject)'),
                 self.tagcompleter.update)
@@ -385,8 +385,9 @@ class MainWindow(QMainWindow):
 
         Usa subprocesso para chamar o exiftool, que gravará os metadados
         modificados na imagem.
+
+        Função não utilizada, mas pode ser útil algum dia.
         '''
-        #TODO Como funcionará no Windows? Será que o PIL pode substituir?
         try:
             shellcall = [
                     'exiftool',
@@ -853,7 +854,10 @@ class EditCompletion(QWidget):
 
         self.automodels = parent.automodels
 
-        self.buttonbox = QGroupBox()
+        self.popmodels = QPushButton(
+                u'&Extrair valores das imagens abertas', self)
+
+        self.buttonbox = QWidget()
         self.insert = QPushButton(u'&Inserir', self)
         self.remove = QPushButton(u'&Remover', self)
         self.buttonhbox = QHBoxLayout()
@@ -863,38 +867,41 @@ class EditCompletion(QWidget):
 
         self.viewvbox = QVBoxLayout()
         self.viewvbox.addWidget(self.automenu)
-        self.viewvbox.addWidget(self.view)
         self.viewvbox.addWidget(self.buttonbox)
+        self.viewvbox.addWidget(self.view)
+        self.viewvbox.addWidget(self.popmodels)
         self.setLayout(self.viewvbox)
 
         self.connect(self.insert, SIGNAL('clicked()'),
                 self.insertrow)
         self.connect(self.remove, SIGNAL('clicked()'),
                 self.removerow)
+        self.connect(self.popmodels, SIGNAL('clicked()'),
+                self.populate)
         self.connect(self.automenu, SIGNAL('currentIndexChanged(QString)'),
                 self.buildview)
 
-    def buildview(self, list):
+    def buildview(self, modellist):
         '''Gera view do modelo escolhido.'''
-        if list == u'Marcadores':
+        if modellist == u'Marcadores':
             self.model = self.automodels.tags
-        elif list == u'Taxa':
+        elif modellist == u'Taxa':
             self.model = self.automodels.taxa
-        elif list == u'Espécies':
+        elif modellist == u'Espécies':
             self.model = self.automodels.spp
-        elif list == u'Especialistas':
+        elif modellist == u'Especialistas':
             self.model = self.automodels.sources
-        elif list == u'Autores':
+        elif modellist == u'Autores':
             self.model = self.automodels.authors
-        elif list == u'Direitos':
+        elif modellist == u'Direitos':
             self.model = self.automodels.rights
-        elif list == u'Locais':
+        elif modellist == u'Locais':
             self.model = self.automodels.locations
-        elif list == u'Cidades':
+        elif modellist == u'Cidades':
             self.model = self.automodels.cities
-        elif list == u'Estados':
+        elif modellist == u'Estados':
             self.model = self.automodels.states
-        elif list == u'Países':
+        elif modellist == u'Países':
             self.model = self.automodels.countries
         self.view.setModel(self.model)
 
@@ -907,7 +914,58 @@ class EditCompletion(QWidget):
         indexes = self.view.selectedIndexes()
         for index in indexes:
             self.model.removeRows(index.row(), 1, QModelIndex())
-        
+
+    def populate(self):
+        '''Extrai valores das fotos e popula modelo.'''
+        modellist = self.model.stringList()
+        setlist = set(modellist)
+        current = self.automenu.currentText()
+        if current == u'Marcadores':
+            col = 3
+        elif current == u'Taxa':
+            col = 4
+        elif current == u'Espécies':
+            col = 5
+        elif current == u'Especialistas':
+            col = 6
+        elif current == u'Autores':
+            col = 7
+        elif current == u'Direitos':
+            col = 8
+        elif current == u'Locais':
+            col = 10
+        elif current == u'Cidades':
+            col = 11
+        elif current == u'Estados':
+            col = 12
+        elif current == u'Países':
+            col = 13
+
+        rows = mainWidget.model.rowCount(mainWidget.model)
+
+        if col == 3:
+            all = []
+            for row in xrange(rows):
+                index = mainWidget.model.index(row, col, QModelIndex())
+                value = mainWidget.model.data(index, Qt.DisplayRole)
+                if str(value.toString()) != '':
+                    taglist = value.toString().split(',')
+                    for tag in taglist:
+                        if tag.trimmed() != '':
+                            all.append(tag.trimmed())
+        else:
+            all = []
+            for row in xrange(rows):
+                index = mainWidget.model.index(row, col, QModelIndex())
+                value = mainWidget.model.data(index, Qt.DisplayRole)
+                if str(value.toString()) != '':
+                    all.append(value.toString())
+
+        setall = set(all)
+        finalset = setlist | setall
+        self.model.setStringList(list(finalset))
+        self.view.setModel(self.model)
+
 
 class PrefsGerais(QWidget):
     '''Opções gerais do programa.'''
@@ -936,8 +994,6 @@ class MainTable(QTableView):
         hh = self.horizontalHeader()
         hh.setStretchLastSection(True)
 
-        # TODO Estudar o melhor jeito de chamar.
-        # Também pode ser no singular com index.
         self.cols_resized = [1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
         for col in self.cols_resized:
             self.resizeColumnToContents(col)
@@ -955,6 +1011,7 @@ class MainTable(QTableView):
         if self.nrows == 1 and self.mydata[0][0] == '':
             self.model.remove_rows(0, 1, QModelIndex())
 
+        #TODO Função obsoleta, ver se tem algo para aproveitar.
         #self.connect(
         #        self.selectionModel,
         #        SIGNAL('selectionChanged(QItemSelection, QItemSelection)'),
@@ -964,7 +1021,8 @@ class MainTable(QTableView):
                 self.selectionModel,
                 SIGNAL('currentChanged(QModelIndex, QModelIndex)'),
                 self.changecurrent)
-
+        
+        #XXX Não utilizado
         self.connect(
                 self.verticalScrollBar(),
                 SIGNAL('valueChanged(int)'),
@@ -1195,7 +1253,6 @@ class DockEditor(QWidget):
                     self.form2.addRow(label, edit)
             eval('self.' + box_id + '.setLayout(self.' + box_layid + ')')
             self.hbox.addWidget(eval('self.' + box_id))
-            #TODO setminimumwidth
 
         # Inicia valores para o autocomplete
         self.autolistgen(parent.automodels)
@@ -1222,10 +1279,6 @@ class DockEditor(QWidget):
 
     def autolistgen(self, models):
         '''Gera autocompletadores dos campos.'''
-        #print 'Importando listas de autocompleção...'
-
-        #TODO Tagcomplete
-        #self.tagsEdit.setText(values[3][1])
         self.tagcompleter.setWidget(self.tageditor)
 
         self.completer = MainCompleter(models.taxa, self)
@@ -1379,9 +1432,13 @@ class MainCompleter(QCompleter):
         self.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
         self.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
 
-#TODO Tagcomplete
+
 class TagCompleter(QCompleter):
-    '''Completador de marcadores.'''
+    '''Completador de marcadores.
+
+    Adaptado de John Schember:
+    john.nachtimwald.com/2009/07/04/qcompleter-and-comma-separated-tags/    
+    '''
     def __init__(self, model, parent):
         QCompleter.__init__(self, model, parent)
         self.model = model
@@ -1395,9 +1452,13 @@ class TagCompleter(QCompleter):
         if completion_prefix.strip() != '':
             self.complete()
 
-#TODO Tagcomplete
+
 class CompleterLineEdit(QLineEdit):
-    '''Editor especial para marcadores.'''
+    '''Editor especial para marcadores.
+
+    Adaptado de John Schember:
+    john.nachtimwald.com/2009/07/04/qcompleter-and-comma-separated-tags/
+    '''
     def __init__(self, *args):
         QLineEdit.__init__(self)
 
@@ -1453,8 +1514,6 @@ class DockThumb(QWidget):
         self.name.setWordWrap(True)
         self.setLayout(self.vbox)
 
-        #XXX omitir enquanto o insert abaixo não funcionar
-        #self.pixcache = {}
         QPixmapCache.setCacheLimit(81920)
 
         self.connect(
@@ -1494,10 +1553,6 @@ class DockThumb(QWidget):
             self.name.setText(unicode(filename))
             timestamp = values[14][1]
             self.timestamp.setText(timestamp)
-
-            #XXX omitir enquanto o insert abaixo não funcionar
-            #if filename not in self.pixcache.keys():
-            #    self.pixcache[filename] = ''
 
             # Tenta abrir o cache
             self.pic = self.pixmapcache(values[0][1])

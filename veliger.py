@@ -6,7 +6,7 @@
 # 
 # TODO Inserir licença.
 #
-# Atualizado: 19 Mar 2010 11:36AM
+# Atualizado: 19 Mar 2010 03:21PM
 '''Editor de Metadados do Banco de imagens do CEBIMar-USP.
 
 Escrever uma explicação.
@@ -33,7 +33,7 @@ __author__ = 'Bruno Vellutini'
 __copyright__ = 'Copyright 2010, CEBIMar-USP'
 __credits__ = 'Bruno C. Vellutini'
 __license__ = 'DEFINIR'
-__version__ = '0.5'
+__version__ = '0.6'
 __maintainer__ = 'Bruno Vellutini'
 __email__ = 'organelas at gmail dot com'
 __status__ = 'Development'
@@ -238,11 +238,11 @@ class MainWindow(QMainWindow):
                 u'Cuidado!',
                 u'As imagens selecionadas serão convertidas! ' +
                 u'Selecione apenas imagens que estejam com problemas na' +
-                ' codificação de caracteres especiais (ç, à, ã, á)!' +
-                ' Se nenhuma entrada estiver selecionada todas as imagens da' +
-                ' tabela serão convertidas! Faça um backup das suas imagens' +
-                ' antes de executar a conversão (é sério). Deseja prosseguir e converter' +
-                ' os metadados da imagem de Latin-1 para UTF-8?',
+                u' codificação de caracteres especiais (ç, à, ã, á)!' +
+                u' Se nenhuma entrada estiver selecionada todas as imagens da' +
+                u' tabela serão convertidas! Faça um backup das suas imagens' +
+                u' antes de executar a conversão (é sério). Deseja prosseguir e converter' +
+                u' os metadados da imagem de Latin-1 para UTF-8?',
                 QMessageBox.Yes,
                 QMessageBox.No)
         if critical == QMessageBox.Yes:
@@ -478,7 +478,7 @@ class MainWindow(QMainWindow):
                 QFileDialog.ShowDirsOnly
                 )
         if folder:
-            self.imgfinder(str(folder))
+            self.imgfinder(unicode(folder))
 
     def imgfinder(self, folder):
         '''Busca recursivamente imagens na pasta selecionada.
@@ -526,7 +526,8 @@ class MainWindow(QMainWindow):
 
         Usa a biblioteca do arquivo iptcinfo.py e retorna lista com valores.
         '''
-        filename = os.path.basename(unicode(filepath))
+        filepath = unicode(filepath)
+        filename = os.path.basename(filepath)
         self.changeStatus(u'Lendo os metadados de %s e criando variáveis...' %
                 filename)
         # Criar objeto com metadados
@@ -597,13 +598,13 @@ class MainWindow(QMainWindow):
             pass
         else:
             os.mkdir(thumbdir)
-        filename = os.path.basename(str(filepath))
+        filename = os.path.basename(filepath)
         thumbs = os.listdir(thumbdir)
         thumbpath = os.path.join(thumbdir, filename)
         if filename in thumbs:
             pass
         else:
-            copy(unicode(filepath), thumbdir)
+            copy(filepath, thumbdir)
             self.changeStatus('%s copiado para %s' % (filename, thumbdir))
             try:
                 im = Image.open(thumbpath)
@@ -727,7 +728,7 @@ class MainWindow(QMainWindow):
         Cria backup dos conteúdos da tabela e da lista de imagens modificadas.
         '''
         print 'Backup...',
-        self.changeStatus(u'Salvando backup...')
+        #self.changeStatus(u'Salvando backup...')
         # Tabela
         tablecache = open(tablepickle, 'wb')
         entries = mainWidget.model.mydata
@@ -749,7 +750,7 @@ class MainWindow(QMainWindow):
         pickle.dump(autolists, autocache)
         autocache.close()
         print 'pronto!'
-        self.changeStatus(u'Salvando backup... pronto!')
+        #self.changeStatus(u'Salvando backup... pronto!')
 
     def readsettings(self):
         '''Lê o estado anterior do aplicativo durante a inicialização.'''
@@ -948,7 +949,7 @@ class EditCompletion(QWidget):
             for row in xrange(rows):
                 index = mainWidget.model.index(row, col, QModelIndex())
                 value = mainWidget.model.data(index, Qt.DisplayRole)
-                if str(value.toString()) != '':
+                if unicode(value.toString()) != '':
                     taglist = value.toString().split(',')
                     for tag in taglist:
                         if tag.trimmed() != '':
@@ -958,7 +959,7 @@ class EditCompletion(QWidget):
             for row in xrange(rows):
                 index = mainWidget.model.index(row, col, QModelIndex())
                 value = mainWidget.model.data(index, Qt.DisplayRole)
-                if str(value.toString()) != '':
+                if unicode(value.toString()) != '':
                     all.append(value.toString())
 
         setall = set(all)
@@ -1310,7 +1311,7 @@ class DockEditor(QWidget):
 
     def setsingle(self, index, value, oldvalue):
         '''Atualiza campo de edição correspondente quando dado é alterado.'''
-        print index.row(), index.column(), value.toString(), oldvalue
+        #print index.row(), index.column(), unicode(value.toString()), unicode(oldvalue)
         if index.column() == 1:
             self.titleEdit.setText(value.toString())
         elif index.column() == 2:
@@ -1535,9 +1536,9 @@ class DockThumb(QWidget):
         # Tenta abrir o cache
         if not QPixmapCache.find(filename, self.pic):
             self.pic.load(thumbpath)
-            print 'Criando cache da imagem %s...' % filename,
+            #print 'Criando cache da imagem %s...' % filename,
             QPixmapCache.insert(filename, self.pic)
-            print 'pronto!'
+            #print 'pronto!'
         else:
             pass
         return self.pic
@@ -1549,7 +1550,7 @@ class DockThumb(QWidget):
         informações.
         '''
         if values and values[0][1] != '':
-            filename = os.path.basename(str(values[0][1]))
+            filename = os.path.basename(unicode(values[0][1]))
             self.name.setText(unicode(filename))
             timestamp = values[14][1]
             self.timestamp.setText(timestamp)

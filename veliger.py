@@ -4,12 +4,18 @@
 # VÉLIGER
 # Copyleft 2010 - Bruno C. Vellutini | organelas.com
 # 
-# TODO Inserir licença.
+#TODO Inserir licença.
 #
-# Atualizado: 19 Mar 2010 04:35PM
-'''Editor de Metadados do Banco de imagens do CEBIMar-USP.
+# Atualizado: 22 Mar 2010 04:41PM
+'''Editor de metadados do banco de imagens do CEBIMar-USP.
 
-Escrever uma explicação.
+Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
+interface para editar estas informações. Os campos foram adaptados para o
+propósito do banco, que é divulgar imagens com conteúdo biológico.
+
+Campos editáveis: título, legenda, marcadores, táxon, espécie, especialista,
+autor, direitos, tamanho, local, cidade, estado e país.
+
 Centro de Biologia Marinha da Universidade de São Paulo.
 '''
 

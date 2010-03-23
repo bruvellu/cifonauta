@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 22 Mar 2010 04:41PM
+# Atualizado: 23 Mar 2010 03:59PM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -123,8 +123,8 @@ class MainWindow(QMainWindow):
         self.saveFile.setStatusTip(u'Salvar metadados')
         self.connect(self.saveFile, SIGNAL('triggered()'),
                 self.dockEditor.savedata)
-        salvo = lambda: self.changeStatus(u'Alterações salvas!')
-        self.saveFile.triggered.connect(salvo)
+        #salvo = lambda: self.changeStatus(u'Alterações salvas!')
+        #self.saveFile.triggered.connect(salvo)
 
         self.writeMeta = QAction(QIcon(u':/gravar.png'),
                 u'Gravar metadados', self)
@@ -1259,6 +1259,8 @@ class DockEditor(QWidget):
                 '>100 mm'
                 ]
 
+        self.changeStatus = parent.changeStatus
+
         self.tageditor = parent.tageditor
         self.tagcompleter = parent.tagcompleter
 
@@ -1412,46 +1414,109 @@ class DockEditor(QWidget):
 
     def savedata(self):
         '''Salva valores dos campos para a tabela.'''
-        mainWidget.model.setData(self.values[1][0],
-                QVariant(self.titleEdit.text()),
-                Qt.EditRole)
-        mainWidget.model.setData(self.values[2][0],
-                QVariant(self.captionEdit.toPlainText()),
-                Qt.EditRole)
-        mainWidget.model.setData(self.values[3][0],
-                QVariant(unicode(self.tagsEdit.text()).lower()),
-                Qt.EditRole)
-        mainWidget.model.setData(self.values[4][0],
-                QVariant(self.taxonEdit.text()),
-                Qt.EditRole)
-        mainWidget.model.setData(self.values[5][0],
-                QVariant(self.spEdit.text()),
-                Qt.EditRole)
-        mainWidget.model.setData(self.values[6][0],
-                QVariant(self.sourceEdit.text()),
-                Qt.EditRole)
-        mainWidget.model.setData(self.values[7][0],
-                QVariant(self.authorEdit.text()),
-                Qt.EditRole)
-        mainWidget.model.setData(self.values[8][0],
-                QVariant(self.rightsEdit.text()),
-                Qt.EditRole)
-        mainWidget.model.setData(self.values[9][0],
-                QVariant(self.sizeEdit.currentText()),
-                Qt.EditRole)
-        mainWidget.model.setData(self.values[10][0],
-                QVariant(self.locationEdit.text()),
-                Qt.EditRole)
-        mainWidget.model.setData(self.values[11][0],
-                QVariant(self.cityEdit.text()),
-                Qt.EditRole)
-        mainWidget.model.setData(self.values[12][0],
-                QVariant(self.stateEdit.text()),
-                Qt.EditRole)
-        mainWidget.model.setData(self.values[13][0],
-                QVariant(self.countryEdit.text()),
-                Qt.EditRole)
+        indexes = mainWidget.selectedIndexes()
+        rows = [index.row() for index in indexes]
+        rows = list(set(rows))
+
+        # Slices dos índices selecionados.
+        nrows = len(rows)
+        si = 0
+        st = nrows
+        
+        # Título
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.titleEdit.text()),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Legenda
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index,
+                    QVariant(self.captionEdit.toPlainText()),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Marcadores
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index,
+                    QVariant(unicode(self.tagsEdit.text()).lower()),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Táxon
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.taxonEdit.text()),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Espécie
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.spEdit.text()),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Especialista
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.sourceEdit.text()),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Autor
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.authorEdit.text()),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Direitos
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.rightsEdit.text()),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Tamanho
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index,
+                    QVariant(self.sizeEdit.currentText()),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Local
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.locationEdit.text()),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Cidade
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.cityEdit.text()),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Estado
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.stateEdit.text()),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Estado
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.countryEdit.text()),
+                    Qt.EditRole)
+
         mainWidget.setFocus(Qt.OtherFocusReason)
+        self.changeStatus(u'%d entradas alteradas!' % nrows, 5000)
 
 
 class AutoModels():

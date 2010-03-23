@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 23 Mar 2010 05:18PM
+# Atualizado: 23 Mar 2010 05:32PM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -603,7 +603,7 @@ class MainWindow(QMainWindow):
         Para selecionar arquivo(s) terminados em .jpg.
         '''
         filepaths = QFileDialog.getOpenFileNames(self, 'Selecionar imagem(ns)',
-                './', 'Images (*.jpg)')
+                './', 'Images (*.jpg *.jpeg *.JPG *.JPEG)')
         if filepaths:
             n_all = len(filepaths)
             n_new = 0
@@ -1548,6 +1548,7 @@ class DockEditor(QWidget):
 
     def savedata(self):
         '''Salva valores dos campos para a tabela.'''
+        #TODO Fundir com a função paste...
         indexes = mainWidget.selectedIndexes()
         rows = [index.row() for index in indexes]
         rows = list(set(rows))

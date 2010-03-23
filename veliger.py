@@ -819,7 +819,7 @@ class MainWindow(QMainWindow):
                         self,
                         u'Atenção!',
                         u'As alterações não foram gravadas nas imagens.' +
-                        ' Deseja apagá-las mesmo assim?',
+                        u'\nDeseja apagá-las mesmo assim?',
                         QMessageBox.Yes,
                         QMessageBox.No)
                 if warning == QMessageBox.Yes:
@@ -870,7 +870,7 @@ class MainWindow(QMainWindow):
                     self,
                     u'Atenção!',
                     u'As alterações não foram gravadas nas imagens.' +
-                    '\nDeseja apagá-las mesmo assim?',
+                    u'\nDeseja apagá-las mesmo assim?',
                     QMessageBox.Yes,
                     QMessageBox.No)
             if warning == QMessageBox.Yes:
@@ -2019,7 +2019,7 @@ class InitPs():
         thumbdir = 'thumbs'
 
         # Redefine o stdout para ser flushed após print
-        sys.stdout = FlushFile(sys.stdout)
+        #sys.stdout = FlushFile(sys.stdout)
         
         # Cabeçalho horizontal da tabela principal
         header = [

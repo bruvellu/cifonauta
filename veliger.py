@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 23 Mar 2010 03:59PM
+# Atualizado: 23 Mar 2010 05:00PM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -61,6 +61,7 @@ class MainWindow(QMainWindow):
         options = PrefsDialog(self)
         self.help = ManualDialog(self)
         self.about = AboutDialog(self)
+        self.copied = []
         # Tagcompleter
         self.tageditor = CompleterLineEdit(QLineEdit)
         self.tagcompleter = TagCompleter(self.automodels.tags,
@@ -111,6 +112,19 @@ class MainWindow(QMainWindow):
         self.openDir.setStatusTip(u'Abrir pasta')
         self.connect(self.openDir, SIGNAL('triggered()'), self.opendir_dialog)
 
+        self.copyMeta = QAction(QIcon(u':/copiar.png'),
+                u'Copiar metadados', self)
+        self.copyMeta.setShortcut('Ctrl+C')
+        self.copyMeta.setStatusTip(u'Copiar metadados da entrada selecionada')
+        self.connect(self.copyMeta, SIGNAL('triggered()'), self.copydata)
+
+        self.pasteMeta = QAction(QIcon(u':/colar.png'),
+                u'Colar metadados', self)
+        self.pasteMeta.setShortcut('Ctrl+V')
+        self.pasteMeta.setStatusTip(
+                u'Colar metadados na(s) entrada(s) selecionada(s)')
+        self.connect(self.pasteMeta, SIGNAL('triggered()'), self.pastedata)
+
         self.delRow = QAction(QIcon(u':/deletar.png'),
                 u'Deletar entrada(s)', self)
         self.delRow.setShortcut('Ctrl+W')
@@ -142,7 +156,7 @@ class MainWindow(QMainWindow):
         self.connect(self.delAll, SIGNAL('triggered()'), self.cleartable)
 
         self.convertChar = QAction(QIcon(u':/conversor.png'),
-                u'Converte codificação dos metadados', self)
+                u'Converter codificação (Latin-1 -> UTF-8)', self)
         self.convertChar.setStatusTip(
                 u'Converter metadados das imagens selecionadas de Latin-1' +
                 ' para UTF-8, use com cautela')
@@ -184,23 +198,28 @@ class MainWindow(QMainWindow):
         self.arquivo = self.menubar.addMenu('&Arquivo')
         self.arquivo.addAction(self.openFile)
         self.arquivo.addAction(self.openDir)
-        self.arquivo.addAction(self.saveFile)
-        self.arquivo.addAction(self.delRow)
         self.arquivo.addSeparator()
         self.arquivo.addAction(self.writeMeta)
+        self.arquivo.addSeparator()
+        self.arquivo.addAction(self.openPref)
         self.arquivo.addSeparator()
         self.arquivo.addAction(self.exit)
 
         self.editar = self.menubar.addMenu('&Editar')
-        self.editar.addAction(self.delAll)
+        self.editar.addAction(self.copyMeta)
+        self.editar.addAction(self.pasteMeta)
+        self.editar.addAction(self.saveFile)
+        self.editar.addAction(self.delRow)
         self.editar.addSeparator()
-        self.editar.addAction(self.toggleThumb)
-        self.editar.addAction(self.toggleEditor)
-        self.editar.addAction(self.toggleUnsaved)
+        self.editar.addAction(self.delAll)
         self.editar.addSeparator()
         self.editar.addAction(self.convertChar)
         self.editar.addSeparator()
-        self.editar.addAction(self.openPref)
+        
+        self.janela = self.menubar.addMenu('&Janela')
+        self.janela.addAction(self.toggleThumb)
+        self.janela.addAction(self.toggleEditor)
+        self.janela.addAction(self.toggleUnsaved)
 
         self.ajuda = self.menubar.addMenu('&Ajuda')
         self.ajuda.addAction(self.openManual)
@@ -211,6 +230,8 @@ class MainWindow(QMainWindow):
         self.toolbar = self.addToolBar('Ações')
         self.toolbar.addAction(self.openFile)
         self.toolbar.addAction(self.openDir)
+        self.toolbar.addAction(self.copyMeta)
+        self.toolbar.addAction(self.pasteMeta)
         self.toolbar.addAction(self.saveFile)
         self.toolbar.addAction(self.delRow)
         self.toolbar = self.addToolBar('Sair')
@@ -244,6 +265,116 @@ class MainWindow(QMainWindow):
                 self.tageditor.complete_text)
 
         self.readsettings()
+
+    def copydata(self):
+        '''Copia metadados da entrada selecionada.'''
+        if self.dockEditor.values:
+            values = self.dockEditor.values
+            self.copied = [value[1] for value in values]
+            self.changeStatus(u'Metadados copiados de %s' % values[0][1], 5000)
+
+    def pastedata(self):
+        '''Cola metadados na(s) entrada(s) selecionada(s).'''
+        indexes = mainWidget.selectedIndexes()
+        rows = [index.row() for index in indexes]
+        rows = list(set(rows))
+
+        # Slices dos índices selecionados.
+        nrows = len(rows)
+        si = 0
+        st = nrows
+        
+        # Título
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.copied[1]),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Legenda
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.copied[2]),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Marcadores
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.copied[3]),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Táxon
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.copied[4]),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Espécie
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.copied[5]),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Especialista
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.copied[6]),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Autor
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.copied[7]),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Direitos
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.copied[8]),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Tamanho
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.copied[9]),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Local
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.copied[10]),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Cidade
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.copied[11]),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Estado
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.copied[12]),
+                    Qt.EditRole)
+        si = st
+        st = si + nrows 
+
+        # Estado
+        for index in indexes[si:st]:
+            mainWidget.model.setData(index, QVariant(self.copied[13]),
+                    Qt.EditRole)
+
+        mainWidget.setFocus(Qt.OtherFocusReason)
+        self.changeStatus(u'%d entradas alteradas!' % nrows, 5000)
 
     def openpref_dialog(self):
         '''Abre janela de opções.'''

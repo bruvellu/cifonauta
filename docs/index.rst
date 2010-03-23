@@ -52,11 +52,27 @@ bem na gravação os novos metadados estarão embebidos na imagem.
     A codificação utilizada para gravar os metadados é UTF-8. Veja mais
     informações sobre a codificação dos metadados abaixo.
 
-Para editar várias entradas de uma vez selecione uma coluna de uma entrada e
-arraste até outra entrada (ou clique e segure **shift** ou **ctrl** para
-selecionar outras); com as entradas selecionadas aperte F2 e ele vai abrir o
-campinho de edição na tabela; escreva e aperte *Enter* e os valores serão
-copiados para as entradas selecionadas (apenas para a coluna escolhida).
+Para editar vários valores de uma coluna, selecione a célula de uma entrada e
+arraste até outra entrada na mesma coluna (ou clique e segure **shift** ou
+**ctrl** para selecionar outras); com as entradas selecionadas aperte F2 e ele
+vai abrir o campinho de edição na tabela; escreva e aperte *Enter* e os valores
+serão copiados para as entradas selecionadas (apenas para a coluna escolhida).
+
+Para alterar todos os metadados de várias entradas de uma vez selecione as
+entradas que serão modificadas e preencha os campos de edição. Ao apertar
+**ctrl+s** todas as entradas selecionadas terão seus metadados
+sobrescritos pelo que você tiver inserido nos campos de edição.
+
+Também é possível copiar os metadados de uma entrada e colá-los em outra(s).
+Para tal, basta selecionar uma entrada e apertar **ctrl+c** para copiar,
+selecionar as entradas cujos metadados serão sobrescritos e apertar **ctrl+v**.
+
+.. note::
+    Lembre-se que ao salvar os metadados (**ctrl+s**) todos os metadados das
+    entradas selecionadas serão **sobrescritos**, mesmo você tendo modificado
+    apenas um dos campos (a legenda, por exemplo). O mesmo ocorrerá ao colar os
+    metadados copiados de uma entrada em outras usando **ctrl+c**/**ctrl+v**. O
+    resultado destas duas funções são entradas cujos metadados são idênticos.
 
 Ao fechar o programa ele lembra a tabela e suas modificações, portanto pode
 fechar sem apertar **Ctrl+Shift+S** que as modificações continuaram presentes
@@ -92,6 +108,8 @@ Atalho              Função
 ============        =======================================================
 ctrl+o              Importar arquivo(s) .jpg
 ctrl+d              Importar recursivamente todo o conteúdo de uma pasta
+ctrl+c              Copiar metadados da entrada selecionada
+ctrl+v              Colar metadados na(s) entrada(s) selecionada(s)
 ctrl+s              Salvar os metadados nos campos de edição para a tabela
 ctrl+shift+s        Gravar os metadados alterados nas respectivas imagens
 alt+[a-z]           Focar o cursor nos menus ou campos de edição

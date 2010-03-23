@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 23 Mar 2010 05:00PM
+# Atualizado: 23 Mar 2010 05:18PM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -206,12 +206,12 @@ class MainWindow(QMainWindow):
         self.arquivo.addAction(self.exit)
 
         self.editar = self.menubar.addMenu('&Editar')
+        self.editar.addAction(self.delAll)
+        self.editar.addSeparator()
         self.editar.addAction(self.copyMeta)
         self.editar.addAction(self.pasteMeta)
         self.editar.addAction(self.saveFile)
         self.editar.addAction(self.delRow)
-        self.editar.addSeparator()
-        self.editar.addAction(self.delAll)
         self.editar.addSeparator()
         self.editar.addAction(self.convertChar)
         self.editar.addSeparator()
@@ -1297,7 +1297,10 @@ class TableModel(QAbstractTableModel):
 
     def columnCount(self, parent):
         '''Conta as colunas.'''
-        return len(self.mydata[0])
+        if self.mydata:
+            return len(self.mydata[0])
+        else:
+            return 0
 
     def data(self, index, role):
         '''Transforma dados brutos em elementos da tabela.'''

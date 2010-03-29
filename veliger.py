@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 23 Mar 2010 05:32PM
+# Atualizado: 29 Mar 2010 04:54PM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -602,9 +602,11 @@ class MainWindow(QMainWindow):
 
         Para selecionar arquivo(s) terminados em .jpg.
         '''
-        filepaths = QFileDialog.getOpenFileNames(self, 'Selecionar imagem(ns)',
-                './', 'Images (*.jpg *.jpeg *.JPG *.JPEG)')
+        self.openfile = QFileDialog()
+        filepaths = self.openfile.getOpenFileNames(self, 'Selecionar imagem(ns)',
+                self.last_openfile, 'Images (*.jpg *.jpeg *.JPG *.JPEG)')
         if filepaths:
+            self.last_openfile = os.path.dirname(unicode(filepaths[0]))
             n_all = len(filepaths)
             n_new = 0
             n_dup = 0
@@ -633,13 +635,15 @@ class MainWindow(QMainWindow):
         
         Chama a função para varrer a pasta selecionada.
         '''
-        folder = QFileDialog.getExistingDirectory(
+        self.opendir = QFileDialog()
+        folder = self.opendir.getExistingDirectory(
                 self,
                 'Selecione uma pasta',
-                './',
+                self.last_opendir,
                 QFileDialog.ShowDirsOnly
                 )
         if folder:
+            self.last_opendir = unicode(folder)
             self.imgfinder(unicode(folder))
 
     def imgfinder(self, folder):
@@ -921,6 +925,8 @@ class MainWindow(QMainWindow):
         settings.beginGroup('main')
         self.resize(settings.value('size', QSize(1000, 740)).toSize())
         self.move(settings.value('position', QPoint(200, 0)).toPoint())
+        self.last_openfile = settings.value('openfile').toString()
+        self.last_opendir = settings.value('opendir').toString()
         settings.endGroup()
 
     def writesettings(self):
@@ -930,23 +936,28 @@ class MainWindow(QMainWindow):
         settings.beginGroup('main')
         settings.setValue('size', self.size())
         settings.setValue('position', self.pos())
+        settings.setValue('openfile', self.last_openfile)
+        settings.setValue('opendir', self.last_opendir)
         settings.endGroup()
 
     def closeEvent(self, event):
         '''O que fazer quando o programa for fechado.'''
-        reply = QMessageBox.question(
-                self,
-                u'Atenção!',
-                u'O programa será finalizado.\nVocê está certo disso?',
-                QMessageBox.Yes,
-                QMessageBox.No
-                )
-        if reply == QMessageBox.Yes:
-            self.cachetable()
-            self.writesettings()
-            event.accept()
-        else:
-            event.ignore()
+        self.cachetable()
+        self.writesettings()
+        event.accept()
+        #reply = QMessageBox.question(
+        #        self,
+        #        u'Atenção!',
+        #        u'O programa será finalizado.\nVocê está certo disso?',
+        #        QMessageBox.Yes,
+        #        QMessageBox.No
+        #        )
+        #if reply == QMessageBox.Yes:
+        #    self.cachetable()
+        #    self.writesettings()
+        #    event.accept()
+        #else:
+        #    event.ignore()
 
 
 class ManualDialog(QDialog):

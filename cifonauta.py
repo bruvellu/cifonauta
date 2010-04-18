@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 17 Apr 2010 09:52PM
+# Atualizado: 18 Apr 2010 01:39AM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -25,6 +25,7 @@ import pg
 
 from datetime import datetime
 from PIL import Image
+from PIL.ExifTags import TAGS
 from shutil import copy
 from iptcinfo import IPTCInfo
 
@@ -235,6 +236,17 @@ class Photo:
                 genus_sp.append('sp.')
         self.meta['genus_sp'] = genus_sp
 
+        # Extraindo metadados do EXIF
+        exif = self.get_exif(self.source_filepath)
+        date = self.get_date(exif)
+        if date:
+            self.meta['date'] = date
+        # Arrumando geolocalização
+        if exif['GPSInfo']:
+            gps = self.get_gps(exif['GPSInfo'])
+            for k, v in gps.iteritems():
+                self.meta[k] = v
+
         # Processar imagem
         #FIXME ARRUMAR TODOS OS OBJETOS PRA FUNCIONAR!
         web_filepath, thumb_filepath = self.process_image()
@@ -260,8 +272,67 @@ class Photo:
         print '\tEstado:\t\t%s' % self.meta['state']
         print '\tPaís:\t\t%s' % self.meta['country']
         print '\tDireitos:\t%s' % self.meta['rights']
+        print '\tData:\t\t%s' % self.meta['date']
+        print
+        print '\tGPS:\t\t%s %d°%d"%d\' %s %d°%d"%d\'' % (self.meta['lat_ref'],
+                self.meta['lat_deg'], self.meta['lat_min'],
+                self.meta['lat_sec'], self.meta['long_ref'],
+                self.meta['long_deg'], self.meta['long_min'],
+                self.meta['long_sec'])
+        print '\tDecimal:\t%f, %f' % (self.meta['latitude'],
+                self.meta['longitude'])
 
         return self.meta
+
+    def get_exif(self, filename):
+        tagnames = ['GPSInfo', 'DateTimeOriginal', 'DateTimeDigitized',
+                'DateTime']
+        exif = {}
+        img = Image.open(filename)
+        info = img._getexif()
+        for tag, value in info.iteritems():
+            tagname = TAGS.get(tag, tag)
+            if tagname in tagnames:
+                exif[tagname] = value
+        return exif
+
+    def get_gps(self, data):
+        gps = {}
+        divide = lambda x: x[0] / x[1]
+        # Latitude
+        gps['lat_ref'] = data[1]
+        gps['lat_deg'] = divide(data[2][0])
+        gps['lat_min'] = divide(data[2][1])
+        gps['lat_sec'] = divide(data[2][2])
+        lat_sec_float = data[2][2][0] / float(data[2][2][1])
+        gps['latitude'] = self.get_decimal(
+                gps['lat_deg'], gps['lat_min'], lat_sec_float)
+        # Longitude
+        gps['long_ref'] = data[3]
+        gps['long_deg'] = divide(data[4][0])
+        gps['long_min'] = divide(data[4][1])
+        gps['long_sec'] = divide(data[4][2])
+        long_sec_float = data[4][2][0] / float(data[4][2][1])
+        gps['longitude'] = self.get_decimal(
+                gps['long_deg'], gps['long_min'], long_sec_float)
+        return gps
+
+    def get_decimal(self, deg, min, sec):
+	decimal_min = (min * 60.0 + sec) / 60.0
+	decimal = (deg * 60.0 + decimal_min) / 60.0
+        return decimal
+
+    def get_date(self, exif):
+        if exif['DateTimeOriginal']:
+            date = exif['DateTimeOriginal']
+        elif exif['DateTimeDigitized']:
+            date = exif['DateTimeDigitized']
+        elif exif['DateTime']:
+            date = exif['DateTime']
+        else:
+            return False
+        date = datetime.strptime(date, '%Y:%m:%d %H:%M:%S')
+        return date
 
     def process_image(self):
         '''Redimensiona a imagem e inclui marca d'água.'''

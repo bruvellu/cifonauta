@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 29 Mar 2010 04:54PM
+# Atualizado: 03 Apr 2010 02:38PM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -398,13 +398,15 @@ class MainWindow(QMainWindow):
 
         critical = QMessageBox.critical(self,
                 u'Cuidado!',
-                u'As imagens selecionadas serão convertidas! ' +
-                u'Selecione apenas imagens que estejam com problemas na' +
-                u' codificação de caracteres especiais (ç, à, ã, á)!' +
-                u' Se nenhuma entrada estiver selecionada todas as imagens da' +
-                u' tabela serão convertidas! Faça um backup das suas imagens' +
-                u' antes de executar a conversão (é sério). Deseja prosseguir e converter' +
-                u' os metadados da imagem de Latin-1 para UTF-8?',
+                u'As imagens selecionadas serão convertidas! ' \
+                        u'Selecione apenas imagens que estejam com ' \
+                        u'problemas na codificação de caracteres ' \
+                        u'especiais (ç, à, ã, á)! Se nenhuma entrada ' \
+                        u'estiver selecionada todas as imagens da ' \
+                        u'tabela serão convertidas! Faça um backup das ' \
+                        u'suas imagens antes de executar a conversão ' \
+                        u'(é sério). Deseja prosseguir e converter os ' \
+                        u'metadados da imagem de Latin-1 para UTF-8?',
                 QMessageBox.Yes,
                 QMessageBox.No)
         if critical == QMessageBox.Yes:
@@ -530,6 +532,7 @@ class MainWindow(QMainWindow):
                 info.data['keywords'] = list(set(keywords))         # keywords
             info.save()
         except IOError:
+            #FIXME Erro não está aparecendo...
             print '\nOcorreu algum erro. '
             self.changeStatus(u'ERRO!', 10000)
             critical = QMessageBox()
@@ -718,7 +721,7 @@ class MainWindow(QMainWindow):
         source = info.data['source']                        # 115
 
         # Criando timestamp
-        timestamp = time.strftime('%d/%m/%Y %I:%M:%S %p',
+        timestamp = time.strftime('%d/%m/%Y %H:%M:%S',
                 time.localtime(os.path.getmtime(filepath)))
         # Cria a lista para tabela da interface
         entrymeta = [
@@ -822,8 +825,8 @@ class MainWindow(QMainWindow):
                 warning = QMessageBox.warning(
                         self,
                         u'Atenção!',
-                        u'As alterações não foram gravadas nas imagens.' +
-                        u'\nDeseja apagá-las mesmo assim?',
+                        u'As alterações não foram gravadas nas imagens.' \
+                                u' Deseja apagá-las mesmo assim?',
                         QMessageBox.Yes,
                         QMessageBox.No)
                 if warning == QMessageBox.Yes:
@@ -873,8 +876,8 @@ class MainWindow(QMainWindow):
             warning = QMessageBox.warning(
                     self,
                     u'Atenção!',
-                    u'As alterações não foram gravadas nas imagens.' +
-                    u'\nDeseja apagá-las mesmo assim?',
+                    u'As alterações não foram gravadas nas imagens.' \
+                            u'Deseja apagá-las mesmo assim?',
                     QMessageBox.Yes,
                     QMessageBox.No)
             if warning == QMessageBox.Yes:

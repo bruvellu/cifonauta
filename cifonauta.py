@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 18 Apr 2010 01:39AM
+# Atualizado: 18 Apr 2010 04:36AM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -241,11 +241,17 @@ class Photo:
         date = self.get_date(exif)
         if date:
             self.meta['date'] = date
+        else:
+            self.meta['date'] = ''
         # Arrumando geolocalização
-        if exif['GPSInfo']:
+        try:
             gps = self.get_gps(exif['GPSInfo'])
             for k, v in gps.iteritems():
                 self.meta[k] = v
+        except:
+            self.meta['geolocation'] = ''
+            self.meta['latitude'] = ''
+            self.meta['longitude'] = ''
 
         # Processar imagem
         #FIXME ARRUMAR TODOS OS OBJETOS PRA FUNCIONAR!
@@ -274,12 +280,8 @@ class Photo:
         print '\tDireitos:\t%s' % self.meta['rights']
         print '\tData:\t\t%s' % self.meta['date']
         print
-        print '\tGPS:\t\t%s %d°%d"%d\' %s %d°%d"%d\'' % (self.meta['lat_ref'],
-                self.meta['lat_deg'], self.meta['lat_min'],
-                self.meta['lat_sec'], self.meta['long_ref'],
-                self.meta['long_deg'], self.meta['long_min'],
-                self.meta['long_sec'])
-        print '\tDecimal:\t%f, %f' % (self.meta['latitude'],
+        print '\tGeolocalização:\t%s' % self.meta['geolocation']
+        print '\tDecimal:\t%s, %s' % (self.meta['latitude'],
                 self.meta['longitude'])
 
         return self.meta
@@ -300,21 +302,27 @@ class Photo:
         gps = {}
         divide = lambda x: x[0] / x[1]
         # Latitude
-        gps['lat_ref'] = data[1]
-        gps['lat_deg'] = divide(data[2][0])
-        gps['lat_min'] = divide(data[2][1])
-        gps['lat_sec'] = divide(data[2][2])
+        lat_ref = data[1]
+        lat_deg = divide(data[2][0])
+        lat_min = divide(data[2][1])
+        lat_sec = divide(data[2][2])
         lat_sec_float = data[2][2][0] / float(data[2][2][1])
-        gps['latitude'] = self.get_decimal(
-                gps['lat_deg'], gps['lat_min'], lat_sec_float)
+        latitude = self.get_decimal(
+                lat_deg, lat_min, lat_sec_float)
         # Longitude
-        gps['long_ref'] = data[3]
-        gps['long_deg'] = divide(data[4][0])
-        gps['long_min'] = divide(data[4][1])
-        gps['long_sec'] = divide(data[4][2])
+        long_ref = data[3]
+        long_deg = divide(data[4][0])
+        long_min = divide(data[4][1])
+        long_sec = divide(data[4][2])
         long_sec_float = data[4][2][0] / float(data[4][2][1])
-        gps['longitude'] = self.get_decimal(
-                gps['long_deg'], gps['long_min'], long_sec_float)
+        longitude = self.get_decimal(
+                long_deg, long_min, long_sec_float)
+
+        gps['geolocation'] = '%s %d°%d"%d\' %s %d°%d"%d\'' % (
+                lat_ref, lat_deg, lat_min, lat_sec, long_ref, long_deg,
+                long_min, long_sec)
+        gps['latitude'] = '%s%f' % (lat_ref, latitude)
+        gps['longitude'] = '%s%f' % (long_ref, longitude)
         return gps
 
     def get_decimal(self, deg, min, sec):
@@ -323,14 +331,17 @@ class Photo:
         return decimal
 
     def get_date(self, exif):
-        if exif['DateTimeOriginal']:
+        try:
             date = exif['DateTimeOriginal']
-        elif exif['DateTimeDigitized']:
-            date = exif['DateTimeDigitized']
-        elif exif['DateTime']:
-            date = exif['DateTime']
-        else:
-            return False
+        except:
+            try:
+                date = exif['DateTimeDigitized']
+            except:
+                try:
+                    date = exif['DateTime']
+                except:
+                    return False
+
         date = datetime.strptime(date, '%Y:%m:%d %H:%M:%S')
         return date
 

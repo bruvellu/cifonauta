@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 03 Apr 2010 02:38PM
+# Atualizado: 07 May 2010 10:05AM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -429,7 +429,9 @@ class MainWindow(QMainWindow):
                 self.model.insert_rows(0, 1, QModelIndex(), entrymeta)
                 self.writemeta(entrymeta)
                 n_all += 1
-            self.changeStatus(u'Metadados de %d figuras convertidos para UTF-8')
+            self.changeStatus(
+                    u'Metadados de %d figuras convertidos para UTF-8'
+                    % n_all)
         else:
             self.changeStatus(u'Nenhuma imagem foi modificada')
 
@@ -681,12 +683,11 @@ class MainWindow(QMainWindow):
                         n_dup += 1
                         pass
                     n_all += 1
-            else:	# Se o número máximo de imagens for atingido, finalizar
-                t1 = time.time()
-                t = t1 - t0
-                self.changeStatus(u'%d imagens analisadas em %.2f s,' % (n_all, t) +
-                        u' %d novas e %d duplicadas' % (n_new, n_dup), 10000)
-                break
+        else:	# Se o número máximo de imagens for atingido, finalizar
+            t1 = time.time()
+            t = t1 - t0
+            self.changeStatus(u'%d imagens analisadas em %.2f s,' % (n_all, t) +
+                    u' %d novas e %d duplicadas' % (n_new, n_dup), 10000)
         # Salva cache
         self.cachetable()
             

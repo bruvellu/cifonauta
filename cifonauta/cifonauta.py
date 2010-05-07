@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 06 May 2010 11:05AM
+# Atualizado: 07 May 2010 12:31AM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -128,7 +128,9 @@ class Database:
         if not update:
             image_meta['view_count'] = 0
             entry = self.db.insert('meta_image', image_meta)
-            entry = self.db.get('meta_image', meta_image['name'], 'name')
+            entry = self.db.get(
+                    'meta_image', image_meta['source_filepath'],
+                    'source_filepath')
         else:
             image_id = self.db.query(
                     '''
@@ -414,9 +416,9 @@ class Folder:
                 elif filename.endswith(to_ignore):
                     print 'Ignorando %s' % filename
                     continue
-                else:
-                    print '\n%d imagens encontradas.' % n
-                    break
+            else:
+                print '\n%d imagens encontradas.' % n
+                break
         return self.images
 
 

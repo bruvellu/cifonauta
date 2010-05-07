@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 07 May 2010 10:05AM
+# Atualizado: 07 May 2010 05:38PM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -878,7 +878,7 @@ class MainWindow(QMainWindow):
                     self,
                     u'Atenção!',
                     u'As alterações não foram gravadas nas imagens.' \
-                            u'Deseja apagá-las mesmo assim?',
+                            u' Deseja apagá-las mesmo assim?',
                     QMessageBox.Yes,
                     QMessageBox.No)
             if warning == QMessageBox.Yes:

@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 20 May 2010 02:40AM
+# Atualizado: 20 May 2010 07:19PM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -24,9 +24,12 @@ import sys
 import operator
 import subprocess
 import time
+import re
 import pickle
 
 import pyexiv2
+from fractions import Fraction
+
 from PIL import Image
 from shutil import copy
 from iptcinfo import IPTCInfo
@@ -1773,17 +1776,27 @@ class DockGeo(QWidget):
         self.geolocation = QWidget()
         #self.map = QWebView()
 
+        self.savebutton = QPushButton(u'&Gravar', self)
         self.editbox = QFormLayout()
         self.editbox.addRow(self.lat_label, self.lat)
         self.editbox.addRow(self.long_label, self.long)
+        self.editbox.addRow(self.savebutton)
         #TODO Colocar botão para salvar.
         self.geolocation.setLayout(self.editbox)
+
+        self.geolocation.setMaximumWidth(200)
 
         self.hbox.addWidget(self.geolocation)
 
         #self.hbox.addWidget(self.map)
 
         self.setLayout(self.hbox)
+
+        self.connect(
+                self.savebutton,
+                SIGNAL('clicked()'),
+                self.write_geo
+                )
 
         self.connect(
                 mainWidget,
@@ -1795,15 +1808,18 @@ class DockGeo(QWidget):
         exif_meta = pyexiv2.Image(unicode(filepath))
         exif_meta.readMetadata()
         gps = {}
-        gps['lat_ref'] = exif_meta['Exif.GPSInfo.GPSLatitudeRef']
-        gps['lat_deg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][0])
-        gps['lat_min'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][1])
-        gps['lat_sec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][2])
-        gps['long_ref'] = exif_meta['Exif.GPSInfo.GPSLongitudeRef']
-        gps['long_deg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][0])
-        gps['long_min'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][1])
-        gps['long_sec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][2])
-        return gps
+        try:
+            gps['lat_ref'] = exif_meta['Exif.GPSInfo.GPSLatitudeRef']
+            gps['lat_deg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][0])
+            gps['lat_min'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][1])
+            gps['lat_sec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][2])
+            gps['long_ref'] = exif_meta['Exif.GPSInfo.GPSLongitudeRef']
+            gps['long_deg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][0])
+            gps['long_min'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][1])
+            gps['long_sec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][2])
+            return gps
+        except:
+            return gps
 
     def resolve(self, frac):
         fraclist = str(frac).split('/')
@@ -1815,16 +1831,61 @@ class DockGeo(QWidget):
         if values and values[0][1] != '':
             #TODO Apagar campo quando não tiver geolocalização.
             self.gps = self.get_exif(values[0][1])
-            self.lat.setText(u'%s %d°%d"%d\'' % (self.gps['lat_ref'],
-                self.gps['lat_deg'], self.gps['lat_min'], self.gps['lat_sec']))
-            self.long.setText(u'%s %d°%d"%d\'' % (self.gps['long_ref'],
-                self.gps['long_deg'], self.gps['long_min'], self.gps['long_sec']))
+            if self.gps:
+                self.lat.setText(u'%s %d°%d"%d\'' % (self.gps['lat_ref'],
+                    self.gps['lat_deg'], self.gps['lat_min'], self.gps['lat_sec']))
+                self.long.setText(u'%s %d°%d"%d\'' % (self.gps['long_ref'],
+                    self.gps['long_deg'], self.gps['long_min'], self.gps['long_sec']))
+            else:
+                self.lat.clear()
+                self.long.clear()
 
     def get_decimal(self, deg, min, sec):
 	decimal_min = (min * 60.0 + sec) / 60.0
 	decimal = (deg * 60.0 + decimal_min) / 60.0
         return decimal
 
+    def write_geo(self):
+        indexes = mainWidget.selectionModel.selectedRows()
+        if indexes:
+            filepaths = []
+            indexes = [index.row() for index in indexes]
+            for row in indexes:
+                index = mainWidget.model.index(row, 0, QModelIndex())
+                filepath = mainWidget.model.data(index, Qt.DisplayRole)
+                filepaths.append(filepath.toString())
+        for filepath in filepaths:
+            image = pyexiv2.Image(unicode(filepath))
+            image.readMetadata()
+            newlat, newlong = self.newgps()
+            image['Exif.GPSInfo.GPSLatitudeRef'] = newlat['ref']
+            image['Exif.GPSInfo.GPSLatitude'] = (newlat['deg'], newlat['min'],
+                    newlat['sec'])
+            image['Exif.GPSInfo.GPSLongitudeRef'] = newlong['ref']
+            image['Exif.GPSInfo.GPSLongitude'] = (newlong['deg'], newlong['min'],
+                    newlong['sec'])
+            image.writeMetadata()
+
+    def newgps(self):
+        lat = self.lat.text()
+        long = self.long.text()
+        newlat = self.geodict(lat)
+        newlong = self.geodict(long)
+        return newlat, newlong
+
+    def geodict(self, string):
+        geo = re.findall('\w+', string)
+        gps = {
+                'ref': geo[0],
+                'deg': geo[1] + '/1',
+                'min': geo[2] + '/1',
+                'sec': geo[3] + '/1'
+                }
+        for k, v in gps.iteritems():
+            if not k == 'ref':
+                gps[k] = pyexiv2.StringToRational(v)
+        return gps
+        
 
 
 class DockThumb(QWidget):

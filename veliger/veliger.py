@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 20 May 2010 07:19PM
+# Atualizado: 20 May 2010 08:28PM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -28,7 +28,6 @@ import re
 import pickle
 
 import pyexiv2
-from fractions import Fraction
 
 from PIL import Image
 from shutil import copy
@@ -1805,6 +1804,7 @@ class DockGeo(QWidget):
                 )
 
     def get_exif(self, filepath):
+        '''Extrai o exif da imagem selecionada.'''
         exif_meta = pyexiv2.Image(unicode(filepath))
         exif_meta.readMetadata()
         gps = {}
@@ -1822,12 +1822,13 @@ class DockGeo(QWidget):
             return gps
 
     def resolve(self, frac):
+        '''Resolve a fração das coordenadas para int.'''
         fraclist = str(frac).split('/')
         result = int(fraclist[0]) / int(fraclist[1])
         return result
 
     def setcurrent(self, values):
-        '''Mostra geolocalização da imagem.'''
+        '''Mostra geolocalização da imagem selecionada.'''
         if values and values[0][1] != '':
             #TODO Apagar campo quando não tiver geolocalização.
             self.gps = self.get_exif(values[0][1])
@@ -1841,11 +1842,13 @@ class DockGeo(QWidget):
                 self.long.clear()
 
     def get_decimal(self, deg, min, sec):
+        '''Descobre o valor decimal das coordenadas.'''
 	decimal_min = (min * 60.0 + sec) / 60.0
 	decimal = (deg * 60.0 + decimal_min) / 60.0
         return decimal
 
     def write_geo(self):
+        '''Grava novas coordenadas nas imagens selecionadas.'''
         indexes = mainWidget.selectionModel.selectedRows()
         if indexes:
             filepaths = []
@@ -1867,6 +1870,7 @@ class DockGeo(QWidget):
             image.writeMetadata()
 
     def newgps(self):
+        '''Pega as novas coordenadas do editor.'''
         lat = self.lat.text()
         long = self.long.text()
         newlat = self.geodict(lat)
@@ -1874,6 +1878,7 @@ class DockGeo(QWidget):
         return newlat, newlong
 
     def geodict(self, string):
+        '''Extrai coordenadas da string do editor.'''
         geo = re.findall('\w+', string)
         gps = {
                 'ref': geo[0],
@@ -1885,7 +1890,6 @@ class DockGeo(QWidget):
             if not k == 'ref':
                 gps[k] = pyexiv2.StringToRational(v)
         return gps
-        
 
 
 class DockThumb(QWidget):

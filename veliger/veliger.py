@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 07 May 2010 05:38PM
+# Atualizado: 20 May 2010 02:40AM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -26,6 +26,7 @@ import subprocess
 import time
 import pickle
 
+import pyexiv2
 from PIL import Image
 from shutil import copy
 from iptcinfo import IPTCInfo
@@ -77,6 +78,10 @@ class MainWindow(QMainWindow):
         self.dockUnsaved = DockUnsaved()
         self.unsavedDockWidget = QDockWidget(u'Modificadas', self)
         self.unsavedDockWidget.setWidget(self.dockUnsaved)
+        # Dock com geolocalização
+        self.dockGeo = DockGeo()
+        self.geoDockWidget = QDockWidget(u'Geolocalização', self)
+        self.geoDockWidget.setWidget(self.dockGeo)
         # Dock com editor de metadados
         self.dockEditor = DockEditor(self)
         self.editorDockWidget = QDockWidget(u'Editor', self)
@@ -185,6 +190,9 @@ class MainWindow(QMainWindow):
         self.toggleThumb = self.thumbDockWidget.toggleViewAction()
         self.toggleThumb.setShortcut('Shift+T')
         self.toggleThumb.setStatusTip(u'Esconde ou mostra o dock com thumbnails')
+        self.toggleGeo = self.geoDockWidget.toggleViewAction()
+        self.toggleGeo.setShortcut('Shift+G')
+        self.toggleGeo.setStatusTip(u'Esconde ou mostra o dock com geolocalização')
 
         self.toggleEditor = self.editorDockWidget.toggleViewAction()
         self.toggleEditor.setShortcut('Shift+E')
@@ -217,8 +225,9 @@ class MainWindow(QMainWindow):
         self.editar.addSeparator()
         
         self.janela = self.menubar.addMenu('&Janela')
-        self.janela.addAction(self.toggleThumb)
         self.janela.addAction(self.toggleEditor)
+        self.janela.addAction(self.toggleThumb)
+        self.janela.addAction(self.toggleGeo)
         self.janela.addAction(self.toggleUnsaved)
 
         self.ajuda = self.menubar.addMenu('&Ajuda')
@@ -239,9 +248,11 @@ class MainWindow(QMainWindow):
 
         # Docks
         self.addDockWidget(Qt.RightDockWidgetArea, self.thumbDockWidget)
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.geoDockWidget)
         self.addDockWidget(Qt.RightDockWidgetArea, self.unsavedDockWidget)
         self.addDockWidget(Qt.BottomDockWidgetArea, self.editorDockWidget)
         self.tabifyDockWidget(self.unsavedDockWidget, self.thumbDockWidget)
+        self.tabifyDockWidget(self.geoDockWidget, self.editorDockWidget)
         self.setTabPosition(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea,
                 QTabWidget.North)
         #self.setCorner(Qt.BottomRightCorner, Qt.RightDockWidgetArea)
@@ -1746,6 +1757,74 @@ class CompleterLineEdit(QLineEdit):
         self.setText('%s%s, %s' % (before_text[:cursor_pos - prefix_len], text,
             after_text))
         self.setCursorPosition(cursor_pos - prefix_len + len(text) + 2)
+
+
+class DockGeo(QWidget):
+    '''Dock para editar a geolocalização da imagem.'''
+    def __init__(self):
+        QWidget.__init__(self)
+
+        self.hbox = QHBoxLayout()
+        self.lat_label = QLabel(u'Latitude:')
+        self.lat = QLineEdit()
+        self.long_label = QLabel(u'Longitude:')
+        self.long = QLineEdit()
+
+        self.geolocation = QWidget()
+        #self.map = QWebView()
+
+        self.editbox = QFormLayout()
+        self.editbox.addRow(self.lat_label, self.lat)
+        self.editbox.addRow(self.long_label, self.long)
+        #TODO Colocar botão para salvar.
+        self.geolocation.setLayout(self.editbox)
+
+        self.hbox.addWidget(self.geolocation)
+
+        #self.hbox.addWidget(self.map)
+
+        self.setLayout(self.hbox)
+
+        self.connect(
+                mainWidget,
+                SIGNAL('thisIsCurrent(values)'),
+                self.setcurrent
+                )
+
+    def get_exif(self, filepath):
+        exif_meta = pyexiv2.Image(unicode(filepath))
+        exif_meta.readMetadata()
+        gps = {}
+        gps['lat_ref'] = exif_meta['Exif.GPSInfo.GPSLatitudeRef']
+        gps['lat_deg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][0])
+        gps['lat_min'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][1])
+        gps['lat_sec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][2])
+        gps['long_ref'] = exif_meta['Exif.GPSInfo.GPSLongitudeRef']
+        gps['long_deg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][0])
+        gps['long_min'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][1])
+        gps['long_sec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][2])
+        return gps
+
+    def resolve(self, frac):
+        fraclist = str(frac).split('/')
+        result = int(fraclist[0]) / int(fraclist[1])
+        return result
+
+    def setcurrent(self, values):
+        '''Mostra geolocalização da imagem.'''
+        if values and values[0][1] != '':
+            #TODO Apagar campo quando não tiver geolocalização.
+            self.gps = self.get_exif(values[0][1])
+            self.lat.setText(u'%s %d°%d"%d\'' % (self.gps['lat_ref'],
+                self.gps['lat_deg'], self.gps['lat_min'], self.gps['lat_sec']))
+            self.long.setText(u'%s %d°%d"%d\'' % (self.gps['long_ref'],
+                self.gps['long_deg'], self.gps['long_min'], self.gps['long_sec']))
+
+    def get_decimal(self, deg, min, sec):
+	decimal_min = (min * 60.0 + sec) / 60.0
+	decimal = (deg * 60.0 + decimal_min) / 60.0
+        return decimal
+
 
 
 class DockThumb(QWidget):

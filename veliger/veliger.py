@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 20 May 2010 08:28PM
+# Atualizado: 20 May 2010 08:35PM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -81,7 +81,7 @@ class MainWindow(QMainWindow):
         self.unsavedDockWidget = QDockWidget(u'Modificadas', self)
         self.unsavedDockWidget.setWidget(self.dockUnsaved)
         # Dock com geolocalização
-        self.dockGeo = DockGeo()
+        self.dockGeo = DockGeo(self)
         self.geoDockWidget = QDockWidget(u'Geolocalização', self)
         self.geoDockWidget.setWidget(self.dockGeo)
         # Dock com editor de metadados
@@ -1763,8 +1763,10 @@ class CompleterLineEdit(QLineEdit):
 
 class DockGeo(QWidget):
     '''Dock para editar a geolocalização da imagem.'''
-    def __init__(self):
-        QWidget.__init__(self)
+    def __init__(self, parent):
+        QWidget.__init__(self, parent)
+
+        self.changeStatus = parent.changeStatus
 
         self.hbox = QHBoxLayout()
         self.lat_label = QLabel(u'Latitude:')
@@ -1780,7 +1782,6 @@ class DockGeo(QWidget):
         self.editbox.addRow(self.lat_label, self.lat)
         self.editbox.addRow(self.long_label, self.long)
         self.editbox.addRow(self.savebutton)
-        #TODO Colocar botão para salvar.
         self.geolocation.setLayout(self.editbox)
 
         self.geolocation.setMaximumWidth(200)
@@ -1868,6 +1869,7 @@ class DockGeo(QWidget):
             image['Exif.GPSInfo.GPSLongitude'] = (newlong['deg'], newlong['min'],
                     newlong['sec'])
             image.writeMetadata()
+        self.changeStatus(u'%d imagens alteradas!' % len(filepaths), 5000)
 
     def newgps(self):
         '''Pega as novas coordenadas do editor.'''

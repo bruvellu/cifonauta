@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 21 May 2010 01:22AM
+# Atualizado: 21 May 2010 01:00PM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -259,6 +259,15 @@ class MainWindow(QMainWindow):
         self.setTabPosition(Qt.RightDockWidgetArea | Qt.LeftDockWidgetArea,
                 QTabWidget.North)
         #self.setCorner(Qt.BottomRightCorner, Qt.RightDockWidgetArea)
+
+        self.connect(
+                self.geoDockWidget,
+                SIGNAL('visibilityChanged(bool)'),
+                self.istab_selected
+                )
+        
+    def istab_selected(self, visible):
+        self.emit(SIGNAL('ismapSelected(visible)'), visible)
 
         self.connect(
                 self.dockUnsaved,
@@ -1784,30 +1793,86 @@ class DockGeo(QWidget):
         self.long_ref_dec = ''
         self.long_dec = 0
 
-        self.html = '''
+
+        #self.url = QUrl('map.html')
+        #self.url.addQueryItem('q', '40.714224,-73.961452')
+        #self.url.addQueryItem('output', 'csv')
+        #self.url.addQueryItem('key', GMAPSKEY)
+        
+        self.map = QWebView(self)
+
+        self.savebutton = QPushButton(u'&Gravar', self)
+        self.editbox = QFormLayout()
+        self.editbox.addRow(self.lat_label, self.lat)
+        self.editbox.addRow(self.long_label, self.long)
+        self.editbox.addRow(self.savebutton)
+        self.geolocation.setLayout(self.editbox)
+
+        self.geolocation.setFixedWidth(200)
+        #self.geolocation.setMaximumWidth(200)
+        self.map.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+        self.hbox.addWidget(self.geolocation)
+        self.hbox.addWidget(self.map)
+
+        self.savebutton.setDisabled(True)
+        self.setLayout(self.hbox)
+
+        self.connect(
+                self.savebutton,
+                SIGNAL('clicked()'),
+                self.write_geo
+                )
+
+        self.connect(
+                mainWidget,
+                SIGNAL('thisIsCurrent(values)'),
+                self.setcurrent
+                )
+
+        self.connect(
+                parent,
+                SIGNAL('ismapSelected(visible)'),
+                self.state
+                )
+
+    def state(self, visible):
+        self.ismap_selected = visible
+        try:
+            if visible:
+                self.load_geocode(self.gps)
+        except:
+            pass
+
+    def write_html(self, unset=0, latref='', longref='', lat=0.0, long=0.0, zoom=5):
+        self.map.setHtml('''
         <html>
         <head>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
         <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
         <title>Véliger</title>
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&language=pt-BR"></script>
         <script type="text/javascript">
-            var map;
             function initialize() {
-                var myLatlng = new google.maps.LatLng(%s%f,%s%f);
+                var unset = %d;
+                var local = new google.maps.LatLng(%s%f,%s%f);
                 var myOptions = {
-                    zoom: 5,
-                    center: myLatlng,
+                    zoom: %d,
+                    center: local,
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 }
                 var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+                if (unset == 0) {
+                    var marker = new google.maps.Marker({
+                        position: local,
+                        map: map,
+                        title:"Local",
+                        draggable: true,
+                    });
+                }
                 google.maps.event.addListener(map, 'rightclick', function(event) {
                     placeMarker(event.Latlng);
-                });
-                var marker = new google.maps.Marker({
-                    position: myLatlng,
-                    map: map,
-                    title:"Local",
                 });
             }
             
@@ -1826,56 +1891,27 @@ class DockGeo(QWidget):
             <div id="map_canvas" style="width: 100%%; height: 100%%;"></div>
         </body>
         </html>
-        '''
-
-        #self.url = QUrl('map.html')
-        #self.url.addQueryItem('q', '40.714224,-73.961452')
-        #self.url.addQueryItem('output', 'csv')
-        #self.url.addQueryItem('key', GMAPSKEY)
-        
-        self.map = QWebView(self)
-
-        self.savebutton = QPushButton(u'&Gravar', self)
-        self.editbox = QFormLayout()
-        self.editbox.addRow(self.lat_label, self.lat)
-        self.editbox.addRow(self.long_label, self.long)
-        self.editbox.addRow(self.savebutton)
-        self.geolocation.setLayout(self.editbox)
-
-        self.geolocation.setMinimumWidth(200)
-        #self.geolocation.setMaximumWidth(210)
-
-        self.hbox.addWidget(self.geolocation)
-        self.hbox.addWidget(self.map)
-
-        self.setLayout(self.hbox)
-
-        self.connect(
-                self.savebutton,
-                SIGNAL('clicked()'),
-                self.write_geo
-                )
-
-        self.connect(
-                mainWidget,
-                SIGNAL('thisIsCurrent(values)'),
-                self.setcurrent
-                )
+        ''' % (unset, latref, lat, longref, long, zoom))
 
     def load_geocode(self, gps):
-        self.lat_dec = self.get_decimal(self.gps['lat_deg'], self.gps['lat_min'],
-                self.gps['lat_sec'])
-        self.long_dec = self.get_decimal(self.gps['long_deg'], self.gps['long_min'],
-                self.gps['long_sec'])
-        lat_ref = ''
-        long_ref = ''
-        if gps['lat_ref'] == 'S':
-            self.lat_ref_dec = '-'
-        if gps['long_ref'] == 'W':
-            self.long_ref_dec = '-'
-        print self.lat_ref_dec, self.lat_dec, self.long_ref_dec, self.long_dec
-        self.map.setHtml(self.html % (self.lat_ref_dec, self.lat_dec, self.long_ref_dec, self.long_dec))
-        self.map.show()
+        if gps:
+            # Cria valores decimais das coordenadas
+            self.lat_dec = self.get_decimal(self.gps['lat_deg'], self.gps['lat_min'],
+                    self.gps['lat_sec'])
+            self.long_dec = self.get_decimal(self.gps['long_deg'], self.gps['long_min'],
+                    self.gps['long_sec'])
+            # Cardinal convertido para + ou -
+            lat_ref_dec = ''
+            if gps['lat_ref'] == 'S':
+                self.lat_ref_dec = '-'
+            long_ref_dec = ''
+            if gps['long_ref'] == 'W':
+                self.long_ref_dec = '-'
+
+            self.write_html(latref=self.lat_ref_dec, lat=self.lat_dec,
+                    longref=self.long_ref_dec, long=self.long_dec)
+        else:
+            self.write_html(unset=1, zoom=1)
 
     def get_exif(self, filepath):
         '''Extrai o exif da imagem selecionada.'''
@@ -1904,17 +1940,21 @@ class DockGeo(QWidget):
     def setcurrent(self, values):
         '''Mostra geolocalização da imagem selecionada.'''
         if values and values[0][1] != '':
-            #TODO Apagar campo quando não tiver geolocalização.
-            self.gps = self.get_exif(values[0][1])
+            self.current_filepath = values[0][1]
+            self.gps = self.get_exif(self.current_filepath)
             if self.gps:
                 self.lat.setText(u'%s %d°%d"%d\'' % (self.gps['lat_ref'],
                     self.gps['lat_deg'], self.gps['lat_min'], self.gps['lat_sec']))
                 self.long.setText(u'%s %d°%d"%d\'' % (self.gps['long_ref'],
                     self.gps['long_deg'], self.gps['long_min'], self.gps['long_sec']))
-                self.load_geocode(self.gps)
+                self.savebutton.setEnabled(True)
             else:
                 self.lat.clear()
                 self.long.clear()
+            if self.ismap_selected:
+                self.load_geocode(self.gps)
+            else:
+                self.map.setHtml('''<html><head></head><body><h1>Recarregue</h1></body></html>''')
 
     def get_decimal(self, deg, min, sec):
         '''Descobre o valor decimal das coordenadas.'''

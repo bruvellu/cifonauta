@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 20 May 2010 08:35PM
+# Atualizado: 21 May 2010 01:22AM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -35,6 +35,7 @@ from iptcinfo import IPTCInfo
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from PyQt4.QtWebKit import *
 
 import recursos
 
@@ -1766,6 +1767,8 @@ class DockGeo(QWidget):
     def __init__(self, parent):
         QWidget.__init__(self, parent)
 
+        GMAPSKEY = 'ABQIAAAAFi-S7i8BmqSKlS8LqVTW8RRFZdQgBXZ_0ffaRoSxMpCcqfO6gBQLw6tE6_eqCEv1BBayYvrrOg5fMw'
+
         self.changeStatus = parent.changeStatus
 
         self.hbox = QHBoxLayout()
@@ -1775,7 +1778,62 @@ class DockGeo(QWidget):
         self.long = QLineEdit()
 
         self.geolocation = QWidget()
-        #self.map = QWebView()
+
+        self.lat_ref_dec = ''
+        self.lat_dec = 0
+        self.long_ref_dec = ''
+        self.long_dec = 0
+
+        self.html = '''
+        <html>
+        <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+        <title>Véliger</title>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script type="text/javascript">
+            var map;
+            function initialize() {
+                var myLatlng = new google.maps.LatLng(%s%f,%s%f);
+                var myOptions = {
+                    zoom: 5,
+                    center: myLatlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                }
+                var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+                google.maps.event.addListener(map, 'rightclick', function(event) {
+                    placeMarker(event.Latlng);
+                });
+                var marker = new google.maps.Marker({
+                    position: myLatlng,
+                    map: map,
+                    title:"Local",
+                });
+            }
+            
+            function placeMarker(location) {
+                var clickedLocation = new google.maps.LatLng(location);
+                var marker = new google.maps.Marker({
+                    position: location,
+                    map: map
+                });
+                map.setCenter(location);
+            }
+
+        </script>
+        </head>
+        <body style="margin:0px; padding:0px;" onload="initialize()">
+            <div id="map_canvas" style="width: 100%%; height: 100%%;"></div>
+        </body>
+        </html>
+        '''
+
+        #self.url = QUrl('map.html')
+        #self.url.addQueryItem('q', '40.714224,-73.961452')
+        #self.url.addQueryItem('output', 'csv')
+        #self.url.addQueryItem('key', GMAPSKEY)
+        
+        self.map = QWebView(self)
 
         self.savebutton = QPushButton(u'&Gravar', self)
         self.editbox = QFormLayout()
@@ -1784,11 +1842,11 @@ class DockGeo(QWidget):
         self.editbox.addRow(self.savebutton)
         self.geolocation.setLayout(self.editbox)
 
-        self.geolocation.setMaximumWidth(200)
+        self.geolocation.setMinimumWidth(200)
+        #self.geolocation.setMaximumWidth(210)
 
         self.hbox.addWidget(self.geolocation)
-
-        #self.hbox.addWidget(self.map)
+        self.hbox.addWidget(self.map)
 
         self.setLayout(self.hbox)
 
@@ -1803,6 +1861,21 @@ class DockGeo(QWidget):
                 SIGNAL('thisIsCurrent(values)'),
                 self.setcurrent
                 )
+
+    def load_geocode(self, gps):
+        self.lat_dec = self.get_decimal(self.gps['lat_deg'], self.gps['lat_min'],
+                self.gps['lat_sec'])
+        self.long_dec = self.get_decimal(self.gps['long_deg'], self.gps['long_min'],
+                self.gps['long_sec'])
+        lat_ref = ''
+        long_ref = ''
+        if gps['lat_ref'] == 'S':
+            self.lat_ref_dec = '-'
+        if gps['long_ref'] == 'W':
+            self.long_ref_dec = '-'
+        print self.lat_ref_dec, self.lat_dec, self.long_ref_dec, self.long_dec
+        self.map.setHtml(self.html % (self.lat_ref_dec, self.lat_dec, self.long_ref_dec, self.long_dec))
+        self.map.show()
 
     def get_exif(self, filepath):
         '''Extrai o exif da imagem selecionada.'''
@@ -1838,6 +1911,7 @@ class DockGeo(QWidget):
                     self.gps['lat_deg'], self.gps['lat_min'], self.gps['lat_sec']))
                 self.long.setText(u'%s %d°%d"%d\'' % (self.gps['long_ref'],
                     self.gps['long_deg'], self.gps['long_min'], self.gps['long_sec']))
+                self.load_geocode(self.gps)
             else:
                 self.lat.clear()
                 self.long.clear()

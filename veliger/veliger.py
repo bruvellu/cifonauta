@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 21 May 2010 01:00PM
+# Atualizado: 22 May 2010 12:47AM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -1853,6 +1853,8 @@ class DockGeo(QWidget):
         <title>Véliger</title>
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&language=pt-BR"></script>
         <script type="text/javascript">
+            var map;
+            var marker;
             function initialize() {
                 var unset = %d;
                 var local = new google.maps.LatLng(%s%f,%s%f);
@@ -1861,8 +1863,9 @@ class DockGeo(QWidget):
                     center: local,
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 }
-                var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
+                map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+                    
                 if (unset == 0) {
                     var marker = new google.maps.Marker({
                         position: local,
@@ -1871,18 +1874,38 @@ class DockGeo(QWidget):
                         draggable: true,
                     });
                 }
-                google.maps.event.addListener(map, 'rightclick', function(event) {
-                    placeMarker(event.Latlng);
-                });
+                else {
+                    google.maps.event.addListener(map, 'rightclick', function(event) {
+                        placeMarker(event.latLng);
+                    });
+                }
+                var position = marker.getPosition();
             }
             
             function placeMarker(location) {
+
                 var clickedLocation = new google.maps.LatLng(location);
+
                 var marker = new google.maps.Marker({
                     position: location,
-                    map: map
+                    map: map,
+                    draggable: true,
                 });
+
                 map.setCenter(location);
+
+            }
+
+            function getMarker() {
+                return 'pqp';
+                if (unset == 0) {
+                    this.position = local;
+                    return position;
+                }
+                else {
+                    this.position = clickedLocation;
+                    return position;
+                }
             }
 
         </script>
@@ -1892,6 +1915,10 @@ class DockGeo(QWidget):
         </body>
         </html>
         ''' % (unset, latref, lat, longref, long, zoom))
+        pos = self.map.page().mainFrame().evaluateJavaScript(
+                QString('getMarker()'))
+        print pos.typeName()
+        print pos.toString()
 
     def load_geocode(self, gps):
         if gps:
@@ -1983,6 +2010,23 @@ class DockGeo(QWidget):
             image['Exif.GPSInfo.GPSLongitude'] = (newlong['deg'], newlong['min'],
                     newlong['sec'])
             image.writeMetadata()
+        lat_dec = self.get_decimal(self.resolve(newlat['deg']),
+                self.resolve(newlat['min']), self.resolve(newlat['sec']))
+        long_dec = self.get_decimal(self.resolve(newlong['deg']),
+                self.resolve(newlong['min']), self.resolve(newlong['sec']))
+
+        # Cardinal convertido para + ou -
+        #XXX Otimizar as funções.
+        lat_ref_dec = ''
+        if newlat['ref'] == 'S':
+            lat_ref_dec = '-'
+        long_ref_dec = ''
+        if newlong['ref'] == 'W':
+            long_ref_dec = '-'
+
+        print newlat['ref'], lat_dec, newlong['ref'], long_dec
+        self.write_html(latref=lat_ref_dec, lat=lat_dec,
+                longref=long_ref_dec, long=long_dec)
         self.changeStatus(u'%d imagens alteradas!' % len(filepaths), 5000)
 
     def newgps(self):

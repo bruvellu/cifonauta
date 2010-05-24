@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 17 May 2010 05:17PM
+# Atualizado: 24 May 2010 04:30PM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -322,7 +322,7 @@ class Photo:
         longitude = self.get_decimal(
                 long_deg, long_min, long_sec_float)
 
-        gps['geolocation'] = '%s %d°%d"%d\' %s %d°%d"%d\'' % (
+        gps['geolocation'] = '%s %d°%d\'%d" %s %d°%d\'%d"' % (
                 lat_ref, lat_deg, lat_min, lat_sec, long_ref, long_deg,
                 long_min, long_sec)
         gps['latitude'] = '%s%f' % (lat_ref, latitude)

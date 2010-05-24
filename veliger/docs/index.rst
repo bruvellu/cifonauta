@@ -11,23 +11,28 @@ Marinha da Universidade de São Paulo (CEBIMar-USP).
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
 interface para editar estas informações. Os campos foram adaptados para o
-propósito do banco, que é divulgar imagens com conteúdo biológico. Saiba mais
-nos detalhes técnicos(link).
+propósito do banco, que é divulgar imagens relacionadas com biologia marinha.
 
-Os campos editáveis: título, legenda, marcadores, táxon, espécie, especialista,
-autor, direitos, tamanho, local, cidade, estado e país.
+Os campos editáveis são:
+
+IPTC
+  título, legenda, marcadores, táxon, espécie, especialista, autor, direitos,
+  tamanho, local, cidade, estado e país.
+
+EXIF
+  Geolocalização.
 
 Guia rápido
 -----------
 
-Instale o programa seguindo estas instruções (link em breve) e inicie-o.
+Instale o programa seguindo estas instruções (link) e inicie-o.
 
 Ao importar imagens o programa irá ler os metadados de cada uma e criar as
 respectivas entradas na tabela principal. Selecione uma linha da tabela para
 visualizar o thumbnail e os metadados contidos na imagem.
 
 Para editar clique 2x na célula da tabela ou clique e aperte F2; após digitar
-aperte *Enter* e o valor está salvo no programa (mas ainda não foi gravado na
+aperte *Enter* e o valor estará salvo no programa (mas ainda não foi gravado na
 imagem).
 
 Outra maneira de editar é usando os campos de edição. Após selecionar uma
@@ -81,6 +86,37 @@ quando programa for aberto novamente.
 .. [#] ou use o ícone para salvar no menu de ferramentas.
 .. [#] ou clique em gravar na doca de modificadas.
 
+Geolocalização
+++++++++++++++
+Ao clicar numa entrada, se a doca da geolocalização estiver aberta, o mapa e as
+coordenadas gravadas na imagem serão carregadas. Para mudar a localização da
+imagem simplesmente arraste o marcador no mapa até a nova posição, aperte
+o botão **Atualizar** para carregar a nova localização no editor e aperte
+**Gravar** para salvar as alterações na imagem.
+
+Se múltiplas imagens estiverem selecionadas, a geolocalização será gravada em
+todas.
+
+.. note::
+    É necessário apertar **Atualizar** após arrastar. As novas coordenadas não
+    são atualizadas automaticamente (ainda).
+
+Imagens sem coordenadas gravadas no EXIF mostrarão um mapa sem marcador. Para
+selecionar um local clique com o **botão direito** do mouse no mapa [#]_. O zoom
+será aumentado para que você possa refinar a posição arrastando o marcador.
+Lembre-se de atualizar antes de gravar.
+
+.. note::
+    Existe um bug no API do Google Maps ou no WebKit que faz com que o marcador
+    seja colocado na posição errada. Isso ocorre quando o usuário arrasta o
+    mapa ou aumenta o zoom, mudando a posição central inicial, antes de criar o
+    marcador. Por este motivo, ao criar um novo marcador tente clicar na região
+    desejada primeiro para evitar contratempos. Após criá-lo não haverá problemas
+    para arrastar até a posição específica.
+
+.. [#] clicar diversas vezes irá criar diversos marcadores, mas apenas o último
+    criado ou arrastado que terá suas coordenadas lidas.
+
 Conversão da codificação
 ++++++++++++++++++++++++
 Se você observar erros na codificação de caracteres especiais (ç, à, á, ã, ê)
@@ -93,9 +129,9 @@ reconheça o UTF-8 corretamente (acho difícil, mas pode acontecer).
 
 Docas
 +++++
-A janela principal do **VÉLIGER** contém 3 docas: editor dos metadados,
-miniatura da imagem e lista de entradas modificadas. Estas docas tem um
-posicionamento padrão, mas podem ser modificados pelo usuário; são arrastáveis,
+A janela principal do **VÉLIGER** contém 4 docas: editor dos metadados, editor
+da geolocalização, miniatura da imagem e lista de entradas modificadas. Estas docas
+tem um posicionamento padrão, mas podem ser modificados pelo usuário; são arrastáveis,
 móveis e destacáveis.
 
 Atalhos de teclado
@@ -115,6 +151,7 @@ ctrl+shift+s        Gravar os metadados alterados nas respectivas imagens
 alt+[a-z]           Focar o cursor nos menus ou campos de edição
                     (e.g., alt+p colocará o cursor no campo **País**)
 shift+e             Mostrar/esconder a doca com campos de edição
+shift+g             Mostrar/esconder a doca com geolocalização 
 shift+t             Mostrar/esconder a doca com miniatura da imagem
 shift+u             Mostrar/esconder a doca com lista de entradas modificadas
 ctrl+q              Sair do programa

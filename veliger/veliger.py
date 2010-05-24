@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 22 May 2010 12:47AM
+# Atualizado: 23 May 2010 11:31PM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -266,9 +266,6 @@ class MainWindow(QMainWindow):
                 self.istab_selected
                 )
         
-    def istab_selected(self, visible):
-        self.emit(SIGNAL('ismapSelected(visible)'), visible)
-
         self.connect(
                 self.dockUnsaved,
                 SIGNAL('commitMeta(entries)'),
@@ -288,6 +285,9 @@ class MainWindow(QMainWindow):
                 self.tageditor.complete_text)
 
         self.readsettings()
+
+    def istab_selected(self, visible):
+        self.emit(SIGNAL('ismapSelected(visible)'), visible)
 
     def copydata(self):
         '''Copia metadados da entrada selecionada.'''
@@ -1800,11 +1800,14 @@ class DockGeo(QWidget):
         #self.url.addQueryItem('key', GMAPSKEY)
         
         self.map = QWebView(self)
+        self.ismap_selected = False
 
+        self.updatebutton = QPushButton(u'&Atualizar', self)
         self.savebutton = QPushButton(u'&Gravar', self)
         self.editbox = QFormLayout()
         self.editbox.addRow(self.lat_label, self.lat)
         self.editbox.addRow(self.long_label, self.long)
+        self.editbox.addRow(self.updatebutton)
         self.editbox.addRow(self.savebutton)
         self.geolocation.setLayout(self.editbox)
 
@@ -1825,6 +1828,12 @@ class DockGeo(QWidget):
                 )
 
         self.connect(
+                self.updatebutton,
+                SIGNAL('clicked()'),
+                self.update_geo
+                )
+
+        self.connect(
                 mainWidget,
                 SIGNAL('thisIsCurrent(values)'),
                 self.setcurrent
@@ -1837,6 +1846,7 @@ class DockGeo(QWidget):
                 )
 
     def state(self, visible):
+        print visible
         self.ismap_selected = visible
         try:
             if visible:
@@ -1844,7 +1854,60 @@ class DockGeo(QWidget):
         except:
             pass
 
-    def write_html(self, unset=0, latref='', longref='', lat=0.0, long=0.0, zoom=5):
+    def setdms(self, dms):
+        self.lat.setText(u'%s %d°%d\'%d"' % (
+            dms['latref'], dms['latdeg'], dms['latmin'], dms['latsec']))
+        self.long.setText(u'%s %d°%d\'%d"' % (
+            dms['longref'], dms['longdeg'], dms['longmin'], dms['longsec']))
+
+
+    def update_geo(self):
+        mark = self.map.page().mainFrame().evaluateJavaScript(
+                'document.getElementById("markerlocation").value').toString()
+        marker = str(mark).strip('()').split(', ')
+        decimals = [float(c) for c in marker]
+        print decimals[0], decimals[1]
+        dms = self.un_decimal(decimals[0], decimals[1])
+        self.setdms(dms)
+
+    def un_decimal(self, lat, long):
+        '''Desconstrói o valor decimal das coordenadas.'''
+        # Latitude
+        latdeg = int(abs(lat))
+        latmin = (abs(lat) - latdeg) * 60
+        latsec = int((latmin - int(latmin)) * 60)
+        latmin = int(latmin)
+
+        # Longitude
+        longdeg = int(abs(long))
+        longmin = (abs(long) - longdeg) * 60
+        longsec = int((longmin - int(longmin)) * 60)
+        longmin = int(longmin)
+
+        # Cardinals
+        if lat < 0:
+            latref = 'S'
+        else:
+            latref = 'N'
+        if long < 0:
+            longref = 'W'
+        else:
+            longref = 'E'
+
+        dms = {
+                'latref': latref,
+                'latdeg': latdeg,
+                'latmin': latmin,
+                'latsec': latsec,
+                'longref': longref,
+                'longdeg': longdeg,
+                'longmin': longmin,
+                'longsec': longsec,
+                }
+
+        return dms
+
+    def write_html(self, unset=0, lat=0.0, long=0.0, zoom=5):
         self.map.setHtml('''
         <html>
         <head>
@@ -1857,7 +1920,7 @@ class DockGeo(QWidget):
             var marker;
             function initialize() {
                 var unset = %d;
-                var local = new google.maps.LatLng(%s%f,%s%f);
+                var local = new google.maps.LatLng(%f,%f);
                 var myOptions = {
                     zoom: %d,
                     center: local,
@@ -1873,17 +1936,21 @@ class DockGeo(QWidget):
                         title:"Local",
                         draggable: true,
                     });
+                    document.getElementById("markerlocation").value = marker.position;
                 }
                 else {
                     google.maps.event.addListener(map, 'rightclick', function(event) {
                         placeMarker(event.latLng);
                     });
                 }
-                var position = marker.getPosition();
+
+                google.maps.event.addListener(marker, 'dragend', function() {
+                    document.getElementById("markerlocation").value = marker.position;
+                    map.setCenter(marker.position);
+                });
             }
             
             function placeMarker(location) {
-
                 var clickedLocation = new google.maps.LatLng(location);
 
                 var marker = new google.maps.Marker({
@@ -1891,52 +1958,39 @@ class DockGeo(QWidget):
                     map: map,
                     draggable: true,
                 });
+                
+                document.getElementById("markerlocation").value = marker.position;
 
                 map.setCenter(location);
+                map.setZoom(5);
 
-            }
+                google.maps.event.addListener(marker, 'dragend', function() {
+                    document.getElementById("markerlocation").value = marker.position;
+                    map.setCenter(marker.position);
+                });
 
-            function getMarker() {
-                return 'pqp';
-                if (unset == 0) {
-                    this.position = local;
-                    return position;
-                }
-                else {
-                    this.position = clickedLocation;
-                    return position;
-                }
             }
 
         </script>
         </head>
         <body style="margin:0px; padding:0px;" onload="initialize()">
             <div id="map_canvas" style="width: 100%%; height: 100%%;"></div>
+            <input id="markerlocation" type="hidden" />
         </body>
         </html>
-        ''' % (unset, latref, lat, longref, long, zoom))
-        pos = self.map.page().mainFrame().evaluateJavaScript(
-                QString('getMarker()'))
-        print pos.typeName()
-        print pos.toString()
+        ''' % (unset, lat, long, zoom))
 
     def load_geocode(self, gps):
         if gps:
             # Cria valores decimais das coordenadas
-            self.lat_dec = self.get_decimal(self.gps['lat_deg'], self.gps['lat_min'],
-                    self.gps['lat_sec'])
-            self.long_dec = self.get_decimal(self.gps['long_deg'], self.gps['long_min'],
-                    self.gps['long_sec'])
-            # Cardinal convertido para + ou -
-            lat_ref_dec = ''
-            if gps['lat_ref'] == 'S':
-                self.lat_ref_dec = '-'
-            long_ref_dec = ''
-            if gps['long_ref'] == 'W':
-                self.long_ref_dec = '-'
+            self.lat_dec = self.get_decimal(
+                    self.gps['latref'], self.gps['latdeg'],
+                    self.gps['latmin'], self.gps['latsec'])
+            self.long_dec = self.get_decimal(
+                    self.gps['longref'], self.gps['longdeg'],
+                    self.gps['longmin'], self.gps['longsec'])
 
-            self.write_html(latref=self.lat_ref_dec, lat=self.lat_dec,
-                    longref=self.long_ref_dec, long=self.long_dec)
+            self.write_html(lat=self.lat_dec, long=self.long_dec)
         else:
             self.write_html(unset=1, zoom=1)
 
@@ -1946,14 +2000,14 @@ class DockGeo(QWidget):
         exif_meta.readMetadata()
         gps = {}
         try:
-            gps['lat_ref'] = exif_meta['Exif.GPSInfo.GPSLatitudeRef']
-            gps['lat_deg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][0])
-            gps['lat_min'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][1])
-            gps['lat_sec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][2])
-            gps['long_ref'] = exif_meta['Exif.GPSInfo.GPSLongitudeRef']
-            gps['long_deg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][0])
-            gps['long_min'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][1])
-            gps['long_sec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][2])
+            gps['latref'] = exif_meta['Exif.GPSInfo.GPSLatitudeRef']
+            gps['latdeg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][0])
+            gps['latmin'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][1])
+            gps['latsec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][2])
+            gps['longref'] = exif_meta['Exif.GPSInfo.GPSLongitudeRef']
+            gps['longdeg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][0])
+            gps['longmin'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][1])
+            gps['longsec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][2])
             return gps
         except:
             return gps
@@ -1970,10 +2024,7 @@ class DockGeo(QWidget):
             self.current_filepath = values[0][1]
             self.gps = self.get_exif(self.current_filepath)
             if self.gps:
-                self.lat.setText(u'%s %d°%d"%d\'' % (self.gps['lat_ref'],
-                    self.gps['lat_deg'], self.gps['lat_min'], self.gps['lat_sec']))
-                self.long.setText(u'%s %d°%d"%d\'' % (self.gps['long_ref'],
-                    self.gps['long_deg'], self.gps['long_min'], self.gps['long_sec']))
+                self.setdms(self.gps)
                 self.savebutton.setEnabled(True)
             else:
                 self.lat.clear()
@@ -1983,10 +2034,13 @@ class DockGeo(QWidget):
             else:
                 self.map.setHtml('''<html><head></head><body><h1>Recarregue</h1></body></html>''')
 
-    def get_decimal(self, deg, min, sec):
+    def get_decimal(self, ref, deg, min, sec):
         '''Descobre o valor decimal das coordenadas.'''
 	decimal_min = (min * 60.0 + sec) / 60.0
 	decimal = (deg * 60.0 + decimal_min) / 60.0
+        negs = ['S', 'W']
+        if ref in negs:
+            decimal = -decimal
         return decimal
 
     def write_geo(self):
@@ -1999,42 +2053,55 @@ class DockGeo(QWidget):
                 index = mainWidget.model.index(row, 0, QModelIndex())
                 filepath = mainWidget.model.data(index, Qt.DisplayRole)
                 filepaths.append(filepath.toString())
-        for filepath in filepaths:
-            image = pyexiv2.Image(unicode(filepath))
-            image.readMetadata()
-            newlat, newlong = self.newgps()
-            image['Exif.GPSInfo.GPSLatitudeRef'] = newlat['ref']
-            image['Exif.GPSInfo.GPSLatitude'] = (newlat['deg'], newlat['min'],
-                    newlat['sec'])
-            image['Exif.GPSInfo.GPSLongitudeRef'] = newlong['ref']
-            image['Exif.GPSInfo.GPSLongitude'] = (newlong['deg'], newlong['min'],
-                    newlong['sec'])
-            image.writeMetadata()
-        lat_dec = self.get_decimal(self.resolve(newlat['deg']),
-                self.resolve(newlat['min']), self.resolve(newlat['sec']))
-        long_dec = self.get_decimal(self.resolve(newlong['deg']),
-                self.resolve(newlong['min']), self.resolve(newlong['sec']))
+            for filepath in filepaths:
+                image = pyexiv2.Image(unicode(filepath))
+                image.readMetadata()
+                newlat, newlong = self.newgps()
+                if newlat and newlong:
+                    image['Exif.GPSInfo.GPSLatitudeRef'] = newlat['ref']
+                    image['Exif.GPSInfo.GPSLatitude'] = (
+                            newlat['deg'], newlat['min'], newlat['sec'])
+                    image['Exif.GPSInfo.GPSLongitudeRef'] = newlong['ref']
+                    image['Exif.GPSInfo.GPSLongitude'] = (
+                            newlong['deg'], newlong['min'], newlong['sec'])
+                    image.writeMetadata()
+                else:
+                    print 'Deletando marcadores Exif'
+                    image.__delitem__('Exif.GPSInfo.GPSLatitudeRef')
+                    image.__delitem__('Exif.GPSInfo.GPSLatitude')
+                    image.__delitem__('Exif.GPSInfo.GPSLongitudeRef')
+                    image.__delitem__('Exif.GPSInfo.GPSLongitude')
+                    image.writeMetadata()
 
-        # Cardinal convertido para + ou -
-        #XXX Otimizar as funções.
-        lat_ref_dec = ''
-        if newlat['ref'] == 'S':
-            lat_ref_dec = '-'
-        long_ref_dec = ''
-        if newlong['ref'] == 'W':
-            long_ref_dec = '-'
+            if newlat and newlong:
+                lat_dec = self.get_decimal(
+                        newlat['ref'], self.resolve(newlat['deg']),
+                        self.resolve(newlat['min']), self.resolve(newlat['sec']))
+                long_dec = self.get_decimal(
+                        newlat['ref'], self.resolve(newlong['deg']),
+                        self.resolve(newlong['min']), self.resolve(newlong['sec']))
 
-        print newlat['ref'], lat_dec, newlong['ref'], long_dec
-        self.write_html(latref=lat_ref_dec, lat=lat_dec,
-                longref=long_ref_dec, long=long_dec)
-        self.changeStatus(u'%d imagens alteradas!' % len(filepaths), 5000)
+                print newlat['ref'], lat_dec, newlong['ref'], long_dec
+                self.write_html(lat=lat_dec, long=long_dec)
+            else:
+                self.lat.clear()
+                self.long.clear()
+                self.write_html(unset=1, zoom=1)
+
+            self.changeStatus(u'%d imagens alteradas!' % len(filepaths), 5000)
+        else:
+            self.changeStatus(u'Nenhuma imagem selecionada!' % len(filepaths), 5000)
+
 
     def newgps(self):
         '''Pega as novas coordenadas do editor.'''
         lat = self.lat.text()
         long = self.long.text()
-        newlat = self.geodict(lat)
-        newlong = self.geodict(long)
+        if not lat or not long:
+            newlat, newlong = {}, {}
+        else:
+            newlat = self.geodict(lat)
+            newlong = self.geodict(long)
         return newlat, newlong
 
     def geodict(self, string):

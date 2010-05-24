@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 23 May 2010 11:31PM
+# Atualizado: 24 May 2010 01:43AM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -1776,50 +1776,41 @@ class DockGeo(QWidget):
     def __init__(self, parent):
         QWidget.__init__(self, parent)
 
-        GMAPSKEY = 'ABQIAAAAFi-S7i8BmqSKlS8LqVTW8RRFZdQgBXZ_0ffaRoSxMpCcqfO6gBQLw6tE6_eqCEv1BBayYvrrOg5fMw'
-
         self.changeStatus = parent.changeStatus
 
+        # Layout do dock
         self.hbox = QHBoxLayout()
+        
+        # Editor
         self.lat_label = QLabel(u'Latitude:')
         self.lat = QLineEdit()
         self.long_label = QLabel(u'Longitude:')
         self.long = QLineEdit()
-
-        self.geolocation = QWidget()
-
-        self.lat_ref_dec = ''
-        self.lat_dec = 0
-        self.long_ref_dec = ''
-        self.long_dec = 0
-
-
-        #self.url = QUrl('map.html')
-        #self.url.addQueryItem('q', '40.714224,-73.961452')
-        #self.url.addQueryItem('output', 'csv')
-        #self.url.addQueryItem('key', GMAPSKEY)
-        
-        self.map = QWebView(self)
-        self.ismap_selected = False
-
         self.updatebutton = QPushButton(u'&Atualizar', self)
         self.savebutton = QPushButton(u'&Gravar', self)
+
+        # Layout do Editor
         self.editbox = QFormLayout()
         self.editbox.addRow(self.lat_label, self.lat)
         self.editbox.addRow(self.long_label, self.long)
         self.editbox.addRow(self.updatebutton)
         self.editbox.addRow(self.savebutton)
+
+        # Widgets do Dock
+        self.geolocation = QWidget()
         self.geolocation.setLayout(self.editbox)
+        self.map = QWebView(self)
 
+        # Tamanhos
         self.geolocation.setFixedWidth(200)
-        #self.geolocation.setMaximumWidth(200)
         self.map.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
-
+        
+        # Layout do Dock
         self.hbox.addWidget(self.geolocation)
         self.hbox.addWidget(self.map)
+        self.setLayout(self.hbox)
 
         self.savebutton.setDisabled(True)
-        self.setLayout(self.hbox)
 
         self.connect(
                 self.savebutton,
@@ -1846,32 +1837,46 @@ class DockGeo(QWidget):
                 )
 
     def state(self, visible):
-        print visible
+        '''Relata se aba está visível e/ou selecionada.
+
+        Captura sinal emitido pelo mainWidget.
+        
+        Por não distinguir entre visível e aba selecionada não funciona em
+        algumas situações.
+        '''
+        #TODO Tem alguma alternativa para descobrir se a aba está selecionada?
         self.ismap_selected = visible
         try:
             if visible:
+                # Se estiver visível, carregar o mapa.
                 self.load_geocode(self.gps)
         except:
             pass
 
     def setdms(self, dms):
+        '''Atualiza as coordenadas do editor.'''
         self.lat.setText(u'%s %d°%d\'%d"' % (
             dms['latref'], dms['latdeg'], dms['latmin'], dms['latsec']))
         self.long.setText(u'%s %d°%d\'%d"' % (
             dms['longref'], dms['longdeg'], dms['longmin'], dms['longsec']))
 
-
     def update_geo(self):
+        '''Captura as coordenadas do marcador para atualizar o editor.'''
+        # Captura coordenadas do último marcador do mapa.
         mark = self.map.page().mainFrame().evaluateJavaScript(
                 'document.getElementById("markerlocation").value').toString()
+        # Transforma a string em lista com floats, limpando os parenteses.
         marker = str(mark).strip('()').split(', ')
         decimals = [float(c) for c in marker]
-        print decimals[0], decimals[1]
+        # Converte decimal para sistema de coordenadas
         dms = self.un_decimal(decimals[0], decimals[1])
         self.setdms(dms)
 
     def un_decimal(self, lat, long):
-        '''Desconstrói o valor decimal das coordenadas.'''
+        '''Converte o valor decimal das coordenadas.
+        
+        Retorna dicionário com referência cardinal, graus, minutos e segundos.
+        '''
         # Latitude
         latdeg = int(abs(lat))
         latmin = (abs(lat) - latdeg) * 60
@@ -1908,6 +1913,10 @@ class DockGeo(QWidget):
         return dms
 
     def write_html(self, unset=0, lat=0.0, long=0.0, zoom=5):
+        '''Carrega código HTML da QWebView com mapa do Google Maps.
+
+        Usando o API V3.
+        '''
         self.map.setHtml('''
         <html>
         <head>
@@ -1981,6 +1990,7 @@ class DockGeo(QWidget):
         ''' % (unset, lat, long, zoom))
 
     def load_geocode(self, gps):
+        '''Pega coordenadas e chama mapa com as variáveis correspondetes.'''
         if gps:
             # Cria valores decimais das coordenadas
             self.lat_dec = self.get_decimal(
@@ -1989,13 +1999,13 @@ class DockGeo(QWidget):
             self.long_dec = self.get_decimal(
                     self.gps['longref'], self.gps['longdeg'],
                     self.gps['longmin'], self.gps['longsec'])
-
             self.write_html(lat=self.lat_dec, long=self.long_dec)
         else:
+            # Imagem sem coordenadas
             self.write_html(unset=1, zoom=1)
 
     def get_exif(self, filepath):
-        '''Extrai o exif da imagem selecionada.'''
+        '''Extrai o exif da imagem selecionada usando o pyexiv2 0.1.3.'''
         exif_meta = pyexiv2.Image(unicode(filepath))
         exif_meta.readMetadata()
         gps = {}
@@ -2013,7 +2023,11 @@ class DockGeo(QWidget):
             return gps
 
     def resolve(self, frac):
-        '''Resolve a fração das coordenadas para int.'''
+        '''Resolve a fração das coordenadas para int.
+
+        Por padrão os valores do exif são guardados como frações. Por isso é
+        necessário converter.
+        '''
         fraclist = str(frac).split('/')
         result = int(fraclist[0]) / int(fraclist[1])
         return result
@@ -2022,16 +2036,21 @@ class DockGeo(QWidget):
         '''Mostra geolocalização da imagem selecionada.'''
         if values and values[0][1] != '':
             self.current_filepath = values[0][1]
+            # Extrai metadados da imagem (exif).
             self.gps = self.get_exif(self.current_filepath)
+            # Atualiza o editor com novos valores.
             if self.gps:
                 self.setdms(self.gps)
                 self.savebutton.setEnabled(True)
             else:
                 self.lat.clear()
                 self.long.clear()
+            # Se o dock estiver visível, carregar o mapa.
             if self.ismap_selected:
                 self.load_geocode(self.gps)
             else:
+                # Possivelmente isso não vai aparecer nunca por causa do
+                # self.state.
                 self.map.setHtml('''<html><head></head><body><h1>Recarregue</h1></body></html>''')
 
     def get_decimal(self, ref, deg, min, sec):
@@ -2045,19 +2064,24 @@ class DockGeo(QWidget):
 
     def write_geo(self):
         '''Grava novas coordenadas nas imagens selecionadas.'''
+        # Pega imagens selecionadas.
         indexes = mainWidget.selectionModel.selectedRows()
         if indexes:
             filepaths = []
             indexes = [index.row() for index in indexes]
+            # Pega o nome dos arquivos.
             for row in indexes:
                 index = mainWidget.model.index(row, 0, QModelIndex())
                 filepath = mainWidget.model.data(index, Qt.DisplayRole)
                 filepaths.append(filepath.toString())
+            # Criar instância para poder gravar metadados.
             for filepath in filepaths:
                 image = pyexiv2.Image(unicode(filepath))
                 image.readMetadata()
                 newlat, newlong = self.newgps()
                 if newlat and newlong:
+                    self.changeStatus(u'Gravando novas coordenadas de %s...' %
+                            filepath)
                     image['Exif.GPSInfo.GPSLatitudeRef'] = newlat['ref']
                     image['Exif.GPSInfo.GPSLatitude'] = (
                             newlat['deg'], newlat['min'], newlat['sec'])
@@ -2065,14 +2089,23 @@ class DockGeo(QWidget):
                     image['Exif.GPSInfo.GPSLongitude'] = (
                             newlong['deg'], newlong['min'], newlong['sec'])
                     image.writeMetadata()
+                    self.changeStatus(
+                            u'Gravando novas coordenadas de %s... pronto!'
+                            % filepath, 5000)
                 else:
-                    print 'Deletando marcadores Exif'
+                    self.changeStatus(
+                            u'Deletando o campo Exif.GPSInfo de %s...' %
+                            filepath)
                     image.__delitem__('Exif.GPSInfo.GPSLatitudeRef')
                     image.__delitem__('Exif.GPSInfo.GPSLatitude')
                     image.__delitem__('Exif.GPSInfo.GPSLongitudeRef')
                     image.__delitem__('Exif.GPSInfo.GPSLongitude')
                     image.writeMetadata()
+                    self.changeStatus(
+                            u'Deletando o campo Exif.GPSInfo de %s... pronto!'
+                            % filepath, 5000)
 
+            #XXX Aqui o mapa é atualizado de acordo com as novas coordenadas.
             if newlat and newlong:
                 lat_dec = self.get_decimal(
                         newlat['ref'], self.resolve(newlat['deg']),
@@ -2081,7 +2114,6 @@ class DockGeo(QWidget):
                         newlat['ref'], self.resolve(newlong['deg']),
                         self.resolve(newlong['min']), self.resolve(newlong['sec']))
 
-                print newlat['ref'], lat_dec, newlong['ref'], long_dec
                 self.write_html(lat=lat_dec, long=long_dec)
             else:
                 self.lat.clear()
@@ -2092,11 +2124,11 @@ class DockGeo(QWidget):
         else:
             self.changeStatus(u'Nenhuma imagem selecionada!' % len(filepaths), 5000)
 
-
     def newgps(self):
         '''Pega as novas coordenadas do editor.'''
         lat = self.lat.text()
         long = self.long.text()
+        # Se um dos campos estiver vazio, deletar geolocalização.
         if not lat or not long:
             newlat, newlong = {}, {}
         else:
@@ -2106,6 +2138,7 @@ class DockGeo(QWidget):
 
     def geodict(self, string):
         '''Extrai coordenadas da string do editor.'''
+        # Utiliza expressões regulares.
         geo = re.findall('\w+', string)
         gps = {
                 'ref': geo[0],
@@ -2115,6 +2148,7 @@ class DockGeo(QWidget):
                 }
         for k, v in gps.iteritems():
             if not k == 'ref':
+                # Transforma valore normal em racional para salvar no exif.
                 gps[k] = pyexiv2.StringToRational(v)
         return gps
 

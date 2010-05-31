@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 24 May 2010 04:30PM
+# Atualizado: 31 May 2010 08:51PM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -29,11 +29,18 @@ from PIL.ExifTags import TAGS
 from shutil import copy
 from iptcinfo import IPTCInfo
 
+# Django environment import
+from django.core.management import setup_environ
+import settings
+setup_environ(settings)
+from meta.models import *
+
+
 __author__ = 'Bruno Vellutini'
 __copyright__ = 'Copyright 2010, CEBIMar-USP'
 __credits__ = 'Bruno C. Vellutini'
 __license__ = 'DEFINIR'
-__version__ = '0.6'
+__version__ = '0.8'
 __maintainer__ = 'Bruno Vellutini'
 __email__ = 'organelas at gmail dot com'
 __status__ = 'Development'
@@ -43,8 +50,8 @@ sourcedir = 'fotos'
 # Diretório espelho do site (imagens já carregadas)
 webdir = 'site_media/images'
 thumbdir = 'site_media/images/thumbs'
-localdir = 'web'
-local_thumbdir = 'web/thumbs'
+localdir = 'localweb'
+local_thumbdir = 'localweb/thumbs'
 # Arquivo com marca d'água
 watermark = 'marca.png'
 
@@ -66,38 +73,29 @@ class Database:
         atualiza o registro.
         '''
         print '\nVerificando se a imagem está no banco de dados...'
-
-        record = self.db.query(
-            '''
-            SELECT web_filepath, timestamp
-            FROM meta_image
-            WHERE web_filepath ILIKE '%%%s';
-            ''' % filename).dictresult()
-
-        # Se o registro existir
-        if record:
+        
+        try :
+            record = Image.objects.get(web_filepath__icontains=filename)
             print 'Bingo! Registro de %s encontrado.' % filename
             print 'Comparando a data de modificação do arquivo com o registro...'
             # Corrige timestamps para poder comparar.
-            timestamp = timestamp.strftime('%Y-%m-%d %H:%M:%S')
-            db_timestamp = record[0]['timestamp'].split('.')
-            db_timestamp = db_timestamp[0]
-
-            if db_timestamp != timestamp:
-                print '%s != %s' % (db_timestamp, timestamp)
+            #timestamp = timestamp.strftime('%Y-%m-%d %H:%M:%S')
+            if record.timestamp != timestamp:
                 print 'Arquivo mudou!'
                 return 1
             else:
-                print '%s = %s' % (db_timestamp, timestamp)
                 print 'Arquivo não mudou!'
                 return 2
-        else:
+        except Image.DoesNotExist:
             print 'Registro não encontrado.'
             return False
 
     def update_db(self, image_meta, update=False):
         '''Cria ou atualiza registro no banco de dados.'''
         print '\nAtualizando o banco de dados...'
+        print
+        print image_meta
+        print
         # Atualizando imagens
         filename = os.path.basename(image_meta['web_filepath'])
         # Guarda objeto com tags
@@ -352,6 +350,8 @@ class Photo:
     def process_image(self):
         '''Redimensiona a imagem e inclui marca d'água.'''
         local_filepath = os.path.join(localdir, self.filename)
+        print local_filepath
+        print self.source_filepath
         print '\nProcessando a imagem...'
         try:
             # Converte para 72dpi, JPG qualidade 50 e redimensiona as imagens
@@ -364,8 +364,7 @@ class Photo:
             # Copia imagem para pasta web
             #XXX Melhorar isso de algum jeito...
             web_filepath = os.path.join(webdir, self.filename)
-            copypath = os.path.join('weblarvae', web_filepath)
-            copy(local_filepath, copypath)
+            copy(local_filepath, web_filepath)
         except IOError:
             print '\nOcorreu algum erro na conversão da imagem. Verifique se o ' \
                     'ImageMagick está instalado.'
@@ -387,8 +386,7 @@ class Photo:
         except IOError:
             print 'Não consegui criar o thumbnail...'
         #XXX Dar um jeito de melhorar isso...
-        copypath = os.path.join('weblarvae', thumbdir)
-        copy(thumb_localfilepath, copypath)
+        copy(thumb_localfilepath, thumbdir)
         thumb_filepath = os.path.join(thumbdir, thumbname)
         return thumb_filepath
 

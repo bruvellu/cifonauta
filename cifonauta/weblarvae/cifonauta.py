@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 01 Jun 2010 12:20AM
+# Atualizado: 01 Jun 2010 12:32AM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -20,8 +20,6 @@ import sys
 import subprocess
 import time
 import getopt
-
-import pg
 
 from datetime import datetime
 from shutil import copy
@@ -55,13 +53,8 @@ watermark = 'marca.png'
 
 
 class Database:
-    def __init__(self, name, user):
-        try:
-            self.db = pg.DB(dbname=name, user=user)
-        except:
-            print 'O CIFONAUTA não conseguiu se conectar ao banco:'
-            print '\n\tNome: %s' % name
-            print '\n\tUsuário: %s' % user
+    def __init__(self):
+        pass
 
     def search_db(self, filename, timestamp):
         '''Busca o registro no banco de dados pelo nome do arquivo.
@@ -116,11 +109,10 @@ class Database:
                 image_meta[k] = self.get_instance(k, image_meta[k])
         del image_meta['genus_sp']
         
-        print image_meta
-
         if not update:
             image_meta['view_count'] = 0
             entry = Image(**image_meta)
+            entry.save()
         else:
             entry = Image.objects.get(web_filepath__icontains=filename)
             for k, v in image_meta.iteritems():
@@ -213,7 +205,6 @@ class Photo:
             self.meta['longitude'] = ''
 
         # Processar imagem
-        #FIXME ARRUMAR TODOS OS OBJETOS PRA FUNCIONAR!
         web_filepath, thumb_filepath = self.process_image()
         self.meta['web_filepath'] = web_filepath
         self.meta['thumb_filepath'] = thumb_filepath
@@ -478,7 +469,7 @@ def main(argv):
         os.mkdir(local_thumbdir)
 
     # Cria instância do bd
-    cbm = Database(name='cebimar', user='nelas')
+    cbm = Database()
 
     # Inicia o cifonauta buscando pasta...
     folder = Folder(sourcedir, n_max)

@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 01 Jun 2010 12:32AM
+# Atualizado: 01 Jun 2010 12:55AM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -197,6 +197,8 @@ class Photo:
         # Arrumando geolocalização
         try:
             gps = self.get_gps(exif)
+            print 'GPS!!!'
+            print gps
             for k, v in gps.iteritems():
                 self.meta[k] = v
         except:
@@ -256,17 +258,17 @@ class Photo:
         gps = {}
         gps_data = {}
         # Latitude
-        gps['latref'] = exif_meta['Exif.GPSInfo.GPSLatitudeRef'].value
-        gps['latdeg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'].value[0])
-        gps['latmin'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'].value[1])
-        gps['latsec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'].value[2])
+        gps['latref'] = exif['Exif.GPSInfo.GPSLatitudeRef'].value
+        gps['latdeg'] = self.resolve(exif['Exif.GPSInfo.GPSLatitude'].value[0])
+        gps['latmin'] = self.resolve(exif['Exif.GPSInfo.GPSLatitude'].value[1])
+        gps['latsec'] = self.resolve(exif['Exif.GPSInfo.GPSLatitude'].value[2])
         latitude = self.get_decimal(
                 gps['latref'], gps['latdeg'], gps['latmin'], gps['latsec'])
         # Longitude
-        gps['longref'] = exif_meta['Exif.GPSInfo.GPSLongitudeRef'].value
-        gps['longdeg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'].value[0])
-        gps['longmin'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'].value[1])
-        gps['longsec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'].value[2])
+        gps['longref'] = exif['Exif.GPSInfo.GPSLongitudeRef'].value
+        gps['longdeg'] = self.resolve(exif['Exif.GPSInfo.GPSLongitude'].value[0])
+        gps['longmin'] = self.resolve(exif['Exif.GPSInfo.GPSLongitude'].value[1])
+        gps['longsec'] = self.resolve(exif['Exif.GPSInfo.GPSLongitude'].value[2])
         longitude = self.get_decimal(
                 gps['longref'], gps['longdeg'], gps['longmin'], gps['longsec'])
 

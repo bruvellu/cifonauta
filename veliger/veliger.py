@@ -727,7 +727,7 @@ class MainWindow(QMainWindow):
         info = IPTCInfo(filepath, True, charset)
         # Checando se o arquivo tem dados IPTC
         if len(info.data) < 4:
-            print '%s não tem dados IPTC!' % filename
+            print u'%s não tem dados IPTC!' % filename
 
         # Definindo as variáveis                            # IPTC
         title = info.data['object name']                    # 5
@@ -1810,8 +1810,6 @@ class DockGeo(QWidget):
         self.hbox.addWidget(self.map)
         self.setLayout(self.hbox)
 
-        self.savebutton.setDisabled(True)
-
         self.connect(
                 self.savebutton,
                 SIGNAL('clicked()'),
@@ -2006,18 +2004,18 @@ class DockGeo(QWidget):
 
     def get_exif(self, filepath):
         '''Extrai o exif da imagem selecionada usando o pyexiv2 0.1.3.'''
-        exif_meta = pyexiv2.Image(unicode(filepath))
-        exif_meta.readMetadata()
+        exif_meta = pyexiv2.ImageMetadata(unicode(filepath))
+        exif_meta.read()
         gps = {}
         try:
-            gps['latref'] = exif_meta['Exif.GPSInfo.GPSLatitudeRef']
-            gps['latdeg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][0])
-            gps['latmin'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][1])
-            gps['latsec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'][2])
-            gps['longref'] = exif_meta['Exif.GPSInfo.GPSLongitudeRef']
-            gps['longdeg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][0])
-            gps['longmin'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][1])
-            gps['longsec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'][2])
+            gps['latref'] = exif_meta['Exif.GPSInfo.GPSLatitudeRef'].value
+            gps['latdeg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'].value[0])
+            gps['latmin'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'].value[1])
+            gps['latsec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'].value[2])
+            gps['longref'] = exif_meta['Exif.GPSInfo.GPSLongitudeRef'].value
+            gps['longdeg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'].value[0])
+            gps['longmin'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'].value[1])
+            gps['longsec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'].value[2])
             return gps
         except:
             return gps
@@ -2055,8 +2053,8 @@ class DockGeo(QWidget):
 
     def get_decimal(self, ref, deg, min, sec):
         '''Descobre o valor decimal das coordenadas.'''
-	decimal_min = (min * 60.0 + sec) / 60.0
-	decimal = (deg * 60.0 + decimal_min) / 60.0
+        decimal_min = (min * 60.0 + sec) / 60.0
+        decimal = (deg * 60.0 + decimal_min) / 60.0
         negs = ['S', 'W']
         if ref in negs:
             decimal = -decimal
@@ -2076,19 +2074,19 @@ class DockGeo(QWidget):
                 filepaths.append(filepath.toString())
             # Criar instância para poder gravar metadados.
             for filepath in filepaths:
-                image = pyexiv2.Image(unicode(filepath))
-                image.readMetadata()
+                image = pyexiv2.ImageMetadata(unicode(filepath))
+                image.read()
                 newlat, newlong = self.newgps()
                 if newlat and newlong:
                     self.changeStatus(u'Gravando novas coordenadas de %s...' %
                             filepath)
-                    image['Exif.GPSInfo.GPSLatitudeRef'] = newlat['ref']
+                    image['Exif.GPSInfo.GPSLatitudeRef'] = str(newlat['ref'])
                     image['Exif.GPSInfo.GPSLatitude'] = (
                             newlat['deg'], newlat['min'], newlat['sec'])
-                    image['Exif.GPSInfo.GPSLongitudeRef'] = newlong['ref']
+                    image['Exif.GPSInfo.GPSLongitudeRef'] = str(newlong['ref'])
                     image['Exif.GPSInfo.GPSLongitude'] = (
                             newlong['deg'], newlong['min'], newlong['sec'])
-                    image.writeMetadata()
+                    image.write()
                     self.changeStatus(
                             u'Gravando novas coordenadas de %s... pronto!'
                             % filepath, 5000)
@@ -2100,7 +2098,7 @@ class DockGeo(QWidget):
                     image.__delitem__('Exif.GPSInfo.GPSLatitude')
                     image.__delitem__('Exif.GPSInfo.GPSLongitudeRef')
                     image.__delitem__('Exif.GPSInfo.GPSLongitude')
-                    image.writeMetadata()
+                    image.write()
                     self.changeStatus(
                             u'Deletando o campo Exif.GPSInfo de %s... pronto!'
                             % filepath, 5000)
@@ -2142,14 +2140,10 @@ class DockGeo(QWidget):
         geo = re.findall('\w+', string)
         gps = {
                 'ref': geo[0],
-                'deg': geo[1] + '/1',
-                'min': geo[2] + '/1',
-                'sec': geo[3] + '/1'
+                'deg': pyexiv2.utils.Rational(geo[1], 1),
+                'min': pyexiv2.utils.Rational(geo[2], 1),
+                'sec': pyexiv2.utils.Rational(geo[3], 1),
                 }
-        for k, v in gps.iteritems():
-            if not k == 'ref':
-                # Transforma valore normal em racional para salvar no exif.
-                gps[k] = pyexiv2.StringToRational(v)
         return gps
 
 

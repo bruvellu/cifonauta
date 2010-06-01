@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 31 May 2010 08:51PM
+# Atualizado: 01 Jun 2010 12:20AM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -24,17 +24,15 @@ import getopt
 import pg
 
 from datetime import datetime
-from PIL import Image
-from PIL.ExifTags import TAGS
 from shutil import copy
 from iptcinfo import IPTCInfo
+import pyexiv2
 
 # Django environment import
 from django.core.management import setup_environ
 import settings
 setup_environ(settings)
 from meta.models import *
-
 
 __author__ = 'Bruno Vellutini'
 __copyright__ = 'Copyright 2010, CEBIMar-USP'
@@ -93,9 +91,6 @@ class Database:
     def update_db(self, image_meta, update=False):
         '''Cria ou atualiza registro no banco de dados.'''
         print '\nAtualizando o banco de dados...'
-        print
-        print image_meta
-        print
         # Atualizando imagens
         filename = os.path.basename(image_meta['web_filepath'])
         # Guarda objeto com tags
@@ -113,76 +108,39 @@ class Database:
         toget = ['author', 'taxon', 'genus', 'species', 'size', 'source',
                 'rights', 'sublocation', 'city', 'state', 'country']
         for k in toget:
-            new_k = '%s_id' % k
             if k == 'genus':
-                image_meta[new_k] = self.getrow_id(k, image_meta['genus_sp'][0])
+                image_meta[k] = self.get_instance(k, image_meta['genus_sp'][0])
             elif k == 'species':
-                image_meta[new_k] = self.getrow_id(k, image_meta['genus_sp'][1])
+                image_meta[k] = self.get_instance(k, image_meta['genus_sp'][1])
             else:
-                image_meta[new_k] = self.getrow_id(k, image_meta[k])
-                del image_meta[k]
+                image_meta[k] = self.get_instance(k, image_meta[k])
         del image_meta['genus_sp']
+        
+        print image_meta
 
         if not update:
             image_meta['view_count'] = 0
-            entry = self.db.insert('meta_image', image_meta)
-            entry = self.db.get(
-                    'meta_image', image_meta['source_filepath'],
-                    'source_filepath')
+            entry = Image(**image_meta)
         else:
-            image_id = self.db.query(
-                    '''
-                    SELECT id FROM meta_image
-                    WHERE web_filepath ILIKE '%%%s';
-                    ''' % filename
-                    ).dictresult()
-            image_meta['id'] = image_id[0]['id']
-            entry = self.db.update('meta_image', image_meta)
+            entry = Image.objects.get(web_filepath__icontains=filename)
+            for k, v in image_meta.iteritems():
+                setattr(entry, k, v)
 
         # Atualiza marcadores
-        if tags:
-            tag_ids = [self.getrow_id('tag', tag) for tag in tags]
-            old_tag_ids = self.db.query(
-                        '''
-                        SELECT tag_id
-                        FROM meta_tag_images
-                        WHERE image_id = %d;
-                        ''' % entry['id']).dictresult()
-            old_tag_ids = [tag['tag_id'] for tag in old_tag_ids]
-            tags_to_unlink = set(old_tag_ids) - set(tag_ids)
-            for tag_id in tags_to_unlink:
-                tag_image_id = self.db.query(
-                        '''
-                        SELECT id
-                        FROM meta_tag_images
-                        WHERE image_id = %d
-                        AND tag_id = %d;''' % (entry['id'], tag_id)).dictresult()
-                self.db.delete('meta_tag_images', {'id': tag_image_id[0]['id']})
-            for tag_id in tag_ids:
-                tag_image_id = self.db.query(
-                        '''
-                        SELECT id
-                        FROM meta_tag_images
-                        WHERE image_id = %d
-                        AND tag_id = %d;''' % (entry['id'], tag_id)).dictresult()
-                if not tag_image_id:
-                    self.db.insert('meta_tag_images', {
-                        'tag_id': tag_id, 'image_id': entry['id']})
-                else:
-                    pass
+        tag_instances = [self.get_instance('tag', tag) for tag in tags]
+        entry.tag_set.clear()
+        [entry.tag_set.add(tag) for tag in tag_instances]
+
+        # Salvando modificações
+        entry.save()
 
         print 'Registro no banco de dados atualizado!'
 
-    def getrow_id(self, table, value):
+    def get_instance(self, table, value):
         '''Retorna o id a partir do nome.'''
-        try:
-            row = self.db.get('meta_%s' % table, value, 'name')
-        except:
-            newrow = self.db.insert('meta_%s' % table, {'name': u'%s' % value,
-                'slug': ''})
-            row = self.db.get('meta_%s' % table, value, 'name')
-        id = row['id']
-        return id
+        metadatum, new = eval('%s.objects.get_or_create(name="%s")' %
+                (table.capitalize(), value))
+        return metadatum
 
 
 class Photo:
@@ -222,7 +180,6 @@ class Photo:
                 }
                 
         # Converte valores None para string em branco
-        # FIXME Checar se isso está funcionando direito...
         for k, v in self.meta.iteritems():
             if v is None:
                 self.meta[k] = u''
@@ -247,7 +204,7 @@ class Photo:
             self.meta['date'] = ''
         # Arrumando geolocalização
         try:
-            gps = self.get_gps(exif['GPSInfo'])
+            gps = self.get_gps(exif)
             for k, v in gps.iteritems():
                 self.meta[k] = v
         except:
@@ -288,70 +245,84 @@ class Photo:
 
         return self.meta
 
-    def get_exif(self, filename):
-        tagnames = ['GPSInfo', 'DateTimeOriginal', 'DateTimeDigitized',
-                'DateTime']
-        exif = {}
-        img = Image.open(filename)
-        info = img._getexif()
-        for tag, value in info.iteritems():
-            tagname = TAGS.get(tag, tag)
-            if tagname in tagnames:
-                exif[tagname] = value
-        return exif
+    def get_exif(self, filepath):
+        '''Extrai o exif da imagem selecionada usando o pyexiv2 0.1.3.'''
+        exif_meta = pyexiv2.ImageMetadata(filepath)
+        exif_meta.read()
+        return exif_meta
+        #tagnames = ['GPSInfo', 'DateTimeOriginal', 'DateTimeDigitized',
+        #        'DateTime']
+        #exif = {}
+        #img = Image.open(filename)
+        #info = img._getexif()
+        #for tag, value in info.iteritems():
+        #    tagname = TAGS.get(tag, tag)
+        #    if tagname in tagnames:
+        #        exif[tagname] = value
+        #return exif
 
-    def get_gps(self, data):
+    def get_gps(self, exif):
         gps = {}
-        divide = lambda x: x[0] / x[1]
+        gps_data = {}
         # Latitude
-        lat_ref = data[1]
-        lat_deg = divide(data[2][0])
-        lat_min = divide(data[2][1])
-        lat_sec = divide(data[2][2])
-        lat_sec_float = data[2][2][0] / float(data[2][2][1])
+        gps['latref'] = exif_meta['Exif.GPSInfo.GPSLatitudeRef'].value
+        gps['latdeg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'].value[0])
+        gps['latmin'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'].value[1])
+        gps['latsec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLatitude'].value[2])
         latitude = self.get_decimal(
-                lat_deg, lat_min, lat_sec_float)
+                gps['latref'], gps['latdeg'], gps['latmin'], gps['latsec'])
         # Longitude
-        long_ref = data[3]
-        long_deg = divide(data[4][0])
-        long_min = divide(data[4][1])
-        long_sec = divide(data[4][2])
-        long_sec_float = data[4][2][0] / float(data[4][2][1])
+        gps['longref'] = exif_meta['Exif.GPSInfo.GPSLongitudeRef'].value
+        gps['longdeg'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'].value[0])
+        gps['longmin'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'].value[1])
+        gps['longsec'] = self.resolve(exif_meta['Exif.GPSInfo.GPSLongitude'].value[2])
         longitude = self.get_decimal(
-                long_deg, long_min, long_sec_float)
+                gps['longref'], gps['longdeg'], gps['longmin'], gps['longsec'])
 
-        gps['geolocation'] = '%s %d°%d\'%d" %s %d°%d\'%d"' % (
-                lat_ref, lat_deg, lat_min, lat_sec, long_ref, long_deg,
-                long_min, long_sec)
-        gps['latitude'] = '%s%f' % (lat_ref, latitude)
-        gps['longitude'] = '%s%f' % (long_ref, longitude)
-        return gps
+        # Gravando valores prontos
+        gps_data['geolocation'] = '%s %d°%d\'%d" %s %d°%d\'%d"' % (
+                gps['latref'], gps['latdeg'], gps['latmin'], gps['latsec'],
+                gps['longref'], gps['longdeg'], gps['longmin'], gps['longsec'])
+        gps_data['latitude'] = '%f' % latitude
+        gps_data['longitude'] = '%f' % longitude
+        return gps_data
 
-    def get_decimal(self, deg, min, sec):
-	decimal_min = (min * 60.0 + sec) / 60.0
-	decimal = (deg * 60.0 + decimal_min) / 60.0
+    def get_decimal(self, ref, deg, min, sec):
+        '''Descobre o valor decimal das coordenadas.'''
+        decimal_min = (min * 60.0 + sec) / 60.0
+        decimal = (deg * 60.0 + decimal_min) / 60.0
+        negs = ['S', 'W']
+        if ref in negs:
+            decimal = -decimal
         return decimal
+
+    def resolve(self, frac):
+        '''Resolve a fração das coordenadas para int.
+
+        Por padrão os valores do exif são guardados como frações. Por isso é
+        necessário converter.
+        '''
+        fraclist = str(frac).split('/')
+        result = int(fraclist[0]) / int(fraclist[1])
+        return result
 
     def get_date(self, exif):
         try:
-            date = exif['DateTimeOriginal']
+            date = exif['Exif.Photo.DateTimeOriginal']
         except:
             try:
-                date = exif['DateTimeDigitized']
+                date = exif['Exif.Photo.DateTimeDigitized']
             except:
                 try:
-                    date = exif['DateTime']
+                    date = exif['Exif.Image.DateTime']
                 except:
                     return False
-
-        date = datetime.strptime(date, '%Y:%m:%d %H:%M:%S')
-        return date
+        print date.value
+        return date.value
 
     def process_image(self):
         '''Redimensiona a imagem e inclui marca d'água.'''
         local_filepath = os.path.join(localdir, self.filename)
-        print local_filepath
-        print self.source_filepath
         print '\nProcessando a imagem...'
         try:
             # Converte para 72dpi, JPG qualidade 50 e redimensiona as imagens

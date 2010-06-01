@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 01 Jun 2010 01:06AM
+# Atualizado: 01 Jun 2010 01:34AM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -361,7 +361,7 @@ class Folder:
         # Buscador de imagens em ação
         for root, dirs, files in os.walk(self.folder_path):
             for filename in files:
-                if filename.endswith(extensions)and n < self.n_max:
+                if filename.endswith(extensions) and n < self.n_max:
                     filepath = os.path.join(root, filename)
                     self.images.append(filepath)
                     o.append(filename)
@@ -374,8 +374,12 @@ class Folder:
                     break
         else:
             print '\n%d imagens encontradas.' % n
+        # Cria lista com nome dos arquivos da pasta
         i = os.listdir(self.folder_path)
+        # Verifica as diferenças...
         diff = set(i) - set(o)
+        # Grava no arquivo...
+        #FIXME Tentar descobrir por que acontece isso!
         loucura = open('loucura.txt', 'w')
         for nome in diff:
             loucura.write(nome + '\n')

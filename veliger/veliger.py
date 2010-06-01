@@ -6,7 +6,7 @@
 # 
 #TODO Inserir licença.
 #
-# Atualizado: 24 May 2010 01:43AM
+# Atualizado: 01 Jun 2010 01:06AM
 '''Editor de metadados do banco de imagens do CEBIMar-USP.
 
 Este programa abre imagens JPG, lê seus metadados (IPTC) e fornece uma
@@ -43,7 +43,7 @@ __author__ = 'Bruno Vellutini'
 __copyright__ = 'Copyright 2010, CEBIMar-USP'
 __credits__ = 'Bruno C. Vellutini'
 __license__ = 'DEFINIR'
-__version__ = '0.6'
+__version__ = '0.8.1'
 __maintainer__ = 'Bruno Vellutini'
 __email__ = 'organelas at gmail dot com'
 __status__ = 'Development'
@@ -2003,7 +2003,7 @@ class DockGeo(QWidget):
             self.write_html(unset=1, zoom=1)
 
     def get_exif(self, filepath):
-        '''Extrai o exif da imagem selecionada usando o pyexiv2 0.1.3.'''
+        '''Extrai o exif da imagem selecionada usando o pyexiv2 0.2.2.'''
         exif_meta = pyexiv2.ImageMetadata(unicode(filepath))
         exif_meta.read()
         gps = {}

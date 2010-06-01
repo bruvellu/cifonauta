@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 01 Jun 2010 12:55AM
+# Atualizado: 01 Jun 2010 01:06AM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -97,7 +97,7 @@ class Database:
         else:
             image_meta['is_public'] = True
 
-        # Transforma valores em IDs
+        # Transforma valores em instâncias dos modelos
         toget = ['author', 'taxon', 'genus', 'species', 'size', 'source',
                 'rights', 'sublocation', 'city', 'state', 'country']
         for k in toget:
@@ -112,6 +112,7 @@ class Database:
         if not update:
             image_meta['view_count'] = 0
             entry = Image(**image_meta)
+            # Tem que salvar para criar id, usado na hora de salvar as tags
             entry.save()
         else:
             entry = Image.objects.get(web_filepath__icontains=filename)
@@ -197,8 +198,6 @@ class Photo:
         # Arrumando geolocalização
         try:
             gps = self.get_gps(exif)
-            print 'GPS!!!'
-            print gps
             for k, v in gps.iteritems():
                 self.meta[k] = v
         except:
@@ -239,22 +238,13 @@ class Photo:
         return self.meta
 
     def get_exif(self, filepath):
-        '''Extrai o exif da imagem selecionada usando o pyexiv2 0.1.3.'''
+        '''Extrai o exif da imagem selecionada usando o pyexiv2 0.2.2.'''
         exif_meta = pyexiv2.ImageMetadata(filepath)
         exif_meta.read()
         return exif_meta
-        #tagnames = ['GPSInfo', 'DateTimeOriginal', 'DateTimeDigitized',
-        #        'DateTime']
-        #exif = {}
-        #img = Image.open(filename)
-        #info = img._getexif()
-        #for tag, value in info.iteritems():
-        #    tagname = TAGS.get(tag, tag)
-        #    if tagname in tagnames:
-        #        exif[tagname] = value
-        #return exif
 
     def get_gps(self, exif):
+        '''Extrai coordenadas guardadas no EXIF.'''
         gps = {}
         gps_data = {}
         # Latitude
@@ -300,6 +290,7 @@ class Photo:
         return result
 
     def get_date(self, exif):
+        '''Extrai a data em que foi criada a foto do EXIF.'''
         try:
             date = exif['Exif.Photo.DateTimeOriginal']
         except:
@@ -310,7 +301,6 @@ class Photo:
                     date = exif['Exif.Image.DateTime']
                 except:
                     return False
-        print date.value
         return date.value
 
     def process_image(self):

@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 01 Jun 2010 01:34AM
+# Atualizado: 05 Jun 2010 11:38PM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -53,6 +53,7 @@ watermark = 'marca.png'
 
 
 class Database:
+    '''Define objeto que interage com o banco de dados.'''
     def __init__(self):
         pass
 
@@ -137,6 +138,7 @@ class Database:
 
 
 class Photo:
+    '''Define objeto para instâncias das fotos.'''
     def __init__(self, filepath):
         self.source_filepath = filepath
         self.filename = os.path.basename(filepath)
@@ -346,6 +348,7 @@ class Photo:
 
 
 class Folder:
+    '''Define objeto para lidar com as pastas a serem lidas.'''
     def __init__(self, folder, n_max):
         self.folder_path = folder
         self.n_max = n_max

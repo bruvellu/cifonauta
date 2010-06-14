@@ -1,0 +1,5 @@
+<div id="meta-list">
+    {% for meta in metas %}
+    <a href="/{{ url }}/{{ meta.slug }}">{{ meta.name }}</a>
+    {% endfor %}
+</div>

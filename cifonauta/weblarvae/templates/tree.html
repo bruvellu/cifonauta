@@ -1,0 +1,47 @@
+{% if taxa %}
+    <h2>Grupos</h2>
+    {% for taxon in taxa %}
+    {% if not taxon.parent %}
+    <ul class="tree root level-0 taxon-{{ taxon.slug }}">
+        <li>
+        <a href="/taxon/{{ taxon.slug }}/" title="{{ taxon.name }}">{{ taxon.name }}</a>
+        </li>
+
+        <!-- 1st -->
+        {% if taxon.children.all|first %}
+        <ul class="tree child level-1 {{ taxon.slug }}-children">
+            {% for 1stchild in taxon.children.all %}
+            <li class="taxon-{{ 1stchild.slug }}">
+                <a href="/taxon/{{ 1stchild.slug }}/" title="{{ 1stchild.name }}">{{ 1stchild.name }}</a>
+            </li>
+
+                <!-- 2nd -->
+                {% if 1stchild.children.all|first %}
+                <ul class="tree child level-2 {{ 1stchild.slug }}-children">
+                    {% for 2ndchild in 1stchild.children.all %}
+                    <li class="taxon-{{ 2ndchild.slug }}">
+                        <a href="/taxon/{{ 2ndchild.slug }}/" title="{{ 2ndchild.name }}">{{ 2ndchild.name }}</a>
+                    </li>
+
+                    <!-- 3rd -->
+                    {% if 2ndchild.children.all|first %}
+                    <ul class="tree child level-3 {{ 2ndchild.slug }}-children">
+                        {% for 3rdchild in 2ndchild.children.all %}
+                        <li class="taxon-{{ 3rdchild.slug }}">
+                            <a href="/taxon/{{ 3rdchild.slug }}/" title="{{ 3rdchild.name }}">{{ 3rdchild.name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}<!-- 2ndchild.children.all -->
+
+                    {% endfor %}
+                </ul>
+                {% endif %}<!-- 1stchild.children.all -->
+
+            {% endfor %}
+        </ul>
+        {% endif %}<!-- taxon.children.all -->
+    </ul>
+    {% endif %}<!-- taxon.parent -->
+    {% endfor %} 
+{% endif %}<!-- taxa -->

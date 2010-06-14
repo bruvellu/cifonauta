@@ -1,0 +1,56 @@
+{% if images %}
+<section id="photo-gallery">
+    <header><h1>Fotos</h1></header>
+    <ul class="thumbs">
+        {% for image in images %}
+            {% if image.is_public %}
+            <li class="size-{{ image.size.slug }}">
+                {% if show_title %}
+                {{ image.title }}<br />
+                {% endif %}
+                <a href="/imagem/{{ image.id }}/"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" height="90" /></a>
+                {% if show_tags %}
+                    {% if image.tag_set.all %}
+                        <br />
+                        {% for tag in image.tag_set.all %}
+                        <a href="/tag/{{ tag.slug }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
+            </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</section>
+{% else %}
+<div class="nomatch">Nenhuma imagem encontrada.</div>
+{% endif %}
+
+{% if videos %}
+<section id="video-gallery">
+    <header><h1>Vídeos</h1></header>
+    <ul class="thumbs">
+    {% for video in videos %}
+        {% if video.is_public %}
+        <li>
+            {% if show_title %}
+            {{ video.title }}<br />
+            {% endif %}
+            <a href="/video/{{ video.id }}/"><img src="/{{ video.thumb_filepath }}" alt="{{ video.title }}" title="{{ video.title }}" width="120" /></a><br />
+            {% if show_tags %}
+                {% if image.tag_set.all %}
+                    <ul class='tag-list'>
+                        {% for tag in video.tag_set.all %}
+                        <a href="/tag/{{ tag.slug }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endif %}
+        </li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+</section>
+{% else %}
+<div class="nomatch">Nenhum vídeo encontrado.</div>
+{% endif %}

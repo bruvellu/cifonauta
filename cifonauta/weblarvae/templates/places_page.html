@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Localidades | {{ block.super }}{% endblock %}
+{% block content %}
+<section class="span-16">
+    <header><h1>Localidades</h1></header>
+
+    <div id="sublocations" class="span-4">
+        <h2>Locais</h2>
+        <ul>
+        {% for subloc in sublocations %}
+            <li>
+            <a href="/local/{{ subloc.slug }}">{{ subloc.name }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div id="cities" class="span-4">
+        <h2>Cidades</h2>
+        <ul>
+        {% for city in cities %}
+            <li>
+            <a href="/cidade/{{ city.slug }}">{{ city.name }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div id="states" class="span-4">
+        <h2>Estados</h2>
+        <ul>
+        {% for state in states %}
+            <li>
+            <a href="/estado/{{ state.slug }}">{{ state.name }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div id="countries" class="span-4 last">
+        <h2>Países</h2>
+        <ul>
+        {% for country in countries %}
+            <li>
+            <a href="/pais/{{ country.slug }}">{{ country.name }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endblock %}
+
+{% block sidebar %}
+<aside class="main span-8 last">
+</aside>
+{% endblock %}

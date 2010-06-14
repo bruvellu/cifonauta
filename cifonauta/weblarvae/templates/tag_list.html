@@ -1,0 +1,5 @@
+<div id="tag-list">
+    {% for tag in tags %}
+    <a href="/tag/{{ tag.slug }}">{{ tag.name }}</a>
+    {% endfor %}
+</div>

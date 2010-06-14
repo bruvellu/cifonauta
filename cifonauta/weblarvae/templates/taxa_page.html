@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Taxa | {{ block.super }}{% endblock %}
+{% block content %}
+<section class="span-16">
+    <header><h1>Taxa</h1></header>
+
+    <div id="taxa" class="span-8">
+        {% include 'tree.html'%}
+    </div>
+
+    <div id="species" class="span-8 last">
+        <h2>Espécies</h2>
+        <ul>
+        {% for genus in genera %}
+            {% for sp in genus.spp.all %}
+            <li>
+            <a href="/especie/{{ sp.slug }}"><em>{{ genus.name }} {{ sp }}</em></a>
+            </li>
+            {% endfor %}
+        {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endblock %}
+
+{% block sidebar %}
+<aside class="main span-8 last">
+</aside>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="span-16">
+    <header>
+        <h1>Bem vindo! Descubra a vida marinha.</h1>
+    </header>
+    <div id="stats">
+        {{ image_count }} image{{ image_count|pluralize:'m,ns' }} e {{ video_count }} vídeo{{ video_count|pluralize }} no banco.
+    </div>
+    {% include 'gallery.html' %}
+</section>
+{% endblock %}
+{% block sidebar %}
+<aside class="main span-8 last">
+{% if hot_images %}
+<header><h1>Mais acessadas</h1></header>
+    {% for image in hot_images %}
+    {% if forloop.last %}<div class="span-2 last"><a href="/imagem/{{ image.id }}/"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="70" /></a><br>({{ image.view_count }})</div>
+    {% else %}
+    <div class="span-2">
+        <a href="/imagem/{{ image.id }}/">
+            <img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="70" /></a>
+        <br>({{ image.view_count }})
+    {% endif %}
+    </div>
+    {% endfor %}
+{% endif %}
+
+{% include 'tree.html' %}
+
+</aside>
+{% endblock %}

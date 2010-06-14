@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>
+            {% block title %}Banco de Imagens do CEBIMar USP{% endblock %}
+        </title>
+        <link rel="stylesheet" href="/site_media/style.css" type="text/css">
+        <link rel="stylesheet" href="/site_media/screen.css" type="text/css" media="screen, projection">
+        <link rel="stylesheet" href="/site_media/print.css" type="text/css" media="print">	
+        <!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+        <script src="/site_media/jquery.js" type="text/javascript"></script>
+        {% block external %}{% endblock %}
+    </head>
+    <body>
+        <section class="container prepend-1 append-1">
+            <nav class="main span-24 last">
+                <ul id="menu">
+                    <li><a href="/">home</a></li>
+                    <li><a href="/buscar/">buscar</a></li>
+                    <li><a href="/tags/">marcadores</a></li>
+                    <li><a href="/autor/">autores</a></li>
+                    <li><a href="/taxa/">taxa</a></li>
+                    <li><a href="/locais/">localidades</a></li>
+                </ul>
+            </nav>
+            <header class="main span-24 last">
+                <hgroup>
+                    <h1>Banco de imagens</h1>
+                    <h2>CEBIMar USP</h2>
+                </hgroup>
+            </header>
+            <section class="main span-24 last" id="content">
+                {% block content %}{% endblock %}
+                {% block sidebar %}{% endblock %}
+            </section>
+            <footer class="main span-24 last quiet borders">&copy;2010 Centro de Biologia Marinha da Universidade de São Paulo</footer>
+        </section>
+    </body>
+</html>

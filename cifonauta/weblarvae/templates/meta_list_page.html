@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}{{ plural }} | {{ block.super }}{% endblock %}
+{% block content %}
+    <header><h1>{{ plural }}</h1></header>
+    {% include 'meta_list.html' %}
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% block title %}{{ media.title }} | {{ block.super }}{% endblock %}
+{% block external %}
+<script type="text/javascript">
+  // JavaScript code goes here.
+$(document).ready(function(){
+        // Collapsible comments
+        $(".show-comment").click(function(){
+            $("#comment-box").slideToggle("slow");
+            $(this).hide();
+            $(".hide-comment").show();
+            });
+        $(".hide-comment").click(function(){
+            $("#comment-box").slideToggle("slow");
+            $(this).hide();
+            $(".show-comment").show();
+            });
+
+        });
+</script>
+{% endblock %}
+{% block content %}
+{% load comments %}
+<section class="span-16">
+    {% if media %}
+    <article id="single" class="{{ type }} author-{{ media.author.slug }} taxon-{{ media.taxon.slug }} genus-{{ media.genus.slug }} species-{{ media.species.slug }} size-{{ media.size.slug }} source-{{ media.source.slug }} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ media.view_count }}">
+        <header class="span-16 last">
+            <h1>{{ media.title }}</h1>
+        </header>
+        {% if media.is_public %}
+        <footer class="span-16 last media-tags">
+            {% if media.tag_set.all %}
+                {% for tag in media.tag_set.all %}
+                <a href="/tag/{{ tag.slug }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            {% endif %}
+        </footer>
+
+        <figure class="span-13 {{ type }} borders">
+            {% ifequal type 'image' %}
+                {% include 'image.html' %}
+            {% else %}
+                {% ifequal type 'video' %}
+                    {% include 'video.html' %}
+                {% endifequal %}
+            {% endifequal %}
+            {% if media.caption %}
+                <figcation class="span-13 last">{{ media.caption }}</figcaption>
+            <div class="span-13 last align-right" id="author">{{ media.author }}</div>
+            {% else %}
+            <div class="span-13 last" id="author">{{ media.author }}</div>
+            {% endif %}
+        </figure>
+
+        <div class="span-2 last border-top border-right border-bottom" id="sideinfo">
+            <div class="border-bottom" id="views">
+                {{ media.view_count }} visita{{ media.view_count|pluralize }}
+            </div>
+            {% if media.genus.name %}
+            <ul id="biodb">
+                <li><a href="http://data.gbif.org/species/species/{{ media.genus}}_{{ media.species }}" title="{{ media.genus }} {{ media.species }} no Global Biodiversity Information Facility" target="_blank">GBIF</a></li>
+                <li><a href="http://www.eol.org/search?q={{ media.genus }} {{ media.species }}" title="{{ media.genus }} {{ media.species }} no Encyclopedia of Life" target="_blank">EoL</a></li>
+                <li><a href="http://www.itis.gov/servlet/SingleRpt/SingleRpt?search_topic=Scientific_Name&search_value={{ media.genus }} {{ media.species }}&search_kingdom=every&search_span=exactly_for&categories=All&source=html&search_credRating=All" title="{{ media.genus }} {{ media.species }} no Integrated Taxonomic Information System" target="_blank">ITIS</a></li>
+                <li><a href="http://www.biodiversitylibrary.org/name/{{ media.genus }}_{{ media.species }}" title="{{ media.genus }} {{ media.species }} no Biodiversity Heritage Library" target="_blank">BHL</a></li>
+                <li><a href="http://www.iobis.org/OBISWEB/ObisControllerServlet?searchCategory=/AdvancedSearchServlet&genus={{ media.genus }}&species={{ media.species }}&sciname={{ media.genus }} {{ media.species }}" title="{{ media.genus }} {{ media.species }} no Ocean Biogeographic Information System" target="_blank">OBIS</a></li>
+                <li><a href="http://www.marinespecies.org/aphia.php?p=taxlist&tName={{ media.genus }} {{ media.species }}" title="{{ media.genus }} {{ media.species }} no World Register of Marine Species" target="_blank">WoRMS</a></li>
+                <li><a href="http://www.catalogueoflife.org/annual-checklist/2006/search_results.php?search_type=search_scientific&genus={{ media.genus }}&species={{ media.species }}" title="{{ media.genus }} {{ media.species }} no Catalogue of Life" target="_blank">CoL</a></li>
+                <li><a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?name={{ media.genus }} {{ media.species }}" title="{{ media.genus }} {{ media.species }} no NCBI GenBank" target="_blank">GenBank</a></li>
+                <li><a href="http://www.co1bank.uoguelph.ca/views/taxbrowser_nomatch.php?taxon={{ media.genus }} {{ media.species }}" title="{{ media.genus }} {{ media.species }} no Barcode of Life Data Systems" target="_blank">BOLD</a></li>
+                <li><a href="http://www.ubio.org/browser/search.php?search_all={{ media.genus }} {{ media.species }}" title="{{ media.genus }} {{ media.species }} no Universal Biological Indexer and Organizer" target="_blank">uBio</a></li>
+            </ul>
+            {% endif %}
+
+            {% if media.size.name %}
+            {% spaceless %}
+            <div class="span-2 last border-top" id="size">
+                <div class="size-{{ media.size.slug }}" id="size-string" title="Escala desta imagem: {{ media.size }}">
+                    {{ media.size }}
+                </div>
+                <div class="size-legend">
+                    <div class="size-01-mm" title="<0,1 mm"></div>
+                    <div class="size-01-10-mm" title="0,1 - 1,0 mm"></div>
+                    <div class="size-10-10-mm" title="1,0 - 10 mm"></div>
+                    <div class="size-10-100-mm" title="10 - 100 mm"></div>
+                    <div class="size-100-mm" title=">100 mm"></div>
+                </div>
+            </div>
+            {% endspaceless %}
+            {% endif %}
+
+        </div>
+
+        <div class="span-13 last borders" id="meta">
+            <div class="span-7 taxonomy">
+                {% if media.genus.name %}
+                    <strong>Espécie:</strong> <span id="genus">{{ media.genus }}</span> 
+                    {% if media.species.name != 'sp.' %}
+                    <span id="species">{{ media.species }}</span>
+                    {% else %}
+                    <span>{{ media.species }}</span>
+                    {% endif %}
+                <br />
+                {% endif %}
+                {% if media.taxon.name %}
+                <strong>Táxon:</strong> <span id="taxon">{{ media.taxon }}</span>
+                <br />
+                {% endif %}
+                {% if media.source.name %}
+                <strong>Especialista:</strong> <span id="source">{{ media.source }}</span>
+                {% endif %}
+            </div>
+
+            <div class="span-6 last location">
+                {% if media.date %}
+                <strong>Data: </strong> <span id="date"><datetime>{{ media.date }}</datetime></span>
+                <br />
+                {% endif %}
+                {% if media.sublocation.name or media.city.name or media.state.name or media.country.name %}
+                    <strong>Local:</strong> 
+                    {% if media.sublocation.name %}<span id="sublocation">{{ media.sublocation }},</span>{% endif %}
+                    {% if media.city.name %}<span id="city">{{ media.city }},</span>{% endif %}
+                    {% if media.state.name %}<span id="state">{{ media.state }},</span>{% endif %}
+                    {% if media.country.name %}<span id="country">{{ media.country }}</span>{% endif %}
+                <br />
+                {% endif %}
+                {% if media.geolocation %}
+                <strong>Geolocalização:</strong> <a href="http://maps.google.com/maps?q={{ media.latitude }},{{ media.longitude }}" title="{{ media.geolocation }} no Google Maps">{{ media.geolocation }}</a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if media.notes %}
+        <div id="notes" class="span-16 last">
+            <h2>Notas</h2>
+            {{ media.notes }}
+        </div>
+        {% endif %}
+
+        {% get_comment_list for media as media_comments %}
+        <div id="comments" class="span-16 last">
+            {% get_comment_count for media as comment_count %}
+            <a name="comment" class="show-comment" href="#comment">Mostrar comentários ({{ comment_count }})</a>
+            <a name="comment" class="hide-comment" href="#">Esconder comentários ({{ comment_count }})</a>
+            <div id="comment-box">
+                {% if media_comments %}
+                    <ul id="comment-list">
+                    {% for comment in media_comments %}
+                    <li>
+                        <div id="user-name">
+                            <a href="{{ comment.user_url }}">{{ comment.user_name }}</a> | <a href="{% get_comment_permalink comment %}" title="permalink">{{ comment.submit_date|date:"DATETIME_FORMAT" }}</a>
+                        </div>
+                        <div id="comment-itself">
+                            {{ comment.comment }}
+                        </div>
+                    </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+                {% render_comment_form for media %}
+            </div>
+        </div>
+
+        {% else %}
+        <div class="private span-16 last">Esta imagem ainda não está disponível.</div>
+        {% endif %}
+    </article>
+    {% else %}
+    <div class="nomatch span-16 last">Nenhuma imagem encontrada.</div>
+    {% endif %}
+</section>
+{% endblock %}
+{% block sidebar %}
+<aside class="main span-8 last">
+    Barra lateral
+</aside>
+{% endblock %}

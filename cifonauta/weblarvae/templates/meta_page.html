@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}{{ meta.name }} | {{ block.super }}{% endblock %}
+{% block content %}
+    <header><h1>{{ meta.name }}</h1></header>
+    {% include 'gallery.html' %}
+{% endblock %}

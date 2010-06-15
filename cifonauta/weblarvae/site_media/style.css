@@ -6,6 +6,11 @@ header,footer,article,section,hgroup,nav,figure,figcaption {
 header.main{
 }
 
+.subpages {
+    background:#fafafa;
+    padding:1.5em 0 0;
+}
+
 nav.main {
     text-align:right;
     font-size: 1.4em;

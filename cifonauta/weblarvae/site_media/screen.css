@@ -17,7 +17,11 @@ article, aside, dialog, figure, footer, header, hgroup, nav, section {display:bl
 body {line-height:1.5;}
 table {border-collapse:separate;border-spacing:0;}
 caption, th, td {text-align:left;font-weight:normal;}
-table, td, th {vertical-align:middle;}
+table, td, th {
+    vertical-align:middle;
+    background:#fafafa;
+    color:#666;
+}
 blockquote:before, blockquote:after, q:before, q:after {content:"";}
 blockquote, q {quotes:"" "";}
 a img {border:none;}
@@ -56,9 +60,9 @@ dl {margin:0 0 1.5em 0;}
 dl dt {font-weight:bold;}
 dd {margin-left:1.5em;}
 table {margin-bottom:1.4em;width:100%;}
-th {font-weight:bold;}
+th {font-weight:bold;background:#ccc;}
 thead th {background:#c3d9ff;}
-th, td, caption {padding:4px 10px 4px 5px;}
+th, td, caption {padding:0.5em 10px;}
 tr.even td {background:#e5ecf9;}
 tfoot {font-style:italic;}
 caption {background:#eee;}
@@ -74,6 +78,7 @@ caption {background:#eee;}
 .last {margin-right:0;padding-right:0;}
 .top {margin-top:0;padding-top:0;}
 .bottom {margin-bottom:0;padding-bottom:0;}
+.bold {font-weight:bold;}
 
 /* forms.css */
 label {font-weight:bold;}

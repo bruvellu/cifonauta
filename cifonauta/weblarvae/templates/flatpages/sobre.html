@@ -1,6 +1,21 @@
 {% extends 'base.html' %}
 {% block title %}{{ flatpage.title }} | {{ block.super }}{% endblock %}
 {% block content %}
-<header><h1>{{ flatpage.title }}</h1></header>
-<p>{{ flatpage.content }}</p>
+<section class="span-16">
+<header class="span-16 last"><h1>{{ flatpage.title }}</h1></header>
+{{ flatpage.content }}
+</section>
+{% endblock %}
+{% block sidebar %}
+<aside class="span-8 last">
+<div class="borders subpages">
+    <ul>
+        <li><a href="/sobre/">Sobre</a></li>
+        <li><a href="/sobre/conteudo/">Conteúdo</a></li>
+        <li><a href="/sobre/organizacao/">Organização do banco</a></li>
+        <li><a href="/sobre/creditos">Créditos e apoio</a></li>
+        <li><a href="/sobre/detalhes">Detalhes técnicos</a></li>
+    </ul>
+</div>
+</aside>
 {% endblock %}

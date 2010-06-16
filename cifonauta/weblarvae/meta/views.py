@@ -11,20 +11,16 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 # Main
 def main_page(request):
     images = Image.objects.order_by('-id')
-    hot_images = Image.objects.order_by('-view_count')[:4]
     image_count = images.count()
     images = images#[:10]
     videos = Video.objects.order_by('-id')
     video_count = videos.count()
     videos = videos[:10]
-    taxa = Taxon.objects.exclude(name='')
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
         'image_count': image_count,
         'video_count': video_count,
-        'hot_images': hot_images,
-        'taxa': taxa,
         'show_tags': False,
         'show_title': False,
         })
@@ -49,66 +45,17 @@ def search_page(request):
                     select_params=[query, query],
                     order_by=('-rank',)
                     )
-            #keywords = query.split()
             q = Q()
-            #for keyword in keywords:
-            #    q_author = Q(author__name__icontains=keyword)
-            #    q_taxon = Q(taxon__name__icontains=keyword)
-            #    q_genus = Q(genus__name__icontains=keyword)
-            #    q_species = Q(species__name__icontains=keyword)
-            #    q_size = Q(size__name__icontains=keyword)
-            #    q_source = Q(source__name__icontains=keyword)
-            #    q_sublocation = Q(sublocation__name__icontains=keyword)
-            #    q_city = Q(city__name__icontains=keyword)
-            #    q_state = Q(state__name__icontains=keyword)
-            #    q_country = Q(country__name__icontains=keyword)
-            #    q = q | q_author | q_taxon | q_genus | q_species | q_size | q_source | q_sublocation | q_city | q_state | q_country
-                #FIXME Não está funcionando...
-                #imgs = Image.objects.raw("SELECT * FROM meta_image WHERE translate(title, 'ã', 'a') ILIKE translate(%s, 'ã', 'a')", [keyword])
             form = SearchForm({'query': query})
-            #images = Image.objects.filter(q)
             images = queryset
             videos = Video.objects.filter(q)
-            authors, taxa, genera, species, sizes, sublocations, cities, states, countries = extract_set(images)
     variables = RequestContext(request, {
         'form': form,
         'images': images,
         'videos': videos,
-        'authors': authors,
-        'taxa': taxa,
-        'genera': genera,
-        'species': species,
-        'sizes': sizes,
-        'sublocations': sublocations,
-        'cities': cities,
-        'states': states,
-        'countries': countries,
         'show_results': show_results,
         })
     return render_to_response('buscar.html', variables)
-
-def extract_set(query):
-    authors = []
-    taxa = []
-    genera = []
-    species = []
-    sizes = []
-    sublocations = []
-    cities = []
-    states = []
-    countries = []
-    for item in query:
-        authors.append(item.author)
-        taxa.append(item.taxon)
-        genera.append(item.genus)
-        species.append(item.species)
-        sizes.append(item.size)
-        sublocations.append(item.sublocation)
-        cities.append(item.city)
-        states.append(item.state)
-        countries.append(item.country)
-    strip = lambda mylist: [x for x in mylist if not x == '']
-    return list(set(authors)), list(set(taxa)), list(set(genera)), list(set(species)), list(set(sizes)), list(set(sublocations)), list(set(cities)), list(set(states)), list(set(countries))
 
 # Single
 def image_page(request, image_id):
@@ -384,13 +331,9 @@ def country_list_page(request):
 
 # Menu
 def taxa_page(request):
-    taxa = Taxon.objects.exclude(name='').order_by('name')
     genera = Genus.objects.order_by('name')
-    spp = Species.objects.order_by('name')
     variables = RequestContext(request, {
-        'taxa': taxa,
         'genera': genera,
-        'spp': spp,
         })
     return render_to_response('taxa_page.html', variables)
 

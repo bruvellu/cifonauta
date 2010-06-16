@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load extra_tags %}
 {% block title %}Buscador | {{ block.super }}{% endblock %}
 {% block external %}
 {% endblock %}
@@ -17,76 +18,6 @@
 {% endblock %}
 {% block sidebar %}
 <aside class="main span-8 last">
-
-{% if authors %}
-<header><h1>Veja mais...</h1></header>
-<h2>Autores</h2>
-<ul>
-    {% for author in authors %}
-    <li><a href="/autor/{{ author.slug }}">{{ author }}</a></li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-{% if taxa %}
-<h2>Táxons</h2>
-<ul>
-    {% for taxon in taxa %}
-    <li><a href="/taxon/{{ taxon.slug }}">{{ taxon }}</a></li>
-    {% endfor %}
-</ul>
-{% endif %}
-{% if genera %}
-<h2>Espécies</h2>
-<ul>
-    {% for genus in genera %}
-        {% for sp in genus.spp.all %}
-        <li>
-        <a href="/especie/{{ sp.slug }}"><em>{{ genus.name }} {{ sp }}</em></a>
-        </li>
-        {% endfor %}
-    {% endfor %}
-</ul>
-{% endif %}
-{% if sizes %}
-<h2>Tamanhos</h2>
-<ul>
-    {% for size in sizes %}
-    <li><a href="/tamanho/{{ size.slug }}">{{ size }}</a></li>
-    {% endfor %}
-</ul>
-{% endif %}
-{% if sublocations %}
-<h2>Local</h2>
-<ul>
-    {% for sublocation in sublocations %}
-    <li><a href="/local/{{ sublocation.slug }}">{{ sublocation }}</a></li>
-    {% endfor %}
-</ul>
-{% endif %}
-{% if cities %}
-<h2>Cidades</h2>
-<ul>
-    {% for city in cities %}
-    <li><a href="/cidade/{{ city.slug }}">{{ city }}</a></li>
-    {% endfor %}
-</ul>
-{% endif %}
-{% if states %}
-<h2>Estados</h2>
-<ul>
-    {% for state in states %}
-    <li><a href="/estado/{{ state.slug }}">{{ state }}</a></li>
-    {% endfor %}
-</ul>
-{% endif %}
-{% if countries %}
-<h2>Países</h2>
-<ul>
-    {% for country in countries %}
-    <li><a href="/pais/{{ country.slug }}">{{ country }}</a></li>
-    {% endfor %}
-</ul>
-{% endif %}
+{% show_info images %}
 </aside>
 {% endblock %}

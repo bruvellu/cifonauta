@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 05 Jun 2010 11:38PM
+# Atualizado: 15 Jun 2010 10:11PM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -193,10 +193,10 @@ class Photo:
         # Extraindo metadados do EXIF
         exif = self.get_exif(self.source_filepath)
         date = self.get_date(exif)
-        if date:
+        if date and not date == '0000:00:00 00:00:00':
             self.meta['date'] = date
         else:
-            self.meta['date'] = ''
+            self.meta['date'] = '1900-01-01 01:01:01'
         # Arrumando geolocalização
         try:
             gps = self.get_gps(exif)

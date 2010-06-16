@@ -37,13 +37,13 @@ $(document).ready(function(){
         </footer>
 
         <figure class="span-13 {{ type }} borders">
-            {% ifequal type 'image' %}
+            {% if type == 'image' %}
                 {% include 'image.html' %}
             {% else %}
-                {% ifequal type 'video' %}
+                {% if type == 'video' %}
                     {% include 'video.html' %}
-                {% endifequal %}
-            {% endifequal %}
+                {% endif %}
+            {% endif %}
             {% if media.caption %}
                 <figcation class="span-13 last">{{ media.caption }}</figcaption>
             <div class="span-13 last align-right" id="author">{{ media.author }}</div>

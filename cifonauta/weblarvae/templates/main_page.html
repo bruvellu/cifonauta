@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load extra_tags %}
 {% block content %}
 <section class="span-16">
     <header>
@@ -12,21 +13,7 @@
 {% endblock %}
 {% block sidebar %}
 <aside class="main span-8 last">
-{% if hot_images %}
-<header><h1>Mais acessadas</h1></header>
-    {% for image in hot_images %}
-    {% if forloop.last %}<div class="span-2 last"><a href="/imagem/{{ image.id }}/"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="70" /></a><br>({{ image.view_count }})</div>
-    {% else %}
-    <div class="span-2">
-        <a href="/imagem/{{ image.id }}/">
-            <img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="70" /></a>
-        <br>({{ image.view_count }})
-    {% endif %}
-    </div>
-    {% endfor %}
-{% endif %}
-
-{% include 'tree.html' %}
-
+{% show_hot %}
+{% show_tree %}
 </aside>
 {% endblock %}

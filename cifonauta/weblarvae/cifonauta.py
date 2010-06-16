@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 15 Jun 2010 10:11PM
+# Atualizado: 16 Jun 2010 03:38PM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -110,6 +110,10 @@ class Database:
                 image_meta[k] = self.get_instance(k, image_meta[k])
         del image_meta['genus_sp']
         
+        # Conectando espécie e gênero.
+        image_meta['species'].parent = image_meta['genus']
+        image_meta['species'].save()
+
         if not update:
             image_meta['view_count'] = 0
             entry = Image(**image_meta)
@@ -130,7 +134,7 @@ class Database:
 
         print 'Registro no banco de dados atualizado!'
 
-    def get_instance(self, table, value):
+    def get_instance(self, table, value, genus=''):
         '''Retorna o id a partir do nome.'''
         metadatum, new = eval('%s.objects.get_or_create(name="%s")' %
                 (table.capitalize(), value))

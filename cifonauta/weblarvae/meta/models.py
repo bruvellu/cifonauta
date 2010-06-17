@@ -42,12 +42,14 @@ class File(models.Model):
 
 class Image(File):
     web_filepath = models.ImageField(upload_to='site_media/images/')
+    datatype = models.CharField(max_length=10, default='photo')
     def __unicode__(self):
         return self.title
 
 
 class Video(File):
     web_filepath = models.FileField(upload_to='site_media/videos/')
+    datatype = models.CharField(max_length=10, default='video')
     def __unicode__(self):
         return self.title
 
@@ -64,7 +66,8 @@ class Tag(models.Model):
     slug = models.SlugField(max_length=64, blank=True)
     images = models.ManyToManyField(Image, null=True, blank=True)
     videos = models.ManyToManyField(Video, null=True, blank=True)
-    parent = models.ForeignKey('TagCategory', blank=True, null=True, related_name='tags')
+    parent = models.ForeignKey('TagCategory', blank=True, null=True,
+            related_name='tags', default='Diversos')
     def __unicode__(self):
         return self.name
 

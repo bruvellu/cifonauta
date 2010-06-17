@@ -12,31 +12,27 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 def main_page(request):
     images = Image.objects.order_by('-id')
     image_count = images.count()
-    images = images#[:10]
     videos = Video.objects.order_by('-id')
     video_count = videos.count()
-    videos = videos[:10]
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
         'image_count': image_count,
         'video_count': video_count,
-        'show_tags': False,
-        'show_title': False,
         })
     return render_to_response('main_page.html', variables)
 
 def search_page(request):
     form = SearchForm()
+    query = ''
     images = []
     videos = []
     show_results = False
-    authors, taxa, genera, species, sizes, sublocations, cities, states, countries = [],[],[],[],[],[],[],[],[]
     if 'query' in request.GET:
         show_results = True
         query = request.GET['query'].strip()
         if query:
-            queryset = Image.objects.extra(
+            image_queryset = Image.objects.extra(
                     select={
                         'rank': "ts_rank_cd(tsv, plainto_tsquery('portuguese', %s), 32)",
                         },
@@ -45,11 +41,31 @@ def search_page(request):
                     select_params=[query, query],
                     order_by=('-rank',)
                     )
-            q = Q()
+            video_queryset = Video.objects.extra(
+                    select={
+                        'rank': "ts_rank_cd(tsv, plainto_tsquery('portuguese', %s), 32)",
+                        },
+                    where=["tsv @@ plainto_tsquery('portuguese', %s)"],
+                    params=[query],
+                    select_params=[query, query],
+                    order_by=('-rank',)
+                    )
+            image_list = image_queryset
+            video_list = video_queryset 
+            img_paginator = Paginator(image_list, 16)
+            # Make sure page request is an int. If not, deliver first page.
+            try:
+                page = int(request.GET.get('page', '1'))
+            except ValueError:
+                page = 1
+            # If page request (9999) is out of range, deliver last page of results.
+            try:
+                images = img_paginator.page(page)
+            except (EmptyPage, InvalidPage):
+                images = img_paginator.page(img_paginator.num_pages)
             form = SearchForm({'query': query})
-            images = queryset
-            videos = Video.objects.filter(q)
     variables = RequestContext(request, {
+        'query': query,
         'form': form,
         'images': images,
         'videos': videos,

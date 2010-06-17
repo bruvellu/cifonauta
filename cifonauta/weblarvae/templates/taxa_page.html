@@ -10,21 +10,12 @@
     </div>
 
     <div id="species" class="span-8 last">
-        <h2>Espécies</h2>
-        <ul>
-        {% for genus in genera %}
-            {% for sp in genus.spp.all %}
-            <li>
-            <a href="/especie/{{ sp.slug }}"><em>{{ genus.name }} {{ sp }}</em></a>
-            </li>
-            {% endfor %}
-        {% endfor %}
-        </ul>
+        {% show_spp %}
     </div>
 </section>
 {% endblock %}
 
 {% block sidebar %}
-<aside class="main span-8 last">
+<aside class="span-8 last">
 </aside>
 {% endblock %}

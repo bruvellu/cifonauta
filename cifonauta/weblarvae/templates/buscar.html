@@ -18,6 +18,8 @@
 {% endblock %}
 {% block sidebar %}
 <aside class="main span-8 last">
-{% show_info images %}
+{% if show_results %}
+    {% show_info images.object_list %}
+{% endif %}
 </aside>
 {% endblock %}

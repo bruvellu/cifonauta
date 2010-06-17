@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
+{% load extra_tags %}
 {% block title %}{{ meta.name }} | {{ block.super }}{% endblock %}
 {% block content %}
+<section class="span-16">
     <header><h1>{{ meta.name }}</h1></header>
     {% include 'gallery.html' %}
+</section>
+{% endblock %}
+{% block sidebar %}
+<aside class="span-8 last">
+{% show_info images %}
+</aside>
 {% endblock %}

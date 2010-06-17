@@ -1,56 +1,50 @@
-{% if images %}
+{% if images.object_list %}
 <section id="photo-gallery">
-    <header><h1>Fotos</h1></header>
+    <header><h2>Fotos</h2></header>
+    <footer class="pagination span-16 last">
+    </footer>
     <ul class="thumbs">
-        {% for image in images %}
+        {% for image in images.object_list %}
             {% if image.is_public %}
             <li class="size-{{ image.size.slug }}">
-                {% if show_title %}
-                {{ image.title }}<br />
-                {% endif %}
                 <a href="/imagem/{{ image.id }}/"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" height="90" /></a>
-                {% if show_tags %}
-                    {% if image.tag_set.all %}
-                        <br />
-                        {% for tag in image.tag_set.all %}
-                        <a href="/tag/{{ tag.slug }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
-                        {% endfor %}
-                    {% endif %}
-                {% endif %}
             </li>
             {% endif %}
         {% endfor %}
     </ul>
-</section>
+<footer class="span-16">
+{% if images.has_previous %}
+<div class="span-2"><a href="?{% if query %}query={{ query }}&{% endif %}page={{ images.previous_page_number }}"><< anterior</a></div>
 {% else %}
-<div class="nomatch">Nenhuma imagem encontrada.</div>
+<div class="span-2">&nbsp;</div>
+{% endif %}
+<div class="span-10 align-center">{{ images.number }} de {{ images.paginator.num_pages }}</div>
+{% if images.has_next %}
+<div class="span-4 last"><a href="?{% if query %}query={{ query }}&{% endif %}page={{ images.next_page_number }}">próxima >></a></div>
+{% else %}
+<div class="span-4 last">&nbsp;</div>
+{% endif %}
+</footer>
+
+</section>
+
+{% else %}
+<section class="notice">Nenhuma imagem encontrada.</section>
 {% endif %}
 
 {% if videos %}
 <section id="video-gallery">
-    <header><h1>Vídeos</h1></header>
+    <header><h2>Vídeos</h2></header>
     <ul class="thumbs">
     {% for video in videos %}
         {% if video.is_public %}
         <li>
-            {% if show_title %}
-            {{ video.title }}<br />
-            {% endif %}
-            <a href="/video/{{ video.id }}/"><img src="/{{ video.thumb_filepath }}" alt="{{ video.title }}" title="{{ video.title }}" width="120" /></a><br />
-            {% if show_tags %}
-                {% if image.tag_set.all %}
-                    <ul class='tag-list'>
-                        {% for tag in video.tag_set.all %}
-                        <a href="/tag/{{ tag.slug }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endif %}
+            <a href="/video/{{ video.id }}/"><img src="/{{ video.thumb_filepath }}" alt="{{ video.title }}" title="{{ video.title }}" width="120" /></a>
         </li>
         {% endif %}
     {% endfor %}
     </ul>
 </section>
 {% else %}
-<div class="nomatch">Nenhum vídeo encontrado.</div>
+<section class="notice">Nenhum vídeo encontrado.</section>
 {% endif %}

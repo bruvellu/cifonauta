@@ -11,24 +11,43 @@
     </div>
     <div class="span-8">
         <h2>Fotos</h2>
-        <strong><a href="/imagem/{{ image.id }}">{{ image.title }}</a></strong><br>
-        <img src="/{{ image.web_filepath }}" alt="{{ image.title }}" width="300" /><br>
-        {{ image.caption }}        
+        <strong><a href="/imagem/{{ image.id }}/">{{ image.title }}</a></strong><br>
+        <a href="/imagem/{{ image.id }}/"><img src="/{{ image.web_filepath }}" alt="{{ image.title }}" width="300" /></a>
     </div>
     <div class="span-8 last">
         <h2>Vídeos</h2>
-        <strong><a href="/video/{{ video.id }}">{{ video.title }}</a></strong><br>
+        <strong><a href="/video/{{ video.id }}/">{{ video.title }}</a></strong><br>
         <video poster="/{{ video.thumb_filepath }}" preload="preload" controls="controls" width="300" height="225">
         <source src="/{{ video.web_filepath }}" type="video/ogg">
         <img alt="Still do vídeo" src="/{{ video.thumb_filepath }}">
         Seu navegador ainda não suporta HTML5...
         </video>
-        {{ video.caption }}
     </div>
+    
+    {% if thumbs %}
+    <div id="highthumbs" class="span-16 last">
+        <ul class="thumbs">
+            {% for thumb in thumbs %}
+                {% if thumb.is_public %}
+                <li class="size-{{ thumb.size.slug }}">
+                    <a href="/imagem/{{ thumb.id }}/"><img src="/{{ thumb.thumb_filepath }}" alt="{{ thumb.title }}" title="{{ thumb.title }}" width="120" height="90" /></a>
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
     <div class="span-16 last">
         <h2>Marcadores</h2>
         {% for tag in tags %}
         <a href="/tag/{{ tag.slug }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    </div>
+    <div class="span-16 last">
+        <h2>Localidades</h2>
+        {% for loc in locations %}
+        <a href="/local/{{ loc.slug }}" title="{{ loc.name }}">{{ loc.name }}</a>{% if not forloop.last %},{% endif %}
         {% endfor %}
     </div>
 </section>

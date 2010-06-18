@@ -51,6 +51,10 @@ figure.video {
     text-align: left;
 }
 
+#highthumbs {
+    padding-left:38px;
+}
+
 #author {
     font-size: 1.1em;
     font-weight: bold;
@@ -100,6 +104,10 @@ div#sideinfo {
 div#notes {
     margin: 2em 0;
     padding: 0 10px;
+}
+
+ul.tree .child {
+    margin:0 1.5em 0 0;
 }
 
 ul#biodb {

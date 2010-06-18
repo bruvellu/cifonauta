@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load extra_tags %}
 {% block title %}{{ media.title }} | {{ block.super }}{% endblock %}
 {% block external %}
 <script type="text/javascript">
@@ -15,7 +16,6 @@ $(document).ready(function(){
             $(this).hide();
             $(".show-comment").show();
             });
-
         });
 </script>
 {% endblock %}
@@ -160,6 +160,11 @@ $(document).ready(function(){
             </div>
         </div>
 
+        <div id="related" class="span-16 last">
+            <h2>Relacionadas</h2>
+            {% show_related media %}
+        </div>
+
         {% else %}
         <div class="private span-16 last">Esta imagem ainda não está disponível.</div>
         {% endif %}
@@ -171,6 +176,6 @@ $(document).ready(function(){
 {% endblock %}
 {% block sidebar %}
 <aside class="main span-8 last">
-    Barra lateral
+{% show_tree %}
 </aside>
 {% endblock %}

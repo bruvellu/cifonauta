@@ -10,15 +10,17 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 # Main
 def main_page(request):
-    images = Image.objects.order_by('-id')
-    image_count = images.count()
-    videos = Video.objects.order_by('-id')
-    video_count = videos.count()
+    image_count = Image.objects.count()
+    images = Image.objects.filter(highlight=True).order_by('?')[:1]
+    image = images[0]
+    videos = Video.objects.filter(highlight=True).order_by('?')[:1]
+    video = videos[0]
+    tags = Tag.objects.all()
     variables = RequestContext(request, {
-        'images': images,
-        'videos': videos,
         'image_count': image_count,
-        'video_count': video_count,
+        'image': image,
+        'video': video,
+        'tags': tags,
         })
     return render_to_response('main_page.html', variables)
 
@@ -52,17 +54,8 @@ def search_page(request):
                     )
             image_list = image_queryset
             video_list = video_queryset 
-            img_paginator = Paginator(image_list, 16)
-            # Make sure page request is an int. If not, deliver first page.
-            try:
-                page = int(request.GET.get('page', '1'))
-            except ValueError:
-                page = 1
-            # If page request (9999) is out of range, deliver last page of results.
-            try:
-                images = img_paginator.page(page)
-            except (EmptyPage, InvalidPage):
-                images = img_paginator.page(img_paginator.num_pages)
+            images = get_paginated(request, image_list)
+            videos = get_paginated(request, video_list)
             form = SearchForm({'query': query})
     variables = RequestContext(request, {
         'query': query,
@@ -97,8 +90,10 @@ def video_page(request, video_id):
 def tag_page(request, tag_slug):
     images = []
     tag = get_object_or_404(Tag, slug=tag_slug)
-    images = tag.images.order_by('-id')
-    videos = tag.videos.order_by('-id')
+    image_list = tag.images.order_by('-id')
+    video_list = tag.videos.order_by('-id')
+    images = get_paginated(request, image_list)
+    videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
@@ -157,8 +152,10 @@ def tag_page(request, tag_slug):
 
 def author_page(request, author_slug):
     author = get_object_or_404(Author, slug=author_slug)
-    images = Image.objects.filter(author__exact=author).order_by('-id')
-    videos = Video.objects.filter(author__exact=author).order_by('-id')
+    image_list = Image.objects.filter(author__exact=author).order_by('-id')
+    video_list = Video.objects.filter(author__exact=author).order_by('-id')
+    images = get_paginated(request, image_list)
+    videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
@@ -168,8 +165,10 @@ def author_page(request, author_slug):
 
 def taxon_page(request, taxon_slug):
     taxon = get_object_or_404(Taxon, slug=taxon_slug)
-    images = Image.objects.filter(taxon__exact=taxon).order_by('-id')
-    videos = Video.objects.filter(taxon__exact=taxon).order_by('-id')
+    image_list = Image.objects.filter(taxon__exact=taxon).order_by('-id')
+    video_list = Video.objects.filter(taxon__exact=taxon).order_by('-id')
+    images = get_paginated(request, image_list)
+    videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
@@ -179,8 +178,10 @@ def taxon_page(request, taxon_slug):
 
 def genus_page(request, genus_slug):
     genus = get_object_or_404(Genus, slug=genus_slug)
-    images = Image.objects.filter(genus__exact=genus).order_by('-id')
-    videos = Video.objects.filter(genus__exact=genus).order_by('-id')
+    image_list = Image.objects.filter(genus__exact=genus).order_by('-id')
+    video_list = Video.objects.filter(genus__exact=genus).order_by('-id')
+    images = get_paginated(request, image_list)
+    videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
@@ -190,8 +191,10 @@ def genus_page(request, genus_slug):
 
 def species_page(request, species_slug):
     species = get_object_or_404(Species, slug=species_slug)
-    images = Image.objects.filter(species__exact=species).order_by('-id')
-    videos = Video.objects.filter(species__exact=species).order_by('-id')
+    image_list = Image.objects.filter(species__exact=species).order_by('-id')
+    video_list = Video.objects.filter(species__exact=species).order_by('-id')
+    images = get_paginated(request, image_list)
+    videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
@@ -201,8 +204,10 @@ def species_page(request, species_slug):
 
 def size_page(request, size_slug):
     size = get_object_or_404(Size, slug=size_slug)
-    images = Image.objects.filter(size__exact=size).order_by('-id')
-    videos = Video.objects.filter(size__exact=size).order_by('-id')
+    image_list = Image.objects.filter(size__exact=size).order_by('-id')
+    video_list = Video.objects.filter(size__exact=size).order_by('-id')
+    images = get_paginated(request, image_list)
+    videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
@@ -212,8 +217,10 @@ def size_page(request, size_slug):
 
 def sublocation_page(request, sublocation_slug):
     sublocation = get_object_or_404(Sublocation, slug=sublocation_slug)
-    images = Image.objects.filter(sublocation__exact=sublocation).order_by('-id')
-    videos = Video.objects.filter(sublocation__exact=sublocation).order_by('-id')
+    image_list = Image.objects.filter(sublocation__exact=sublocation).order_by('-id')
+    video_list = Video.objects.filter(sublocation__exact=sublocation).order_by('-id')
+    images = get_paginated(request, image_list)
+    videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
@@ -223,8 +230,10 @@ def sublocation_page(request, sublocation_slug):
 
 def city_page(request, city_slug):
     city = get_object_or_404(City, slug=city_slug)
-    images = Image.objects.filter(city__exact=city).order_by('-id')
-    videos = Video.objects.filter(city__exact=city).order_by('-id')
+    image_list = Image.objects.filter(city__exact=city).order_by('-id')
+    video_list = Video.objects.filter(city__exact=city).order_by('-id')
+    images = get_paginated(request, image_list)
+    videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
@@ -234,8 +243,10 @@ def city_page(request, city_slug):
 
 def state_page(request, state_slug):
     state = get_object_or_404(State, slug=state_slug)
-    images = Image.objects.filter(state__exact=state).order_by('-id')
-    videos = Video.objects.filter(state__exact=state).order_by('-id')
+    image_list = Image.objects.filter(state__exact=state).order_by('-id')
+    video_list = Video.objects.filter(state__exact=state).order_by('-id')
+    images = get_paginated(request, image_list)
+    videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
@@ -245,8 +256,10 @@ def state_page(request, state_slug):
 
 def country_page(request, country_slug):
     country = get_object_or_404(Country, slug=country_slug)
-    images = Image.objects.filter(country__exact=country).order_by('-id')
-    videos = Video.objects.filter(country__exact=country).order_by('-id')
+    image_list = Image.objects.filter(country__exact=country).order_by('-id')
+    video_list = Video.objects.filter(country__exact=country).order_by('-id')
+    images = get_paginated(request, image_list)
+    videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
@@ -374,5 +387,18 @@ def tags_page(request):
         'sizes': sizes,
         })
     return render_to_response('tags_page.html', variables)
+
 # Internal functions
-# none...
+def get_paginated(request, obj_list):
+    paginator = Paginator(obj_list, 16)
+    # Make sure page request is an int. If not, deliver first page.
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+    # If page request (9999) is out of range, deliver last page of results.
+    try:
+        obj = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        obj = paginator.page(paginator.num_pages)
+    return obj

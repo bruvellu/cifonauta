@@ -32,11 +32,11 @@
 <section class="notice">Nenhuma imagem encontrada.</section>
 {% endif %}
 
-{% if videos %}
+{% if videos.object_list %}
 <section id="video-gallery">
     <header><h2>Vídeos</h2></header>
     <ul class="thumbs">
-    {% for video in videos %}
+    {% for video in videos.object_list %}
         {% if video.is_public %}
         <li>
             <a href="/video/{{ video.id }}/"><img src="/{{ video.thumb_filepath }}" alt="{{ video.title }}" title="{{ video.title }}" width="120" /></a>
@@ -44,6 +44,20 @@
         {% endif %}
     {% endfor %}
     </ul>
+
+<footer class="span-16">
+{% if videos.has_previous %}
+<div class="span-2"><a href="?{% if query %}query={{ query }}&{% endif %}page={{ videos.previous_page_number }}"><< anterior</a></div>
+{% else %}
+<div class="span-2">&nbsp;</div>
+{% endif %}
+<div class="span-10 align-center">{{ videos.number }} de {{ videos.paginator.num_pages }}</div>
+{% if videos.has_next %}
+<div class="span-4 last"><a href="?{% if query %}query={{ query }}&{% endif %}page={{ videos.next_page_number }}">próxima >></a></div>
+{% else %}
+<div class="span-4 last">&nbsp;</div>
+{% endif %}
+</footer>
 </section>
 {% else %}
 <section class="notice">Nenhum vídeo encontrado.</section>

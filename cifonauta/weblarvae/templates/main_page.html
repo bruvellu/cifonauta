@@ -5,10 +5,32 @@
     <header>
         <h1>Bem vindo! Descubra a vida marinha.</h1>
     </header>
-    <div id="stats">
-        {{ image_count }} image{{ image_count|pluralize:'m,ns' }} e {{ video_count }} vídeo{{ video_count|pluralize }} no banco.
+    {% show_stats %}
+    <div class="span-16 last">
+        <p>Bem-vindo ao ImageMar -- o banco de imagens do Centro de Biologia Marinha da Universidade de São Paulo. O ImageMar foi criado para tornar acessível ao público em geral, educadores e comunidade acadêmica imagens de qualidade sobre biologia marinha. No momento contém {{ image_count }} image{{ image_count|pluralize:'m,ns' }}, um dos maiores acervos disponíveis na internet. <a href="/sobre/">Saiba mais</a> ou comece a explorar!</p>
     </div>
-    {% include 'gallery.html' %}
+    <div class="span-8">
+        <h2>Fotos</h2>
+        <strong><a href="/imagem/{{ image.id }}">{{ image.title }}</a></strong><br>
+        <img src="/{{ image.web_filepath }}" alt="{{ image.title }}" width="300" /><br>
+        {{ image.caption }}        
+    </div>
+    <div class="span-8 last">
+        <h2>Vídeos</h2>
+        <strong><a href="/video/{{ video.id }}">{{ video.title }}</a></strong><br>
+        <video poster="/{{ video.thumb_filepath }}" preload="preload" controls="controls" width="300" height="225">
+        <source src="/{{ video.web_filepath }}" type="video/ogg">
+        <img alt="Still do vídeo" src="/{{ video.thumb_filepath }}">
+        Seu navegador ainda não suporta HTML5...
+        </video>
+        {{ video.caption }}
+    </div>
+    <div class="span-16 last">
+        <h2>Marcadores</h2>
+        {% for tag in tags %}
+        <a href="/tag/{{ tag.slug }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    </div>
 </section>
 {% endblock %}
 {% block sidebar %}

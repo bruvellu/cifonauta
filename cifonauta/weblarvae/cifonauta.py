@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 16 Jun 2010 03:38PM
+# Atualizado: 19 Jun 2010 09:08PM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -378,6 +378,7 @@ class Folder:
                     print 'Ignorando %s' % filename
                     continue
                 else:
+                    print 'Nome do último arquivo: %s' % filename
                     break
         else:
             print '\n%d imagens encontradas.' % n

@@ -67,7 +67,7 @@ class Tag(models.Model):
     images = models.ManyToManyField(Image, null=True, blank=True)
     videos = models.ManyToManyField(Video, null=True, blank=True)
     parent = models.ForeignKey('TagCategory', blank=True, null=True,
-            related_name='tags', default='Diversos')
+            related_name='tags')
     def __unicode__(self):
         return self.name
 

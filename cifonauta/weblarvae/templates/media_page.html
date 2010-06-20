@@ -160,10 +160,7 @@ $(document).ready(function(){
             </div>
         </div>
 
-        <div id="related" class="span-16 last">
-            <h2>Relacionadas</h2>
-            {% show_related media %}
-        </div>
+        {% show_related media %}
 
         {% else %}
         <div class="private span-16 last">Esta imagem ainda não está disponível.</div>

@@ -70,7 +70,7 @@ class Tag(models.Model):
     def save(self, *args, **kwargs):
         """Cleans up any characters I don't want in a URL"""
 
-        self.name = Tag.clean_tag(self.name)
+        self.name = slugify(self.name)
         super(Tag, self).save(*args, **kwargs)
 
     @models.permalink

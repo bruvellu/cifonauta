@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% load extra_tags %}
 {% block title %}{{ media.title }} | {{ block.super }}{% endblock %}
-{% block external %}
+{% block extra-head %}
 <script type="text/javascript">
-  // JavaScript code goes here.
+// JavaScript code goes here.
 $(document).ready(function(){
         // Collapsible comments
         $(".show-comment").click(function(){

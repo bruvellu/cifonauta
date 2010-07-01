@@ -1,0 +1,19 @@
+{% extends 'articles/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans article.title %}{% endblock %}
+{% block meta-keywords %}{{ article.keywords|escape }}{% endblock %}
+{% block meta-description %}{{ article.description|escape }}{% endblock %}
+{% block extra-head %}
+{{ block.super }}
+{% for tag in article.tags.all %}
+<link rel="alternate" type="application/rss+xml" title="Blog Articles Tagged '{{ tag.name }}' RSS Feed" href="{% url articles_feed tag.rss_name %}" />{% endfor %}
+{% endblock %}
+
+{% block content %}
+
+{% include 'articles/_article_content.html' %}
+{% include 'articles/_meta.html' %}
+{% include 'articles/_comments.html' %}
+
+{% endblock %}

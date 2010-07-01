@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load article_tags i18n %}
+
+{% block extra-head %}
+{{ block.super }}
+<link rel="alternate" type="application/rss+xml" title="Latest Blog Articles RSS Feed" href="{% url articles_feed 'latest' %}" />
+{% endblock %}
+
+{% block content %}
+<div id="article-archives">
+    <h2 class="title">{% trans 'Article Archives' %}</h2>
+    {% get_article_archives as archives %}
+    {% for year in archives %}
+    {% if forloop.first %}<ul>{% endif %}
+        <li>
+            <strong>{{ year.0 }}</strong>
+            <ul class="months">
+            {% for month in year.1 %}
+                <li><a href="{% url articles_in_month month.year,month.month %}" title="{% trans 'View articles posted in this month' %}">{{ month|date:"N" }}</a></li>
+            {% endfor %}
+            </ul>
+            <div class="clear">&nbsp;</div>
+        </li>
+    {% if forloop.last %}</ul>{% endif %}
+    {% endfor %}
+</div>
+
+{% block articles-content %}{% endblock %}
+
+{% if paginator and page_obj %}
+{% ifnotequal paginator.page_range|length 1 %}
+{% for p in paginator.page_range %}
+{% if forloop.first %}<ul class="pagination-pages">
+{% if page_obj.has_previous %}
+    <li><a href="{% get_page_url 1 %}">&laquo;</a></li>
+    <li><a href="{% get_page_url page_obj.previous_page_number %}">&lsaquo;</a></li>
+{% endif %}
+{% endif %}
+    <li><a href="{% get_page_url p %}"{% ifequal p page_obj.number %} class="current-page"{% endifequal %}>{{ p }}</a></li>
+{% if forloop.last %}
+{% if page_obj.has_next %}
+    <li><a href="{% get_page_url page_obj.next_page_number %}">&rsaquo;</a></li>
+    <li><a href="{% get_page_url paginator.num_pages %}">&raquo;</a></li>
+{% endif %}
+</ul>{% endif %}
+{% endfor %}
+{% endifnotequal %}
+{% endif %}
+{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+
+<script type="application/javascript">
+//<![CDATA[
+(function() {
+    var links = document.getElementsByTagName('a');
+    var query = '?';
+    for(var i = 0; i < links.length; i++) {
+    if(links[i].href.indexOf('#disqus_thread') >= 0) {
+        query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+    }
+    }
+    document.write('<script charset="utf-8" type="application/javascript" src="http://disqus.com/forums/{{ disqus_forum }}/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
+</script>
+{% endblock %}
+

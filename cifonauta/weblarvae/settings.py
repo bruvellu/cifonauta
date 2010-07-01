@@ -84,6 +84,10 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.flatpages',
     'django.contrib.comments',
+    'django.contrib.humanize',
+    'django.contrib.markup',
+    'django.contrib.syndication',
     'weblarvae.meta',
+    'articles',
     #'django_evolution',
 )

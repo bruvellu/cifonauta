@@ -17,6 +17,7 @@ site_media = os.path.join(
 
 urlpatterns = patterns('',
         (r'^$', main_page),
+        (r'^blog/', include('articles.urls')),
         (r'^comentarios/', include('django.contrib.comments.urls')),
 
         (r'^buscar/$', search_page),

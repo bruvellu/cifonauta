@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load article_tags i18n %}
+{% load i18n %}
 
 {% block extra-head %}
 {{ block.super }}
@@ -35,17 +36,17 @@
 {% block sidebar %}
 <aside class="span-8 last">
     {% block recent_articles %}
-        <h2>Recent Articles</h2>
+    <h2>{% trans 'Recent Articles' %}</h2>
         {% get_articles 10 as recent %}
         {% for article in recent %}
         {% if forloop.first %}<ul>{% endif %}
-            <li><a href="{{ article.get_absolute_url }}" title="Read this article">{{ article.title }}</a></li>
+            <li><a href="{{ article.get_absolute_url }}" title="{% trans 'Read this article' %}">{{ article.title }}</a></li>
         {% if forloop.last %}</ul>{% endif %}
         {% endfor %}
     {% endblock %}
 
     {% block article_tags %}
-        <h2>Tag Cloud</h2>
+    <h2>{% trans 'Tag Cloud' %}</h2>
         {% tag_cloud %}
     {% endblock %}
 
@@ -69,23 +70,3 @@
 
 </aside>
 {% endblock %}
-
-{% block footer %}
-{{ block.super }}
-
-<script type="application/javascript">
-//<![CDATA[
-(function() {
-    var links = document.getElementsByTagName('a');
-    var query = '?';
-    for(var i = 0; i < links.length; i++) {
-    if(links[i].href.indexOf('#disqus_thread') >= 0) {
-        query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
-    }
-    }
-    document.write('<script charset="utf-8" type="application/javascript" src="http://disqus.com/forums/{{ disqus_forum }}/get_num_replies.js' + query + '"></' + 'script>');
-})();
-//]]>
-</script>
-{% endblock %}
-

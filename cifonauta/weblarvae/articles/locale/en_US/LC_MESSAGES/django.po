@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-articles dev\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-29 07:32-0500\n"
+"POT-Creation-Date: 2010-07-01 16:43-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Josh VanderLinden <codekoala@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,35 +16,44 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: admin.py:42
+#: admin.py:55
 msgid "Mark select articles as active"
 msgstr ""
 
-#: admin.py:46
+#: admin.py:59
 msgid "Mark select articles as inactive"
+msgstr ""
+
+#: admin.py:69 admin.py:74
+#, python-format
+msgid "Set status of selected to \"%s\""
 msgstr ""
 
 #: forms.py:8
 msgid "Words that describe this article"
 msgstr ""
 
-#: models.py:22
+#: models.py:23
 msgid "HTML/Plain Text"
 msgstr ""
 
-#: models.py:23
+#: models.py:24
 msgid "Markdown"
 msgstr ""
 
-#: models.py:24
+#: models.py:25
 msgid "ReStructured Text"
 msgstr ""
 
-#: models.py:25
+#: models.py:26
 msgid "Textile"
 msgstr ""
 
-#: models.py:83
+#: models.py:105
+msgid "Article statuses"
+msgstr ""
+
+#: models.py:138
 msgid ""
 "Select the type of markup you are using in this article.\n"
 "<ul>\n"
@@ -57,56 +66,72 @@ msgid ""
 "</ul>"
 msgstr ""
 
-#: models.py:97
+#: models.py:152
+msgid "If omitted, the keywords will be the same as the article tags."
+msgstr ""
+
+#: models.py:153
 msgid ""
 "If omitted, the description will be determined by the first bit of the "
 "article's content."
 msgstr ""
 
-#: models.py:103
+#: models.py:159
 msgid "Tags that describe this article"
 msgstr ""
 
-#: models.py:104
+#: models.py:160
 msgid "Select any other articles that this article follows up on."
 msgstr ""
 
-#: models.py:107
+#: models.py:163
 msgid "The date and time this article shall appear online."
 msgstr ""
 
-#: models.py:108
+#: models.py:164
 msgid "Leave blank if the article does not expire."
 msgstr ""
 
-#: models.py:111
+#: models.py:167
 msgid "Enable this if users must login before they can read this article."
 msgstr ""
 
-#: models.py:113
+#: models.py:169
 msgid "Show AddThis button"
 msgstr ""
 
-#: models.py:113
+#: models.py:169
 msgid "Check this to show an AddThis bookmark button when viewing an article."
 msgstr ""
 
-#: models.py:114
+#: models.py:170
 msgid "Use article author's username"
 msgstr ""
 
-#: models.py:114
+#: models.py:170
 msgid ""
 "Check this if you want to use the article author's username for the AddThis "
 "button.  Respected only if the username field is left empty."
 msgstr ""
 
-#: models.py:115
+#: models.py:171
 msgid "AddThis Username"
 msgstr ""
 
-#: models.py:115
+#: models.py:171
 msgid "The AddThis username to use for the button."
+msgstr ""
+
+#: management/commands/check_for_articles_from_email.py:358
+msgid "Article Posted"
+msgstr ""
+
+#: management/commands/check_for_articles_from_email.py:359
+#, python-format
+msgid ""
+"Your email (%(title)s) has been posted as an article on %(site_name)s.\n"
+"\n"
+"    http://%(domain)s%(article_url)s"
 msgstr ""
 
 #: templates/articles/_articles.html:4 templates/articles/_meta.html:58
@@ -192,16 +217,16 @@ msgid "Articles"
 msgstr ""
 
 #: templates/articles/article_list.html:7 templates/articles/by_author.html:7
-#: templates/articles/display_tag.html:7 templates/articles/in_month.html:7
+#: templates/articles/display_tag.html:11 templates/articles/in_month.html:7
 #: templates/articles/uncategorized_article_list.html:7
 msgid "page"
 msgstr ""
 
-#: templates/articles/base.html:6
+#: templates/articles/base.html:11
 msgid "Article Archives"
 msgstr ""
 
-#: templates/articles/base.html:14
+#: templates/articles/base.html:19
 msgid "View articles posted in this month"
 msgstr ""
 
@@ -213,7 +238,8 @@ msgstr ""
 msgid "Articles By"
 msgstr ""
 
-#: templates/articles/display_tag.html:4 templates/articles/display_tag.html:7
+#: templates/articles/display_tag.html:4
+#: templates/articles/display_tag.html:11
 msgid "Articles Tagged"
 msgstr ""
 

@@ -7,24 +7,7 @@
 {% endblock %}
 
 {% block content %}
-<div id="article-archives">
-    <h2 class="title">{% trans 'Article Archives' %}</h2>
-    {% get_article_archives as archives %}
-    {% for year in archives %}
-    {% if forloop.first %}<ul>{% endif %}
-        <li>
-            <strong>{{ year.0 }}</strong>
-            <ul class="months">
-            {% for month in year.1 %}
-                <li><a href="{% url articles_in_month month.year,month.month %}" title="{% trans 'View articles posted in this month' %}">{{ month|date:"N" }}</a></li>
-            {% endfor %}
-            </ul>
-            <div class="clear">&nbsp;</div>
-        </li>
-    {% if forloop.last %}</ul>{% endif %}
-    {% endfor %}
-</div>
-
+<section class="span-16">
 {% block articles-content %}{% endblock %}
 
 {% if paginator and page_obj %}
@@ -46,6 +29,45 @@
 {% endfor %}
 {% endifnotequal %}
 {% endif %}
+</section>
+{% endblock %}
+
+{% block sidebar %}
+<aside class="span-8 last">
+    {% block recent_articles %}
+        <h2>Recent Articles</h2>
+        {% get_articles 10 as recent %}
+        {% for article in recent %}
+        {% if forloop.first %}<ul>{% endif %}
+            <li><a href="{{ article.get_absolute_url }}" title="Read this article">{{ article.title }}</a></li>
+        {% if forloop.last %}</ul>{% endif %}
+        {% endfor %}
+    {% endblock %}
+
+    {% block article_tags %}
+        <h2>Tag Cloud</h2>
+        {% tag_cloud %}
+    {% endblock %}
+
+<div id="article-archives">
+    <h2 class="title">{% trans 'Article Archives' %}</h2>
+    {% get_article_archives as archives %}
+    {% for year in archives %}
+    {% if forloop.first %}<ul>{% endif %}
+        <li>
+            <strong>{{ year.0 }}</strong>
+            <ul class="months">
+            {% for month in year.1 %}
+                <li><a href="{% url articles_in_month month.year,month.month %}" title="{% trans 'View articles posted in this month' %}">{{ month|date:"N" }}</a></li>
+            {% endfor %}
+            </ul>
+            <div class="clear">&nbsp;</div>
+        </li>
+    {% if forloop.last %}</ul>{% endif %}
+    {% endfor %}
+</div>
+
+</aside>
 {% endblock %}
 
 {% block footer %}

@@ -110,6 +110,23 @@ ul.tree .child {
     margin:0 1.5em 0 0;
 }
 
+#article-share {
+    background:#fafafa;
+}
+
+article.post footer {
+    margin-bottom:1em;
+}
+
+article.post footer#comment-count, article.post footer#article-tags {
+    margin-top:1em;
+}
+
+article.post {
+    margin:1em 0;
+    padding:0;
+}
+
 ul#biodb {
     list-style: none;
     padding: 0;
@@ -126,6 +143,7 @@ ul#tophits {
 ul#tophits li {
     float:left;
 }
+
 div#meta {
     background:#fafafa;
     padding: 10px;
@@ -221,6 +239,7 @@ div#comments {
 
 ul#comment-list {
     list-style:none;
+    padding:0;
 }
 
 #user-name {

@@ -8,12 +8,34 @@
 {{ block.super }}
 {% for tag in article.tags.all %}
 <link rel="alternate" type="application/rss+xml" title="Blog Articles Tagged '{{ tag.name }}' RSS Feed" href="{% url articles_feed tag.rss_name %}" />{% endfor %}
+
+<script type="text/javascript">
+// JavaScript code goes here.
+$(document).ready(function(){
+        // Collapsible comments
+        $(".show-comment").click(function(){
+            $("#comment-box").slideToggle("slow");
+            $(this).hide();
+            $(".hide-comment").show();
+            });
+        $(".hide-comment").click(function(){
+            $("#comment-box").slideToggle("slow");
+            $(this).hide();
+            $(".show-comment").show();
+            });
+        });
+</script>
 {% endblock %}
 
 {% block content %}
+<section class="span-16">
+<article id="article-content" class="post">
 
 {% include 'articles/_article_content.html' %}
 {% include 'articles/_meta.html' %}
 {% include 'articles/_comments.html' %}
+{% include 'articles/_related.html' %}
 
+</article>
+</section>
 {% endblock %}

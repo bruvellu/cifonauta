@@ -1,0 +1,7 @@
+# use glob syntax.
+syntax: glob
+
+*.pyc
+*.swp
+fotos/*
+localweb/*

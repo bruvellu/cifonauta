@@ -1,0 +1,12 @@
+{% if genera %}
+<h2>Espécies</h2>
+<ul>
+{% for genus in genera %}
+    {% for sp in genus.spp.all %}
+    <li>
+    <a href="/especie/{{ sp.slug }}"><em>{{ genus.name }} {{ sp }}</em></a>
+    </li>
+    {% endfor %}
+{% endfor %}
+</ul>
+{% endif %}

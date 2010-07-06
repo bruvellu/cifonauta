@@ -1,0 +1,27 @@
+{% if rel_images %}
+<div id="related" class="span-16 last">
+    <h2>Relacionadas</h2>
+    <ul class="thumbs">
+        {% for image in rel_images %}
+            {% if image.is_public %}
+            <li class="size-{{ image.size.slug }}">
+                <a href="/imagem/{{ image.id }}/"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" height="90" /></a>
+            </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+{% else %}
+<div id="related" class="span-16 last">
+    <h2>Aleatórias</h2>
+    <ul class="thumbs">
+        {% for image in rand_images %}
+            {% if image.is_public %}
+            <li class="size-{{ image.size.slug }}">
+                <a href="/imagem/{{ image.id }}/"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" height="90" /></a>
+            </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}

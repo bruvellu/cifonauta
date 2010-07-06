@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-articles dev\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-01 16:43-0300\n"
+"POT-Creation-Date: 2010-07-06 19:33-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Josh VanderLinden <codekoala@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -134,80 +134,72 @@ msgid ""
 "    http://%(domain)s%(article_url)s"
 msgstr ""
 
-#: templates/articles/_articles.html:4 templates/articles/_meta.html:58
-msgid "Read this article"
-msgstr ""
-
-#: templates/articles/_articles.html:6
+#: templates/articles/_article_content.html:4
+#: templates/articles/_articles.html:5
 msgid "Posted on"
 msgstr ""
 
-#: templates/articles/_articles.html:7
+#: templates/articles/_article_content.html:4
+#: templates/articles/_articles.html:5
 msgid "by"
 msgstr ""
 
-#: templates/articles/_articles.html:7
+#: templates/articles/_article_content.html:4
+#: templates/articles/_articles.html:5
 msgid "View articles posted by"
 msgstr ""
 
-#: templates/articles/_meta.html:6
-msgid "Published"
+#: templates/articles/_articles.html:3 templates/articles/_related.html:17
+#: templates/articles/base.html:42
+msgid "Read this article"
 msgstr ""
 
-#: templates/articles/_meta.html:8
-msgid "Author"
+#: templates/articles/_articles.html:8
+msgid "Continue reading"
 msgstr ""
 
-#: templates/articles/_meta.html:8
-msgid "Read other articles by this author"
+#: templates/articles/_articles.html:8
+msgid "read more"
 msgstr ""
 
-#: templates/articles/_meta.html:10
-msgid "Comments"
-msgstr ""
-
-#: templates/articles/_meta.html:12
-msgid "Word Count"
-msgstr ""
-
-#: templates/articles/_meta.html:16
-msgid "Next"
-msgstr ""
-
-#: templates/articles/_meta.html:23
-msgid "Previous"
-msgstr ""
-
-#: templates/articles/_meta.html:40
+#: templates/articles/_meta.html:4
 msgid "Tags"
 msgstr ""
 
-#: templates/articles/_meta.html:44
+#: templates/articles/_meta.html:15
+msgid "Previous"
+msgstr ""
+
+#: templates/articles/_meta.html:23
+msgid "Next"
+msgstr ""
+
+#: templates/articles/_related.html:5
 msgid "Follow-Up Articles"
 msgstr ""
 
-#: templates/articles/_meta.html:48
+#: templates/articles/_related.html:8
 msgid "Read this follow-up article"
 msgstr ""
 
-#: templates/articles/_meta.html:48 templates/articles/_meta.html.py:58
-#: templates/articles/_meta.html:68
+#: templates/articles/_related.html:8 templates/articles/_related.html:17
+#: templates/articles/_related.html:26
 msgid "posted"
 msgstr ""
 
-#: templates/articles/_meta.html:54
+#: templates/articles/_related.html:14
 msgid "Follows Up On"
 msgstr ""
 
-#: templates/articles/_meta.html:64
+#: templates/articles/_related.html:23
 msgid "Related Articles"
 msgstr ""
 
-#: templates/articles/_meta.html:68
+#: templates/articles/_related.html:26
 msgid "Read this related article"
 msgstr ""
 
-#: templates/articles/_meta.html:74
+#: templates/articles/_related.html:32
 msgid "Article Links"
 msgstr ""
 
@@ -222,11 +214,19 @@ msgstr ""
 msgid "page"
 msgstr ""
 
-#: templates/articles/base.html:11
+#: templates/articles/base.html:38
+msgid "Recent Articles"
+msgstr ""
+
+#: templates/articles/base.html:48
+msgid "Tag Cloud"
+msgstr ""
+
+#: templates/articles/base.html:53
 msgid "Article Archives"
 msgstr ""
 
-#: templates/articles/base.html:19
+#: templates/articles/base.html:61
 msgid "View articles posted in this month"
 msgstr ""
 

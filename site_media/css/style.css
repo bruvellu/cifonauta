@@ -111,7 +111,12 @@ ul.tree .child {
 }
 
 #article-share {
+    display:none;
     background:#fafafa;
+}
+
+hr {
+    margin: 1.5em 0 1.5em 0 !important;
 }
 
 article.post footer {
@@ -195,7 +200,7 @@ ul.thumbs {
 ul.thumbs li {
     display: inline;
     float: left;
-    margin: 8px;
+    margin: 0 0 10px 10px;
     padding: 1px 0px 5px;
     background: #eeeeee;
     list-style: none;
@@ -234,7 +239,7 @@ ul.thumbs li.size-100-mm, .size-100-mm {
 }
 
 div#comments {
-    padding:10px;
+    padding:1em 0;
 }
 
 ul#comment-list {

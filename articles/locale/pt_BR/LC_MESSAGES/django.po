@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-01 16:43-0300\n"
+"POT-Creation-Date: 2010-07-06 19:33-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -135,80 +135,72 @@ msgid ""
 "    http://%(domain)s%(article_url)s"
 msgstr ""
 
-#: templates/articles/_articles.html:4 templates/articles/_meta.html:58
-msgid "Read this article"
-msgstr "Leia esta notícia"
-
-#: templates/articles/_articles.html:6
+#: templates/articles/_article_content.html:4
+#: templates/articles/_articles.html:5
 msgid "Posted on"
 msgstr "Publicado em"
 
-#: templates/articles/_articles.html:7
+#: templates/articles/_article_content.html:4
+#: templates/articles/_articles.html:5
 msgid "by"
 msgstr "por"
 
-#: templates/articles/_articles.html:7
+#: templates/articles/_article_content.html:4
+#: templates/articles/_articles.html:5
 msgid "View articles posted by"
 msgstr "Veja notícias publicadas por"
 
-#: templates/articles/_meta.html:6
-msgid "Published"
-msgstr "Publicado"
+#: templates/articles/_articles.html:3 templates/articles/_related.html:17
+#: templates/articles/base.html:42
+msgid "Read this article"
+msgstr "Leia esta notícia"
 
-#: templates/articles/_meta.html:8
-msgid "Author"
-msgstr "Autor"
+#: templates/articles/_articles.html:8
+msgid "Continue reading"
+msgstr "Continue lendo"
 
-#: templates/articles/_meta.html:8
-msgid "Read other articles by this author"
-msgstr "Leia outras notícias por este autor"
+#: templates/articles/_articles.html:8
+msgid "read more"
+msgstr "leia mais"
 
-#: templates/articles/_meta.html:10
-msgid "Comments"
-msgstr "Comentários"
-
-#: templates/articles/_meta.html:12
-msgid "Word Count"
-msgstr "N° de Palavras"
-
-#: templates/articles/_meta.html:16
-msgid "Next"
-msgstr "Próximo"
-
-#: templates/articles/_meta.html:23
-msgid "Previous"
-msgstr "Anterior"
-
-#: templates/articles/_meta.html:40
+#: templates/articles/_meta.html:4
 msgid "Tags"
 msgstr "Marcadores"
 
-#: templates/articles/_meta.html:44
+#: templates/articles/_meta.html:15
+msgid "Previous"
+msgstr "Anterior"
+
+#: templates/articles/_meta.html:23
+msgid "Next"
+msgstr "Próximo"
+
+#: templates/articles/_related.html:5
 msgid "Follow-Up Articles"
 msgstr "Próximas Notícias"
 
-#: templates/articles/_meta.html:48
+#: templates/articles/_related.html:8
 msgid "Read this follow-up article"
 msgstr "Leia esta notícia complementar"
 
-#: templates/articles/_meta.html:48 templates/articles/_meta.html.py:58
-#: templates/articles/_meta.html:68
+#: templates/articles/_related.html:8 templates/articles/_related.html:17
+#: templates/articles/_related.html:26
 msgid "posted"
 msgstr "publicado"
 
-#: templates/articles/_meta.html:54
+#: templates/articles/_related.html:14
 msgid "Follows Up On"
-msgstr ""
+msgstr "É seguido de"
 
-#: templates/articles/_meta.html:64
+#: templates/articles/_related.html:23
 msgid "Related Articles"
 msgstr "Notícias Relacionados"
 
-#: templates/articles/_meta.html:68
+#: templates/articles/_related.html:26
 msgid "Read this related article"
 msgstr "Leia esta notícia relacionada"
 
-#: templates/articles/_meta.html:74
+#: templates/articles/_related.html:32
 msgid "Article Links"
 msgstr "Links da Notícia"
 
@@ -223,11 +215,19 @@ msgstr "Notícias"
 msgid "page"
 msgstr "página"
 
-#: templates/articles/base.html:11
+#: templates/articles/base.html:38
+msgid "Recent Articles"
+msgstr "Notícias Recentes"
+
+#: templates/articles/base.html:48
+msgid "Tag Cloud"
+msgstr "Nuvem de Marcadores"
+
+#: templates/articles/base.html:53
 msgid "Article Archives"
 msgstr "Arquivos"
 
-#: templates/articles/base.html:19
+#: templates/articles/base.html:61
 msgid "View articles posted in this month"
 msgstr "Veja notícias publicadas neste mês"
 
@@ -252,3 +252,18 @@ msgstr "Notícias de"
 #: templates/articles/uncategorized_article_list.html:7
 msgid "Uncategorized Articles"
 msgstr "Notícias não-categorizadas"
+
+#~ msgid "Published"
+#~ msgstr "Publicado"
+
+#~ msgid "Author"
+#~ msgstr "Autor"
+
+#~ msgid "Read other articles by this author"
+#~ msgstr "Leia outras notícias por este autor"
+
+#~ msgid "Comments"
+#~ msgstr "Comentários"
+
+#~ msgid "Word Count"
+#~ msgstr "N° de Palavras"

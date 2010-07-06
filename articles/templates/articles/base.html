@@ -44,28 +44,28 @@
         {% endfor %}
     {% endblock %}
 
+    <div id="article-archives">
+        <h2 class="title">{% trans 'Article Archives' %}</h2>
+        {% get_article_archives as archives %}
+        {% for year in archives %}
+        {% if forloop.first %}<ul>{% endif %}
+            <li>
+                <strong>{{ year.0 }}</strong>
+                <ul class="months">
+                {% for month in year.1 %}
+                    <li><a href="{% url articles_in_month month.year,month.month %}" title="{% trans 'View articles posted in this month' %}">{{ month|date:"N" }}</a></li>
+                {% endfor %}
+                </ul>
+                <div class="clear">&nbsp;</div>
+            </li>
+        {% if forloop.last %}</ul>{% endif %}
+        {% endfor %}
+    </div>
+
     {% block article_tags %}
     <h2>{% trans 'Tag Cloud' %}</h2>
         {% tag_cloud %}
     {% endblock %}
-
-<div id="article-archives">
-    <h2 class="title">{% trans 'Article Archives' %}</h2>
-    {% get_article_archives as archives %}
-    {% for year in archives %}
-    {% if forloop.first %}<ul>{% endif %}
-        <li>
-            <strong>{{ year.0 }}</strong>
-            <ul class="months">
-            {% for month in year.1 %}
-                <li><a href="{% url articles_in_month month.year,month.month %}" title="{% trans 'View articles posted in this month' %}">{{ month|date:"N" }}</a></li>
-            {% endfor %}
-            </ul>
-            <div class="clear">&nbsp;</div>
-        </li>
-    {% if forloop.last %}</ul>{% endif %}
-    {% endfor %}
-</div>
 
 </aside>
 {% endblock %}

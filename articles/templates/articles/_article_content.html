@@ -3,7 +3,7 @@
     <footer class="quiet">
     {% trans 'Posted on' %} {{ article.publish_date|date:"DATE_FORMAT" }} {% trans 'by' %} <a href="{% url articles_by_author article.author.username %}" title="{% trans 'View articles posted by' %} {{ article.author.get_name }}">{{ article.author.get_name }}</a>
     </footer>
-    {{ article.rendered_content|safe }}
+    <div class="span-16 last">{{ article.rendered_content|safe }}</div>
 
 {% for att in article.attachments.all %}
 {% if forloop.first %}<div id="article-attachments">

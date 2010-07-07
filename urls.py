@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 from django.conf.urls.defaults import *
 from meta.views import *
@@ -30,42 +31,53 @@ urlpatterns = patterns('',
         (r'^locais/$', places_page),
         (r'^blog/', include('articles.urls')),
 
-        (r'^tag/$', tag_list_page),
-        (r'^tag/(?P<slug>[\w\-]+)/$', tag_page),
+        url(r'^tag/$', meta_list_page,
+            {'model': Tag, 'plural': u'Marcadores'}),
+        url(r'^tag/(?P<slug>[\w\-]+)/$', tag_page,
+            name='tag_url'),
 
-        (r'^autor/$', author_list_page),
+        url(r'^autor/$', meta_list_page,
+            {'model': Author, 'plural': u'Autores'}),
         url(r'^autor/(?P<slug>[^\d]+)/$', meta_page,
             extra(Author, 'author'), name='author_url'),
 
-        (r'^taxon/$', taxon_list_page),
+        url(r'^taxon/$', meta_list_page,
+            {'model': Taxon, 'plural': u'Táxons'}),
         url(r'^taxon/(?P<slug>[^\d]+)/$', meta_page,
             extra(Taxon, 'taxon'), name='taxon_url'),
 
-        (r'^genero/$', genus_list_page),
+        url(r'^genero/$', meta_list_page,
+            {'model': Genus, 'plural': u'Gêneros'}),
         url(r'^genero/(?P<slug>[^\d]+)/$', meta_page,
             extra(Genus, 'genus'), name='genus_url'),
 
-        (r'^especie/$', species_list_page),
+        url(r'^especie/$', meta_list_page,
+            {'model': Species, 'plural': u'Espécies'}),
         url(r'^especie/(?P<slug>[^\d]+)/$', meta_page,
             extra(Species, 'species'), name='species_url'),
 
-        (r'^tamanho/$', size_list_page),
+        url(r'^tamanho/$', meta_list_page,
+            {'model': Size, 'plural': u'Tamanhos'}),
         url(r'^tamanho/(?P<slug>[\w\-]+)/$', meta_page,
             extra(Size, 'size'), name='size_url'),
 
-        (r'^local/$', sublocation_list_page),
+        url(r'^local/$', meta_list_page,
+            {'model': Sublocation, 'plural': u'Locais'}),
         url(r'^local/(?P<slug>[^\d]+)/$', meta_page,
             extra(Sublocation, 'sublocation'), name='sublocation_url'),
 
-        (r'^cidade/$', city_list_page),
+        url(r'^cidade/$', meta_list_page,
+            {'model': City, 'plural': u'Cidades'}),
         url(r'^cidade/(?P<slug>[^\d]+)/$', meta_page,
             extra(City, 'city'), name='city_url'),
 
-        (r'^estado/$', state_list_page),
+        url(r'^estado/$', meta_list_page,
+            {'model': State, 'plural': u'Estados'}),
         url(r'^estado/(?P<slug>[^\d]+)/$', meta_page,
             extra(State, 'state'), name='state_url'),
 
-        (r'^pais/$', country_list_page),
+        url(r'^pais/$', meta_list_page,
+            {'model': Country, 'plural': u'Países'}),
         url(r'^pais/(?P<slug>[^\d]+)/$', meta_page,
             extra(Country, 'country'), name='country_url'),
 

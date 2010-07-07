@@ -69,9 +69,13 @@ class Video(File):
 class Author(models.Model):
     name = models.CharField(max_length=32, unique=True, blank=True)
     slug = models.SlugField(max_length=32, blank=True)
+
     def __unicode__(self):
         return self.name
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('author_url', [self.slug])
 
 class Tag(models.Model):
     name = models.CharField(max_length=64, unique=True)
@@ -80,8 +84,13 @@ class Tag(models.Model):
     videos = models.ManyToManyField(Video, null=True, blank=True)
     parent = models.ForeignKey('TagCategory', blank=True, null=True,
             related_name='tags')
+
     def __unicode__(self):
         return self.name
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('tag_url', [self.slug])
 
 
 class TagCategory(models.Model):
@@ -95,25 +104,39 @@ class Taxon(models.Model):
     name = models.CharField(max_length=256, unique=True, blank=True)
     slug = models.SlugField(max_length=256, blank=True)
     parent = models.ForeignKey('self', blank=True, null=True, related_name='children')
+
     def __unicode__(self):
         return self.name
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('taxon_url', [self.slug])
 
 
 class Genus(models.Model):
     name = models.CharField(max_length=32, unique=True, blank=True)
     slug = models.SlugField(max_length=32, blank=True)
     parent = models.ForeignKey('Taxon', blank=True, null=True, related_name='genera')
+
     def __unicode__(self):
         return self.name
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('genus_url', [self.slug])
 
 
 class Species(models.Model):
     name = models.CharField(max_length=32, unique=True, blank=True)
     slug = models.SlugField(max_length=32, blank=True)
     parent = models.ForeignKey('Genus', blank=True, null=True, related_name='spp')
+
     def __unicode__(self):
         return self.name
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('species_url', [self.slug])
 
 class Size(models.Model):
     SIZES = (
@@ -130,10 +153,15 @@ class Size(models.Model):
     def __unicode__(self):
         return self.name
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('size_url', [self.slug])
+
 
 class Source(models.Model):
     name = models.CharField(max_length=32, unique=True, blank=True)
     slug = models.SlugField(max_length=32, blank=True)
+
     def __unicode__(self):
         return self.name
 
@@ -141,6 +169,7 @@ class Source(models.Model):
 class Rights(models.Model):
     name = models.CharField(max_length=32, unique=True, blank=True)
     slug = models.SlugField(max_length=32, blank=True)
+
     def __unicode__(self):
         return self.name
 
@@ -148,30 +177,48 @@ class Rights(models.Model):
 class Sublocation(models.Model):
     name = models.CharField(max_length=32, unique=True, blank=True)
     slug = models.SlugField(max_length=32, blank=True)
+
     def __unicode__(self):
         return self.name
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('sublocation_url', [self.slug])
 
 class City(models.Model):
     name = models.CharField(max_length=32, unique=True, blank=True)
     slug = models.SlugField(max_length=32, blank=True)
+
     def __unicode__(self):
         return self.name
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('city_url', [self.slug])
 
 
 class State(models.Model):
     name = models.CharField(max_length=32, unique=True, blank=True)
     slug = models.SlugField(max_length=32, blank=True)
+
     def __unicode__(self):
         return self.name
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('state_url', [self.slug])
 
 
 class Country(models.Model):
     name = models.CharField(max_length=64, unique=True, blank=True)
     slug = models.SlugField(max_length=64, blank=True)
+
     def __unicode__(self):
         return self.name
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('country_url', [self.slug])
 
 def slug_pre_save(signal, instance, sender, **kwargs):
     if not instance.slug:

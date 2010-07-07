@@ -168,93 +168,11 @@ def meta_page(request, model_name, field, slug):
     return render_to_response('meta_page.html', variables)
 
 # Lists
-def tag_list_page(request):
-    tags = Tag.objects.order_by('name')
+def meta_list_page(request, model, plural):
+    objects = model.objects.order_by('name')
     variables = RequestContext(request, {
-        'metas': tags,
-        'plural': u'Marcadores',
-        'url': 'tag',
-        })
-    return render_to_response('meta_list_page.html', variables)
-
-def author_list_page(request):
-    authors = Author.objects.order_by('name')
-    variables = RequestContext(request, {
-        'metas': authors,
-        'plural': u'Autores',
-        'url': 'autor'
-        })
-    return render_to_response('meta_list_page.html', variables)
-
-def taxon_list_page(request):
-    taxa = Taxon.objects.order_by('name')
-    variables = RequestContext(request, {
-        'metas': taxa,
-        'plural': u'Táxons',
-        'url': 'taxon',
-        })
-    return render_to_response('meta_list_page.html', variables)
-
-def genus_list_page(request):
-    genera = Genus.objects.order_by('name')
-    variables = RequestContext(request, {
-        'metas': genera,
-        'plural': u'Gêneros',
-        'url': 'genero',
-        })
-    return render_to_response('meta_list_page.html', variables)
-
-def species_list_page(request):
-    spp = Species.objects.order_by('name')
-    variables = RequestContext(request, {
-        'metas': spp,
-        'plural': u'Espécies',
-        'url': 'especie',
-        })
-    return render_to_response('meta_list_page.html', variables)
-
-def size_list_page(request):
-    sizes = Size.objects.order_by('name')
-    variables = RequestContext(request, {
-        'metas': sizes,
-        'plural': u'Tamanhos',
-        'url': 'tamanho',
-        })
-    return render_to_response('meta_list_page.html', variables)
-
-def sublocation_list_page(request):
-    sublocations = Sublocation.objects.order_by('name')
-    variables = RequestContext(request, {
-        'metas': sublocations,
-        'plural': u'Locais',
-        'url': 'local',
-        })
-    return render_to_response('meta_list_page.html', variables)
-
-def city_list_page(request):
-    cities = City.objects.order_by('name')
-    variables = RequestContext(request, {
-        'metas': cities,
-        'plural': u'Cidades',
-        'url': 'cidade',
-        })
-    return render_to_response('meta_list_page.html', variables)
-
-def state_list_page(request):
-    states = State.objects.order_by('name')
-    variables = RequestContext(request, {
-        'metas': states,
-        'plural': u'Estados',
-        'url': 'estado',
-        })
-    return render_to_response('meta_list_page.html', variables)
-
-def country_list_page(request):
-    countries = Country.objects.order_by('name')
-    variables = RequestContext(request, {
-        'metas': countries,
-        'plural': u'Países',
-        'url': 'pais',
+        'metas': objects,
+        'plural': plural,
         })
     return render_to_response('meta_list_page.html', variables)
 

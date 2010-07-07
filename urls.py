@@ -25,7 +25,7 @@ urlpatterns = patterns('',
         (r'^tags/$', tags_page),
 
         (r'^tag/$', tag_list_page),
-        (r'^tag/([\w]+)/$', tag_page),
+        (r'^tag/([\w\-]+)/$', tag_page),
 
         (r'^autor/$', author_list_page),
         (r'^autor/([^\d]+)/$', author_page),
@@ -42,7 +42,7 @@ urlpatterns = patterns('',
         (r'^especie/([^\d]+)/$', species_page),
 
         (r'^tamanho/$', size_list_page),
-        (r'^tamanho/([\w]+)/$', size_page),
+        (r'^tamanho/([\w\-]+)/$', size_page),
 
         (r'^locais/$', places_page),
 

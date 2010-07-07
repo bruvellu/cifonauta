@@ -92,7 +92,6 @@ def video_page(request, video_id):
     return render_to_response('media_page.html', variables)
 
 def tag_page(request, tag_slug):
-    images = []
     tag = get_object_or_404(Tag, slug=tag_slug)
     image_list = tag.images.order_by('-id')
     video_list = tag.videos.order_by('-id')
@@ -167,16 +166,17 @@ def author_page(request, author_slug):
         })
     return render_to_response('meta_page.html', variables)
 
-def taxon_page(request, taxon_slug):
-    taxon = get_object_or_404(Taxon, slug=taxon_slug)
-    image_list = Image.objects.filter(taxon__exact=taxon).order_by('-id')
-    video_list = Video.objects.filter(taxon__exact=taxon).order_by('-id')
+def meta_page(request, model_name, field, slug):
+    model = get_object_or_404(model_name, slug=slug)
+    kwargs = {field: model}
+    image_list = Image.objects.filter(**kwargs).order_by('-id')
+    video_list = Video.objects.filter(**kwargs).order_by('-id')
     images = get_paginated(request, image_list)
     videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
-        'meta': taxon,
+        'meta': model,
         })
     return render_to_response('meta_page.html', variables)
 

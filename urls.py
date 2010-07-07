@@ -2,7 +2,7 @@ import os
 from django.conf.urls.defaults import *
 from meta.views import *
 from meta.feeds import *
-from meta.models import Image
+from meta.models import *
 
 info_dict = {
         'queryset': Image.objects.all(),
@@ -20,7 +20,7 @@ urlpatterns = patterns('',
         (r'^$', main_page),
         (r'^blog/', include('articles.urls')),
         (r'^comentarios/', include('django.contrib.comments.urls')),
-        (r'^feed/$', LatestMedia()),
+        #(r'^feed/$', LatestMedia()),
 
         (r'^buscar/$', search_page),
 
@@ -35,7 +35,8 @@ urlpatterns = patterns('',
         (r'^taxa/$', taxa_page),
 
         (r'^taxon/$', taxon_list_page),
-        (r'^taxon/([^\d]+)/$', taxon_page),
+        url(r'^taxon/(?P<slug>[^\d]+)/$', meta_page, {'model_name': Taxon,
+            'field': 'taxon'}, name='taxon_url'),
 
         (r'^genero/$', genus_list_page),
         (r'^genero/([^\d]+)/$', genus_page),
@@ -60,8 +61,8 @@ urlpatterns = patterns('',
         (r'^pais/$', country_list_page),
         (r'^pais/([^\d]+)/$', country_page),
 
-        (r'^imagem/([0-9]+)/$', image_page),
-        (r'^video/([0-9]+)/$', video_page),
+        (r'^imagem/(\d+)/$', image_page),
+        (r'^video/(\d+)/$', video_page),
         # Admin
         (r'^admin/', include(admin.site.urls)),
         # Site media

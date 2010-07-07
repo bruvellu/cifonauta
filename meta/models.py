@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models import signals
+from django.db.models import permalink
 from django.template.defaultfilters import slugify
+from meta.views import *
 
 
 class File(models.Model):
@@ -44,8 +46,13 @@ class File(models.Model):
 class Image(File):
     web_filepath = models.ImageField(upload_to='site_media/images/')
     datatype = models.CharField(max_length=10, default='photo')
+
     def __unicode__(self):
         return self.title
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return (image_page, self.id)
 
 
 class Video(File):

@@ -1,6 +1,7 @@
 import os
 from django.conf.urls.defaults import *
 from meta.views import *
+from meta.feeds import *
 from meta.models import Image
 
 info_dict = {
@@ -19,6 +20,7 @@ urlpatterns = patterns('',
         (r'^$', main_page),
         (r'^blog/', include('articles.urls')),
         (r'^comentarios/', include('django.contrib.comments.urls')),
+        (r'^feed/$', LatestMedia()),
 
         (r'^buscar/$', search_page),
 

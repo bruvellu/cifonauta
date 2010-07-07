@@ -14,6 +14,7 @@ class File(models.Model):
     view_count = models.PositiveIntegerField(default=0, editable=False)
     is_public = models.BooleanField(default=False)
     notes = models.TextField(null=True, blank=True)
+    pub_date = models.DateTimeField(auto_now_add=True)
 
     # IPTC
     title = models.CharField(max_length=64, blank=True)

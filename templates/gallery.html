@@ -7,7 +7,7 @@
         {% for image in images.object_list %}
             {% if image.is_public %}
             <li class="size-{{ image.size.slug }}">
-                <a href="/imagem/{{ image.id }}/"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" height="90" /></a>
+                <a href="{{ image.get_absolute_url }}"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" height="90" /></a>
             </li>
             {% endif %}
         {% endfor %}
@@ -39,7 +39,7 @@
     {% for video in videos.object_list %}
         {% if video.is_public %}
         <li>
-            <a href="/video/{{ video.id }}/"><img src="/{{ video.thumb_filepath }}" alt="{{ video.title }}" title="{{ video.title }}" width="120" /></a>
+        <a href="{{ video.get_absolute_url }}"><img src="/{{ video.thumb_filepath }}" alt="{{ video.title }}" title="{{ video.title }}" width="120" /></a>
         </li>
         {% endif %}
     {% endfor %}

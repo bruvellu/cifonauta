@@ -52,15 +52,19 @@ class Image(File):
     
     @models.permalink
     def get_absolute_url(self):
-        return (image_page, self.id)
+        return ('image_url', [str(self.id)])
 
 
 class Video(File):
     web_filepath = models.FileField(upload_to='site_media/videos/')
     datatype = models.CharField(max_length=10, default='video')
+
     def __unicode__(self):
         return self.title
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('video_url', [str(self.id)])
 
 class Author(models.Model):
     name = models.CharField(max_length=32, unique=True, blank=True)

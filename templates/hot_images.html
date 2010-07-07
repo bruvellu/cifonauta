@@ -1,10 +1,10 @@
 {% if hot_images %}
 <h2>Mais acessadas</h2>
     {% for image in hot_images %}
-    {% if forloop.last %}<div class="span-2 last"><a href="/imagem/{{ image.id }}/"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="70" /></a><br>({{ image.view_count }})</div>
+    {% if forloop.last %}<div class="span-2 last"><a href="{{ image.get_absolute_url }}"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="70" /></a><br>({{ image.view_count }})</div>
     {% else %}
     <div class="span-2">
-        <a href="/imagem/{{ image.id }}/">
+        <a href="{{ image.get_absolute_url }}">
             <img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="70" /></a>
         <br>({{ image.view_count }})
     {% endif %}

@@ -91,8 +91,8 @@ def video_page(request, video_id):
         })
     return render_to_response('media_page.html', variables)
 
-def tag_page(request, tag_slug):
-    tag = get_object_or_404(Tag, slug=tag_slug)
+def tag_page(request, slug):
+    tag = get_object_or_404(Tag, slug=slug)
     image_list = tag.images.order_by('-id')
     video_list = tag.videos.order_by('-id')
     images = get_paginated(request, image_list)
@@ -153,121 +153,17 @@ def tag_page(request, tag_slug):
     #    tag = get_object_or_404(Tag, name=tag_name)
     #    images = tag.images.order_by('-id')
 
-def author_page(request, author_slug):
-    author = get_object_or_404(Author, slug=author_slug)
-    image_list = Image.objects.filter(author__exact=author).order_by('-id')
-    video_list = Video.objects.filter(author__exact=author).order_by('-id')
-    images = get_paginated(request, image_list)
-    videos = get_paginated(request, video_list)
-    variables = RequestContext(request, {
-        'images': images,
-        'videos': videos,
-        'meta': author,
-        })
-    return render_to_response('meta_page.html', variables)
-
 def meta_page(request, model_name, field, slug):
     model = get_object_or_404(model_name, slug=slug)
-    kwargs = {field: model}
-    image_list = Image.objects.filter(**kwargs).order_by('-id')
-    video_list = Video.objects.filter(**kwargs).order_by('-id')
+    filter_args = {field: model}
+    image_list = Image.objects.filter(**filter_args).order_by('-id')
+    video_list = Video.objects.filter(**filter_args).order_by('-id')
     images = get_paginated(request, image_list)
     videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
         'meta': model,
-        })
-    return render_to_response('meta_page.html', variables)
-
-def genus_page(request, genus_slug):
-    genus = get_object_or_404(Genus, slug=genus_slug)
-    image_list = Image.objects.filter(genus__exact=genus).order_by('-id')
-    video_list = Video.objects.filter(genus__exact=genus).order_by('-id')
-    images = get_paginated(request, image_list)
-    videos = get_paginated(request, video_list)
-    variables = RequestContext(request, {
-        'images': images,
-        'videos': videos,
-        'meta': genus,
-        })
-    return render_to_response('meta_page.html', variables)
-
-def species_page(request, species_slug):
-    species = get_object_or_404(Species, slug=species_slug)
-    image_list = Image.objects.filter(species__exact=species).order_by('-id')
-    video_list = Video.objects.filter(species__exact=species).order_by('-id')
-    images = get_paginated(request, image_list)
-    videos = get_paginated(request, video_list)
-    variables = RequestContext(request, {
-        'images': images,
-        'videos': videos,
-        'meta': species,
-        })
-    return render_to_response('meta_page.html', variables)
-
-def size_page(request, size_slug):
-    size = get_object_or_404(Size, slug=size_slug)
-    image_list = Image.objects.filter(size__exact=size).order_by('-id')
-    video_list = Video.objects.filter(size__exact=size).order_by('-id')
-    images = get_paginated(request, image_list)
-    videos = get_paginated(request, video_list)
-    variables = RequestContext(request, {
-        'images': images,
-        'videos': videos,
-        'meta': size,
-        })
-    return render_to_response('meta_page.html', variables)
-
-def sublocation_page(request, sublocation_slug):
-    sublocation = get_object_or_404(Sublocation, slug=sublocation_slug)
-    image_list = Image.objects.filter(sublocation__exact=sublocation).order_by('-id')
-    video_list = Video.objects.filter(sublocation__exact=sublocation).order_by('-id')
-    images = get_paginated(request, image_list)
-    videos = get_paginated(request, video_list)
-    variables = RequestContext(request, {
-        'images': images,
-        'videos': videos,
-        'meta': sublocation,
-        })
-    return render_to_response('meta_page.html', variables)
-
-def city_page(request, city_slug):
-    city = get_object_or_404(City, slug=city_slug)
-    image_list = Image.objects.filter(city__exact=city).order_by('-id')
-    video_list = Video.objects.filter(city__exact=city).order_by('-id')
-    images = get_paginated(request, image_list)
-    videos = get_paginated(request, video_list)
-    variables = RequestContext(request, {
-        'images': images,
-        'videos': videos,
-        'meta': city,
-        })
-    return render_to_response('meta_page.html', variables)
-
-def state_page(request, state_slug):
-    state = get_object_or_404(State, slug=state_slug)
-    image_list = Image.objects.filter(state__exact=state).order_by('-id')
-    video_list = Video.objects.filter(state__exact=state).order_by('-id')
-    images = get_paginated(request, image_list)
-    videos = get_paginated(request, video_list)
-    variables = RequestContext(request, {
-        'images': images,
-        'videos': videos,
-        'meta': state,
-        })
-    return render_to_response('meta_page.html', variables)
-
-def country_page(request, country_slug):
-    country = get_object_or_404(Country, slug=country_slug)
-    image_list = Image.objects.filter(country__exact=country).order_by('-id')
-    video_list = Video.objects.filter(country__exact=country).order_by('-id')
-    images = get_paginated(request, image_list)
-    videos = get_paginated(request, video_list)
-    variables = RequestContext(request, {
-        'images': images,
-        'videos': videos,
-        'meta': country,
         })
     return render_to_response('meta_page.html', variables)
 

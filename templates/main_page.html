@@ -11,8 +11,8 @@
     </div>
     <div class="span-8">
         <h2>Fotos</h2>
-        <strong><a href="/imagem/{{ image.id }}/">{{ image.title }}</a></strong><br>
-        <a href="/imagem/{{ image.id }}/"><img src="/{{ image.web_filepath }}" alt="{{ image.title }}" width="300" /></a>
+        <strong><a href="{{ image.get_absolute_url }}">{{ image.title }}</a></strong><br>
+        <a href="{{ image.get_absolute_url }}"><img src="/{{ image.web_filepath }}" alt="{{ image.title }}" width="300" /></a>
     </div>
     <div class="span-8 last">
         <h2>Vídeos</h2>
@@ -30,7 +30,7 @@
             {% for thumb in thumbs %}
                 {% if thumb.is_public %}
                 <li class="size-{{ thumb.size.slug }}">
-                    <a href="/imagem/{{ thumb.id }}/"><img src="/{{ thumb.thumb_filepath }}" alt="{{ thumb.title }}" title="{{ thumb.title }}" width="120" height="90" /></a>
+                    <a href="{{ thumb.get_absolute_url }}"><img src="/{{ thumb.thumb_filepath }}" alt="{{ thumb.title }}" title="{{ thumb.title }}" width="120" height="90" /></a>
                 </li>
                 {% endif %}
             {% endfor %}

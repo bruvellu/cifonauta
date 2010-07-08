@@ -70,6 +70,26 @@ def search_page(request):
         })
     return render_to_response('buscar.html', variables)
 
+def org_page(request):
+    image_count = Image.objects.count()
+    images = Image.objects.filter(highlight=True).order_by('?')
+    image = images[0]
+    thumbs = images.exclude(id=image.id)[:4]
+    videos = Video.objects.filter(highlight=True).order_by('?')[:1]
+    video = videos[0]
+    tags = Tag.objects.all()
+    locations = Sublocation.objects.exclude(name='')
+    variables = RequestContext(request, {
+        'image_count': image_count,
+        'image': image,
+        'thumbs': thumbs,
+        'video': video,
+        'tags': tags,
+        'locations': locations,
+        'title': u'Organização do banco',
+        })
+    return render_to_response('organizacao.html', variables)
+
 # Single
 def image_page(request, image_id):
     image = get_object_or_404(Image, id=image_id)

@@ -30,6 +30,7 @@ urlpatterns = patterns('',
         (r'^taxa/$', taxa_page),
         (r'^locais/$', places_page),
         (r'^blog/', include('articles.urls')),
+        (r'^sobre/organizacao/$', org_page),
 
         url(r'^tag/$', meta_list_page,
             {'model': Tag, 'plural': u'Marcadores'}),

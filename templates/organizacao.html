@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} | {{ block.super }}{% endblock %}
+{% block content %}
+<section class="span-16">
+<header class="span-16 last"><h1>{{ title }}</h1></header>
+
+<p>As fotos e vídeos carregados no site podem ser pesquisadas por meio das informações básicas (metadados), como espécie, local, autor, tamanho. Às imagens estão também associados marcadores (tags), termos que as qualificam de acordo com categorias como, técnica fotográfica, estágio de vida, habitat etc. Desse modo, é possível navegar pelas imagens usando os marcadores. Por exemplo, você pode querer procurar fotos de larvas de moluscos tiradas em microscopia confocal, ou apenas navegar pelos estágios adultos de organismos planctônicos. A categorização das imagens e a explicação de alguns dos marcadores utilizados encontra-se abaixo.</p>
+
+<h2>Táxons</h2>
+
+<p>A classificação biológica utilizada não adota nenhuma proposta em particular. Em grande parte, seguimos a classificação mais consensual ou tradicional, visando facilitar a visualização da hierarquia taxonômica e a navegação entre as imagens. Em alguns casos, empregamos a proposta de classificação seguida pelo especialista que identificou a espécie ilustrada.</p>
+
+<h2>Tamanho</h2>
+
+<p>Para dar uma ideia das dimensões dos organismos das imagens, 5 classes de tamanho foram criadas arbitrariamente. A fauna bentônica recebeu uma classificação adicional de tamanho: macrofauna, meiofauna e microfauna (ver item Modo de Vida, abaixo). Fotos dos ambientes não contêm informações de tamanho, mas caso estejam ilustrando algum organismo (por exemplo, cracas no costão), podem vir acompanhadas da escala relativa a esse organismo. As classes de tamanho são:</p>
+
+<table>
+<tr>
+<th>Tamanho
+<th>Descrição
+<th>Exemplo
+
+<tr>
+<td class="bold"><0,1 mm
+<td>Protozoários e detalhes de células animais.
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">0,1 - 1,0 mm
+<td>Embriões, larvas e seres planctônicos.
+<td><a href="/imagem/29/"><img src="/site_media/images/thumbs/migotto_arbacia_-_dscn0084.png" /></a>
+
+<tr>
+<td class="bold">1,0 - 10 mm
+<td>Seres diminutos, mas identificáveis a olho nu.
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">10 - 100 mm
+<td>Organismos macroscópicos.
+<td><a href="/imagem/22/"><img src="/site_media/images/thumbs/migotto_beroe_ovata01.png" /></a>
+
+<tr>
+<td class="bold">>100 mm
+<td>Organismos ainda maiores.
+<td><a href="/imagem/12/"><img src="/site_media/images/thumbs/migotto_eunice_sebastiani_01.png" /></a>
+</table>
+
+<h2>Técnicas fotográficas</h2>
+
+<p>As diferentes técnicas utilizadas para capturar as imagens do banco foram divididas em 4 categorias: <strong>submersa</strong>, <strong>macrofotografia</strong>, <strong>paisagem</strong> e <strong>microscopia</strong>. Para abarcar a variedade de técnicas de microscopia este último foi subdividido. Segue então a lista dos marcadores referentes às técnicas fotográficas:</p>
+
+<table>
+<tr>
+<th>Técnica
+<th>Descrição
+<th>Exemplo
+
+<tr>
+<td class="bold">submersa
+<td>Tirado embaixo d’água com caixa-estanque.
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">macrofotografia
+<td>Detalhe tirado com câmera convencional; muitas vezes de organismos em aquários.
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">paisagem
+<td>Mostra um ambiente.
+<td>[thumbnail com exemplo]
+</table>
+
+<table>
+<tr>
+<th>microscopia
+<th>
+<th>
+
+<tr>
+<td class="bold">campo claro
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">campo escuro
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">dic
+<td>Contraste de interferência diferencial (ou Nomarski).
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">contraste de fase
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">luz polarizada
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">confocal
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">epifluorescência
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">mev
+<td>Microscopia eletrônica de varredura.
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">met
+<td>Microscopia eletrônica de transmissão.
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">3d
+<td>Imagens processadas digitalmente para mostrar a tridimensionalidade.
+<td>[thumbnail com exemplo]
+</table>
+
+<h2>Estágio de vida</h2>
+<p>Nem sempre os organismos fotografados são indivíduos adultos.</p>
+
+<table>
+<tr>
+<th>Estágio
+<th>Descrição
+<th>Exemplo
+
+<tr>
+<td class="bold">gameta
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">embrião
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">larva
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">juvenil
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">adulto
+<td>
+<td>[thumbnail com exemplo]
+</table>
+
+<h2>Modo de vida</h2>
+<p>Cada estágio de vida de um organismo pode ter um modo de vida diferente. Por isso, essa classificação refere-se ao modo de vida da fase ilustrada na imagem. Sempre que possível, as imagens foram classificadas nas categorias abaixo:</p>
+
+<table>
+<tr>
+<th>Pelágicos
+<th>Organismos que vivem na coluna d’água.
+<th>Exemplo
+
+<tr>
+<td class="bold">demersal
+<td>Organismo que vive próximo ao fundo do mar, embora possua capacidade de natação ativa.
+<td>[thumbnail com exemplo] vários peixes, como linguados etc
+
+<tr>
+<td class="bold">planctônico
+<td>Conjunto dos organismos que vivem dispersos na coluna d’água, com muito pouca ou nenhuma capacidade de locomoção.
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">nectônico
+<td>Conjunto dos organismos que vivem dispersos na coluna d’água, com capacidade de natação.
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">neustônico
+<td>Organismos pequenos e médios que vivem logo abaixo ou na superfície da água.
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">pleustônico
+<td>Plantas que bóiam e caravelas.
+<td>[thumbnail com exemplo]
+</table>
+
+<table>
+<tr>
+<th>Bentônicos
+<th>Organismos que vivem no leito dos oceanos e mares, fixos ou não a um substrato.
+<th>Exemplo
+
+<tr>
+<td class="bold">infauna
+<td>Dentro do sedimento.
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">epifauna
+<td>Superfície do sedimento.
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">intersticial
+<td>Entre os interstícios dos grãos de sedimento.
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">epibionte
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">macrofauna
+<td>Animais cuja menor dimensão é maior ou igual a 0,5 mm.
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">meiofauna
+<td>Animais cuja menor dimensão é menor que 0,5 mm e maior que 0,1 mm.
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">microfauna
+<td>Animais menores que 0,1 mm.
+<td>[thumbnail com exemplo]
+</table>
+
+<h2>Habitat</h2>
+<p>Também indicamos os habitats de cada organismo, quando possível.</p>
+
+<table>
+<tr>
+<th>Habitat
+<th>Descrição
+<th>Exemplo
+
+<tr>
+<td class="bold">praia
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">costão rochoso
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">manguezal
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">estuário
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">infralitoral
+<td>
+<td>[thumbnail com exemplo]
+</table>
+
+<h2>Diversos</h2>
+
+<p>Marcadores que não se encaixam nas outras categorias. Podem ser termos comuns frequentemente procurados.</p>
+
+<table>
+<tr>
+<th>Outros
+<th>Descrição
+<th>Exemplo
+
+<tr>
+<td class="bold">avifauna / aves
+<td>
+<td><a href="/imagem/23/"><img src="/site_media/images/thumbs/Gar%C3%A7aDSC_3264.png" /></a>
+
+<tr>
+<td class="bold">mamífero marinho
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">espécie exótica
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">espécie introduzida
+<td>
+<td>[thumbnail com exemplo]
+
+<tr>
+<td class="bold">ictiofauna / peixes
+<td>
+<td>[thumbnail com exemplo]
+</table>
+
+</section>
+{% endblock %}
+{% block sidebar %}
+<aside class="span-8 last">
+{% include 'sobremenu.html' %}
+</aside>
+{% endblock %}

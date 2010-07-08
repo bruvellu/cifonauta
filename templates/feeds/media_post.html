@@ -1,0 +1,69 @@
+<div>
+{% if obj.tag_set.all %}
+<strong>Marcadores: </strong>
+    {% for tag in obj.tag_set.all %}
+    <a href="{{ tag.get_absolute_url }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+    {% endfor %}
+{% endif %}
+</div>
+
+<div>
+{% if obj.datatype == 'photo' %}
+<img width="510" src="http://{{ site.domain }}/{{ obj.web_filepath }}" alt="{{ obj.title }}" title="{{ obj.title }}" />
+{% else %}
+    {% if obj.datatype == 'video' %}
+    <video poster="http://{{ site.domain }}/{{ obj.thumb_filepath }}" preload="preload" controls="controls">
+    <source src="http://{{site.domain }}/{{ obj.web_filepath }}" type="video/ogg">
+    <img alt="Still do vídeo" src="http://{{ site.domain }}/{{ obj.thumb_filepath }}">
+    Seu navegador ainda não suporta HTML5...
+    </video>
+    {% endif %}
+{% endif %}
+
+{% if obj.caption %}
+    <div>{{ obj.caption }}</div>
+{% endif %}
+</div>
+
+<div style="margin:10px 0; padding:10px; background:#fafafa;">
+    {% if obj.author.name %}
+    <strong>Autor:</strong> <span id="author">{{ obj.author }}</span><br>
+    {% endif %}
+    {% if obj.genus.name %}
+    <strong>Espécie:</strong> <span id="genus">{{ obj.genus }}</span>
+    {% if obj.species.name != 'sp.' %}
+        <span id="species">{{ obj.species }}</span>
+    {% else %}
+        <span>{{ obj.species }}</span>
+    {% endif %}
+    <br>
+    {% endif %}
+
+    {% if obj.taxon.name %}
+    <strong>Táxon:</strong> <span id="taxon">{{ obj.taxon }}</span><br>
+    {% endif %}
+    {% if obj.size.name %}
+    <strong>Tamanho:</strong> <span id="size">{{ obj.size }}</span><br>
+    {% endif %}
+    {% if obj.source.name %}
+    <strong>Especialista:</strong> <span id="source">{{ obj.source }}</span>
+    {% endif %}
+
+    {% if obj.date %}
+    <strong>Data: </strong> <span id="date"><datetime>{{ obj.date }}</datetime></span>
+    <br />
+    {% endif %}
+
+    {% if obj.sublocation.name or obj.city.name or obj.state.name or obj.country.name %}
+        <strong>Local:</strong> 
+        {% if obj.sublocation.name %}<span id="sublocation">{{ obj.sublocation }},</span>{% endif %}
+        {% if obj.city.name %}<span id="city">{{ obj.city }},</span>{% endif %}
+        {% if obj.state.name %}<span id="state">{{ obj.state }},</span>{% endif %}
+        {% if obj.country.name %}<span id="country">{{ obj.country }}</span>{% endif %}
+    <br />
+    {% endif %}
+
+    {% if obj.geolocation %}
+    <strong>Geolocalização:</strong> <a href="http://maps.google.com/maps?q={{ obj.latitude }},{{ obj.longitude }}" title="{{ obj.geolocation }} no Google Maps">{{ obj.geolocation }}</a>
+    {% endif %}
+</div>

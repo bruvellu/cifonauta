@@ -31,7 +31,7 @@ $(document).ready(function(){
         <footer class="span-16 last media-tags">
             {% if media.tag_set.all %}
                 {% for tag in media.tag_set.all %}
-                <a href="/tag/{{ tag.slug }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+                <a href="{{ tag.get_absolute_url }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
                 {% endfor %}
             {% endif %}
         </footer>

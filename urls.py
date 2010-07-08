@@ -23,7 +23,7 @@ def extra(model, field):
 urlpatterns = patterns('',
         (r'^$', main_page),
         (r'^comentarios/', include('django.contrib.comments.urls')),
-        #(r'^feed/$', LatestMedia()),
+        (r'^feed/$', LatestMedia()),
 
         (r'^buscar/$', search_page),
         (r'^tags/$', tags_page),

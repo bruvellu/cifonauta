@@ -72,20 +72,8 @@ def search_page(request):
 
 def org_page(request):
     sizes = Size.objects.all().exclude(name='').order_by('position')
-    images = Image.objects.filter(highlight=True).order_by('?')
-    image = images[0]
-    thumbs = images.exclude(id=image.id)[:4]
-    videos = Video.objects.filter(highlight=True).order_by('?')[:1]
-    video = videos[0]
-    tags = Tag.objects.all()
-    locations = Sublocation.objects.exclude(name='')
     variables = RequestContext(request, {
         'sizes': sizes,
-        'image': image,
-        'thumbs': thumbs,
-        'video': video,
-        'tags': tags,
-        'locations': locations,
         'title': u'Organização do banco',
         })
     return render_to_response('organizacao.html', variables)

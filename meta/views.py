@@ -71,7 +71,7 @@ def search_page(request):
     return render_to_response('buscar.html', variables)
 
 def org_page(request):
-    image_count = Image.objects.count()
+    sizes = Size.objects.all().exclude(name='').order_by('position')
     images = Image.objects.filter(highlight=True).order_by('?')
     image = images[0]
     thumbs = images.exclude(id=image.id)[:4]
@@ -80,7 +80,7 @@ def org_page(request):
     tags = Tag.objects.all()
     locations = Sublocation.objects.exclude(name='')
     variables = RequestContext(request, {
-        'image_count': image_count,
+        'sizes': sizes,
         'image': image,
         'thumbs': thumbs,
         'video': video,

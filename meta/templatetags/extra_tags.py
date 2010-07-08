@@ -19,6 +19,11 @@ def show_hot():
     hot_images = Image.objects.order_by('-view_count')[:4]
     return {'hot_images': hot_images}
 
+@register.inclusion_tag('thumb.html')
+def size_thumbs(size):
+    image = Image.objects.filter(size=size).order_by('?')[0]
+    return {'image': image}
+
 @register.inclusion_tag('related.html')
 def show_related(media):
     taxa = Image.objects.filter(taxon=media.taxon).exclude(id=media.id)

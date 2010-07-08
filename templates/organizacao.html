@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load extra_tags %}
 {% block title %}{{ title }} | {{ block.super }}{% endblock %}
 {% block content %}
 <section class="span-16">
@@ -20,30 +21,13 @@
 <th>Descrição
 <th>Exemplo
 
+{% for size in sizes %}
 <tr>
-<td class="bold"><0,1 mm
-<td>Protozoários e detalhes de células animais.
-<td>[thumbnail com exemplo]
+    <td class="bold">{{ size }}
+        <td>{% if size.description %}{{ size.description }}{% endif %}
+            <td>{% size_thumbs size %}
 
-<tr>
-<td class="bold">0,1 - 1,0 mm
-<td>Embriões, larvas e seres planctônicos.
-<td><a href="/imagem/29/"><img src="/site_media/images/thumbs/migotto_arbacia_-_dscn0084.png" /></a>
-
-<tr>
-<td class="bold">1,0 - 10 mm
-<td>Seres diminutos, mas identificáveis a olho nu.
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">10 - 100 mm
-<td>Organismos macroscópicos.
-<td><a href="/imagem/22/"><img src="/site_media/images/thumbs/migotto_beroe_ovata01.png" /></a>
-
-<tr>
-<td class="bold">>100 mm
-<td>Organismos ainda maiores.
-<td><a href="/imagem/12/"><img src="/site_media/images/thumbs/migotto_eunice_sebastiani_01.png" /></a>
+{% endfor %}
 </table>
 
 <h2>Técnicas fotográficas</h2>

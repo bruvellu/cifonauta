@@ -66,6 +66,7 @@ class Video(File):
     def get_absolute_url(self):
         return ('video_url', [str(self.id)])
 
+
 class Author(models.Model):
     name = models.CharField(max_length=32, unique=True, blank=True)
     slug = models.SlugField(max_length=32, blank=True)
@@ -77,8 +78,10 @@ class Author(models.Model):
     def get_absolute_url(self):
         return ('author_url', [self.slug])
 
+
 class Tag(models.Model):
     name = models.CharField(max_length=64, unique=True)
+    description = models.TextField(blank=True)
     slug = models.SlugField(max_length=64, blank=True)
     images = models.ManyToManyField(Image, null=True, blank=True)
     videos = models.ManyToManyField(Video, null=True, blank=True)
@@ -95,6 +98,7 @@ class Tag(models.Model):
 
 class TagCategory(models.Model):
     name = models.CharField(max_length=64, unique=True)
+    description = models.TextField(blank=True)
     slug = models.SlugField(max_length=64, blank=True)
     def __unicode__(self):
         return self.name
@@ -138,6 +142,7 @@ class Species(models.Model):
     def get_absolute_url(self):
         return ('species_url', [self.slug])
 
+
 class Size(models.Model):
     SIZES = (
             ('', ''),
@@ -149,7 +154,9 @@ class Size(models.Model):
             )
     name = models.CharField(max_length=32, unique=True, choices=SIZES,
             blank=True)
+    description = models.TextField(blank=True)
     slug = models.SlugField(max_length=32, blank=True)
+    position = models.PositiveIntegerField(default=0)
     def __unicode__(self):
         return self.name
 
@@ -185,6 +192,7 @@ class Sublocation(models.Model):
     def get_absolute_url(self):
         return ('sublocation_url', [self.slug])
 
+
 class City(models.Model):
     name = models.CharField(max_length=32, unique=True, blank=True)
     slug = models.SlugField(max_length=32, blank=True)
@@ -219,6 +227,7 @@ class Country(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('country_url', [self.slug])
+
 
 def slug_pre_save(signal, instance, sender, **kwargs):
     if not instance.slug:

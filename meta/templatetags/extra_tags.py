@@ -20,8 +20,12 @@ def show_hot():
     return {'hot_images': hot_images}
 
 @register.inclusion_tag('thumb.html')
-def size_thumbs(size):
-    image = Image.objects.filter(size=size).order_by('?')[0]
+def print_thumb(field, obj):
+    params = {field:obj}
+    try:
+        image = Image.objects.filter(**params).order_by('?')[0]
+    except:
+        image = ''
     return {'image': image}
 
 @register.inclusion_tag('related.html')

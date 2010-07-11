@@ -72,8 +72,14 @@ def search_page(request):
 
 def org_page(request):
     sizes = Size.objects.all().exclude(name='').order_by('position')
+    tec_cat = TagCategory.objects.filter(name=u'Técnica')
+    tecnicas = Tag.objects.filter(parent=tec_cat)
+    mics = tecnicas.exclude(name='paisagem').exclude(name='macrofotografia').exclude(name='submarina')
+    notmic = tecnicas.filter(name='paisagem') | tecnicas.filter(name='macrofotografia') | tecnicas.filter(name='submarina')
     variables = RequestContext(request, {
         'sizes': sizes,
+        'mics': mics,
+        'notmic': notmic,
         'title': u'Organização do banco',
         })
     return render_to_response('organizacao.html', variables)

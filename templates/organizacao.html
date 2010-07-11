@@ -25,7 +25,7 @@
 <tr>
     <td class="bold">{{ size }}
         <td>{% if size.description %}{{ size.description }}{% endif %}
-            <td>{% size_thumbs size %}
+            <td>{% print_thumb 'size' size %}
 
 {% endfor %}
 </table>
@@ -40,20 +40,12 @@
 <th>Descrição
 <th>Exemplo
 
+{% for tag in notmic %}
 <tr>
-<td class="bold">submersa
-<td>Tirado embaixo d’água com caixa-estanque.
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">macrofotografia
-<td>Detalhe tirado com câmera convencional; muitas vezes de organismos em aquários.
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">paisagem
-<td>Mostra um ambiente.
-<td>[thumbnail com exemplo]
+    <td class="bold">{{ tag }}
+        <td>{% if tag.description %}{{ tag.description }}{% endif %}
+            <td>{% print_thumb 'tag' tag %}
+{% endfor %}
 </table>
 
 <table>
@@ -62,55 +54,12 @@
 <th>
 <th>
 
+{% for tag in mics %}
 <tr>
-<td class="bold">campo claro
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">campo escuro
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">dic
-<td>Contraste de interferência diferencial (ou Nomarski).
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">contraste de fase
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">luz polarizada
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">confocal
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">epifluorescência
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">mev
-<td>Microscopia eletrônica de varredura.
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">met
-<td>Microscopia eletrônica de transmissão.
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">3d
-<td>Imagens processadas digitalmente para mostrar a tridimensionalidade.
-<td>[thumbnail com exemplo]
+    <td class="bold">{{ tag }}
+        <td>{% if tag.description %}{{ tag.description }}{% endif %}
+            <td>{% print_thumb 'tag' tag %}
+{% endfor %}
 </table>
 
 <h2>Estágio de vida</h2>

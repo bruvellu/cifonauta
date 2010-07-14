@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+import operator
 
 # Main
 def main_page(request):
@@ -184,8 +185,15 @@ def tag_page(request, slug):
 def meta_page(request, model_name, field, slug):
     model = get_object_or_404(model_name, slug=slug)
     filter_args = {field: model}
-    image_list = Image.objects.filter(**filter_args).order_by('-id')
-    video_list = Video.objects.filter(**filter_args).order_by('-id')
+    try:
+        q = [Q(**filter_args),]
+        for child in model.children.all():
+            q.append(Q(**{field: child}))
+        image_list = Image.objects.filter(reduce(operator.or_, q)).order_by('-id')
+        video_list = Video.objects.filter(reduce(operator.or_, q)).order_by('-id')
+    except:
+        image_list = Image.objects.filter(**filter_args).order_by('-id')
+        video_list = Video.objects.filter(**filter_args).order_by('-id')
     images = get_paginated(request, image_list)
     videos = get_paginated(request, video_list)
     variables = RequestContext(request, {

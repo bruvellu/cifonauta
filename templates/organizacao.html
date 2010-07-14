@@ -40,7 +40,7 @@
 <th>Descrição
 <th>Exemplo
 
-{% for tag in notmic %}
+{% for tag in tecnica.tags.all %}
 <tr>
     <td class="bold">{{ tag }}
         <td>{% if tag.description %}{{ tag.description }}{% endif %}
@@ -54,7 +54,7 @@
 <th>
 <th>
 
-{% for tag in mics %}
+{% for tag in microscopia.tags.all %}
 <tr>
     <td class="bold">{{ tag }}
         <td>{% if tag.description %}{{ tag.description }}{% endif %}
@@ -62,8 +62,8 @@
 {% endfor %}
 </table>
 
-<h2>Estágio de vida</h2>
-<p>Nem sempre os organismos fotografados são indivíduos adultos.</p>
+<h2>{{ estagio.name }}</h2>
+<p>{{ estagio.description }}</p>
 
 <table>
 <tr>
@@ -71,111 +71,47 @@
 <th>Descrição
 <th>Exemplo
 
+{% for tag in estagio.tags.all %}
 <tr>
-<td class="bold">gameta
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">embrião
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">larva
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">juvenil
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">adulto
-<td>
-<td>[thumbnail com exemplo]
+    <td class="bold">{{ tag }}
+        <td>{% if tag.description %}{{ tag.description }}{% endif %}
+            <td>{% print_thumb 'tag' tag %}
+{% endfor %}
 </table>
 
-<h2>Modo de vida</h2>
-<p>Cada estágio de vida de um organismo pode ter um modo de vida diferente. Por isso, essa classificação refere-se ao modo de vida da fase ilustrada na imagem. Sempre que possível, as imagens foram classificadas nas categorias abaixo:</p>
+<h2>{{ pelagicos.parent }}</h2>
+<p>{{ pelagicos.parent.description }}</p>
 
 <table>
 <tr>
-<th>Pelágicos
-<th>Organismos que vivem na coluna d’água.
+<th>{{ pelagicos.name }}
+<th>{{ pelagicos.description }}
 <th>Exemplo
 
+{% for tag in pelagicos.tags.all %}
 <tr>
-<td class="bold">demersal
-<td>Organismo que vive próximo ao fundo do mar, embora possua capacidade de natação ativa.
-<td>[thumbnail com exemplo] vários peixes, como linguados etc
-
-<tr>
-<td class="bold">planctônico
-<td>Conjunto dos organismos que vivem dispersos na coluna d’água, com muito pouca ou nenhuma capacidade de locomoção.
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">nectônico
-<td>Conjunto dos organismos que vivem dispersos na coluna d’água, com capacidade de natação.
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">neustônico
-<td>Organismos pequenos e médios que vivem logo abaixo ou na superfície da água.
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">pleustônico
-<td>Plantas que bóiam e caravelas.
-<td>[thumbnail com exemplo]
+    <td class="bold">{{ tag }}
+        <td>{% if tag.description %}{{ tag.description }}{% endif %}
+            <td>{% print_thumb 'tag' tag %}
+{% endfor %}
 </table>
 
 <table>
 <tr>
-<th>Bentônicos
-<th>Organismos que vivem no leito dos oceanos e mares, fixos ou não a um substrato.
+<th>{{ bentonicos.name }}
+<th>{{ bentonicos.description }}
 <th>Exemplo
 
+{% for tag in bentonicos.tags.all %}
 <tr>
-<td class="bold">infauna
-<td>Dentro do sedimento.
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">epifauna
-<td>Superfície do sedimento.
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">intersticial
-<td>Entre os interstícios dos grãos de sedimento.
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">epibionte
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">macrofauna
-<td>Animais cuja menor dimensão é maior ou igual a 0,5 mm.
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">meiofauna
-<td>Animais cuja menor dimensão é menor que 0,5 mm e maior que 0,1 mm.
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">microfauna
-<td>Animais menores que 0,1 mm.
-<td>[thumbnail com exemplo]
+    <td class="bold">{{ tag }}
+        <td>{% if tag.description %}{{ tag.description }}{% endif %}
+            <td>{% print_thumb 'tag' tag %}
+{% endfor %}
 </table>
 
-<h2>Habitat</h2>
-<p>Também indicamos os habitats de cada organismo, quando possível.</p>
+<h2>{{ habitat.name }}</h2>
+<p>{{ habitat.description }}</p>
 
 <table>
 <tr>
@@ -183,35 +119,16 @@
 <th>Descrição
 <th>Exemplo
 
+{% for tag in habitat.tags.all %}
 <tr>
-<td class="bold">praia
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">costão rochoso
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">manguezal
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">estuário
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">infralitoral
-<td>
-<td>[thumbnail com exemplo]
+    <td class="bold">{{ tag }}
+        <td>{% if tag.description %}{{ tag.description }}{% endif %}
+            <td>{% print_thumb 'tag' tag %}
+{% endfor %}
 </table>
 
-<h2>Diversos</h2>
-
-<p>Marcadores que não se encaixam nas outras categorias. Podem ser termos comuns frequentemente procurados.</p>
+<h2>{{ diversos.name }}</h2>
+<p>{{ diversos.description }}</p>
 
 <table>
 <tr>
@@ -219,30 +136,12 @@
 <th>Descrição
 <th>Exemplo
 
+{% for tag in diversos.tags.all %}
 <tr>
-<td class="bold">avifauna / aves
-<td>
-<td><a href="/imagem/23/"><img src="/site_media/images/thumbs/Gar%C3%A7aDSC_3264.png" /></a>
-
-<tr>
-<td class="bold">mamífero marinho
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">espécie exótica
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">espécie introduzida
-<td>
-<td>[thumbnail com exemplo]
-
-<tr>
-<td class="bold">ictiofauna / peixes
-<td>
-<td>[thumbnail com exemplo]
+    <td class="bold">{{ tag }}
+        <td>{% if tag.description %}{{ tag.description }}{% endif %}
+            <td>{% print_thumb 'tag' tag %}
+{% endfor %}
 </table>
 
 </section>

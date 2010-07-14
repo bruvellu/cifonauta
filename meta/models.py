@@ -100,6 +100,7 @@ class TagCategory(models.Model):
     name = models.CharField(max_length=64, unique=True)
     description = models.TextField(blank=True)
     slug = models.SlugField(max_length=64, blank=True)
+    parent = models.ForeignKey('self', blank=True, null=True, related_name='tagcat_children')
     def __unicode__(self):
         return self.name
 

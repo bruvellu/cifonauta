@@ -71,15 +71,29 @@ def search_page(request):
     return render_to_response('buscar.html', variables)
 
 def org_page(request):
+    # Tamanhos
     sizes = Size.objects.all().exclude(name='').order_by('position')
-    tec_cat = TagCategory.objects.filter(name=u'Técnica')
-    tecnicas = Tag.objects.filter(parent=tec_cat)
-    mics = tecnicas.exclude(name='paisagem').exclude(name='macrofotografia').exclude(name='submarina')
-    notmic = tecnicas.filter(name='paisagem') | tecnicas.filter(name='macrofotografia') | tecnicas.filter(name='submarina')
+    # Técnicas
+    tecnica = TagCategory.objects.get(name=u'Técnica')
+    microscopia = TagCategory.objects.get(name=u'Microscopia')
+    # Estágios
+    estagio = TagCategory.objects.get(name=u'Estágio de vida')
+    # Modos
+    pelagicos = TagCategory.objects.get(name=u'Pelágicos')
+    bentonicos = TagCategory.objects.get(name=u'Bentônicos')
+    # Habitat
+    habitat = TagCategory.objects.get(name=u'Habitat')
+    # Diversos 
+    diversos = TagCategory.objects.get(name=u'Diversos')
     variables = RequestContext(request, {
         'sizes': sizes,
-        'mics': mics,
-        'notmic': notmic,
+        'microscopia': microscopia,
+        'tecnica': tecnica,
+        'estagio': estagio,
+        'pelagicos': pelagicos,
+        'bentonicos': bentonicos,
+        'habitat': habitat,
+        'diversos': diversos,
         'title': u'Organização do banco',
         })
     return render_to_response('organizacao.html', variables)

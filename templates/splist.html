@@ -4,7 +4,7 @@
 {% for genus in genera %}
     {% for sp in genus.spp.all %}
     <li>
-    <a href="/especie/{{ sp.slug }}"><em>{{ genus.name }} {{ sp }}</em></a>
+    <a href="{{ sp.get_absolute_url }}"><em>{{ genus.name }} {{ sp }}</em></a>
     </li>
     {% endfor %}
 {% endfor %}

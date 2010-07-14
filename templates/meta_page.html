@@ -3,7 +3,7 @@
 {% block title %}{{ meta.name }} | {{ block.super }}{% endblock %}
 {% block content %}
 <section class="span-16">
-    <header><h1>{{ meta.name }}</h1></header>
+<header><h1>{% if field == 'species' %}{{ meta.parent }}{% endif %} {{ meta.name }}</h1></header>
     {% include 'gallery.html' %}
 </section>
 {% endblock %}

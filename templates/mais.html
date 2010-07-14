@@ -1,7 +1,7 @@
 {% if tags %}
 <h2>Marcadores</h2>
 {% for tag in tags %}
-<a href="/tag/{{ tag.slug }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+<a href="{{ tag.get_absolute_url }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
 {% endfor %}
 {% endif %}
 
@@ -9,7 +9,7 @@
 <h2>Autores</h2>
 <ul>
     {% for author in authors %}
-    <li><a href="/autor/{{ author.slug }}">{{ author }}</a></li>
+    <li><a href="{{ author.get_absolute_url }}">{{ author }}</a></li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -18,7 +18,7 @@
 <h2>Táxons</h2>
 <ul>
     {% for taxon in taxa %}
-    <li><a href="/taxon/{{ taxon.slug }}">{{ taxon }}</a></li>
+    <li><a href="{{ taxon.get_absolute_url }}">{{ taxon }}</a></li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -28,7 +28,7 @@
     {% for genus in genera %}
         {% for sp in genus.spp.all %}
         <li>
-        <a href="/especie/{{ sp.slug }}"><em>{{ genus.name }} {{ sp }}</em></a>
+        <a href="{{ sp.get_absolute_url }}"><em>{{ genus.name }} {{ sp }}</em></a>
         </li>
         {% endfor %}
     {% endfor %}
@@ -38,7 +38,7 @@
 <h2>Tamanhos</h2>
 <ul>
     {% for size in sizes %}
-    <li><a href="/tamanho/{{ size.slug }}">{{ size }}</a></li>
+    <li><a href="{{ size.get_absolute_url }}">{{ size }}</a></li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -46,7 +46,7 @@
 <h2>Local</h2>
 <ul>
     {% for sublocation in sublocations %}
-    <li><a href="/local/{{ sublocation.slug }}">{{ sublocation }}</a></li>
+    <li><a href="{{ sublocation.get_absolute_url }}">{{ sublocation }}</a></li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -54,7 +54,7 @@
 <h2>Cidades</h2>
 <ul>
     {% for city in cities %}
-    <li><a href="/cidade/{{ city.slug }}">{{ city }}</a></li>
+    <li><a href="{{ city.get_absolute_url }}">{{ city }}</a></li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -62,7 +62,7 @@
 <h2>Estados</h2>
 <ul>
     {% for state in states %}
-    <li><a href="/estado/{{ state.slug }}">{{ state }}</a></li>
+    <li><a href="{{ state.get_absolute_url }}">{{ state }}</a></li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -70,7 +70,7 @@
 <h2>Países</h2>
 <ul>
     {% for country in countries %}
-    <li><a href="/pais/{{ country.slug }}">{{ country }}</a></li>
+    <li><a href="{{ country.get_absolute_url }}">{{ country }}</a></li>
     {% endfor %}
 </ul>
 {% endif %}

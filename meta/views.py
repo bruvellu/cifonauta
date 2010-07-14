@@ -182,7 +182,7 @@ def tag_page(request, slug):
     #    tag = get_object_or_404(Tag, name=tag_name)
     #    images = tag.images.order_by('-id')
 
-def meta_page(request, model_name, field, slug):
+def meta_page(request, model_name, field, slug, genus=''):
     model = get_object_or_404(model_name, slug=slug)
     filter_args = {field: model}
     try:
@@ -200,6 +200,7 @@ def meta_page(request, model_name, field, slug):
         'images': images,
         'videos': videos,
         'meta': model,
+        'field': field,
         })
     return render_to_response('meta_page.html', variables)
 

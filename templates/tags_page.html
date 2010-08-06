@@ -12,7 +12,7 @@
         <ul>
         {% for tag in item.list %}
             <li>
-            <a href="/tag/{{ tag.slug }}">{{ tag.name }}</a>
+            <a href="{{ tag.get_absolute_url }}">{{ tag.name }}</a>
             </li>
         {% endfor %}
         </ul>
@@ -24,7 +24,7 @@
         <ul>
             {% for size in sizes %}
             <li>
-            <a href="/tamanho/{{ size.slug }}/">{{ size.name }}</a>
+            <a href="{{ size.get_absolute_url }}">{{ size.name }}</a>
             </li>
             {% endfor %}
         </ul>

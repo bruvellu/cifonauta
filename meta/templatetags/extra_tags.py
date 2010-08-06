@@ -1,6 +1,7 @@
 from meta.models import *
 from django import template
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.template.defaultfilters import slugify
 
 register = template.Library()
 
@@ -61,10 +62,26 @@ def show_stats():
     countries = Country.objects.count()
     return {'images': images, 'videos': videos, 'taxa': taxa, 'genera': genera, 'spp': spp, 'locations': locations, 'cities': cities, 'states': states, 'countries': countries}
 
+@register.filter
+def in_list(value, arg):
+    return value in arg
+
+@register.filter
+def wordsplit(value):
+    return value.split()
+
+@register.inclusion_tag('fino.html')
+def refine(meta, query):
+    qlist = [slugify(q) for q in query.split()]
+    return {'meta': meta, 'query': query, 'qlist': qlist}
+
 @register.inclusion_tag('mais.html')
-def show_info(media):
+def show_info(media, query):
     authors, taxa, genera, species, sizes, sublocations, cities, states, countries, tags = extract_set(media)
-    return {'authors': authors, 'taxa': taxa, 'genera': genera, 'species': species, 'sizes': sizes, 'sublocations': sublocations, 'cities': cities, 'states': states, 'countries': countries, 'tags': tags}
+    return {'authors': authors, 'taxa': taxa, 'genera': genera, 'species':
+            species, 'sizes': sizes, 'sublocations': sublocations, 'cities':
+            cities, 'states': states, 'countries': countries, 'tags': tags,
+            'query': query}
 
 def extract_set(query):
     '''Extrai outros metadados das imagens buscadas.'''

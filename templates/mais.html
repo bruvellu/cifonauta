@@ -1,15 +1,18 @@
+{% load extra_tags %}
 {% if tags %}
-<h2>Marcadores</h2>
-{% for tag in tags %}
-<a href="{{ tag.get_absolute_url }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
-{% endfor %}
+<h2>Marcadores | <a href="{% url meta.views.tags_page %}" title="Todos os marcadores">ver todos</a></h2>
+    {% for tag in tags %}
+    {% refine tag query %}{% if not forloop.last %},{% endif %}
+    {% endfor %}
 {% endif %}
 
 {% if authors %}
 <h2>Autores</h2>
 <ul>
     {% for author in authors %}
-    <li><a href="{{ author.get_absolute_url }}">{{ author }}</a></li>
+    <li>
+        {% refine author query %}
+    </li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -18,7 +21,9 @@
 <h2>Táxons</h2>
 <ul>
     {% for taxon in taxa %}
-    <li><a href="{{ taxon.get_absolute_url }}">{{ taxon }}</a></li>
+    <li>
+        {% refine taxon query %}
+    </li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -46,7 +51,9 @@
 <h2>Local</h2>
 <ul>
     {% for sublocation in sublocations %}
-    <li><a href="{{ sublocation.get_absolute_url }}">{{ sublocation }}</a></li>
+    <li>
+        {% refine sublocation query %}
+    </li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -54,7 +61,7 @@
 <h2>Cidades</h2>
 <ul>
     {% for city in cities %}
-    <li><a href="{{ city.get_absolute_url }}">{{ city }}</a></li>
+    <li>{% refine city query %}</li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -62,7 +69,7 @@
 <h2>Estados</h2>
 <ul>
     {% for state in states %}
-    <li><a href="{{ state.get_absolute_url }}">{{ state }}</a></li>
+    <li>{% refine state query %}</li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -70,7 +77,7 @@
 <h2>Países</h2>
 <ul>
     {% for country in countries %}
-    <li><a href="{{ country.get_absolute_url }}">{{ country }}</a></li>
+    <li>{% refine country query %}</li>
     {% endfor %}
 </ul>
 {% endif %}

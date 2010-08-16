@@ -111,7 +111,7 @@ $(document).ready(function(){
             </div>
 
             <div class="span-6 last location">
-                {% if media.date %}
+                {% if media.date and media.date|date:"Y" > "1910" %} 
                 <strong>Data: </strong> <span id="date"><datetime>{{ media.date }}</datetime></span>
                 <br />
                 {% endif %}

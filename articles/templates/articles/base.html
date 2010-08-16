@@ -62,10 +62,12 @@
         {% endfor %}
     </div>
 
+    {% comment %}
     {% block article_tags %}
     <h2>{% trans 'Tag Cloud' %}</h2>
         {% tag_cloud %}
     {% endblock %}
+    {% endcomment %}
 
 </aside>
 {% endblock %}

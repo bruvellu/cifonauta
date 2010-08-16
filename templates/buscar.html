@@ -11,6 +11,9 @@
 </form>
 <div id="search-results">
     {% if show_results %}
+    {% if qsize %}
+    <h1>{{ qsize }}</h1>
+    {% endif %}
         {% include 'gallery.html' %}
     {% endif %}
 </div>
@@ -19,7 +22,7 @@
 {% block sidebar %}
 <aside class="main span-8 last">
 {% if show_results %}
-    {% show_info images.object_list query %}
+    {% show_info images.object_list query qsize %}
 {% endif %}
 </aside>
 {% endblock %}

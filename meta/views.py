@@ -31,6 +31,7 @@ def main_page(request):
 
 def search_page(request):
     form = SearchForm()
+    qsize = ''
     query = ''
     images = []
     videos = []
@@ -59,6 +60,11 @@ def search_page(request):
                     )
             image_list = image_queryset
             video_list = video_queryset 
+            if 'size' in request.GET:
+                size = request.GET['size']
+                qsize = Size.objects.get(id=size)
+                image_list = image_list.filter(size=size)
+                video_list = video_list.filter(size=size)
             images = get_paginated(request, image_list)
             videos = get_paginated(request, video_list)
             form = SearchForm({'query': query})
@@ -68,6 +74,7 @@ def search_page(request):
         'images': images,
         'videos': videos,
         'show_results': show_results,
+        'qsize': qsize,
         })
     return render_to_response('buscar.html', variables)
 

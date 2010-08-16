@@ -71,17 +71,17 @@ def wordsplit(value):
     return value.split()
 
 @register.inclusion_tag('fino.html')
-def refine(meta, query):
+def refine(meta, query, qsize):
     qlist = [slugify(q) for q in query.split()]
-    return {'meta': meta, 'query': query, 'qlist': qlist}
+    return {'meta': meta, 'query': query, 'qlist': qlist, 'qsize': qsize}
 
 @register.inclusion_tag('mais.html')
-def show_info(media, query):
+def show_info(media, query, qsize):
     authors, taxa, genera, species, sizes, sublocations, cities, states, countries, tags = extract_set(media)
     return {'authors': authors, 'taxa': taxa, 'genera': genera, 'species':
             species, 'sizes': sizes, 'sublocations': sublocations, 'cities':
             cities, 'states': states, 'countries': countries, 'tags': tags,
-            'query': query}
+            'query': query, 'qsize': qsize}
 
 def extract_set(query):
     '''Extrai outros metadados das imagens buscadas.'''

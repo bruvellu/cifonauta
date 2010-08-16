@@ -2,7 +2,7 @@
 {% if tags %}
 <h2>Marcadores | <a href="{% url meta.views.tags_page %}" title="Todos os marcadores">ver todos</a></h2>
     {% for tag in tags %}
-    {% refine tag query %}{% if not forloop.last %},{% endif %}
+    {% refine tag query qsize %}{% if not forloop.last %},{% endif %}
     {% endfor %}
 {% endif %}
 
@@ -11,7 +11,7 @@
 <ul>
     {% for author in authors %}
     <li>
-        {% refine author query %}
+        {% refine author query qsize %}
     </li>
     {% endfor %}
 </ul>
@@ -22,7 +22,7 @@
 <ul>
     {% for taxon in taxa %}
     <li>
-        {% refine taxon query %}
+        {% refine taxon query qsize %}
     </li>
     {% endfor %}
 </ul>
@@ -43,7 +43,14 @@
 <h2>Tamanhos</h2>
 <ul>
     {% for size in sizes %}
-    <li><a href="{{ size.get_absolute_url }}">{{ size }}</a></li>
+    <li>
+    {% if qsize.id == size.id %}
+    <strong><a href="{{ size.get_absolute_url }}">{{ size }}</a></strong>
+    {% else %}
+    <a href="{{ size.get_absolute_url }}">{{ size }}</a> (<a href="/buscar/?query={{ query }}&size={{ size.id }}" title="Limitar busca para tamanho {{ size.name }}">+</a>)
+    {% endif %}
+    
+    </li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -52,7 +59,7 @@
 <ul>
     {% for sublocation in sublocations %}
     <li>
-        {% refine sublocation query %}
+        {% refine sublocation query qsize %}
     </li>
     {% endfor %}
 </ul>
@@ -61,7 +68,7 @@
 <h2>Cidades</h2>
 <ul>
     {% for city in cities %}
-    <li>{% refine city query %}</li>
+    <li>{% refine city query qsize %}</li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -69,7 +76,7 @@
 <h2>Estados</h2>
 <ul>
     {% for state in states %}
-    <li>{% refine state query %}</li>
+    <li>{% refine state query qsize %}</li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -77,7 +84,7 @@
 <h2>Países</h2>
 <ul>
     {% for country in countries %}
-    <li>{% refine country query %}</li>
+    <li>{% refine country query qsize %}</li>
     {% endfor %}
 </ul>
 {% endif %}

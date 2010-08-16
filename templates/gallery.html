@@ -2,6 +2,7 @@
 <section id="photo-gallery">
     <header><h2>Fotos</h2></header>
     <footer class="pagination span-16 last">
+    {{ images.paginator.count }} íte{{ images.paginator.count|pluralize:"m,ns" }} encontrado{{ images.paginator.count|pluralize }}
     </footer>
     <ul class="thumbs">
         {% for image in images.object_list %}
@@ -35,6 +36,9 @@
 {% if videos.object_list %}
 <section id="video-gallery">
     <header><h2>Vídeos</h2></header>
+    <footer class="pagination span-16 last">
+    {{ videos.paginator.count }} íte{{ videos.paginator.count|pluralize:"m,ns" }} encontrado{{ videos.paginator.count|pluralize }}
+    </footer>
     <ul class="thumbs">
     {% for video in videos.object_list %}
         {% if video.is_public %}

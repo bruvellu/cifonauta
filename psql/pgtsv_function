@@ -9,6 +9,7 @@ sublocation varchar;
 city varchar;
 state varchar;
 country varchar;
+parent varchar;
 tags varchar;
 
 BEGIN
@@ -22,6 +23,7 @@ SELECT name INTO STRICT sublocation FROM meta_sublocation WHERE id = NEW.subloca
 SELECT name INTO STRICT city FROM meta_city WHERE id = NEW.city_id;
 SELECT name INTO STRICT state FROM meta_state WHERE id = NEW.state_id;
 SELECT name INTO STRICT country FROM meta_country WHERE id = NEW.country_id;
+SELECT name INTO STRICT parent FROM meta_taxon WHERE id = (SELECT parent_id FROM meta_taxon WHERE id = NEW.taxon_id);
 
 SELECT concat((SELECT name FROM meta_tag WHERE id = tag_id)||' ') INTO tags FROM meta_tag_images WHERE image_id = NEW.id;
 
@@ -51,7 +53,9 @@ NEW.tsv :=
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(state, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(state), '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(country, '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(country), '')), 'A');
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(country), '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(parent, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(parent), '')), 'A');
 return new;
 END                 
 $$ LANGUAGE plpgsql;

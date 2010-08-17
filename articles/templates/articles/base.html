@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends '../templates/base.html' %}
 {% load article_tags i18n %}
 
 {% block extra-head %}
@@ -7,45 +7,42 @@
 {% endblock %}
 
 {% block content %}
-    <section class="span-16">
+
     {% block articles-content %}{% endblock %}
 
     {% if paginator and page_obj %}
-    {% ifnotequal paginator.page_range|length 1 %}
-    {% for p in paginator.page_range %}
-    {% if forloop.first %}<ul class="pagination-pages">
-    {% if page_obj.has_previous %}
-        <li><a href="{% get_page_url 1 %}">&laquo;</a></li>
-        <li><a href="{% get_page_url page_obj.previous_page_number %}">&lsaquo;</a></li>
+        {% ifnotequal paginator.page_range|length 1 %}
+            {% for p in paginator.page_range %}
+                {% if forloop.first %}<ul class="pagination-pages">
+                {% if page_obj.has_previous %}
+                    <li><a href="{% get_page_url 1 %}">&laquo;</a></li>
+                    <li><a href="{% get_page_url page_obj.previous_page_number %}">&lsaquo;</a></li>
+                {% endif %}
+                {% endif %}
+                    <li><a href="{% get_page_url p %}"{% ifequal p page_obj.number %} class="current-page"{% endifequal %}>{{ p }}</a></li>
+                {% if forloop.last %}
+                {% if page_obj.has_next %}
+                    <li><a href="{% get_page_url page_obj.next_page_number %}">&rsaquo;</a></li>
+                    <li><a href="{% get_page_url paginator.num_pages %}">&raquo;</a></li>
+                {% endif %}
+                </ul>{% endif %}
+            {% endfor %}
+        {% endifnotequal %}
     {% endif %}
-    {% endif %}
-        <li><a href="{% get_page_url p %}"{% ifequal p page_obj.number %} class="current-page"{% endifequal %}>{{ p }}</a></li>
-    {% if forloop.last %}
-    {% if page_obj.has_next %}
-        <li><a href="{% get_page_url page_obj.next_page_number %}">&rsaquo;</a></li>
-        <li><a href="{% get_page_url paginator.num_pages %}">&raquo;</a></li>
-    {% endif %}
-    </ul>{% endif %}
-    {% endfor %}
-    {% endifnotequal %}
-    {% endif %}
-    </section>
+
 {% endblock %}
 
 {% block sidebar %}
 <aside class="span-8 last">
-    {% block recent_articles %}
-    <h2>{% trans 'Recent Articles' %}</h2>
+    <h2 class="title">{% trans 'Recent Articles' %}</h2>
         {% get_articles 10 as recent %}
         {% for article in recent %}
         {% if forloop.first %}<ul>{% endif %}
             <li><a href="{{ article.get_absolute_url }}" title="{% trans 'Read this article' %}">{{ article.title }}</a></li>
         {% if forloop.last %}</ul>{% endif %}
         {% endfor %}
-    {% endblock %}
 
-    <div id="article-archives">
-        <h2 class="title">{% trans 'Article Archives' %}</h2>
+    <h2 class="title">{% trans 'Article Archives' %}</h2>
         {% get_article_archives as archives %}
         {% for year in archives %}
         {% if forloop.first %}<ul>{% endif %}
@@ -60,7 +57,6 @@
             </li>
         {% if forloop.last %}</ul>{% endif %}
         {% endfor %}
-    </div>
 
     {% comment %}
     {% block article_tags %}

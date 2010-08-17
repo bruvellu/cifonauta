@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load extra_tags %}
 {% block content %}
-<section class="span-16">
+<section class="main span-16">
     <header>
         <h1>Descubra a biodiversidade marinha.</h1>
     </header>
@@ -55,9 +55,10 @@
     </div>
 </section>
 {% endblock %}
+
 {% block sidebar %}
 <aside class="main span-8 last">
-{% show_tree %}
-{% show_hot %}
+    {% show_tree %}
+    {% show_hot %}
 </aside>
 {% endblock %}

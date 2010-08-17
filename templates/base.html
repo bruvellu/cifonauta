@@ -23,7 +23,7 @@
                     <li><a href="/sobre/">sobre</a></li>
                     <li><a href="{% url meta.views.search_page %}">buscar</a></li>
                     <li><a href="{% url meta.views.tags_page %}">marcadores</a></li>
-                    <li><a href="{% url meta.views.meta_list_page 'Author' %}">autores</a></li>
+                    <li><a href="/autor/">autores</a></li>
                     <li><a href="{% url meta.views.taxa_page %}">grupos</a></li>
                     <li><a href="{% url meta.views.places_page %}">localidades</a></li>
                     <li><a href="/blog/"><strong>blog</strong></a></li>
@@ -39,7 +39,9 @@
                 {% block content %}{% endblock %}
                 {% block sidebar %}{% endblock %}
             </section>
-            <footer class="main span-24 last quiet borders">&nbsp; &copy;{% now "Y" %} Centro de Biologia Marinha da Universidade de São Paulo</footer>
+            <footer class="main span-24 last quiet borders">
+                &nbsp; &copy;{% now "Y" %} Centro de Biologia Marinha da Universidade de São Paulo
+            </footer>
         </section>
     </body>
 </html>

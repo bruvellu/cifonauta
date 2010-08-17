@@ -5,8 +5,8 @@
     {% trans 'Posted on' %} {{ article.publish_date|date:"DATE_FORMAT" }} {% trans 'by' %} <a href="{% url articles_by_author article.author.username %}" title="{% trans 'View articles posted by' %} {{ article.author.get_name }}">{{ article.author.get_name }}</a>
     </footer>
     {% if article.rendered_content|wordcount >= 100 %}
-    {{ article.rendered_content|safe|truncatewords:100 }} <a href="{{ article.get_absolute_url }}" title="{% trans 'Continue reading' %}"><strong>{% trans 'read more' %}</strong></a>.
+    <div>{{ article.rendered_content|safe|truncatewords:100 }} <a href="{{ article.get_absolute_url }}" title="{% trans 'Continue reading' %}"><strong>{% trans 'read more' %}</strong></a>.</div>
     {% else %}
-    {{ article.rendered_content|safe }}
+    <div>{{ article.rendered_content|safe }}</div>
     {% endif %}
 </article>

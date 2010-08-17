@@ -21,11 +21,11 @@
                 <ul id="menu">
                     <li><a href="/">home</a></li>
                     <li><a href="/sobre/">sobre</a></li>
-                    <li><a href="/buscar/">buscar</a></li>
-                    <li><a href="/tags/">marcadores</a></li>
-                    <li><a href="/autor/">autores</a></li>
-                    <li><a href="/taxa/">taxa</a></li>
-                    <li><a href="/locais/">localidades</a></li>
+                    <li><a href="{% url meta.views.search_page %}">buscar</a></li>
+                    <li><a href="{% url meta.views.tags_page %}">marcadores</a></li>
+                    <li><a href="{% url meta.views.meta_list_page 'Author' %}">autores</a></li>
+                    <li><a href="{% url meta.views.taxa_page %}">grupos</a></li>
+                    <li><a href="{% url meta.views.places_page %}">localidades</a></li>
                     <li><a href="/blog/"><strong>blog</strong></a></li>
                 </ul>
             </nav>

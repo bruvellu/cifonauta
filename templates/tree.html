@@ -1,5 +1,8 @@
 {% if taxa %}
+<div class="borders block">
+    {% comment %}
     <h2>Grupos</h2>
+    {% endcomment %}
     {% for taxon in taxa %}
     {% if not taxon.parent %}
     <ul class="tree root level-0 taxon-{{ taxon.slug }}">
@@ -44,4 +47,5 @@
     </ul>
     {% endif %}<!-- taxon.parent -->
     {% endfor %} 
+</div>
 {% endif %}<!-- taxa -->

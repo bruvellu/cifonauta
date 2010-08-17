@@ -3,11 +3,13 @@
 {% block content %}
 <section class="span-16">
     <header>
-        <h1>Bem vindo! Descubra a vida marinha.</h1>
+        <h1>Descubra a biodiversidade marinha.</h1>
     </header>
     {% show_stats %}
-    <div class="span-16 last">
-        <p>Bem-vindo ao ImageMar -- o banco de imagens do Centro de Biologia Marinha da Universidade de São Paulo. O ImageMar foi criado para tornar acessível ao público em geral, educadores e comunidade acadêmica imagens de qualidade sobre biologia marinha. No momento contém {{ image_count }} image{{ image_count|pluralize:'m,ns' }}, um dos maiores acervos disponíveis na internet. <a href="/sobre/">Saiba mais</a> ou comece a explorar!</p>
+    <div class="main span-16 last" id="intro">
+        <p>Bem-vindo à Oceanoteca &mdash; o banco de imagens do Centro de Biologia Marinha da Universidade de São Paulo.</p>
+        <p>Nosso acervo digital é resultado de pesquisas científicas e atividades de extensão desenvolvidas no CEBIMar e tem como objetivo disponibilizar imagens de qualidade sobre biologia marinha para curiosos, estudantes, educadores e comunidade acadêmica.</p>
+        <p>Comece a explorar ou <a href="/sobre/">saiba mais</a>!</p>
     </div>
     <div class="span-8">
         <h2>Fotos</h2>
@@ -25,7 +27,7 @@
     </div>
     
     {% if thumbs %}
-    <div id="highthumbs" class="span-16 last">
+    <div id="highthumbs" class="main span-16 last">
     <h2>Destaques</h2>
         <ul class="thumbs">
             {% for thumb in thumbs %}
@@ -39,13 +41,13 @@
     </div>
     {% endif %}
 
-    <div class="span-16 last">
+    <div class="main span-16 last">
         <h2>Marcadores</h2>
         {% for tag in tags %}
         <a href="/tag/{{ tag.slug }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
         {% endfor %}
     </div>
-    <div class="span-16 last">
+    <div class="main span-16 last">
         <h2>Localidades</h2>
         {% for loc in locations %}
         <a href="/local/{{ loc.slug }}" title="{{ loc.name }}">{{ loc.name }}</a>{% if not forloop.last %},{% endif %}
@@ -55,7 +57,7 @@
 {% endblock %}
 {% block sidebar %}
 <aside class="main span-8 last">
-{% show_hot %}
 {% show_tree %}
+{% show_hot %}
 </aside>
 {% endblock %}

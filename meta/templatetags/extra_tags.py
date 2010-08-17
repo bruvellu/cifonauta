@@ -60,7 +60,8 @@ def show_stats():
     cities = City.objects.count()
     states = State.objects.count()
     countries = Country.objects.count()
-    return {'images': images, 'videos': videos, 'taxa': taxa, 'genera': genera, 'spp': spp, 'locations': locations, 'cities': cities, 'states': states, 'countries': countries}
+    tags = Tag.objects.count()
+    return {'images': images, 'videos': videos, 'taxa': taxa, 'genera': genera, 'spp': spp, 'locations': locations, 'cities': cities, 'states': states, 'countries': countries, 'tags': tags}
 
 @register.filter
 def in_list(value, arg):

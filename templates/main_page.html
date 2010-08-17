@@ -2,8 +2,8 @@
 {% load extra_tags %}
 {% block content %}
 <section class="main span-16">
-    <header>
-        <h1>Descubra a biodiversidade marinha.</h1>
+    <header id="slogan">
+        <h1>Descubra a biodiversidade marinha</h1>
     </header>
     {% show_stats %}
     <div class="main span-16 last" id="intro">
@@ -58,7 +58,11 @@
 
 {% block sidebar %}
 <aside class="main span-8 last">
+<div class="borders block">
     {% show_tree %}
+</div>
+<div class="borders block">
     {% show_hot %}
+</div>
 </aside>
 {% endblock %}

@@ -1,3 +1,7 @@
+body {
+    font-family:Tahoma,"Helvetica Neue",Arial,Helvetica,sans-serif !important;
+}
+
 header,footer,article,section,hgroup,nav,figure,figcaption {
     display: block;
     clear: both;
@@ -33,6 +37,7 @@ section#stats {
 }
 
 div#intro {
+    font-size:1.3em;
 }
 
 footer.media-tags {
@@ -44,10 +49,10 @@ aside.main {
     min-height:20em;
 }
 
-aside .block {
+aside div.block {
     border-top: solid 20px #4d7494;
     margin: 0 0 1em 0;
-    padding: 1em 0;
+    padding: 1em 1em;
     background:#fafafa;
 }
 
@@ -67,6 +72,8 @@ figure.video {
     padding: 10px;
 }
 
+footer.pagination {
+}
 .align-right {
     text-align: right;
 }
@@ -197,6 +204,14 @@ span#genus, span#species {
     float: left;
     margin: 0 0.5em;
     padding: 0;
+}
+
+#menu li a {
+}
+
+#slogan {
+    text-align:center;
+    text-transform:uppercase;
 }
 
 #content {

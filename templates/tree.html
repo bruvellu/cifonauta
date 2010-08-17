@@ -1,13 +1,10 @@
 {% if taxa %}
-<div class="borders block">
-    {% comment %}
     <h2>Grupos</h2>
-    {% endcomment %}
     {% for taxon in taxa %}
     {% if not taxon.parent %}
     <ul class="tree root level-0 taxon-{{ taxon.slug }}">
         <li>
-        <a href="/taxon/{{ taxon.slug }}/" title="{{ taxon.name }}">{{ taxon.name }}</a>
+        <a href="{{ taxon.get_absolute_url }}" title="{{ taxon.name }}">{{ taxon.name }}</a>
         </li>
 
         <!-- 1st -->
@@ -15,7 +12,7 @@
         <ul class="tree child level-1 {{ taxon.slug }}-children">
             {% for 1stchild in taxon.children.all %}
             <li class="taxon-{{ 1stchild.slug }}">
-                <a href="/taxon/{{ 1stchild.slug }}/" title="{{ 1stchild.name }}">{{ 1stchild.name }}</a>
+                <a href="{{ 1stchild.get_absolute_url }}" title="{{ 1stchild.name }}">{{ 1stchild.name }}</a>
             </li>
 
                 <!-- 2nd -->
@@ -23,7 +20,7 @@
                 <ul class="tree child level-2 {{ 1stchild.slug }}-children">
                     {% for 2ndchild in 1stchild.children.all %}
                     <li class="taxon-{{ 2ndchild.slug }}">
-                        <a href="/taxon/{{ 2ndchild.slug }}/" title="{{ 2ndchild.name }}">{{ 2ndchild.name }}</a>
+                        <a href="{{ 2ndchild.get_absolute_url }}" title="{{ 2ndchild.name }}">{{ 2ndchild.name }}</a>
                     </li>
 
                     <!-- 3rd -->
@@ -31,7 +28,7 @@
                     <ul class="tree child level-3 {{ 2ndchild.slug }}-children">
                         {% for 3rdchild in 2ndchild.children.all %}
                         <li class="taxon-{{ 3rdchild.slug }}">
-                            <a href="/taxon/{{ 3rdchild.slug }}/" title="{{ 3rdchild.name }}">{{ 3rdchild.name }}</a>
+                            <a href="{{ 3rdchild.get_absolute_url }}" title="{{ 3rdchild.name }}">{{ 3rdchild.name }}</a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -47,5 +44,4 @@
     </ul>
     {% endif %}<!-- taxon.parent -->
     {% endfor %} 
-</div>
 {% endif %}<!-- taxa -->

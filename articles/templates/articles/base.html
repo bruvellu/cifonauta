@@ -34,6 +34,7 @@
 
 {% block sidebar %}
 <aside class="span-8 last">
+    <div class="block borders">
     <h2 class="title">{% trans 'Recent Articles' %}</h2>
         {% get_articles 10 as recent %}
         {% for article in recent %}
@@ -41,7 +42,9 @@
             <li><a href="{{ article.get_absolute_url }}" title="{% trans 'Read this article' %}">{{ article.title }}</a></li>
         {% if forloop.last %}</ul>{% endif %}
         {% endfor %}
+    </div>
 
+    <div class="borders block">
     <h2 class="title">{% trans 'Article Archives' %}</h2>
         {% get_article_archives as archives %}
         {% for year in archives %}
@@ -57,6 +60,7 @@
             </li>
         {% if forloop.last %}</ul>{% endif %}
         {% endfor %}
+    </div>
 
     {% comment %}
     {% block article_tags %}

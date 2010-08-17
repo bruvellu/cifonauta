@@ -10,6 +10,7 @@
     <input type="submit" value="Encontrar" />
     <a href="{% url meta.views.search_page %}">Limpar</a>
 </form>
+<hr class="space">
 <div id="search-results">
     {% if show_results %}
         {% include 'gallery.html' %}

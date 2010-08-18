@@ -9,7 +9,7 @@ header,footer,article,section,hgroup,nav,figure,figcaption {
 
 header.main{
     margin:0 0 2em;
-    background: #fafafa;
+    background:url("http://127.0.0.1:8000/site_media/bryo.png") no-repeat scroll 0 0 transparent;
 }
 
 div.main {
@@ -22,18 +22,56 @@ div.main {
 nav.main {
     text-align:right;
     font-size: 1.4em;
-    padding: 0 0 1em;
-    background: #fafafa;
+}
+
+#menu {
+    float: right;
+    display: inline;
+    list-style: none;
+    margin: 0;
+    padding: 0.5em 20px 0.5em 32px;
+    text-transform: uppercase;
+    font-size:0.8em;
+    -moz-border-radius: 0 0 10px 30px;
+    -webkit-border-radius: 0 0 10px 30px;
+    border-radius: 0 0 10px 30px;
+    background:#4d7494;
+}
+
+#menu li {
+    float: left;
+    margin: 0 0.5em;
+    padding: 0;
+}
+
+#menu li a {
+    color:white;
+}
+
+#slogan {
+    text-align:center;
+    text-transform:uppercase;
+    -moz-border-radius: 10px 10px 0 0;
+    -webkit-border-radius: 10px 10px 0 0;
+    border-radius: 10px 10px 0 0;
+    background:#C6D880;
+    padding: 1em 0 0.1em;
+}
+
+header.main hgroup {
+    margin:0 70px;
 }
 
 section#stats {
     font-size: 1.2em;
     color: #333333;
     font-family:Georgia;
-    background:#fafafa;
+    background:#E6EFC2;
     text-align: center;
     padding: 0.5em 0;
-    margin: 0.5em 0;
+    -moz-border-radius: 0 0 10px 10px;
+    -webkit-border-radius: 0 0 10px 10px;
+    border-radius: 0 0 10px 10px;
 }
 
 div#intro {
@@ -50,10 +88,13 @@ aside.main {
 }
 
 aside div.block {
-    border-top: solid 20px #4d7494;
+    border-top: solid 10px #4d7494;
     margin: 0 0 1em 0;
     padding: 1em 1em;
     background:#fafafa;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
 }
 
 aside.image {
@@ -63,6 +104,9 @@ aside.image {
 figure.image {
     background: #ffffff;
     padding: 10px;
+    -moz-border-radius: 10px 0 0;
+    -webkit-border-radius: 10px 0 0;
+    border-radius: 10px 0 0;
 }
 
 figure.video {
@@ -123,6 +167,9 @@ figcation {
 div#sideinfo {
     background:#fafafa;
     padding:0.8em 10px 0;
+    -moz-border-radius: 0 10px 0 0;
+    -webkit-border-radius: 0 10px 0 0;
+    border-radius: 0 10px 0 0;
 }
 
 #views {
@@ -131,6 +178,9 @@ div#sideinfo {
     text-align: center;
     margin: -0.8em -10px -1px;
     padding: 0.8em 10px;
+    -moz-border-radius: 0 10px 0 0;
+    -webkit-border-radius: 0 10px 0 0;
+    border-radius: 0 10px 0 0;
 }
 
 div#notes {
@@ -184,34 +234,13 @@ ul#tophits li {
 div#meta {
     background:#fafafa;
     padding: 10px;
+    -moz-border-radius: 0 0 10px 10px;
+    -webkit-border-radius: 0 0 10px 10px;
+    border-radius: 0 0 10px 10px;
 }
 
 span#genus, span#species {
     font-style: italic;
-}
-
-#menu {
-    float: right;
-    display: inline;
-    list-style: none;
-    margin: 0;
-    padding: 0.5em 0 0;
-    text-transform: uppercase;
-    font-size:0.8em;
-}
-
-#menu li {
-    float: left;
-    margin: 0 0.5em;
-    padding: 0;
-}
-
-#menu li a {
-}
-
-#slogan {
-    text-align:center;
-    text-transform:uppercase;
 }
 
 #content {
@@ -234,6 +263,12 @@ span#genus, span#species {
     clear:both;
 }
 
+.error, .notice, .success {
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+
 ul.thumbs {
     margin: 0;
     padding: 0;
@@ -243,9 +278,12 @@ ul.thumbs li {
     display: inline;
     float: left;
     margin: 0 0 10px 10px;
-    padding: 1px 0px 5px;
+    padding: 5px;
     background: #eeeeee;
     list-style: none;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
 }
 
 ul.thumbs li a {
@@ -312,4 +350,7 @@ footer.main {
     padding: 1em 0;
     margin: 1em 0 0;
     background: #fafafa;
+    -moz-border-radius: 10px 10px 0 0;
+    -webkit-border-radius: 10px 10px 0 0;
+    border-radius: 10px 10px 0 0;
 }

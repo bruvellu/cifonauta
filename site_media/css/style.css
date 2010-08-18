@@ -277,7 +277,7 @@ ul.thumbs {
 ul.thumbs li {
     display: inline;
     float: left;
-    margin: 0 0 10px 10px;
+    margin: 0 10px 10px 0;
     padding: 5px;
     background: #eeeeee;
     list-style: none;
@@ -347,7 +347,7 @@ footer.main {
     font-size:0.9em;
     font-variant: small-caps;
     letter-spacing: 2px;
-    padding: 1em 0;
+    padding: 1em 0 0.6em;
     margin: 1em 0 0;
     background: #fafafa;
     -moz-border-radius: 10px 10px 0 0;

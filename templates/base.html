@@ -15,11 +15,20 @@
         <script src="/site_media/js/jquery.js" type="text/javascript"></script>
 
         <script type="text/javascript">
-        // JavaScript code goes here.
         $(document).ready(function(){
-                // Collapsible comments
+                // Esconde avisos
                 $(".success, .notice, .error").delay(2000).hide('slow');
                 });
+        </script>
+        
+        <script type="text/javascript" src="/site_media/js/highslide/highslide.js"></script>
+        <link rel="stylesheet" type="text/css" href="/site_media/js/highslide/highslide.css" />
+        <script type="text/javascript">
+            hs.graphicsDir = '/site_media/js/highslide/graphics/';
+            hs.outlineType = 'rounded-white';
+            hs.align = 'center';
+            hs.showCredits = false;
+
         </script>
 
         {% block extra-head %}{% endblock %}
@@ -49,7 +58,10 @@
                 {% block sidebar %}{% endblock %}
             </section>
             <footer class="main span-24 last quiet borders">
+            <div class="span-24 last">
                 &nbsp; &copy;{% now "Y" %} Centro de Biologia Marinha da Universidade de São Paulo
+            </div>
+            <div class="span-24 last">&nbsp; <a href="http://www.usp.br/cbm/">www.usp.br/cbm</a></div>
             </footer>
         </section>
     </body>

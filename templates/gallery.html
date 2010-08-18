@@ -3,7 +3,7 @@
     <footer class="success">
     {{ images.paginator.count }} foto{{ images.paginator.count|pluralize }} encontrada{{ images.paginator.count|pluralize }}.
     </footer>
-    <header><h2>Fotos</h2></header>
+    <header><h2>Foto{{ images.paginator.count|pluralize }} ({{ images.paginator.count }})</h2></header>
     <ul class="thumbs">
         {% for image in images.object_list %}
             {% if image.is_public %}
@@ -40,7 +40,7 @@
     <footer class="success">
     {{ videos.paginator.count }} vídeo{{ videos.paginator.count|pluralize }} encontrado{{ videos.paginator.count|pluralize }}
     </footer>
-    <header><h2>Vídeos</h2></header>
+    <header><h2>Vídeo{{ videos.paginator.count|pluralize }} ({{ videos.paginator.count }})</h2></header>
     <ul class="thumbs">
     {% for video in videos.object_list %}
         {% if video.is_public %}

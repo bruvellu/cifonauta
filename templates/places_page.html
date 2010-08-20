@@ -1,45 +1,58 @@
 {% extends 'base.html' %}
+{% load extra_tags %}
 {% block title %}Localidades | {{ block.super }}{% endblock %}
 {% block content %}
-<section class="span-16">
+<section class="span-24 last">
     <header><h1>Localidades</h1></header>
 
-    <div id="sublocations" class="span-4">
+    <div id="sublocations" class="span-6">
         <h2>Locais</h2>
         <ul>
         {% for subloc in sublocations %}
             <li>
-            <a href="/local/{{ subloc.slug }}">{{ subloc.name }}</a>
+            <div class="tag_item">
+            <a href="{{ subloc.get_absolute_url }}">{{ subloc.name }}</a>
+            </div>
+            <div class="tag_count quiet">{{ subloc|icount:'sublocation' }}</div>
             </li>
         {% endfor %}
         </ul>
     </div>
-    <div id="cities" class="span-4">
+    <div id="cities" class="span-6">
         <h2>Cidades</h2>
         <ul>
         {% for city in cities %}
             <li>
-            <a href="/cidade/{{ city.slug }}">{{ city.name }}</a>
+            <div class="tag_item">
+            <a href="{{ city.get_absolute_url }}">{{ city.name }}</a>
+            </div>
+            <div class="tag_count quiet">{{ city|icount:'city' }}</div>
             </li>
         {% endfor %}
         </ul>
     </div>
-    <div id="states" class="span-4">
+    <div id="states" class="span-6">
         <h2>Estados</h2>
         <ul>
         {% for state in states %}
             <li>
-            <a href="/estado/{{ state.slug }}">{{ state.name }}</a>
+            <div class="tag_item">
+            <a href="{{ state.get_absolute_url }}">{{ state.name }}</a>
+            </div>
+            <div class="tag_count quiet">{{ state|icount:'state' }}</div>
             </li>
         {% endfor %}
         </ul>
     </div>
-    <div id="countries" class="span-4 last">
+    <div id="countries" class="span-6 last">
         <h2>Países</h2>
         <ul>
         {% for country in countries %}
             <li>
-            <a href="/pais/{{ country.slug }}">{{ country.name }}</a>
+            <div class="tag_item">
+            <a href="{{ country.get_absolute_url }}">{{ country.name }}</a>
+            </div>
+            <div class="tag_count quiet">{{ country|icount:'country' }}</div>
             </li>
         {% endfor %}
         </ul>
@@ -48,6 +61,4 @@
 {% endblock %}
 
 {% block sidebar %}
-<aside class="main span-8 last">
-</aside>
 {% endblock %}

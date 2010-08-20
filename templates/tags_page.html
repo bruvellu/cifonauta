@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load extra_tags %}
 {% block title %}Marcadores | {{ block.super }}{% endblock %}
 {% block content %}
 <section class="span-24 last">
@@ -11,7 +12,10 @@
         <ul>
             {% for size in sizes %}
             <li>
-            <a href="{{ size.get_absolute_url }}">{{ size.name }}</a>
+            <div class="tag_item">
+                <a href="{{ size.get_absolute_url }}">{{ size.name }}</a>
+            </div>
+            <div class="tag_count quiet">{{ size|icount:'size' }}</div>
             </li>
             {% endfor %}
         </ul>
@@ -23,7 +27,10 @@
         <ul>
         {% for tag in item.list %}
             <li>
-            <a href="{{ tag.get_absolute_url }}">{{ tag.name }}</a>
+            <div class="tag_item">
+                <a href="{{ tag.get_absolute_url }}">{{ tag.name }}</a>
+            </div>
+            <div class="tag_count quiet">{{ tag|icount:'tag' }}</div>
             </li>
         {% endfor %}
         </ul>
@@ -31,4 +38,7 @@
     {% endfor %}
 
 </section>
+{% endblock %}
+
+{% block sidebar %}
 {% endblock %}

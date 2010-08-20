@@ -88,6 +88,14 @@ section#stats {
     box-shadow: 2px 2px 5px #aaa; 
 }
 
+div.tag_item {
+    float:left;
+}
+
+div.tag_count {
+    text-align:right;
+}
+
 div#intro {
     font-size:1.3em;
 }

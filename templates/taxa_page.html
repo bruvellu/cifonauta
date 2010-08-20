@@ -2,20 +2,18 @@
 {% load extra_tags %}
 {% block title %}Táxons | {{ block.super }}{% endblock %}
 {% block content %}
-<section class="span-16">
+<section class="span-24 last">
     <header><h1>Táxons</h1></header>
 
-    <div id="taxa" class="span-8">
+    <div id="taxa" class="span-12">
         {% show_tree %}
     </div>
 
-    <div id="species" class="span-8 last">
+    <div id="species" class="span-12 last">
         {% show_spp %}
     </div>
 </section>
 {% endblock %}
 
 {% block sidebar %}
-<aside class="span-8 last">
-</aside>
 {% endblock %}

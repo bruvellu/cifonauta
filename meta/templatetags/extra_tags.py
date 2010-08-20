@@ -72,6 +72,11 @@ def in_list(value, arg):
 def wordsplit(value):
     return value.split()
 
+@register.filter
+def icount(value, field):
+    q = {field:value}
+    return Image.objects.filter(**q).count() + Video.objects.filter(**q).count()
+
 @register.inclusion_tag('fino.html')
 def refine(meta, query, qsize):
     qlist = [slugify(q) for q in query.split()]

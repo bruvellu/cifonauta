@@ -1,10 +1,12 @@
 {% if hot_images %}
     <h2>Mais acessadas</h2>
-    <ul>
+    <ul class="thumbs">
         {% for image in hot_images %}
-        <li>
-        <a href="{{ image.get_absolute_url }}"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" /></a> {{ image.view_count }} visitas
+        <li class="shadow size-{{ image.size.slug }}">
+        <div><a href="{{ image.get_absolute_url }}"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" /></a></div>
+        <div class="quiet">{{ image.view_count }} visitas</div>
         </li>
         {% endfor %}
     </ul>
+    <div class="align-right">Veja o ranking completo.</div>
 {% endif %}

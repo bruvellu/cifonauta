@@ -6,7 +6,7 @@
 #
 #TODO Inserir licença.
 #
-# Atualizado: 19 Aug 2010 10:03PM
+# Atualizado: 19 Aug 2010 11:13PM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -110,9 +110,10 @@ class Database:
                 image_meta[k] = self.get_instance(k, image_meta[k])
         del image_meta['genus_sp']
         
-        # Conectando espécie e gênero.
-        image_meta['species'].parent = image_meta['genus']
-        image_meta['species'].save()
+        # Conectando espécie e gênero. Apenas se sp existir.
+        if image_meta['species'].name:
+            image_meta['species'].parent = image_meta['genus']
+            image_meta['species'].save()
 
         if not update:
             image_meta['view_count'] = 0
@@ -192,6 +193,9 @@ class Photo:
                 genus_sp.append('')
             else:
                 genus_sp.append('')
+        elif len(genus_sp) == 2:
+            if genus_sp[1] == 'sp.' or genus_sp[1] == 'sp':
+                genus_sp[1] = ''
         self.meta['genus_sp'] = genus_sp
 
         # Extraindo metadados do EXIF

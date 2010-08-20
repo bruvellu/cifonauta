@@ -1,13 +1,24 @@
 {% extends 'base.html' %}
 {% block title %}Marcadores | {{ block.super }}{% endblock %}
 {% block content %}
-<section class="span-16">
+<section class="span-24 last">
     <header><h1>Marcadores</h1></header>
 
     {% regroup tags by parent as tag_groups %}
 
+    <div class="span-6">
+        <h2>Tamanhos</h2>
+        <ul>
+            {% for size in sizes %}
+            <li>
+            <a href="{{ size.get_absolute_url }}">{{ size.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
     {% for item in tag_groups %}
-    <div class="span-{% cycle '8' '8 last' %}">
+    <div class="span-{% cycle '6' '6' '6 last' '6' %}">
         <h2>{{ item.grouper }}</h2>
         <ul>
         {% for tag in item.list %}
@@ -19,21 +30,5 @@
     </div>
     {% endfor %}
 
-    <div class="span-16">
-        <h2>Tamanhos</h2>
-        <ul>
-            {% for size in sizes %}
-            <li>
-            <a href="{{ size.get_absolute_url }}">{{ size.name }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-
 </section>
-{% endblock %}
-
-{% block sidebar %}
-<aside class="main span-8 last">
-</aside>
 {% endblock %}

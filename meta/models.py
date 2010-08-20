@@ -108,6 +108,7 @@ class TagCategory(models.Model):
 class Taxon(models.Model):
     name = models.CharField(max_length=256, unique=True, blank=True)
     slug = models.SlugField(max_length=256, blank=True)
+    common = models.CharField(max_length=256, blank=True)
     parent = models.ForeignKey('self', blank=True, null=True, related_name='children')
 
     def __unicode__(self):
@@ -121,6 +122,7 @@ class Taxon(models.Model):
 class Genus(models.Model):
     name = models.CharField(max_length=32, unique=True, blank=True)
     slug = models.SlugField(max_length=32, blank=True)
+    common = models.CharField(max_length=256, blank=True)
     parent = models.ForeignKey('Taxon', blank=True, null=True, related_name='genera')
 
     def __unicode__(self):
@@ -134,6 +136,7 @@ class Genus(models.Model):
 class Species(models.Model):
     name = models.CharField(max_length=32, unique=True, blank=True)
     slug = models.SlugField(max_length=32, blank=True)
+    common = models.CharField(max_length=256, blank=True)
     parent = models.ForeignKey('Genus', blank=True, null=True, related_name='spp')
 
     def __unicode__(self):

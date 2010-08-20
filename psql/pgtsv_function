@@ -4,12 +4,16 @@ author varchar;
 taxon varchar;
 genus varchar;
 species varchar;
+taxon_common varchar;
+genus_common varchar;
+species_common varchar;
 source varchar;
 sublocation varchar;
 city varchar;
 state varchar;
 country varchar;
 parent varchar;
+parent_common varchar;
 tags varchar;
 
 BEGIN
@@ -18,12 +22,16 @@ SELECT name INTO STRICT author FROM meta_author WHERE id = NEW.author_id;
 SELECT name INTO STRICT taxon FROM meta_taxon WHERE id = NEW.taxon_id;
 SELECT name INTO STRICT genus FROM meta_genus WHERE id = NEW.genus_id;
 SELECT name INTO STRICT species FROM meta_species WHERE id = NEW.species_id;
+SELECT common INTO STRICT taxon_common FROM meta_taxon WHERE id = NEW.taxon_id;
+SELECT common INTO STRICT genus_common FROM meta_genus WHERE id = NEW.genus_id;
+SELECT common INTO STRICT species_common FROM meta_species WHERE id = NEW.species_id;
 SELECT name INTO STRICT source FROM meta_source WHERE id = NEW.source_id;
 SELECT name INTO STRICT sublocation FROM meta_sublocation WHERE id = NEW.sublocation_id;
 SELECT name INTO STRICT city FROM meta_city WHERE id = NEW.city_id;
 SELECT name INTO STRICT state FROM meta_state WHERE id = NEW.state_id;
 SELECT name INTO STRICT country FROM meta_country WHERE id = NEW.country_id;
 SELECT name INTO STRICT parent FROM meta_taxon WHERE id = (SELECT coalesce(parent_id, 12) FROM meta_taxon WHERE id = NEW.taxon_id);
+SELECT common INTO STRICT parent_common FROM meta_taxon WHERE id = (SELECT coalesce(parent_id, 12) FROM meta_taxon WHERE id = NEW.taxon_id);
 
 SELECT concat((SELECT name FROM meta_tag WHERE id = tag_id)||' ') INTO tags FROM meta_tag_images WHERE image_id = NEW.id;
 
@@ -44,6 +52,12 @@ NEW.tsv :=
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(genus), '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(species, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(species), '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(taxon_common, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(taxon_common), '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(genus_common, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(genus_common), '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(species_common, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(species_common), '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(source, '')), 'C') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(source), '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(sublocation, '')), 'A') ||
@@ -55,7 +69,9 @@ NEW.tsv :=
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(country, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(country), '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(parent, '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(parent), '')), 'A');
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(parent), '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(parent_common, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(parent_common), '')), 'A');
 return new;
 END                 
 $$ LANGUAGE plpgsql;

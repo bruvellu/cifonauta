@@ -4,7 +4,7 @@
     <ul class="thumbs">
         {% for image in rel_images %}
             {% if image.is_public %}
-            <li class="size-{{ image.size.slug }}">
+            <li class="shadow size-{{ image.size.slug }}">
                 <a href="{{ image.get_absolute_url }}"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" height="90" /></a>
             </li>
             {% endif %}
@@ -17,7 +17,7 @@
     <ul class="thumbs">
         {% for image in rand_images %}
             {% if image.is_public %}
-            <li class="size-{{ image.size.slug }}">
+            <li class="shadow size-{{ image.size.slug }}">
                 <a href="{{ image.get_absolute_url }}"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" height="90" /></a>
             </li>
             {% endif %}

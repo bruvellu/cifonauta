@@ -34,7 +34,7 @@
 
 {% block sidebar %}
 <aside class="span-8 last">
-    <div class="block borders">
+    <div class="borders block shadow">
     <h2 class="title">{% trans 'Recent Articles' %}</h2>
         {% get_articles 10 as recent %}
         {% for article in recent %}
@@ -44,7 +44,7 @@
         {% endfor %}
     </div>
 
-    <div class="borders block">
+    <div class="borders block shadow">
     <h2 class="title">{% trans 'Article Archives' %}</h2>
         {% get_article_archives as archives %}
         {% for year in archives %}

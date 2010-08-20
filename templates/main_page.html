@@ -2,7 +2,7 @@
 {% load extra_tags %}
 {% block content %}
 <section class="main span-16">
-    <header id="slogan">
+    <header class="shadow" id="slogan">
         <h1>Descubra a biodiversidade marinha</h1>
     </header>
     {% show_stats %}
@@ -32,7 +32,7 @@
         <ul class="thumbs">
             {% for thumb in thumbs %}
                 {% if thumb.is_public %}
-                <li class="size-{{ thumb.size.slug }}">
+                <li class="shadow size-{{ thumb.size.slug }}">
                     <a href="{{ thumb.get_absolute_url }}"><img src="/{{ thumb.thumb_filepath }}" alt="{{ thumb.title }}" title="{{ thumb.title }}" width="120" height="90" /></a>
                 </li>
                 {% endif %}
@@ -52,10 +52,10 @@
 
 {% block sidebar %}
 <aside class="main span-8 last">
-<div class="borders block">
+<div class="borders block shadow">
     {% show_tree %}
 </div>
-<div class="borders block">
+<div class="borders block shadow">
     {% show_hot %}
 </div>
 </aside>

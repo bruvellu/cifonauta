@@ -335,6 +335,12 @@ ul#comment-list {
     display:block;
 }
 
+.hide-comment, .show-comment {
+    cursor: pointer;
+    font-weight: bold;
+    color:#4d7494;
+}
+
 .hide-comment {
     display:none;
 }

@@ -1,5 +1,5 @@
 {% if genera %}
-<h2>Espécies ({{ genera.count }})</h2>
+<h2>Gênero{{ genera.count|pluralize }} ({{ genera.count }}) e espécie{{ spcount|pluralize }} ({{ spcount }})</h2>
 <ul>
 {% for genus in genera %}
 {% if genus.spp.all %}

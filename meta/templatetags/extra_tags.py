@@ -13,7 +13,8 @@ def show_tree():
 @register.inclusion_tag('splist.html')
 def show_spp():
     genera = Genus.objects.exclude(name='').order_by('name')
-    return {'genera': genera}
+    spcount = Species.objects.count()
+    return {'genera': genera, 'spcount': spcount}
 
 @register.inclusion_tag('hot_images.html')
 def show_hot():

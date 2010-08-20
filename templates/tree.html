@@ -1,5 +1,5 @@
 {% if taxa %}
-    <h2>Grupos</h2>
+<h2>Grupos ({{ taxa.count }})</h2>
     {% for taxon in taxa %}
     {% if not taxon.parent %}
     <ul class="tree root level-0 taxon-{{ taxon.slug }}">

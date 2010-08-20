@@ -47,12 +47,6 @@
         <a href="{{ tag.get_absolute_url }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
         {% endfor %}
     </div>
-    <div class="main span-16 last">
-        <h2>Localidades</h2>
-        {% for loc in locations %}
-        <a href="{{ loc.get_absolute_url }}" title="{{ loc.name }}">{{ loc.name }}</a>{% if not forloop.last %},{% endif %}
-        {% endfor %}
-    </div>
 </section>
 {% endblock %}
 

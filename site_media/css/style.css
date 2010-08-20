@@ -56,6 +56,9 @@ nav.main {
     border-radius: 10px 10px 0 0;
     background:#C6D880;
     padding: 1em 0 0.1em;
+    -webkit-box-shadow: 2px 2px 5px #aaa;
+    -moz-box-shadow: 2px 2px 5px #aaa;
+    box-shadow: 2px 2px 5px #aaa; 
 }
 
 header.main hgroup {
@@ -72,6 +75,9 @@ section#stats {
     -moz-border-radius: 0 0 10px 10px;
     -webkit-border-radius: 0 0 10px 10px;
     border-radius: 0 0 10px 10px;
+    -webkit-box-shadow: 2px 2px 5px #aaa;
+    -moz-box-shadow: 2px 2px 5px #aaa;
+    box-shadow: 2px 2px 5px #aaa; 
 }
 
 div#intro {
@@ -95,6 +101,9 @@ aside div.block {
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     border-radius: 10px;
+    -webkit-box-shadow: 2px 2px 5px #aaa;
+    -moz-box-shadow: 2px 2px 5px #aaa;
+    box-shadow: 2px 2px 5px #aaa; 
 }
 
 aside.image {
@@ -284,6 +293,9 @@ ul.thumbs li {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
+    -webkit-box-shadow: 2px 2px 5px #aaa;
+    -moz-box-shadow: 2px 2px 5px #aaa;
+    box-shadow: 2px 2px 5px #aaa; 
 }
 
 ul.thumbs li a {

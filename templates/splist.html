@@ -1,12 +1,18 @@
 {% if genera %}
-<h2>Espécies</h2>
+<h2>Espécies ({{ genera.count }})</h2>
 <ul>
 {% for genus in genera %}
+{% if genus.spp.all %}
     {% for sp in genus.spp.all %}
     <li>
-    <a href="{{ sp.get_absolute_url }}"><em>{{ genus.name }} {{ sp }}</em></a>
+    <a href="{{ sp.get_absolute_url }}"><em>{{ genus.name }} {{ sp.name }}</em></a>
     </li>
     {% endfor %}
+{% else %}
+    <li>
+    <a href="{{ genus.get_absolute_url }}"><em>{{ genus.name }} sp.</em></a>
+    </li>
+{% endif %}
 {% endfor %}
 </ul>
 {% endif %}

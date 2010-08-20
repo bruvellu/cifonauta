@@ -86,6 +86,19 @@ def org_page(request):
     microscopia = TagCategory.objects.get(name=u'Microscopia')
     # Estágios
     estagio = TagCategory.objects.get(name=u'Estágio de vida')
+    tmp = ['','','','','']
+    for fase in estagio.tags.all():
+        if fase.name == 'gameta':
+            tmp[0] = fase
+        elif fase.name == 'embrião':
+            tmp[1] = fase
+        elif fase.name == 'larva':
+            tmp[2] = fase
+        elif fase.name == 'juvenil':
+            tmp[3] = fase
+        elif fase.name == 'adulto':
+            tmp[4] = fase
+    estagios = tmp
     # Modos
     pelagicos = TagCategory.objects.get(name=u'Pelágicos')
     bentonicos = TagCategory.objects.get(name=u'Bentônicos')
@@ -97,7 +110,7 @@ def org_page(request):
         'sizes': sizes,
         'microscopia': microscopia,
         'tecnica': tecnica,
-        'estagio': estagio,
+        'estagios': estagios,
         'pelagicos': pelagicos,
         'bentonicos': bentonicos,
         'habitat': habitat,

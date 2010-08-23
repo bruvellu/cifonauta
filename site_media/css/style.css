@@ -9,7 +9,7 @@ header,footer,article,section,hgroup,nav,figure,figcaption {
 
 header.main{
     margin:0 0 2em;
-    background:url("http://127.0.0.1:8000/site_media/bryo.png") no-repeat scroll 0 0 transparent;
+    background:url("http://127.0.0.1:8000/site_media/logo.png") no-repeat scroll 0 0 transparent;
 }
 
 div.main {
@@ -68,6 +68,8 @@ nav.main {
 
 header.main hgroup {
     margin:0 70px;
+    font-family: Tahoma !important;
+    letter-spacing: 6px;
 }
 
 section#stats {

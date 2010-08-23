@@ -36,6 +36,7 @@ nav.main {
     -webkit-border-radius: 0 0 10px 30px;
     border-radius: 0 0 10px 30px;
     background:#4d7494;
+    font-weight:bold;
 }
 
 #menu li {
@@ -67,8 +68,7 @@ nav.main {
 }
 
 header.main hgroup {
-    margin:0 70px;
-    font-family: Tahoma !important;
+    margin:0 80px;
     letter-spacing: 6px;
 }
 
@@ -294,6 +294,25 @@ span#genus, span#species {
     border-radius: 10px;
 }
 
+.semfoto {
+    width:120px;
+    height:90px;
+    text-align:center;
+}
+
+div.thumbs-org {
+    padding:5px 5px 0 5px;
+    float:left;
+    background: #eeeeee;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+div.thumbs-org a {
+    float:left;
+}
+
 ul.thumbs {
     margin: 0;
     padding: 0;
@@ -311,6 +330,24 @@ ul.thumbs li {
     border-radius: 5px;
 }
 
+ul.thumbs .lupa, div.thumbs-org .lupa {
+    display: none;
+    float: right;
+    position: relative;
+    margin:-10px;
+    left:-6px;
+    background:#eeeeee;
+    top:6px;
+    padding: 0 5px;
+    -moz-border-radius: 0 5px 0 5px;
+    -webkit-border-radius: 0 5px 0 5px;
+    border-radius: 0 5px 0 5px;
+}
+
+ul.thumbs li:hover .lupa, div.thumbs-org:hover .lupa {
+    display: block;
+}
+
 ul.thumbs li a {
     margin:0;
     padding:0;
@@ -324,19 +361,19 @@ ul.thumbs img {
 }
 
 ul.thumbs li.size-01-mm, .size-01-mm {
-    background: #fbb4ae;
+    background: #fbb4ae !important;
 }
 ul.thumbs li.size-01-10-mm, .size-01-10-mm {
-    background: #b3cde3;
+    background: #b3cde3 !important;
 }
 ul.thumbs li.size-10-10-mm, .size-10-10-mm {
-    background: #ccebc5;
+    background: #ccebc5 !important;
 }
 ul.thumbs li.size-10-100-mm, .size-10-100-mm {
-    background: #decbe4;
+    background: #decbe4 !important;
 }
 ul.thumbs li.size-100-mm, .size-100-mm {
-    background: #fed9a6;
+    background: #fed9a6 !important;
 }
 
 #comment-box {
@@ -385,3 +422,13 @@ footer.main {
     -webkit-border-radius: 10px 10px 0 0;
     border-radius: 10px 10px 0 0;
 }
+
+.float-right {
+    float:right;
+}
+
+.float-left {
+    float:left;
+}
+
+/* Highslide */

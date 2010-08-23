@@ -1,5 +1,15 @@
-{% if image %}
-<a href="{{ image.get_absolute_url }}"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" height="90" /></a>
-{% else %}
-Nenhuma foto
-{% endif %}
+            <a href="{{ image.get_absolute_url }}">
+                <img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" height="90" />
+            </a>
+            <a class="lupa highslide size-{{ image.size.slug }}" onclick="return hs.expand(this)" href="/{{ image.web_filepath }}">+<!--<img src="/site_media/js/highslide/graphics/zoomin.cur" />--></a>
+            {% if image.title %}
+            <div class="highslide-heading">{{ image.title }}</div>
+            {% endif %}
+            <div class="highslide-caption">
+                {% if image.caption %}
+                <div class="float-left">{{ image.caption }}</div>
+                {% endif %}
+                <div class="float-right">
+                    <a href="{{ image.get_absolute_url }}">ver detalhes</a>
+                </div>
+            </div>

@@ -7,7 +7,7 @@
     </header>
     {% show_stats %}
     <div class="main span-16 last" id="intro">
-        <p>Bem-vindo à BIOcea &mdash; o banco de imagens do Centro de Biologia Marinha da Universidade de São Paulo.</p>
+        <p>Bem-vindo à BIOCEA &mdash; o banco de imagens do Centro de Biologia Marinha da Universidade de São Paulo.</p>
         <p>Nosso acervo digital é resultado de pesquisas científicas e atividades de extensão desenvolvidas no CEBIMar e tem como objetivo disponibilizar imagens de qualidade sobre biologia marinha para curiosos, estudantes, educadores e comunidade acadêmica.</p>
         <p>Comece a explorar ou <a href="/sobre/">saiba mais</a>!</p>
     </div>
@@ -31,10 +31,10 @@
     <div id="highthumbs" class="main span-16 last">
     <h2>Destaques</h2>
         <ul class="thumbs">
-            {% for thumb in thumbs %}
-                {% if thumb.is_public %}
-                <li class="shadow size-{{ thumb.size.slug }}">
-                    <a href="{{ thumb.get_absolute_url }}"><img src="/{{ thumb.thumb_filepath }}" alt="{{ thumb.title }}" title="{{ thumb.title }}" width="120" height="90" /></a>
+            {% for image in thumbs %}
+                {% if image.is_public %}
+                <li class="shadow size-{{ image.size.slug }}">
+                {% include 'thumb.html' %}
                 </li>
                 {% endif %}
             {% endfor %}

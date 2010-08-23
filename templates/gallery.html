@@ -1,3 +1,5 @@
+{% block extra-head %}
+{% endblock %}
 {% if images.object_list %}
 <section id="photo-gallery">
     <footer class="success">
@@ -8,7 +10,7 @@
         {% for image in images.object_list %}
             {% if image.is_public %}
             <li class="shadow size-{{ image.size.slug }}">
-                <a href="{{ image.get_absolute_url }}"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" height="90" /></a>
+            {% include 'thumb.html' %}
             </li>
             {% endif %}
         {% endfor %}

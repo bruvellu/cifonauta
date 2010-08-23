@@ -21,7 +21,7 @@ def show_hot():
     hot_images = Image.objects.order_by('-view_count')[:4]
     return {'hot_images': hot_images}
 
-@register.inclusion_tag('thumb.html')
+@register.inclusion_tag('thumb_org.html')
 def print_thumb(field, obj):
     params = {field:obj}
     try:

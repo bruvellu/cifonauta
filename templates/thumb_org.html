@@ -1,0 +1,11 @@
+{% if image and image.is_public %}
+<div class="thumbs-org shadow size-{{ image.size.slug }}">
+    {% include 'thumb.html' %}
+</div>
+{% else %}
+<div class="thumbs-org shadow semfoto">
+    <img src="" />sem foto
+</div>
+
+{% endif %}
+

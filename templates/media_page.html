@@ -28,13 +28,13 @@ $(document).ready(function(){
             <h1>{{ media.title }}</h1>
         </header>
         {% if media.is_public %}
-        <footer class="span-16 last media-tags">
-            {% if media.tag_set.all %}
-                {% for tag in media.tag_set.all %}
-                <a href="{{ tag.get_absolute_url }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
-                {% endfor %}
-            {% endif %}
-        </footer>
+        {% if media.tag_set.all %}
+            <footer class="span-16 last media-tags">
+                    {% for tag in media.tag_set.all %}
+                    <a href="{{ tag.get_absolute_url }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+            </footer>
+        {% endif %}
 
         <figure class="span-13 {{ type }} borders">
             {% if type == 'image' %}

@@ -10,10 +10,12 @@
         <ul>
         {% for subloc in sublocations %}
             <li>
-            <div class="tag_item">
-            <a href="{{ subloc.get_absolute_url }}">{{ subloc.name }}</a>
+            <div>
+                <div class="tag_item">
+                <a href="{{ subloc.get_absolute_url }}">{{ subloc.name }}</a>
+                </div>
+                <div class="tag_count quiet">{{ subloc|icount:'sublocation' }}</div>
             </div>
-            <div class="tag_count quiet">{{ subloc|icount:'sublocation' }}</div>
             </li>
         {% endfor %}
         </ul>
@@ -23,10 +25,12 @@
         <ul>
         {% for city in cities %}
             <li>
-            <div class="tag_item">
-            <a href="{{ city.get_absolute_url }}">{{ city.name }}</a>
+            <div>
+                <div class="tag_item">
+                <a href="{{ city.get_absolute_url }}">{{ city.name }}</a>
+                </div>
+                <div class="tag_count quiet">{{ city|icount:'city' }}</div>
             </div>
-            <div class="tag_count quiet">{{ city|icount:'city' }}</div>
             </li>
         {% endfor %}
         </ul>
@@ -36,10 +40,12 @@
         <ul>
         {% for state in states %}
             <li>
-            <div class="tag_item">
-            <a href="{{ state.get_absolute_url }}">{{ state.name }}</a>
+            <div>
+                <div class="tag_item">
+                <a href="{{ state.get_absolute_url }}">{{ state.name }}</a>
+                </div>
+                <div class="tag_count quiet">{{ state|icount:'state' }}</div>
             </div>
-            <div class="tag_count quiet">{{ state|icount:'state' }}</div>
             </li>
         {% endfor %}
         </ul>
@@ -49,10 +55,12 @@
         <ul>
         {% for country in countries %}
             <li>
-            <div class="tag_item">
-            <a href="{{ country.get_absolute_url }}">{{ country.name }}</a>
+            <div>
+                <div class="tag_item">
+                <a href="{{ country.get_absolute_url }}">{{ country.name }}</a>
+                </div>
+                <div class="tag_count quiet">{{ country|icount:'country' }}</div>
             </div>
-            <div class="tag_count quiet">{{ country|icount:'country' }}</div>
             </li>
         {% endfor %}
         </ul>

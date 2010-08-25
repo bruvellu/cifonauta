@@ -12,10 +12,13 @@
         <ul>
             {% for size in sizes %}
             <li>
-            <div class="tag_item">
-                <a href="{{ size.get_absolute_url }}">{{ size.name }}</a>
+            <!-- div container para evitar bug no chrome -->
+            <div>
+                <div class="tag_item">
+                    <a href="{{ size.get_absolute_url }}">{{ size.name }}</a>
+                </div>
+                <div class="tag_count quiet">{{ size|icount:'size' }}</div>
             </div>
-            <div class="tag_count quiet">{{ size|icount:'size' }}</div>
             </li>
             {% endfor %}
         </ul>
@@ -27,10 +30,12 @@
         <ul>
         {% for tag in item.list %}
             <li>
-            <div class="tag_item">
-                <a href="{{ tag.get_absolute_url }}">{{ tag.name }}</a>
+            <div>
+                <div class="tag_item">
+                    <a href="{{ tag.get_absolute_url }}">{{ tag.name }}</a>
+                </div>
+                <div class="tag_count quiet">{{ tag|icount:'tag' }}</div>
             </div>
-            <div class="tag_count quiet">{{ tag|icount:'tag' }}</div>
             </li>
         {% endfor %}
         </ul>

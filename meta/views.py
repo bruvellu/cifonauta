@@ -111,6 +111,7 @@ def org_page(request):
         'microscopia': microscopia,
         'tecnica': tecnica,
         'estagios': estagios,
+        'estagio': estagio,
         'pelagicos': pelagicos,
         'bentonicos': bentonicos,
         'habitat': habitat,

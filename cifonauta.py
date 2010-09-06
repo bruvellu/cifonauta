@@ -4,9 +4,9 @@
 # CIFONAUTA
 # Copyleft 2010 - Bruno C. Vellutini | organelas.ccom
 #
-#TODO Inserir licença.
+#TODO Definir licença.
 #
-# Atualizado: 19 Aug 2010 11:13PM
+# Atualizado: 06 Sep 2010 05:13AM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus

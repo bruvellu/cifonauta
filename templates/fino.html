@@ -1,4 +1,3 @@
-{% load extra_tags %}
 {% if meta.name|wordcount > 1 %}
     {% if meta.name|wordsplit|first|slugify|in_list:qlist and meta.name|wordsplit|last|slugify|in_list:qlist %}
         <strong><a href="{{ meta.get_absolute_url }}" title="{{ meta.name }}">{{ meta.name }}</a></strong>

@@ -5,6 +5,9 @@ from meta.views import *
 from meta.feeds import *
 from meta.models import *
 
+from django import template
+template.add_to_builtins('weblarvae.meta.templatetags.extra_tags')
+
 info_dict = {
         'queryset': Image.objects.all(),
         }

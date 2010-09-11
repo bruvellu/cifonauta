@@ -8,9 +8,9 @@ from meta.models import *
 from django import template
 template.add_to_builtins('weblarvae.meta.templatetags.extra_tags')
 
-info_dict = {
-        'queryset': Image.objects.all(),
-        }
+#info_dict = {
+#        'queryset': Image.objects.all(),
+#        }
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin

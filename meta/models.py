@@ -1,8 +1,8 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 from django.db.models import signals
 from django.db.models import permalink
 from django.template.defaultfilters import slugify
-from meta.views import *
 
 
 class File(models.Model):

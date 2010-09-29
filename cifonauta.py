@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 06 Sep 2010 05:13AM
+# Atualizado: 29 Sep 2010 01:46AM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -87,33 +87,35 @@ class Database:
         print '\nAtualizando o banco de dados...'
         # Atualizando imagens
         filename = os.path.basename(image_meta['web_filepath'])
+        # Guarda objeto com infos taxonômicas
+        taxa = image_meta['taxon']
+        del image_meta['taxon']
+        genus_sp = image_meta['genus_sp']
+        del image_meta['genus_sp']
+        # Guarda objeto com autores
+        authors = image_meta['author']
         # Guarda objeto com tags
         tags = image_meta['tags']
         del image_meta['tags']
 
         # Não deixar imagem pública se faltar título ou autor
-        if image_meta['title'] == '' or image_meta['author'] == '':
+        if image_meta['title'] == '' or not image_meta['author']:
             print 'Imagem sem título ou autor!'
             image_meta['is_public'] = False
         else:
             image_meta['is_public'] = True
+        del image_meta['author']
 
         # Transforma valores em instâncias dos modelos
-        toget = ['author', 'taxon', 'genus', 'species', 'size', 'source',
-                'rights', 'sublocation', 'city', 'state', 'country']
+        toget = ['size', 'source', 'rights', 'sublocation',
+                'city', 'state', 'country']
         for k in toget:
-            if k == 'genus':
-                image_meta[k] = self.get_instance(k, image_meta['genus_sp'][0])
-            elif k == 'species':
-                image_meta[k] = self.get_instance(k, image_meta['genus_sp'][1])
-            else:
-                image_meta[k] = self.get_instance(k, image_meta[k])
-        del image_meta['genus_sp']
+            image_meta[k] = self.get_instance(k, image_meta[k])
         
         # Conectando espécie e gênero. Apenas se sp existir.
-        if image_meta['species'].name:
-            image_meta['species'].parent = image_meta['genus']
-            image_meta['species'].save()
+        #if image_meta['species'].name:
+        #    image_meta['species'].parent = image_meta['genus']
+        #    image_meta['species'].save()
 
         if not update:
             image_meta['view_count'] = 0
@@ -125,21 +127,41 @@ class Database:
             for k, v in image_meta.iteritems():
                 setattr(entry, k, v)
 
+        # Atualiza autores
+        entry = self.update_sets(entry, 'author', authors)
+
+        # Atualiza táxons
+        entry = self.update_sets(entry, 'taxon', taxa)
+        
+        # Atualiza gêneros e espécies
+        genera = []
+        spp = []
+        for binomius in genus_sp:
+            genera.append(binomius['genus'])
+            spp.append(binomius['sp'])
+        entry = self.update_sets(entry, 'genus', genera)
+        entry = self.update_sets(entry, 'species', spp)
+
         # Atualiza marcadores
-        tag_instances = [self.get_instance('tag', tag) for tag in tags]
-        entry.tag_set.clear()
-        [entry.tag_set.add(tag) for tag in tag_instances]
+        entry = self.update_sets(entry, 'tag', tags)
 
         # Salvando modificações
         entry.save()
 
         print 'Registro no banco de dados atualizado!'
 
-    def get_instance(self, table, value, genus=''):
+    def get_instance(self, table, value):
         '''Retorna o id a partir do nome.'''
         metadatum, new = eval('%s.objects.get_or_create(name="%s")' %
                 (table.capitalize(), value))
         return metadatum
+
+    def update_sets(self, entry, field, meta):
+        '''Atualiza campos many to many do banco de dados.'''
+        meta_instances = [self.get_instance(field, value) for value in meta]
+        eval('entry.%s_set.clear()' % field)
+        [eval('entry.%s_set.add(value)' % field) for value in meta_instances]
+        return entry
 
 
 class Photo:
@@ -184,19 +206,24 @@ class Photo:
             if v is None:
                 self.meta[k] = u''
 
+        # Preparando autor(es) para o banco de dados
+        self.meta['author'] = [a.strip() for a in self.meta['author'].split(',')] 
+        # Preparando taxon(s) para o banco de dados
+        self.meta['taxon'] = [a.strip() for a in self.meta['taxon'].split(',')] 
+
         # Preparando a espécie para o banco de dados
-        genus_sp = self.meta['genus_sp'].split()
-        if not genus_sp:
-            genus_sp.extend(['', ''])
-        elif len(genus_sp) == 1:
-            if genus_sp[0] == '':
-                genus_sp.append('')
-            else:
-                genus_sp.append('')
-        elif len(genus_sp) == 2:
-            if genus_sp[1] == 'sp.' or genus_sp[1] == 'sp':
-                genus_sp[1] = ''
-        self.meta['genus_sp'] = genus_sp
+        spp_diclist = []
+        genera_spp = [i.strip() for i in self.meta['genus_sp'].split(',')]
+        for genus_sp in genera_spp:
+            if genus_sp:
+                bilist = genus_sp.split()
+                if len(bilist) == 1 and bilist[0] != '':
+                    spp_diclist.append({'genus': bilist[0], 'sp': ''})
+                elif len(bilist) == 2:
+                    if bilist[1] in ['sp.', 'sp', 'spp']:
+                        bilist[1] = ''
+                    spp_diclist.append({'genus': bilist[0], 'sp': bilist[1]})
+        self.meta['genus_sp'] = spp_diclist
 
         # Extraindo metadados do EXIF
         exif = self.get_exif(self.source_filepath)

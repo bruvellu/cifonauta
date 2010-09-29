@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 29 Sep 2010 01:46AM
+# Atualizado: 29 Sep 2010 08:23PM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -255,7 +255,7 @@ class Photo:
         print '\t' + 40 * '-'
         print '\tTítulo:\t\t%s' % self.meta['title']
         print '\tDescrição:\t%s' % self.meta['caption']
-        print '\tEspécie:\t%s' % ' '.join(self.meta['genus_sp'])
+        print '\tEspécie:\t%s' % self.meta['genus_sp']
         print '\tTáxon:\t\t%s' % self.meta['taxon']
         print '\tTags:\t\t%s' % '\n\t\t\t'.join(self.meta['tags'])
         print '\tTamanho:\t%s' % self.meta['size']

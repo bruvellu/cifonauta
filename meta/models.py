@@ -78,6 +78,14 @@ class Author(models.Model):
         return ('author_url', [self.slug])
 
 
+class Source(models.Model):
+    name = models.CharField(max_length=32, unique=True, blank=True)
+    slug = models.SlugField(max_length=32, blank=True)
+
+    def __unicode__(self):
+        return self.name
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=64, unique=True)
     description = models.TextField(blank=True)
@@ -172,14 +180,6 @@ class Size(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('size_url', [self.slug])
-
-
-class Source(models.Model):
-    name = models.CharField(max_length=32, unique=True, blank=True)
-    slug = models.SlugField(max_length=32, blank=True)
-
-    def __unicode__(self):
-        return self.name
 
 
 class Rights(models.Model):

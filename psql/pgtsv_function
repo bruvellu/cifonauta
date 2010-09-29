@@ -1,3 +1,10 @@
+CREATE LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION make_ai(TEXT) RETURNS TEXT
+AS $$
+    SELECT translate($1, 'áàâãäåāăąÁÀÂÃÄÅĀĂĄéèêëēĕėęěÉÈÊËĒĔĖĘĚìíîïìĩīĭÌÍÎÏÌĨĪĬóòôõöōŏőÒÓÔÕÖŌŎŐùúûüũūŭůÙÚÛÜŨŪŬŮç', 'aaaaaaaaaaaaaaaaaaeeeeeeeeeeeeeeeeeeiiiiiiiiiiiiiiiioooooooooooooooouuuuuuuuuuuuuuuuc');
+$$ LANGUAGE SQL;
+
 CREATE OR REPLACE FUNCTION update_tsv() RETURNS trigger AS $$
 DECLARE
 author varchar;
@@ -30,8 +37,8 @@ SELECT name INTO STRICT sublocation FROM meta_sublocation WHERE id = NEW.subloca
 SELECT name INTO STRICT city FROM meta_city WHERE id = NEW.city_id;
 SELECT name INTO STRICT state FROM meta_state WHERE id = NEW.state_id;
 SELECT name INTO STRICT country FROM meta_country WHERE id = NEW.country_id;
-SELECT name INTO STRICT parent FROM meta_taxon WHERE id = (SELECT coalesce(parent_id, 12) FROM meta_taxon WHERE id = NEW.taxon_id);
-SELECT common INTO STRICT parent_common FROM meta_taxon WHERE id = (SELECT coalesce(parent_id, 12) FROM meta_taxon WHERE id = NEW.taxon_id);
+SELECT name INTO STRICT parent FROM meta_taxon WHERE id = (SELECT coalesce(parent_id, 1) FROM meta_taxon WHERE id = NEW.taxon_id);
+SELECT common INTO STRICT parent_common FROM meta_taxon WHERE id = (SELECT coalesce(parent_id, 1) FROM meta_taxon WHERE id = NEW.taxon_id);
 
 SELECT concat((SELECT name FROM meta_tag WHERE id = tag_id)||' ') INTO tags FROM meta_tag_images WHERE image_id = NEW.id;
 

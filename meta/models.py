@@ -21,10 +21,6 @@ class File(models.Model):
     # IPTC
     title = models.CharField(max_length=64, blank=True)
     caption = models.TextField(blank=True)
-    author = models.ForeignKey('Author')
-    taxon = models.ForeignKey('Taxon')
-    genus = models.ForeignKey('Genus')
-    species = models.ForeignKey('Species')
     size = models.ForeignKey('Size')
     source = models.ForeignKey('Source')
     rights = models.ForeignKey('Rights')
@@ -71,6 +67,8 @@ class Video(File):
 class Author(models.Model):
     name = models.CharField(max_length=32, unique=True, blank=True)
     slug = models.SlugField(max_length=32, blank=True)
+    images = models.ManyToManyField(Image, null=True, blank=True)
+    videos = models.ManyToManyField(Video, null=True, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -111,6 +109,8 @@ class Taxon(models.Model):
     slug = models.SlugField(max_length=256, blank=True)
     common = models.CharField(max_length=256, blank=True)
     parent = models.ForeignKey('self', blank=True, null=True, related_name='children')
+    images = models.ManyToManyField(Image, null=True, blank=True)
+    videos = models.ManyToManyField(Video, null=True, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -125,6 +125,8 @@ class Genus(models.Model):
     slug = models.SlugField(max_length=32, blank=True)
     common = models.CharField(max_length=256, blank=True)
     parent = models.ForeignKey('Taxon', blank=True, null=True, related_name='genera')
+    images = models.ManyToManyField(Image, null=True, blank=True)
+    videos = models.ManyToManyField(Video, null=True, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -139,6 +141,8 @@ class Species(models.Model):
     slug = models.SlugField(max_length=32, blank=True)
     common = models.CharField(max_length=256, blank=True)
     parent = models.ForeignKey('Genus', blank=True, null=True, related_name='spp')
+    images = models.ManyToManyField(Image, null=True, blank=True)
+    videos = models.ManyToManyField(Video, null=True, blank=True)
 
     def __unicode__(self):
         return self.name

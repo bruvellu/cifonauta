@@ -22,16 +22,14 @@ $(document).ready(function(){
 {% load comments %}
 <section class="span-16">
     {% if media %}
-    <article id="single" class="{{ type }} author-{{ media.author.slug }} taxon-{{ media.taxon.slug }} genus-{{ media.genus.slug }} species-{{ media.species.slug }} size-{{ media.size.slug }} source-{{ media.source.slug }} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ media.view_count }}">
+    <article id="single" class="{{ type }} {% show_set media.author_set.all 'author-' '' ' ' 'slug' %} {% show_set media.taxon_set.all 'taxon-' '' ' ' 'slug' %} {% show_set media.genus_set.all 'genus-' '' ' ' 'slug' %} {% show_set media.species_set.all 'species-' '' ' ' 'slug' %} size-{{ media.size.slug }} source-{{ media.source.slug }} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ media.view_count }}">
         <header class="span-16 last">
             <h1>{{ media.title }}</h1>
         </header>
         {% if media.is_public %}
         {% if media.tag_set.all %}
             <footer class="span-16 last media-tags">
-                    {% for tag in media.tag_set.all %}
-                    <a href="{{ tag.get_absolute_url }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
-                    {% endfor %}
+                {% show_set media.tag_set.all '' '' ', ' 'link' %}
             </footer>
         {% endif %}
 
@@ -45,9 +43,11 @@ $(document).ready(function(){
             {% endif %}
             {% if media.caption %}
                 <figcation class="span-13 last">{{ media.caption }}</figcaption>
-            <div class="span-13 last align-right" id="author">{{ media.author }}</div>
+                <div class="span-13 last align-right" id="author">{% show_set media.author_set.all '' '' ', ' '' %}</div>
             {% else %}
-            <div class="span-13 last" id="author">{{ media.author }}</div>
+            <div class="span-13 last" id="author">
+                {% show_set media.author_set.all '' '' ', ' '' %}
+            </div>
             {% endif %}
         </figure>
 

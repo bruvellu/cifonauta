@@ -90,6 +90,10 @@ def show_info(media, query, qsize):
             cities, 'states': states, 'countries': countries, 'tags': tags,
             'query': query, 'qsize': qsize}
 
+@register.inclusion_tag('sets.html')
+def show_set(set, prefix, suffix, sep, method='name'):
+    return {'set': set, 'prefix': prefix, 'suffix': suffix, 'sep': sep, 'method': method}
+
 def extract_set(query):
     '''Extrai outros metadados das imagens buscadas.'''
     authors = []

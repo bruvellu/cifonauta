@@ -102,8 +102,8 @@ $(document).ready(function(){
                     {% endif %}
                 <br />
                 {% endif %}
-                {% if media.taxon.name %}
-                <strong>Táxon:</strong> <span id="taxon">{{ media.taxon }}</span>
+                {% if media.taxon_set.all %}
+                <strong>Táxon{{ media.taxon_set.all.count|pluralize }}:</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
                 <br />
                 {% endif %}
                 {% if media.source.name %}

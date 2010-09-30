@@ -245,6 +245,32 @@ ul.biodb {
     margin: 1em 0;
 }
 
+ul.biodb li:hover {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+div.external {
+    background: white;
+    margin:-3.9em 0 0 65px;
+    border: 1px solid #eeeeee;
+    padding:0.8em;
+    position: absolute;
+    display: none;
+    cursor: auto;
+    font-weight:normal;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    -moz-opacity:0.9;
+    opacity:0.9;
+    filter: alpha(opacity=50);
+}
+
+div.external li:hover {
+    font-weight:normal;
+}
+
 ul#tophits {
     list-style: none;
     padding: 0;

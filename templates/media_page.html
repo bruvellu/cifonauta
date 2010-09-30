@@ -14,8 +14,21 @@ $(document).ready(function(){
             $("#comment-box").slideToggle("slow");
             $(this).hide();
             $(".show-comment").show();
-            });
-        });
+            }
+        );
+
+        // External DB hovers
+        $(".biodb li").hover(
+            function () {
+                $(this).find(".external").fadeIn(200);
+            },
+            function () {
+                $(this).find(".external").fadeOut(200);
+            }
+        );
+});
+</script>
+<script type="text/javascript">
 </script>
 {% endblock %}
 {% block content %}
@@ -55,7 +68,7 @@ $(document).ready(function(){
             <div class="border-bottom" id="views">
                 {{ media.view_count }} visita{{ media.view_count|pluralize }}
             </div>
-            {% if media.genus_set.all %}
+            {% if media.taxon_set.all %}
                 {% include 'biodb.html' %}
             {% endif %}
 

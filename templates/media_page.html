@@ -93,15 +93,16 @@ $(document).ready(function(){
 
         <div class="span-13 last borders" id="meta">
             <div class="span-7 taxonomy">
-                {% if media.genus.name %}
-                    <strong>Espécie:</strong> <span id="genus">{{ media.genus }}</span> 
-                    {% if media.species.name != 'sp.' %}
-                    <span id="species">{{ media.species }}</span>
-                    {% else %}
-                    <span>{{ media.species }}</span>
-                    {% endif %}
+                {% if media.genus_set.all %}
+                <strong>Espécie{{ splist.count|pluralize }}: </strong>
+                <span id="species">
+                    {% for sp in splist %}
+                    {{ sp }}{% if sp|wordcount == 1 %}<span id="sp"> sp.</span>{% endif %}{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                </span> 
                 <br />
                 {% endif %}
+
                 {% if media.taxon_set.all %}
                 <strong>Táxon{{ media.taxon_set.all.count|pluralize }}:</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
                 <br />

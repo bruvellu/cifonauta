@@ -290,8 +290,11 @@ div#meta {
     border-radius: 0 0 10px 10px;
 }
 
-span#genus, span#species {
+span#species {
     font-style: italic;
+}
+span#sp {
+    font-style: normal !important;
 }
 
 #content {

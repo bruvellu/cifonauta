@@ -125,8 +125,10 @@ def image_page(request, image_id):
     image = get_object_or_404(Image, id=image_id)
     image.view_count = image.view_count + 1
     image.save()
+    spp = splist(request, image)
     variables = RequestContext(request, {
         'media': image,
+        'splist': spp,
         'type': 'image',
         })
     return render_to_response('media_page.html', variables)
@@ -135,8 +137,10 @@ def video_page(request, video_id):
     video = get_object_or_404(Video, id=video_id)
     video.view_count = video.view_count + 1
     video.save()
+    spp = splist(request, image)
     variables = RequestContext(request, {
         'media': video,
+        'splist': spp,
         'type': 'video',
         })
     return render_to_response('media_page.html', variables)
@@ -278,3 +282,17 @@ def get_paginated(request, obj_list):
     except (EmptyPage, InvalidPage):
         obj = paginator.page(paginator.num_pages)
     return obj
+
+def splist(request, media):
+    splist = []
+    parents = []
+    if media.genus_set.all():
+        for sp in media.species_set.all():
+            if sp.name:
+                splist.append(u'%s %s' % (sp.parent.name, sp.name))
+                parents.append(sp.parent.name)
+        for genus in media.genus_set.all():
+            if genus.name not in parents:
+                splist.append(u'%s' % genus.name)
+    return splist
+

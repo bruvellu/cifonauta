@@ -1,3 +1,6 @@
+-- Command to create db:
+-- createdb -E UTF8 -T template0 --lc-collate=pt_BR.UTF8 --lc-ctype=pt_BR.UTF8 cebimar
+
 -- Create tsvector columns for files
 ALTER TABLE meta_image ADD COLUMN tsv tsvector;
 ALTER TABLE meta_video ADD COLUMN tsv tsvector;

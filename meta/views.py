@@ -13,9 +13,17 @@ import operator
 def main_page(request):
     image_count = Image.objects.count()
     images = Image.objects.filter(highlight=True).order_by('?')
+    if not images:
+        images = Image.objects.all().order_by('?')
+    if not images:
+        images = ['']
     image = images[0]
     thumbs = images.exclude(id=image.id)[:4]
-    videos = Video.objects.filter(highlight=True).order_by('?')[:1]
+    videos = Video.objects.filter(highlight=True).order_by('?')
+    if not videos:
+        videos = Video.objects.all().order_by('?')
+    if not videos:
+        videos = ['']
     video = videos[0]
     tags = Tag.objects.all()
     locations = Sublocation.objects.exclude(name='')

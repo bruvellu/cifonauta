@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 29 Sep 2010 08:23PM
+# Atualizado: 01 Oct 2010 08:01PM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -137,6 +137,10 @@ class Database:
         genera = []
         spp = []
         for binomius in genus_sp:
+            # Faz o link entre espécie e gênero
+            sp = self.get_instance('species', binomius['sp'])
+            sp.parent = self.get_instance('genus', binomius['genus'])
+            sp.save()
             genera.append(binomius['genus'])
             spp.append(binomius['sp'])
         entry = self.update_sets(entry, 'genus', genera)

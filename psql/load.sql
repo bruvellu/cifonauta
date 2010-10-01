@@ -12,6 +12,7 @@ AS $$
 $$ LANGUAGE SQL;
 
 -- Concatenate strings
+-- PostgreSQL 9.0 has a function for this
 CREATE AGGREGATE concat(
   basetype    = text,
   sfunc       = textcat,
@@ -108,4 +109,6 @@ $$ LANGUAGE plpgsql;
 
 -- Trigger to keep up with updates
 CREATE TRIGGER updatetsvectors BEFORE INSERT OR UPDATE ON meta_image 
+    FOR EACH ROW EXECUTE PROCEDURE update_tsv();
+CREATE TRIGGER updatetsvectors BEFORE INSERT OR UPDATE ON meta_video
     FOR EACH ROW EXECUTE PROCEDURE update_tsv();

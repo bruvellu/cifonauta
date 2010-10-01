@@ -294,7 +294,7 @@ span#species {
     font-style: italic;
 }
 span#sp {
-    font-style: normal !important;
+    font-style: normal;
 }
 
 #content {

@@ -112,3 +112,7 @@ CREATE TRIGGER updatetsvectors BEFORE INSERT OR UPDATE ON meta_image
     FOR EACH ROW EXECUTE PROCEDURE update_tsv();
 CREATE TRIGGER updatetsvectors BEFORE INSERT OR UPDATE ON meta_video
     FOR EACH ROW EXECUTE PROCEDURE update_tsv();
+
+-- Create index to optimize search
+CREATE INDEX meta_image_tsv ON meta_image USING gin(tsv);
+CREATE INDEX meta_video_tsv ON meta_video USING gin(tsv);

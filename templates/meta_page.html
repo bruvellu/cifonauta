@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{{ meta.name }} | {{ block.super }}{% endblock %}
+{% block title %}{% if field == 'species' %}{{ meta.parent }}{% endif %} {{ meta.name }} | {{ block.super }}{% endblock %}
 {% block content %}
 <section class="span-16">
 <header><h1>{% if field == 'species' %}{{ meta.parent }}{% endif %} {{ meta.name }}</h1></header>

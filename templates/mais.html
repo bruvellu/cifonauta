@@ -1,5 +1,5 @@
-{% if tags %}
 <div class="block borders shadow">
+{% if tags %}
 <h2>Marcadores | <a href="{% url meta.views.tags_page %}" title="Todos os marcadores">ver todos</a></h2>
     {% for tag in tags %}{% refine tag query qsize %}{% if not forloop.last %},{% endif %}{% endfor %}
 {% endif %}
@@ -19,9 +19,15 @@
 <h2>Táxons</h2>
 <ul>
     {% for taxon in taxa %}
+    {% if taxon.name %}
     <li>
         {% refine taxon query qsize %}
     </li>
+    {% else %}
+    <li class="quiet">
+    Nenhum
+    </li>
+    {% endif %}
     {% endfor %}
 </ul>
 {% endif %}
@@ -29,11 +35,17 @@
 <h2>Espécies</h2>
 <ul>
     {% for genus in genera %}
+    {% if genus.name %}
         {% for sp in genus.spp.all %}
         <li>
         <a href="{{ sp.get_absolute_url }}"><em>{{ genus.name }} {{ sp }}</em></a>
         </li>
         {% endfor %}
+    {% else %}
+        <li class="quiet">
+        Nenhum
+        </li>
+        {% endif %}
     {% endfor %}
 </ul>
 {% endif %}
@@ -52,21 +64,33 @@
     {% endfor %}
 </ul>
 {% endif %}
+
 {% if sublocations %}
 <h2>Local</h2>
 <ul>
     {% for sublocation in sublocations %}
+    {% if sublocation.name %}
     <li>
         {% refine sublocation query qsize %}
     </li>
+    {% else %}
+    <li class="quiet">
+    Nenhum
+    </li>
+    {% endif %}
     {% endfor %}
 </ul>
 {% endif %}
+
 {% if cities %}
 <h2>Cidades</h2>
 <ul>
     {% for city in cities %}
+    {% if city.name %}
     <li>{% refine city query qsize %}</li>
+    {% else %}
+    <li class="quiet">Nenhum</li>
+    {% endif %}
     {% endfor %}
 </ul>
 {% endif %}
@@ -74,7 +98,11 @@
 <h2>Estados</h2>
 <ul>
     {% for state in states %}
+    {% if state.name %}
     <li>{% refine state query qsize %}</li>
+    {% else %}
+    <li class="quiet">Nenhum</li>
+    {% endif %}
     {% endfor %}
 </ul>
 {% endif %}
@@ -82,8 +110,12 @@
 <h2>Países</h2>
 <ul>
     {% for country in countries %}
+    {% if country.name %}
     <li>{% refine country query qsize %}</li>
+    {% else %}
+    <li class="quiet">Nenhum</li>
+    {% endif %}
     {% endfor %}
 </ul>
-</div>
 {% endif %}
+</div>

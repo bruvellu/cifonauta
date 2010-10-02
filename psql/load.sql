@@ -111,9 +111,9 @@ END
 $$ LANGUAGE plpgsql;
 
 -- Trigger to keep up with updates
-CREATE TRIGGER updatetsvectors BEFORE INSERT OR UPDATE ON meta_image 
+CREATE TRIGGER update_imagetsv BEFORE INSERT OR UPDATE ON meta_image 
     FOR EACH ROW EXECUTE PROCEDURE update_tsv();
-CREATE TRIGGER updatetsvectors BEFORE INSERT OR UPDATE ON meta_video
+CREATE TRIGGER update_videotsv BEFORE INSERT OR UPDATE ON meta_video
     FOR EACH ROW EXECUTE PROCEDURE update_tsv();
 
 -- Create index to optimize search

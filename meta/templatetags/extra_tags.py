@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from meta.models import *
 from django import template
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -89,11 +91,17 @@ def icount(value, field):
 
 @register.inclusion_tag('fino.html')
 def refine(meta, query, qsize):
+    '''Recebe metadado, processa a query para lista e manda refinar.
+    
+    A lista serve para marcar os metadados que estão selecionados.
+    O refinamento é baseado no buscador, apenas o tamanho que é literal.
+    '''
     qlist = [slugify(q) for q in query.split()]
     return {'meta': meta, 'query': query, 'qlist': qlist, 'qsize': qsize}
 
 @register.inclusion_tag('mais.html')
 def show_info(media, query, qsize):
+    '''Apenas manda extrair os metadados e envia para template.'''
     authors, taxa, genera, species, sizes, sublocations, cities, states, countries, tags = extract_set(media)
     return {'authors': authors, 'taxa': taxa, 'genera': genera, 'species':
             species, 'sizes': sizes, 'sublocations': sublocations, 'cities':
@@ -117,14 +125,18 @@ def extract_set(query):
     countries = []
     tags = []
     for item in query:
-        if item.author.name:
-            authors.append(item.author)
-        if item.taxon.name:
-            taxa.append(item.taxon)
-        if item.genus.name:
-            genera.append(item.genus)
-        if item.species.name:
-            species.append(item.species)
+        if item.author_set.all:
+            for author in item.author_set.all():
+                authors.append(author)
+        if item.taxon_set.all:
+            for taxon in item.taxon_set.all():
+                taxa.append(taxon)
+        if item.genus_set.all:
+            for genus in item.genus_set.all():
+                genera.append(genus)
+        if item.species_set.all:
+            for sp in item.species_set.all():
+                species.append(sp)
         if item.size.name:
             sizes.append(item.size)
         if item.sublocation.name:

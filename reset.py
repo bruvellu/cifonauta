@@ -215,36 +215,3 @@ for taxon in taxa:
     zero.common=taxon_common
     zero.parent=taxon_parent
     zero.save()
-
-#for genus in genera:
-#    print genus
-#    if genus['parent'] and genus['parent'] != u'None':
-#        genus_parent, new = Genus.objects.get_or_create(
-#                name=genus['parent'])
-#    else:
-#        genus_parent = None
-#    if genus['common'] == u'None':
-#        genus_common = u''
-#    else:
-#        genus_common = genus['common']
-#    zero, new = Genus.objects.get_or_create(name=genus['name'])
-#    zero.common=genus_common
-#    zero.parent=genus_parent
-#    zero.save()
-#
-#for sp in species:
-#    print sp
-#    if sp['parent'] and sp['parent'] != u'None':
-#        sp_parent, new = Species.objects.get_or_create(
-#                name=sp['parent'])
-#    else:
-#        sp_parent = None
-#    if sp['common'] == u'None':
-#        sp_common = u''
-#    else:
-#        sp_common = sp['common']
-#    zero, new = Species.objects.get_or_create(name=sp['name'])
-#    zero.common=sp_common
-#    zero.parent=sp_parent
-#    zero.save()
-#

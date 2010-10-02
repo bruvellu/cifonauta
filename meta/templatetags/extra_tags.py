@@ -2,6 +2,7 @@ from meta.models import *
 from django import template
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.template.defaultfilters import slugify
+from django.db.models import Q
 
 register = template.Library()
 
@@ -32,21 +33,30 @@ def print_thumb(field, obj):
 
 @register.inclusion_tag('related.html')
 def show_related(media):
-    taxa = Image.objects.filter(taxon=media.taxon).exclude(id=media.id)
-    if media.genus.name:
-        genera = Image.objects.filter(genus=media.genus).exclude(id=media.id)
-    else:
-        genera = []
-    if media.species.name:
-        species = Image.objects.filter(species=media.species).exclude(id=media.id)
-    else:
-        species = []
-    if taxa and genera and species:
-        rel_images = taxa | genera | species
-        rel_images = rel_images.order_by('?')[:8]
+    '''Usa metadados da imagem para encontrar imagens relacionadas.
+    
+    Por enquanto procura apenas grupos taxonômicos relacionados, 
+    usando o Q() para refinar a busca. Caso não encontre nenhum
+    grupo relacionado, mostra imagens aleatórias.
+    '''
+    #TODO Idéia é criar um combobox para escolher por qual metadado filtrar.
+    if media.taxon_set.all:
+        qobj = Q()
+        for taxon in media.taxon_set.all():
+            qobj.add(Q(taxon=taxon), Q.AND)
+
+        if media.genus_set.all:
+            for genus in media.genus_set.all():
+                qobj.add(Q(genus=genus), Q.OR)
+
+            if media.species_set.all:
+                for sp in media.species_set.all():
+                    qobj.add(Q(species=sp), Q.OR)
+
+        rel_images = Image.objects.filter(qobj).exclude(id=media.id).order_by('?')[:8]
+    if rel_images:
         rand_images = []
     else:
-        rel_images = []
         rand_images = Image.objects.all().order_by('?')[:8]
     return {'rel_images': rel_images, 'rand_images': rand_images}
 

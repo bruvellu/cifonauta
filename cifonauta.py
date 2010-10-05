@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 05 Oct 2010 02:27PM
+# Atualizado: 05 Oct 2010 07:47PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -43,12 +43,6 @@ __status__ = 'Development'
 
 # Diretório com os arquivos 
 source_dir = u'source_media'
-# Diretório espelho do site (imagens já carregadas)
-#TODO Fazer o processamento do vídeo, copiar pra pasta certa, etc.
-site_photo_dir = u'site_media/images'
-site_photothumb_dir = u'site_media/images/thumbs'
-local_photo_dir = u'local_media'
-local_photothumb_dir = u'local_media/thumbs'
 # Arquivo com marca d'água
 watermark = u'marca.png'
 
@@ -181,9 +175,15 @@ class Movie:
         self.timestamp = datetime.fromtimestamp(os.path.getmtime(filepath))
         self.type = 'video'
 
-        print self.source_filepath
-        print self.filename
-        print self.timestamp
+        # Diretórios
+        self.site_dir = u'site_media/videos'
+        self.site_thumb_dir = u'site_media/videos/thumbs'
+        self.local_dir = u'local_media/videos'
+        self.local_thumb_dir = u'local_media/videos/thumbs'
+
+        # Verifica existência dos diretórios.
+        dir_ready(self.site_dir, self.site_thumb_dir,
+                self.local_dir, self.local_thumb_dir)
 
     def create_meta(self, charset='utf-8'):
         '''Define as variáveis dos metadados do vídeo.'''
@@ -217,10 +217,12 @@ class Movie:
     def create_thumbs(self):
         '''Cria thumbnails para os novos vídeos.'''
         #TODO Não esquecer de criar o large thumb também.
-        filename_noext = self.filename.split('.')[0]
-        thumbname = filename_noext + '.png'
-        thumb_localfilepath = os.path.join(local_photothumb_dir, thumbname)
+        thumbname = self.filename.split('.')[0] + '.png'
+        # Define caminho para pasta local.
+        local_filepath = os.path.join(self.local_thumb_dir, thumbname)
         try:
+            #ffmpeg -i fx002.kinofx.dv -vframes 1 -s 480x360 -ss 10 -f image2 foo3.png
+
             # Convocando o ImageMagick
             subprocess.call(['convert', '-define', 'jpeg:size=200x150',
                 self.source_filepath, '-thumbnail', '120x90^', '-gravity', 'center',
@@ -228,9 +230,10 @@ class Movie:
         except IOError:
             print 'Não consegui criar o thumbnail...'
         #XXX Dar um jeito de melhorar isso...
-        copy(thumb_localfilepath, site_photothumb_dir)
-        thumb_filepath = os.path.join(site_photothumb_dir, thumbname)
-        return thumb_filepath
+        copy(local_filepath, self.site_thumb_dir)
+        # Define caminho para o thumb do site.
+        site_filepath = os.path.join(self.site_thumb_dir, thumbname)
+        return site_filepath
 
 class Photo:
     '''Define objeto para instâncias das fotos.'''
@@ -239,6 +242,16 @@ class Photo:
         self.filename = os.path.basename(filepath)
         self.timestamp = datetime.fromtimestamp(os.path.getmtime(filepath))
         self.type = 'photo'
+
+        # Diretórios
+        self.site_dir = u'site_media/photos'
+        self.site_thumb_dir = u'site_media/photos/thumbs'
+        self.local_dir = u'local_media/photos'
+        self.local_thumb_dir = u'local_media/photos/thumbs'
+
+        # Verifica existência dos diretórios.
+        dir_ready(self.site_dir, self.site_thumb_dir,
+                self.local_dir, self.local_thumb_dir)
 
     def create_meta(self, charset='utf-8'):
         '''Define as variáveis extraídas dos metadados da imagem.
@@ -411,7 +424,7 @@ class Photo:
 
     def process_image(self):
         '''Redimensiona a imagem e inclui marca d'água.'''
-        local_filepath = os.path.join(local_photo_dir, self.filename)
+        local_filepath = os.path.join(self.local_dir, self.filename)
         print '\nProcessando a imagem...'
         try:
             # Converte para 72dpi, JPG qualidade 50 e redimensiona as imagens
@@ -423,7 +436,7 @@ class Photo:
                 'southeast', watermark, local_filepath, local_filepath])
             # Copia imagem para pasta web
             #XXX Melhorar isso de algum jeito...
-            web_filepath = os.path.join(site_photo_dir, self.filename)
+            web_filepath = os.path.join(self.site_dir, self.filename)
             copy(local_filepath, web_filepath)
         except IOError:
             print '\nOcorreu algum erro na conversão da imagem. Verifique se o ' \
@@ -438,7 +451,7 @@ class Photo:
         # Define nome do thumbnail.
         thumbname = self.filename.split('.')[0] + '.png'
         # Define caminho para pasta local.
-        local_filepath = os.path.join(local_photothumb_dir, thumbname)
+        local_filepath = os.path.join(self.local_thumb_dir, thumbname)
         try:
             # Convocando o ImageMagick
             subprocess.call(['convert', '-define', 'jpeg:size=200x150',
@@ -447,9 +460,9 @@ class Photo:
         except IOError:
             print 'Não consegui criar o thumbnail...'
         # Copia thumb da pasta local para site_media.
-        copy(local_filepath, site_photothumb_dir)
+        copy(local_filepath, self.site_thumb_dir)
         # Define caminho para o thumb do site.
-        site_filepath = os.path.join(site_photothumb_dir, thumbname)
+        site_filepath = os.path.join(self.site_thumb_dir, thumbname)
         return site_filepath
 
 
@@ -495,6 +508,15 @@ class Folder:
 
         return self.files
 
+
+# Funções principais
+
+def dir_ready(*dirs):
+    '''Verifica se o diretório existe, criando caso não exista.'''
+    for dir in dirs:
+        if os.path.isdir(dir) is False:
+            print 'Criando diretório inexistente...'
+            os.mkdir(dir)
 
 def usage():
     '''Imprime manual de uso e argumentos disponíveis.'''
@@ -566,12 +588,6 @@ def main(argv):
     # Cria o arquivo log
     logname = 'log_%s' % time.strftime('%Y.%m.%d_%I:%M:%S', time.localtime())
     log = open(logname, 'a+b')
-
-    # Checar se diretório web existe antes de começar
-    if os.path.isdir(local_photo_dir) is False:
-        os.mkdir(local_photo_dir)
-    if os.path.isdir(local_photothumb_dir) is False:
-        os.mkdir(local_photothumb_dir)
 
     # Cria instância do bd
     cbm = Database()

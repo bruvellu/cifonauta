@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 05 Oct 2010 01:59PM
+# Atualizado: 05 Oct 2010 02:27PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -215,7 +215,7 @@ class Movie:
         return self.meta
 
     def create_thumbs(self):
-        '''Cria thumbnails para as fotos novas.'''
+        '''Cria thumbnails para os novos vídeos.'''
         #TODO Não esquecer de criar o large thumb também.
         filename_noext = self.filename.split('.')[0]
         thumbname = filename_noext + '.png'
@@ -435,20 +435,22 @@ class Photo:
 
     def create_thumbs(self):
         '''Cria thumbnails para as fotos novas.'''
-        filename_noext = self.filename.split('.')[0]
-        thumbname = filename_noext + '.png'
-        thumb_localfilepath = os.path.join(local_photothumb_dir, thumbname)
+        # Define nome do thumbnail.
+        thumbname = self.filename.split('.')[0] + '.png'
+        # Define caminho para pasta local.
+        local_filepath = os.path.join(local_photothumb_dir, thumbname)
         try:
             # Convocando o ImageMagick
             subprocess.call(['convert', '-define', 'jpeg:size=200x150',
                 self.source_filepath, '-thumbnail', '120x90^', '-gravity', 'center',
-                '-extent', '120x90', 'PNG8:%s' % thumb_localfilepath])
+                '-extent', '120x90', 'PNG8:%s' % local_filepath])
         except IOError:
             print 'Não consegui criar o thumbnail...'
-        #XXX Dar um jeito de melhorar isso...
-        copy(thumb_localfilepath, site_photothumb_dir)
-        thumb_filepath = os.path.join(site_photothumb_dir, thumbname)
-        return thumb_filepath
+        # Copia thumb da pasta local para site_media.
+        copy(local_filepath, site_photothumb_dir)
+        # Define caminho para o thumb do site.
+        site_filepath = os.path.join(site_photothumb_dir, thumbname)
+        return site_filepath
 
 
 class Folder:

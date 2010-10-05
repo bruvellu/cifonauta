@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 05 Oct 2010 02:06AM
+# Atualizado: 05 Oct 2010 01:59PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -42,15 +42,15 @@ __email__ = 'organelas at gmail dot com'
 __status__ = 'Development'
 
 # Diretório com os arquivos 
-sourcedir = 'fotos'
+source_dir = u'source_media'
 # Diretório espelho do site (imagens já carregadas)
 #TODO Fazer o processamento do vídeo, copiar pra pasta certa, etc.
-webdir = 'site_media/images'
-thumbdir = 'site_media/images/thumbs'
-localdir = 'localweb'
-local_thumbdir = 'localweb/thumbs'
+site_photo_dir = u'site_media/images'
+site_photothumb_dir = u'site_media/images/thumbs'
+local_photo_dir = u'local_media'
+local_photothumb_dir = u'local_media/thumbs'
 # Arquivo com marca d'água
-watermark = 'marca.png'
+watermark = u'marca.png'
 
 
 class Database:
@@ -214,6 +214,23 @@ class Movie:
 
         return self.meta
 
+    def create_thumbs(self):
+        '''Cria thumbnails para as fotos novas.'''
+        #TODO Não esquecer de criar o large thumb também.
+        filename_noext = self.filename.split('.')[0]
+        thumbname = filename_noext + '.png'
+        thumb_localfilepath = os.path.join(local_photothumb_dir, thumbname)
+        try:
+            # Convocando o ImageMagick
+            subprocess.call(['convert', '-define', 'jpeg:size=200x150',
+                self.source_filepath, '-thumbnail', '120x90^', '-gravity', 'center',
+                '-extent', '120x90', 'PNG8:%s' % thumb_localfilepath])
+        except IOError:
+            print 'Não consegui criar o thumbnail...'
+        #XXX Dar um jeito de melhorar isso...
+        copy(thumb_localfilepath, site_photothumb_dir)
+        thumb_filepath = os.path.join(site_photothumb_dir, thumbname)
+        return thumb_filepath
 
 class Photo:
     '''Define objeto para instâncias das fotos.'''
@@ -394,7 +411,7 @@ class Photo:
 
     def process_image(self):
         '''Redimensiona a imagem e inclui marca d'água.'''
-        local_filepath = os.path.join(localdir, self.filename)
+        local_filepath = os.path.join(local_photo_dir, self.filename)
         print '\nProcessando a imagem...'
         try:
             # Converte para 72dpi, JPG qualidade 50 e redimensiona as imagens
@@ -406,7 +423,7 @@ class Photo:
                 'southeast', watermark, local_filepath, local_filepath])
             # Copia imagem para pasta web
             #XXX Melhorar isso de algum jeito...
-            web_filepath = os.path.join(webdir, self.filename)
+            web_filepath = os.path.join(site_photo_dir, self.filename)
             copy(local_filepath, web_filepath)
         except IOError:
             print '\nOcorreu algum erro na conversão da imagem. Verifique se o ' \
@@ -420,17 +437,17 @@ class Photo:
         '''Cria thumbnails para as fotos novas.'''
         filename_noext = self.filename.split('.')[0]
         thumbname = filename_noext + '.png'
-        thumb_localfilepath = os.path.join(local_thumbdir, thumbname)
+        thumb_localfilepath = os.path.join(local_photothumb_dir, thumbname)
         try:
-            #TODO arrumar
+            # Convocando o ImageMagick
             subprocess.call(['convert', '-define', 'jpeg:size=200x150',
                 self.source_filepath, '-thumbnail', '120x90^', '-gravity', 'center',
                 '-extent', '120x90', 'PNG8:%s' % thumb_localfilepath])
         except IOError:
             print 'Não consegui criar o thumbnail...'
         #XXX Dar um jeito de melhorar isso...
-        copy(thumb_localfilepath, thumbdir)
-        thumb_filepath = os.path.join(thumbdir, thumbname)
+        copy(thumb_localfilepath, site_photothumb_dir)
+        thumb_filepath = os.path.join(site_photothumb_dir, thumbname)
         return thumb_filepath
 
 
@@ -498,7 +515,7 @@ def usage():
     print 'Exemplo:'
     print '  python cifonauta.py -f -n 15'
     print '\tFaz a atualização forçada dos primeiros 15 arquivos que o programa'
-    print '\tencontrar na pasta padrão (sourcedir; ver código).'
+    print '\tencontrar na pasta padrão (source_media; ver código).'
     print
 
 def main(argv):
@@ -549,16 +566,16 @@ def main(argv):
     log = open(logname, 'a+b')
 
     # Checar se diretório web existe antes de começar
-    if os.path.isdir(localdir) is False:
-        os.mkdir(localdir)
-    if os.path.isdir(local_thumbdir) is False:
-        os.mkdir(local_thumbdir)
+    if os.path.isdir(local_photo_dir) is False:
+        os.mkdir(local_photo_dir)
+    if os.path.isdir(local_photothumb_dir) is False:
+        os.mkdir(local_photothumb_dir)
 
     # Cria instância do bd
     cbm = Database()
 
     # Inicia o cifonauta buscando pasta...
-    folder = Folder(sourcedir, n_max)
+    folder = Folder(source_dir, n_max)
     filepaths = folder.get_files()
     for path in filepaths:
         # Reconhece se é foto ou vídeo

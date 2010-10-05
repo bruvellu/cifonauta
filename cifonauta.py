@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 04 Oct 2010 10:15PM
+# Atualizado: 05 Oct 2010 01:53AM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -41,9 +41,10 @@ __maintainer__ = 'Bruno Vellutini'
 __email__ = 'organelas at gmail dot com'
 __status__ = 'Development'
 
-# Diretório com as imagens
+# Diretório com os arquivos 
 sourcedir = 'fotos'
 # Diretório espelho do site (imagens já carregadas)
+#TODO Fazer o processamento do vídeo, copiar pra pasta certa, etc.
 webdir = 'site_media/images'
 thumbdir = 'site_media/images/thumbs'
 localdir = 'localweb'
@@ -61,10 +62,10 @@ class Database:
         '''Busca o registro no banco de dados pelo nome do arquivo.
         
         Se encontrar, compara a data de modificação do arquivo e do registro.
-        Se as datas forem iguais pula para a próxima imagem, se forem diferentes
+        Se as datas forem iguais pula para próximo arquivo, se forem diferentes
         atualiza o registro.
         '''
-        print '\nVerificando se a imagem está no banco de dados...'
+        print '\nVerificando se o arquivo está no banco de dados...'
         
         try :
             record = Image.objects.get(web_filepath__icontains=filename)
@@ -82,49 +83,53 @@ class Database:
             print 'Registro não encontrado.'
             return False
 
-    def update_db(self, image_meta, update=False):
+    def update_db(self, media, update=False):
         '''Cria ou atualiza registro no banco de dados.'''
         print '\nAtualizando o banco de dados...'
-        # Atualizando imagens
-        filename = os.path.basename(image_meta['web_filepath'])
+        # Instancia metadados pra não dar conflito.
+        media_meta = media.meta
+        print media_meta
         # Guarda objeto com infos taxonômicas
-        taxa = image_meta['taxon']
-        del image_meta['taxon']
-        genus_sp = image_meta['genus_sp']
-        del image_meta['genus_sp']
+        taxa = media_meta['taxon']
+        del media_meta['taxon']
+        genus_sp = media_meta['genus_sp']
+        del media_meta['genus_sp']
         # Guarda objeto com autores
-        authors = image_meta['author']
+        authors = media_meta['author']
         # Guarda objeto com tags
-        tags = image_meta['tags']
-        del image_meta['tags']
+        tags = media_meta['tags']
+        del media_meta['tags']
 
-        # Não deixar imagem pública se faltar título ou autor
-        if image_meta['title'] == '' or not image_meta['author']:
-            print 'Imagem sem título ou autor!'
-            image_meta['is_public'] = False
+        # Não deixar entrada pública se faltar título ou autor
+        if media_meta['title'] == '' or not media_meta['author']:
+            print 'Mídia sem título ou autor!'
+            media_meta['is_public'] = False
         else:
-            image_meta['is_public'] = True
-        del image_meta['author']
+            media_meta['is_public'] = True
+        # Deleta para inserir autores separadamente.
+        del media_meta['author']
 
         # Transforma valores em instâncias dos modelos
         toget = ['size', 'source', 'rights', 'sublocation',
                 'city', 'state', 'country']
         for k in toget:
-            image_meta[k] = self.get_instance(k, image_meta[k])
-        
-        # Conectando espécie e gênero. Apenas se sp existir.
-        #if image_meta['species'].name:
-        #    image_meta['species'].parent = image_meta['genus']
-        #    image_meta['species'].save()
+            media_meta[k] = self.get_instance(k, media_meta[k])
+            print k, media_meta[k].id, media_meta[k]
 
         if not update:
-            image_meta['view_count'] = 0
-            entry = Image(**image_meta)
+            media_meta['view_count'] = 0
+            if media.type == 'photo':
+                entry = Image(**media_meta)
+            elif media.type == 'video':
+                entry = Video(**media_meta)
             # Tem que salvar para criar id, usado na hora de salvar as tags
             entry.save()
         else:
-            entry = Image.objects.get(web_filepath__icontains=filename)
-            for k, v in image_meta.iteritems():
+            if media.type == 'photo':
+                entry = Image.objects.get(web_filepath__icontains=media.filename)
+            elif media.type == 'video':
+                entry = Video.objects.get(web_filepath__icontains=media.filename)
+            for k, v in media_meta.iteritems():
                 setattr(entry, k, v)
 
         # Atualiza autores
@@ -168,12 +173,13 @@ class Database:
         return entry
 
 
-class Video:
+class Movie:
     '''Define objetos para instâncias dos vídeos.'''
     def __init__(self, filepath):
         self.source_filepath = filepath
         self.filename = os.path.basename(filepath)
         self.timestamp = datetime.fromtimestamp(os.path.getmtime(filepath))
+        self.type = 'video'
 
         print self.source_filepath
         print self.filename
@@ -182,6 +188,31 @@ class Video:
     def create_meta(self, charset='utf-8'):
         '''Define as variáveis dos metadados do vídeo.'''
         print 'Lendo os metadados de %s e criando variáveis.' % self.filename
+        #TODO Incorporar leitura de metadados e delegação dos valores.
+        # Testar com o ffmpeg, arquivo de texto, etc.
+        self.meta = {
+                'source_filepath': os.path.abspath(self.source_filepath),
+                'timestamp': self.timestamp,
+                'title': u'',
+                'tags': u'',
+                'author': u'',
+                'city': u'',
+                'sublocation': u'',
+                'state': u'',
+                'country': u'',
+                'taxon': u'',
+                'rights': u'',
+                'caption': u'',
+                'genus_sp': u'',
+                'size': u'',
+                'source': u'',
+                'date': '1900-01-01 01:01:01',
+                'geolocation': u'',
+                'latitude': u'',
+                'longitude': u''
+                }
+
+        return self.meta
 
 
 class Photo:
@@ -190,6 +221,7 @@ class Photo:
         self.source_filepath = filepath
         self.filename = os.path.basename(filepath)
         self.timestamp = datetime.fromtimestamp(os.path.getmtime(filepath))
+        self.type = 'photo'
 
     def create_meta(self, charset='utf-8'):
         '''Define as variáveis extraídas dos metadados da imagem.
@@ -418,7 +450,7 @@ class Folder:
         n = 0
         # Tuplas para o endswith()
         photo_extensions = ('jpg', 'JPG', 'jpeg', 'JPEG')
-        video_extensions = ('avi', 'AVI', 'mov', 'MOV', 'mp4', 'MP4', 'ogg', 'OGG', 'ogv', 'OGV', 'dv', 'DV')
+        video_extensions = ('avi', 'AVI', 'mov', 'MOV', 'mp4', 'MP4', 'ogg', 'OGG', 'ogv', 'OGV', 'dv', 'DV', 'mpg', 'MPG', 'mpeg', 'MPEG', 'flv', 'FLV')
         ignore_extensions = ('~')
         # Buscador de arquivos em ação
         for root, dirs, files in os.walk(self.folder_path):
@@ -440,7 +472,7 @@ class Folder:
                     print 'Nome do último arquivo: %s' % filename
                     break
         else:
-            print '\n%d imagens encontradas.' % n
+            print '\n%d arquivos encontrados.' % n
 
         return self.files
 
@@ -456,16 +488,16 @@ def usage():
     print '\tMostra este menu de ajuda.'
     print
     print '  -n {n}, --n-max {n} (padrão=20)'
-    print '\tEspecifica um número máximo de imagens que o programa irá ' \
+    print '\tEspecifica um número máximo de arquivos que o programa irá ' \
             'verificar.'
     print
     print '  -f, --force-update'
-    print '\tAtualiza banco de dados e refaz thumbnails de todas as imagens, '
+    print '\tAtualiza banco de dados e refaz thumbnails de todas as entradas, '
     print '\tinclusive as que não foram modificadas.'
     print
     print 'Exemplo:'
     print '  python cifonauta.py -f -n 15'
-    print '\tFaz a atualização forçada das primeiras 15 imagens que o programa'
+    print '\tFaz a atualização forçada dos primeiros 15 arquivos que o programa'
     print '\tencontrar na pasta padrão (sourcedir; ver código).'
     print
 
@@ -506,10 +538,10 @@ def main(argv):
     
     # Imprime resumo do que o programa vai fazer
     if force_update is True:
-        print '\n%d imagens serão atualizadas de forma forçada.' % n_max
+        print '\n%d arquivos serão atualizadas de forma forçada.' % n_max
         print '(argumento "-f" utilizado)'
     else:
-        print '\n%d imagens serão verificadas e registradas no banco de ' \
+        print '\n%d arquivos serão verificadas e registradas no banco de ' \
                 'dados.' % n_max
 
     # Cria o arquivo log
@@ -533,23 +565,23 @@ def main(argv):
         if path[1] == 'photo':
             media = Photo(path[0])
         elif path[1] == 'video':
-            media = Video(path[0])
+            media = Movie(path[0])
         # Busca nome do arquivo no banco de dados
         query = cbm.search_db(media.filename, media.timestamp)
         if not query:
-            # Se imagem for nova
-            print '\nIMAGEM NOVA, CRIANDO ENTRADA NO BANCO DE DADOS...'
+            # Se mídia for nova
+            print '\nARQUIVO NOVO, CRIANDO ENTRADA NO BANCO DE DADOS...'
             media.create_meta()
-            cbm.update_db(media.meta)
+            cbm.update_db(media)
             n_new += 1
         else:
             if not force_update and query == 2:
                 # Se registro existir e timestamp for igual
                 print '\nREGISTRO EXISTE E ESTÁ ATUALIZADO NO SITE! ' \
-                        'PRÓXIMA IMAGEM...'
+                        'PRÓXIMO ARQUIVO...'
                 pass
             else:
-                # Se imagem do site não estiver atualizada
+                # Se arquivo do site não estiver atualizada
                 if force_update:
                     print '\nREGISTRO EXISTE E ESTÁ ATUALIZADO, MAS '\
                             'RODANDO SOB ARGUMENTO "-f".'
@@ -557,13 +589,12 @@ def main(argv):
                     print '\nREGISTRO EXISTE, MAS NÃO ESTÁ ATUALIZADO. ' \
                             'ATUALIZANDO O BANCO DE DADOS...'
                 media.create_meta()
-                cbm.update_db(media.meta, update=True)
+                cbm.update_db(media, update=True)
                 n_up += 1
     n = len(filepaths)
     
     # Deletando arquivo log se ele estiver vazio
     if log.read(1024) == '':
-        #Fechando a imagem
         log.close()
         # Deletando log vazio
         os.remove(logname)
@@ -571,9 +602,9 @@ def main(argv):
         # Fechando arquivo de log
         log.close()
     
-    print '\n%d IMAGENS ANALISADAS' % n
-    print '%d novas imagens' % n_new
-    print '%d imagens atualizadas' % n_up
+    print '\n%d ARQUIVOS ANALISADAS' % n
+    print '%d novos' % n_new
+    print '%d atualizados' % n_up
     t = int(time.time() - t0)
     if t > 60:
         print '\nTempo de execução:', t / 60, 'min', t % 60, 's'

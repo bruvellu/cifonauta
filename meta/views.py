@@ -18,7 +18,10 @@ def main_page(request):
     if not images:
         images = ['']
     image = images[0]
-    thumbs = images.exclude(id=image.id)[:4]
+    if images[0] != '':
+        thumbs = images.exclude(id=image.id)[:4]
+    else:
+        thumbs = []
     videos = Video.objects.filter(highlight=True).order_by('?')
     if not videos:
         videos = Video.objects.all().order_by('?')

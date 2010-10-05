@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 01 Oct 2010 08:01PM
+# Atualizado: 04 Oct 2010 10:15PM
 '''Gerenciador do Banco de imagens do CEBIMar-USP.
 
 Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
@@ -168,6 +168,22 @@ class Database:
         return entry
 
 
+class Video:
+    '''Define objetos para instâncias dos vídeos.'''
+    def __init__(self, filepath):
+        self.source_filepath = filepath
+        self.filename = os.path.basename(filepath)
+        self.timestamp = datetime.fromtimestamp(os.path.getmtime(filepath))
+
+        print self.source_filepath
+        print self.filename
+        print self.timestamp
+
+    def create_meta(self, charset='utf-8'):
+        '''Define as variáveis dos metadados do vídeo.'''
+        print 'Lendo os metadados de %s e criando variáveis.' % self.filename
+
+
 class Photo:
     '''Define objeto para instâncias das fotos.'''
     def __init__(self, filepath):
@@ -176,9 +192,9 @@ class Photo:
         self.timestamp = datetime.fromtimestamp(os.path.getmtime(filepath))
 
     def create_meta(self, charset='utf-8'):
-        '''Define as variáveis extraídas dos metadados (IPTC) da imagem.
+        '''Define as variáveis extraídas dos metadados da imagem.
 
-        Usa a biblioteca do arquivo iptcinfo.py.
+        Usa a biblioteca do arquivo iptcinfo.py para padrão IPTC e pyexiv2 para EXIF.
         '''
         print 'Lendo os metadados de %s e criando variáveis.' % self.filename
         # Criar objeto com metadados
@@ -387,29 +403,37 @@ class Photo:
 
 
 class Folder:
-    '''Define objeto para lidar com as pastas a serem lidas.'''
+    '''Classes de objetos para lidar com as pastas e seus arquivos.'''
     def __init__(self, folder, n_max):
         self.folder_path = folder
         self.n_max = n_max
-        self.images = []
+        self.files = []
 
-    def get_images(self):
-        '''Busca recursivamente arquivos com extensão .jpg.'''
+    def get_files(self):
+        '''Busca recursivamente arquivos de uma pasta.
+        
+        Identifica a extensão do arquivo e salva tipo junto com o caminho.
+        Retorna lista de tuplas com caminho e tipo.
+        '''
         n = 0
-        # Tupla para o endswith()
-        extensions = ('jpg', 'JPG', 'jpeg', 'JPEG')
-        to_ignore = ('~')
-        o = []
-        # Buscador de imagens em ação
+        # Tuplas para o endswith()
+        photo_extensions = ('jpg', 'JPG', 'jpeg', 'JPEG')
+        video_extensions = ('avi', 'AVI', 'mov', 'MOV', 'mp4', 'MP4', 'ogg', 'OGG', 'ogv', 'OGV', 'dv', 'DV')
+        ignore_extensions = ('~')
+        # Buscador de arquivos em ação
         for root, dirs, files in os.walk(self.folder_path):
             for filename in files:
-                if filename.endswith(extensions) and n < self.n_max:
+                if filename.endswith(photo_extensions) and n < self.n_max:
                     filepath = os.path.join(root, filename)
-                    self.images.append(filepath)
-                    o.append(filename)
+                    self.files.append((filepath, 'photo'))
                     n += 1
                     continue
-                elif filename.endswith(to_ignore):
+                if filename.endswith(video_extensions) and n < self.n_max:
+                    filepath = os.path.join(root, filename)
+                    self.files.append((filepath, 'video'))
+                    n += 1
+                    continue
+                elif filename.endswith(ignore_extensions):
                     print 'Ignorando %s' % filename
                     continue
                 else:
@@ -417,17 +441,8 @@ class Folder:
                     break
         else:
             print '\n%d imagens encontradas.' % n
-        # Cria lista com nome dos arquivos da pasta
-        i = os.listdir(self.folder_path)
-        # Verifica as diferenças...
-        diff = set(i) - set(o)
-        # Grava no arquivo...
-        #FIXME Tentar descobrir por que acontece isso!
-        loucura = open('loucura.txt', 'w')
-        for nome in diff:
-            loucura.write(nome + '\n')
 
-        return self.images
+        return self.files
 
 
 def usage():
@@ -512,15 +527,20 @@ def main(argv):
 
     # Inicia o cifonauta buscando pasta...
     folder = Folder(sourcedir, n_max)
-    image_paths = folder.get_images()
-    for path in image_paths:
-        image = Photo(path)
-        query = cbm.search_db(image.filename, image.timestamp)
+    filepaths = folder.get_files()
+    for path in filepaths:
+        # Reconhece se é foto ou vídeo
+        if path[1] == 'photo':
+            media = Photo(path[0])
+        elif path[1] == 'video':
+            media = Video(path[0])
+        # Busca nome do arquivo no banco de dados
+        query = cbm.search_db(media.filename, media.timestamp)
         if not query:
             # Se imagem for nova
             print '\nIMAGEM NOVA, CRIANDO ENTRADA NO BANCO DE DADOS...'
-            image.create_meta()
-            cbm.update_db(image.meta)
+            media.create_meta()
+            cbm.update_db(media.meta)
             n_new += 1
         else:
             if not force_update and query == 2:
@@ -536,10 +556,10 @@ def main(argv):
                 else:
                     print '\nREGISTRO EXISTE, MAS NÃO ESTÁ ATUALIZADO. ' \
                             'ATUALIZANDO O BANCO DE DADOS...'
-                image.create_meta()
-                cbm.update_db(image.meta, update=True)
+                media.create_meta()
+                cbm.update_db(media.meta, update=True)
                 n_up += 1
-    n = len(image_paths)
+    n = len(filepaths)
     
     # Deletando arquivo log se ele estiver vazio
     if log.read(1024) == '':

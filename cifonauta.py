@@ -6,10 +6,10 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 05 Oct 2010 01:53AM
-'''Gerenciador do Banco de imagens do CEBIMar-USP.
+# Atualizado: 05 Oct 2010 02:06AM
+'''Gerenciador do banco de imagens do CEBIMar-USP.
 
-Este programa gerencia as imagens do banco de imagens do CEBIMar lendo seus
+Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
 metadados, reconhecendo marquivos modificados e atualizando o website.
 
 Centro de Biologia Marinha da Universidade de São Paulo.

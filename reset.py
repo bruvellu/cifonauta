@@ -6,7 +6,30 @@ from django.core.management import setup_environ
 import settings
 setup_environ(settings)
 from meta.models import *
+import subprocess
 
+# Deleta banco de dados do cebimar
+print '\nApagando o banco de dados: cebimar...'
+subprocess.call(['dropdb', 'cebimar'])
+print 'Apagado!'
+
+# Cria novo banco usando parâmetros a seguir
+print '\nCriando novo banco de dados...'
+subprocess.call(['createdb', '-E', 'UTF8', '-T', 'template0', '--lc-collate=pt_BR.UTF8', '--lc-ctype=pt_BR.UTF8', 'cebimar'])
+print 'Novo banco de dados criado: cebimar'
+
+# Roda o syncdb para criar tabelas necessárias
+print '\nCriando tabelas baseado nos modelos...'
+subprocess.call(['python', 'manage.py', 'syncdb'])
+print 'Tabelas prontas!'
+
+# Instala funções e triggers para funcionamento básico
+print '\nInstalando funções e triggers...'
+subprocess.call(['psql', '-f', 'psql/load.sql', 'cebimar'])
+print 'Banco de dados pronto!'
+
+# Cria colunas onde o valor é vazio
+print '\nCriando colunas para valores em branco...'
 zero, new = Taxon.objects.get_or_create(name=u'')
 zero, new = Genus.objects.get_or_create(name=u'')
 zero, new = Species.objects.get_or_create(name=u'')
@@ -168,8 +191,9 @@ species = [
 
 ####################################################
 
+# Cria categorias de marcadores
+print '\nCriando categorias de marcadores...'
 for tagcat in tagcats:
-    print tagcat
     if tagcat['parent'] and tagcat['parent'] != u'None':
         tagcat_parent, new = TagCategory.objects.get_or_create(
                 name=tagcat['parent'])
@@ -183,9 +207,11 @@ for tagcat in tagcats:
     zero.description=tagcat_description
     zero.parent=tagcat_parent
     zero.save()
+    print '\t%s' % tagcat['name']
 
+# Cria marcadores
+print '\nCriando marcadores...'
 for tag in tags:
-    print tag
     if tag['parent'] and tag['parent'] != u'None':
         tag_parent, new = TagCategory.objects.get_or_create(
                 name=tag['parent'])
@@ -199,9 +225,11 @@ for tag in tags:
     zero.description=tag_description
     zero.parent=tag_parent
     zero.save()
+    print '\t%s' % tag['name']
 
+# Cria táxons
+print '\nCriando táxons...'
 for taxon in taxa:
-    print taxon
     if taxon['parent'] and taxon['parent'] != u'None':
         taxon_parent, new = Taxon.objects.get_or_create(
                 name=taxon['parent'])
@@ -215,3 +243,4 @@ for taxon in taxa:
     zero.common=taxon_common
     zero.parent=taxon_parent
     zero.save()
+    print '\t%s' % taxon['name']

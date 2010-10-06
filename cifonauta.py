@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 05 Oct 2010 07:47PM
+# Atualizado: 06 Oct 2010 03:07AM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -212,28 +212,63 @@ class Movie:
                 'longitude': u''
                 }
 
+        #TODO incluir filepath de arquivos e thumbs no meta
+
         return self.meta
+
+    def process_video(self):
+        '''Redimensiona o vídeo, inclui marca d'água e comprime.'''
+        local_filepath = os.path.join(self.local_dir, self.filename)
+        print '\nProcessando o vídeo...'
+        try:
+            #TODO Arrumar o processamento.
+            # Converte para 72dpi, JPG qualidade 50 e redimensiona as imagens
+            # maiores que 640 (em altura ou largura)
+            subprocess.call(['convert', self.source_filepath, '-density', '72', '-format', 'jpg',
+                '-quality', '50', '-resize', '640x640>', local_filepath])
+            # Insere marca d'água no canto direito embaixo
+            subprocess.call(['composite', '-dissolve', '20', '-gravity',
+                'southeast', watermark, local_filepath, local_filepath])
+            # Copia imagem para pasta web
+            #XXX Melhorar isso de algum jeito...
+            web_filepath = os.path.join(self.site_dir, self.filename)
+            copy(local_filepath, web_filepath)
+        except IOError:
+            print '\nOcorreu algum erro na conversão da imagem. Verifique se o ' \
+                    'ImageMagick está instalado.'
+        else:
+            print 'Imagem convertida com sucesso! Criando thumbnails...'
+            thumb_filepath = self.create_thumbs()
+            return web_filepath, thumb_filepath
+
 
     def create_thumbs(self):
         '''Cria thumbnails para os novos vídeos.'''
-        #TODO Não esquecer de criar o large thumb também.
+        # Troca extensão para png.
         thumbname = self.filename.split('.')[0] + '.png'
+        large_thumbname = self.filename.split('.')[0] + '.jpg'
         # Define caminho para pasta local.
         local_filepath = os.path.join(self.local_thumb_dir, thumbname)
+        local_filepath_large = os.path.join(self.local_thumb_dir, large_thumbname)
         try:
-            #ffmpeg -i fx002.kinofx.dv -vframes 1 -s 480x360 -ss 10 -f image2 foo3.png
-
-            # Convocando o ImageMagick
+            # Cria thumb grande a partir de 1 frame no segundo 5
+            subprocess.call(['ffmpeg', '-i', self.source_filepath,
+                '-vframes', '1', '-s', '480x360', '-ss', '5', '-f',
+                'image2', local_filepath_large])
+            # Cria thumb normal (pequeno)
             subprocess.call(['convert', '-define', 'jpeg:size=200x150',
-                self.source_filepath, '-thumbnail', '120x90^', '-gravity', 'center',
-                '-extent', '120x90', 'PNG8:%s' % thumb_localfilepath])
+                local_filepath_large, '-thumbnail', '120x90^', '-gravity',
+                'center', '-extent', '120x90', 'PNG8:%s' % local_filepath])
         except IOError:
+            #TODO Criar entrada no log.
             print 'Não consegui criar o thumbnail...'
-        #XXX Dar um jeito de melhorar isso...
+        # Copia thumbs da pasta local para site
         copy(local_filepath, self.site_thumb_dir)
+        copy(local_filepath_large, self.site_thumb_dir)
         # Define caminho para o thumb do site.
         site_filepath = os.path.join(self.site_thumb_dir, thumbname)
-        return site_filepath
+        site_filepath_large = os.path.join(self.site_thumb_dir, large_thumbname)
+        return site_filepath, site_filepath_large
 
 class Photo:
     '''Define objeto para instâncias das fotos.'''
@@ -458,6 +493,7 @@ class Photo:
                 self.source_filepath, '-thumbnail', '120x90^', '-gravity', 'center',
                 '-extent', '120x90', 'PNG8:%s' % local_filepath])
         except IOError:
+            #TODO Criar entrada no log.
             print 'Não consegui criar o thumbnail...'
         # Copia thumb da pasta local para site_media.
         copy(local_filepath, self.site_thumb_dir)

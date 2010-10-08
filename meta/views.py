@@ -148,7 +148,7 @@ def video_page(request, video_id):
     video = get_object_or_404(Video, id=video_id)
     video.view_count = video.view_count + 1
     video.save()
-    spp = splist(request, image)
+    spp = splist(request, video)
     variables = RequestContext(request, {
         'media': video,
         'splist': spp,

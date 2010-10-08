@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 06 Oct 2010 03:07AM
+# Atualizado: 08 Oct 2010 05:06AM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -52,7 +52,7 @@ class Database:
     def __init__(self):
         pass
 
-    def search_db(self, filename, timestamp):
+    def search_db(self, media):
         '''Busca o registro no banco de dados pelo nome do arquivo.
         
         Se encontrar, compara a data de modificação do arquivo e do registro.
@@ -62,12 +62,24 @@ class Database:
         print '\nVerificando se o arquivo está no banco de dados...'
         
         try :
-            record = Image.objects.get(web_filepath__icontains=filename)
-            print 'Bingo! Registro de %s encontrado.' % filename
+            if media.type == "photo":
+                record = Image.objects.get(web_filepath__icontains=media.filename)
+            elif media.type == "video":
+                try:
+                    record = Video.objects.get(
+                            webm_filepath__icontains=media.filename.split('.')[0])
+                except:
+                    try:
+                        record = Video.objects.get(mp4_filepath__icontains=media.filename.split('.')[0])
+                    except:
+                        try:
+                            record = Video.objects.get(ogg_filepath__icontains=media.filename.split('.')[0])
+                        except:
+                            print 'Não bateu nenhum!'
+                            return False
+            print 'Bingo! Registro de %s encontrado.' % media.filename
             print 'Comparando a data de modificação do arquivo com o registro...'
-            # Corrige timestamps para poder comparar.
-            #timestamp = timestamp.strftime('%Y-%m-%d %H:%M:%S')
-            if record.timestamp != timestamp:
+            if record.timestamp != media.timestamp:
                 print 'Arquivo mudou!'
                 return 1
             else:
@@ -122,7 +134,7 @@ class Database:
             if media.type == 'photo':
                 entry = Image.objects.get(web_filepath__icontains=media.filename)
             elif media.type == 'video':
-                entry = Video.objects.get(web_filepath__icontains=media.filename)
+                entry = Video.objects.get(webm_filepath__icontains=media.filename.split('.')[0])
             for k, v in media_meta.iteritems():
                 setattr(entry, k, v)
 
@@ -213,33 +225,111 @@ class Movie:
                 }
 
         #TODO incluir filepath de arquivos e thumbs no meta
+        web_paths, thumb_filepath, large_thumb = self.process_video()
+        print web_paths
+        for k, v in web_paths.iteritems():
+            self.meta[k] = v
+        self.meta['thumb_filepath'] = thumb_filepath
+        self.meta['large_thumb'] = large_thumb
 
         return self.meta
 
     def process_video(self):
         '''Redimensiona o vídeo, inclui marca d'água e comprime.'''
-        local_filepath = os.path.join(self.local_dir, self.filename)
         print '\nProcessando o vídeo...'
+        web_paths = {}
         try:
-            #TODO Arrumar o processamento.
-            # Converte para 72dpi, JPG qualidade 50 e redimensiona as imagens
-            # maiores que 640 (em altura ou largura)
-            subprocess.call(['convert', self.source_filepath, '-density', '72', '-format', 'jpg',
-                '-quality', '50', '-resize', '640x640>', local_filepath])
-            # Insere marca d'água no canto direito embaixo
-            subprocess.call(['composite', '-dissolve', '20', '-gravity',
-                'southeast', watermark, local_filepath, local_filepath])
-            # Copia imagem para pasta web
-            #XXX Melhorar isso de algum jeito...
-            web_filepath = os.path.join(self.site_dir, self.filename)
-            copy(local_filepath, web_filepath)
+            try:
+                # WebM
+                webm_name = self.filename.split('.')[0] + '.webm'
+                webm_filepath = os.path.join(self.local_dir, webm_name)
+                subprocess.call([
+                    'ffmpeg', '-y', '-i', self.source_filepath, '-aspect',
+                    '4:3', '-metadata', 'title="%s"' % self.meta['title'],
+                    '-metadata', 'author="%s"' % self.meta['author'], '-s',
+                    '480x360', '-pass', '1', '-vcodec', 'libvpx', '-b', '300k',
+                    '-g', '15', '-bf', '2', '-vpre', 'veryslow_firstpass',
+                    '-threads', '2', webm_filepath])
+                subprocess.call(['ffmpeg', '-y', '-i', self.source_filepath,
+                    '-aspect', '4:3', '-metadata', 'title="%s"' %
+                    self.meta['title'], '-metadata', 'author="%s"' %
+                    self.meta['author'], '-s', '480x360', '-pass', '2',
+                    '-vcodec', 'libvpx', '-b', '300k', '-g', '15', '-bf', '2',
+                    '-vpre', 'veryslow', '-acodec', 'libvorbis', '-ab', '128k',
+                    '-ar', '44100', '-threads', '2', webm_filepath])
+                try:
+                    # Copia imagem para pasta web
+                    webm_site_filepath = os.path.join(self.site_dir, webm_name)
+                    copy(webm_filepath, webm_site_filepath)
+                except:
+                    print 'Não conseguiu copiar para o site.'
+                web_paths['webm_filepath'] = webm_site_filepath
+            except:
+                print 'Processamento do WebM não funcionou!'
+            try:
+                # MP4
+                mp4_name = self.filename.split('.')[0] + '.mp4' 
+                mp4_filepath = os.path.join(self.local_dir, mp4_name)
+                subprocess.call([
+                    'ffmpeg', '-y', '-i', self.source_filepath, '-aspect',
+                    '4:3', '-metadata', 'title="%s"' % self.meta['title'],
+                    '-metadata', 'author="%s"' % self.meta['author'], '-s',
+                    '480x360', '-pass', '1', '-vcodec', 'libx264', '-b', '300k',
+                    '-g', '15', '-bf', '2', '-vpre', 'veryslow_firstpass',
+                    '-threads', '2', mp4_filepath])
+                subprocess.call(['ffmpeg', '-y', '-i', self.source_filepath,
+                    '-aspect', '4:3', '-metadata', 'title="%s"' %
+                    self.meta['title'], '-metadata', 'author="%s"' %
+                    self.meta['author'], '-s', '480x360', '-pass', '2',
+                    '-vcodec', 'libx264', '-b', '300k', '-g', '15', '-bf', '2',
+                    '-vpre', 'veryslow', '-acodec', 'libfaac', '-ab', '128k',
+                    '-ar', '44100', '-threads', '2', mp4_filepath])
+                try:
+                    # Copia imagem para pasta web
+                    mp4_site_filepath = os.path.join(self.site_dir, mp4_name)
+                    copy(mp4_filepath, mp4_site_filepath)
+                except:
+                    print 'Não conseguiu copiar para o site.'
+                web_paths['mp4_filepath'] = mp4_site_filepath
+            except:
+                print 'Processamento do x264 não funcionou!'
+            try:
+                # OGG
+                ogg_name = self.filename.split('.')[0] + '.ogv' 
+                ogg_filepath = os.path.join(self.local_dir, ogg_name)
+                subprocess.call([
+                    'ffmpeg', '-y', '-i', self.source_filepath, '-aspect',
+                    '4:3', '-metadata', 'title="%s"' % self.meta['title'],
+                    '-metadata', 'author="%s"' % self.meta['author'], '-s',
+                    '480x360', '-pass', '1', '-vcodec', 'libtheora', '-b', '300k',
+                    '-g', '15', '-bf', '2', '-vpre', 'veryslow_firstpass',
+                    '-threads', '2', ogg_filepath])
+                subprocess.call(['ffmpeg', '-y', '-i', self.source_filepath,
+                    '-aspect', '4:3', '-metadata', 'title="%s"' %
+                    self.meta['title'], '-metadata', 'author="%s"' %
+                    self.meta['author'], '-s', '480x360', '-pass', '2',
+                    '-vcodec', 'libtheora', '-b', '300k', '-g', '15', '-bf',
+                    '2', '-vpre', 'veryslow', '-acodec', 'libvorbis', '-ab',
+                    '128k', '-ar', '44100', '-threads', '2', ogg_filepath])
+                try:
+                    # Copia imagem para pasta web
+                    ogg_site_filepath = os.path.join(self.site_dir, ogg_name)
+                    copy(ogg_filepath, ogg_site_filepath)
+                except:
+                    print 'Não conseguiu copiar para o site.'
+                web_paths['ogg_filepath'] = ogg_site_filepath
+            except:
+                print 'Processamento do OGG não funcionou!'
+
+            #TODO qt-faststart input.foo output.foo
+
         except IOError:
             print '\nOcorreu algum erro na conversão da imagem. Verifique se o ' \
                     'ImageMagick está instalado.'
         else:
-            print 'Imagem convertida com sucesso! Criando thumbnails...'
-            thumb_filepath = self.create_thumbs()
-            return web_filepath, thumb_filepath
+            print 'Vídeos convertidos com sucessos! Criando thumbnails...'
+            thumb_filepath, large_thumb_filepath = self.create_thumbs()
+            return web_paths, thumb_filepath, large_thumb_filepath
 
 
     def create_thumbs(self):
@@ -638,7 +728,7 @@ def main(argv):
         elif path[1] == 'video':
             media = Movie(path[0])
         # Busca nome do arquivo no banco de dados
-        query = cbm.search_db(media.filename, media.timestamp)
+        query = cbm.search_db(media)
         if not query:
             # Se mídia for nova
             print '\nARQUIVO NOVO, CRIANDO ENTRADA NO BANCO DE DADOS...'

@@ -52,8 +52,10 @@ class Image(File):
 
 
 class Video(File):
-    web_filepath = models.FileField(upload_to='site_media/videos/')
-    alt_filepath = models.FileField(upload_to='site_media/videos/')
+    webm_filepath = models.FileField(upload_to='site_media/videos/', blank=True)
+    ogg_filepath = models.FileField(upload_to='site_media/videos/', blank=True)
+    mp4_filepath = models.FileField(upload_to='site_media/videos/', blank=True)
+    flv_filepath = models.FileField(upload_to='site_media/videos/', blank=True)
     datatype = models.CharField(max_length=10, default='video')
     large_thumb = models.ImageField(upload_to='site_media/images/thumbs')
 

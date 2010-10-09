@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 08 Oct 2010 05:06AM
+# Atualizado: 09 Oct 2010 03:09AM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -20,6 +20,7 @@ import sys
 import subprocess
 import time
 import getopt
+import pickle
 
 from datetime import datetime
 from shutil import copy
@@ -202,6 +203,7 @@ class Movie:
         print 'Lendo os metadados de %s e criando variáveis.' % self.filename
         #TODO Incorporar leitura de metadados e delegação dos valores.
         # Testar com o ffmpeg, arquivo de texto, etc.
+
         self.meta = {
                 'source_filepath': os.path.abspath(self.source_filepath),
                 'timestamp': self.timestamp,
@@ -224,9 +226,27 @@ class Movie:
                 'longitude': u''
                 }
 
+        text_path = self.source_filepath.split('.')[0] + '.txt'
+        try:
+            meta_text = open(text_path, 'rb')
+            print 'Arquivo de info existe!'
+        except:
+            meta_text = ''
+
+        print self.meta
+        if meta_text:
+            meta_dic = pickle.load(meta_text)
+            meta_text.close()
+        self.meta.update(meta_dic)
+        print self.meta
+
         #TODO incluir filepath de arquivos e thumbs no meta
         web_paths, thumb_filepath, large_thumb = self.process_video()
         print web_paths
+
+        # Prepara alguns campos para banco de dados
+        self.meta = prepare_meta(self.meta)
+
         for k, v in web_paths.iteritems():
             self.meta[k] = v
         self.meta['thumb_filepath'] = thumb_filepath
@@ -407,31 +427,10 @@ class Photo:
                 'source': info.data['source'], # 115
                 'timestamp': self.timestamp,
                 }
+
+        # Prepara alguns campos para banco de dados
+        self.meta = prepare_meta(self.meta)
                 
-        # Converte valores None para string em branco
-        for k, v in self.meta.iteritems():
-            if v is None:
-                self.meta[k] = u''
-
-        # Preparando autor(es) para o banco de dados
-        self.meta['author'] = [a.strip() for a in self.meta['author'].split(',')] 
-        # Preparando taxon(s) para o banco de dados
-        self.meta['taxon'] = [a.strip() for a in self.meta['taxon'].split(',')] 
-
-        # Preparando a espécie para o banco de dados
-        spp_diclist = []
-        genera_spp = [i.strip() for i in self.meta['genus_sp'].split(',')]
-        for genus_sp in genera_spp:
-            if genus_sp:
-                bilist = genus_sp.split()
-                if len(bilist) == 1 and bilist[0] != '':
-                    spp_diclist.append({'genus': bilist[0], 'sp': ''})
-                elif len(bilist) == 2:
-                    if bilist[1] in ['sp.', 'sp', 'spp']:
-                        bilist[1] = ''
-                    spp_diclist.append({'genus': bilist[0], 'sp': bilist[1]})
-        self.meta['genus_sp'] = spp_diclist
-
         # Extraindo metadados do EXIF
         exif = self.get_exif(self.source_filepath)
         date = self.get_date(exif)
@@ -626,9 +625,9 @@ class Folder:
                 elif filename.endswith(ignore_extensions):
                     print 'Ignorando %s' % filename
                     continue
-                else:
-                    print 'Nome do último arquivo: %s' % filename
-                    break
+            else:
+                print 'Nome do último arquivo: %s' % filename
+                break
         else:
             print '\n%d arquivos encontrados.' % n
 
@@ -636,6 +635,38 @@ class Folder:
 
 
 # Funções principais
+
+def prepare_meta(meta):
+    '''Processa as strings dos metadados convertendo para bd.
+    
+    Transforma None em string vazia, transforma autores e táxons em lista,
+    espécies em dicionário.
+    '''
+    # Converte valores None para string em branco
+    for k, v in meta.iteritems():
+        if v is None:
+            meta[k] = u''
+
+    # Preparando autor(es) para o banco de dados
+    meta['author'] = [a.strip() for a in meta['author'].split(',')] 
+    # Preparando taxon(s) para o banco de dados
+    meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')] 
+
+    # Preparando a espécie para o banco de dados
+    spp_diclist = []
+    genera_spp = [i.strip() for i in meta['genus_sp'].split(',')]
+    for genus_sp in genera_spp:
+        if genus_sp:
+            bilist = genus_sp.split()
+            if len(bilist) == 1 and bilist[0] != '':
+                spp_diclist.append({'genus': bilist[0], 'sp': ''})
+            elif len(bilist) == 2:
+                if bilist[1] in ['sp.', 'sp', 'spp']:
+                    bilist[1] = ''
+                spp_diclist.append({'genus': bilist[0], 'sp': bilist[1]})
+    meta['genus_sp'] = spp_diclist
+
+    return meta
 
 def dir_ready(*dirs):
     '''Verifica se o diretório existe, criando caso não exista.'''
@@ -763,7 +794,7 @@ def main(argv):
         # Fechando arquivo de log
         log.close()
     
-    print '\n%d ARQUIVOS ANALISADAS' % n
+    print '\n%d ARQUIVOS ANALISADOS' % n
     print '%d novos' % n_new
     print '%d atualizados' % n_up
     t = int(time.time() - t0)

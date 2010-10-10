@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 09 Oct 2010 03:09AM
+# Atualizado: 10 Oct 2010 01:25AM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -21,6 +21,7 @@ import subprocess
 import time
 import getopt
 import pickle
+import random
 
 from datetime import datetime
 from shutil import copy
@@ -37,7 +38,7 @@ __author__ = 'Bruno Vellutini'
 __copyright__ = 'Copyright 2010, CEBIMar-USP'
 __credits__ = 'Bruno C. Vellutini'
 __license__ = 'DEFINIR'
-__version__ = '0.8'
+__version__ = '0.8.2'
 __maintainer__ = 'Bruno Vellutini'
 __email__ = 'organelas at gmail dot com'
 __status__ = 'Development'
@@ -198,14 +199,10 @@ class Movie:
         dir_ready(self.site_dir, self.site_thumb_dir,
                 self.local_dir, self.local_thumb_dir)
 
-    def create_meta(self, charset='utf-8'):
+    def create_meta(self, new=False):
         '''Define as variáveis dos metadados do vídeo.'''
         print 'Lendo os metadados de %s e criando variáveis.' % self.filename
-        #TODO Incorporar leitura de metadados e delegação dos valores.
-        # Testar com o ffmpeg, arquivo de texto, etc.
-
         self.meta = {
-                'source_filepath': os.path.abspath(self.source_filepath),
                 'timestamp': self.timestamp,
                 'title': u'',
                 'tags': u'',
@@ -226,25 +223,45 @@ class Movie:
                 'longitude': u''
                 }
 
-        text_path = self.source_filepath.split('.')[0] + '.txt'
+        # Verifica se arquivo acessório com meta dos vídeos existe.
         try:
+            text_path = self.source_filepath.split('.')[0] + '.txt'
             meta_text = open(text_path, 'rb')
             print 'Arquivo de info existe!'
         except:
             meta_text = ''
 
-        print self.meta
         if meta_text:
             meta_dic = pickle.load(meta_text)
             meta_text.close()
-        self.meta.update(meta_dic)
-        print self.meta
+            # Atualiza meta com valores do arquivo acessório.
+            self.meta.update(meta_dic)
 
-        #TODO incluir filepath de arquivos e thumbs no meta
+        # Inicia processo de renomear arquivo. 
+        if new:
+            # Adiciona o antigo caminho aos metadados.
+            self.meta['old_filepath'] = self.source_filepath
+            new_filename = rename_file(self.filename, self.meta['author'])
+            # Atualiza media object.
+            self.source_filepath = os.path.join(
+                    os.path.dirname(self.source_filepath), new_filename)
+            self.filename = new_filename
+            # Atualiza os metadados.
+            self.meta['source_filepath'] = os.path.abspath(self.source_filepath)
+            # Renomeia o arquivo.
+            os.rename(self.meta['old_filepath'], self.meta['source_filepath'])
+            if meta_text:
+                # Renomeia o arquivo acessório.
+                text_path = self.meta['old_filepath'].split('.')[0] + '.txt'
+                new_path = self.source_filepath.split('.')[0] + '.txt'
+                os.rename(text_path, new_path)
+        else:
+            self.meta['source_filepath'] = os.path.abspath(self.source_filepath)
+
+        # Processa o vídeo.
         web_paths, thumb_filepath, large_thumb = self.process_video()
-        print web_paths
 
-        # Prepara alguns campos para banco de dados
+        # Prepara alguns campos para banco de dados.
         self.meta = prepare_meta(self.meta)
 
         for k, v in web_paths.iteritems():
@@ -380,6 +397,7 @@ class Movie:
         site_filepath_large = os.path.join(self.site_thumb_dir, large_thumbname)
         return site_filepath, site_filepath_large
 
+
 class Photo:
     '''Define objeto para instâncias das fotos.'''
     def __init__(self, filepath):
@@ -398,7 +416,7 @@ class Photo:
         dir_ready(self.site_dir, self.site_thumb_dir,
                 self.local_dir, self.local_thumb_dir)
 
-    def create_meta(self, charset='utf-8'):
+    def create_meta(self, charset='utf-8', new=False):
         '''Define as variáveis extraídas dos metadados da imagem.
 
         Usa a biblioteca do arquivo iptcinfo.py para padrão IPTC e pyexiv2 para EXIF.
@@ -427,6 +445,20 @@ class Photo:
                 'source': info.data['source'], # 115
                 'timestamp': self.timestamp,
                 }
+
+        if new:
+            # Adiciona o antigo caminho aos metadados.
+            self.meta['old_filepath'] = self.source_filepath
+            new_filename = rename_file(self.filename, self.meta['author'])
+            # Atualiza media object.
+            self.source_filepath = os.path.join(
+                    os.path.dirname(self.source_filepath), new_filename)
+            self.filename = new_filename
+            # Atualiza os metadados.
+            self.meta['source_filepath'] = os.path.abspath(self.source_filepath)
+            os.rename(self.meta['old_filepath'], self.meta['source_filepath'])
+        else:
+            self.meta['source_filepath'] = os.path.abspath(self.source_filepath)
 
         # Prepara alguns campos para banco de dados
         self.meta = prepare_meta(self.meta)
@@ -626,7 +658,6 @@ class Folder:
                     print 'Ignorando %s' % filename
                     continue
             else:
-                print 'Nome do último arquivo: %s' % filename
                 break
         else:
             print '\n%d arquivos encontrados.' % n
@@ -635,6 +666,35 @@ class Folder:
 
 
 # Funções principais
+
+def rename_file(filename, authors):
+    '''Renomeia arquivo com iniciais e identificador.'''
+    print '%s, hora de renomeá-lo!' % filename
+    if authors:
+        initials = get_initials(authors)
+    else:
+        initials = 'cbm'
+    id = create_id()
+    new_filename = initials + '_' + id + '.' + filename.split('.')[1]
+    return new_filename
+
+def get_initials(authors):
+    '''Extrai iniciais dos autores.
+
+    Faz split por vírgulas, caso tenha mais de 1 autor; para cada autor faz
+    split por espaços em branco e pega apenas a primeira letra; junta iniciais
+    em sequência; junta autores separados por hífen.
+
+    Não está muito legível, mas é isso aí.
+    '''
+    initials = '-'.join([''.join([sil[:1] for sil in word.strip().split(' ')]) for word in authors.split(',')]).lower()
+    return initials
+
+def create_id():
+    '''Cria identificador único para nome do arquivo.'''
+    chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    id = ''.join([random.choice(chars) for x in xrange(6)])
+    return id
 
 def prepare_meta(meta):
     '''Processa as strings dos metadados convertendo para bd.
@@ -693,6 +753,9 @@ def usage():
     print '\tAtualiza banco de dados e refaz thumbnails de todas as entradas, '
     print '\tinclusive as que não foram modificadas.'
     print
+    print '  -r, --no-rename'
+    print '\tNão executa a função de renomear arquivos.'
+    print
     print 'Exemplo:'
     print '  python cifonauta.py -f -n 15'
     print '\tFaz a atualização forçada dos primeiros 15 arquivos que o programa'
@@ -709,15 +772,17 @@ def main(argv):
     n_up = 0
     # Valores padrão para argumentos
     force_update = False
+    no_rename = False
     n_max = 20
     web_upload = False
     single_img = False
 
     # Verifica se argumentos foram passados com a execução do programa
     try:
-        opts, args = getopt.getopt(argv, 'hfn:', [
+        opts, args = getopt.getopt(argv, 'hfrn:', [
             'help',
             'force-update',
+            'no-rename',
             'n='])
     except getopt.GetoptError:
         print 'Algo de errado nos argumentos...'
@@ -733,6 +798,8 @@ def main(argv):
             n_max = int(arg)
         elif opt in ('-f', '--force-update'):
             force_update = True
+        elif opt in ('-r', '--no-rename'):
+            no_rename = True
     
     # Imprime resumo do que o programa vai fazer
     if force_update is True:
@@ -763,7 +830,10 @@ def main(argv):
         if not query:
             # Se mídia for nova
             print '\nARQUIVO NOVO, CRIANDO ENTRADA NO BANCO DE DADOS...'
-            media.create_meta()
+            if no_rename:
+                media.create_meta()
+            else:
+                media.create_meta(new=True)
             cbm.update_db(media)
             n_new += 1
         else:

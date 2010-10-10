@@ -9,6 +9,7 @@ class File(models.Model):
     # File
     source_filepath = models.CharField(max_length=100, blank=True)
     thumb_filepath = models.ImageField(upload_to='site_media/images/thumbs')
+    old_filepath = models.CharField(max_length=100, blank=True)
     timestamp = models.DateTimeField()
 
     # Website
@@ -55,7 +56,7 @@ class Video(File):
     webm_filepath = models.FileField(upload_to='site_media/videos/', blank=True)
     ogg_filepath = models.FileField(upload_to='site_media/videos/', blank=True)
     mp4_filepath = models.FileField(upload_to='site_media/videos/', blank=True)
-    flv_filepath = models.FileField(upload_to='site_media/videos/', blank=True)
+    #flv_filepath = models.FileField(upload_to='site_media/videos/', blank=True)
     datatype = models.CharField(max_length=10, default='video')
     large_thumb = models.ImageField(upload_to='site_media/images/thumbs')
 

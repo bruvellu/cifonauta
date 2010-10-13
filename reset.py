@@ -15,7 +15,7 @@ print 'Apagado!'
 
 # Cria novo banco usando parâmetros a seguir
 print '\nCriando novo banco de dados...'
-subprocess.call(['createdb', '-E', 'UTF8', '-T', 'template0', '--lc-collate=pt_BR.UTF8', '--lc-ctype=pt_BR.UTF8', 'cebimar'])
+subprocess.call(['createdb', '-E', 'UTF8', '-T', 'template0', '-l', 'pt_BR.UTF8', 'cebimar'])
 print 'Novo banco de dados criado: cebimar'
 
 # Roda o syncdb para criar tabelas necessárias
@@ -35,6 +35,11 @@ zero, new = Genus.objects.get_or_create(name=u'')
 zero, new = Species.objects.get_or_create(name=u'')
 zero, new = Source.objects.get_or_create(name=u'')
 zero, new = Size.objects.get_or_create(name=u'')
+zero, new = Size.objects.get_or_create(name=u'<0,1 mm')
+zero, new = Size.objects.get_or_create(name=u'0,1 - 1,0 mm')
+zero, new = Size.objects.get_or_create(name=u'1,0 - 10 mm')
+zero, new = Size.objects.get_or_create(name=u'10 - 100 mm')
+zero, new = Size.objects.get_or_create(name=u'>100 mm')
 zero, new = Rights.objects.get_or_create(name=u'')
 zero, new = Sublocation.objects.get_or_create(name=u'')
 zero, new = City.objects.get_or_create(name=u'')
@@ -54,7 +59,6 @@ tags = [
 	{'name': u'campo claro', 'description': u'', 'parent': u'Microscopia'},
 	{'name': u'campo escuro', 'description': u'', 'parent': u'Microscopia'},
 	{'name': u'confocal', 'description': u'', 'parent': u'Microscopia'},
-	{'name': u'avifauna', 'description': u'', 'parent': u'Diversos'},
 	{'name': u'bentônico', 'description': u'Organismos que vivem no leito dos oceanos e mares, fixos ou não a um substrato.', 'parent': u'Bentônicos'},
 	{'name': u'gameta', 'description': u'Célula reprodutiva madura (espermatozóide ou óvulo).', 'parent': u'Estágio de vida'},
 	{'name': u'embrião', 'description': u'Organismo em desenvolvimento, antes de deixar o ovo ou o útero materno.', 'parent': u'Estágio de vida'},

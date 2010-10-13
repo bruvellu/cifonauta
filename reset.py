@@ -8,25 +8,45 @@ setup_environ(settings)
 from meta.models import *
 import subprocess
 
+# Backup do banco de dados do cebimar
+try:
+    print '\nFazendo backup do banco de dados...'
+    subprocess.call(['pg_dump', 'cebimar', '-f', 'db_backup'])
+    print 'Backup feito!'
+except:
+    print '\nProblema no backup!'
+
 # Deleta banco de dados do cebimar
-print '\nApagando o banco de dados: cebimar...'
-subprocess.call(['dropdb', 'cebimar'])
-print 'Apagado!'
+try:
+    print '\nApagando o banco de dados: cebimar...'
+    subprocess.call(['dropdb', 'cebimar'])
+    print 'Apagado!'
+except:
+    print '\nNão foi possível apagar o bd!'
 
 # Cria novo banco usando parâmetros a seguir
-print '\nCriando novo banco de dados...'
-subprocess.call(['createdb', '-E', 'UTF8', '-T', 'template0', '-l', 'pt_BR.UTF8', 'cebimar'])
-print 'Novo banco de dados criado: cebimar'
+try:
+    print '\nCriando novo banco de dados...'
+    subprocess.call(['createdb', '-E', 'UTF8', '-T', 'template0', '-l', 'pt_BR.UTF8', 'cebimar'])
+    print 'Novo banco de dados criado: cebimar'
+except:
+    print '\nNão foi possível criar o novo banco!'
 
 # Roda o syncdb para criar tabelas necessárias
-print '\nCriando tabelas baseado nos modelos...'
-subprocess.call(['python', 'manage.py', 'syncdb'])
-print 'Tabelas prontas!'
+try:
+    print '\nCriando tabelas baseado nos modelos...'
+    subprocess.call(['python', 'manage.py', 'syncdb'])
+    print 'Tabelas prontas!'
+except:
+    print '\nOcorreu algum erro durante a criação das tabelas.'
 
 # Instala funções e triggers para funcionamento básico
-print '\nInstalando funções e triggers...'
-subprocess.call(['psql', '-f', 'psql/load.sql', 'cebimar'])
-print 'Banco de dados pronto!'
+try:
+    print '\nInstalando funções e triggers...'
+    subprocess.call(['psql', '-f', 'psql/load.sql', 'cebimar'])
+    print 'Banco de dados pronto!'
+except:
+    print '\nNão foi possível instalar as funções do bd.'
 
 # Cria colunas onde o valor é vazio
 print '\nCriando colunas para valores em branco...'

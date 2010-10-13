@@ -85,6 +85,8 @@ urlpatterns = patterns('',
         url(r'^pais/(?P<slug>[^\d]+)/$', meta_page,
             extra(Country, 'country'), name='country_url'),
 
+        # Criar url para referências?
+
         url(r'^imagem/(\d+)/$', image_page, name='image_url'),
         url(r'^video/(\d+)/$', video_page, name='video_url'),
         # Admin

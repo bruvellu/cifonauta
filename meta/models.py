@@ -242,6 +242,20 @@ class Country(models.Model):
         return ('country_url', [self.slug])
 
 
+class Reference(models.Model):
+    name = models.CharField(max_length=32, unique=True, blank=True)
+    slug = models.SlugField(max_length=32, blank=True)
+    images = models.ManyToManyField(Image, null=True, blank=True)
+    videos = models.ManyToManyField(Video, null=True, blank=True)
+
+    def __unicode__(self):
+        return self.name
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('reference_url', [self.slug])
+
+
 def slug_pre_save(signal, instance, sender, **kwargs):
     if not instance.slug:
         slug = slugify(instance.name)

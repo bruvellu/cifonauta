@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 15 Oct 2010 03:11PM
+# Atualizado: 15 Oct 2010 03:22PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -592,7 +592,6 @@ class Photo:
             subprocess.call(['composite', '-dissolve', '20', '-gravity',
                 'southeast', watermark, local_filepath, local_filepath])
             # Copia imagem para pasta web
-            #XXX Melhorar isso de algum jeito...
             web_filepath = os.path.join(self.site_dir, self.filename)
             copy(local_filepath, web_filepath)
         except IOError:
@@ -676,7 +675,7 @@ def rename_file(filename, authors):
     else:
         initials = 'cbm'
     id = create_id()
-    new_filename = initials + '_' + id + '.' + filename.split('.')[1]
+    new_filename = initials + '_' + id + '.' + filename.split('.')[1].lower()
     return new_filename
 
 def get_initials(authors):

@@ -7,9 +7,9 @@ from django.template.defaultfilters import slugify
 
 class File(models.Model):
     # File
-    source_filepath = models.CharField(max_length=100, blank=True)
+    source_filepath = models.CharField(max_length=200, blank=True)
     thumb_filepath = models.ImageField(upload_to='site_media/images/thumbs')
-    old_filepath = models.CharField(max_length=100, blank=True)
+    old_filepath = models.CharField(max_length=200, blank=True)
     timestamp = models.DateTimeField()
 
     # Website
@@ -20,7 +20,7 @@ class File(models.Model):
     pub_date = models.DateTimeField(auto_now_add=True)
 
     # IPTC
-    title = models.CharField(max_length=64, blank=True)
+    title = models.CharField(max_length=200, blank=True)
     caption = models.TextField(blank=True)
     size = models.ForeignKey('Size')
     source = models.ForeignKey('Source')
@@ -69,8 +69,8 @@ class Video(File):
 
 
 class Author(models.Model):
-    name = models.CharField(max_length=32, unique=True, blank=True)
-    slug = models.SlugField(max_length=32, blank=True)
+    name = models.CharField(max_length=200, unique=True, blank=True)
+    slug = models.SlugField(max_length=200, blank=True)
     images = models.ManyToManyField(Image, null=True, blank=True)
     videos = models.ManyToManyField(Video, null=True, blank=True)
 
@@ -83,8 +83,8 @@ class Author(models.Model):
 
 
 class Source(models.Model):
-    name = models.CharField(max_length=32, unique=True, blank=True)
-    slug = models.SlugField(max_length=32, blank=True)
+    name = models.CharField(max_length=200, unique=True, blank=True)
+    slug = models.SlugField(max_length=200, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -133,8 +133,8 @@ class Taxon(models.Model):
 
 
 class Genus(models.Model):
-    name = models.CharField(max_length=32, unique=True, blank=True)
-    slug = models.SlugField(max_length=32, blank=True)
+    name = models.CharField(max_length=64, unique=True, blank=True)
+    slug = models.SlugField(max_length=64, blank=True)
     common = models.CharField(max_length=256, blank=True)
     parent = models.ForeignKey('Taxon', blank=True, null=True, related_name='genera')
     images = models.ManyToManyField(Image, null=True, blank=True)
@@ -149,8 +149,8 @@ class Genus(models.Model):
 
 
 class Species(models.Model):
-    name = models.CharField(max_length=32, unique=True, blank=True)
-    slug = models.SlugField(max_length=32, blank=True)
+    name = models.CharField(max_length=64, unique=True, blank=True)
+    slug = models.SlugField(max_length=64, blank=True)
     common = models.CharField(max_length=256, blank=True)
     parent = models.ForeignKey('Genus', blank=True, null=True, related_name='spp')
     images = models.ManyToManyField(Image, null=True, blank=True)
@@ -187,16 +187,16 @@ class Size(models.Model):
 
 
 class Rights(models.Model):
-    name = models.CharField(max_length=32, unique=True, blank=True)
-    slug = models.SlugField(max_length=32, blank=True)
+    name = models.CharField(max_length=64, unique=True, blank=True)
+    slug = models.SlugField(max_length=64, blank=True)
 
     def __unicode__(self):
         return self.name
 
 
 class Sublocation(models.Model):
-    name = models.CharField(max_length=32, unique=True, blank=True)
-    slug = models.SlugField(max_length=32, blank=True)
+    name = models.CharField(max_length=64, unique=True, blank=True)
+    slug = models.SlugField(max_length=64, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -207,8 +207,8 @@ class Sublocation(models.Model):
 
 
 class City(models.Model):
-    name = models.CharField(max_length=32, unique=True, blank=True)
-    slug = models.SlugField(max_length=32, blank=True)
+    name = models.CharField(max_length=64, unique=True, blank=True)
+    slug = models.SlugField(max_length=64, blank=True)
 
     def __unicode__(self):
         return self.name
@@ -219,8 +219,8 @@ class City(models.Model):
 
 
 class State(models.Model):
-    name = models.CharField(max_length=32, unique=True, blank=True)
-    slug = models.SlugField(max_length=32, blank=True)
+    name = models.CharField(max_length=64, unique=True, blank=True)
+    slug = models.SlugField(max_length=64, blank=True)
 
     def __unicode__(self):
         return self.name

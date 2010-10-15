@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 14 Oct 2010 11:14PM
+# Atualizado: 15 Oct 2010 03:11PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -466,7 +466,8 @@ class Photo:
         # Extraindo metadados do EXIF
         exif = self.get_exif(self.source_filepath)
         date = self.get_date(exif)
-        if date and not date == '0000:00:00 00:00:00':
+        # strip() garante que não tem espaços em branco na data.
+        if date.strip() and not date == '0000:00:00 00:00:00':
             self.meta['date'] = date
         else:
             self.meta['date'] = '1900-01-01 01:01:01'

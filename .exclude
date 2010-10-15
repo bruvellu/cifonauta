@@ -1,0 +1,8 @@
+source_media
+local_media
+site_media/photos
+site_media/videos
+.pyc
+.log
+.mbtree
+.stt

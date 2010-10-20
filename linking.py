@@ -72,9 +72,10 @@ def get_media():
     print '\nOFICIAIS'
     for root, dirs, files in os.walk(storage):
         for filename in files:
-            filepath = os.path.join(root, filename)
-            sources.append(filepath)
-            print filepath
+            if not filename.endswith('~'):
+                filepath = os.path.join(root, filename)
+                sources.append(filepath)
+                print filepath
         else:
             continue
     else:

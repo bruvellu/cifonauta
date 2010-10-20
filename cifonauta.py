@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 15 Oct 2010 03:22PM
+# Atualizado: 20 Oct 2010 03:48PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -27,6 +27,8 @@ from datetime import datetime
 from shutil import copy
 from iptcinfo import IPTCInfo
 import pyexiv2
+
+import linking
 
 # Django environment import
 from django.core.management import setup_environ
@@ -466,8 +468,8 @@ class Photo:
         # Extraindo metadados do EXIF
         exif = self.get_exif(self.source_filepath)
         date = self.get_date(exif)
-        # strip() garante que não tem espaços em branco na data.
-        if date.strip() and not date == '0000:00:00 00:00:00':
+        date_string = date.strftime('%Y-%m-%d %I:%M:%S')
+        if date_string and date_string != '0000:00:00 00:00:00':
             self.meta['date'] = date
         else:
             self.meta['date'] = '1900-01-01 01:01:01'
@@ -878,5 +880,7 @@ def main(argv):
 if __name__ == '__main__':
     # Marca a hora inicial
     t0 = time.time()
+    print 'Verificando e atualizando os links da pasta oficial...'
+    linking.main()
     # Inicia função principal, lendo os argumentos (se houver)
     main(sys.argv[1:])

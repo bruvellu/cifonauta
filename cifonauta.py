@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 20 Oct 2010 09:49PM
+# Atualizado: 21 Oct 2010 01:53AM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -262,6 +262,8 @@ class Movie:
 
         # Processa o vídeo.
         web_paths, thumb_filepath, large_thumb = self.process_video()
+        if not web_paths:
+            return None
 
         # Prepara alguns campos para banco de dados.
         self.meta = prepare_meta(self.meta)
@@ -364,6 +366,7 @@ class Movie:
 
         except IOError:
             print '\nOcorreu algum erro na conversão da imagem.'
+            return None, None, None
         else:
             print 'Vídeos convertidos com sucessos! Criando thumbnails...'
             thumb_filepath, large_thumb_filepath = self.create_thumbs()
@@ -381,7 +384,7 @@ class Movie:
         try:
             # Cria thumb grande a partir de 1 frame no segundo 5
             subprocess.call(['ffmpeg', '-i', self.source_filepath,
-                '-vframes', '1', '-s', '480x360', '-ss', '5', '-f',
+                '-vframes', '1', '-s', '480x360', '-ss', '1', '-f',
                 'image2', local_filepath_large])
             # Cria thumb normal (pequeno)
             subprocess.call(['convert', '-define', 'jpeg:size=200x150',
@@ -487,6 +490,8 @@ class Photo:
 
         # Processar imagem
         web_filepath, thumb_filepath = self.process_image()
+        if not web_filepath:
+            return None
         self.meta['web_filepath'] = web_filepath
         self.meta['thumb_filepath'] = thumb_filepath
 
@@ -601,7 +606,11 @@ class Photo:
         except IOError:
             print '\nOcorreu algum erro na conversão da imagem. Verifique se o ' \
                     'ImageMagick está instalado.'
-            copy(self.source_filepath, '~/')
+            #TODO Criar entrada no log
+            copy(self.source_filepath,
+                    '/home/nelas/bugs/' + os.path.basename(os.readlink(self.source_filepath)))
+            # Evita que o loop seja interrompido.
+            return None, None
         else:
             print 'Imagem convertida com sucesso! Criando thumbnails...'
             thumb_filepath = self.create_thumbs()
@@ -836,9 +845,13 @@ def main(argv):
             # Se mídia for nova
             print '\nARQUIVO NOVO, CRIANDO ENTRADA NO BANCO DE DADOS...'
             if no_rename:
-                media.create_meta()
+                # Caso o arquivo esteja corrompido, pular
+                if not media.create_meta():
+                    continue
             else:
-                media.create_meta(new=True)
+                # Caso o arquivo esteja corrompido, pular
+                if not media.create_meta(new=True):
+                    continue
             cbm.update_db(media)
             n_new += 1
         else:

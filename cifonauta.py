@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 20 Oct 2010 03:48PM
+# Atualizado: 20 Oct 2010 09:49PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -363,8 +363,7 @@ class Movie:
             #TODO qt-faststart input.foo output.foo
 
         except IOError:
-            print '\nOcorreu algum erro na conversão da imagem. Verifique se o ' \
-                    'ImageMagick está instalado.'
+            print '\nOcorreu algum erro na conversão da imagem.'
         else:
             print 'Vídeos convertidos com sucessos! Criando thumbnails...'
             thumb_filepath, large_thumb_filepath = self.create_thumbs()
@@ -468,7 +467,10 @@ class Photo:
         # Extraindo metadados do EXIF
         exif = self.get_exif(self.source_filepath)
         date = self.get_date(exif)
-        date_string = date.strftime('%Y-%m-%d %I:%M:%S')
+        try:
+            date_string = date.strftime('%Y-%m-%d %I:%M:%S')
+        except:
+            date_string = ''
         if date_string and date_string != '0000:00:00 00:00:00':
             self.meta['date'] = date
         else:
@@ -599,6 +601,7 @@ class Photo:
         except IOError:
             print '\nOcorreu algum erro na conversão da imagem. Verifique se o ' \
                     'ImageMagick está instalado.'
+            copy(self.source_filepath, '~/')
         else:
             print 'Imagem convertida com sucesso! Criando thumbnails...'
             thumb_filepath = self.create_thumbs()

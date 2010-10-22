@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 21 Oct 2010 01:53AM
+# Atualizado: 21 Oct 2010 03:57PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -204,6 +204,8 @@ class Movie:
     def create_meta(self, new=False):
         '''Define as variáveis dos metadados do vídeo.'''
         print 'Lendo os metadados de %s e criando variáveis.' % self.filename
+        # Limpa metadados pra não misturar com o anterior.
+        self.meta = {}
         self.meta = {
                 'timestamp': self.timestamp,
                 'title': u'',
@@ -432,6 +434,8 @@ class Photo:
         if len(info.data) < 4:
             print '%s não tem dados IPTC!' % self.filename
 
+        # Limpa metadados pra não misturar com o anterior.
+        self.meta = {}
         self.meta = {
                 'source_filepath': os.path.abspath(self.source_filepath),
                 'title': info.data['object name'], # 5

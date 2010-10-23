@@ -86,6 +86,7 @@ def fix_broken():
     if broken_links:
         print '\nBROKEN LINKS'
         for k, v in broken_links.iteritems():
+            print
             print k + ' -> ' + v
             potencial = []
             for i in sources:
@@ -118,7 +119,7 @@ def fix_broken():
                 elif int(index) > len(potencial) - 1:
                     print 'Número inválido, tente novamente.'
                 else:
-                    print 'Eureka, vamos arrumar o link' % potencial[int(index)]
+                    print 'Eureka, vamos arrumar o link %s' % potencial[int(index)]
                     fixlink(potencial[int(index)], k)
     else:
         print '\nNenhum link quebrado.'

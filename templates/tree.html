@@ -1,7 +1,7 @@
 {% if taxa %}
 <h2>Grupos ({{ taxa.count }})</h2>
     {% for taxon in taxa %}
-    {% if not taxon.parent %}
+    {% if not taxon.parent.name %}
     <ul class="tree root level-0 taxon-{{ taxon.slug }}">
         <li>
         <a href="{{ taxon.get_absolute_url }}" title="{{ taxon.name }}">{{ taxon.name }}</a>

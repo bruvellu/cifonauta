@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 21 Oct 2010 03:57PM
+# Atualizado: 22 Oct 2010 10:44PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -28,6 +28,7 @@ from shutil import copy
 from iptcinfo import IPTCInfo
 import pyexiv2
 
+from itis import Itis
 import linking
 
 # Django environment import
@@ -98,7 +99,6 @@ class Database:
         print '\nAtualizando o banco de dados...'
         # Instancia metadados pra não dar conflito.
         media_meta = media.meta
-        print media_meta
         # Guarda objeto com infos taxonômicas
         taxa = media_meta['taxon']
         del media_meta['taxon']
@@ -124,7 +124,7 @@ class Database:
                 'city', 'state', 'country']
         for k in toget:
             media_meta[k] = self.get_instance(k, media_meta[k])
-            print k, media_meta[k].id, media_meta[k]
+            #print k, media_meta[k].id, media_meta[k]
 
         if not update:
             media_meta['view_count'] = 0
@@ -173,6 +173,11 @@ class Database:
         '''Retorna o id a partir do nome.'''
         metadatum, new = eval('%s.objects.get_or_create(name="%s")' %
                 (table.capitalize(), value))
+        if table == 'taxon' and new:
+            parent, rank = self.get_itis(value)
+            metadatum.parent = self.get_instance('taxon', parent)
+            metadatum.rank = rank
+            metadatum.save()
         return metadatum
 
     def update_sets(self, entry, field, meta):
@@ -181,6 +186,24 @@ class Database:
         eval('entry.%s_set.clear()' % field)
         [eval('entry.%s_set.add(value)' % field) for value in meta_instances]
         return entry
+
+    def get_itis(self, name):
+        '''Consulta banco de dados do ITIS.
+
+        Extrai o táxon pai e o ranking. Valores são guardados em:
+
+        taxon.name
+        taxon.rank
+        taxon.tsn
+        taxon.parent
+        taxon.parent_rank
+        taxon.parent_tsn
+        '''
+        try:
+            taxon = Itis(name)
+        except:
+            return '', ''
+        return taxon.parent, taxon.rank
 
 
 class Movie:
@@ -508,11 +531,11 @@ class Photo:
         print '\tTítulo:\t\t%s' % self.meta['title']
         print '\tDescrição:\t%s' % self.meta['caption']
         print '\tEspécie:\t%s' % self.meta['genus_sp']
-        print '\tTáxon:\t\t%s' % self.meta['taxon']
+        print '\tTáxon:\t\t%s' % ', '.join(self.meta['taxon'])
         print '\tTags:\t\t%s' % '\n\t\t\t'.join(self.meta['tags'])
         print '\tTamanho:\t%s' % self.meta['size']
         print '\tEspecialista:\t%s' % self.meta['source']
-        print '\tAutor:\t\t%s' % self.meta['author']
+        print '\tAutor:\t\t%s' % ', '.join(self.meta['author'])
         print '\tSublocal:\t%s' % self.meta['sublocation']
         print '\tCidade:\t\t%s' % self.meta['city']
         print '\tEstado:\t\t%s' % self.meta['state']

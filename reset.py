@@ -150,7 +150,7 @@ taxa = [
 	{'name': u'Crustacea', 'common': u'Crustáceos', 'parent': u'Arthropoda'},
 	{'name': u'Ctenophora', 'common': u'Ctenóforos', 'parent': u'Metazoa'},
 	{'name': u'Echinoidea', 'common': u'Equinóides', 'parent': u'Echinodermata'},
-	{'name': u'Bryozoa', 'common': u'briozoários', 'parent': u'Metazoa'},
+	{'name': u'Bryozoa', 'common': u'Briozoários', 'parent': u'Metazoa'},
 ]
 genera = [
 	{'name': u'Discoporella', 'common': u'', 'parent': None},
@@ -252,19 +252,19 @@ for tag in tags:
     print '\t%s' % tag['name']
 
 # Cria táxons
-print '\nCriando táxons...'
-for taxon in taxa:
-    if taxon['parent'] and taxon['parent'] != u'None':
-        taxon_parent, new = Taxon.objects.get_or_create(
-                name=taxon['parent'])
-    else:
-        taxon_parent = None
-    if taxon['common'] == u'None':
-        taxon_common = u''
-    else:
-        taxon_common = taxon['common']
-    zero, new = Taxon.objects.get_or_create(name=taxon['name'])
-    zero.common=taxon_common
-    zero.parent=taxon_parent
-    zero.save()
-    print '\t%s' % taxon['name']
+#print '\nCriando táxons...'
+#for taxon in taxa:
+#    if taxon['parent'] and taxon['parent'] != u'None':
+#        taxon_parent, new = Taxon.objects.get_or_create(
+#                name=taxon['parent'])
+#    else:
+#        taxon_parent = None
+#    if taxon['common'] == u'None':
+#        taxon_common = u''
+#    else:
+#        taxon_common = taxon['common']
+#    zero, new = Taxon.objects.get_or_create(name=taxon['name'])
+#    zero.common=taxon_common
+#    zero.parent=taxon_parent
+#    zero.save()
+#    print '\t%s' % taxon['name']

@@ -12,6 +12,7 @@ from xml.etree import ElementTree
 class Itis:
     '''Interação com o ITIS'''
     def __init__(self, query):
+        print 'Iniciando contato com ITIS.'
         self.name = query
         self.tsn = ''
         self.rank = ''
@@ -109,8 +110,12 @@ class Itis:
 
         http://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey=Crustacea
         '''
-        xml = urllib2.urlopen(
-                'http://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey=%s' % query)
+        #TODO Lidar com timeout!
+        xml = self.open_url(
+                'http://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey=%s'
+                    % query, 10)
+        if not xml:
+            return None
         tree = ElementTree.parse(xml)
         root = tree.getroot()
 
@@ -157,8 +162,11 @@ class Itis:
         http://www.itis.gov/ITISWebService/services/ITISService/getHierarchyUpFromTSN?tsn=83677 
         '''
         if tsn:
-            xml = urllib2.urlopen('http://www.itis.gov/ITISWebService/services/ITISService/getHierarchyUpFromTSN?tsn=%s' % tsn)
-            #http://www.itis.gov/ITISWebService/services/ITISService/getParentTSNFromTSN?tsn=83677
+            xml = self.open_url(
+                    'http://www.itis.gov/ITISWebService/services/ITISService/getHierarchyUpFromTSN?tsn=%s'
+                    % tsn, 10)
+            if not xml:
+                return None
             tree = ElementTree.parse(xml)
             root = tree.getroot()
 
@@ -166,28 +174,37 @@ class Itis:
             for child in root.getiterator():
                 if child.tag.split('}')[1] == 'parentName':
                     parent = child.text
-                if child.tag.split('}')[1] == 'parentTsn':
+                elif child.tag.split('}')[1] == 'parentTsn':
                     parent_tsn = child.text
-                if child.tag.split('}')[1] == 'rankName':
+                elif child.tag.split('}')[1] == 'rankName':
                     rank = child.text
 
-            print u'Descobrindo seu ranqueamento...'
-            parent_rank = self.get_rank(parent_tsn)
-            if parent_rank in self.ranks:
-                print parent + u' é ' + parent_rank
-                self.rank = self.translate(rank)
-                self.parent_rank = self.translate(parent_rank)
-                self.parent = parent
-                self.parent_tsn = parent_tsn
+            if parent and parent_tsn:
+                print u'Descobrindo seu ranqueamento...'
+                parent_rank = self.get_rank(parent_tsn)
+                if parent_rank in self.ranks:
+                    print parent + u' é ' + parent_rank
+                    self.rank = self.translate(rank)
+                    self.parent_rank = self.translate(parent_rank)
+                    self.parent = parent
+                    self.parent_tsn = parent_tsn
+                else:
+                    self.get_parent(parent_tsn)
             else:
-                self.get_parent(parent_tsn)
+                print u'Táxon inválido? Ou sem pai mesmo?'
+                self.parent, self.parent_tsn, self.parent_rank = '', '', ''
+                self.rank = self.translate(rank)
         else:
             print u'Salvando do loop infinito...'
             pass
 
     def get_rank(self, tsn):
         '''Retorna o nome do rank do táxon.'''
-        xml = urllib2.urlopen('http://www.itis.gov/ITISWebService/services/ITISService/getTaxonomicRankNameFromTSN?tsn=%s' % tsn)
+        xml = self.open_url(
+                'http://www.itis.gov/ITISWebService/services/ITISService/getTaxonomicRankNameFromTSN?tsn=%s'
+                % tsn, 10)
+        if not xml:
+            return None
         tree = ElementTree.parse(xml)
         root = tree.getroot()
 
@@ -195,6 +212,27 @@ class Itis:
             if child.tag.split('}')[1] == 'rankName':
                 return child.text
         return None
+
+    def open_url(self, url, timeout):
+        '''Abre o url e retorna a resposta.'''
+        try:
+            print 'Conectando ao itis.gov...'
+            xml = urllib2.urlopen(url, None, timeout)
+        except:
+            print 'Acabou o tempo e não houve retorno do ITIS. Nova tentativa:'
+            try:
+                print 'Conectando ao itis.gov... (2)'
+                xml = urllib2.urlopen(url, None, timeout)
+            except:
+                print 'Acabou o tempo e não houve retorno do ITIS. Nova tentativa:'
+                try:
+                    print 'Conectando ao itis.gov... (3)'
+                    xml = urllib2.urlopen(url, None, 10)
+                except:
+                    print 'Não houve retorno do ITIS. Desisto.'
+                    return None
+        print 'Sucesso!'
+        return xml
 
 def main():
     pass

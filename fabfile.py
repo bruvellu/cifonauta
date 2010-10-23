@@ -21,10 +21,10 @@ def clean_local_media():
     local('rm -r local_media/*')
 
 def clean_site_media():
-    run('rm -r source_media/*')
-    run('rm -r site_media/photos/*')
-    run('rm -r site_media/videos/*')
-    run('rm -r local_media/*')
+    run('rm -r /home/nelas/.local/lib/python/weblarvae/source_media/*')
+    run('rm -r /home/nelas/.local/lib/python/weblarvae/site_media/photos/*')
+    run('rm -r /home/nelas/.local/lib/python/weblarvae/site_media/videos/*')
+    run('rm -r /home/nelas/.local/lib/python/weblarvae/local_media/*')
 
 def sync():
     local('rsync -ah -L --delete --progress --exclude-from=\'.exclude\' -e ssh /home/nelas/CEBIMar/weblarvae 143.107.42.231:/home/nelas/.local/lib/python/', capture=False)

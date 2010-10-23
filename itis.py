@@ -183,7 +183,7 @@ class Itis:
                 print u'Descobrindo seu ranqueamento...'
                 parent_rank = self.get_rank(parent_tsn)
                 if parent_rank in self.ranks:
-                    print parent + u' é ' + parent_rank
+                    print parent + u' é: ' + self.translate(parent_rank)
                     self.rank = self.translate(rank)
                     self.parent_rank = self.translate(parent_rank)
                     self.parent = parent

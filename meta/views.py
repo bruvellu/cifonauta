@@ -131,6 +131,15 @@ def org_page(request):
         })
     return render_to_response('organizacao.html', variables)
 
+def hidden_page(request):
+    images = Image.objects.filter(is_public=False)
+    videos = Video.objects.filter(is_public=False)
+    variables = RequestContext(request, {
+        'images': images,
+        'videos': videos,
+        })
+    return render_to_response('hidden.html', variables)
+
 # Single
 def image_page(request, image_id):
     image = get_object_or_404(Image, id=image_id)

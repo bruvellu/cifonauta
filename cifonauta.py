@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 22 Oct 2010 10:44PM
+# Atualizado: 29 Oct 2010 12:26AM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -267,7 +267,7 @@ class Movie:
         # Inicia processo de renomear arquivo. 
         if new:
             # Adiciona o antigo caminho aos metadados.
-            self.meta['old_filepath'] = self.source_filepath
+            self.meta['old_filepath'] = os.path.abspath(self.source_filepath)
             new_filename = rename_file(self.filename, self.meta['author'])
             # Atualiza media object.
             self.source_filepath = os.path.join(
@@ -479,7 +479,7 @@ class Photo:
 
         if new:
             # Adiciona o antigo caminho aos metadados.
-            self.meta['old_filepath'] = self.source_filepath
+            self.meta['old_filepath'] = os.path.abspath(self.source_filepath)
             new_filename = rename_file(self.filename, self.meta['author'])
             # Atualiza media object.
             self.source_filepath = os.path.join(
@@ -776,6 +776,38 @@ def dir_ready(*dirs):
             print 'Criando diretório inexistente...'
             os.mkdir(dir)
 
+def remove_broken():
+    '''Deleta entradas de imagens oficiais apagadas.
+    
+    Script linking.py salva um pickle do dicionário com os arquivos que devem
+    ser apagados.
+    '''
+    try:
+        file = open('to_del', 'rb')
+        lost = pickle.load(file)
+    except:
+        print 'Nenhum arquivo pra deletar.'
+        return
+    for k, v in lost.iteritems():
+        name = os.path.basename(k)
+        try:
+            media = Image.objects.get(web_filepath__icontains=name)
+        except:
+            try:
+                media = Video.objects.get(webm_filepath__icontains=name)
+            except:
+                print 'Nenhum imagem com nome %s' % name
+                continue
+        if media:
+            media.is_public = False
+            media.review = True
+            os.remove(media.source_filepath)
+            media.save()
+            print 'Link problemático apagado e imagem não está mais pública.'
+    print 'Apagando arquivo pickle...'
+    file.close()
+    os.remove('to_del')
+
 def usage():
     '''Imprime manual de uso e argumentos disponíveis.'''
     print
@@ -925,5 +957,6 @@ if __name__ == '__main__':
     t0 = time.time()
     print 'Verificando e atualizando os links da pasta oficial...'
     linking.main()
+    remove_broken()
     # Inicia função principal, lendo os argumentos (se houver)
     main(sys.argv[1:])

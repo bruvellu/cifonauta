@@ -28,6 +28,8 @@ urlpatterns = patterns('',
         (r'^comentarios/', include('django.contrib.comments.urls')),
         (r'^feed/$', LatestMedia()),
 
+        (r'^privadas/$', hidden_page),
+
         (r'^buscar/$', search_page),
         (r'^tags/$', tags_page),
         (r'^taxa/$', taxa_page),

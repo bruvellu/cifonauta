@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import pickle
 
 storage = '/home/nelas/storage/oficial'
 source_media = 'source_media/oficial'
@@ -57,34 +58,39 @@ def get_links():
     Salva links numa lista e links quebrados em outra.
     '''
     print '\nLINKS'
+    total = 0
     for root, dirs, files in os.walk(source_media):
         for filename in files:
             filepath = os.path.join(root, filename)
             deal_links(filepath)
             print filepath
+            total += 1
         else:
             continue
     else:
-        pass
+        print '%d arquivos' % total
 
 def get_media():
     '''Recursivamente identifica os arquivos de mídia.'''
     print '\nOFICIAIS'
+    total = 0
     for root, dirs, files in os.walk(storage):
         for filename in files:
             if not filename.endswith('~'):
                 filepath = os.path.join(root, filename)
                 sources.append(filepath)
                 print filepath
+                total += 1
         else:
             continue
     else:
-        pass
+        print '%d arquivos' % total
 
 def fix_broken():
     '''Processa links quebrados, tentando arrumar.'''
     if broken_links:
         print '\nBROKEN LINKS'
+        lost = {}
         for k, v in broken_links.iteritems():
             print
             print k + ' -> ' + v
@@ -96,6 +102,8 @@ def fix_broken():
                     potencial.append(i)
             if not potencial:
                 print 'Nenhum candidato a este link foi encontrado!'
+                #TODO Documentar tudo isso pra não esquecer como funciona.
+                lost[k] = v
             elif len(potencial) == 1:
                 print 'Apenas um candidato, corrigindo o link...'
                 fixlink(potencial[0], k)
@@ -110,10 +118,14 @@ def fix_broken():
                 print
                 for idx, val in enumerate(potencial):
                     print '\t[%d] ' % idx + val
-                index = raw_input('\nPor favor, digite o número da imagem certa ' \
-                        '(ou "i" para ignorar): ')
+                index = raw_input('\nDigite o número da imagem certa ' \
+                        '("i" para ignorar; "l" para perdidas): ')
                 if index == 'i':
                     print 'Ignorando... o erro será anunciado novamente.'
+                elif index == 'l':
+                    print 'Imagem perdida, e agora?'
+                    print k, v
+                    lost[k] = v
                 elif not index.strip():
                     print 'Valor vazio, tente novamente.'
                 elif int(index) > len(potencial) - 1:
@@ -121,6 +133,14 @@ def fix_broken():
                 else:
                     print 'Eureka, vamos arrumar o link %s' % potencial[int(index)]
                     fixlink(potencial[int(index)], k)
+        print lost
+        if lost:
+            print 'LOST'
+            file = open('to_del', 'wb')
+            for k, v in lost.iteritems():
+                print k + ' -> ' + v
+            pickle.dump(lost, file)
+            file.close()
     else:
         print '\nNenhum link quebrado.'
 

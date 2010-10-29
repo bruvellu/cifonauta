@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 29 Oct 2010 12:26AM
+# Atualizado: 29 Oct 2010 12:41PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -790,6 +790,8 @@ def remove_broken():
         return
     for k, v in lost.iteritems():
         name = os.path.basename(k)
+        if name.endswith('txt'):
+            os.remove(k)
         try:
             media = Image.objects.get(web_filepath__icontains=name)
         except:
@@ -799,6 +801,7 @@ def remove_broken():
                 print 'Nenhum imagem com nome %s' % name
                 continue
         if media:
+            #TODO Deletar os thumbs e site media também?
             media.is_public = False
             media.review = True
             os.remove(media.source_filepath)

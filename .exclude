@@ -6,3 +6,5 @@ site_media/videos
 .log
 .mbtree
 .stt
+data.json
+db_backup

@@ -9,6 +9,7 @@ from meta.models import *
 import subprocess
 
 # Backup do banco de dados do cebimar
+#TODO Checar se banco existe?
 try:
     print '\nFazendo backup do banco de dados...'
     subprocess.call(['pg_dump', 'cebimar', '-f', 'db_backup'])
@@ -16,7 +17,15 @@ try:
 except:
     print '\nProblema no backup!'
 
+# Faz dump de todo o banco para json
+try:
+    subprocess.call(['python', 'manage.py', 'dumpdata'], stdout='data.json')
+    print 'Dump feito.'
+except:
+    print 'Dump deu pau...'
+
 # Deleta banco de dados do cebimar
+#TODO Verificar se tem alguém usando antes...
 try:
     print '\nApagando o banco de dados: cebimar...'
     subprocess.call(['dropdb', 'cebimar'])
@@ -39,6 +48,13 @@ try:
     print 'Tabelas prontas!'
 except:
     print '\nOcorreu algum erro durante a criação das tabelas.'
+
+# Copia banco de dados de volta
+try:
+    subprocess.call(['python', 'manage.py', 'loaddata', 'data.json'])
+    print 'Dados carregados de volta.'
+except:
+    print 'Não conseguiu carregar dados de volta...'
 
 # Instala funções e triggers para funcionamento básico
 try:
@@ -216,40 +232,40 @@ species = [
 ####################################################
 
 # Cria categorias de marcadores
-print '\nCriando categorias de marcadores...'
-for tagcat in tagcats:
-    if tagcat['parent'] and tagcat['parent'] != u'None':
-        tagcat_parent, new = TagCategory.objects.get_or_create(
-                name=tagcat['parent'])
-    else:
-        tagcat_parent = None
-    if tagcat['description'] == u'None':
-        tagcat_description = u''
-    else:
-        tagcat_description = tagcat['description']
-    zero, new = TagCategory.objects.get_or_create(name=tagcat['name'])
-    zero.description=tagcat_description
-    zero.parent=tagcat_parent
-    zero.save()
-    print '\t%s' % tagcat['name']
+#print '\nCriando categorias de marcadores...'
+#for tagcat in tagcats:
+#    if tagcat['parent'] and tagcat['parent'] != u'None':
+#        tagcat_parent, new = TagCategory.objects.get_or_create(
+#                name=tagcat['parent'])
+#    else:
+#        tagcat_parent = None
+#    if tagcat['description'] == u'None':
+#        tagcat_description = u''
+#    else:
+#        tagcat_description = tagcat['description']
+#    zero, new = TagCategory.objects.get_or_create(name=tagcat['name'])
+#    zero.description=tagcat_description
+#    zero.parent=tagcat_parent
+#    zero.save()
+#    print '\t%s' % tagcat['name']
 
 # Cria marcadores
-print '\nCriando marcadores...'
-for tag in tags:
-    if tag['parent'] and tag['parent'] != u'None':
-        tag_parent, new = TagCategory.objects.get_or_create(
-                name=tag['parent'])
-    else:
-        tag_parent = None
-    if tag['description'] == u'None':
-        tag_description = u''
-    else:
-        tag_description = tag['description']
-    zero, new = Tag.objects.get_or_create(name=tag['name'])
-    zero.description=tag_description
-    zero.parent=tag_parent
-    zero.save()
-    print '\t%s' % tag['name']
+#print '\nCriando marcadores...'
+#for tag in tags:
+#    if tag['parent'] and tag['parent'] != u'None':
+#        tag_parent, new = TagCategory.objects.get_or_create(
+#                name=tag['parent'])
+#    else:
+#        tag_parent = None
+#    if tag['description'] == u'None':
+#        tag_description = u''
+#    else:
+#        tag_description = tag['description']
+#    zero, new = Tag.objects.get_or_create(name=tag['name'])
+#    zero.description=tag_description
+#    zero.parent=tag_parent
+#    zero.save()
+#    print '\t%s' % tag['name']
 
 # Cria táxons
 #print '\nCriando táxons...'

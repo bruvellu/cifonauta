@@ -140,6 +140,13 @@ def hidden_page(request):
         })
     return render_to_response('hidden.html', variables)
 
+def feedback_page(request):
+    images = Image.objects.filter(is_public=False)
+    variables = RequestContext(request, {
+        'images': images,
+        })
+    return render_to_response('feedback.html', variables)
+
 # Single
 def image_page(request, image_id):
     image = get_object_or_404(Image, id=image_id)

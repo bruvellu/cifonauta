@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Imagens não publicadas</h1>
+
+<h2>Fotos</h2>
+{% for image in images %}
+
+<div class="span-24 borders last">
+    <div class="span-4">
+        <a href="{{ image.get_absolute_url }}"><img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" height="90" /></a><br>
+        <a class="highslide }}" onclick="return hs.expand(this)" href="/{{ image.web_filepath }}">ampliar</a><br>
+    </div>
+    <div class="span-20 last">
+        <strong>Pasta oficial:</strong> {{ image.old_filepath }}<br>
+        <strong>Diretório do site:</strong> {{ image.web_filepath }}<br>
+        --<br>
+        <strong>Título:</strong> {{ image.title }}<br>
+        <strong>Autor(es):</strong> {% show_set image.author_set.all '' '' ', ' '' %}<br>
+        <strong>Marcadores:</strong> {% show_set image.tag_set.all '' '' ', ' 'link' %}<br>
+    </div>
+</div>
+<hr>
+{% endfor %}
+
+
+<h2>Vídeos</h2>
+{% for video in videos %}
+
+<div class="span-24 borders last">
+    <div class="span-4">
+        <a href="{{ video.get_absolute_url }}"><img src="/{{ video.thumb_filepath }}" alt="{{ video.title }}" title="{{ video.title }}" width="120" height="90" /></a>
+    </div>
+    <div class="span-20 last">
+        <strong>Pasta oficial:</strong> {{ video.old_filepath }}<br>
+        <strong>Diretório do site:</strong> {{ video.webm_filepath }}<br>
+        --<br>
+        <strong>Título:</strong> {{ video.title }}<br>
+        <strong>Autor(es):</strong> {% show_set video.author_set.all '' '' ', ' '' %}<br>
+        <strong>Marcadores:</strong> {% show_set video.tag_set.all '' '' ', ' 'link' %}<br>
+    </div>
+</div>
+<hr>
+{% endfor %}
+
+{% endblock %}

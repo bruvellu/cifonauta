@@ -29,6 +29,7 @@ urlpatterns = patterns('',
         (r'^feed/$', LatestMedia()),
 
         (r'^privadas/$', hidden_page),
+        (r'^feedback/$', feedback_page),
 
         (r'^buscar/$', search_page),
         (r'^tags/$', tags_page),

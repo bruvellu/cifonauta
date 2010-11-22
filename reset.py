@@ -232,22 +232,22 @@ species = [
 ####################################################
 
 # Cria categorias de marcadores
-#print '\nCriando categorias de marcadores...'
-#for tagcat in tagcats:
-#    if tagcat['parent'] and tagcat['parent'] != u'None':
-#        tagcat_parent, new = TagCategory.objects.get_or_create(
-#                name=tagcat['parent'])
-#    else:
-#        tagcat_parent = None
-#    if tagcat['description'] == u'None':
-#        tagcat_description = u''
-#    else:
-#        tagcat_description = tagcat['description']
-#    zero, new = TagCategory.objects.get_or_create(name=tagcat['name'])
-#    zero.description=tagcat_description
-#    zero.parent=tagcat_parent
-#    zero.save()
-#    print '\t%s' % tagcat['name']
+print '\nCriando categorias de marcadores...'
+for tagcat in tagcats:
+    if tagcat['parent'] and tagcat['parent'] != u'None':
+        tagcat_parent, new = TagCategory.objects.get_or_create(
+                name=tagcat['parent'])
+    else:
+        tagcat_parent = None
+    if tagcat['description'] == u'None':
+        tagcat_description = u''
+    else:
+        tagcat_description = tagcat['description']
+    zero, new = TagCategory.objects.get_or_create(name=tagcat['name'])
+    zero.description=tagcat_description
+    zero.parent=tagcat_parent
+    zero.save()
+    print '\t%s' % tagcat['name']
 
 # Cria marcadores
 #print '\nCriando marcadores...'

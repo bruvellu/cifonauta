@@ -110,7 +110,6 @@ class Itis:
 
         http://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey=Crustacea
         '''
-        #TODO Lidar com timeout!
         xml = self.open_url(
                 'http://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey=%s'
                     % query, 10)

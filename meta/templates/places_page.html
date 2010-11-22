@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% comment %}
+Mostra todas as localidades em 4 colunas. Código bem objetivo, usando icount para contar linhas da tabela.
+{% endcomment %}
 {% block title %}Localidades | {{ block.super }}{% endblock %}
 {% block content %}
 <section class="span-24 last">
@@ -6,7 +9,7 @@
 
     <div id="sublocations" class="span-6">
         <h2>Locais</h2>
-        <ul>
+        <ul class="tags">
         {% for subloc in sublocations %}
             <li>
             <div>
@@ -21,7 +24,7 @@
     </div>
     <div id="cities" class="span-6">
         <h2>Cidades</h2>
-        <ul>
+        <ul class="tags">
         {% for city in cities %}
             <li>
             <div>
@@ -36,7 +39,7 @@
     </div>
     <div id="states" class="span-6">
         <h2>Estados</h2>
-        <ul>
+        <ul class="tags">
         {% for state in states %}
             <li>
             <div>
@@ -51,7 +54,7 @@
     </div>
     <div id="countries" class="span-6 last">
         <h2>Países</h2>
-        <ul>
+        <ul class="tags">
         {% for country in countries %}
             <li>
             <div>

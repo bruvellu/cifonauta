@@ -239,6 +239,11 @@ article.post {
     padding:0;
 }
 
+ul.tags {
+    margin:0 1em 1.5em 0;
+    padding-left:17px;
+}
+
 ul.biodb {
     list-style: none;
     padding: 0;

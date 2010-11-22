@@ -8,7 +8,7 @@
 
     <div class="span-6">
         <h2>Tamanhos</h2>
-        <ul>
+        <ul class="tags">
             {% for size in sizes %}
             <li>
             <!-- div container para evitar bug no chrome -->
@@ -26,7 +26,7 @@
     {% for item in tag_groups %}
     <div class="span-{% cycle '6' '6' '6 last' '6' %}">
         <h2>{{ item.grouper }}</h2>
-        <ul>
+        <ul class="tags">
         {% for tag in item.list %}
             <li>
             <div>

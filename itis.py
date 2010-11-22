@@ -4,6 +4,17 @@
 
 Baseado no nome do táxon ele busca a entrada para descobrir o nome do táxon pai
 e o ranking (Reino, Filo, Classe...).
+
+Algoritmo:
+    - Abre URL através da API do ITIS e salva o XML, se houver (get_tsn)
+    - Usa ElementTree pra parse o XML a partir da raiz
+    - Busca as tags "unitName1" e "tsn" e salva em lista
+    - Se houver mais de 1 ou nenhum emitir aviso
+    - Do contrário, procurar pai do primeiro elemento (get_parent)
+    - Usa novamente API do ITIS para buscar pai pelo TSN
+    - Se existir, descobrir seu ranqueamento e se é icônico (get_rank)
+    - Caso não seja, buscar pelo pai do pai (get_parent) até primeira categoria icônica
+    - Achado o táxon é necessário traduzir (translate) e salvar no objeto
 '''
 
 import urllib2

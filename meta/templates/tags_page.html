@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% comment %}
+Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o regroup para criar objetos de cada categoria, usa o cycle para definir o span de cada coluna adequadamente e o icount para contar o número de linhas de cada tabela.
+{% endcomment %}
 {% block title %}Marcadores | {{ block.super }}{% endblock %}
 {% block content %}
 <section class="span-24 last">

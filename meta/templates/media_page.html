@@ -42,7 +42,7 @@ $(document).ready(function(){
         {% if media.is_public %}
         {% if media.tag_set.all %}
             <footer class="span-16 last media-tags">
-                {% show_set media.tag_set.all '' '' ', ' 'link' %}
+                {% show_set tags '' '' ', ' 'link' %}
             </footer>
         {% endif %}
 

@@ -456,6 +456,10 @@ footer.main {
     border-radius: 10px 10px 0 0;
 }
 
+.cnpq img {
+    vertical-align:top;
+}
+
 .float-right {
     float:right;
 }

@@ -1,9 +1,21 @@
 {% if rel_images %}
 <div id="related" class="span-16 last">
     <h2>Relacionadas</h2>
-    <ul class="thumbs">
+    <select name="menu">
+        <option value="0" selected> Táxon </option>
+        <option value="1"> Gênero </option>
+        <option value="2"> Espécie </option>
+        <option value="3"> Local </option>
+        <option value="4"> Cidade </option>
+    </select>
+
+    <ul class="rel-thumbs">
         {% for image in rel_images %}
-            {% if image.is_public %}
+            {% if forloop.counter == 3 %}
+            <li class="shadow size-{{ image.size.slug }} current">
+                <img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" />
+            </li>
+            {% else %}
             <li class="shadow size-{{ image.size.slug }}">
             {% include 'thumb.html' %}
             </li>

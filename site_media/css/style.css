@@ -153,9 +153,6 @@ footer.pagination {
     text-align: left;
 }
 
-#highthumbs {
-}
-
 #author {
     font-size: 1.1em;
     font-weight: bold;
@@ -347,12 +344,12 @@ div.thumbs-org a {
     float:left;
 }
 
-ul.thumbs {
+ul.thumbs, ul.rel-thumbs {
     margin: 0;
     padding: 0;
 }
 
-ul.thumbs li {
+ul.thumbs li, ul.rel-thumbs li {
     display: inline;
     float: left;
     margin: 0 10px 10px 0;
@@ -364,7 +361,14 @@ ul.thumbs li {
     border-radius: 5px;
 }
 
-ul.thumbs .lupa, div.thumbs-org .lupa {
+ul.rel-thumbs li.current {
+    -moz-opacity:0.4;
+    opacity:0.4;
+    filter:alpha(opacity=40);
+    zoom:1;
+}
+
+ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
     display: none;
     float: right;
     position: relative;
@@ -378,20 +382,24 @@ ul.thumbs .lupa, div.thumbs-org .lupa {
     border-radius: 0 5px 0 5px;
 }
 
-ul.thumbs li:hover .lupa, div.thumbs-org:hover .lupa {
+ul.thumbs li:hover .lupa, ul.rel-thumbs li:hover .lupa, div.thumbs-org:hover .lupa {
     display: block;
 }
 
-ul.thumbs li a {
+ul.thumbs li a, ul.rel-thumbs li a {
     margin:0;
     padding:0;
 }
 
-ul.thumbs img {
+ul.thumbs img, ul.rel-thumbs img {
     border:none;
     float:left;
     margin:0;
     padding:0;
+}
+
+ul.rel-thumbs img {
+    width:88px;
 }
 
 ul.thumbs li.size-01-mm, .size-01-mm {

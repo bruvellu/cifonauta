@@ -41,21 +41,30 @@ def show_related(media):
     usando o Q() para refinar a busca. Caso não encontre nenhum
     grupo relacionado, mostra imagens aleatórias.
     '''
+    cities = Image.objects.filter(city=media.city.id, is_public=True).order_by('id')
+    for index, item in enumerate(cities):
+        if item.id == media.id:
+            media_index = index
+        else:
+            print 'Não encontrou id, algo está errado.'
+    rel_cities = cities[media_index-2:media_index+3]
+    rel_images = rel_cities
+
     #TODO Idéia é criar um combobox para escolher por qual metadado filtrar.
-    if media.taxon_set.all:
-        qobj = Q()
-        for taxon in media.taxon_set.all():
-            qobj.add(Q(taxon=taxon), Q.AND)
+    #if media.taxon_set.all:
+    #    qobj = Q()
+    #    for taxon in media.taxon_set.all():
+    #        qobj.add(Q(taxon=taxon), Q.AND)
 
-        if media.genus_set.all:
-            for genus in media.genus_set.all():
-                qobj.add(Q(genus=genus), Q.OR)
+    #    if media.genus_set.all:
+    #        for genus in media.genus_set.all():
+    #            qobj.add(Q(genus=genus), Q.OR)
 
-            if media.species_set.all:
-                for sp in media.species_set.all():
-                    qobj.add(Q(species=sp), Q.OR)
+    #        if media.species_set.all:
+    #            for sp in media.species_set.all():
+    #                qobj.add(Q(species=sp), Q.OR)
 
-        rel_images = Image.objects.filter(qobj).exclude(id=media.id).order_by('?')[:8]
+    #    rel_images = Image.objects.filter(qobj).exclude(id=media.id).order_by('?')[:8]
     if rel_images:
         rand_images = []
     else:

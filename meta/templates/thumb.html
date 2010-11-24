@@ -1,5 +1,5 @@
             <a href="{{ image.get_absolute_url }}">
-                <img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" width="120" height="90" />
+                <img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" />
             </a>
             <a class="lupa highslide size-{{ image.size.slug }}" onclick="return hs.expand(this)" href="/{{ image.web_filepath }}">+<!--<img src="/site_media/js/highslide/graphics/zoomin.cur" />--></a>
             {% if image.title %}

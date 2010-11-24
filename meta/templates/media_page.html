@@ -68,9 +68,11 @@ $(document).ready(function(){
             <div class="border-bottom" id="views">
                 {{ media.view_count }} visita{{ media.view_count|pluralize }}
             </div>
-            {% if media.taxon_set.all %}
+            {% with media.taxon_set.all|first as tax %}
+            {% if tax.name %}
                 {% include 'biodb.html' %}
             {% endif %}
+            {% endwith %}
 
             {% if media.size.name %}
             {% spaceless %}
@@ -93,6 +95,7 @@ $(document).ready(function(){
 
         <div class="span-13 last borders" id="meta">
             <div class="span-7 taxonomy">
+
                 {% if media.genus_set.all %}
                 <strong>Espécie{{ splist.count|pluralize }}: </strong>
                 <span id="species">
@@ -103,10 +106,13 @@ $(document).ready(function(){
                 <br />
                 {% endif %}
 
-                {% if media.taxon_set.all %}
-                <strong>Táxon{{ media.taxon_set.all.count|pluralize }}:</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
-                <br />
-                {% endif %}
+                {% with media.taxon_set.all|first as tax %}
+                    {% if tax.name %}
+                    <strong>Táxon{{ media.taxon_set.all.count|pluralize }}:</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
+                    <br />
+                    {% endif %}
+                {% endwith %}
+
                 {% if media.source.name %}
                 <strong>Especialista:</strong> <span id="source">{{ media.source }}</span>
                 {% endif %}
@@ -125,6 +131,7 @@ $(document).ready(function(){
                     {% if media.country.name %}<span id="country">{{ media.country }}</span>{% endif %}
                 <br />
                 {% endif %}
+
                 {% if media.geolocation %}
                 <strong>Geolocalização:</strong> <a href="http://maps.google.com/maps?q={{ media.latitude }},{{ media.longitude }}" title="{{ media.geolocation }} no Google Maps">{{ media.geolocation }}</a>
                 {% endif %}

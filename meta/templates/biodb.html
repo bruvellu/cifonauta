@@ -11,36 +11,44 @@
             {% for taxon in media.taxon_set.all %}
             {% if taxon.name %}
             <li>
-            <a href="http://data.gbif.org/search/{{ taxon.name}}" title="{{ taxon.name }} no Global Biodiversity Information Facility" target="_blank">{{ taxon.name }}</a>
+            <a href="http://data.gbif.org/search/{{ taxon.name }}" title="{{ taxon.name }} no Global Biodiversity Information Facility" target="_blank">{{ taxon.name }}</a>
             </li>
             {% endif %}
             {% endfor %}
         </ul>
 
+        {% with media.genus_set.all|first as gen %}
+        {% if gen.name %}
         Gênero{{ media.genus_set.all.count|pluralize }}:
         <ul>
             {% for genus in media.genus_set.all %}
             {% if genus.name %}
             <li>
-            <a href="http://data.gbif.org/species/genus/{{ genus.name}}" title="{{ genus.name }} no Global Biodiversity Information Facility" target="_blank">{{ genus.name }}</a>
+            <a href="http://data.gbif.org/species/genus/{{ genus.name }}" title="{{ genus.name }} no Global Biodiversity Information Facility" target="_blank">{{ genus.name }}</a>
             </li>
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
 
+        {% with media.species_set.all|first as spp %}
+        {% if spp.name %}
         Espécie{{ media.species_set.all.count|pluralize }}:
         <ul>
             {% for sp in media.species_set.all %}
             {% if sp.name %}
             <li>
-            <a href="http://data.gbif.org/species/species/{{ sp.parent.name}}_{{ sp.name }}" title="{{ sp.parent.name }} {{ sp.name }} no Global Biodiversity Information Facility" target="_blank">{{ sp.parent.name }} {{ sp.name }}</a>
+            <a href="http://data.gbif.org/species/species/{{ sp.parent.name }}_{{ sp.name }}" title="{{ sp.parent.name }} {{ sp.name }} no Global Biodiversity Information Facility" target="_blank">{{ sp.parent.name }} {{ sp.name }}</a>
             </li>
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
     </div>
-    
     </li>
+
     <li>
 
     EoL
@@ -59,6 +67,8 @@
             {% endfor %}
         </ul>
 
+        {% with media.genus_set.all|first as gen %}
+        {% if gen.name %}
         Gênero{{ media.genus_set.all.count|pluralize }}:
         <ul>
             {% for genus in media.genus_set.all %}
@@ -69,7 +79,11 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
 
+        {% with media.species_set.all|first as spp %}
+        {% if spp.name %}
         Espécie{{ media.species_set.all.count|pluralize }}:
         <ul>
             {% for sp in media.species_set.all %}
@@ -80,6 +94,8 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
     </div>
     
     </li>
@@ -101,6 +117,8 @@
             {% endfor %}
         </ul>
 
+        {% with media.genus_set.all|first as gen %}
+        {% if gen.name %}
         Gênero{{ media.genus_set.all.count|pluralize }}:
         <ul>
             {% for genus in media.genus_set.all %}
@@ -111,7 +129,11 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
 
+        {% with media.species_set.all|first as spp %}
+        {% if spp.name %}
         Espécie{{ media.species_set.all.count|pluralize }}:
         <ul>
             {% for sp in media.species_set.all %}
@@ -122,6 +144,8 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
     </div>
     
     </li>
@@ -143,6 +167,8 @@
             {% endfor %}
         </ul>
 
+        {% with media.genus_set.all|first as gen %}
+        {% if gen.name %}
         Gênero{{ media.genus_set.all.count|pluralize }}:
         <ul>
             {% for genus in media.genus_set.all %}
@@ -153,7 +179,11 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
 
+        {% with media.species_set.all|first as spp %}
+        {% if spp.name %}
         Espécie{{ media.species_set.all.count|pluralize }}:
         <ul>
             {% for sp in media.species_set.all %}
@@ -164,6 +194,8 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
     </div>
     
     </li>
@@ -185,6 +217,8 @@
             {% endfor %}
         </ul>
 
+        {% with media.genus_set.all|first as gen %}
+        {% if gen.name %}
         Gênero{{ media.genus_set.all.count|pluralize }}:
         <ul>
             {% for genus in media.genus_set.all %}
@@ -195,7 +229,11 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
 
+        {% with media.species_set.all|first as spp %}
+        {% if spp.name %}
         Espécie{{ media.species_set.all.count|pluralize }}:
         <ul>
             {% for sp in media.species_set.all %}
@@ -206,6 +244,8 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
     </div>
     
     </li>
@@ -227,6 +267,8 @@
             {% endfor %}
         </ul>
 
+        {% with media.genus_set.all|first as gen %}
+        {% if gen.name %}
         Gênero{{ media.genus_set.all.count|pluralize }}:
         <ul>
             {% for genus in media.genus_set.all %}
@@ -237,7 +279,11 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
 
+        {% with media.species_set.all|first as spp %}
+        {% if spp.name %}
         Espécie{{ media.species_set.all.count|pluralize }}:
         <ul>
             {% for sp in media.species_set.all %}
@@ -248,6 +294,8 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
     </div>
     
     
@@ -270,6 +318,8 @@
             {% endfor %}
         </ul>
 
+        {% with media.genus_set.all|first as gen %}
+        {% if gen.name %}
         Gênero{{ media.genus_set.all.count|pluralize }}:
         <ul>
             {% for genus in media.genus_set.all %}
@@ -280,7 +330,11 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
 
+        {% with media.species_set.all|first as spp %}
+        {% if spp.name %}
         Espécie{{ media.species_set.all.count|pluralize }}:
         <ul>
             {% for sp in media.species_set.all %}
@@ -291,6 +345,8 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
     </div>
     
     </li>
@@ -312,6 +368,8 @@
             {% endfor %}
         </ul>
 
+        {% with media.genus_set.all|first as gen %}
+        {% if gen.name %}
         Gênero{{ media.genus_set.all.count|pluralize }}:
         <ul>
             {% for genus in media.genus_set.all %}
@@ -322,7 +380,11 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
 
+        {% with media.species_set.all|first as spp %}
+        {% if spp.name %}
         Espécie{{ media.species_set.all.count|pluralize }}:
         <ul>
             {% for sp in media.species_set.all %}
@@ -333,6 +395,8 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
     </div>
     
     </li>
@@ -354,6 +418,8 @@
             {% endfor %}
         </ul>
 
+        {% with media.genus_set.all|first as gen %}
+        {% if gen.name %}
         Gênero{{ media.genus_set.all.count|pluralize }}:
         <ul>
             {% for genus in media.genus_set.all %}
@@ -364,7 +430,11 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
 
+        {% with media.species_set.all|first as spp %}
+        {% if spp.name %}
         Espécie{{ media.species_set.all.count|pluralize }}:
         <ul>
             {% for sp in media.species_set.all %}
@@ -375,6 +445,8 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
     </div>
     
     </li>
@@ -396,6 +468,8 @@
             {% endfor %}
         </ul>
 
+        {% with media.genus_set.all|first as gen %}
+        {% if gen.name %}
         Gênero{{ media.genus_set.all.count|pluralize }}:
         <ul>
             {% for genus in media.genus_set.all %}
@@ -406,7 +480,11 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
 
+        {% with media.species_set.all|first as spp %}
+        {% if spp.name %}
         Espécie{{ media.species_set.all.count|pluralize }}:
         <ul>
             {% for sp in media.species_set.all %}
@@ -417,6 +495,8 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
     </div>
     
     </li>
@@ -438,6 +518,8 @@
             {% endfor %}
         </ul>
 
+        {% with media.genus_set.all|first as gen %}
+        {% if gen.name %}
         Gênero{{ media.genus_set.all.count|pluralize }}:
         <ul>
             {% for genus in media.genus_set.all %}
@@ -448,7 +530,11 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
 
+        {% with media.species_set.all|first as spp %}
+        {% if spp.name %}
         Espécie{{ media.species_set.all.count|pluralize }}:
         <ul>
             {% for sp in media.species_set.all %}
@@ -459,6 +545,8 @@
             {% endif %}
             {% endfor %}
         </ul>
+        {% endif %}
+        {% endwith %}
     </div>
     
     </li>

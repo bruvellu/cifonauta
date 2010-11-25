@@ -47,7 +47,7 @@
     {% for video in videos.object_list %}
         {% if video.is_public %}
         <li>
-        <a href="{{ video.get_absolute_url }}"><img src="/{{ video.thumb_filepath }}" alt="{{ video.title }}" title="{{ video.title }}" width="120" /></a>
+        <a href="{{ video.get_absolute_url }}"><img src="/{{ video.thumb_filepath }}" alt="{{ video.title }}" title="{{ video.title }}" /></a>
         </li>
         {% endif %}
     {% endfor %}

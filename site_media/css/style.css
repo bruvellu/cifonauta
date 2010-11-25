@@ -77,7 +77,7 @@ nav.main {
 
 header.main hgroup {
     margin:0 80px;
-    letter-spacing: 6px;
+    letter-spacing: 4px;
 }
 
 section#stats {
@@ -129,11 +129,11 @@ aside div.block {
     border-radius: 10px;
 }
 
-aside.image {
+aside.photo {
     float:right;
 }
 
-figure.image {
+figure.photo {
     background: #ffffff;
     padding: 10px;
     -moz-border-radius: 10px 0 0;

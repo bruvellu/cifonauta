@@ -27,12 +27,12 @@ def show_hot():
 
 @register.inclusion_tag('thumb_org.html')
 def print_thumb(field, obj):
-    params = {field:obj}
+    params = {field: obj, 'is_public': True}
     try:
-        image = Image.objects.filter(**params).order_by('?')[0]
+        media = Image.objects.filter(**params).order_by('?')[0]
     except:
-        image = ''
-    return {'image': image}
+        media = ''
+    return {'media': media}
 
 def slicer(query, media_id):
     '''Processa resultado do queryset.
@@ -52,6 +52,16 @@ def slicer(query, media_id):
         rel_query = query[media_index-2:media_index+3]
     return rel_query
 
+def mediaque(media, qobj):
+    '''Retorna queryset de vídeo ou foto.'''
+    if media.datatype == 'photo':
+        query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
+    elif media.datatype == 'video':
+        query = Video.objects.filter(qobj, is_public=True).distinct().order_by('id')
+    else:
+        print '%s é um datatype desconhecido.' % media.datatype
+    return query
+
 @register.inclusion_tag('related.html')
 def show_related(media, form, related):
     '''Usa metadados da imagem para encontrar imagens relacionadas.
@@ -61,7 +71,7 @@ def show_related(media, form, related):
     grupo relacionado, mostra imagens aleatórias.
     '''
     # Limpa imagens relacionadas.
-    rel_images = ''
+    rel_media = ''
     # Transforma choices em dicionário.
     form_choices = form.fields['type'].choices
     choices = {}
@@ -75,12 +85,12 @@ def show_related(media, form, related):
                 if meta.name:
                     qobj.add(Q(author=meta), Q.OR)
             if qobj.__len__():
-                query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
-                rel_images = slicer(query, media.id) 
+                query = mediaque(media, qobj)
+                rel_media = slicer(query, media.id) 
             else:
-                rel_images = ''
+                rel_media = ''
         else:
-            rel_images = ''
+            rel_media = ''
 
     elif related == u'taxon':
         if media.taxon_set.all():
@@ -89,12 +99,12 @@ def show_related(media, form, related):
                 if meta.name:
                     qobj.add(Q(taxon=meta), Q.OR)
             if qobj.__len__():
-                query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
-                rel_images = slicer(query, media.id)
+                query = mediaque(media, qobj)
+                rel_media = slicer(query, media.id)
             else:
-                rel_images = ''
+                rel_media = ''
         else:
-            rel_images = ''
+            rel_media = ''
 
     elif related == u'genus':
         if media.genus_set.all():
@@ -103,12 +113,12 @@ def show_related(media, form, related):
                 if meta.name:
                     qobj.add(Q(genus=meta), Q.OR)
             if qobj.__len__():
-                query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
-                rel_images = slicer(query, media.id) 
+                query = mediaque(media, qobj)
+                rel_media = slicer(query, media.id) 
             else:
-                rel_images = ''
+                rel_media = ''
         else:
-            rel_images = ''
+            rel_media = ''
 
     elif related == u'species':
         if media.species_set.all():
@@ -117,50 +127,55 @@ def show_related(media, form, related):
                 if meta.name:
                     qobj.add(Q(species=meta), Q.OR)
             if qobj.__len__():
-                query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
-                rel_images = slicer(query, media.id) 
+                query = mediaque(media, qobj)
+                rel_media = slicer(query, media.id) 
             else:
-                rel_images = ''
+                rel_media = ''
         else:
-            rel_images = ''
+            rel_media = ''
 
     elif related == u'size':
         if media.size.name:
-            query = Image.objects.filter(size=media.size.id, is_public=True).order_by('id')
-            rel_images = slicer(query, media.id) 
+            qobj = Q(size=media.size.id)
+            query = mediaque(media, qobj)
+            rel_media = slicer(query, media.id) 
         else:
-            rel_images = ''
+            rel_media = ''
 
     elif related == u'sublocation':
         if media.sublocation.name:
-            query = Image.objects.filter(sublocation=media.sublocation.id, is_public=True).order_by('id')
-            rel_images = slicer(query, media.id) 
+            qobj = Q(sublocation=media.sublocation.id)
+            query = mediaque(media, qobj)
+            rel_media = slicer(query, media.id) 
         else:
-            rel_images = ''
+            rel_media = ''
 
     elif related == u'city':
         if media.city.name:
-            query = Image.objects.filter(city=media.city.id, is_public=True).order_by('id')
-            rel_images = slicer(query, media.id) 
+            qobj = Q(city=media.city.id)
+            query = mediaque(media, qobj)
+            rel_media = slicer(query, media.id) 
         else:
-            rel_images = ''
+            rel_media = ''
 
     elif related == u'state':
         if media.state.name:
-            query = Image.objects.filter(state=media.state.id, is_public=True).order_by('id')
-            rel_images = slicer(query, media.id) 
+            qobj = Q(state=media.state.id)
+            query = mediaque(media, qobj)
+            rel_media = slicer(query, media.id) 
         else:
-            rel_images = ''
+            rel_media = ''
 
     elif related == u'country':
         if media.country.name:
-            query = Image.objects.filter(country=media.country.id, is_public=True).order_by('id')
-            rel_images = slicer(query, media.id) 
+            qobj = Q(country=media.country.id)
+            query = mediaque(media, qobj)
+            rel_media = slicer(query, media.id) 
         else:
-            rel_images = ''
+            rel_media = ''
 
     else:
-        rel_images = ''
+        rel_media = ''
 
     if related in [u'author', u'taxon', u'genus', u'species']:
         crumbs = eval('list(media.%s_set.all())' % related)
@@ -173,7 +188,7 @@ def show_related(media, form, related):
 
     media_id = media.id
 
-    return {'media_id': media_id, 'rel_images': rel_images, 'form': form, 'related': related, 'type': choices[related], 'crumbs': crumbs}
+    return {'media_id': media_id, 'rel_media': rel_media, 'form': form, 'related': related, 'type': choices[related], 'crumbs': crumbs}
 
 @register.inclusion_tag('stats.html')
 def show_stats():

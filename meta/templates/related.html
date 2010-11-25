@@ -1,15 +1,15 @@
-{% if rel_images %}
+{% if rel_media %}
 <div id="related" class="span-16 last">
     <ul class="rel-thumbs">
-        {% for image in rel_images %}
-            {% if image.id == media_id %}
-            <li class="shadow size-{{ image.size.slug }} current">
-                <img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" />
+        {% for media in rel_media %}
+            {% if media.id == media_id %}
+            <li class="shadow size-{{ media.size.slug }} current">
+                <img src="/{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" />
                 <div class="linear" id="prev">{% autoescape on %}&lt;&lt; anterior{% endautoescape %}</div>
                 <div class="linear" id="next">{% autoescape on %}próxima &gt;&gt;{% endautoescape %}</div>
             </li>
             {% else %}
-            <li class="shadow size-{{ image.size.slug }}">
+            <li class="shadow size-{{ media.size.slug }}">
             {% include 'thumb.html' %}
             </li>
             {% endif %}

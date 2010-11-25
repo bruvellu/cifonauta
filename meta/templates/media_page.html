@@ -35,7 +35,7 @@ $(document).ready(function(){
 {% load comments %}
 <section class="span-16">
     {% if media %}
-    <article id="single" class="{{ type }} {% show_set media.author_set.all 'author-' '' ' ' 'slug' %} {% show_set media.taxon_set.all 'taxon-' '' ' ' 'slug' %} {% show_set media.genus_set.all 'genus-' '' ' ' 'slug' %} {% show_set media.species_set.all 'species-' '' ' ' 'slug' %} size-{{ media.size.slug }} source-{{ media.source.slug }} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ media.view_count }}">
+    <article id="single" class="{{ media.datatype }} {% show_set media.author_set.all 'author-' '' ' ' 'slug' %} {% show_set media.taxon_set.all 'taxon-' '' ' ' 'slug' %} {% show_set media.genus_set.all 'genus-' '' ' ' 'slug' %} {% show_set media.species_set.all 'species-' '' ' ' 'slug' %} size-{{ media.size.slug }} source-{{ media.source.slug }} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ media.view_count }}">
         <header class="span-16 last">
             <h1>{{ media.title }}</h1>
         </header>
@@ -46,11 +46,11 @@ $(document).ready(function(){
             </footer>
         {% endif %}
 
-        <figure class="span-13 {{ type }} borders">
-            {% if type == 'image' %}
-                {% include 'image.html' %}
+        <figure class="span-13 {{ media.datatype }} borders">
+            {% if media.datatype == 'photo' %}
+                {% include 'photo.html' %}
             {% else %}
-                {% if type == 'video' %}
+                {% if media.datatype == 'video' %}
                     {% include 'video.html' %}
                 {% endif %}
             {% endif %}

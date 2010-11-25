@@ -1,15 +1,15 @@
-            <a href="{{ image.get_absolute_url }}">
-                <img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" />
+            <a href="{{ media.get_absolute_url }}">
+                <img src="/{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" />
             </a>
-            <a class="lupa highslide size-{{ image.size.slug }}" onclick="return hs.expand(this)" href="/{{ image.web_filepath }}">+<!--<img src="/site_media/js/highslide/graphics/zoomin.cur" />--></a>
-            {% if image.title %}
-            <div class="highslide-heading">{{ image.title }}</div>
+            <a class="lupa highslide size-{{ media.size.slug }}" onclick="return hs.expand(this)" href="/{{ media.web_filepath }}">+<!--<img src="/site_media/js/highslide/graphics/zoomin.cur" />--></a>
+            {% if media.title %}
+            <div class="highslide-heading">{{ media.title }}</div>
             {% endif %}
             <div class="highslide-caption">
-                {% if image.caption %}
-                <div class="float-left">{{ image.caption }}</div>
+                {% if media.caption %}
+                <div class="float-left">{{ media.caption }}</div>
                 {% endif %}
                 <div class="float-right">
-                    <a href="{{ image.get_absolute_url }}">ver detalhes</a>
+                    <a href="{{ media.get_absolute_url }}">ver detalhes</a>
                 </div>
             </div>

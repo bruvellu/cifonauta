@@ -185,7 +185,6 @@ def image_page(request, image_id):
     return render_to_response('media_page.html', variables)
 
 def video_page(request, video_id):
-    #TODO Implementar vídeos relacionados.
     if request.method == 'POST':
         form = RelatedForm(request.POST)
         if form.is_valid:
@@ -225,55 +224,6 @@ def tag_page(request, slug):
         'meta': tag,
         })
     return render_to_response('meta_page.html', variables)
-
-    #if '&' and '|' in tag_name:
-    #    and_tags = tag_name.split('&')
-    #    for and_tag in and_tags:
-    #        if '|' in and_tag:
-    #            preor_imgs = []
-    #            or_tags = and_tag.split('|')
-    #            for or_tag in or_tags:
-    #                or_tag = get_object_or_404(Tag, name=or_tag)
-    #                or_imgs = or_tag.images.order_by('-id')
-    #                preor_imgs.append(set(or_imgs))
-    #            allor_imgs = preor_imgs[0]
-    #            for or_set in preor_imgs:
-    #                # Return union between sets
-    #                allor_imgs |= or_set
-    #            images.append(allor_imgs)
-    #        else:
-    #            and_tag = get_object_or_404(Tag, name=and_tag)
-    #            and_imgs = and_tag.images.order_by('-id')
-    #            images.append(set(and_imgs))
-    #    final_set = images[0]
-    #    for pre_set in images:
-    #        # Return intersection between sets
-    #        final_set &= pre_set
-    #    images = final_set
-    #elif '|' in tag_name:
-    #    preor_imgs = []
-    #    or_tags = tag_name.split('|')
-    #    for or_tag in or_tags:
-    #        or_tag = get_object_or_404(Tag, name=or_tag)
-    #        or_imgs = or_tag.images.order_by('-id')
-    #        preor_imgs.append(set(or_imgs))
-    #    allor_imgs = preor_imgs[0]
-    #    for or_set in preor_imgs:
-    #        allor_imgs |= or_set
-    #    images = allor_imgs
-    #elif '&' in tag_name:
-    #    and_tags = tag_name.split('&')
-    #    for and_tag in and_tags:
-    #        and_tag = get_object_or_404(Tag, name=and_tag)
-    #        and_imgs = and_tag.images.order_by('-id')
-    #        images.append(set(and_imgs))
-    #    final_set = images[0]
-    #    for pre_set in images:
-    #        final_set &= pre_set
-    #    images = final_set
-    #else:
-    #    tag = get_object_or_404(Tag, name=tag_name)
-    #    images = tag.images.order_by('-id')
 
 def meta_page(request, model_name, field, slug, genus=''):
     model = get_object_or_404(model_name, slug=slug)

@@ -107,8 +107,11 @@ def show_related(media, form, related):
             rel_images = ''
 
     elif related == u'size':
-        query = Image.objects.filter(size=media.size.id, is_public=True).order_by('id')
-        rel_images = slicer(query, media.id) 
+        if media.size.name:
+            query = Image.objects.filter(size=media.size.id, is_public=True).order_by('id')
+            rel_images = slicer(query, media.id) 
+        else:
+            rel_images = ''
 
     elif related == u'sublocation':
         if media.sublocation.name:
@@ -161,6 +164,10 @@ def show_stats():
     countries = Country.objects.count()
     tags = Tag.objects.count()
     return {'images': images, 'videos': videos, 'taxa': taxa, 'genera': genera, 'spp': spp, 'locations': locations, 'cities': cities, 'states': states, 'countries': countries, 'tags': tags}
+
+@register.filter
+def get_type(obj):
+    return type(obj)
 
 @register.filter
 def in_list(value, arg):

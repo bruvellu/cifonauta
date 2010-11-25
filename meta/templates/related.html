@@ -1,14 +1,5 @@
 {% if rel_images %}
 <div id="related" class="span-16 last">
-    <h2>Relacionadas</h2>
-    <select name="menu">
-        <option value="0" selected> Táxon </option>
-        <option value="1"> Gênero </option>
-        <option value="2"> Espécie </option>
-        <option value="3"> Local </option>
-        <option value="4"> Cidade </option>
-    </select>
-
     <ul class="rel-thumbs">
         {% for image in rel_images %}
             {% if forloop.counter == 3 %}
@@ -23,17 +14,22 @@
         {% endfor %}
     </ul>
 </div>
-{% else %}
-<div id="related" class="span-16 last">
-    <h2>Aleatórias</h2>
-    <ul class="thumbs">
-        {% for image in rand_images %}
-            {% if image.is_public %}
-            <li class="shadow size-{{ image.size.slug }}">
-            {% include 'thumb.html' %}
-            </li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-</div>
 {% endif %}
+<div id="related-form" class="span-16 last">
+    <form action="." method="post">
+        {{ form.type.label_tag }}<strong>:</strong> {{ form.type }} {{ form.type.value }}
+        <input type="submit" value="Trocar" /> 
+        <span class="quiet">
+            {% if not crumbs %}
+            Esta imagem não tem {{ type }}.
+            {% else %}
+                {% if crumbs|length %}
+                    {% show_set crumbs '' '' ', ' '' %}
+                {% else %}
+                    {{ crumbs }}
+                {% endif %}
+            {% endif %}
+        </span>
+        {% csrf_token %}
+    </form>
+</div>

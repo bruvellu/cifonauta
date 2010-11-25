@@ -149,6 +149,18 @@ def feedback_page(request):
 
 # Single
 def image_page(request, image_id):
+    if request.method == 'POST':
+        form = RelatedForm(request.POST)
+        if form.is_valid:
+            related = form.data['type']
+            request.session['rel_type'] = form.data['type']
+    else:
+        try:
+            form = RelatedForm(initial={'type': request.session['rel_type']})
+            related = request.session['rel_type']
+        except:
+            form = RelatedForm(initial={'type': 'author'})
+            related = u'author'
     image = get_object_or_404(Image, id=image_id)
     image.view_count = image.view_count + 1
     image.save()
@@ -158,6 +170,8 @@ def image_page(request, image_id):
         'media': image,
         'splist': spp,
         'tags': tags,
+        'form': form,
+        'related': related,
         'type': 'image',
         })
     return render_to_response('media_page.html', variables)

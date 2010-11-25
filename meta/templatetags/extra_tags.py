@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from meta.models import *
+from meta.forms import *
 from django import template
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.template.defaultfilters import slugify
@@ -33,43 +34,107 @@ def print_thumb(field, obj):
         image = ''
     return {'image': image}
 
+def slicer(query, media_id):
+    '''Processa resultado do queryset.
+
+    Busca o metadado, encontra o índice da imagem e reduz amostra.
+    '''
+    for index, item in enumerate(query):
+        if item.id == media_id:
+            media_index = index
+        else:
+            print u'Não encontrou id, algo está errado.'
+    if len(query) <= 5:
+        rel_query = query
+    else:
+        rel_query = query[media_index-2:media_index+3]
+    return rel_query
+
 @register.inclusion_tag('related.html')
-def show_related(media):
+def show_related(media, form, related):
     '''Usa metadados da imagem para encontrar imagens relacionadas.
     
     Por enquanto procura apenas grupos taxonômicos relacionados, 
     usando o Q() para refinar a busca. Caso não encontre nenhum
     grupo relacionado, mostra imagens aleatórias.
     '''
-    cities = Image.objects.filter(city=media.city.id, is_public=True).order_by('id')
-    for index, item in enumerate(cities):
-        if item.id == media.id:
-            media_index = index
+    # Limpa imagens relacionadas.
+    rel_images = ''
+    # Transforma choices em dicionário.
+    form_choices = form.fields['type'].choices
+    choices = {}
+    for c in form_choices:
+        choices[c[0]] = c[1]
+
+    if related == u'author':
+        if media.author_set.all():
+            qobj = Q()
+            for meta in media.author_set.all():
+                qobj.add(Q(author=meta), Q.OR)
+            query = Image.objects.filter(qobj, is_public=True).order_by('id')
+            rel_images = slicer(query, media.id) 
         else:
-            print 'Não encontrou id, algo está errado.'
-    rel_cities = cities[media_index-2:media_index+3]
-    rel_images = rel_cities
+            rel_images = ''
 
-    #TODO Idéia é criar um combobox para escolher por qual metadado filtrar.
-    #if media.taxon_set.all:
-    #    qobj = Q()
-    #    for taxon in media.taxon_set.all():
-    #        qobj.add(Q(taxon=taxon), Q.AND)
+    elif related == u'taxon':
+        if media.taxon_set.all():
+            qobj = Q()
+            for meta in media.taxon_set.all():
+                qobj.add(Q(taxon=meta), Q.OR)
+            query = Image.objects.filter(qobj, is_public=True).order_by('id')
+            rel_images = slicer(query, media.id) 
+        else:
+            rel_images = ''
 
-    #    if media.genus_set.all:
-    #        for genus in media.genus_set.all():
-    #            qobj.add(Q(genus=genus), Q.OR)
+    elif related == u'genus':
+        if media.genus_set.all():
+            qobj = Q()
+            for meta in media.genus_set.all():
+                qobj.add(Q(genus=meta), Q.OR)
+            query = Image.objects.filter(qobj, is_public=True).order_by('id')
+            rel_images = slicer(query, media.id) 
+        else:
+            rel_images = ''
 
-    #        if media.species_set.all:
-    #            for sp in media.species_set.all():
-    #                qobj.add(Q(species=sp), Q.OR)
+    elif related == u'species':
+        if media.species_set.all():
+            qobj = Q()
+            for meta in media.species_set.all():
+                qobj.add(Q(species=meta), Q.OR)
+            query = Image.objects.filter(qobj, is_public=True).order_by('id')
+            rel_images = slicer(query, media.id) 
+        else:
+            rel_images = ''
 
-    #    rel_images = Image.objects.filter(qobj).exclude(id=media.id).order_by('?')[:8]
-    if rel_images:
-        rand_images = []
+    elif related == u'size':
+        query = Image.objects.filter(size=media.size.id, is_public=True).order_by('id')
+        rel_images = slicer(query, media.id) 
+
+    elif related == u'sublocation':
+        query = Image.objects.filter(sublocation=media.sublocation.id, is_public=True).order_by('id')
+        rel_images = slicer(query, media.id) 
+
+    elif related == u'city':
+        query = Image.objects.filter(city=media.city.id, is_public=True).order_by('id')
+        rel_images = slicer(query, media.id) 
+
+    elif related == u'state':
+        query = Image.objects.filter(state=media.state.id, is_public=True).order_by('id')
+        rel_images = slicer(query, media.id) 
+
+    elif related == u'country':
+        query = Image.objects.filter(country=media.country.id, is_public=True).order_by('id')
+        rel_images = slicer(query, media.id) 
+
     else:
-        rand_images = Image.objects.all().order_by('?')[:8]
-    return {'rel_images': rel_images, 'rand_images': rand_images}
+        rel_images = ''
+
+    if related in [u'author', u'taxon', u'genus', u'species']:
+        crumbs = eval('media.%s_set.all()' % related)
+    else:
+        crumbs = eval('media.%s' % related)
+
+    return {'rel_images': rel_images, 'form': form, 'related': related, 'type': choices[related], 'crumbs': crumbs}
 
 @register.inclusion_tag('stats.html')
 def show_stats():

@@ -43,7 +43,7 @@ def slicer(query, media_id):
         if item.id == media_id:
             media_index = index
         else:
-            print u'Não encontrou id, algo está errado.'
+            pass
     if media_index < 2:
         media_index = 2
     if len(query) <= 5:

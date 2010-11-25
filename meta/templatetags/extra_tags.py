@@ -72,9 +72,13 @@ def show_related(media, form, related):
         if media.author_set.all():
             qobj = Q()
             for meta in media.author_set.all():
-                qobj.add(Q(author=meta), Q.OR)
-            query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
-            rel_images = slicer(query, media.id) 
+                if meta.name:
+                    qobj.add(Q(author=meta), Q.OR)
+            if qobj.__len__():
+                query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
+                rel_images = slicer(query, media.id) 
+            else:
+                rel_images = ''
         else:
             rel_images = ''
 
@@ -82,9 +86,13 @@ def show_related(media, form, related):
         if media.taxon_set.all():
             qobj = Q()
             for meta in media.taxon_set.all():
-                qobj.add(Q(taxon=meta), Q.OR)
-            query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
-            rel_images = slicer(query, media.id) 
+                if meta.name:
+                    qobj.add(Q(taxon=meta), Q.OR)
+            if qobj.__len__():
+                query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
+                rel_images = slicer(query, media.id)
+            else:
+                rel_images = ''
         else:
             rel_images = ''
 
@@ -92,9 +100,13 @@ def show_related(media, form, related):
         if media.genus_set.all():
             qobj = Q()
             for meta in media.genus_set.all():
-                qobj.add(Q(genus=meta), Q.OR)
-            query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
-            rel_images = slicer(query, media.id) 
+                if meta.name:
+                    qobj.add(Q(genus=meta), Q.OR)
+            if qobj.__len__():
+                query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
+                rel_images = slicer(query, media.id) 
+            else:
+                rel_images = ''
         else:
             rel_images = ''
 
@@ -102,9 +114,13 @@ def show_related(media, form, related):
         if media.species_set.all():
             qobj = Q()
             for meta in media.species_set.all():
-                qobj.add(Q(species=meta), Q.OR)
-            query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
-            rel_images = slicer(query, media.id) 
+                if meta.name:
+                    qobj.add(Q(species=meta), Q.OR)
+            if qobj.__len__():
+                query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
+                rel_images = slicer(query, media.id) 
+            else:
+                rel_images = ''
         else:
             rel_images = ''
 
@@ -148,6 +164,10 @@ def show_related(media, form, related):
 
     if related in [u'author', u'taxon', u'genus', u'species']:
         crumbs = eval('list(media.%s_set.all())' % related)
+        pseudo = crumbs
+        for index, item in enumerate(pseudo):
+            if not item.name:
+                crumbs.pop(index)
     else:
         crumbs = eval('media.%s.name' % related)
 

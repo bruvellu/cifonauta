@@ -36,6 +36,12 @@
     <body>
         <section class="container prepend-1 append-1">
             <nav class="main span-24 last">
+                {% if user.is_authenticated %}
+                <span class="admin">
+                    <a href="/admin/">admin</a> <a href="/privadas/">privadas</a>
+                </span>
+                {% endif %}
+
                 <ul id="menu">
                     <li><a href="/">home</a></li>
                     <li><a href="/sobre/">sobre</a></li>

@@ -11,7 +11,11 @@ import operator
 
 # Main
 def main_page(request):
-    image_count = Image.objects.count()
+    '''Página principal mostrando destaques e pontos de partida para navegar.'''
+    #TODO Deixar página mais atrativa e eficiente.
+    # Conta apenas imagens públicas.
+    image_count = Image.objects.filter(is_public=True)
+    # Tenta encontrar destaques.
     images = Image.objects.filter(highlight=True, is_public=True).order_by('?')
     if not images:
         images = Image.objects.filter(is_public=True).order_by('?')
@@ -19,9 +23,11 @@ def main_page(request):
         images = ['']
     image = images[0]
     if images[0] != '':
+        # Retira imagem principal da lista de destaques.
         thumbs = images.exclude(id=image.id)[:4]
     else:
         thumbs = []
+    # Tenta encontrar destaques.
     videos = Video.objects.filter(highlight=True, is_public=True).order_by('?')
     if not videos:
         videos = Video.objects.filter(is_public=True).order_by('?')
@@ -41,6 +47,11 @@ def main_page(request):
     return render_to_response('main_page.html', variables)
 
 def search_page(request):
+    '''Página de busca com um formulário simples.
+    
+    Procura termo no campo tsv do banco de dados, que possibilita o full-text search.
+    '''
+    #TODO Implementar jQuery e AJAX para melhorar usabilidade.
     form = SearchForm()
     qsize = ''
     query = ''
@@ -141,10 +152,7 @@ def hidden_page(request):
     return render_to_response('hidden.html', variables)
 
 def feedback_page(request):
-    images = Image.objects.filter(is_public=False)
-    variables = RequestContext(request, {
-        'images': images,
-        })
+    variables = RequestContext(request, {})
     return render_to_response('feedback.html', variables)
 
 # Single

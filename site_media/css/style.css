@@ -7,9 +7,17 @@ header,footer,article,section,hgroup,nav,figure,figcaption {
     clear: both;
 }
 
-header.main{
+header.main {
     margin:0 0 2em;
     background:url("/site_media/logo.png") no-repeat scroll 0 0 transparent;
+}
+
+.admin {
+    float:left;
+}
+
+.admin a {
+    color:#eee;
 }
 
 div.main {

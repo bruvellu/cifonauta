@@ -5,9 +5,7 @@
 {% block content %}
 <section class="span-16">
 <form id="search-form" method="get" action=".">
-    {{ form.as_p }}
-    <input type="submit" value="Encontrar" />
-    <a href="{% url meta.views.search_page %}">Limpar</a>
+    {{ form.query.label_tag }}<strong>:</strong> {{ form.query }} <input type="submit" value="Encontrar" /> {{form.query.help_text }} <a href="{% url meta.views.search_page %}">Limpar</a>
 </form>
 <hr class="space">
 <div id="search-results">

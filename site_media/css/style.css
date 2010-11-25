@@ -382,7 +382,23 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
     border-radius: 0 5px 0 5px;
 }
 
+#related {
+    margin-bottom:1em;
+}
+
 #related-form {
+}
+
+.linear {
+    position:absolute;
+}
+
+#prev {
+    margin:72px 0 0 -14px;
+}
+
+#next {
+    margin:72px 0 0 51px;
 }
 
 ul.thumbs li:hover .lupa, ul.rel-thumbs li:hover .lupa, div.thumbs-org:hover .lupa {

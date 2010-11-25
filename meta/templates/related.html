@@ -5,6 +5,8 @@
             {% if image.id == media_id %}
             <li class="shadow size-{{ image.size.slug }} current">
                 <img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" />
+                <div class="linear" id="prev">{% autoescape on %}&lt;&lt; anterior{% endautoescape %}</div>
+                <div class="linear" id="next">{% autoescape on %}próxima &gt;&gt;{% endautoescape %}</div>
             </li>
             {% else %}
             <li class="shadow size-{{ image.size.slug }}">

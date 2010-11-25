@@ -224,6 +224,10 @@ def video_page(request, video_id):
     return render_to_response('media_page.html', variables)
 
 def tag_page(request, slug):
+    '''Página de um marcador.
+
+    Mostra galeria com todas as imagens que o possuem.
+    '''
     tag = get_object_or_404(Tag, slug=slug)
     image_list = tag.images.order_by('-id')
     video_list = tag.videos.order_by('-id')
@@ -237,8 +241,13 @@ def tag_page(request, slug):
     return render_to_response('meta_page.html', variables)
 
 def meta_page(request, model_name, field, slug, genus=''):
+    '''Página de um metadado.
+
+    Mostra galeria com todas as imagens que o possuem.
+    '''
     model = get_object_or_404(model_name, slug=slug)
     filter_args = {field: model}
+    #TODO checar se pai e filhos são corretamente interpretados.
     try:
         q = [Q(**filter_args),]
         for child in model.children.all():
@@ -260,6 +269,10 @@ def meta_page(request, model_name, field, slug, genus=''):
 
 # Lists
 def meta_list_page(request, model, plural):
+    '''Lista com todos os metadados.
+    
+    Não utilizado?
+    '''
     objects = model.objects.order_by('name')
     variables = RequestContext(request, {
         'metas': objects,
@@ -269,6 +282,7 @@ def meta_list_page(request, model, plural):
 
 # Menu
 def taxa_page(request):
+    '''Página mostrando grupos taxonômicos de maneira organizada.'''
     genera = Genus.objects.order_by('name')
     variables = RequestContext(request, {
         'genera': genera,
@@ -276,6 +290,7 @@ def taxa_page(request):
     return render_to_response('taxa_page.html', variables)
 
 def places_page(request):
+    '''Página mostrando locais de maneira organizada.'''
     sublocations = Sublocation.objects.exclude(name='').order_by('name')
     cities = City.objects.exclude(name='').order_by('name')
     states = State.objects.exclude(name='').order_by('name')
@@ -289,6 +304,7 @@ def places_page(request):
     return render_to_response('places_page.html', variables)
 
 def tags_page(request):
+    '''Página mostrando tags organizados por categoria.'''
     tags = Tag.objects.exclude(name='').order_by('parent')
     sizes = Size.objects.exclude(name='').order_by('id')
     variables = RequestContext(request, {
@@ -299,6 +315,7 @@ def tags_page(request):
 
 # Internal functions
 def get_paginated(request, obj_list):
+    '''Retorna o Paginator de um queryset.'''
     paginator = Paginator(obj_list, 16)
     # Make sure page request is an int. If not, deliver first page.
     try:
@@ -313,6 +330,7 @@ def get_paginated(request, obj_list):
     return obj
 
 def splist(request, media):
+    '''Retorna lista de espécies associadas à uma imagem.'''
     splist = []
     parents = []
     if media.genus_set.all():

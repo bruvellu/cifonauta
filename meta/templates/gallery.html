@@ -7,9 +7,9 @@
     </footer>
     <header><h2>Foto{{ images.paginator.count|pluralize }} ({{ images.paginator.count }})</h2></header>
     <ul class="thumbs">
-        {% for image in images.object_list %}
-            {% if image.is_public %}
-            <li class="shadow size-{{ image.size.slug }}">
+        {% for media in images.object_list %}
+            {% if media.is_public %}
+            <li class="shadow size-{{ media.size.slug }}">
             {% include 'thumb.html' %}
             </li>
             {% endif %}
@@ -44,13 +44,13 @@
     </footer>
     <header><h2>Vídeo{{ videos.paginator.count|pluralize }} ({{ videos.paginator.count }})</h2></header>
     <ul class="thumbs">
-    {% for video in videos.object_list %}
-        {% if video.is_public %}
-        <li>
-        <a href="{{ video.get_absolute_url }}"><img src="/{{ video.thumb_filepath }}" alt="{{ video.title }}" title="{{ video.title }}" /></a>
-        </li>
-        {% endif %}
-    {% endfor %}
+        {% for media in videos.object_list %}
+            {% if media.is_public %}
+            <li class="shadow size-{{ media.size.slug }}">
+            {% include 'thumb.html' %}
+            </li>
+            {% endif %}
+        {% endfor %}
     </ul>
 
 <footer class="span-16 pagination">

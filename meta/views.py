@@ -101,6 +101,10 @@ def search_page(request):
     return render_to_response('buscar.html', variables)
 
 def org_page(request):
+    '''Página mostrando a organização dos metadados.
+
+    Além de buscar as descrições de cada categoria, mostra exemplos aleatórios de imagens.
+    '''
     # Tamanhos
     sizes = Size.objects.all().exclude(name='').order_by('position')
     # Técnicas
@@ -143,6 +147,10 @@ def org_page(request):
     return render_to_response('organizacao.html', variables)
 
 def hidden_page(request):
+    '''Página mostrando imagens não públicas.
+
+    Usada pelos administradores como referência para a edição de metadados.
+    '''
     images = Image.objects.filter(is_public=False)
     videos = Video.objects.filter(is_public=False)
     variables = RequestContext(request, {
@@ -152,11 +160,13 @@ def hidden_page(request):
     return render_to_response('hidden.html', variables)
 
 def feedback_page(request):
+    '''Montada para receber o feedback dos usuários durante os testes.'''
     variables = RequestContext(request, {})
     return render_to_response('feedback.html', variables)
 
 # Single
 def image_page(request, image_id):
+    '''Página única de cada imagem com todas as informações.'''
     if request.method == 'POST':
         form = RelatedForm(request.POST)
         if form.is_valid:
@@ -185,6 +195,7 @@ def image_page(request, image_id):
     return render_to_response('media_page.html', variables)
 
 def video_page(request, video_id):
+    '''Página única de cada vídeo com todas as informações.'''
     if request.method == 'POST':
         form = RelatedForm(request.POST)
         if form.is_valid:

@@ -111,20 +111,32 @@ def show_related(media, form, related):
         rel_images = slicer(query, media.id) 
 
     elif related == u'sublocation':
-        query = Image.objects.filter(sublocation=media.sublocation.id, is_public=True).order_by('id')
-        rel_images = slicer(query, media.id) 
+        if media.sublocation.name:
+            query = Image.objects.filter(sublocation=media.sublocation.id, is_public=True).order_by('id')
+            rel_images = slicer(query, media.id) 
+        else:
+            rel_images = ''
 
     elif related == u'city':
-        query = Image.objects.filter(city=media.city.id, is_public=True).order_by('id')
-        rel_images = slicer(query, media.id) 
+        if media.city.name:
+            query = Image.objects.filter(city=media.city.id, is_public=True).order_by('id')
+            rel_images = slicer(query, media.id) 
+        else:
+            rel_images = ''
 
     elif related == u'state':
-        query = Image.objects.filter(state=media.state.id, is_public=True).order_by('id')
-        rel_images = slicer(query, media.id) 
+        if media.state.name:
+            query = Image.objects.filter(state=media.state.id, is_public=True).order_by('id')
+            rel_images = slicer(query, media.id) 
+        else:
+            rel_images = ''
 
     elif related == u'country':
-        query = Image.objects.filter(country=media.country.id, is_public=True).order_by('id')
-        rel_images = slicer(query, media.id) 
+        if media.country.name:
+            query = Image.objects.filter(country=media.country.id, is_public=True).order_by('id')
+            rel_images = slicer(query, media.id) 
+        else:
+            rel_images = ''
 
     else:
         rel_images = ''
@@ -132,7 +144,7 @@ def show_related(media, form, related):
     if related in [u'author', u'taxon', u'genus', u'species']:
         crumbs = eval('media.%s_set.all()' % related)
     else:
-        crumbs = eval('media.%s' % related)
+        crumbs = eval('media.%s.name' % related)
 
     return {'rel_images': rel_images, 'form': form, 'related': related, 'type': choices[related], 'crumbs': crumbs}
 

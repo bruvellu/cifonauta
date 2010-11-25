@@ -23,7 +23,7 @@
             {% if not crumbs %}
             Esta imagem não tem {{ type }}.
             {% else %}
-                {% if crumbs|get_type == 'list' %}
+                {% if crumbs|islist %}
                     {% show_set crumbs '' '' ', ' '' %}
                 {% else %}
                     {{ crumbs }}

@@ -145,7 +145,7 @@ def show_related(media, form, related):
         rel_images = ''
 
     if related in [u'author', u'taxon', u'genus', u'species']:
-        crumbs = eval('media.%s_set.all()' % related)
+        crumbs = eval('list(media.%s_set.all())' % related)
     else:
         crumbs = eval('media.%s.name' % related)
 
@@ -166,8 +166,8 @@ def show_stats():
     return {'images': images, 'videos': videos, 'taxa': taxa, 'genera': genera, 'spp': spp, 'locations': locations, 'cities': cities, 'states': states, 'countries': countries, 'tags': tags}
 
 @register.filter
-def get_type(obj):
-    return type(obj)
+def islist(obj):
+    return isinstance(obj, list)
 
 @register.filter
 def in_list(value, arg):

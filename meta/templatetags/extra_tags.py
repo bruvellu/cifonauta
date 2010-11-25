@@ -211,16 +211,16 @@ def extract_set(query):
     countries = []
     tags = []
     for item in query:
-        if item.author_set.all:
+        if item.author_set.all():
             for author in item.author_set.all():
                 authors.append(author)
-        if item.taxon_set.all:
+        if item.taxon_set.all():
             for taxon in item.taxon_set.all():
                 taxa.append(taxon)
-        if item.genus_set.all:
+        if item.genus_set.all():
             for genus in item.genus_set.all():
                 genera.append(genus)
-        if item.species_set.all:
+        if item.species_set.all():
             for sp in item.species_set.all():
                 species.append(sp)
         if item.size.name:
@@ -233,7 +233,7 @@ def extract_set(query):
             states.append(item.state)
         if item.country.name:
             countries.append(item.country)
-        if item.tag_set.all:
+        if item.tag_set.all():
             for tag in item.tag_set.all():
                 tags.append(tag)
     return list(set(authors)), list(set(taxa)), list(set(genera)), list(set(species)), list(set(sizes)), list(set(sublocations)), list(set(cities)), list(set(states)), list(set(countries)), list(set(tags))

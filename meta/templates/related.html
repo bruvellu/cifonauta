@@ -2,7 +2,7 @@
 <div id="related" class="span-16 last">
     <ul class="rel-thumbs">
         {% for image in rel_images %}
-            {% if forloop.counter == 3 %}
+            {% if image.id == media_id %}
             <li class="shadow size-{{ image.size.slug }} current">
                 <img src="/{{ image.thumb_filepath }}" alt="{{ image.title }}" title="{{ image.title }}" />
             </li>

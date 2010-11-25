@@ -44,6 +44,8 @@ def slicer(query, media_id):
             media_index = index
         else:
             print u'Não encontrou id, algo está errado.'
+    if media_index < 2:
+        media_index = 2
     if len(query) <= 5:
         rel_query = query
     else:
@@ -149,7 +151,9 @@ def show_related(media, form, related):
     else:
         crumbs = eval('media.%s.name' % related)
 
-    return {'rel_images': rel_images, 'form': form, 'related': related, 'type': choices[related], 'crumbs': crumbs}
+    media_id = media.id
+
+    return {'media_id': media_id, 'rel_images': rel_images, 'form': form, 'related': related, 'type': choices[related], 'crumbs': crumbs}
 
 @register.inclusion_tag('stats.html')
 def show_stats():

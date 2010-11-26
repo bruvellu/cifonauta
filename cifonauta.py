@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 26 Nov 2010 01:20PM
+# Atualizado: 26 Nov 2010 06:56PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -126,7 +126,15 @@ class Database:
         toget = ['size', 'source', 'rights', 'sublocation',
                 'city', 'state', 'country']
         for k in toget:
-            media_meta[k] = self.get_instance(k, media_meta[k])
+            print '\nK'
+            print '\nMETA (%s): %s' % (k, media_meta[k])
+            # Apenas criar se não estiver em branco.
+            if media_meta[k]:
+                media_meta[k] = self.get_instance(k, media_meta[k])
+                print 'INSTANCES FOUND: %s' % media_meta[k] 
+                print 'INSTANCES ADDED.'
+            else:
+                del media_meta[k]
 
         if not update:
             media_meta['view_count'] = 0

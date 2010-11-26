@@ -1,6 +1,3 @@
--- Command to create db:
--- createdb -E UTF8 -T template0 --lc-collate=pt_BR.UTF8 --lc-ctype=pt_BR.UTF8 cebimar
-
 -- Create tsvector columns for files
 ALTER TABLE meta_image ADD COLUMN tsv tsvector;
 ALTER TABLE meta_video ADD COLUMN tsv tsvector;
@@ -48,11 +45,21 @@ country varchar;
 BEGIN
 
 -- Select directly from id
-SELECT name INTO STRICT source FROM meta_source WHERE id = NEW.source_id;
-SELECT name INTO STRICT sublocation FROM meta_sublocation WHERE id = NEW.sublocation_id;
-SELECT name INTO STRICT city FROM meta_city WHERE id = NEW.city_id;
-SELECT name INTO STRICT state FROM meta_state WHERE id = NEW.state_id;
-SELECT name INTO STRICT country FROM meta_country WHERE id = NEW.country_id;
+IF NEW.source_id IS NOT NULL THEN
+    SELECT name INTO STRICT source FROM meta_source WHERE id = NEW.source_id;
+END IF;
+IF NEW.sublocation_id IS NOT NULL THEN
+    SELECT name INTO STRICT sublocation FROM meta_sublocation WHERE id = NEW.sublocation_id;
+END IF;
+IF NEW.city_id IS NOT NULL THEN
+    SELECT name INTO STRICT city FROM meta_city WHERE id = NEW.city_id;
+END IF;
+IF NEW.state_id IS NOT NULL THEN
+    SELECT name INTO STRICT state FROM meta_state WHERE id = NEW.state_id;
+END IF;
+IF NEW.country_id IS NOT NULL THEN
+    SELECT name INTO STRICT country FROM meta_country WHERE id = NEW.country_id;
+END IF;
 
 -- Many to many relationships
 SELECT concat((SELECT name FROM meta_tag WHERE id = tag_id)||' ') INTO tags FROM meta_tag_images WHERE image_id = NEW.id;

@@ -16,7 +16,6 @@ class File(models.Model):
     highlight = models.BooleanField(default=False)
     view_count = models.PositiveIntegerField(default=0, editable=False)
     is_public = models.BooleanField(default=False)
-    #FIXME Tirar esse review?
     review = models.BooleanField(default=False)
     notes = models.TextField(null=True, blank=True)
     pub_date = models.DateTimeField(auto_now_add=True)
@@ -24,13 +23,16 @@ class File(models.Model):
     # IPTC
     title = models.CharField(max_length=200, blank=True)
     caption = models.TextField(blank=True)
-    size = models.ForeignKey('Size')
-    source = models.ForeignKey('Source')
-    rights = models.ForeignKey('Rights')
-    sublocation = models.ForeignKey('Sublocation')
-    city = models.ForeignKey('City')
-    state = models.ForeignKey('State')
-    country = models.ForeignKey('Country')
+    #NOTA null e blank devem ser True
+    # null está se referindo ao NULL do banco de dados e
+    # blank está se referindo à interface de admin.
+    size = models.ForeignKey('Size', null=True, blank=True)
+    source = models.ForeignKey('Source', null=True, blank=True)
+    rights = models.ForeignKey('Rights', null=True, blank=True)
+    sublocation = models.ForeignKey('Sublocation', null=True, blank=True)
+    city = models.ForeignKey('City', null=True, blank=True)
+    state = models.ForeignKey('State', null=True, blank=True)
+    country = models.ForeignKey('Country', null=True, blank=True)
 
     # EXIF
     date = models.DateTimeField(blank=True)
@@ -71,7 +73,7 @@ class Video(File):
 
 
 class Author(models.Model):
-    name = models.CharField(max_length=200, unique=True, blank=True)
+    name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, blank=True)
     images = models.ManyToManyField(Image, null=True, blank=True)
     videos = models.ManyToManyField(Video, null=True, blank=True)
@@ -85,7 +87,7 @@ class Author(models.Model):
 
 
 class Source(models.Model):
-    name = models.CharField(max_length=200, unique=True, blank=True)
+    name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, blank=True)
 
     def __unicode__(self):
@@ -169,15 +171,13 @@ class Species(models.Model):
 
 class Size(models.Model):
     SIZES = (
-            ('', ''),
             ('<0,1 mm', '<0,1 mm'),
             ('0,1 - 1,0 mm', '0,1 - 1,0 mm'),
             ('1,0 - 10 mm', '1,0 - 10 mm'),
             ('10 - 100 mm', '10 - 100 mm'),
             ('>100 mm', '>100 mm')
             )
-    name = models.CharField(max_length=32, unique=True, choices=SIZES,
-            blank=True)
+    name = models.CharField(max_length=32, unique=True, choices=SIZES)
     description = models.TextField(blank=True)
     slug = models.SlugField(max_length=32, blank=True)
     position = models.PositiveIntegerField(default=0)
@@ -190,7 +190,7 @@ class Size(models.Model):
 
 
 class Rights(models.Model):
-    name = models.CharField(max_length=64, unique=True, blank=True)
+    name = models.CharField(max_length=64, unique=True)
     slug = models.SlugField(max_length=64, blank=True)
 
     def __unicode__(self):
@@ -198,7 +198,7 @@ class Rights(models.Model):
 
 
 class Sublocation(models.Model):
-    name = models.CharField(max_length=64, unique=True, blank=True)
+    name = models.CharField(max_length=64, unique=True)
     slug = models.SlugField(max_length=64, blank=True)
 
     def __unicode__(self):
@@ -210,7 +210,7 @@ class Sublocation(models.Model):
 
 
 class City(models.Model):
-    name = models.CharField(max_length=64, unique=True, blank=True)
+    name = models.CharField(max_length=64, unique=True)
     slug = models.SlugField(max_length=64, blank=True)
 
     def __unicode__(self):
@@ -222,7 +222,7 @@ class City(models.Model):
 
 
 class State(models.Model):
-    name = models.CharField(max_length=64, unique=True, blank=True)
+    name = models.CharField(max_length=64, unique=True)
     slug = models.SlugField(max_length=64, blank=True)
 
     def __unicode__(self):
@@ -234,7 +234,7 @@ class State(models.Model):
 
 
 class Country(models.Model):
-    name = models.CharField(max_length=64, unique=True, blank=True)
+    name = models.CharField(max_length=64, unique=True)
     slug = models.SlugField(max_length=64, blank=True)
 
     def __unicode__(self):

@@ -172,6 +172,13 @@ $(document).ready(function(){
 
         {% show_related media form related %}
 
+        {% if media.reference_set.all %}
+        <div class="span-16 last">
+            <h2>Referências bibliográficas</h2>
+            {% print_refs media.reference_set.all %}
+        </div>
+        {% endif %}
+
         {% else %}
         <div class="private span-16 last">Esta imagem ainda não está disponível.</div>
         {% endif %}

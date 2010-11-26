@@ -7,6 +7,8 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.template.defaultfilters import slugify
 from django.db.models import Q
 
+from test import mendeley
+
 register = template.Library()
 
 @register.inclusion_tag('tree.html')
@@ -24,6 +26,15 @@ def show_spp():
 def show_hot():
     hot_images = Image.objects.order_by('-view_count')[:4]
     return {'hot_images': hot_images}
+
+@register.inclusion_tag('refs.html')
+def print_refs(refs):
+    references = []
+    #XXX Mendeley API funcionou, mas talvez não seja a melhor opção.
+    #for ref_id in refs:
+    #    item = mendeley.document_details(ref_id)
+    #    references.append(item)
+    return {'references': references}
 
 @register.inclusion_tag('thumb_org.html')
 def print_thumb(field, obj):

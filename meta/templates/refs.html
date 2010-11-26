@@ -1,0 +1,3 @@
+{% for ref in references %}
+{% for author in ref.authors %}{{ author }}{% endfor %} {{ ref.title }}
+{% endfor %}

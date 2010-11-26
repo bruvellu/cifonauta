@@ -119,7 +119,7 @@ class TagCategory(models.Model):
 
 
 class Taxon(models.Model):
-    name = models.CharField(max_length=256, unique=True, blank=True)
+    name = models.CharField(max_length=256, unique=True)
     slug = models.SlugField(max_length=256, blank=True)
     common = models.CharField(max_length=256, blank=True)
     rank = models.CharField(max_length=256, blank=True)
@@ -136,7 +136,7 @@ class Taxon(models.Model):
 
 
 class Genus(models.Model):
-    name = models.CharField(max_length=64, unique=True, blank=True)
+    name = models.CharField(max_length=64, unique=True)
     slug = models.SlugField(max_length=64, blank=True)
     common = models.CharField(max_length=256, blank=True)
     parent = models.ForeignKey('Taxon', blank=True, null=True, related_name='genera')
@@ -152,7 +152,7 @@ class Genus(models.Model):
 
 
 class Species(models.Model):
-    name = models.CharField(max_length=64, unique=True, blank=True)
+    name = models.CharField(max_length=64, unique=True)
     slug = models.SlugField(max_length=64, blank=True)
     common = models.CharField(max_length=256, blank=True)
     parent = models.ForeignKey('Genus', blank=True, null=True, related_name='spp')

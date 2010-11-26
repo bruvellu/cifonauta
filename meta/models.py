@@ -246,7 +246,7 @@ class Country(models.Model):
 
 
 class Reference(models.Model):
-    name = models.CharField(max_length=100, unique=True, blank=True)
+    name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, blank=True)
     citation = models.TextField(blank=True)
     images = models.ManyToManyField(Image, null=True, blank=True)

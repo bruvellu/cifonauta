@@ -13,8 +13,6 @@ import operator
 def main_page(request):
     '''Página principal mostrando destaques e pontos de partida para navegar.'''
     #TODO Deixar página mais atrativa e eficiente.
-    # Conta apenas imagens públicas.
-    image_count = Image.objects.filter(is_public=True)
     # Tenta encontrar destaques.
     images = Image.objects.filter(highlight=True, is_public=True).order_by('?')
     if not images:
@@ -37,7 +35,6 @@ def main_page(request):
     tags = Tag.objects.all()
     locations = Sublocation.objects.exclude(name='')
     variables = RequestContext(request, {
-        'image_count': image_count,
         'image': image,
         'thumbs': thumbs,
         'video': video,

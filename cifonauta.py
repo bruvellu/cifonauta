@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 26 Nov 2010 10:14AM
+# Atualizado: 26 Nov 2010 01:20PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -154,16 +154,21 @@ class Database:
         genera = []
         spp = []
         for binomius in genus_sp:
-            # Faz o link entre espécie e gênero
-            sp = self.get_instance('species', binomius['sp'])
-            sp.parent = self.get_instance('genus', binomius['genus'])
-            sp.save()
-            genera.append(binomius['genus'])
-            spp.append(binomius['sp'])
+            # Faz o link entre espécie e gênero (apenas quando os 2 existem.
+            if binomius['sp'] and binomius['genus']:
+                sp = self.get_instance('species', binomius['sp'])
+                sp.parent = self.get_instance('genus', binomius['genus'])
+                sp.save()
+            # Apenas adiciona se existe.
+            if binomius['genus']:
+                genera.append(binomius['genus'])
+            if binomius['sp']:
+                spp.append(binomius['sp'])
         entry = self.update_sets(entry, 'genus', genera)
         entry = self.update_sets(entry, 'species', spp)
 
         # Atualiza marcadores
+
         entry = self.update_sets(entry, 'tag', tags)
 
         # Atualiza referências
@@ -186,10 +191,19 @@ class Database:
         return metadatum
 
     def update_sets(self, entry, field, meta):
-        '''Atualiza campos many to many do banco de dados.'''
-        meta_instances = [self.get_instance(field, value) for value in meta]
+        '''Atualiza campos many to many do banco de dados.
+        
+        Verifica se o value não está em branco, para não adicionar entradas em
+        branco no banco.
+        '''
+        print '\nMETA (%s): %s' % (field, meta)
+        meta_instances = [self.get_instance(field, value) for value in meta if
+                value]
+        print 'INSTANCES FOUND: %s' % meta_instances
         eval('entry.%s_set.clear()' % field)
-        [eval('entry.%s_set.add(value)' % field) for value in meta_instances]
+        if meta_instances:
+            [eval('entry.%s_set.add(value)' % field) for value in meta_instances]
+            print 'INSTANCES ADDED.'
         return entry
 
     def get_itis(self, name):
@@ -252,7 +266,8 @@ class Movie:
                 'date': '1900-01-01 01:01:01',
                 'geolocation': u'',
                 'latitude': u'',
-                'longitude': u''
+                'longitude': u'',
+                'references': u'',
                 }
 
         # Verifica se arquivo acessório com meta dos vídeos existe.

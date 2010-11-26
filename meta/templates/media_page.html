@@ -175,7 +175,10 @@ $(document).ready(function(){
         {% if media.reference_set.all %}
         <div class="span-16 last">
             <h2>Referências bibliográficas</h2>
-            {% print_refs media.reference_set.all %}
+            {% for ref in media.reference_set.all %}
+            {{ ref.citation }}
+            {% endfor %}
+            {% comment %}{% print_refs media.reference_set.all %}{% endcomment %}
         </div>
         {% endif %}
 

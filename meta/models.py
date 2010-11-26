@@ -246,8 +246,9 @@ class Country(models.Model):
 
 
 class Reference(models.Model):
-    name = models.CharField(max_length=32, unique=True, blank=True)
-    slug = models.SlugField(max_length=32, blank=True)
+    name = models.CharField(max_length=100, unique=True, blank=True)
+    slug = models.SlugField(max_length=100, blank=True)
+    citation = models.TextField(blank=True)
     images = models.ManyToManyField(Image, null=True, blank=True)
     videos = models.ManyToManyField(Video, null=True, blank=True)
 
@@ -258,12 +259,18 @@ class Reference(models.Model):
     def get_absolute_url(self):
         return ('reference_url', [self.slug])
 
+def citation_pre_save(signal, instance, sender, **kwargs):
+    '''Cria citação em HTML a partir da bibkey.'''
+    citation = u'Nelas, BC. 2010. As Bolachas. Certo'
+    instance.citation = citation
 
 def slug_pre_save(signal, instance, sender, **kwargs):
+    '''Cria slug antes de salvar.'''
     if not instance.slug:
         slug = slugify(instance.name)
         instance.slug = slug
 
+# Slugify before saving.
 signals.pre_save.connect(slug_pre_save, sender=Author)
 signals.pre_save.connect(slug_pre_save, sender=Tag)
 signals.pre_save.connect(slug_pre_save, sender=TagCategory)
@@ -277,3 +284,6 @@ signals.pre_save.connect(slug_pre_save, sender=Sublocation)
 signals.pre_save.connect(slug_pre_save, sender=City)
 signals.pre_save.connect(slug_pre_save, sender=State)
 signals.pre_save.connect(slug_pre_save, sender=Country)
+signals.pre_save.connect(slug_pre_save, sender=Reference)
+# Create citation with bibkey.
+signals.pre_save.connect(citation_pre_save, sender=Reference)

@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 29 Oct 2010 12:41PM
+# Atualizado: 26 Nov 2010 10:14AM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -109,6 +109,9 @@ class Database:
         # Guarda objeto com tags
         tags = media_meta['tags']
         del media_meta['tags']
+        # Guarda objeto com referências
+        refs = media_meta['references']
+        del media_meta['references']
 
         # Não deixar entrada pública se faltar título ou autor
         if media_meta['title'] == '' or not media_meta['author']:
@@ -124,7 +127,6 @@ class Database:
                 'city', 'state', 'country']
         for k in toget:
             media_meta[k] = self.get_instance(k, media_meta[k])
-            #print k, media_meta[k].id, media_meta[k]
 
         if not update:
             media_meta['view_count'] = 0
@@ -163,6 +165,9 @@ class Database:
 
         # Atualiza marcadores
         entry = self.update_sets(entry, 'tag', tags)
+
+        # Atualiza referências
+        entry = self.update_sets(entry, 'reference', refs)
 
         # Salvando modificações
         entry.save()
@@ -474,6 +479,7 @@ class Photo:
                 'genus_sp': info.data['original transmission reference'], # 103
                 'size': info.data['special instructions'], # 40
                 'source': info.data['source'], # 115
+                'references': info.data['credit'], #110
                 'timestamp': self.timestamp,
                 }
 
@@ -752,6 +758,8 @@ def prepare_meta(meta):
     meta['author'] = [a.strip() for a in meta['author'].split(',')] 
     # Preparando taxon(s) para o banco de dados
     meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')] 
+    # Preparando referências para o banco de dados
+    meta['references'] = [a.strip() for a in meta['references'].split(',')] 
 
     # Preparando a espécie para o banco de dados
     spp_diclist = []

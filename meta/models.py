@@ -263,6 +263,7 @@ class Reference(models.Model):
 
 def get_html(ref):
     '''Retorna citação formatada em HTML.'''
+    #TODO E se não tiver issue ou url ou doi?
     authors = []
     for author in ref['authors']:
         names = author.split()

@@ -173,7 +173,7 @@ $(document).ready(function(){
         {% show_related media form related %}
 
         {% if media.reference_set.all %}
-        <div class="span-16 last">
+        <div class="span-16 last" id="references">
             <h2>Referências bibliográficas</h2>
             {% for ref in media.reference_set.all %}
             {% autoescape off %}{{ ref.citation }}{% endautoescape %}

@@ -64,12 +64,7 @@ def mediaque(media, qobj):
 
 @register.inclusion_tag('related.html')
 def show_related(media, form, related):
-    '''Usa metadados da imagem para encontrar imagens relacionadas.
-    
-    Por enquanto procura apenas grupos taxonômicos relacionados, 
-    usando o Q() para refinar a busca. Caso não encontre nenhum
-    grupo relacionado, mostra imagens aleatórias.
-    '''
+    '''Usa metadados da imagem para encontrar imagens relacionadas.'''
     # Limpa imagens relacionadas.
     rel_media = ''
     # Transforma choices em dicionário.
@@ -270,15 +265,15 @@ def extract_set(query):
         if item.species_set.all():
             for sp in item.species_set.all():
                 species.append(sp)
-        if item.size.name:
+        if item.size:
             sizes.append(item.size)
-        if item.sublocation.name:
+        if item.sublocation:
             sublocations.append(item.sublocation)
-        if item.city.name:
+        if item.city:
             cities.append(item.city)
-        if item.state.name:
+        if item.state:
             states.append(item.state)
-        if item.country.name:
+        if item.country:
             countries.append(item.country)
         if item.tag_set.all():
             for tag in item.tag_set.all():

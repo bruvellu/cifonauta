@@ -395,6 +395,11 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
 }
 
 #related-form {
+    margin:0 0 1em 0;
+}
+
+#references {
+    margin:0 0 1em 0;
 }
 
 .linear {

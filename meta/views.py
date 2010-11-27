@@ -164,6 +164,7 @@ def feedback_page(request):
 # Single
 def image_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''
+    #FIXME Checar se os if meta.name não necessários no template.
     if request.method == 'POST':
         form = RelatedForm(request.POST)
         if form.is_valid:

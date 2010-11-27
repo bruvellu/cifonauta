@@ -4,6 +4,8 @@ from django.db.models import signals
 from django.db.models import permalink
 from django.template.defaultfilters import slugify
 
+from test import mendeley
+
 
 class File(models.Model):
     # File
@@ -259,9 +261,29 @@ class Reference(models.Model):
     def get_absolute_url(self):
         return ('reference_url', [self.slug])
 
+def get_html(ref):
+    '''Retorna citação formatada em HTML.'''
+    authors = []
+    for author in ref['authors']:
+        names = author.split()
+        last = names.pop()
+        initials = [name[:1] for name in names]
+        initials = ''.join(initials)
+        final = u'%s %s' % (last, initials)
+        authors.append(final)
+    authors = ', '.join(authors)
+    citation = u'<strong>%s</strong> %s. %s %s, %s(%s): %s, doi:<a href="http://dx.doi.org/%s">%s</a><br><a href="%s">%s</a>' % (
+            ref['year'], authors, ref['title'],
+            ref['publication_outlet'], ref['volume'], ref['issue'],
+            ref['pages'], ref['identifiers']['doi'], ref['identifiers']['doi'],
+            ref['url'], ref['url'])
+    return citation
+
 def citation_pre_save(signal, instance, sender, **kwargs):
     '''Cria citação em HTML a partir da bibkey.'''
-    citation = u'Nelas, BC. 2010. As Bolachas. Certo'
+    ref_id = instance.name
+    ref = mendeley.document_details(ref_id)
+    citation = get_html(ref)
     instance.citation = citation
 
 def slug_pre_save(signal, instance, sender, **kwargs):

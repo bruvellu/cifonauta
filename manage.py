@@ -1,5 +1,10 @@
 #!/usr/bin/python
 from django.core.management import execute_manager
+import os, sys
+
+# Import external libs
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'external'))
+
 try:
     import settings # Assumed to be in the same directory.
 except ImportError:

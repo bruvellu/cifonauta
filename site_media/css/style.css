@@ -391,7 +391,7 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
 }
 
 #related {
-    margin-bottom:1em;
+    margin:1em 0;
 }
 
 #related-form {

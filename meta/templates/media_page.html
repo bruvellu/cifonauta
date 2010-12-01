@@ -146,6 +146,8 @@ $(document).ready(function(){
         </div>
         {% endif %}
 
+        {% show_related media form related %}
+
         {% get_comment_list for media as media_comments %}
         <div id="comments" class="span-16 last">
             {% get_comment_count for media as comment_count %}
@@ -169,8 +171,6 @@ $(document).ready(function(){
                 {% render_comment_form for media %}
             </div>
         </div>
-
-        {% show_related media form related %}
 
         {% if media.reference_set.all %}
         <div class="span-16 last" id="references">

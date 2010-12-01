@@ -4,7 +4,7 @@ from django.db.models import signals
 from django.db.models import permalink
 from django.template.defaultfilters import slugify
 
-from mendeley import mendeley
+from external.mendeley import mendeley
 
 
 class File(models.Model):

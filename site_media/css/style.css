@@ -402,6 +402,10 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
     margin:0 0 1em 0;
 }
 
+.citation {
+    margin:0 0 0.5em 0;
+}
+
 .linear {
     position:absolute;
 }

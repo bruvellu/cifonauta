@@ -39,18 +39,38 @@ def slicer(query, media_id):
 
     Busca o metadado, encontra o índice da imagem e reduz amostra.
     '''
+    relative = {
+            'ahead': '',
+            'behind': '',
+            'next': '',
+            'previous': '',
+            }
     for index, item in enumerate(query):
         if item.id == media_id:
             media_index = index
         else:
             pass
+    ahead = len(query[media_index:]) - 1
+    behind = len(query[:media_index])
+    relative = {'ahead': ahead, 'behind': behind}
     if media_index < 2:
         media_index = 2
     if len(query) <= 5:
         rel_query = query
     else:
         rel_query = query[media_index-2:media_index+3]
-    return rel_query
+
+    for index, item in enumerate(rel_query):
+        if item.id == media_id:
+            if index == 0:
+                relative['previous'] = ''
+            else:
+                relative['previous'] = rel_query[index-1]
+            if index == len(rel_query)-1:
+                relative['next'] = ''
+            else:
+                relative['next'] = rel_query[index+1]
+    return rel_query, relative
 
 def mediaque(media, qobj):
     '''Retorna queryset de vídeo ou foto.'''
@@ -67,6 +87,7 @@ def show_related(media, form, related):
     '''Usa metadados da imagem para encontrar imagens relacionadas.'''
     # Limpa imagens relacionadas.
     rel_media = ''
+    relative = ''
     # Transforma choices em dicionário.
     form_choices = form.fields['type'].choices
     choices = {}
@@ -81,7 +102,7 @@ def show_related(media, form, related):
                     qobj.add(Q(author=meta), Q.OR)
             if qobj.__len__():
                 query = mediaque(media, qobj)
-                rel_media = slicer(query, media.id) 
+                rel_media, relative = slicer(query, media.id) 
             else:
                 rel_media = ''
         else:
@@ -95,7 +116,7 @@ def show_related(media, form, related):
                     qobj.add(Q(taxon=meta), Q.OR)
             if qobj.__len__():
                 query = mediaque(media, qobj)
-                rel_media = slicer(query, media.id)
+                rel_media, relative = slicer(query, media.id)
             else:
                 rel_media = ''
         else:
@@ -109,7 +130,7 @@ def show_related(media, form, related):
                     qobj.add(Q(genus=meta), Q.OR)
             if qobj.__len__():
                 query = mediaque(media, qobj)
-                rel_media = slicer(query, media.id) 
+                rel_media, relative = slicer(query, media.id) 
             else:
                 rel_media = ''
         else:
@@ -123,7 +144,7 @@ def show_related(media, form, related):
                     qobj.add(Q(species=meta), Q.OR)
             if qobj.__len__():
                 query = mediaque(media, qobj)
-                rel_media = slicer(query, media.id) 
+                rel_media, relative = slicer(query, media.id) 
             else:
                 rel_media = ''
         else:
@@ -133,7 +154,7 @@ def show_related(media, form, related):
         if media.size.name:
             qobj = Q(size=media.size.id)
             query = mediaque(media, qobj)
-            rel_media = slicer(query, media.id) 
+            rel_media, relative = slicer(query, media.id) 
         else:
             rel_media = ''
 
@@ -141,7 +162,7 @@ def show_related(media, form, related):
         if media.sublocation.name:
             qobj = Q(sublocation=media.sublocation.id)
             query = mediaque(media, qobj)
-            rel_media = slicer(query, media.id) 
+            rel_media, relative = slicer(query, media.id) 
         else:
             rel_media = ''
 
@@ -149,7 +170,7 @@ def show_related(media, form, related):
         if media.city.name:
             qobj = Q(city=media.city.id)
             query = mediaque(media, qobj)
-            rel_media = slicer(query, media.id) 
+            rel_media, relative = slicer(query, media.id) 
         else:
             rel_media = ''
 
@@ -157,7 +178,7 @@ def show_related(media, form, related):
         if media.state.name:
             qobj = Q(state=media.state.id)
             query = mediaque(media, qobj)
-            rel_media = slicer(query, media.id) 
+            rel_media, relative = slicer(query, media.id) 
         else:
             rel_media = ''
 
@@ -165,7 +186,7 @@ def show_related(media, form, related):
         if media.country.name:
             qobj = Q(country=media.country.id)
             query = mediaque(media, qobj)
-            rel_media = slicer(query, media.id) 
+            rel_media, relative = slicer(query, media.id) 
         else:
             rel_media = ''
 
@@ -183,7 +204,7 @@ def show_related(media, form, related):
 
     media_id = media.id
 
-    return {'media_id': media_id, 'rel_media': rel_media, 'form': form, 'related': related, 'type': choices[related], 'crumbs': crumbs}
+    return {'media_id': media_id, 'rel_media': rel_media, 'relative': relative, 'form': form, 'related': related, 'type': choices[related], 'crumbs': crumbs}
 
 @register.inclusion_tag('stats.html')
 def show_stats():

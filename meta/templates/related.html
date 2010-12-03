@@ -5,8 +5,25 @@
             {% if media.id == media_id %}
             <li class="shadow size-{{ media.size.slug }} current">
                 <img src="/{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" />
-                <div class="linear" id="prev">{% autoescape on %}&lt;&lt; anterior{% endautoescape %}</div>
-                <div class="linear" id="next">{% autoescape on %}próxima &gt;&gt;{% endautoescape %}</div>
+                <div class="linear" id="{% if relative.previous %}prev{% else %}prev-first{% endif %}">
+                    {% if relative.previous %}
+                    +{{ relative.behind }} 
+                    <a href="{{ relative.previous.get_absolute_url }}" title="{{ relative.previous.title }}">
+                        {% autoescape on %}&lt;&lt; {% endautoescape %}anterior
+                    </a>
+                    {% else %}
+                    {% autoescape on %}{% endautoescape %}primeira
+                    {% endif %}
+                </div>
+                <div class="linear" id="{% if relative.next %}next{% else %}next-last{% endif %}">
+                    {% if relative.next %}
+                    <a href="{{ relative.next.get_absolute_url }}" title="{{ relative.next.title }}">
+                        próxima{% autoescape on %} &gt;&gt;{% endautoescape %}</a> +{{ relative.ahead }}
+
+                    {% else %}
+                    {% autoescape on %}{% endautoescape %}última
+                    {% endif %}
+                </div>
             </li>
             {% else %}
             <li class="shadow size-{{ media.size.slug }}">

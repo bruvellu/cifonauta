@@ -391,7 +391,7 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
 }
 
 #related {
-    margin:1em 0;
+    margin:1em 0 2em 0;
 }
 
 #related-form {
@@ -408,14 +408,38 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
 
 .linear {
     position:absolute;
+    width:140px;
+    font-size:1.5em;
 }
 
 #prev {
-    margin:72px 0 0 -14px;
+    margin:78px 0 0 -66px;
+    text-align:left;
 }
 
 #next {
-    margin:72px 0 0 51px;
+    margin:78px 0 0 16px;
+    text-align:right;
+}
+
+#prev-first {
+    margin:17px 0 0 0;
+    text-align:center;
+    color:#ffffff;
+    font-size:2em;
+    width:88px;
+    text-shadow: 2px 2px 5px #000;
+    filter: dropshadow(color=#000000, offx=2, offy=2);
+}
+
+#next-last {
+    margin:17px 0 0 0;
+    text-align:center;
+    color:#ffffff;
+    font-size:2em;
+    width:88px;
+    text-shadow: 2px 2px 5px #000;
+    filter: dropshadow(color=#000000, offx=2, offy=2);
 }
 
 ul.thumbs li:hover .lupa, ul.rel-thumbs li:hover .lupa, div.thumbs-org:hover .lupa {

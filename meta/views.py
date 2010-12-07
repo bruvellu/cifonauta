@@ -249,8 +249,10 @@ def meta_page(request, model_name, field, slug, genus=''):
     try:
         q = [Q(**filter_args),]
         for child in model.children.all():
+            print child
             q.append(Q(**{field: child}))
         image_list = Image.objects.filter(reduce(operator.or_, q)).order_by('-id')
+        print image_list
         video_list = Video.objects.filter(reduce(operator.or_, q)).order_by('-id')
     except:
         image_list = Image.objects.filter(**filter_args).order_by('-id')

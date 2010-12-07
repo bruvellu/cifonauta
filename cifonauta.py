@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 01 Dec 2010 11:34AM
+# Atualizado: 07 Dec 2010 06:28PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -65,20 +65,22 @@ class Database:
         atualiza o registro.
         '''
         print '\nVerificando se o arquivo está no banco de dados...'
+        photopath = 'site_media/photos/'
+        videopath = 'site_media/videos/'
         
         try :
             if media.type == "photo":
-                record = Image.objects.get(web_filepath__icontains=media.filename)
+                # Busca pelo nome exato do arquivo, para evitar confusão.
+                record = Image.objects.get(web_filepath=photopath + media.filename)
             elif media.type == "video":
                 try:
-                    record = Video.objects.get(
-                            webm_filepath__icontains=media.filename.split('.')[0])
+                    record = Video.objects.get(webm_filepath=videopath + media.filename.split('.')[0] + '.webm')
                 except:
                     try:
-                        record = Video.objects.get(mp4_filepath__icontains=media.filename.split('.')[0])
+                        record = Video.objects.get(mp4_filepath=videopath + media.filename.split('.')[0] + '.mp4')
                     except:
                         try:
-                            record = Video.objects.get(ogg_filepath__icontains=media.filename.split('.')[0])
+                            record = Video.objects.get(ogg_filepath=videopath + media.filename.split('.')[0] + '.ogv')
                         except:
                             print 'Não bateu nenhum!'
                             return False

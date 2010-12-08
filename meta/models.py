@@ -168,7 +168,7 @@ class Species(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('species_url', [self.parent.slug, self.slug])
+        return ('species_url', [self.slug])
 
 
 class Size(models.Model):

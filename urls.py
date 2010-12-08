@@ -60,7 +60,7 @@ urlpatterns = patterns('',
 
         url(r'^especie/$', meta_list_page,
             {'model': Species, 'plural': u'Espécies'}),
-        url(r'^especie/(?P<genus>[^\d]+)-(?P<slug>[^\d]+)/$', meta_page,
+        url(r'^especie/(?P<slug>[^\d]+)/$', meta_page,
             extra(Species, 'species'), name='species_url'),
 
         url(r'^tamanho/$', meta_list_page,

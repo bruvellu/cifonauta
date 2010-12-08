@@ -343,3 +343,26 @@ def splist(request, media):
                 splist.append(u'%s' % genus.name)
     return splist
 
+def recurse(taxon):
+    '''Recursively returns all taxon children in a Q object.'''
+    #TODO FIXME Decidir o que fazer aqui!
+    try:
+        if taxon.spp.all():
+            print 'Species:'
+            for sp in taxon.spp.all():
+                print sp
+    except:
+        if taxon.children.all():
+            print '%s has children.' % taxon
+            for child in taxon.children.all():
+                print child
+                recurse(child)
+        else:
+            print '%s has no children.' % taxon
+            print 'Trying genera...'
+            if taxon.genera.all():
+                for genus in taxon.genera.all():
+                    print genus
+                    recurse(genus)
+    #q = [Q(**filter_args),]
+    #q.append(Q(**{field: child}))

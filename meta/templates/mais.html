@@ -19,33 +19,29 @@
 <h2>Táxons</h2>
 <ul>
     {% for taxon in taxa %}
-    {% if taxon %}
     <li>
         {% refine taxon query qsize %}
     </li>
-    {% else %}
-    <li class="quiet">
-    Nenhum
-    </li>
-    {% endif %}
     {% endfor %}
 </ul>
 {% endif %}
 {% if genera %}
-<h2>Espécies</h2>
+<h2>Gêneros</h2>
 <ul>
     {% for genus in genera %}
-    {% if genus %}
-        {% for sp in genus.spp.all %}
-        <li>
-        <a href="{{ sp.get_absolute_url }}"><em>{{ genus.name }} {{ sp }}</em></a>
-        </li>
-        {% endfor %}
-    {% else %}
-        <li class="quiet">
-        Nenhum
-        </li>
-        {% endif %}
+    <li>
+        {% refine genus query qsize %}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% if species %}
+<h2>Espécies</h2>
+<ul>
+    {% for sp in species %}
+    <li>
+        {% refine sp query qsize %}
+    </li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -69,15 +65,9 @@
 <h2>Local</h2>
 <ul>
     {% for sublocation in sublocations %}
-    {% if sublocation %}
     <li>
         {% refine sublocation query qsize %}
     </li>
-    {% else %}
-    <li class="quiet">
-    Nenhum
-    </li>
-    {% endif %}
     {% endfor %}
 </ul>
 {% endif %}
@@ -86,11 +76,9 @@
 <h2>Cidades</h2>
 <ul>
     {% for city in cities %}
-    {% if city %}
-    <li>{% refine city query qsize %}</li>
-    {% else %}
-    <li class="quiet">Nenhum</li>
-    {% endif %}
+    <li>
+        {% refine city query qsize %}
+    </li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -98,11 +86,9 @@
 <h2>Estados</h2>
 <ul>
     {% for state in states %}
-    {% if state %}
-    <li>{% refine state query qsize %}</li>
-    {% else %}
-    <li class="quiet">Nenhum</li>
-    {% endif %}
+    <li>
+        {% refine state query qsize %}
+    </li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -110,11 +96,9 @@
 <h2>Países</h2>
 <ul>
     {% for country in countries %}
-    {% if country %}
-    <li>{% refine country query qsize %}</li>
-    {% else %}
-    <li class="quiet">Nenhum</li>
-    {% endif %}
+    <li>
+        {% refine country query qsize %}
+    </li>
     {% endfor %}
 </ul>
 {% endif %}

@@ -283,9 +283,7 @@ def meta_list_page(request, model, plural):
 # Menu
 def taxa_page(request):
     '''Página mostrando grupos taxonômicos de maneira organizada.'''
-    genera = Genus.objects.order_by('name')
     variables = RequestContext(request, {
-        'genera': genera,
         })
     return render_to_response('taxa_page.html', variables)
 
@@ -335,12 +333,13 @@ def splist(request, media):
     parents = []
     if media.genus_set.all():
         for sp in media.species_set.all():
-            if sp.name:
-                splist.append(u'%s %s' % (sp.parent.name, sp.name))
-                parents.append(sp.parent.name)
+            splist.append(sp.name)
+            parents.append(sp.parent.name)
         for genus in media.genus_set.all():
             if genus.name not in parents:
-                splist.append(u'%s' % genus.name)
+                splist.append(genus.name)
+    else:
+        splist = []
     return splist
 
 def recurse(taxon):

@@ -5,7 +5,7 @@
 {% if genus.spp.all %}
     {% for sp in genus.spp.all %}
     <li>
-    <a href="{{ sp.get_absolute_url }}"><em>{{ genus.name }} {{ sp.name }}</em></a>
+    <a href="{{ sp.get_absolute_url }}"><em>{{ sp.name }}</em></a>
     </li>
     {% endfor %}
 {% else %}

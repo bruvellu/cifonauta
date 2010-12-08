@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 08 Dec 2010 12:18PM
+# Atualizado: 08 Dec 2010 07:08PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -166,21 +166,41 @@ class Database:
         genera = []
         spp = []
         for binomius in genus_sp:
-            # Faz o link entre espécie e gênero (apenas quando os 2 existem.
+            # Faz o link entre espécie e gênero (apenas quando os 2 existem).
+            # Lineu é a forma binomial, novo formato do banco.
+            lineu = u'%s %s' % (binomius['genus'], binomius['sp'])
             if binomius['sp'] and binomius['genus']:
-                sp = self.get_instance('species', binomius['sp'])
+                sp = self.get_instance('species', lineu)
                 sp.parent = self.get_instance('genus', binomius['genus'])
                 sp.save()
             # Apenas adiciona se existe.
             if binomius['genus']:
                 genera.append(binomius['genus'])
             if binomius['sp']:
-                spp.append(binomius['sp'])
+                spp.append(lineu)
+        # Quando ligar ao pai?
         entry = self.update_sets(entry, 'genus', genera)
         entry = self.update_sets(entry, 'species', spp)
 
-        # Atualiza marcadores
+        # Liga gênero ao táxon
+        #XXX Lembrar: quando existe apenas 1 táxon e dois gêneros diferentes na
+        # mesma imagem é necessário repetir o táxon para que a associação entre
+        # gênero e táxon fique certa.
+        if len(taxa) == len(genera) or len(taxa) > len(genera):
+            print u'Tudo OK! =='
+            for index, genus in enumerate(genera):
+                gen = self.get_instance('genus', genus)
+                gen.parent = self.get_instance('taxon', taxa[index])
+                gen.save()
+        elif len(taxa) < len(genera):
+                for index, taxon in enumerate(taxa):
+                    gen = self.get_instance('genus', genera[index])
+                    gen.parent = self.get_instance('taxon', taxon)
+                    gen.save()
+        else:
+            print u'Erro para especificar pai do gênero.'
 
+        # Atualiza marcadores
         entry = self.update_sets(entry, 'tag', tags)
 
         # Atualiza referências
@@ -196,6 +216,7 @@ class Database:
         metadatum, new = eval('%s.objects.get_or_create(name="%s")' %
                 (table.capitalize(), value))
         if table == 'taxon' and new:
+            # Consulta ITIS para extrair táxons.
             parent, rank = self.get_itis(value)
             metadatum.parent = self.get_instance('taxon', parent)
             metadatum.rank = rank

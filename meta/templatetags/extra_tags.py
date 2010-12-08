@@ -16,7 +16,7 @@ def show_tree():
 
 @register.inclusion_tag('splist.html')
 def show_spp():
-    genera = Genus.objects.exclude(name='').order_by('name')
+    genera = Genus.objects.all().order_by('name')
     spcount = Species.objects.count()
     return {'genera': genera, 'spcount': spcount}
 

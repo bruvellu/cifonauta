@@ -264,7 +264,22 @@ class Reference(models.Model):
 def get_html(ref):
     '''Retorna citação formatada em HTML.'''
     #TODO E se não tiver issue ou url ou doi?
+    keys = ['year', 'title', 'publication_outlet', 'volume', 'issue', 'pages',
+            'url', 'authors']
+    # Fix
+    for key in keys:
+        if not key in ref:
+            ref[key] = ''
+    # DOI fix
+    if 'identifiers' in ref:
+        if not 'doi' in ref['identifiers']:
+            doi = ''
+        else:
+            doi = ', doi:<a href="http://dx.doi.org/%s">%s</a>' % (ref['identifiers']['doi'], ref['identifiers']['doi'])
+    else:
+        doi = ''
     authors = []
+
     for author in ref['authors']:
         names = author.split()
         last = names.pop()
@@ -273,11 +288,22 @@ def get_html(ref):
         final = u'%s %s' % (last, initials)
         authors.append(final)
     authors = ', '.join(authors)
-    citation = u'<strong>%s</strong> %s. %s %s, %s(%s): %s, doi:<a href="http://dx.doi.org/%s">%s</a><br><a href="%s">%s</a>' % (
+
+    if ref['issue']:
+        issue = '(%s)' % ref['issue']
+    else:
+        issue = ''
+
+    if ref['url']:
+        url = '<br><a href="%s">%s</a>' % (ref['url'], ref['url'])
+    else:
+        url = ''
+
+    citation = u'<strong>%s</strong> %s. %s %s, %s%s: %s%s%s' % (
             ref['year'], authors, ref['title'],
-            ref['publication_outlet'], ref['volume'], ref['issue'],
-            ref['pages'], ref['identifiers']['doi'], ref['identifiers']['doi'],
-            ref['url'], ref['url'])
+            ref['publication_outlet'], ref['volume'], issue,
+            ref['pages'], doi, url
+            )
     return citation
 
 def citation_pre_save(signal, instance, sender, **kwargs):

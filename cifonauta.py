@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 07 Dec 2010 06:28PM
+# Atualizado: 08 Dec 2010 12:18PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -161,6 +161,8 @@ class Database:
         entry = self.update_sets(entry, 'taxon', taxa)
         
         # Atualiza gêneros e espécies
+        #TODO Ligar gênero e táxon de acordo com a ordem apresentada.
+        #TODO Mudar a espécie para binômio.
         genera = []
         spp = []
         for binomius in genus_sp:

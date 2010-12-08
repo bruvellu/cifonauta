@@ -77,8 +77,8 @@ def search_page(request):
                     select_params=[query, query],
                     order_by=('-rank',)
                     )
-            image_list = image_queryset
-            video_list = video_queryset 
+            image_list = image_queryset.exclude(is_public=False)
+            video_list = video_queryset.exclude(is_public=False) 
             if 'size' in request.GET:
                 size = request.GET['size']
                 qsize = Size.objects.get(id=size)

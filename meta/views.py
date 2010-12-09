@@ -164,7 +164,6 @@ def feedback_page(request):
 # Single
 def image_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''
-    #FIXME Checar se os if meta.name não necessários no template.
     if request.method == 'POST':
         form = RelatedForm(request.POST)
         if form.is_valid:
@@ -183,10 +182,12 @@ def image_page(request, image_id):
     image.save()
     tags = image.tag_set.all().order_by('name')
     spp = splist(request, image)
+    references = image.reference_set.all().order_by('-citation')
     variables = RequestContext(request, {
         'media': image,
         'splist': spp,
         'tags': tags,
+        'references': references,
         'form': form,
         'related': related,
         })

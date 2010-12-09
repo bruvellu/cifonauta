@@ -300,7 +300,7 @@ def get_html(ref):
     else:
         url = ''
 
-    citation = u'<strong>%s</strong> %s. %s %s, %s%s: %s%s%s' % (
+    citation = u'<strong>%s</strong> %s. %s. %s, %s%s: %s%s%s' % (
             ref['year'], authors, ref['title'],
             ref['publication_outlet'], ref['volume'], issue,
             ref['pages'], doi, url

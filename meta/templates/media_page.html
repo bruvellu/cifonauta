@@ -172,10 +172,10 @@ $(document).ready(function(){
             </div>
         </div>
 
-        {% if media.reference_set.all %}
+        {% if references %}
         <div class="span-16 last" id="references">
             <h2>Referências bibliográficas</h2>
-            {% for ref in media.reference_set.all %}
+            {% for ref in references %}
             <div class="citation">
             {% autoescape off %}{{ ref.citation }}{% endautoescape %}
             </div>

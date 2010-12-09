@@ -98,11 +98,11 @@ section#stats {
     box-shadow: 2px 2px 5px #aaa; 
 }
 
-div.tag_item {
+div.tag-item {
     float:left;
 }
 
-div.tag_count {
+div.tag-count {
     text-align:right;
 }
 
@@ -391,11 +391,10 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
 }
 
 #related {
-    margin:1em 0 2em 0;
 }
 
 #related-form {
-    margin:0 0 1em 0;
+    margin:1em 0 0 0;
 }
 
 #references {
@@ -407,23 +406,37 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
 }
 
 .linear {
-    position:absolute;
-    width:140px;
     font-size:1.5em;
 }
 
+#linear-nav {
+    padding: 0 1em;
+}
+
+#navbox {
+}
+
+#crumbs {
+    margin:1em -4px 0 0;
+}
+
 #prev {
-    margin:78px 0 0 -66px;
-    text-align:left;
+    float:left;
 }
 
 #next {
-    margin:78px 0 0 16px;
-    text-align:right;
+    float:right;
+}
+
+#total {
+    text-align:center;
+    font-size:1.1em;
+    padding:0 1em;
 }
 
 #prev-first {
     margin:17px 0 0 0;
+    position:absolute;
     text-align:center;
     color:#ffffff;
     font-size:2em;
@@ -434,6 +447,7 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
 
 #next-last {
     margin:17px 0 0 0;
+    position:absolute;
     text-align:center;
     color:#ffffff;
     font-size:2em;

@@ -311,6 +311,24 @@ def tags_page(request):
         })
     return render_to_response('tags_page.html', variables)
 
+def authors_page(request):
+    '''Página mostrando autores e especialistas.'''
+    authors = Author.objects.order_by('name')
+    sources = Source.objects.order_by('name')
+    variables = RequestContext(request, {
+        'authors': authors,
+        'sources': sources,
+        })
+    return render_to_response('authors_page.html', variables)
+
+def refs_page(request):
+    '''Página mostrando referências.'''
+    references = Reference.objects.order_by('-citation')
+    variables = RequestContext(request, {
+        'references': references,
+        })
+    return render_to_response('refs_page.html', variables)
+
 # Internal functions
 def get_paginated(request, obj_list):
     '''Retorna o Paginator de um queryset.'''

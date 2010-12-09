@@ -16,10 +16,10 @@ Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o re
             <li>
             <!-- div container para evitar bug no chrome -->
             <div>
-                <div class="tag_item">
+                <div class="tag-item">
                     <a href="{{ size.get_absolute_url }}">{{ size.name }}</a>
                 </div>
-                <div class="tag_count quiet">{{ size|icount:'size' }}</div>
+                <div class="tag-count quiet">{{ size|icount:'size' }}</div>
             </div>
             </li>
             {% endfor %}
@@ -33,10 +33,10 @@ Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o re
         {% for tag in item.list %}
             <li>
             <div>
-                <div class="tag_item">
+                <div class="tag-item">
                     <a href="{{ tag.get_absolute_url }}">{{ tag.name }}</a>
                 </div>
-                <div class="tag_count quiet">{{ tag|icount:'tag' }}</div>
+                <div class="tag-count quiet">{{ tag|icount:'tag' }}</div>
             </div>
             </li>
         {% endfor %}

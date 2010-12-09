@@ -1,43 +1,7 @@
-{% if rel_media %}
-<div id="related" class="span-16 last">
-    <ul class="rel-thumbs">
-        {% for media in rel_media %}
-            {% if media.id == media_id %}
-            <li class="shadow size-{{ media.size.slug }} current">
-                <img src="/{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" />
-                <div class="linear" id="{% if relative.previous %}prev{% else %}prev-first{% endif %}">
-                    {% if relative.previous %}
-                    +{{ relative.behind }} 
-                    <a href="{{ relative.previous.get_absolute_url }}" title="{{ relative.previous.title }}">
-                        {% autoescape on %}&lt;&lt; {% endautoescape %}anterior
-                    </a>
-                    {% else %}
-                    {% autoescape on %}{% endautoescape %}primeira
-                    {% endif %}
-                </div>
-                <div class="linear" id="{% if relative.next %}next{% else %}next-last{% endif %}">
-                    {% if relative.next %}
-                    <a href="{{ relative.next.get_absolute_url }}" title="{{ relative.next.title }}">
-                        próxima{% autoescape on %} &gt;&gt;{% endautoescape %}</a> +{{ relative.ahead }}
-
-                    {% else %}
-                    {% autoescape on %}{% endautoescape %}última
-                    {% endif %}
-                </div>
-            </li>
-            {% else %}
-            <li class="shadow size-{{ media.size.slug }}">
-            {% include 'thumb.html' %}
-            </li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
-<div id="related-form" class="span-16 last">
+<div id="related-form" class="span-15 last">
     <form action="." method="post">
-        {{ form.type.label_tag }}<strong>:</strong> {{ form.type }}
-        <input type="submit" value="Trocar" /> 
+        <div class="span-10" id="crumbs">
+        {{ form.type.label_tag }}<strong> {{ type }}:</strong>
         <span class="quiet">
             {% if not crumbs %}
             Esta imagem não tem {{ type }}.
@@ -49,6 +13,61 @@
                 {% endif %}
             {% endif %}
         </span>
+        </div>
+        <div class="span-5 last" id="navbox">
+            {{ form.type }}
+            <input type="submit" value="Trocar" /> 
+        </div>
         {% csrf_token %}
     </form>
 </div>
+
+{% if rel_media %}
+<div id="related" class="span-16 last">
+    <ul class="rel-thumbs">
+        {% for media in rel_media %}
+            {% if media.id == media_id %}
+            <li class="shadow size-{{ media.size.slug }} current">
+            <img src="/{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" />
+            {% if relative.next or relative.previous %}
+                {% if not relative.next %}
+                <div id="next-last">última</div>
+                {% endif %}
+                {% if not relative.previous %}
+                <div id="prev-first">primeira</div>
+                {% endif %}
+            {% endif %}
+
+            </li>
+            {% else %}
+            <li class="shadow size-{{ media.size.slug }}">
+            {% include 'thumb.html' %}
+            </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+
+{% if relative.previous or relative.next %}
+<div id="linear-nav" class="span-13 last">
+    <div class="linear" id="prev">
+        {% if relative.previous %}
+        +{{ relative.behind }} 
+        <a href="{{ relative.previous.get_absolute_url }}" title="{{ relative.previous.title }}">
+            {% autoescape on %}&lt;&lt; {% endautoescape %}anterior
+        </a>
+        {% endif %}
+    </div>
+    <div class="linear" id="next">
+        {% if relative.next %}
+        <a href="{{ relative.next.get_absolute_url }}" title="{{ relative.next.title }}">
+            próxima{% autoescape on %} &gt;&gt;{% endautoescape %}</a> +{{ relative.ahead }}
+        
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+<div class="span-13 last quiet" id="total">
+    {{ relative.behind|add:relative.ahead|add:"1" }} image{{ relative.behind|add:relative.ahead|add:"1"|pluralize:'m,ns' }}
+</div>
+{% endif %}

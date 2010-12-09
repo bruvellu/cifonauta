@@ -35,6 +35,8 @@ urlpatterns = patterns('',
         (r'^tags/$', tags_page),
         (r'^taxa/$', taxa_page),
         (r'^locais/$', places_page),
+        (r'^autores/$', authors_page),
+        (r'^literatura/$', refs_page),
         (r'^blog/', include('articles.urls')),
         (r'^organizacao/$', org_page),
 

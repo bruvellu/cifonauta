@@ -249,11 +249,13 @@ def meta_page(request, model_name, field, slug, genus=''):
     try:
         q = [Q(**filter_args),]
         q = recurse(model, q)
-        image_list = Image.objects.filter(reduce(operator.or_, q)).exclude(is_public=False).order_by('-id')
-        video_list = Video.objects.filter(reduce(operator.or_, q)).exclude(is_public=False).order_by('-id')
+        image_list = Image.objects.filter(reduce(operator.or_,
+            q)).exclude(is_public=False).distinct().order_by('-id')
+        video_list = Video.objects.filter(reduce(operator.or_,
+            q)).exclude(is_public=False).distinct().order_by('-id')
     except:
-        image_list = Image.objects.filter(**filter_args).exclude(is_public=False).order_by('-id')
-        video_list = Video.objects.filter(**filter_args).exclude(is_public=False).order_by('-id')
+        image_list = Image.objects.filter(**filter_args).exclude(is_public=False).distinct().order_by('-id')
+        video_list = Video.objects.filter(**filter_args).exclude(is_public=False).distinct().order_by('-id')
     images = get_paginated(request, image_list)
     videos = get_paginated(request, video_list)
     variables = RequestContext(request, {

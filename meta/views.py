@@ -33,7 +33,7 @@ def main_page(request):
         videos = ['']
     video = videos[0]
     tags = Tag.objects.all()
-    locations = Sublocation.objects.exclude(name='')
+    locations = Sublocation.objects.all()
     variables = RequestContext(request, {
         'image': image,
         'thumbs': thumbs,
@@ -103,7 +103,7 @@ def org_page(request):
     Além de buscar as descrições de cada categoria, mostra exemplos aleatórios de imagens.
     '''
     # Tamanhos
-    sizes = Size.objects.all().exclude(name='').order_by('position')
+    sizes = Size.objects.all().order_by('position')
     # Técnicas
     tecnica = TagCategory.objects.get(name=u'Técnica')
     microscopia = TagCategory.objects.get(name=u'Microscopia')
@@ -249,11 +249,11 @@ def meta_page(request, model_name, field, slug, genus=''):
     try:
         q = [Q(**filter_args),]
         q = recurse(model, q)
-        image_list = Image.objects.filter(reduce(operator.or_, q)).order_by('-id')
-        video_list = Video.objects.filter(reduce(operator.or_, q)).order_by('-id')
+        image_list = Image.objects.filter(reduce(operator.or_, q)).exclude(is_public=False).order_by('-id')
+        video_list = Video.objects.filter(reduce(operator.or_, q)).exclude(is_public=False).order_by('-id')
     except:
-        image_list = Image.objects.filter(**filter_args).order_by('-id')
-        video_list = Video.objects.filter(**filter_args).order_by('-id')
+        image_list = Image.objects.filter(**filter_args).exclude(is_public=False).order_by('-id')
+        video_list = Video.objects.filter(**filter_args).exclude(is_public=False).order_by('-id')
     images = get_paginated(request, image_list)
     videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
@@ -286,10 +286,10 @@ def taxa_page(request):
 
 def places_page(request):
     '''Página mostrando locais de maneira organizada.'''
-    sublocations = Sublocation.objects.exclude(name='').order_by('name')
-    cities = City.objects.exclude(name='').order_by('name')
-    states = State.objects.exclude(name='').order_by('name')
-    countries = Country.objects.exclude(name='').order_by('name')
+    sublocations = Sublocation.objects.order_by('name')
+    cities = City.objects.order_by('name')
+    states = State.objects.order_by('name')
+    countries = Country.objects.order_by('name')
     variables = RequestContext(request, {
         'sublocations': sublocations,
         'cities': cities,
@@ -300,8 +300,8 @@ def places_page(request):
 
 def tags_page(request):
     '''Página mostrando tags organizados por categoria.'''
-    tags = Tag.objects.exclude(name='').order_by('parent')
-    sizes = Size.objects.exclude(name='').order_by('id')
+    tags = Tag.objects.order_by('parent')
+    sizes = Size.objects.order_by('id')
     variables = RequestContext(request, {
         'tags': tags,
         'sizes': sizes,

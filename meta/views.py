@@ -245,14 +245,11 @@ def meta_page(request, model_name, field, slug, genus=''):
     '''
     model = get_object_or_404(model_name, slug=slug)
     filter_args = {field: model}
-    #TODO checar se pai e filhos são corretamente interpretados.
+    #TODO Verificar se está tudo certo com a função recursiva.
     try:
         q = [Q(**filter_args),]
-        for child in model.children.all():
-            print child
-            q.append(Q(**{field: child}))
+        q = recurse(model, q)
         image_list = Image.objects.filter(reduce(operator.or_, q)).order_by('-id')
-        print image_list
         video_list = Video.objects.filter(reduce(operator.or_, q)).order_by('-id')
     except:
         image_list = Image.objects.filter(**filter_args).order_by('-id')
@@ -342,26 +339,25 @@ def splist(request, media):
         splist = []
     return splist
 
-def recurse(taxon):
+def recurse(taxon, q=None):
     '''Recursively returns all taxon children in a Q object.'''
-    #TODO FIXME Decidir o que fazer aqui!
-    try:
-        if taxon.spp.all():
-            print 'Species:'
-            for sp in taxon.spp.all():
-                print sp
-    except:
+    if not q:
+        q = []
+    if taxon.__class__.__name__ == 'Taxon':
         if taxon.children.all():
-            print '%s has children.' % taxon
             for child in taxon.children.all():
                 print child
-                recurse(child)
-        else:
-            print '%s has no children.' % taxon
-            print 'Trying genera...'
-            if taxon.genera.all():
-                for genus in taxon.genera.all():
-                    print genus
-                    recurse(genus)
-    #q = [Q(**filter_args),]
-    #q.append(Q(**{field: child}))
+                q.append(Q(**{'taxon': child}))
+                recurse(child, q)
+        elif taxon.genera.all():
+            for genus in taxon.genera.all():
+                print '\t%s' % genus
+                q.append(Q(**{'genus': genus}))
+                recurse(genus, q)
+    elif taxon.__class__.__name__ == 'Genus':
+        if taxon.spp.all():
+            for sp in taxon.spp.all():
+                print '\t\t%s' % sp
+                q.append(Q(**{'species': sp}))
+    return q
+    #elif taxon.__class__.__name__ == 'Species':

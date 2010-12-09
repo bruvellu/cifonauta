@@ -261,6 +261,7 @@ class Reference(models.Model):
     def get_absolute_url(self):
         return ('reference_url', [self.slug])
 
+
 def get_html(ref):
     '''Retorna citação formatada em HTML.'''
     #TODO E se não tiver issue ou url ou doi?

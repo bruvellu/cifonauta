@@ -213,10 +213,12 @@ def video_page(request, video_id):
     video.save()
     tags = video.tag_set.all().order_by('name')
     spp = splist(request, video)
+    references = video.reference_set.all().order_by('-citation')
     variables = RequestContext(request, {
         'media': video,
         'splist': spp,
         'tags': tags,
+        'references': references,
         'form': form,
         'related': related,
         })

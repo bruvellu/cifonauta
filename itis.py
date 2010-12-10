@@ -202,7 +202,8 @@ class Itis:
                     self.get_parent(parent_tsn)
             else:
                 print u'Táxon inválido? Ou sem pai mesmo?'
-                self.parent, self.parent_tsn, self.parent_rank = '', '', ''
+                #FIXME None evita táxon pai em branco?
+                self.parent, self.parent_tsn, self.parent_rank = None, None, None
                 self.rank = self.translate(rank)
         else:
             print u'Salvando do loop infinito...'

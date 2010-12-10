@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 10 Dec 2010 04:37PM
+# Atualizado: 10 Dec 2010 05:09PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -808,6 +808,8 @@ def prepare_meta(meta):
     Transforma None em string vazia, transforma autores e táxons em lista,
     espécies em dicionário.
     '''
+    print '\nBEFORE'
+    print meta
     # Converte valores None para string em branco
     for k, v in meta.iteritems():
         if v is None:
@@ -838,6 +840,9 @@ def prepare_meta(meta):
                     bilist[1] = ''
                 spp_diclist.append({'genus': bilist[0], 'sp': bilist[1]})
     meta['genus_sp'] = spp_diclist
+
+    print '\nAFTER'
+    print meta
 
     return meta
 

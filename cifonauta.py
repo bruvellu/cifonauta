@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 10 Dec 2010 12:35PM
+# Atualizado: 10 Dec 2010 04:29PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -341,8 +341,11 @@ class Movie:
             os.rename(self.meta['old_filepath'], self.meta['source_filepath'])
             if meta_text:
                 # Renomeia o arquivo acessório.
-                text_path = self.meta['old_filepath'].split('.')[0] + '.txt'
+                text_name = os.path.basename(self.meta['old_filepath'])
+                new_name = text_name.split('.')[0] + '.txt'
+                text_path = os.path.join(os.path.dirname(self.meta['old_filepath']), new_name)
                 new_path = self.source_filepath.split('.')[0] + '.txt'
+                import pdb; pdb.set_trace()
                 os.rename(text_path, new_path)
         else:
             self.meta['source_filepath'] = os.path.abspath(self.source_filepath)

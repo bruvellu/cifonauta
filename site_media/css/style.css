@@ -75,6 +75,10 @@ nav.main {
     padding: 1em 0 0.1em;
 }
 
+#feedback {
+    margin:2em 0 0 0;
+}
+
 header.main hgroup {
     margin:0 80px;
     letter-spacing: 4px;

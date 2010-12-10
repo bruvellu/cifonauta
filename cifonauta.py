@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 09 Dec 2010 06:02PM
+# Atualizado: 10 Dec 2010 12:35PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -143,6 +143,9 @@ class Database:
 
         if not update:
             media_meta['view_count'] = 0
+            print
+            print media_meta
+            print
             if media.type == 'photo':
                 entry = Image(**media_meta)
             elif media.type == 'video':
@@ -193,7 +196,6 @@ class Database:
         # mesma imagem é necessário repetir o táxon para que a associação entre
         # gênero e táxon fique certa.
         if len(taxa) == len(genera) or len(taxa) > len(genera):
-            print u'Tudo OK! =='
             for index, genus in enumerate(genera):
                 gen = self.get_instance('genus', genus)
                 gen.parent = self.get_instance('taxon', taxa[index])
@@ -224,8 +226,10 @@ class Database:
         if table == 'taxon' and new:
             # Consulta ITIS para extrair táxons.
             parent, rank = self.get_itis(value)
-            metadatum.parent = self.get_instance('taxon', parent)
-            metadatum.rank = rank
+            if parent:
+                metadatum.parent = self.get_instance('taxon', parent)
+            if rank:
+                metadatum.rank = rank
             metadatum.save()
         return metadatum
 
@@ -236,8 +240,7 @@ class Database:
         branco no banco.
         '''
         print '\nMETA (%s): %s' % (field, meta)
-        meta_instances = [self.get_instance(field, value) for value in meta if
-                value]
+        meta_instances = [self.get_instance(field, value) for value in meta if value.strip()]
         print 'INSTANCES FOUND: %s' % meta_instances
         eval('entry.%s_set.clear()' % field)
         if meta_instances:
@@ -807,6 +810,9 @@ def prepare_meta(meta):
     for k, v in meta.iteritems():
         if v is None:
             meta[k] = u''
+
+    #FIXME Checar se tags estão no formato de lista...
+    #if not isinstance(meta['tags'], list):
 
     # Preparando autor(es) para o banco de dados
     meta['author'] = [a.strip() for a in meta['author'].split(',')] 

@@ -50,6 +50,11 @@ urlpatterns = patterns('',
         url(r'^autor/(?P<slug>[^\d]+)/$', meta_page,
             extra(Author, 'author'), name='author_url'),
 
+        url(r'^especialista/$', meta_list_page,
+            {'model': Source, 'plural': u'Especialista'}),
+        url(r'^especialista/(?P<slug>[^\d]+)/$', meta_page,
+            extra(Source, 'source'), name='source_url'),
+
         url(r'^taxon/$', meta_list_page,
             {'model': Taxon, 'plural': u'Táxons'}),
         url(r'^taxon/(?P<slug>[^\d]+)/$', meta_page,

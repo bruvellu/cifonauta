@@ -13,10 +13,10 @@ Mostra todas as localidades em 4 colunas. Código bem objetivo, usando icount pa
         {% for subloc in sublocations %}
             <li>
             <div>
-                <div class="tag_item">
+                <div class="tag-item">
                 <a href="{{ subloc.get_absolute_url }}">{{ subloc.name }}</a>
                 </div>
-                <div class="tag_count quiet">{{ subloc|icount:'sublocation' }}</div>
+                <div class="tag-count quiet">{{ subloc|icount:'sublocation' }}</div>
             </div>
             </li>
         {% endfor %}
@@ -28,10 +28,10 @@ Mostra todas as localidades em 4 colunas. Código bem objetivo, usando icount pa
         {% for city in cities %}
             <li>
             <div>
-                <div class="tag_item">
+                <div class="tag-item">
                 <a href="{{ city.get_absolute_url }}">{{ city.name }}</a>
                 </div>
-                <div class="tag_count quiet">{{ city|icount:'city' }}</div>
+                <div class="tag-count quiet">{{ city|icount:'city' }}</div>
             </div>
             </li>
         {% endfor %}
@@ -43,10 +43,10 @@ Mostra todas as localidades em 4 colunas. Código bem objetivo, usando icount pa
         {% for state in states %}
             <li>
             <div>
-                <div class="tag_item">
+                <div class="tag-item">
                 <a href="{{ state.get_absolute_url }}">{{ state.name }}</a>
                 </div>
-                <div class="tag_count quiet">{{ state|icount:'state' }}</div>
+                <div class="tag-count quiet">{{ state|icount:'state' }}</div>
             </div>
             </li>
         {% endfor %}
@@ -58,10 +58,10 @@ Mostra todas as localidades em 4 colunas. Código bem objetivo, usando icount pa
         {% for country in countries %}
             <li>
             <div>
-                <div class="tag_item">
+                <div class="tag-item">
                 <a href="{{ country.get_absolute_url }}">{{ country.name }}</a>
                 </div>
-                <div class="tag_count quiet">{{ country|icount:'country' }}</div>
+                <div class="tag-count quiet">{{ country|icount:'country' }}</div>
             </div>
             </li>
         {% endfor %}

@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 08 Dec 2010 07:08PM
+# Atualizado: 09 Dec 2010 06:02PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -108,6 +108,9 @@ class Database:
         del media_meta['genus_sp']
         # Guarda objeto com autores
         authors = media_meta['author']
+        # Guarda objeto com especialistas 
+        sources = media_meta['source']
+        del media_meta['source']
         # Guarda objeto com tags
         tags = media_meta['tags']
         del media_meta['tags']
@@ -125,7 +128,7 @@ class Database:
         del media_meta['author']
 
         # Transforma valores em instâncias dos modelos
-        toget = ['size', 'source', 'rights', 'sublocation',
+        toget = ['size', 'rights', 'sublocation',
                 'city', 'state', 'country']
         for k in toget:
             print '\nK'
@@ -156,6 +159,9 @@ class Database:
 
         # Atualiza autores
         entry = self.update_sets(entry, 'author', authors)
+
+        # Atualiza especialistas
+        entry = self.update_sets(entry, 'source', sources)
 
         # Atualiza táxons
         entry = self.update_sets(entry, 'taxon', taxa)
@@ -804,6 +810,8 @@ def prepare_meta(meta):
 
     # Preparando autor(es) para o banco de dados
     meta['author'] = [a.strip() for a in meta['author'].split(',')] 
+    # Preparando especialista(s) para o banco de dados
+    meta['source'] = [a.strip() for a in meta['source'].split(',')] 
     # Preparando taxon(s) para o banco de dados
     meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')] 
     # Preparando referências para o banco de dados

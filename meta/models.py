@@ -29,7 +29,6 @@ class File(models.Model):
     # null está se referindo ao NULL do banco de dados e
     # blank está se referindo à interface de admin.
     size = models.ForeignKey('Size', null=True, blank=True)
-    source = models.ForeignKey('Source', null=True, blank=True)
     rights = models.ForeignKey('Rights', null=True, blank=True)
     sublocation = models.ForeignKey('Sublocation', null=True, blank=True)
     city = models.ForeignKey('City', null=True, blank=True)
@@ -91,9 +90,15 @@ class Author(models.Model):
 class Source(models.Model):
     name = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, blank=True)
+    images = models.ManyToManyField(Image, null=True, blank=True)
+    videos = models.ManyToManyField(Video, null=True, blank=True)
 
     def __unicode__(self):
         return self.name
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('source_url', [self.slug])
 
 
 class Tag(models.Model):

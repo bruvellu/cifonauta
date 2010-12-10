@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Referências bibliográficas | {{ block.super }}{% endblock %}
+{% block content %}
+<section class="span-24 last">
+<header><h1>Referências bibliográficas</h1></header>
+{% for ref in references %}
+<div class="citation">
+    {% autoescape off %}
+    {{ ref.citation }}
+    {% endautoescape %}
+</div>
+{% endfor %}
+</section>
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}

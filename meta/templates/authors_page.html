@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Autores | {{ block.super }}{% endblock %}
+{% block content %}
+<section class="span-24 last">
+    <header><h1>Autores e especialistas</h1></header>
+
+    <div id="authors" class="span-12">
+        <h2>Autores</h2>
+        <ul class="tags">
+            {% for author in authors %}
+            <li>
+            <div>
+                <div class="tag-item">
+                    <a href="{{ author.get_absolute_url }}">{{ author }}</a>
+                </div>
+                <div class="tag-count quiet">{{ author|icount:'author'}}</div>
+            </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div id="sources" class="span-12 last">
+        <h2>Especialistas</h2>
+        <ul class="tags">
+            {% for source in sources %}
+            <li>
+            <div>
+                <div class="tag-item">
+                    <a href="{{ source.get_absolute_url }}">{{ source }}</a>
+                </div>
+                <div class="tag-count quiet">{{ source|icount:'source'}}</div>
+            </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}

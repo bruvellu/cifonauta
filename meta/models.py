@@ -92,6 +92,7 @@ class Source(models.Model):
     slug = models.SlugField(max_length=200, blank=True)
     images = models.ManyToManyField(Image, null=True, blank=True)
     videos = models.ManyToManyField(Video, null=True, blank=True)
+    #FIXME Checar onde no template precisa adequar para novo formato.
 
     def __unicode__(self):
         return self.name

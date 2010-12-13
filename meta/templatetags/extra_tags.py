@@ -202,9 +202,9 @@ def show_related(media, form, related):
     else:
         crumbs = eval('media.%s.name' % related)
 
-    media_id = media.id
+    current = media
 
-    return {'media_id': media_id, 'rel_media': rel_media, 'relative': relative, 'form': form, 'related': related, 'type': choices[related], 'crumbs': crumbs}
+    return {'current': current, 'rel_media': rel_media, 'relative': relative, 'form': form, 'related': related, 'type': choices[related], 'crumbs': crumbs}
 
 @register.inclusion_tag('stats.html')
 def show_stats():

@@ -150,6 +150,7 @@ $(document).ready(function(){
         {% endif %}
 
         {% show_related media form related %}
+        {{ media.datatype }}
 
         {% get_comment_list for media as media_comments %}
         <div id="comments" class="span-16 last">

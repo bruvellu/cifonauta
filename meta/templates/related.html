@@ -26,7 +26,7 @@
 <div id="related" class="span-16 last">
     <ul class="rel-thumbs">
         {% for media in rel_media %}
-            {% if media.id == media_id %}
+            {% if media.id == current.id %}
             <li class="shadow size-{{ media.size.slug }} current">
             <img src="/{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" />
             {% if relative.next or relative.previous %}
@@ -67,7 +67,8 @@
     </div>
 </div>
 {% endif %}
+{{ media }}
 <div class="span-13 last quiet" id="total">
-    {{ relative.behind|add:relative.ahead|add:"1" }} image{{ relative.behind|add:relative.ahead|add:"1"|pluralize:'m,ns' }}
+    {{ relative.behind|add:relative.ahead|add:"1" }} {% if current.datatype == 'photo' %}image{{ relative.behind|add:relative.ahead|add:"1"|pluralize:'m,ns' }}{% else %}{% if current.datatype == 'video' %}vídeo{{ relative.behind|add:relative.ahead|add:"1"|pluralize }}{% endif %}{% endif %}
 </div>
 {% endif %}

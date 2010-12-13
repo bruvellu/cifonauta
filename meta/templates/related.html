@@ -67,7 +67,6 @@
     </div>
 </div>
 {% endif %}
-{{ media }}
 <div class="span-13 last quiet" id="total">
     {{ relative.behind|add:relative.ahead|add:"1" }} {% if current.datatype == 'photo' %}image{{ relative.behind|add:relative.ahead|add:"1"|pluralize:'m,ns' }}{% else %}{% if current.datatype == 'video' %}vídeo{{ relative.behind|add:relative.ahead|add:"1"|pluralize }}{% endif %}{% endif %}
 </div>

@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 10 Dec 2010 07:13PM
+# Atualizado: 13 Dec 2010 06:31PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -263,7 +263,7 @@ class Database:
         try:
             taxon = Itis(name)
         except:
-            return '', ''
+            return None, None
         return taxon.parent, taxon.rank
 
 

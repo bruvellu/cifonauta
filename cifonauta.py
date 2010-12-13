@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 13 Dec 2010 06:31PM
+# Atualizado: 13 Dec 2010 06:42PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -901,7 +901,7 @@ def usage():
     print '  -h, --help'
     print '\tMostra este menu de ajuda.'
     print
-    print '  -n {n}, --n-max {n} (padrão=20)'
+    print '  -n {n}, --n-max {n} (padrão=10000)'
     print '\tEspecifica um número máximo de arquivos que o programa irá ' \
             'verificar.'
     print
@@ -929,7 +929,7 @@ def main(argv):
     # Valores padrão para argumentos
     force_update = False
     no_rename = False
-    n_max = 20
+    n_max = 10000
     web_upload = False
     single_img = False
 

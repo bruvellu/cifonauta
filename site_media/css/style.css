@@ -8,7 +8,7 @@ header,footer,article,section,hgroup,nav,figure,figcaption {
 }
 
 header.main {
-    margin:0 0 2em;
+    margin:1em 0 2em;
     background:url("/site_media/logo.png") no-repeat scroll 0 0 transparent;
 }
 
@@ -81,8 +81,10 @@ nav.main {
 }
 
 header.main hgroup {
-    margin:0 80px;
+    margin:0 0 0 80px;
     letter-spacing: 4px;
+    font-family: sans-serif;
+    font-variant:small-caps;
 }
 
 section#stats {

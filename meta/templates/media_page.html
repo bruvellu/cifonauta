@@ -35,7 +35,7 @@ $(document).ready(function(){
 {% load comments %}
 <section class="span-16">
     {% if media %}
-    <article id="single" class="{{ media.datatype }} {% show_set media.author_set.all 'author-' '' ' ' 'slug' %} {% show_set media.taxon_set.all 'taxon-' '' ' ' 'slug' %} {% show_set media.genus_set.all 'genus-' '' ' ' 'slug' %} {% show_set media.species_set.all 'species-' '' ' ' 'slug' %} size-{{ media.size.slug }} {% show_set media.source_set.all 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ media.view_count }}">
+    <article id="single" class="{{ media.datatype }} {% show_set media.author_set.all 'author-' '' ' ' 'slug' %} {% show_set media.taxon_set.all 'taxon-' '' ' ' 'slug' %} size-{{ media.size.slug }} {% show_set media.source_set.all 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ media.view_count }}">
         <header class="span-16 last">
             <h1>{{ media.title }}</h1>
         </header>
@@ -96,25 +96,10 @@ $(document).ready(function(){
         <div class="span-13 last borders" id="meta">
             <div class="span-7 taxonomy">
 
-                {% if media.genus_set.all %}
-                <strong>Espécie{{ splist.count|pluralize }}: </strong>
-                <span id="species">
-                    {% for sp in splist %}
-                    {{ sp }}{% if sp|wordcount == 1 %}<span id="sp"> sp.</span>{% endif %}{% if not forloop.last %},{% endif %}
-                    {% endfor %}
-                </span> 
+                {% if media.taxon_set.all %}
+                <strong>Táxon{{ media.taxon_set.all.count|pluralize }}:</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
                 <br />
                 {% endif %}
-
-                {% with media.taxon_set.all|first as tax %}
-                {% comment %}
-                Manter só até resolver o problema do táxon em branco
-                {% endcomment %}
-                    {% if tax.name %}
-                    <strong>Táxon{{ media.taxon_set.all.count|pluralize }}:</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
-                    <br />
-                    {% endif %}
-                {% endwith %}
 
                 {% if media.source_set.all %}
                 <strong>Especialista{{ media.source_set.all.count|pluralize }}:</strong> <span id="source">{% show_set media.source_set.all '' '' ', ' '' %}</span>

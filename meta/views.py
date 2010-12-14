@@ -181,11 +181,9 @@ def image_page(request, image_id):
     image.view_count = image.view_count + 1
     image.save()
     tags = image.tag_set.all().order_by('name')
-    spp = splist(request, image)
     references = image.reference_set.all().order_by('-citation')
     variables = RequestContext(request, {
         'media': image,
-        'splist': spp,
         'tags': tags,
         'references': references,
         'form': form,
@@ -212,11 +210,9 @@ def video_page(request, video_id):
     video.view_count = video.view_count + 1
     video.save()
     tags = video.tag_set.all().order_by('name')
-    spp = splist(request, video)
     references = video.reference_set.all().order_by('-citation')
     variables = RequestContext(request, {
         'media': video,
-        'splist': spp,
         'tags': tags,
         'references': references,
         'form': form,
@@ -346,22 +342,6 @@ def get_paginated(request, obj_list):
     except (EmptyPage, InvalidPage):
         obj = paginator.page(paginator.num_pages)
     return obj
-
-def splist(request, media):
-    '''Retorna lista de espécies associadas à uma imagem.'''
-    #FIXME E agora que não tem mais espécie?
-    splist = []
-    parents = []
-    if media.genus_set.all():
-        for sp in media.species_set.all():
-            splist.append(sp.name)
-            parents.append(sp.parent.name)
-        for genus in media.genus_set.all():
-            if genus.name not in parents:
-                splist.append(genus.name)
-    else:
-        splist = []
-    return splist
 
 def recurse(taxon, q=None):
     '''Recursively returns all taxon children in a Q object.'''

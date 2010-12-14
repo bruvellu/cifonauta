@@ -60,16 +60,6 @@ urlpatterns = patterns('',
         url(r'^taxon/(?P<slug>[^\d]+)/$', meta_page,
             extra(Taxon, 'taxon'), name='taxon_url'),
 
-        url(r'^genero/$', meta_list_page,
-            {'model': Genus, 'plural': u'Gêneros'}),
-        url(r'^genero/(?P<slug>[^\d]+)/$', meta_page,
-            extra(Genus, 'genus'), name='genus_url'),
-
-        url(r'^especie/$', meta_list_page,
-            {'model': Species, 'plural': u'Espécies'}),
-        url(r'^especie/(?P<slug>[^\d]+)/$', meta_page,
-            extra(Species, 'species'), name='species_url'),
-
         url(r'^tamanho/$', meta_list_page,
             {'model': Size, 'plural': u'Tamanhos'}),
         url(r'^tamanho/(?P<slug>[\w\-]+)/$', meta_page,

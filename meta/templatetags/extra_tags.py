@@ -210,16 +210,15 @@ def show_related(media, form, related):
 def show_stats():
     images = Image.objects.filter(is_public=True).count()
     videos = Video.objects.filter(is_public=True).count()
-    taxa = Taxon.objects.count()
-    genera = Genus.objects.count()
-    spp = Species.objects.count()
-    locations = Sublocation.objects.all().exclude(name='').count()
-    cities = City.objects.all().exclude(name='').count()
-    states = State.objects.all().exclude(name='').count()
-    countries = Country.objects.all().exclude(name='').count()
+    genera = Taxon.objects.filter(rank=u'Gênero').count()
+    spp = Taxon.objects.filter(rank=u'Espécie').count()
+    locations = Sublocation.objects.count()
+    cities = City.objects.count()
+    states = State.objects.count()
+    countries = Country.objects.count()
     tags = Tag.objects.count()
     references = Reference.objects.count()
-    return {'images': images, 'videos': videos, 'taxa': taxa, 'genera': genera, 'spp': spp, 'locations': locations, 'cities': cities, 'states': states, 'countries': countries, 'tags': tags, 'references': references}
+    return {'images': images, 'videos': videos, 'genera': genera, 'spp': spp, 'locations': locations, 'cities': cities, 'states': states, 'countries': countries, 'tags': tags, 'references': references}
 
 @register.filter
 def islist(obj):

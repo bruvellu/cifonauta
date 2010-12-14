@@ -147,38 +147,6 @@ class Taxon(models.Model):
         return ('taxon_url', [self.slug])
 
 
-class Genus(models.Model):
-    name = models.CharField(max_length=64, unique=True)
-    slug = models.SlugField(max_length=64, blank=True)
-    common = models.CharField(max_length=256, blank=True)
-    parent = models.ForeignKey('Taxon', blank=True, null=True, related_name='genera')
-    images = models.ManyToManyField(Image, null=True, blank=True)
-    videos = models.ManyToManyField(Video, null=True, blank=True)
-
-    def __unicode__(self):
-        return self.name
-
-    @models.permalink
-    def get_absolute_url(self):
-        return ('genus_url', [self.slug])
-
-
-class Species(models.Model):
-    name = models.CharField(max_length=64, unique=True)
-    slug = models.SlugField(max_length=64, blank=True)
-    common = models.CharField(max_length=256, blank=True)
-    parent = models.ForeignKey('Genus', blank=True, null=True, related_name='spp')
-    images = models.ManyToManyField(Image, null=True, blank=True)
-    videos = models.ManyToManyField(Video, null=True, blank=True)
-
-    def __unicode__(self):
-        return self.name
-
-    @models.permalink
-    def get_absolute_url(self):
-        return ('species_url', [self.slug])
-
-
 class Size(models.Model):
     SIZES = (
             ('<0,1 mm', '<0,1 mm'),
@@ -333,8 +301,6 @@ signals.pre_save.connect(slug_pre_save, sender=Author)
 signals.pre_save.connect(slug_pre_save, sender=Tag)
 signals.pre_save.connect(slug_pre_save, sender=TagCategory)
 signals.pre_save.connect(slug_pre_save, sender=Taxon)
-signals.pre_save.connect(slug_pre_save, sender=Genus)
-signals.pre_save.connect(slug_pre_save, sender=Species)
 signals.pre_save.connect(slug_pre_save, sender=Size)
 signals.pre_save.connect(slug_pre_save, sender=Source)
 signals.pre_save.connect(slug_pre_save, sender=Rights)

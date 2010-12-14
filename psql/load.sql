@@ -27,14 +27,10 @@ DECLARE
 authors varchar;
 sources varchar;
 taxa varchar;
-genera varchar;
-spp varchar;
 parents varchar;
 tags varchar;
 
 taxa_common varchar;
-genera_common varchar;
-spp_common varchar;
 parents_common varchar;
 
 sublocation varchar;
@@ -63,12 +59,8 @@ SELECT concat((SELECT name FROM meta_tag WHERE id = tag_id)||' ') INTO tags FROM
 SELECT concat((SELECT name FROM meta_author WHERE id = author_id)||' ') INTO authors FROM meta_author_images WHERE image_id = NEW.id;
 SELECT concat((SELECT name FROM meta_source WHERE id = source_id)||' ') INTO sources FROM meta_source_images WHERE image_id = NEW.id;
 SELECT concat((SELECT name FROM meta_taxon WHERE id = taxon_id)||' ') INTO taxa FROM meta_taxon_images WHERE image_id = NEW.id;
-SELECT concat((SELECT name FROM meta_genus WHERE id = genus_id)||' ') INTO genera FROM meta_genus_images WHERE image_id = NEW.id;
-SELECT concat((SELECT name FROM meta_species WHERE id = species_id)||' ') INTO spp FROM meta_species_images WHERE image_id = NEW.id;
 
 SELECT concat((SELECT common FROM meta_taxon WHERE id = taxon_id)||' ') INTO taxa_common FROM meta_taxon_images WHERE image_id = NEW.id;
-SELECT concat((SELECT common FROM meta_genus WHERE id = genus_id)||' ') INTO genera_common FROM meta_genus_images WHERE image_id = NEW.id;
-SELECT concat((SELECT common FROM meta_species WHERE id = species_id)||' ') INTO spp_common FROM meta_species_images WHERE image_id = NEW.id;
 
 -- Parent from taxon
 SELECT concat((SELECT name FROM meta_taxon WHERE id = (SELECT coalesce(parent_id, 1) FROM meta_taxon WHERE id = taxon_id))||' ') INTO parents FROM meta_taxon_images WHERE image_id = NEW.id;
@@ -89,16 +81,8 @@ NEW.tsv :=
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(sources), '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(taxa, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(taxa), '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(genera, '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(genera), '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(spp, '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(spp), '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(taxa_common, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(taxa_common), '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(genera_common, '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(genera_common), '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(spp_common, '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(spp_common), '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(sublocation, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(sublocation), '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(city, '')), 'A') ||

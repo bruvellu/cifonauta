@@ -349,6 +349,7 @@ def get_paginated(request, obj_list):
 
 def splist(request, media):
     '''Retorna lista de espécies associadas à uma imagem.'''
+    #FIXME E agora que não tem mais espécie?
     splist = []
     parents = []
     if media.genus_set.all():

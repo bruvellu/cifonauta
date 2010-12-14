@@ -25,26 +25,7 @@
     {% endfor %}
 </ul>
 {% endif %}
-{% if genera %}
-<h2>Gêneros</h2>
-<ul>
-    {% for genus in genera %}
-    <li>
-        {% refine genus query qsize %}
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
-{% if species %}
-<h2>Espécies</h2>
-<ul>
-    {% for sp in species %}
-    <li>
-        {% refine sp query qsize %}
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
+
 {% if sizes %}
 <h2>Tamanhos</h2>
 <ul>

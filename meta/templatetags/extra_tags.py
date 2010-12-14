@@ -16,9 +16,8 @@ def show_tree():
 
 @register.inclusion_tag('splist.html')
 def show_spp():
-    genera = Genus.objects.all().order_by('name')
-    spcount = Species.objects.count()
-    return {'genera': genera, 'spcount': spcount}
+    spp = Taxon.objects.filter(rank=u'Espécie').order_by('name')
+    return {'spp': spp}
 
 @register.inclusion_tag('hot_images.html')
 def show_hot():
@@ -250,11 +249,8 @@ def refine(meta, query, qsize):
 @register.inclusion_tag('mais.html')
 def show_info(media, query, qsize):
     '''Apenas manda extrair os metadados e envia para template.'''
-    authors, taxa, genera, species, sizes, sublocations, cities, states, countries, tags = extract_set(media)
-    return {'authors': authors, 'taxa': taxa, 'genera': genera, 'species':
-            species, 'sizes': sizes, 'sublocations': sublocations, 'cities':
-            cities, 'states': states, 'countries': countries, 'tags': tags,
-            'query': query, 'qsize': qsize}
+    authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(media)
+    return {'authors': authors, 'taxa': taxa, 'sizes': sizes, 'sublocations': sublocations, 'cities': cities, 'states': states, 'countries': countries, 'tags': tags, 'query': query, 'qsize': qsize}
 
 @register.inclusion_tag('sets.html')
 def show_set(set, prefix, suffix, sep, method='name'):
@@ -264,8 +260,6 @@ def extract_set(query):
     '''Extrai outros metadados das imagens buscadas.'''
     authors = []
     taxa = []
-    genera = []
-    species = []
     sizes = []
     sublocations = []
     cities = []
@@ -279,12 +273,6 @@ def extract_set(query):
         if item.taxon_set.all():
             for taxon in item.taxon_set.all():
                 taxa.append(taxon)
-        if item.genus_set.all():
-            for genus in item.genus_set.all():
-                genera.append(genus)
-        if item.species_set.all():
-            for sp in item.species_set.all():
-                species.append(sp)
         if item.size:
             sizes.append(item.size)
         if item.sublocation:
@@ -298,4 +286,4 @@ def extract_set(query):
         if item.tag_set.all():
             for tag in item.tag_set.all():
                 tags.append(tag)
-    return list(set(authors)), list(set(taxa)), list(set(genera)), list(set(species)), list(set(sizes)), list(set(sublocations)), list(set(cities)), list(set(states)), list(set(countries)), list(set(tags))
+    return list(set(authors)), list(set(taxa)), list(set(sizes)), list(set(sublocations)), list(set(cities)), list(set(states)), list(set(countries)), list(set(tags))

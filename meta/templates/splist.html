@@ -1,18 +1,12 @@
-{% if genera %}
-<h2>Gênero{{ genera.count|pluralize }} ({{ genera.count }}) e espécie{{ spcount|pluralize }} ({{ spcount }})</h2>
+{% if spp %}
+<h2>Espécie{{ spp.count|pluralize }} ({{ spp.count }})</h2>
 <ul>
-{% for genus in genera %}
-{% if genus.spp.all %}
-    {% for sp in genus.spp.all %}
+    {% for sp in spp %}
     <li>
     <a href="{{ sp.get_absolute_url }}"><em>{{ sp.name }}</em></a>
     </li>
     {% endfor %}
-{% else %}
-    <li>
-    <a href="{{ genus.get_absolute_url }}"><em>{{ genus.name }} sp.</em></a>
-    </li>
-{% endif %}
-{% endfor %}
 </ul>
+{% else %}
+<h2>Nenhuma espécie no banco</h2>
 {% endif %}

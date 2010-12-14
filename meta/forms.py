@@ -13,8 +13,6 @@ class SearchForm(forms.Form):
 METAS = (
         (u'author', u'Autor'),
         (u'taxon', u'Táxon'),
-        (u'genus', u'Gênero'),
-        (u'species', u'Espécie'),
         (u'size', u'Tamanho'),
         (u'sublocation', u'Local'),
         (u'city', u'Cidade'),

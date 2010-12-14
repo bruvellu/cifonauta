@@ -17,19 +17,50 @@ Algoritmo:
     - Achado o táxon é necessário traduzir (translate) e salvar no objeto
 '''
 
-import urllib2
-from xml.etree import ElementTree
+from suds.client import Client
+
+#FIXME IMPEDIR TAXONS VAZIOOOOS!
+
+#TODO Implementar o WoRMS
+#worms = 'http://www.marinespecies.org/aphia.php?p=soap&wsdl=1'
+#taxon = client.service.getAphiaRecordByID(id)
+
+#def show(classi):
+#    print classi.scientificname, classi.rank
+#    if classi.child:
+#        show(classi.child)
+#
+#id = client.service.getAphiaID("Clypeaster")
+#taxon = client.service.getAphiaRecordByID(id)
+#print id, taxon
+#print
+#print taxon.scientificname, taxon.authority
+#print taxon.valid_name, taxon.valid_authority
+#print
+#print taxon.url
+#print
+#classi = client.service.getAphiaClassificationByID(id)
+#show(classi)
+#
+#print 'FIM'
 
 class Itis:
     '''Interação com o ITIS'''
     def __init__(self, query):
         print 'Iniciando contato com ITIS.'
+
+        self.url = 'http://www.itis.gov/ITISWebService.xml'
+        try:
+            self.client = Client(self.url)
+        except:
+            print u'Não conseguiu conectar o cliente!'
+
         self.name = query
-        self.tsn = ''
-        self.rank = ''
-        self.parent = ''
-        self.parent_tsn = ''
-        self.parent_rank = ''
+        self.tsn = None
+        self.rank = None
+        self.parent = None
+        self.parent_tsn = None
+        self.parent_rank = None
 
         self.ranks = ['Kingdom', 'Phylum', 'Class', 'Order',
                 'Family', 'Genus', 'Species']
@@ -121,36 +152,33 @@ class Itis:
 
         http://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey=Crustacea
         '''
-        xml = self.open_url(
-                'http://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey=%s'
-                    % query, 10)
-        if not xml:
-            return None
-        tree = ElementTree.parse(xml)
-        root = tree.getroot()
-
-        matches = []
-
         print u'Procurando o TSN de %s...' % query
+        try:
+            results = self.client.service.searchByScientificName(query)
+        except:
+            #TODO O que fazer quando isso acontecer?
+            print u'Não conseguiu conectar...'
+            results = None
 
-        for results in root.getchildren():
-            for children in results.getchildren():
-                taxon = None
-                tsn = None
-                for child in children.getchildren():
-                    if child.tag.split('}')[1] == 'unitName1':
-                        taxon = child.text
-                    if child.tag.split('}')[1] == 'tsn':
-                        tsn = child.text
-                if taxon == query:
-                    print query, tsn
-                    matches.append(tsn)
-        if matches:
-            if len(matches) > 1:
+        #import pdb; pdb.set_trace()
+        if results:
+            if len(results.scientificNames) > 1:
                 print u'Mais de um táxon encontrado!'
+                theone = []
+                # Tentando encontrar o táxon certo.
+                for r in results.scientificNames:
+                    if r.combinedName == query:
+                        theone.append(r)
+                if len(theone) == 1:
+                    taxon = theone[0]
+                    self.tsn = taxon.tsn
+                    self.get_parent(taxon.tsn)
+                else:
+                    #FIXME Descobrir o que fazer quando tiver mais de um.
+                    print 'Fodeu...'
             else:
-                self.tsn = matches[0]
-                self.get_parent(matches[0])
+                self.tsn = results.scientificNames[0].tsn
+                self.get_parent(self.tsn)
         else:
             print u'Nenhum táxon com o nome de %s foi encontrado' % query
 
@@ -172,57 +200,39 @@ class Itis:
         http://www.itis.gov/ITISWebService/services/ITISService/getHierarchyUpFromTSN?tsn=83677 
         '''
         if tsn:
-            xml = self.open_url(
-                    'http://www.itis.gov/ITISWebService/services/ITISService/getHierarchyUpFromTSN?tsn=%s'
-                    % tsn, 10)
-            if not xml:
-                return None
-            tree = ElementTree.parse(xml)
-            root = tree.getroot()
-
             print u'Pegando o táxon pai...'
-            for child in root.getiterator():
-                if child.tag.split('}')[1] == 'parentName':
-                    parent = child.text
-                elif child.tag.split('}')[1] == 'parentTsn':
-                    parent_tsn = child.text
-                elif child.tag.split('}')[1] == 'rankName':
-                    rank = child.text
-
-            if parent and parent_tsn:
-                print u'Descobrindo seu ranqueamento...'
-                parent_rank = self.get_rank(parent_tsn)
-                if parent_rank in self.ranks:
-                    print parent + u' é: ' + self.translate(parent_rank)
-                    self.rank = self.translate(rank)
-                    self.parent_rank = self.translate(parent_rank)
-                    self.parent = parent
-                    self.parent_tsn = parent_tsn
-                else:
-                    self.get_parent(parent_tsn)
+            try:
+                up = self.client.service.getHierarchyUpFromTSN(tsn)
+            except:
+                #TODO O que fazer quando isso acontecer?
+                print u'Não conseguiu conectar...'
+                up = None
+            #import pdb; pdb.set_trace()
+            if up.parentName and up.parentTsn:
+                self.rank = self.translate(up.rankName)
+                self.parent_rank = self.translate(
+                        self.get_rank(up.parentTsn)
+                        )
+                self.parent = up.parentName
+                self.parent_tsn = up.parentTsn
             else:
                 print u'Táxon inválido? Ou sem pai mesmo?'
                 #FIXME None evita táxon pai em branco?
                 self.parent, self.parent_tsn, self.parent_rank = None, None, None
-                self.rank = self.translate(rank)
+                self.rank = self.translate(up.rankName)
         else:
             print u'Salvando do loop infinito...'
             pass
 
     def get_rank(self, tsn):
         '''Retorna o nome do rank do táxon.'''
-        xml = self.open_url(
-                'http://www.itis.gov/ITISWebService/services/ITISService/getTaxonomicRankNameFromTSN?tsn=%s'
-                % tsn, 10)
-        if not xml:
+        try:
+            rank = self.client.service.getTaxonomicRankNameFromTSN(tsn)
+            return rank.rankName
+        except:
+            #TODO O que fazer quando isso acontecer?
+            print u'Não conseguiu conectar...'
             return None
-        tree = ElementTree.parse(xml)
-        root = tree.getroot()
-
-        for child in root.getiterator():
-            if child.tag.split('}')[1] == 'rankName':
-                return child.text
-        return None
 
     def open_url(self, url, timeout):
         '''Abre o url e retorna a resposta.'''

@@ -133,6 +133,8 @@ class Taxon(models.Model):
     slug = models.SlugField(max_length=256, blank=True)
     common = models.CharField(max_length=256, blank=True)
     rank = models.CharField(max_length=256, blank=True)
+    tsn = models.PositiveIntegerField(null=True, blank=True)
+    aphia = models.PositiveIntegerField(null=True, blank=True)
     parent = models.ForeignKey('self', blank=True, null=True, related_name='children')
     images = models.ManyToManyField(Image, null=True, blank=True)
     videos = models.ManyToManyField(Video, null=True, blank=True)

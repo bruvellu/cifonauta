@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 14 Dec 2010 09:06AM
+# Atualizado: 14 Dec 2010 06:17PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -104,8 +104,8 @@ class Database:
         # Guarda objeto com infos taxonômicas
         taxa = media_meta['taxon']
         del media_meta['taxon']
-        genus_sp = media_meta['genus_sp']
-        del media_meta['genus_sp']
+        #genus_sp = media_meta['genus_sp']
+        #del media_meta['genus_sp']
         # Guarda objeto com autores
         authors = media_meta['author']
         # Guarda objeto com especialistas 
@@ -167,45 +167,46 @@ class Database:
         entry = self.update_sets(entry, 'taxon', taxa)
         
         # Atualiza gêneros e espécies
+        #XXX DEPRECATED
         #TODO Ligar gênero e táxon de acordo com a ordem apresentada.
         #TODO Mudar a espécie para binômio.
-        genera = []
-        spp = []
-        for binomius in genus_sp:
-            # Faz o link entre espécie e gênero (apenas quando os 2 existem).
-            # Lineu é a forma binomial, novo formato do banco.
-            lineu = u'%s %s' % (binomius['genus'], binomius['sp'])
-            if binomius['sp'] and binomius['genus']:
-                sp = self.get_instance('species', lineu)
-                sp.parent = self.get_instance('genus', binomius['genus'])
-                sp.save()
-            # Apenas adiciona se existe.
-            if binomius['genus']:
-                genera.append(binomius['genus'])
-            if binomius['sp']:
-                spp.append(lineu)
-        # Quando ligar ao pai?
-        entry = self.update_sets(entry, 'genus', genera)
-        entry = self.update_sets(entry, 'species', spp)
+        #genera = []
+        #spp = []
+        #for binomius in genus_sp:
+        #    # Faz o link entre espécie e gênero (apenas quando os 2 existem).
+        #    # Lineu é a forma binomial, novo formato do banco.
+        #    lineu = u'%s %s' % (binomius['genus'], binomius['sp'])
+        #    if binomius['sp'] and binomius['genus']:
+        #        sp = self.get_instance('species', lineu)
+        #        sp.parent = self.get_instance('genus', binomius['genus'])
+        #        sp.save()
+        #    # Apenas adiciona se existe.
+        #    if binomius['genus']:
+        #        genera.append(binomius['genus'])
+        #    if binomius['sp']:
+        #        spp.append(lineu)
+        ## Quando ligar ao pai?
+        #entry = self.update_sets(entry, 'genus', genera)
+        #entry = self.update_sets(entry, 'species', spp)
 
-        # Liga gênero ao táxon
-        #XXX Lembrar: quando existe apenas 1 táxon e dois gêneros diferentes na
-        # mesma imagem é necessário repetir o táxon para que a associação entre
-        # gênero e táxon fique certa.
-        if len(taxa) == len(genera) or len(taxa) > len(genera):
-            for index, genus in enumerate(genera):
-                gen = self.get_instance('genus', genus)
-                if taxa[index]:
-                    gen.parent = self.get_instance('taxon', taxa[index])
-                gen.save()
-        elif len(taxa) < len(genera):
-                for index, taxon in enumerate(taxa):
-                    gen = self.get_instance('genus', genera[index])
-                    if taxon:
-                        gen.parent = self.get_instance('taxon', taxon)
-                    gen.save()
-        else:
-            print u'Erro para especificar pai do gênero.'
+        ## Liga gênero ao táxon
+        ##XXX Lembrar: quando existe apenas 1 táxon e dois gêneros diferentes na
+        ## mesma imagem é necessário repetir o táxon para que a associação entre
+        ## gênero e táxon fique certa.
+        #if len(taxa) == len(genera) or len(taxa) > len(genera):
+        #    for index, genus in enumerate(genera):
+        #        gen = self.get_instance('genus', genus)
+        #        if taxa[index]:
+        #            gen.parent = self.get_instance('taxon', taxa[index])
+        #        gen.save()
+        #elif len(taxa) < len(genera):
+        #        for index, taxon in enumerate(taxa):
+        #            gen = self.get_instance('genus', genera[index])
+        #            if taxon:
+        #                gen.parent = self.get_instance('taxon', taxon)
+        #            gen.save()
+        #else:
+        #    print u'Erro para especificar pai do gênero.'
 
         # Atualiza marcadores
         entry = self.update_sets(entry, 'tag', tags)
@@ -224,11 +225,25 @@ class Database:
                 (table.capitalize(), value))
         if table == 'taxon' and new:
             # Consulta ITIS para extrair táxons.
-            parent, rank = self.get_itis(value)
-            if parent:
-                metadatum.parent = self.get_instance('taxon', parent)
-            if rank:
-                metadatum.rank = rank
+            taxon = self.get_itis(value)
+            if taxon.parents:
+                for parent in taxon.parents:
+                    print u'Criando %s...' % parent.taxonName
+                    newtaxon, new = Taxon.objects.get_or_create(name=parent.taxonName)
+                    if new:
+                        newtaxon.rank = parent.rankName
+                        newtaxon.tsn = parent.tsn
+                        if parent.parentName:
+                            newtaxon.parent = Taxon.objects.get(name=parent.parentName)
+                        newtaxon.save()
+                        print u'Salvo!'
+                    else:
+                        print u'Já existe!'
+
+            if taxon.parent_name:
+                metadatum.parent = Taxon.objects.get(name=taxon.parent_name)
+            metadatum.tsn = taxon.tsn
+            metadatum.rank = taxon.rank
             metadatum.save()
         return metadatum
 
@@ -261,8 +276,8 @@ class Database:
         try:
             taxon = Itis(name)
         except:
-            return None, None
-        return taxon.parent, taxon.rank
+            return None
+        return taxon
 
 
 class Movie:
@@ -300,7 +315,7 @@ class Movie:
                 'taxon': u'',
                 'rights': u'',
                 'caption': u'',
-                'genus_sp': u'',
+                #'genus_sp': u'',
                 'size': u'',
                 'source': u'',
                 'date': '1900-01-01 01:01:01',
@@ -536,7 +551,7 @@ class Photo:
                 'taxon': info.data['headline'], # 105
                 'rights': info.data['copyright notice'], # 116
                 'caption': info.data['caption/abstract'], # 120
-                'genus_sp': info.data['original transmission reference'], # 103
+                #'genus_sp': info.data['original transmission reference'], # 103
                 'size': info.data['special instructions'], # 40
                 'source': info.data['source'], # 115
                 'references': info.data['credit'], #110
@@ -596,7 +611,7 @@ class Photo:
         print '\t' + 40 * '-'
         print '\tTítulo:\t\t%s' % self.meta['title']
         print '\tDescrição:\t%s' % self.meta['caption']
-        print '\tEspécie:\t%s' % self.meta['genus_sp']
+        #print '\tEspécie:\t%s' % self.meta['genus_sp']
         print '\tTáxon:\t\t%s' % ', '.join(self.meta['taxon'])
         print '\tTags:\t\t%s' % '\n\t\t\t'.join(self.meta['tags'])
         print '\tTamanho:\t%s' % self.meta['size']
@@ -822,23 +837,24 @@ def prepare_meta(meta):
     # Preparando especialista(s) para o banco de dados
     meta['source'] = [a.strip() for a in meta['source'].split(',')] 
     # Preparando taxon(s) para o banco de dados
+    #XXX Lidar com fortuitos sp.?
     meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')] 
     # Preparando referências para o banco de dados
     meta['references'] = [a.strip() for a in meta['references'].split(',')] 
 
     # Preparando a espécie para o banco de dados
-    spp_diclist = []
-    genera_spp = [i.strip() for i in meta['genus_sp'].split(',')]
-    for genus_sp in genera_spp:
-        if genus_sp:
-            bilist = genus_sp.split()
-            if len(bilist) == 1 and bilist[0] != '':
-                spp_diclist.append({'genus': bilist[0], 'sp': ''})
-            elif len(bilist) == 2:
-                if bilist[1] in ['sp.', 'sp', 'spp']:
-                    bilist[1] = ''
-                spp_diclist.append({'genus': bilist[0], 'sp': bilist[1]})
-    meta['genus_sp'] = spp_diclist
+    #spp_diclist = []
+    #genera_spp = [i.strip() for i in meta['genus_sp'].split(',')]
+    #for genus_sp in genera_spp:
+    #    if genus_sp:
+    #        bilist = genus_sp.split()
+    #        if len(bilist) == 1 and bilist[0] != '':
+    #            spp_diclist.append({'genus': bilist[0], 'sp': ''})
+    #        elif len(bilist) == 2:
+    #            if bilist[1] in ['sp.', 'sp', 'spp']:
+    #                bilist[1] = ''
+    #            spp_diclist.append({'genus': bilist[0], 'sp': bilist[1]})
+    #meta['genus_sp'] = spp_diclist
 
     return meta
 

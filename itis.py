@@ -58,9 +58,10 @@ class Itis:
         self.name = query
         self.tsn = None
         self.rank = None
-        self.parent = None
+        self.parent_name = None
         self.parent_tsn = None
-        self.parent_rank = None
+        self.parents = None
+        self.hierarchy = None
 
         self.ranks = ['Kingdom', 'Phylum', 'Class', 'Order',
                 'Family', 'Genus', 'Species']
@@ -160,7 +161,6 @@ class Itis:
             print u'Não conseguiu conectar...'
             results = None
 
-        #import pdb; pdb.set_trace()
         if results:
             if len(results.scientificNames) > 1:
                 print u'Mais de um táxon encontrado!'
@@ -172,15 +172,48 @@ class Itis:
                 if len(theone) == 1:
                     taxon = theone[0]
                     self.tsn = taxon.tsn
-                    self.get_parent(taxon.tsn)
+                    self.hierarchy = self.get_hierarchy(self.tsn)
                 else:
                     #FIXME Descobrir o que fazer quando tiver mais de um.
                     print 'Fodeu...'
             else:
                 self.tsn = results.scientificNames[0].tsn
-                self.get_parent(self.tsn)
+                self.hierarchy = self.get_hierarchy(self.tsn)
         else:
             print u'Nenhum táxon com o nome de %s foi encontrado' % query
+
+    def get_hierarchy(self, tsn):
+        '''Encontra hierarquia e converte valores.
+        
+        O formato vindo do SOAP não serve para criar as instâncias no Django.
+        Por isso é necessário converter em unicode e int, além de traduzir os
+        rankings.
+        '''
+        print u'Pegando hierarquia...'
+        try:
+            hierarchy = self.client.service.getFullHierarchyFromTSN(tsn)
+            taxon = hierarchy.hierarchyList[-1]
+            # Salva propriedades da classe.
+            self.tsn = int(hierarchy.tsn)
+            self.rank = self.translate(taxon.rankName)
+            self.parent_name = unicode(taxon.parentName)
+            self.parent_tsn = int(taxon.parentTsn)
+            self.parents = hierarchy.hierarchyList
+            # Remove o último item, referente ao próprio táxon.
+            # Deixa somente os parents mesmo.
+            self.parents.pop()
+            print u'Traduzindo...'
+            for taxon in self.parents:
+                taxon.rankName = self.translate(taxon.rankName)
+                taxon.taxonName = unicode(taxon.taxonName)
+                taxon.tsn = int(taxon.tsn)
+                if taxon.parentName and taxon.parentTsn:
+                    taxon.parentName = unicode(taxon.parentName)
+                    taxon.parentTsn = int(taxon.parentTsn)
+        except:
+            print u'Táxon não retornou classificação completa...'
+            hierarchy = None
+        return hierarchy
 
     def get_parent(self, tsn):
         '''Encontra o táxon pai.
@@ -235,26 +268,26 @@ class Itis:
             print u'Não conseguiu conectar...'
             return None
 
-    def open_url(self, url, timeout):
+    def open_service(self, function, value):
         '''Abre o url e retorna a resposta.'''
         try:
             print 'Conectando ao itis.gov...'
-            xml = urllib2.urlopen(url, None, timeout)
+            query = eval('self.client.service.%s(%s)' % (function, value))
         except:
             print 'Acabou o tempo e não houve retorno do ITIS. Nova tentativa:'
             try:
                 print 'Conectando ao itis.gov... (2)'
-                xml = urllib2.urlopen(url, None, timeout)
+                query = eval('self.client.service.%s(%s)' % (function, value))
             except:
                 print 'Acabou o tempo e não houve retorno do ITIS. Nova tentativa:'
                 try:
                     print 'Conectando ao itis.gov... (3)'
-                    xml = urllib2.urlopen(url, None, 10)
+                    query = eval('self.client.service.%s(%s)' % (function, value))
                 except:
                     print 'Não houve retorno do ITIS. Desisto.'
                     return None
         print 'Sucesso!'
-        return xml
+        return query
 
 def main():
     pass

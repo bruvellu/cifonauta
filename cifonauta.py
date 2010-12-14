@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 14 Dec 2010 01:07AM
+# Atualizado: 14 Dec 2010 09:06AM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -143,9 +143,6 @@ class Database:
 
         if not update:
             media_meta['view_count'] = 0
-            print
-            print media_meta
-            print
             if media.type == 'photo':
                 entry = Image(**media_meta)
             elif media.type == 'video':
@@ -198,12 +195,14 @@ class Database:
         if len(taxa) == len(genera) or len(taxa) > len(genera):
             for index, genus in enumerate(genera):
                 gen = self.get_instance('genus', genus)
-                gen.parent = self.get_instance('taxon', taxa[index])
+                if taxa[index]:
+                    gen.parent = self.get_instance('taxon', taxa[index])
                 gen.save()
         elif len(taxa) < len(genera):
                 for index, taxon in enumerate(taxa):
                     gen = self.get_instance('genus', genera[index])
-                    gen.parent = self.get_instance('taxon', taxon)
+                    if taxon:
+                        gen.parent = self.get_instance('taxon', taxon)
                     gen.save()
         else:
             print u'Erro para especificar pai do gênero.'
@@ -243,9 +242,8 @@ class Database:
         meta_instances = [self.get_instance(field, value) for value in meta if value.strip()]
         print 'INSTANCES FOUND: %s' % meta_instances
         eval('entry.%s_set.clear()' % field)
-        if meta_instances:
-            [eval('entry.%s_set.add(value)' % field) for value in meta_instances]
-            print 'INSTANCES ADDED.'
+        [eval('entry.%s_set.add(value)' % field) for value in meta_instances if meta_instances]
+        print 'INSTANCES ADDED.'
         return entry
 
     def get_itis(self, name):

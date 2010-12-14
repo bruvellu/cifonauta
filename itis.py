@@ -218,6 +218,7 @@ class Itis:
             else:
                 print u'Táxon inválido? Ou sem pai mesmo?'
                 #FIXME None evita táxon pai em branco?
+                #FIXME E táxon inválido?
                 self.parent, self.parent_tsn, self.parent_rank = None, None, None
                 self.rank = self.translate(up.rankName)
         else:

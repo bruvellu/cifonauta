@@ -343,7 +343,7 @@ def get_paginated(request, obj_list):
     return obj
 
 def recurse(taxon, q=None):
-    '''Recursively returns all taxon children in a Q object.'''
+    '''Recursivamente retorna todos os táxons-filho em um Q object.'''
     if not q:
         q = []
     if taxon.children.all():

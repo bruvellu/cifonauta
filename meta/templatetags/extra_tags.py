@@ -6,6 +6,8 @@ from django import template
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.template.defaultfilters import slugify
 from django.db.models import Q
+from django.utils.html import conditional_escape
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 
@@ -190,6 +192,26 @@ def show_stats():
     tags = Tag.objects.count()
     references = Reference.objects.count()
     return {'images': images, 'videos': videos, 'genera': genera, 'spp': spp, 'locations': locations, 'cities': cities, 'states': states, 'countries': countries, 'tags': tags, 'references': references}
+
+@register.filter
+def sp_em(meta, autoescape=None):
+    if autoescape:
+        esc = conditional_escape
+    else:
+        esc = lambda x: x
+    try:
+        if meta.rank == u'Gênero' or meta.rank == u'Espécie':
+            output = u'<em>%s</em>' % esc(meta.name)
+        else:
+            output = esc(meta.name)
+    except:
+        output = esc(meta.name)
+    return mark_safe(output)
+sp_em.needs_autoescape = True
+
+
+
+
 
 @register.filter
 def islist(obj):

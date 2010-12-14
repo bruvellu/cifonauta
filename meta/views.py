@@ -237,14 +237,13 @@ def tag_page(request, slug):
         })
     return render_to_response('meta_page.html', variables)
 
-def meta_page(request, model_name, field, slug, genus=''):
+def meta_page(request, model_name, field, slug):
     '''Página de um metadado.
 
     Mostra galeria com todas as imagens que o possuem.
     '''
     model = get_object_or_404(model_name, slug=slug)
     filter_args = {field: model}
-    #TODO Verificar se está tudo certo com a função recursiva.
     try:
         q = [Q(**filter_args),]
         q = recurse(model, q)
@@ -347,21 +346,8 @@ def recurse(taxon, q=None):
     '''Recursively returns all taxon children in a Q object.'''
     if not q:
         q = []
-    if taxon.__class__.__name__ == 'Taxon':
-        if taxon.children.all():
-            for child in taxon.children.all():
-                print child
-                q.append(Q(**{'taxon': child}))
-                recurse(child, q)
-        elif taxon.genera.all():
-            for genus in taxon.genera.all():
-                print '\t%s' % genus
-                q.append(Q(**{'genus': genus}))
-                recurse(genus, q)
-    elif taxon.__class__.__name__ == 'Genus':
-        if taxon.spp.all():
-            for sp in taxon.spp.all():
-                print '\t\t%s' % sp
-                q.append(Q(**{'species': sp}))
+    if taxon.children.all():
+        for child in taxon.children.all():
+            q.append(Q(**{'taxon': child}))
+            recurse(child, q)
     return q
-    #elif taxon.__class__.__name__ == 'Species':

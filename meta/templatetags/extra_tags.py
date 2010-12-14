@@ -121,34 +121,6 @@ def show_related(media, form, related):
         else:
             rel_media = ''
 
-    elif related == u'genus':
-        if media.genus_set.all():
-            qobj = Q()
-            for meta in media.genus_set.all():
-                if meta.name:
-                    qobj.add(Q(genus=meta), Q.OR)
-            if qobj.__len__():
-                query = mediaque(media, qobj)
-                rel_media, relative = slicer(query, media.id) 
-            else:
-                rel_media = ''
-        else:
-            rel_media = ''
-
-    elif related == u'species':
-        if media.species_set.all():
-            qobj = Q()
-            for meta in media.species_set.all():
-                if meta.name:
-                    qobj.add(Q(species=meta), Q.OR)
-            if qobj.__len__():
-                query = mediaque(media, qobj)
-                rel_media, relative = slicer(query, media.id) 
-            else:
-                rel_media = ''
-        else:
-            rel_media = ''
-
     elif related == u'size':
         if media.size.name:
             qobj = Q(size=media.size.id)
@@ -192,7 +164,7 @@ def show_related(media, form, related):
     else:
         rel_media = ''
 
-    if related in [u'author', u'taxon', u'genus', u'species']:
+    if related in [u'author', u'taxon',]:
         crumbs = eval('list(media.%s_set.all())' % related)
         pseudo = crumbs
         for index, item in enumerate(pseudo):

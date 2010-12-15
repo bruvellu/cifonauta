@@ -14,7 +14,7 @@ register = template.Library()
 
 @register.inclusion_tag('tree.html')
 def show_tree():
-    taxa = Taxon.objects.exclude(name='').order_by('name')
+    taxa = Taxon.tree.all()
     return {'taxa': taxa}
 
 @register.inclusion_tag('splist.html')

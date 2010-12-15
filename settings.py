@@ -89,7 +89,8 @@ INSTALLED_APPS = (
     'django.contrib.syndication',
     'weblarvae.meta',
     'articles',
-    #'django_evolution',
+    'south',
+    'mptt',
 )
 
 from settings_local import *

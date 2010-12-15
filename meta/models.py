@@ -2,6 +2,7 @@
 from django.db import models
 from django.db.models import signals
 from django.db.models import permalink
+from mptt.models import MPTTModel
 from django.template.defaultfilters import slugify
 
 from external.mendeley import mendeley
@@ -128,7 +129,7 @@ class TagCategory(models.Model):
         return self.name
 
 
-class Taxon(models.Model):
+class Taxon(MPTTModel):
     name = models.CharField(max_length=256, unique=True)
     slug = models.SlugField(max_length=256, blank=True)
     common = models.CharField(max_length=256, blank=True)

@@ -1,11 +1,33 @@
 {% block extra-head %}
 {% endblock %}
+
+<div id="messages">
+    {% if images.paginator.count or videos.paginator.count %}
+    <div class="success">
+        {% if images.paginator.count %}
+        {{ images.paginator.count }} foto{{ images.paginator.count|pluralize }} {% endif %}{% if images.paginator.count and videos.paginator.count %}e {% endif %}{% if videos.paginator.count %}{{ videos.paginator.count }} vídeo{{ videos.paginator.count|pluralize }} {% endif %}
+    </div>
+    {% endif %}
+
+    {% if not images.object_list or not videos.object_list %}
+    <div class="notice">
+        {% if not images.object_list %}
+        Nenhuma foto
+        {% endif %}
+        {% if not videos.object_list and not images.object_list %}
+        e nenhum vídeo
+        {% else %}
+        Nenhum vídeo
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
 {% if images.object_list %}
 <section id="photo-gallery">
-    <footer class="success">
-    {{ images.paginator.count }} foto{{ images.paginator.count|pluralize }} encontrada{{ images.paginator.count|pluralize }}.
-    </footer>
-    <header><h2>Foto{{ images.paginator.count|pluralize }} ({{ images.paginator.count }})</h2></header>
+<header class="span-16 last">
+<h2 class="span-10">Foto{{ images.paginator.count|pluralize }} ({{ images.paginator.count }})</h2>
+</header>
     <ul class="thumbs">
         {% for media in images.object_list %}
             {% if media.is_public %}
@@ -15,7 +37,7 @@
             {% endif %}
         {% endfor %}
     </ul>
-<footer class="pagination span-16">
+<footer class="pagination span-16 last">
 {% if images.has_previous %}
 <div class="span-2"><a href="?{% if query %}query={{ query }}&{% endif %}page={{ images.previous_page_number }}"><< anterior</a></div>
 {% else %}
@@ -28,21 +50,17 @@
 <div class="span-4 last">&nbsp;</div>
 {% endif %}
 </footer>
-
 </section>
 
-{% else %}
-<section class="notice">Nenhuma foto encontrada.</section>
 {% endif %}
 
 <hr class="space">
 
 {% if videos.object_list %}
 <section id="video-gallery">
-    <footer class="success">
-    {{ videos.paginator.count }} vídeo{{ videos.paginator.count|pluralize }} encontrado{{ videos.paginator.count|pluralize }}
-    </footer>
-    <header><h2>Vídeo{{ videos.paginator.count|pluralize }} ({{ videos.paginator.count }})</h2></header>
+<header class="span-16 last">
+<h2 class="span-10">Vídeo{{ videos.paginator.count|pluralize }} ({{ videos.paginator.count }})</h2>
+</header>
     <ul class="thumbs">
         {% for media in videos.object_list %}
             {% if media.is_public %}
@@ -53,7 +71,7 @@
         {% endfor %}
     </ul>
 
-<footer class="span-16 pagination">
+<footer class="span-16 pagination last">
 {% if videos.has_previous %}
 <div class="span-2"><a href="?{% if query %}query={{ query }}&{% endif %}page={{ videos.previous_page_number }}"><< anterior</a></div>
 {% else %}
@@ -67,6 +85,4 @@
 {% endif %}
 </footer>
 </section>
-{% else %}
-<section class="notice">Nenhum vídeo encontrado.</section>
 {% endif %}

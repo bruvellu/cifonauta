@@ -157,6 +157,7 @@ figure.video {
 }
 
 footer.pagination {
+    margin:0 0 1em 0;
 }
 .align-right {
     text-align: right;
@@ -334,10 +335,29 @@ span#sp {
     clear:both;
 }
 
+#messages {
+    position:fixed;
+    top:1em;
+    left:10px;
+    text-align:center;
+}
+
+#messages div {
+    margin:0 0 0.5em 0;
+}
+
 .error, .notice, .success {
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
+    padding:.2em 1em;
+    border:2px solid #ddd;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border-radius:5px;
+    font-size:1.4em;
+    -moz-opacity:0.9;
+    opacity:0.9;
+    filter:alpha(opacity=90);
+    zoom:1;
+    position:relative;
 }
 
 .semfoto {

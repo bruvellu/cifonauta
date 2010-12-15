@@ -42,8 +42,8 @@ urlpatterns = patterns('',
 
         url(r'^tag/$', meta_list_page,
             {'model': Tag, 'plural': u'Marcadores'}),
-        url(r'^tag/(?P<slug>[\w\-]+)/$', tag_page,
-            name='tag_url'),
+        url(r'^tag/(?P<slug>[\w\-]+)/$', meta_page,
+            extra(Tag, 'tag'), name='tag_url'),
 
         url(r'^autor/$', meta_list_page,
             {'model': Author, 'plural': u'Autores'}),

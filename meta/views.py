@@ -52,6 +52,8 @@ def search_page(request):
     form = SearchForm()
     qsize = ''
     query = ''
+    image_list = []
+    video_list = []
     images = []
     videos = []
     show_results = False
@@ -92,6 +94,8 @@ def search_page(request):
         'form': form,
         'images': images,
         'videos': videos,
+        'image_list': image_list,
+        'video_list': video_list,
         'show_results': show_results,
         'qsize': qsize,
         })
@@ -220,23 +224,6 @@ def video_page(request, video_id):
         })
     return render_to_response('media_page.html', variables)
 
-def tag_page(request, slug):
-    '''Página de um marcador.
-
-    Mostra galeria com todas as imagens que o possuem.
-    '''
-    tag = get_object_or_404(Tag, slug=slug)
-    image_list = tag.images.order_by('-id')
-    video_list = tag.videos.order_by('-id')
-    images = get_paginated(request, image_list)
-    videos = get_paginated(request, video_list)
-    variables = RequestContext(request, {
-        'images': images,
-        'videos': videos,
-        'meta': tag,
-        })
-    return render_to_response('meta_page.html', variables)
-
 def meta_page(request, model_name, field, slug):
     '''Página de um metadado.
 
@@ -259,6 +246,8 @@ def meta_page(request, model_name, field, slug):
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
+        'image_list': image_list,
+        'video_list': video_list,
         'meta': model,
         'field': field,
         })

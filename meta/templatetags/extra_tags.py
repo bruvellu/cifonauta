@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import operator
 from meta.models import *
 from meta.forms import *
 from django import template
@@ -209,10 +210,6 @@ def sp_em(meta, autoescape=None):
     return mark_safe(output)
 sp_em.needs_autoescape = True
 
-
-
-
-
 @register.filter
 def islist(obj):
     return isinstance(obj, list)
@@ -241,43 +238,54 @@ def refine(meta, query, qsize):
     return {'meta': meta, 'query': query, 'qlist': qlist, 'qsize': qsize}
 
 @register.inclusion_tag('mais.html')
-def show_info(media, query, qsize):
+def show_info(media_list, query, qsize):
     '''Apenas manda extrair os metadados e envia para template.'''
-    authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(media)
+    authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(media_list)
     return {'authors': authors, 'taxa': taxa, 'sizes': sizes, 'sublocations': sublocations, 'cities': cities, 'states': states, 'countries': countries, 'tags': tags, 'query': query, 'qsize': qsize}
 
 @register.inclusion_tag('sets.html')
 def show_set(set, prefix, suffix, sep, method='name'):
     return {'set': set, 'prefix': prefix, 'suffix': suffix, 'sep': sep, 'method': method}
 
-def extract_set(query):
+def extract_set(media_list):
     '''Extrai outros metadados das imagens buscadas.'''
-    authors = []
-    taxa = []
-    sizes = []
-    sublocations = []
-    cities = []
-    states = []
-    countries = []
-    tags = []
-    for item in query:
-        if item.author_set.all():
-            for author in item.author_set.all():
-                authors.append(author)
-        if item.taxon_set.all():
-            for taxon in item.taxon_set.all():
-                taxa.append(taxon)
-        if item.size:
-            sizes.append(item.size)
-        if item.sublocation:
-            sublocations.append(item.sublocation)
-        if item.city:
-            cities.append(item.city)
-        if item.state:
-            states.append(item.state)
-        if item.country:
-            countries.append(item.country)
-        if item.tag_set.all():
-            for tag in item.tag_set.all():
-                tags.append(tag)
-    return list(set(authors)), list(set(taxa)), list(set(sizes)), list(set(sublocations)), list(set(cities)), list(set(states)), list(set(countries)), list(set(tags))
+    #TODO OTIMIZAR URGENTE! COMO?
+    #print media_list, len(media_list)
+    q_authors = [Q(),]
+    q_taxa = [Q(),]
+    q_sizes = [Q(),]
+    q_sublocations = [Q(),]
+    q_cities = [Q(),]
+    q_states = [Q(),]
+    q_countries = [Q(),]
+    q_tags = [Q(),]
+    for media in media_list:
+        if media.tag_set.all():
+            for tag in media.tag_set.all():
+                q_tags.append(Q(**{'name': tag}))
+        if media.author_set.all():
+            for author in media.author_set.all():
+                q_authors.append(Q(**{'name': author}))
+        if media.taxon_set.all():
+            for taxon in media.taxon_set.all():
+                q_taxa.append(Q(**{'name': taxon}))
+        if media.size:
+            q_sizes.append(Q(**{'name': media.size}))
+        if media.sublocation:
+            q_sublocations.append(Q(**{'name': media.sublocation}))
+        if media.city:
+            q_cities.append(Q(**{'name': media.city}))
+        if media.state:
+            q_states.append(Q(**{'name': media.state}))
+        if media.country:
+            q_countries.append(Q(**{'name': media.country}))
+
+    tags = Tag.objects.filter(reduce(operator.or_, q_tags)).distinct().order_by('name')
+    authors = Author.objects.filter(reduce(operator.or_, q_authors)).distinct().order_by('name')
+    taxa = Taxon.objects.filter(reduce(operator.or_, q_taxa)).distinct().order_by('name')
+    sizes = Size.objects.filter(reduce(operator.or_, q_sizes)).distinct().order_by('name')
+    sublocations = Sublocation.objects.filter(reduce(operator.or_, q_sublocations)).distinct().order_by('name')
+    cities = City.objects.filter(reduce(operator.or_, q_cities)).distinct().order_by('name')
+    states = State.objects.filter(reduce(operator.or_, q_states)).distinct().order_by('name')
+    countries = Country.objects.filter(reduce(operator.or_, q_countries)).distinct().order_by('name')
+    return authors, taxa, sizes, sublocations, cities, states, countries, tags

@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 14 Dec 2010 06:17PM
+# Atualizado: 14 Dec 2010 10:22PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -226,7 +226,13 @@ class Database:
         if table == 'taxon' and new:
             # Consulta ITIS para extrair táxons.
             taxon = self.get_itis(value)
-            if taxon.parents:
+            if not taxon:
+                taxon = self.get_itis(value)
+                if not taxon:
+                    print u'Nova tentativa em 5s...'
+                    time.sleep(5)
+                    taxon = self.get_itis(value)
+            try:
                 for parent in taxon.parents:
                     print u'Criando %s...' % parent.taxonName
                     newtaxon, new = Taxon.objects.get_or_create(name=parent.taxonName)
@@ -240,10 +246,15 @@ class Database:
                     else:
                         print u'Já existe!'
 
-            if taxon.parent_name:
-                metadatum.parent = Taxon.objects.get(name=taxon.parent_name)
-            metadatum.tsn = taxon.tsn
-            metadatum.rank = taxon.rank
+                if taxon.parent_name:
+                    metadatum.parent = Taxon.objects.get(name=taxon.parent_name)
+                if taxon.tsn:
+                    metadatum.tsn = taxon.tsn
+                if taxon.rank:
+                    metadatum.rank = taxon.rank
+            except:
+                print u'Não rolou pegar hierarquia...'
+
             metadatum.save()
         return metadatum
 
@@ -329,14 +340,14 @@ class Movie:
         try:
             text_path = self.source_filepath.split('.')[0] + '.txt'
             meta_text = open(text_path, 'rb')
-            import pdb; pdb.set_trace()
+            #import pdb; pdb.set_trace()
             print 'Arquivo de info existe!'
         except:
             meta_text = ''
 
         if meta_text:
             meta_dic = pickle.load(meta_text)
-            import pdb; pdb.set_trace()
+            #import pdb; pdb.set_trace()
             meta_text.close()
             # Atualiza meta com valores do arquivo acessório.
             self.meta.update(meta_dic)
@@ -360,7 +371,7 @@ class Movie:
                 new_name = text_name.split('.')[0] + '.txt'
                 text_path = os.path.join(os.path.dirname(self.meta['old_filepath']), new_name)
                 new_path = self.source_filepath.split('.')[0] + '.txt'
-                import pdb; pdb.set_trace()
+                #import pdb; pdb.set_trace()
                 os.rename(text_path, new_path)
         else:
             self.meta['source_filepath'] = os.path.abspath(self.source_filepath)

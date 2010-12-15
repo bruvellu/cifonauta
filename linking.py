@@ -3,6 +3,7 @@
 
 import os
 import pickle
+from iptcinfo import IPTCInfo
 
 storage = '/home/nelas/storage/oficial'
 source_media = 'source_media/oficial'
@@ -70,6 +71,23 @@ def get_links():
     else:
         print '%d arquivos' % total
 
+def temp_spp(filepath):
+    '''Copia campo de espécies para táxons (IPTC).'''
+    info = IPTCInfo(filepath, True, 'utf-8') 
+    if info.data['original transmission reference']:
+        print 'ESPÉCIES PERDIDAS!'
+        print info.data['original transmission reference']
+        print 'TÁXONS!'
+        print info.data['headline']
+
+        info.data['headline'] = info.data['original transmission reference']
+        info.data['original transmission reference'] = ''
+        print
+        print info.data['headline']
+        print info.data['original transmission reference']
+        info.save()
+        #import pdb; pdb.set_trace()
+
 def get_media():
     '''Recursivamente identifica os arquivos de mídia.'''
     print '\nOFICIAIS'
@@ -78,6 +96,7 @@ def get_media():
         for filename in files:
             if not filename.endswith('~'):
                 filepath = os.path.join(root, filename)
+                temp_spp(filepath)
                 sources.append(filepath)
                 print filepath
                 total += 1

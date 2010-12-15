@@ -18,8 +18,10 @@ Algoritmo:
 '''
 
 from suds.client import Client
+import logging
+logging.basicConfig(level=logging.INFO)
+#logging.getLogger('suds.client').setLevel(logging.DEBUG)
 
-#FIXME IMPEDIR TAXONS VAZIOOOOS!
 
 #TODO Implementar o WoRMS
 #worms = 'http://www.marinespecies.org/aphia.php?p=soap&wsdl=1'
@@ -161,7 +163,7 @@ class Itis:
             print u'Não conseguiu conectar...'
             results = None
 
-        if results:
+        if results.scientificNames:
             if len(results.scientificNames) > 1:
                 print u'Mais de um táxon encontrado!'
                 theone = []

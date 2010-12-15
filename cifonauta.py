@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 14 Dec 2010 10:22PM
+# Atualizado: 14 Dec 2010 10:51PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -226,6 +226,7 @@ class Database:
         if table == 'taxon' and new:
             # Consulta ITIS para extrair táxons.
             taxon = self.get_itis(value)
+            # Reforça, caso a conexão falhe.
             if not taxon:
                 taxon = self.get_itis(value)
                 if not taxon:
@@ -233,6 +234,7 @@ class Database:
                     time.sleep(5)
                     taxon = self.get_itis(value)
             try:
+                # Pega a lista de pais e cria táxons, na ordem reversa.
                 for parent in taxon.parents:
                     print u'Criando %s...' % parent.taxonName
                     newtaxon, new = Taxon.objects.get_or_create(name=parent.taxonName)
@@ -247,6 +249,7 @@ class Database:
                         print u'Já existe!'
 
                 if taxon.parent_name:
+                    # Ordem reversa acima garante que ele já existe.
                     metadatum.parent = Taxon.objects.get(name=taxon.parent_name)
                 if taxon.tsn:
                     metadatum.tsn = taxon.tsn

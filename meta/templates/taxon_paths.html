@@ -2,6 +2,3 @@
 {% for ancestor in ancestors %}
 {{ ancestor.rank }} <a href="{{ ancestor.get_absolute_url }}" title="{{ ancestor.name }}">{{ ancestor.name }}</a>{% if not ancestor.is_leaf_node %} :: {% endif %}{% if forloop.last %}{{ taxon.rank }} <strong>{% if taxon.rank == 'Gênero' or taxon.rank == 'Espécie' %}<em>{{ taxon.name }}</em>{% else %}{{ taxon.name }}{% endif %}</strong>{% endif %}
 {% endfor %}
-
-<h2>Testes</h2>
-{% drilldown_tree_for_node taxon as drill %}

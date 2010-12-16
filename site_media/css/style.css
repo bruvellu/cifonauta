@@ -226,8 +226,8 @@ div#notes {
     padding: 0 10px;
 }
 
-ul.tree .child {
-    margin:0 1.5em 0 0;
+ul.tree, ol.tree {
+    padding-left:17px;
 }
 
 #article-share {
@@ -415,6 +415,9 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
     -moz-border-radius: 0 5px 0 5px;
     -webkit-border-radius: 0 5px 0 5px;
     border-radius: 0 5px 0 5px;
+}
+
+#breadcrumbs {
 }
 
 #related {

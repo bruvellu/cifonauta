@@ -72,7 +72,10 @@ def get_links():
         print '%d arquivos' % total
 
 def temp_spp(filepath):
-    '''Copia campo de espécies para táxons (IPTC).'''
+    '''Copia campo de espécies para táxons (IPTC).
+    
+    Função criada para converter espécies para táxons. Necessária após a unificação taxonômica. Não será mais usada.
+    '''
     info = IPTCInfo(filepath, True, 'utf-8') 
     if info.data['original transmission reference']:
         print 'ESPÉCIES PERDIDAS!'
@@ -96,7 +99,7 @@ def get_media():
         for filename in files:
             if not filename.endswith('~'):
                 filepath = os.path.join(root, filename)
-                temp_spp(filepath)
+                #temp_spp(filepath)
                 sources.append(filepath)
                 print filepath
                 total += 1

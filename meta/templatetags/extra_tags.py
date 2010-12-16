@@ -12,15 +12,22 @@ from django.utils.safestring import mark_safe
 
 register = template.Library()
 
+main_ranks = [u'Reino', u'Filo', u'Classe', u'Ordem', u'Família', u'Gênero', u'Espécie']
+
 @register.inclusion_tag('tree.html')
 def show_tree():
     taxa = Taxon.tree.all()
-    return {'taxa': taxa}
+    return {'taxa': taxa, 'main_ranks': main_ranks}
 
 @register.inclusion_tag('splist.html')
 def show_spp():
     spp = Taxon.objects.filter(rank=u'Espécie').order_by('name')
     return {'spp': spp}
+
+@register.inclusion_tag('taxon_paths.html')
+def taxon_paths(taxon):
+    ancestors = [t for t in taxon.get_ancestors() if t.rank in main_ranks]
+    return {'taxon': taxon, 'ancestors': ancestors}
 
 @register.inclusion_tag('hot_images.html')
 def show_hot():

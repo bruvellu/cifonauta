@@ -136,6 +136,15 @@ $(document).ready(function(){
 
         {% show_related media form related %}
 
+        {% if media.taxon_set.all %}
+        {% for taxon in media.taxon_set.all %}
+        <footer class="span-16 last quiet" id="breadcrumbs">
+            <h2>Classificação</h2>
+            {% taxon_paths taxon %}
+        </footer>
+        {% endfor %}
+        {% endif %}
+
         {% get_comment_list for media as media_comments %}
         <div id="comments" class="span-16 last">
             {% get_comment_count for media as comment_count %}

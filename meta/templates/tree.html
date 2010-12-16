@@ -1,14 +1,17 @@
 {% load mptt_tags %}
 
-<ul class="root">
+<h2>Grupos ({{ taxa.count }})</h2>
+<ul class="root tree">
     {% recursetree taxa %}
+    {% if node.rank in main_ranks %}
     <li>
-    {{ node.name }}
+    <span class="quiet">{{ node.rank }}</span> <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{{ node.name }}</a>
     {% if not node.is_leaf_node %}
-    <ul class="children">
+    <ul class="children tree">
         {{ children }}
     </ul>
     {% endif %}
     </li>
+    {% endif %}
     {% endrecursetree %}
 </ul>

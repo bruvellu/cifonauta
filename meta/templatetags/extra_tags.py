@@ -17,6 +17,8 @@ main_ranks = [u'Reino', u'Filo', u'Classe', u'Ordem', u'Família', u'Gênero', u
 @register.inclusion_tag('tree.html')
 def show_tree():
     taxa = Taxon.tree.all()
+    #TODO Count não funciona com ManyToMany...
+    #taxa = Taxon.tree.add_related_count(Taxon.tree.all(), Taxon, 'images', 'image_count', cumulative=True)
     return {'taxa': taxa, 'main_ranks': main_ranks}
 
 @register.inclusion_tag('splist.html')

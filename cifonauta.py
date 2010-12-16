@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 15 Dec 2010 10:30AM
+# Atualizado: 16 Dec 2010 01:26PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -101,11 +101,14 @@ class Database:
         print '\nAtualizando o banco de dados...'
         # Instancia metadados pra não dar conflito.
         media_meta = media.meta
-        # Guarda objeto com infos taxonômicas
+        # Guarda objeto com infos taxonômicas.
         taxa = media_meta['taxon']
         del media_meta['taxon']
-        #genus_sp = media_meta['genus_sp']
-        #del media_meta['genus_sp']
+        # Prevenção contra extinto campo de espécie.
+        try:
+            del media_meta['genus_sp']
+        except:
+            pass
         # Guarda objeto com autores
         authors = media_meta['author']
         # Guarda objeto com especialistas 

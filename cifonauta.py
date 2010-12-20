@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 20 Dec 2010 05:05PM
+# Atualizado: 20 Dec 2010 05:24PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -410,14 +410,14 @@ class Movie:
                 subprocess.call([
                     'ffmpeg', '-y', '-i', self.source_filepath, '-aspect',
                     '4:3', '-metadata', 'title="%s"' % self.meta['title'],
-                    '-metadata', 'author="%s"' % self.meta['author'], '-s',
-                    '480x360', '-pass', '1', '-vcodec', 'libvpx', '-b', '300k',
+                    '-metadata', 'author="%s"' % self.meta['author'], '-vf',
+                    '510:-1', '-pass', '1', '-vcodec', 'libvpx', '-b', '300k',
                     '-g', '15', '-bf', '2', '-vpre', 'veryslow_firstpass',
                     '-threads', '2', webm_filepath])
                 subprocess.call(['ffmpeg', '-y', '-i', self.source_filepath,
                     '-aspect', '4:3', '-metadata', 'title="%s"' %
                     self.meta['title'], '-metadata', 'author="%s"' %
-                    self.meta['author'], '-s', '480x360', '-pass', '2',
+                    self.meta['author'], '-vf', '510:-1', '-pass', '2',
                     '-vcodec', 'libvpx', '-b', '300k', '-g', '15', '-bf', '2',
                     '-vpre', 'veryslow', '-acodec', 'libvorbis', '-ab', '128k',
                     '-ar', '44100', '-threads', '2', webm_filepath])
@@ -437,14 +437,14 @@ class Movie:
                 subprocess.call([
                     'ffmpeg', '-y', '-i', self.source_filepath, '-aspect',
                     '4:3', '-metadata', 'title="%s"' % self.meta['title'],
-                    '-metadata', 'author="%s"' % self.meta['author'], '-s',
-                    '480x360', '-pass', '1', '-vcodec', 'libx264', '-b', '300k',
+                    '-metadata', 'author="%s"' % self.meta['author'], '-vf',
+                    '510:-1', '-pass', '1', '-vcodec', 'libx264', '-b', '300k',
                     '-g', '15', '-bf', '2', '-vpre', 'veryslow_firstpass',
                     '-threads', '2', mp4_filepath])
                 subprocess.call(['ffmpeg', '-y', '-i', self.source_filepath,
                     '-aspect', '4:3', '-metadata', 'title="%s"' %
                     self.meta['title'], '-metadata', 'author="%s"' %
-                    self.meta['author'], '-s', '480x360', '-pass', '2',
+                    self.meta['author'], '-s', '510:-1', '-pass', '2',
                     '-vcodec', 'libx264', '-b', '300k', '-g', '15', '-bf', '2',
                     '-vpre', 'veryslow', '-acodec', 'libfaac', '-ab', '128k',
                     '-ar', '44100', '-threads', '2', mp4_filepath])
@@ -464,14 +464,14 @@ class Movie:
                 subprocess.call([
                     'ffmpeg', '-y', '-i', self.source_filepath, '-aspect',
                     '4:3', '-metadata', 'title="%s"' % self.meta['title'],
-                    '-metadata', 'author="%s"' % self.meta['author'], '-s',
-                    '480x360', '-pass', '1', '-vcodec', 'libtheora', '-b', '300k',
+                    '-metadata', 'author="%s"' % self.meta['author'], '-vf',
+                    '510:-1', '-pass', '1', '-vcodec', 'libtheora', '-b', '300k',
                     '-g', '15', '-bf', '2', '-vpre', 'veryslow_firstpass',
                     '-threads', '2', ogg_filepath])
                 subprocess.call(['ffmpeg', '-y', '-i', self.source_filepath,
                     '-aspect', '4:3', '-metadata', 'title="%s"' %
                     self.meta['title'], '-metadata', 'author="%s"' %
-                    self.meta['author'], '-s', '480x360', '-pass', '2',
+                    self.meta['author'], '-vf', '510:-1', '-pass', '2',
                     '-vcodec', 'libtheora', '-b', '300k', '-g', '15', '-bf',
                     '2', '-vpre', 'veryslow', '-acodec', 'libvorbis', '-ab',
                     '128k', '-ar', '44100', '-threads', '2', ogg_filepath])
@@ -494,7 +494,6 @@ class Movie:
             print 'Vídeos convertidos com sucessos! Criando thumbnails...'
             thumb_filepath, large_thumb_filepath = self.create_thumbs()
             return web_paths, thumb_filepath, large_thumb_filepath
-
 
     def create_thumbs(self):
         '''Cria thumbnails para os novos vídeos.'''

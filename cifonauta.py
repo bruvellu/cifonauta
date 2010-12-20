@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 20 Dec 2010 10:40AM
+# Atualizado: 20 Dec 2010 03:24PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -716,7 +716,7 @@ class Photo:
             # Converte para 72dpi, JPG qualidade 50 e redimensiona as imagens
             # maiores que 640 (em altura ou largura)
             subprocess.call(['convert', self.source_filepath, '-density', '72', '-format', 'jpg',
-                '-quality', '50', '-resize', '640x640>', local_filepath])
+                '-quality', '50', '-resize', '800x800>', local_filepath])
             # Insere marca d'água no canto direito embaixo
             subprocess.call(['composite', '-dissolve', '20', '-gravity',
                 'southeast', watermark, local_filepath, local_filepath])
@@ -773,7 +773,7 @@ class Folder:
         n = 0
         # Tuplas para o endswith()
         photo_extensions = ('jpg', 'JPG', 'jpeg', 'JPEG')
-        video_extensions = ('avi', 'AVI', 'mov', 'MOV', 'mp4', 'MP4', 'ogg', 'OGG', 'ogv', 'OGV', 'dv', 'DV', 'mpg', 'MPG', 'mpeg', 'MPEG', 'flv', 'FLV')
+        video_extensions = ('avi', 'AVI', 'mov', 'MOV', 'mp4', 'MP4', 'ogg', 'OGG', 'ogv', 'OGV', 'dv', 'DV', 'mpg', 'MPG', 'mpeg', 'MPEG', 'flv', 'FLV', 'm2ts', 'M2TS', 'wmv', 'WMV')
         ignore_extensions = ('~')
         # Buscador de arquivos em ação
         for root, dirs, files in os.walk(self.folder_path):

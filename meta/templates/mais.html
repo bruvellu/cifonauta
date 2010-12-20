@@ -1,6 +1,6 @@
 <div class="block borders shadow">
     <h2>Refine sua busca</h2>
-    <p>Clique em um dos metadados abaixo para refinar.</p>
+    <p>Use os metadados abaixo para refinar sua busca.</p>
 {% if tags %}
 <h3>Marcadores | <a href="{% url meta.views.tags_page %}" title="Todos os marcadores">ver todos</a></h3>
     {% for meta in tags %}{% include 'fino.html' %}{% if not forloop.last %},{% endif %}{% endfor %}

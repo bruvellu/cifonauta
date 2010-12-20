@@ -236,65 +236,82 @@ def icount(value, field):
     q = {field:value}
     return Image.objects.filter(**q).count() + Video.objects.filter(**q).count()
 
-@register.inclusion_tag('fino.html')
-def refine(meta, query, qsize):
-    '''Recebe metadado, processa a query para lista e manda refinar.
-    
-    A lista serve para marcar os metadados que estão selecionados.
-    O refinamento é baseado no buscador, apenas o tamanho que é literal.
-    '''
-    qlist = [slugify(q) for q in query.split()]
-    return {'meta': meta, 'query': query, 'qlist': qlist, 'qsize': qsize}
-
 @register.inclusion_tag('mais.html')
 def show_info(media_list, query, qsize):
     '''Apenas manda extrair os metadados e envia para template.'''
     authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(media_list)
-    return {'authors': authors, 'taxa': taxa, 'sizes': sizes, 'sublocations': sublocations, 'cities': cities, 'states': states, 'countries': countries, 'tags': tags, 'query': query, 'qsize': qsize}
+    qlist = [slugify(q) for q in query.split()]
+    return {
+            'authors': authors, 'taxa': taxa, 'sizes': sizes,
+            'sublocations': sublocations, 'cities': cities,
+            'states': states, 'countries': countries, 'tags': tags,
+            'query': query, 'qsize': qsize, 'qlist': qlist
+            }
 
 @register.inclusion_tag('sets.html')
 def show_set(set, prefix, suffix, sep, method='name'):
     return {'set': set, 'prefix': prefix, 'suffix': suffix, 'sep': sep, 'method': method}
 
+def refine_set(media_list, meta_instances):
+    '''Identifica marcadores presentes nas imagens (via ForeignKey).'''
+    refined = []
+    for meta in meta_instances:
+        print 'TAG:'
+        print meta 
+        for i in media_list:
+            print 'IMAGE:'
+            print i
+            try:
+                meta.image_set.get(id=i.id)
+                print 'issa'
+                refined.append(meta)
+                break
+            except:
+                print 'continua...'
+    print 'RESULTADO:'
+    print refined
+    return refined
+
+def refine_many(media_list, meta_instances):
+    '''Identifica marcadores presentes nas imagens (via ManyToMany).'''
+    refined = []
+    for meta in meta_instances:
+        print 'TAG:'
+        print meta 
+        for i in media_list:
+            print 'IMAGE:'
+            print i
+            try:
+                meta.images.get(id=i.id)
+                print 'issa'
+                refined.append(meta)
+                break
+            except:
+                print 'continua...'
+    print 'RESULTADO:'
+    print refined
+    return refined
+
 def extract_set(media_list):
     '''Extrai outros metadados das imagens buscadas.'''
-    #TODO OTIMIZAR URGENTE! COMO?
-    #print media_list, len(media_list)
-    q_authors = [Q(),]
-    q_taxa = [Q(),]
-    q_sizes = [Q(),]
-    q_sublocations = [Q(),]
-    q_cities = [Q(),]
-    q_states = [Q(),]
-    q_countries = [Q(),]
-    q_tags = [Q(),]
-    for media in media_list:
-        if media.tag_set.all():
-            for tag in media.tag_set.all():
-                q_tags.append(Q(**{'name': tag}))
-        if media.author_set.all():
-            for author in media.author_set.all():
-                q_authors.append(Q(**{'name': author}))
-        if media.taxon_set.all():
-            for taxon in media.taxon_set.all():
-                q_taxa.append(Q(**{'name': taxon}))
-        if media.size:
-            q_sizes.append(Q(**{'name': media.size}))
-        if media.sublocation:
-            q_sublocations.append(Q(**{'name': media.sublocation}))
-        if media.city:
-            q_cities.append(Q(**{'name': media.city}))
-        if media.state:
-            q_states.append(Q(**{'name': media.state}))
-        if media.country:
-            q_countries.append(Q(**{'name': media.country}))
+    # ManyToMany relationships
+    tags = Tag.objects.all().order_by('name')
+    refined_tags = refine_many(media_list, tags)
+    authors = Author.objects.all().order_by('name')
+    refined_authors = refine_many(media_list, authors)
+    taxa = Taxon.objects.all().order_by('name')
+    refined_taxa = refine_many(media_list, taxa)
 
-    tags = Tag.objects.filter(reduce(operator.or_, q_tags)).distinct().order_by('name')
-    authors = Author.objects.filter(reduce(operator.or_, q_authors)).distinct().order_by('name')
-    taxa = Taxon.objects.filter(reduce(operator.or_, q_taxa)).distinct().order_by('name')
-    sizes = Size.objects.filter(reduce(operator.or_, q_sizes)).distinct().order_by('name')
-    sublocations = Sublocation.objects.filter(reduce(operator.or_, q_sublocations)).distinct().order_by('name')
-    cities = City.objects.filter(reduce(operator.or_, q_cities)).distinct().order_by('name')
-    states = State.objects.filter(reduce(operator.or_, q_states)).distinct().order_by('name')
-    countries = Country.objects.filter(reduce(operator.or_, q_countries)).distinct().order_by('name')
-    return authors, taxa, sizes, sublocations, cities, states, countries, tags
+    # ForeignKey relationships
+    sizes = Size.objects.all().order_by('name')
+    refined_sizes = refine_set(media_list, sizes)
+    sublocations = Sublocation.objects.all().order_by('name')
+    refined_sublocations = refine_set(media_list, sublocations)
+    cities = City.objects.all().order_by('name')
+    refined_cities = refine_set(media_list, cities)
+    states = State.objects.all().order_by('name')
+    refined_states = refine_set(media_list, states)
+    countries = Country.objects.all().order_by('name')
+    refined_countries = refine_set(media_list, countries)
+    
+    return refined_authors, refined_taxa, refined_sizes, refined_sublocations, refined_cities, refined_states, refined_countries, refined_tags

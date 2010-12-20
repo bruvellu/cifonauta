@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 16 Dec 2010 01:26PM
+# Atualizado: 20 Dec 2010 10:40AM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -542,7 +542,7 @@ class Photo:
 
         Usa a biblioteca do arquivo iptcinfo.py para padrão IPTC e pyexiv2 para EXIF.
         '''
-        print 'Lendo os metadados de %s e criando variáveis.' % self.filename
+        print u'Lendo os metadados de %s e criando variáveis.' % self.filename
         # Criar objeto com metadados
         info = IPTCInfo(self.source_filepath, True, charset)
         # Checando se o arquivo tem dados IPTC
@@ -616,28 +616,28 @@ class Photo:
         self.meta['thumb_filepath'] = thumb_filepath
 
         print
-        print '\tVariável\tMetadado'
-        print '\t' + 40 * '-'
-        print '\t' + self.meta['web_filepath']
-        print '\t' + self.meta['thumb_filepath']
-        print '\t' + 40 * '-'
-        print '\tTítulo:\t\t%s' % self.meta['title']
-        print '\tDescrição:\t%s' % self.meta['caption']
-        #print '\tEspécie:\t%s' % self.meta['genus_sp']
-        print '\tTáxon:\t\t%s' % ', '.join(self.meta['taxon'])
-        print '\tTags:\t\t%s' % '\n\t\t\t'.join(self.meta['tags'])
-        print '\tTamanho:\t%s' % self.meta['size']
-        print '\tEspecialista:\t%s' % self.meta['source']
-        print '\tAutor:\t\t%s' % ', '.join(self.meta['author'])
-        print '\tSublocal:\t%s' % self.meta['sublocation']
-        print '\tCidade:\t\t%s' % self.meta['city']
-        print '\tEstado:\t\t%s' % self.meta['state']
-        print '\tPaís:\t\t%s' % self.meta['country']
-        print '\tDireitos:\t%s' % self.meta['rights']
-        print '\tData:\t\t%s' % self.meta['date']
+        print u'\tVariável\tMetadado'
+        print u'\t' + 40 * '-'
+        print u'\t' + self.meta['web_filepath']
+        print u'\t' + self.meta['thumb_filepath']
+        print u'\t' + 40 * '-'
+        print u'\tTítulo:\t\t%s' % self.meta['title']
+        print u'\tDescrição:\t%s' % self.meta['caption']
+        #printu '\tEspécie:\t%s' % self.meta['genus_sp']
+        print u'\tTáxon:\t\t%s' % ', '.join(self.meta['taxon'])
+        print u'\tTags:\t\t%s' % '\n\t\t\t'.join(self.meta['tags'])
+        print u'\tTamanho:\t%s' % self.meta['size']
+        print u'\tEspecialista:\t%s' % self.meta['source']
+        print u'\tAutor:\t\t%s' % ', '.join(self.meta['author'])
+        print u'\tSublocal:\t%s' % self.meta['sublocation']
+        print u'\tCidade:\t\t%s' % self.meta['city']
+        print u'\tEstado:\t\t%s' % self.meta['state']
+        print u'\tPaís:\t\t%s' % self.meta['country']
+        print u'\tDireitos:\t%s' % self.meta['rights']
+        print u'\tData:\t\t%s' % self.meta['date']
         print
-        print '\tGeolocalização:\t%s' % self.meta['geolocation']
-        print '\tDecimal:\t%s, %s' % (self.meta['latitude'],
+        print u'\tGeolocalização:\t%s' % self.meta['geolocation']
+        print u'\tDecimal:\t%s, %s' % (self.meta['latitude'],
                 self.meta['longitude'])
 
         return self.meta
@@ -803,7 +803,7 @@ class Folder:
 
 def rename_file(filename, authors):
     '''Renomeia arquivo com iniciais e identificador.'''
-    print '%s, hora de renomeá-lo!' % filename
+    print u'%s, hora de renomeá-lo!' % filename
     if authors:
         initials = get_initials(authors)
     else:

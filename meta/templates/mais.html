@@ -1,33 +1,35 @@
 <div class="block borders shadow">
+    <h2>Refine sua busca</h2>
+    <p>Clique em um dos metadados abaixo para refinar.</p>
 {% if tags %}
-<h2>Marcadores | <a href="{% url meta.views.tags_page %}" title="Todos os marcadores">ver todos</a></h2>
-    {% for tag in tags %}{% refine tag query qsize %}{% if not forloop.last %},{% endif %}{% endfor %}
+<h3>Marcadores | <a href="{% url meta.views.tags_page %}" title="Todos os marcadores">ver todos</a></h3>
+    {% for meta in tags %}{% include 'fino.html' %}{% if not forloop.last %},{% endif %}{% endfor %}
 {% endif %}
 
 {% if authors %}
-<h2>Autores</h2>
+<h3>Autores</h3>
 <ul>
-    {% for author in authors %}
+    {% for meta in authors %}
     <li>
-        {% refine author query qsize %}
+    {% include 'fino.html' %}
     </li>
     {% endfor %}
 </ul>
 {% endif %}
 
 {% if taxa %}
-<h2>Táxons</h2>
+<h3>Táxons</h3>
 <ul>
-    {% for taxon in taxa %}
+    {% for meta in taxa %}
     <li>
-        {% refine taxon query qsize %}
+    {% include 'fino.html' %}
     </li>
     {% endfor %}
 </ul>
 {% endif %}
 
 {% if sizes %}
-<h2>Tamanhos</h2>
+<h3>Tamanhos</h3>
 <ul>
     {% for size in sizes %}
     <li>
@@ -43,42 +45,42 @@
 {% endif %}
 
 {% if sublocations %}
-<h2>Local</h2>
+<h3>Local</h3>
 <ul>
-    {% for sublocation in sublocations %}
+    {% for meta in sublocations %}
     <li>
-        {% refine sublocation query qsize %}
+    {% include 'fino.html' %}
     </li>
     {% endfor %}
 </ul>
 {% endif %}
 
 {% if cities %}
-<h2>Cidades</h2>
+<h3>Cidades</h3>
 <ul>
-    {% for city in cities %}
+    {% for meta in cities %}
     <li>
-        {% refine city query qsize %}
+    {% include 'fino.html' %}
     </li>
     {% endfor %}
 </ul>
 {% endif %}
 {% if states %}
-<h2>Estados</h2>
+<h3>Estados</h3>
 <ul>
-    {% for state in states %}
+    {% for meta in states %}
     <li>
-        {% refine state query qsize %}
+    {% include 'fino.html' %}
     </li>
     {% endfor %}
 </ul>
 {% endif %}
 {% if countries %}
-<h2>Países</h2>
+<h3>Países</h3>
 <ul>
-    {% for country in countries %}
+    {% for meta in countries %}
     <li>
-        {% refine country query qsize %}
+    {% include 'fino.html' %}
     </li>
     {% endfor %}
 </ul>

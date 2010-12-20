@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 20 Dec 2010 03:24PM
+# Atualizado: 20 Dec 2010 05:05PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -394,6 +394,12 @@ class Movie:
 
     def process_video(self):
         '''Redimensiona o vídeo, inclui marca d'água e comprime.'''
+        #TODO Fazer reconhecer vídeos em HD
+        # Exemplo:
+        #       /usr/local/bin/ffmpeg -y -i pelagosfera004.m2ts -vf "scale=510:-1" -aspect 16:9 -pass 1 -vcodec libvpx -b 300k -g 15 -bf 2 -vpre veryslow_firstpass -acodec libvorbis -ab 128k -ac 2 -ar 44100 -threads 2 teste2.webm
+        #       /usr/local/bin/ffmpeg -y -i pelagosfera004.m2ts -vf "scale=510:-1" -aspect 16:9 -pass 2 -vcodec libvpx -b 300k -g 15 -bf 2 -vpre veryslow -acodec libvorbis -ab 128k -ac 2 -ar 44100 -threads 2 teste2.webm
+        #TODO Mudar o tamanho dos vídeos para 510px usando a nova opção -vf scale=510:-1
+        #FIXME O que fazer quando vídeos forem menores que isso?
         print '\nProcessando o vídeo...'
         web_paths = {}
         try:

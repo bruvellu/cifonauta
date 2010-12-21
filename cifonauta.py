@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 21 Dec 2010 06:58PM
+# Atualizado: 21 Dec 2010 07:10PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -518,7 +518,7 @@ class Movie:
         try:
             # Cria thumb grande a partir de 1 frame no segundo 5
             subprocess.call(['ffmpeg', '-i', self.source_filepath,
-                '-vframes', '1', '-s', '480x360', '-ss', '1', '-f',
+                '-vframes', '1', '-vf', '510:-1', '-ss', '1', '-f',
                 'image2', local_filepath_large])
             # Cria thumb normal (pequeno)
             subprocess.call(['convert', '-define', 'jpeg:size=200x150',

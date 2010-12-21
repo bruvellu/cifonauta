@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 21 Dec 2010 06:07PM
+# Atualizado: 21 Dec 2010 06:08PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -868,17 +868,17 @@ def prepare_meta(meta):
     meta['references'] = [a.strip() for a in meta['references'].split(',')] 
     # Preparando taxon(s) para o banco de dados
     #XXX Lidar com fortuitos sp.?
-    meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')] 
-    #temp_taxa = [a.strip() for a in meta['taxon'].split(',')] 
-    #clean_taxa = []
-    #for taxon in temp_taxa: 
-    #    tplit = taxon.split()
-    #    if len(tsplit) == 2 and tsplit[-1] in ['sp', 'sp.', 'spp']:
-    #        tsplit.pop()
-    #        clean_taxa.append(tsplit[0])
-    #    else:
-    #        clean_taxa.append(taxon)
-    #meta['taxon'] = clean_taxa
+    #meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')] 
+    temp_taxa = [a.strip() for a in meta['taxon'].split(',')] 
+    clean_taxa = []
+    for taxon in temp_taxa: 
+        tplit = taxon.split()
+        if len(tsplit) == 2 and tsplit[-1] in ['sp', 'sp.', 'spp']:
+            tsplit.pop()
+            clean_taxa.append(tsplit[0])
+        else:
+            clean_taxa.append(taxon)
+    meta['taxon'] = clean_taxa
 
     #    if genus_sp:
     #        bilist = genus_sp.split()

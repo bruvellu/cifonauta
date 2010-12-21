@@ -1,8 +1,8 @@
 {% if spp %}
 <h2>Espécie{{ spp.count|pluralize }} ({{ spp.count }})</h2>
-<ul>
+<ul class="root tree">
     {% for sp in spp %}
-    <li>
+    <li class="children tree">
     <a href="{{ sp.get_absolute_url }}"><em>{{ sp.name }}</em></a>
     </li>
     {% endfor %}

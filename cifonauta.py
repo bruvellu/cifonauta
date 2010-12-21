@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 21 Dec 2010 06:20PM
+# Atualizado: 21 Dec 2010 06:58PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -402,11 +402,6 @@ class Movie:
                 '-vf', '510:-1', '-b', '300k', '-g', '15', '-bf', '2',
                 '-threads', '2', '-pass', str(ipass),
                 ]
-        # Presets
-        if ipass == 1:
-            call.extend(['-vpre', 'veryslow_firstpass'])
-        elif ipass == 2:
-            call.extend(['-vpre', 'veryslow'])
         # HD
         #TODO Achar um jeito mais confiável de saber se é HD...
         if self.source_filepath.endswith('m2ts'):
@@ -427,6 +422,12 @@ class Movie:
             call.extend(['-vcodec', 'libx264'])
         if filepath.endswith('ogv'):
             call.extend(['-vcodec', 'libtheora'])
+        # Presets
+        # Precisa ser colocado depois do vcodec.
+        if ipass == 1:
+            call.extend(['-vpre', 'veryslow_firstpass'])
+        elif ipass == 2:
+            call.extend(['-vpre', 'veryslow'])
         # Finaliza com nome do arquivo
         call.append(filepath)
         print call

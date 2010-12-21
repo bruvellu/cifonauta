@@ -1,5 +1,6 @@
 {% load mptt_tags %}
 
+{% if taxa %}
 <h2>Grupos ({{ taxa.count }})</h2>
 <ul class="root tree">
     {% recursetree taxa %}
@@ -15,3 +16,6 @@
     {% endif %}
     {% endrecursetree %}
 </ul>
+{% else %}
+<h2>Nenhum táxon no banco</h2>
+{% endif %}

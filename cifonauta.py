@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 21 Dec 2010 06:08PM
+# Atualizado: 21 Dec 2010 06:20PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -872,23 +872,13 @@ def prepare_meta(meta):
     temp_taxa = [a.strip() for a in meta['taxon'].split(',')] 
     clean_taxa = []
     for taxon in temp_taxa: 
-        tplit = taxon.split()
+        tsplit = taxon.split()
         if len(tsplit) == 2 and tsplit[-1] in ['sp', 'sp.', 'spp']:
             tsplit.pop()
             clean_taxa.append(tsplit[0])
         else:
             clean_taxa.append(taxon)
     meta['taxon'] = clean_taxa
-
-    #    if genus_sp:
-    #        bilist = genus_sp.split()
-    #        if len(bilist) == 1 and bilist[0] != '':
-    #            spp_diclist.append({'genus': bilist[0], 'sp': ''})
-    #        elif len(bilist) == 2:
-    #            if bilist[1] in ['sp.', 'sp', 'spp']:
-    #                bilist[1] = ''
-    #            spp_diclist.append({'genus': bilist[0], 'sp': bilist[1]})
-    #meta['genus_sp'] = spp_diclist
 
     return meta
 

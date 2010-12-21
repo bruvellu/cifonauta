@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 20 Dec 2010 05:24PM
+# Atualizado: 21 Dec 2010 06:07PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -392,6 +392,47 @@ class Movie:
 
         return self.meta
 
+    def build_call(self, filepath, ipass):
+        '''Constrói o subprocesso para converter o vídeo com o FFmpeg.'''
+        # Básico
+        call = [
+                'ffmpeg', '-y', '-i', self.source_filepath,
+                '-metadata', 'title="%s"' % self.meta['title'],
+                '-metadata', 'author="%s"' % self.meta['author'],
+                '-vf', '510:-1', '-b', '300k', '-g', '15', '-bf', '2',
+                '-threads', '2', '-pass', str(ipass),
+                ]
+        # Presets
+        if ipass == 1:
+            call.extend(['-vpre', 'veryslow_firstpass'])
+        elif ipass == 2:
+            call.extend(['-vpre', 'veryslow'])
+        # HD
+        #TODO Achar um jeito mais confiável de saber se é HD...
+        if self.source_filepath.endswith('m2ts'):
+            call.extend(['-aspect', '16:9'])
+        else:
+            call.extend(['-aspect', '4:3'])
+        # Audio codecs
+        if filepath.endswith('mp4'):
+            call.extend(['-acodec', 'libfaac', '-ab', '128k', '-ac', '2',
+                '-ar', '44100'])
+        else:
+            call.extend(['-acodec', 'libvorbis', '-ab', '128k', '-ac', '2',
+                '-ar', '44100'])
+        # Video codec
+        if filepath.endswith('webm'):
+            call.extend(['-vcodec', 'libvpx'])
+        elif filepath.endswith('mp4'):
+            call.extend(['-vcodec', 'libx264'])
+        if filepath.endswith('ogv'):
+            call.extend(['-vcodec', 'libtheora'])
+        # Finaliza com nome do arquivo
+        call.append(filepath)
+        print call
+        import pdb; pdb.set_trace()
+        return call
+
     def process_video(self):
         '''Redimensiona o vídeo, inclui marca d'água e comprime.'''
         #TODO Fazer reconhecer vídeos em HD
@@ -403,24 +444,25 @@ class Movie:
         print '\nProcessando o vídeo...'
         web_paths = {}
         try:
+            # WebM
+            webm_name = self.filename.split('.')[0] + '.webm'
+            webm_filepath = os.path.join(self.local_dir, webm_name)
+            webm_firstcall = self.build_call(webm_filepath, 1)
+            webm_secondcall = self.build_call(webm_filepath, 2)
+            # MP4
+            mp4_name = self.filename.split('.')[0] + '.mp4' 
+            mp4_filepath = os.path.join(self.local_dir, mp4_name)
+            mp4_firstcall = self.build_call(mp4_filepath, 1)
+            mp4_secondcall = self.build_call(mp4_filepath, 2)
+            # OGG
+            ogg_name = self.filename.split('.')[0] + '.ogv' 
+            ogg_filepath = os.path.join(self.local_dir, ogg_name)
+            ogg_firstcall = self.build_call(ogg_filepath, 1)
+            ogg_secondcall = self.build_call(ogg_filepath, 2)
             try:
                 # WebM
-                webm_name = self.filename.split('.')[0] + '.webm'
-                webm_filepath = os.path.join(self.local_dir, webm_name)
-                subprocess.call([
-                    'ffmpeg', '-y', '-i', self.source_filepath, '-aspect',
-                    '4:3', '-metadata', 'title="%s"' % self.meta['title'],
-                    '-metadata', 'author="%s"' % self.meta['author'], '-vf',
-                    '510:-1', '-pass', '1', '-vcodec', 'libvpx', '-b', '300k',
-                    '-g', '15', '-bf', '2', '-vpre', 'veryslow_firstpass',
-                    '-threads', '2', webm_filepath])
-                subprocess.call(['ffmpeg', '-y', '-i', self.source_filepath,
-                    '-aspect', '4:3', '-metadata', 'title="%s"' %
-                    self.meta['title'], '-metadata', 'author="%s"' %
-                    self.meta['author'], '-vf', '510:-1', '-pass', '2',
-                    '-vcodec', 'libvpx', '-b', '300k', '-g', '15', '-bf', '2',
-                    '-vpre', 'veryslow', '-acodec', 'libvorbis', '-ab', '128k',
-                    '-ar', '44100', '-threads', '2', webm_filepath])
+                subprocess.call(webm_firstcall)
+                subprocess.call(webm_secondcall)
                 try:
                     # Copia imagem para pasta web
                     webm_site_filepath = os.path.join(self.site_dir, webm_name)
@@ -432,22 +474,8 @@ class Movie:
                 print 'Processamento do WebM não funcionou!'
             try:
                 # MP4
-                mp4_name = self.filename.split('.')[0] + '.mp4' 
-                mp4_filepath = os.path.join(self.local_dir, mp4_name)
-                subprocess.call([
-                    'ffmpeg', '-y', '-i', self.source_filepath, '-aspect',
-                    '4:3', '-metadata', 'title="%s"' % self.meta['title'],
-                    '-metadata', 'author="%s"' % self.meta['author'], '-vf',
-                    '510:-1', '-pass', '1', '-vcodec', 'libx264', '-b', '300k',
-                    '-g', '15', '-bf', '2', '-vpre', 'veryslow_firstpass',
-                    '-threads', '2', mp4_filepath])
-                subprocess.call(['ffmpeg', '-y', '-i', self.source_filepath,
-                    '-aspect', '4:3', '-metadata', 'title="%s"' %
-                    self.meta['title'], '-metadata', 'author="%s"' %
-                    self.meta['author'], '-s', '510:-1', '-pass', '2',
-                    '-vcodec', 'libx264', '-b', '300k', '-g', '15', '-bf', '2',
-                    '-vpre', 'veryslow', '-acodec', 'libfaac', '-ab', '128k',
-                    '-ar', '44100', '-threads', '2', mp4_filepath])
+                subprocess.call(mp4_firstcall)
+                subprocess.call(mp4_secondcall)
                 try:
                     # Copia imagem para pasta web
                     mp4_site_filepath = os.path.join(self.site_dir, mp4_name)
@@ -459,22 +487,8 @@ class Movie:
                 print 'Processamento do x264 não funcionou!'
             try:
                 # OGG
-                ogg_name = self.filename.split('.')[0] + '.ogv' 
-                ogg_filepath = os.path.join(self.local_dir, ogg_name)
-                subprocess.call([
-                    'ffmpeg', '-y', '-i', self.source_filepath, '-aspect',
-                    '4:3', '-metadata', 'title="%s"' % self.meta['title'],
-                    '-metadata', 'author="%s"' % self.meta['author'], '-vf',
-                    '510:-1', '-pass', '1', '-vcodec', 'libtheora', '-b', '300k',
-                    '-g', '15', '-bf', '2', '-vpre', 'veryslow_firstpass',
-                    '-threads', '2', ogg_filepath])
-                subprocess.call(['ffmpeg', '-y', '-i', self.source_filepath,
-                    '-aspect', '4:3', '-metadata', 'title="%s"' %
-                    self.meta['title'], '-metadata', 'author="%s"' %
-                    self.meta['author'], '-vf', '510:-1', '-pass', '2',
-                    '-vcodec', 'libtheora', '-b', '300k', '-g', '15', '-bf',
-                    '2', '-vpre', 'veryslow', '-acodec', 'libvorbis', '-ab',
-                    '128k', '-ar', '44100', '-threads', '2', ogg_filepath])
+                subprocess.call(ogg_firstcall)
+                subprocess.call(ogg_secondcall)
                 try:
                     # Copia imagem para pasta web
                     ogg_site_filepath = os.path.join(self.site_dir, ogg_name)
@@ -484,9 +498,6 @@ class Movie:
                 web_paths['ogg_filepath'] = ogg_site_filepath
             except:
                 print 'Processamento do OGG não funcionou!'
-
-            #TODO qt-faststart input.foo output.foo
-
         except IOError:
             print '\nOcorreu algum erro na conversão da imagem.'
             return None, None, None
@@ -853,16 +864,22 @@ def prepare_meta(meta):
     meta['author'] = [a.strip() for a in meta['author'].split(',')] 
     # Preparando especialista(s) para o banco de dados
     meta['source'] = [a.strip() for a in meta['source'].split(',')] 
+    # Preparando referências para o banco de dados
+    meta['references'] = [a.strip() for a in meta['references'].split(',')] 
     # Preparando taxon(s) para o banco de dados
     #XXX Lidar com fortuitos sp.?
     meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')] 
-    # Preparando referências para o banco de dados
-    meta['references'] = [a.strip() for a in meta['references'].split(',')] 
+    #temp_taxa = [a.strip() for a in meta['taxon'].split(',')] 
+    #clean_taxa = []
+    #for taxon in temp_taxa: 
+    #    tplit = taxon.split()
+    #    if len(tsplit) == 2 and tsplit[-1] in ['sp', 'sp.', 'spp']:
+    #        tsplit.pop()
+    #        clean_taxa.append(tsplit[0])
+    #    else:
+    #        clean_taxa.append(taxon)
+    #meta['taxon'] = clean_taxa
 
-    # Preparando a espécie para o banco de dados
-    #spp_diclist = []
-    #genera_spp = [i.strip() for i in meta['genus_sp'].split(',')]
-    #for genus_sp in genera_spp:
     #    if genus_sp:
     #        bilist = genus_sp.split()
     #        if len(bilist) == 1 and bilist[0] != '':

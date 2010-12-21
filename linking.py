@@ -99,7 +99,7 @@ def get_media():
         for filename in files:
             if not filename.endswith('~'):
                 filepath = os.path.join(root, filename)
-                #temp_spp(filepath)
+                temp_spp(filepath)
                 sources.append(filepath)
                 print filepath
                 total += 1

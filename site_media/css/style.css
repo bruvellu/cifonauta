@@ -227,7 +227,7 @@ div#notes {
 }
 
 ul.tree, ol.tree {
-    padding-left:17px;
+    /*padding-left:17px;*/
 }
 
 #article-share {

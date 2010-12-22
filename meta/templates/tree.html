@@ -1,11 +1,41 @@
 {% load mptt_tags %}
 
+{% block extra-head %}
+<link rel="stylesheet" href="/site_media/js/jquery-treeview/jquery.treeview.css" /> 
+ 
+<script src="/site_media/js/jquery-treeview/lib/jquery.js" type="text/javascript"></script> 
+<script src="/site_media/js/jquery-treeview/lib/jquery.cookie.js" type="text/javascript"></script> 
+<script src="/site_media/js/jquery-treeview/jquery.treeview.js" type="text/javascript"></script> 
+ 
+<script type="text/javascript">
+    $(function() {
+            $("#colaptree").treeview(
+                {
+                    collapsed: true,
+                    animated: "fast",
+                    //control:"#sidetreecontrol",
+                    persist: "location"
+                }
+            );
+            //{% if media.taxa %}
+            //$(".{{ media.taxa.slug }}-hitarea }}").click();
+            //var parentnode = $(".{{ media.taxa.slug }}-hitarea }}");
+            //do {
+            //$.parentnode.click();
+            //var parentnode = parentnode.parent();
+            //}
+            //while (parentnode);
+            //{% endif %}
+        })
+</script>
+{% endblock %}
+
 {% if taxa %}
 <h2>Grupos ({{ taxa.count }})</h2>
-<ul class="root tree">
+<ul class="root tree" id="colaptree">
     {% recursetree taxa %}
-    {% if node.rank in main_ranks %}
-    <li>
+    {% comment %}{% if node.rank in main_ranks %}{% endcomment %}
+    <li class="{{ node.rank|slugify }} {{ node.slug }}">
     <span class="quiet">{{ node.rank }}</span> <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{% if node.rank == 'Gênero' or node.rank == 'Espécie' %}<em>{{ node.name }}</em>{% else %}{{ node.name }}{% endif %}</a>
     {% if not node.is_leaf_node %}
     <ul class="children tree">
@@ -13,7 +43,7 @@
     </ul>
     {% endif %}
     </li>
-    {% endif %}
+    {% comment %}{% endif %}{% endcomment %}
     {% endrecursetree %}
 </ul>
 {% else %}

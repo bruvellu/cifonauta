@@ -1,7 +1,7 @@
             <a href="{{ media.get_absolute_url }}">
                 <img src="/{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" />
             </a>
-            <a class="lupa highslide size-{{ media.size.slug }}" onclick="return hs.expand(this)" href="/{{ media.web_filepath }}">+<!--<img src="/site_media/js/highslide/graphics/zoomin.cur" />--></a>
+            <a class="lupa highslide size-{{ media.size.slug }}" onclick="return hs.expand(this)" href="/{% if media.datatype == "video" %}{{ media.large_thumb }}{% else %}{{ media.web_filepath }}{% endif %}">+<!--<img src="/site_media/js/highslide/graphics/zoomin.cur" />--></a>
             {% if media.title %}
             <div class="highslide-heading">{{ media.title }}</div>
             {% endif %}

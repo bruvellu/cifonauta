@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 21 Dec 2010 07:22PM
+# Atualizado: 22 Dec 2010 03:26AM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -394,27 +394,36 @@ class Movie:
 
     def build_call(self, filepath, ipass):
         '''Constrói o subprocesso para converter o vídeo com o FFmpeg.'''
+        #TODO MUTAR SOM
+        #TODO Diferenças entre pass 1 e 2
+        #TODO Fazer transcoding do m2t primeiro?
         # Básico
         call = [
                 'ffmpeg', '-y', '-i', self.source_filepath,
                 '-metadata', 'title="%s"' % self.meta['title'],
                 '-metadata', 'author="%s"' % self.meta['author'],
-                '-vf', 'scale=510:-1', '-b', '300k', '-g', '15', '-bf', '2',
+                '-b', '300k', '-g', '15', '-bf', '2',
                 '-threads', '2', '-pass', str(ipass),
                 ]
         # HD
         #TODO Achar um jeito mais confiável de saber se é HD...
         if self.source_filepath.endswith('m2ts'):
-            call.extend(['-aspect', '16:9'])
+            #XXX Será que é a melhor opção?
+            # Ideal seria ser reconhecida direito no desktop...
+            call.extend(['-vf', 'scale=510:287', '-aspect', '16:9'])
         else:
-            call.extend(['-aspect', '4:3'])
+            call.extend(['-vf', 'scale=510:-1', '-aspect', '4:3'])
         # Audio codecs
-        if filepath.endswith('mp4'):
-            call.extend(['-acodec', 'libfaac', '-ab', '128k', '-ac', '2',
-                '-ar', '44100'])
+        if 'comsom' in self.source_filepath.split('_') and ipass == 2:
+            if filepath.endswith('mp4'):
+                call.extend(['-acodec', 'libfaac', '-ab', '128k',
+                    '-ac', '2', '-ar', '44100'])
+            else:
+                call.extend(['-acodec', 'libvorbis', '-ab', '128k',
+                    '-ac', '2', '-ar', '44100'])
         else:
-            call.extend(['-acodec', 'libvorbis', '-ab', '128k', '-ac', '2',
-                '-ar', '44100'])
+            call.append('-an')
+
         # Video codec
         if filepath.endswith('webm'):
             call.extend(['-vcodec', 'libvpx'])
@@ -431,7 +440,7 @@ class Movie:
         # Finaliza com nome do arquivo
         call.append(filepath)
         print call
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         return call
 
     def process_video(self):
@@ -517,9 +526,15 @@ class Movie:
         local_filepath_large = os.path.join(self.local_thumb_dir, large_thumbname)
         try:
             # Cria thumb grande a partir de 1 frame no segundo 5
-            subprocess.call(['ffmpeg', '-i', self.source_filepath,
-                '-vframes', '1', '-vf', 'scale=510:-1', '-ss', '1', '-f',
-                'image2', local_filepath_large])
+            #FIXME Está funcionando?
+            if self.source_filepath.endswith('m2ts'):
+                subprocess.call(['ffmpeg', '-i', self.source_filepath,
+                    '-vframes', '1', '-vf', 'scale=510:287', '-aspect', '16:9', '-ss', '1', '-f',
+                    'image2', local_filepath_large])
+            else:
+                subprocess.call(['ffmpeg', '-i', self.source_filepath,
+                    '-vframes', '1', '-vf', 'scale=510:-1', '-ss', '1', '-f',
+                    'image2', local_filepath_large])
             # Cria thumb normal (pequeno)
             subprocess.call(['convert', '-define', 'jpeg:size=200x150',
                 local_filepath_large, '-thumbnail', '120x90^', '-gravity',

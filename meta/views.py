@@ -165,6 +165,13 @@ def feedback_page(request):
     variables = RequestContext(request, {})
     return render_to_response('feedback.html', variables)
 
+def fixtaxa_page(request):
+    '''Página mostrando táxons sem pai.'''
+    taxa = Taxon.objects.filter(parent__isnull=True, rank='')
+    variables = RequestContext(request, {
+        'taxa': taxa,
+        })
+    return render_to_response('fixtaxa.html', variables)
 # Single
 def image_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''

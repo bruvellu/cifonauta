@@ -30,6 +30,7 @@ urlpatterns = patterns('',
 
         (r'^privadas/$', hidden_page),
         (r'^feedback/$', feedback_page),
+        (r'^fixtaxa/$', fixtaxa_page),
 
         (r'^buscar/$', search_page),
         (r'^tags/$', tags_page),

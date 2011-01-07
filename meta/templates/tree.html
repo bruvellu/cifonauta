@@ -35,6 +35,7 @@
 <ul class="root tree" id="colaptree">
     {% recursetree taxa %}
     {% comment %}{% if node.rank in main_ranks %}{% endcomment %}
+    {% if node.rank %}
     <li class="{{ node.rank|slugify }} {{ node.slug }}">
     <span class="quiet">{{ node.rank }}</span> <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{% if node.rank == 'Gênero' or node.rank == 'Espécie' %}<em>{{ node.name }}</em>{% else %}{{ node.name }}{% endif %}</a>
     {% if not node.is_leaf_node %}
@@ -43,6 +44,7 @@
     </ul>
     {% endif %}
     </li>
+    {% endif %}
     {% comment %}{% endif %}{% endcomment %}
     {% endrecursetree %}
 </ul>

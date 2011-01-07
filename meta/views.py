@@ -181,7 +181,44 @@ def fixtaxa_page(request):
                     if taxon.hierarchy:
                         valids.append(name)
                     else:
-                        invalids.append(name)
+                        try:
+                            # Gambiarra para encontrar gêneros nas tabelas.
+                            genus = name.split()[0]
+                            taxon = Itis(genus)
+                            print genus
+                            print taxon.hierarchy
+                            if taxon.hierarchy:
+                                try:
+                                    genus, new = Taxon.objects.get_or_create(name=genus)
+                                    for parent in taxon.parents:
+                                        newtaxon, new = Taxon.objects.get_or_create(name=parent.taxonName)
+                                        if new:
+                                            newtaxon.rank = parent.rankName
+                                            newtaxon.tsn = parent.tsn
+                                            if parent.parentName:
+                                                newtaxon.parent = Taxon.objects.get(name=parent.parentName)
+                                            newtaxon.save()
+                                            print u'Salvo!'
+                                        else:
+                                            print u'Já existe!'
+
+                                    if taxon.parent_name:
+                                        genus.parent = Taxon.objects.get(name=taxon.parent_name)
+                                    if taxon.tsn:
+                                        genus.tsn = taxon.tsn
+                                    if taxon.rank:
+                                        genus.rank = taxon.rank
+                                except:
+                                    print u'Não rolou pegar hierarquia...'
+                                genus.save()
+                                binomial = Taxon.objects.get(name=name)
+                                binomial.parent = genus
+                                binomial .save()
+                                valids.append(name.split()[0])
+                            else:
+                                invalids.append(name.split()[0])
+                        except:
+                            invalids.append(name)
                 except:
                     print name
                     invalids.append(name)

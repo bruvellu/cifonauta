@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 import operator
+from itis import Itis
 
 # Main
 def main_page(request):
@@ -167,11 +168,32 @@ def feedback_page(request):
 
 def fixtaxa_page(request):
     '''Página mostrando táxons sem pai.'''
-    taxa = Taxon.objects.filter(parent__isnull=True, rank='')
+    invalids = []
+    valids = []
+    if request.method == 'POST':
+        form = FixTaxaForm(request.POST)
+        if form.is_valid():
+            print form.cleaned_data['revise']
+            for name in form.cleaned_data['revise']:
+                try:
+                    taxon = Itis(name)
+                    print taxon
+                    if taxon.hierarchy:
+                        valids.append(name)
+                    else:
+                        invalids.append(name)
+                except:
+                    print name
+                    invalids.append(name)
+    else:
+        form = FixTaxaForm()
     variables = RequestContext(request, {
-        'taxa': taxa,
+        'form': form,
+        'invalids': invalids,
+        'valids': valids,
         })
     return render_to_response('fixtaxa.html', variables)
+
 # Single
 def image_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''

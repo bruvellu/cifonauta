@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
+from meta.models import *
 
     
 class SearchForm(forms.Form):
@@ -21,5 +22,13 @@ METAS = (
         )
 
 class RelatedForm(forms.Form):
-    type = forms.ChoiceField(choices=METAS, label='Navegando por')
+    type = forms.ChoiceField(choices=METAS, label=u'Navegando por')
     #TODO Incluir um checkbox para mostrar apenas highlights?
+
+class FixTaxaForm(forms.Form):
+    def get_orphans():
+        taxa = Taxon.objects.filter(parent__isnull=True, rank='')
+        semitaxa = [(taxon.name, taxon.name) for taxon in taxa]
+        orphans = tuple(semitaxa)
+        return orphans
+    revise = forms.MultipleChoiceField(choices=get_orphans(), widget=forms.CheckboxSelectMultiple(attrs={'class':'check-taxon'}), required=False, label=u'Revisar táxons')

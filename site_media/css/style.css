@@ -580,4 +580,18 @@ footer.main {
     float:left;
 }
 
+.unselect-all, .select-all {
+    cursor: pointer;
+}
+
+.unselect-all {
+    display:none;
+}
+
+.red {
+    color:red;
+}
+.green {
+    color:green;
+}
 /* Highslide */

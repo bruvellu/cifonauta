@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 22 Dec 2010 03:26AM
+# Atualizado: 17 Jan 2011 08:36PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -83,18 +83,19 @@ class Database:
                             record = Video.objects.get(ogg_filepath=videopath + media.filename.split('.')[0] + '.ogv')
                         except:
                             print 'Não bateu nenhum!'
-                            return False
+                            return False, ''
             print 'Bingo! Registro de %s encontrado.' % media.filename
             print 'Comparando a data de modificação do arquivo com o registro...'
             if record.timestamp != media.timestamp:
+                oldpath = record.old_filepath
                 print 'Arquivo mudou!'
-                return 1
+                return 1, oldpath
             else:
                 print 'Arquivo não mudou!'
-                return 2
+                return 2, ''
         except Image.DoesNotExist:
             print 'Registro não encontrado.'
-            return False
+            return False, ''
 
     def update_db(self, media, update=False):
         '''Cria ou atualiza registro no banco de dados.'''
@@ -297,8 +298,20 @@ class Movie:
     def __init__(self, filepath):
         self.source_filepath = filepath
         self.filename = os.path.basename(filepath)
-        self.timestamp = datetime.fromtimestamp(os.path.getmtime(filepath))
         self.type = 'video'
+
+        # Checa para ver qual timestamp é mais atual, o arquivo de vídeo ou o
+        # arquivo acessório com os metadados.
+        try:
+            file_timestamp = datetime.fromtimestamp(os.path.getmtime(filepath))
+            meta_timestamp = datetime.fromtimestamp(
+                    os.path.getmtime(filepath.split('.')[0] + '.txt'))
+            if file_timestamp > meta_timestamp:
+                self.timestamp = file_timestamp
+            else:
+                self.timestamp = meta_timestamp
+        except:
+            self.timestamp = datetime.fromtimestamp(os.path.getmtime(filepath))
 
         # Diretórios
         self.site_dir = u'site_media/videos'
@@ -310,7 +323,7 @@ class Movie:
         dir_ready(self.site_dir, self.site_thumb_dir,
                 self.local_dir, self.local_thumb_dir)
 
-    def create_meta(self, new=False):
+    def create_meta(self, new=False, oldpath=''):
         '''Define as variáveis dos metadados do vídeo.'''
         print 'Lendo os metadados de %s e criando variáveis.' % self.filename
         # Limpa metadados pra não misturar com o anterior.
@@ -344,11 +357,15 @@ class Movie:
             #import pdb; pdb.set_trace()
             print 'Arquivo de info existe!'
         except:
-            meta_text = ''
+            try:
+                text_path = oldpath.split('.')[0] + '.txt'
+                meta_text = open(text_path, 'rb')
+                print 'Arquivo de info existe!'
+            except:
+                meta_text = ''
 
         if meta_text:
             meta_dic = pickle.load(meta_text)
-            #import pdb; pdb.set_trace()
             meta_text.close()
             # Atualiza meta com valores do arquivo acessório.
             self.meta.update(meta_dic)
@@ -372,7 +389,6 @@ class Movie:
                 new_name = text_name.split('.')[0] + '.txt'
                 text_path = os.path.join(os.path.dirname(self.meta['old_filepath']), new_name)
                 new_path = self.source_filepath.split('.')[0] + '.txt'
-                #import pdb; pdb.set_trace()
                 os.rename(text_path, new_path)
         else:
             self.meta['source_filepath'] = os.path.abspath(self.source_filepath)
@@ -440,7 +456,6 @@ class Movie:
         # Finaliza com nome do arquivo
         call.append(filepath)
         print call
-        #import pdb; pdb.set_trace()
         return call
 
     def process_video(self):
@@ -1031,7 +1046,7 @@ def main(argv):
         elif path[1] == 'video':
             media = Movie(path[0])
         # Busca nome do arquivo no banco de dados
-        query = cbm.search_db(media)
+        query, oldpath = cbm.search_db(media)
         if not query:
             # Se mídia for nova
             print '\nARQUIVO NOVO, CRIANDO ENTRADA NO BANCO DE DADOS...'
@@ -1059,7 +1074,7 @@ def main(argv):
                 else:
                     print '\nREGISTRO EXISTE, MAS NÃO ESTÁ ATUALIZADO. ' \
                             'ATUALIZANDO O BANCO DE DADOS...'
-                media.create_meta()
+                media.create_meta(oldpath=oldpath)
                 cbm.update_db(media, update=True)
                 n_up += 1
     n = len(filepaths)

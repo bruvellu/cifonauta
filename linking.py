@@ -62,10 +62,12 @@ def get_links():
     total = 0
     for root, dirs, files in os.walk(source_media):
         for filename in files:
-            filepath = os.path.join(root, filename)
-            deal_links(filepath)
-            print filepath
-            total += 1
+            # Exclui arquivos acessórios dos vídeos.
+            if not filename.endswith('txt'):
+                filepath = os.path.join(root, filename)
+                deal_links(filepath)
+                print filepath
+                total += 1
         else:
             continue
     else:
@@ -99,7 +101,7 @@ def get_media():
         for filename in files:
             if not filename.endswith('~'):
                 filepath = os.path.join(root, filename)
-                temp_spp(filepath)
+                #temp_spp(filepath)
                 sources.append(filepath)
                 print filepath
                 total += 1

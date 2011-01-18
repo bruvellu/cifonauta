@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 17 Jan 2011 08:36PM
+# Atualizado: 18 Jan 2011 12:12AM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -410,9 +410,11 @@ class Movie:
 
     def build_call(self, filepath, ipass):
         '''Constrói o subprocesso para converter o vídeo com o FFmpeg.'''
-        #TODO MUTAR SOM
-        #TODO Diferenças entre pass 1 e 2
         #TODO Fazer transcoding do m2t primeiro?
+        #FIXME MP4 não está sendo convertido!
+        #XXX Achar o melhor custo benefício para a qualidade. Provavelmente vai
+        # ser diferente entre os HDs e não HDs.
+
         # Básico
         call = [
                 'ffmpeg', '-y', '-i', self.source_filepath,
@@ -460,11 +462,9 @@ class Movie:
 
     def process_video(self):
         '''Redimensiona o vídeo, inclui marca d'água e comprime.'''
-        #TODO Fazer reconhecer vídeos em HD
         # Exemplo:
         #       /usr/local/bin/ffmpeg -y -i pelagosfera004.m2ts -vf "scale=510:-1" -aspect 16:9 -pass 1 -vcodec libvpx -b 300k -g 15 -bf 2 -vpre veryslow_firstpass -acodec libvorbis -ab 128k -ac 2 -ar 44100 -threads 2 teste2.webm
         #       /usr/local/bin/ffmpeg -y -i pelagosfera004.m2ts -vf "scale=510:-1" -aspect 16:9 -pass 2 -vcodec libvpx -b 300k -g 15 -bf 2 -vpre veryslow -acodec libvorbis -ab 128k -ac 2 -ar 44100 -threads 2 teste2.webm
-        #TODO Mudar o tamanho dos vídeos para 510px usando a nova opção -vf scale=510:-1
         #FIXME O que fazer quando vídeos forem menores que isso?
         print '\nProcessando o vídeo...'
         web_paths = {}

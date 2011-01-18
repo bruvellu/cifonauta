@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Imagens não publicadas</h1>
+<h1>Imagens não publicadas ({{ images.count|add:videos.count }})</h1>
 
-<h2>Fotos</h2>
+<h2>Fotos ({{ images.count }})</h2>
 {% for image in images %}
 
 <div class="span-24 borders last">
@@ -23,7 +23,7 @@
 {% endfor %}
 
 
-<h2>Vídeos</h2>
+<h2>Vídeos ({{ videos.count }})</h2>
 {% for video in videos %}
 
 <div class="span-24 borders last">

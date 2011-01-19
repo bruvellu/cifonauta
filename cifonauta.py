@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 18 Jan 2011 11:35PM
+# Atualizado: 19 Jan 2011 12:02AM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -996,13 +996,17 @@ def main(argv):
     n_max = 10000
     web_upload = False
     single_img = False
+    only_videos = False
+    only_photos = False
 
     # Verifica se argumentos foram passados com a execução do programa
     try:
-        opts, args = getopt.getopt(argv, 'hfrn:', [
+        opts, args = getopt.getopt(argv, 'hfrvpn:', [
             'help',
             'force-update',
             'no-rename',
+            'only-videos',
+            'only-photos',
             'n='])
     except getopt.GetoptError:
         print 'Algo de errado nos argumentos...'
@@ -1020,14 +1024,22 @@ def main(argv):
             force_update = True
         elif opt in ('-r', '--no-rename'):
             no_rename = True
+        elif opt in ('-v', '--only-videos'):
+            only_videos = True
+        elif opt in ('-p', '--only-photos'):
+            only_photos = True
     
     # Imprime resumo do que o programa vai fazer
     if force_update is True:
-        print '\n%d arquivos serão atualizadas de forma forçada.' % n_max
-        print '(argumento "-f" utilizado)'
+        print u'\n%d arquivos serão atualizadas de forma forçada.' % n_max
+        print u'(argumento "-f" utilizado)'
     else:
-        print '\n%d arquivos serão verificadas e registradas no banco de ' \
+        print u'\n%d arquivos serão verificadas e registradas no banco de ' \
                 'dados.' % n_max
+    if only_videos is True:
+        print u'\nApenas vídeos serão atualizadas.'
+    elif only_photos is True:
+        print u'\nApenas fotos serão atualizadas.'
 
     # Cria o arquivo log
     logname = 'log_%s' % time.strftime('%Y.%m.%d_%I:%M:%S', time.localtime())
@@ -1042,9 +1054,17 @@ def main(argv):
     for path in filepaths:
         # Reconhece se é foto ou vídeo
         if path[1] == 'photo':
-            media = Photo(path[0])
+            if not only_videos:
+                media = Photo(path[0])
+            else:
+                # Caso seja apenas vídeos, pular para próximo ítem.
+                continue
         elif path[1] == 'video':
-            media = Movie(path[0])
+            if not only_photos:
+                media = Movie(path[0])
+            else:
+                # Caso seja apenas fotos, pular para próximo ítem.
+                continue
         # Busca nome do arquivo no banco de dados
         query, oldpath = cbm.search_db(media)
         if not query:

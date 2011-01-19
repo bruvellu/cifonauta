@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 18 Jan 2011 12:12AM
+# Atualizado: 18 Jan 2011 11:35PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -420,7 +420,7 @@ class Movie:
                 'ffmpeg', '-y', '-i', self.source_filepath,
                 '-metadata', 'title="%s"' % self.meta['title'],
                 '-metadata', 'author="%s"' % self.meta['author'],
-                '-b', '300k', '-g', '15', '-bf', '2',
+                '-b', '600k', '-g', '15', '-bf', '2',
                 '-threads', '2', '-pass', str(ipass),
                 ]
         # HD
@@ -428,9 +428,9 @@ class Movie:
         if self.source_filepath.endswith('m2ts'):
             #XXX Será que é a melhor opção?
             # Ideal seria ser reconhecida direito no desktop...
-            call.extend(['-vf', 'scale=510:287', '-aspect', '16:9'])
+            call.extend(['-vf', 'scale=512:-1', '-aspect', '16:9'])
         else:
-            call.extend(['-vf', 'scale=510:-1', '-aspect', '4:3'])
+            call.extend(['-vf', 'scale=512:-1', '-aspect', '4:3'])
         # Audio codecs
         if 'comsom' in self.source_filepath.split('_') and ipass == 2:
             if filepath.endswith('mp4'):

@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 19 Jan 2011 12:02AM
+# Atualizado: 19 Jan 2011 07:13PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -544,11 +544,11 @@ class Movie:
             #FIXME Está funcionando?
             if self.source_filepath.endswith('m2ts'):
                 subprocess.call(['ffmpeg', '-i', self.source_filepath,
-                    '-vframes', '1', '-vf', 'scale=510:287', '-aspect', '16:9', '-ss', '1', '-f',
+                    '-vframes', '1', '-vf', 'scale=512:-1', '-aspect', '16:9', '-ss', '1', '-f',
                     'image2', local_filepath_large])
             else:
                 subprocess.call(['ffmpeg', '-i', self.source_filepath,
-                    '-vframes', '1', '-vf', 'scale=510:-1', '-ss', '1', '-f',
+                    '-vframes', '1', '-vf', 'scale=512:-1', '-ss', '1', '-f',
                     'image2', local_filepath_large])
             # Cria thumb normal (pequeno)
             subprocess.call(['convert', '-define', 'jpeg:size=200x150',
@@ -1108,6 +1108,7 @@ def main(argv):
         # Fechando arquivo de log
         log.close()
     
+    #TODO Melhorar as estatísticas daqui...
     print '\n%d ARQUIVOS ANALISADOS' % n
     print '%d novos' % n_new
     print '%d atualizados' % n_up

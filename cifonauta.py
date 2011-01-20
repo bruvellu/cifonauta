@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 19 Jan 2011 07:13PM
+# Atualizado: 19 Jan 2011 11:38PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -83,19 +83,18 @@ class Database:
                             record = Video.objects.get(ogg_filepath=videopath + media.filename.split('.')[0] + '.ogv')
                         except:
                             print 'Não bateu nenhum!'
-                            return False, ''
+                            return False
             print 'Bingo! Registro de %s encontrado.' % media.filename
             print 'Comparando a data de modificação do arquivo com o registro...'
             if record.timestamp != media.timestamp:
-                oldpath = record.old_filepath
                 print 'Arquivo mudou!'
-                return 1, oldpath
+                return 1
             else:
                 print 'Arquivo não mudou!'
-                return 2, ''
+                return 2
         except Image.DoesNotExist:
             print 'Registro não encontrado.'
-            return False, ''
+            return False
 
     def update_db(self, media, update=False):
         '''Cria ou atualiza registro no banco de dados.'''
@@ -323,7 +322,7 @@ class Movie:
         dir_ready(self.site_dir, self.site_thumb_dir,
                 self.local_dir, self.local_thumb_dir)
 
-    def create_meta(self, new=False, oldpath=''):
+    def create_meta(self, new=False):
         '''Define as variáveis dos metadados do vídeo.'''
         print 'Lendo os metadados de %s e criando variáveis.' % self.filename
         # Limpa metadados pra não misturar com o anterior.
@@ -352,17 +351,15 @@ class Movie:
 
         # Verifica se arquivo acessório com meta dos vídeos existe.
         try:
-            text_path = self.source_filepath.split('.')[0] + '.txt'
-            meta_text = open(text_path, 'rb')
-            #import pdb; pdb.set_trace()
+            linked_to = os.readlink(self.source_filepath)
+            txt_path = linked_to.split('.')[0] + '.txt'
+            meta_text = open(txt_path, 'rb')
             print 'Arquivo de info existe!'
         except:
-            try:
-                text_path = oldpath.split('.')[0] + '.txt'
-                meta_text = open(text_path, 'rb')
-                print 'Arquivo de info existe!'
-            except:
-                meta_text = ''
+            print 'Arquivo de info não existe!'
+            meta_text = ''
+
+        #import pdb; pdb.set_trace()
 
         if meta_text:
             meta_dic = pickle.load(meta_text)
@@ -411,9 +408,7 @@ class Movie:
     def build_call(self, filepath, ipass):
         '''Constrói o subprocesso para converter o vídeo com o FFmpeg.'''
         #TODO Fazer transcoding do m2t primeiro?
-        #FIXME MP4 não está sendo convertido!
-        #XXX Achar o melhor custo benefício para a qualidade. Provavelmente vai
-        # ser diferente entre os HDs e não HDs.
+        #FIXME Descobrir jeito de forçar width e height serem par!
 
         # Básico
         call = [
@@ -426,7 +421,6 @@ class Movie:
         # HD
         #TODO Achar um jeito mais confiável de saber se é HD...
         if self.source_filepath.endswith('m2ts'):
-            #XXX Será que é a melhor opção?
             # Ideal seria ser reconhecida direito no desktop...
             call.extend(['-vf', 'scale=512:-1', '-aspect', '16:9'])
         else:
@@ -541,7 +535,7 @@ class Movie:
         local_filepath_large = os.path.join(self.local_thumb_dir, large_thumbname)
         try:
             # Cria thumb grande a partir de 1 frame no segundo 5
-            #FIXME Está funcionando?
+            #XXX Lembrar de deixar do mesmo tamanho do vídeo...
             if self.source_filepath.endswith('m2ts'):
                 subprocess.call(['ffmpeg', '-i', self.source_filepath,
                     '-vframes', '1', '-vf', 'scale=512:-1', '-aspect', '16:9', '-ss', '1', '-f',
@@ -1066,7 +1060,7 @@ def main(argv):
                 # Caso seja apenas fotos, pular para próximo ítem.
                 continue
         # Busca nome do arquivo no banco de dados
-        query, oldpath = cbm.search_db(media)
+        query = cbm.search_db(media)
         if not query:
             # Se mídia for nova
             print '\nARQUIVO NOVO, CRIANDO ENTRADA NO BANCO DE DADOS...'
@@ -1094,7 +1088,7 @@ def main(argv):
                 else:
                     print '\nREGISTRO EXISTE, MAS NÃO ESTÁ ATUALIZADO. ' \
                             'ATUALIZANDO O BANCO DE DADOS...'
-                media.create_meta(oldpath=oldpath)
+                media.create_meta()
                 cbm.update_db(media, update=True)
                 n_up += 1
     n = len(filepaths)

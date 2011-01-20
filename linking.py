@@ -62,12 +62,9 @@ def get_links():
     total = 0
     for root, dirs, files in os.walk(source_media):
         for filename in files:
-            # Exclui arquivos acessórios dos vídeos.
-            if not filename.endswith('txt'):
-                filepath = os.path.join(root, filename)
-                deal_links(filepath)
-                print filepath
-                total += 1
+            filepath = os.path.join(root, filename)
+            deal_links(filepath)
+            total += 1
         else:
             continue
     else:
@@ -99,12 +96,15 @@ def get_media():
     total = 0
     for root, dirs, files in os.walk(storage):
         for filename in files:
-            if not filename.endswith('~'):
+            # Exclui arquivos acessórios dos vídeos.
+            #FIXME Não estou conseguindo excluir os .txt...
+            if not filename.endswith('~') or not filename.endswith('.txt'):
                 filepath = os.path.join(root, filename)
                 #temp_spp(filepath)
                 sources.append(filepath)
-                print filepath
                 total += 1
+            else:
+                continue
         else:
             continue
     else:

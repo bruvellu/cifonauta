@@ -134,7 +134,7 @@ def show_related(media, form, related):
             rel_media = ''
 
     elif related == u'size':
-        if media.size.name:
+        if media.size:
             qobj = Q(size=media.size.id)
             query = mediaque(media, qobj)
             rel_media, relative = slicer(query, media.id) 
@@ -142,7 +142,7 @@ def show_related(media, form, related):
             rel_media = ''
 
     elif related == u'sublocation':
-        if media.sublocation.name:
+        if media.sublocation:
             qobj = Q(sublocation=media.sublocation.id)
             query = mediaque(media, qobj)
             rel_media, relative = slicer(query, media.id) 
@@ -150,7 +150,7 @@ def show_related(media, form, related):
             rel_media = ''
 
     elif related == u'city':
-        if media.city.name:
+        if media.city:
             qobj = Q(city=media.city.id)
             query = mediaque(media, qobj)
             rel_media, relative = slicer(query, media.id) 
@@ -158,7 +158,7 @@ def show_related(media, form, related):
             rel_media = ''
 
     elif related == u'state':
-        if media.state.name:
+        if media.state:
             qobj = Q(state=media.state.id)
             query = mediaque(media, qobj)
             rel_media, relative = slicer(query, media.id) 
@@ -166,7 +166,7 @@ def show_related(media, form, related):
             rel_media = ''
 
     elif related == u'country':
-        if media.country.name:
+        if media.country:
             qobj = Q(country=media.country.id)
             query = mediaque(media, qobj)
             rel_media, relative = slicer(query, media.id) 
@@ -183,7 +183,7 @@ def show_related(media, form, related):
             if not item.name:
                 crumbs.pop(index)
     else:
-        crumbs = eval('media.%s.name' % related)
+        crumbs = eval('media.%s' % related)
 
     current = media
 

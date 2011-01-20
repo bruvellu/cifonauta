@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 19 Jan 2011 11:38PM
+# Atualizado: 20 Jan 2011 05:22PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -416,7 +416,7 @@ class Movie:
                 '-metadata', 'title="%s"' % self.meta['title'],
                 '-metadata', 'author="%s"' % self.meta['author'],
                 '-b', '600k', '-g', '15', '-bf', '2',
-                '-threads', '2', '-pass', str(ipass),
+                '-threads', '0', '-pass', str(ipass),
                 ]
         # HD
         #TODO Achar um jeito mais confiável de saber se é HD...

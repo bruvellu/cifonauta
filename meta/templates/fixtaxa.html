@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block extra-head %}
+
+<script type="text/javascript">
+    $(document).ready(function(){
+            // Collapsible comments
+            $(".select-all").click(function(){
+                $(".check-taxon").attr("checked", true);
+                $(this).hide();
+                $(".unselect-all").show();
+                });
+            $(".unselect-all").click(function(){
+                $(".check-taxon").attr("checked", false);
+                $(this).hide();
+                $(".select-all").show();
+                }
+                );
+            });
+</script>
+{% endblock %}
+{% block content %}
+<h1>Táxons que precisam ser arrumados</h1>
+
+{% if valids %}
+<hr>
+<div class="success"><strong>Táxons encontrados com sucesso:</strong>
+{% for valid in valids %}
+{{ valid }}{% if not forloop.last %}, {% endif %}
+{% endfor %}
+</div>
+{% endif %}
+{% if invalids %}
+<hr>
+<div class="error"><strong>Alguns táxons não foram encontrados:</strong>
+{% for invalid in invalids %}
+{{ invalid }}{% if not forloop.last %}, {% endif %}
+{% endfor %}
+</div>
+{% endif %}
+ 
+<hr>
+<form action="." method="post">
+    <div><input type="submit" value="Pesquisar" /> Após clicar em pesquisar <strong>aguarde</strong> o carregamento da página. Uma mensagem informará o resultado.</div>
+    <hr>
+    <div class="prepend-6 span-18"><span class="select-all">Selecionar tudo</span> <span class="unselect-all">Desmarcar tudo</span></div>
+    {{ form.as_p }}
+    {% csrf_token %}
+</form>
+    <hr>
+    <div class="notice"><strong>Dependendo do número de táxons selecionados a pesquisa pode levar vários minutos.</strong></div>
+    <hr>
+
+{% comment %}
+{% if taxa %}
+<h2>Lista normal...</h2>
+<ul>
+    {% for taxon in taxa %}
+    <li>
+    <a href="{{ taxon.get_absolute_url }}">{{ taxon.name }}</a>
+    </li>
+{% endfor %}
+</ul>
+{% else %}
+Nenhum táxon para arrumar.
+{% endif %}
+{% endcomment %}
+
+{% endblock %}

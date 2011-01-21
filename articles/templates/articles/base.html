@@ -37,11 +37,13 @@
     <div class="borders block shadow">
     <h2 class="title">{% trans 'Recent Articles' %}</h2>
         {% get_articles 10 as recent %}
+        {% if recent.count > 1 %}
         {% for article in recent %}
         {% if forloop.first %}<ul>{% endif %}
             <li><a href="{{ article.get_absolute_url }}" title="{% trans 'Read this article' %}">{{ article.title }}</a></li>
         {% if forloop.last %}</ul>{% endif %}
         {% endfor %}
+        {% endif %}
     </div>
 
     <div class="borders block shadow">

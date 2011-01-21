@@ -231,6 +231,18 @@ def fixtaxa_page(request):
         })
     return render_to_response('fixtaxa.html', variables)
 
+def all_page(request):
+    '''Página todas as imagens do site.'''
+    image_list = Image.objects.filter(is_public=True).order_by('?')
+    video_list = Video.objects.filter(is_public=True).order_by('?')
+    images = get_paginated(request, image_list)
+    videos = get_paginated(request, video_list)
+    variables = RequestContext(request, {
+        'images': images,
+        'videos': videos,
+        })
+    return render_to_response('tudo.html', variables)
+
 # Single
 def image_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''
@@ -382,9 +394,9 @@ def refs_page(request):
     return render_to_response('refs_page.html', variables)
 
 # Internal functions
-def get_paginated(request, obj_list):
+def get_paginated(request, obj_list, n_page=16):
     '''Retorna o Paginator de um queryset.'''
-    paginator = Paginator(obj_list, 16)
+    paginator = Paginator(obj_list, n_page)
     # Make sure page request is an int. If not, deliver first page.
     try:
         page = int(request.GET.get('page', '1'))

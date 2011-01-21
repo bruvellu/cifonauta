@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="span-16">
+<header>
+<h1>Todas as imagens: {{ images.paginator.count }} fotos, {{ videos.paginator.count }} vídeos</h1>
+</header>
+{% include 'gallery.html' %}
+</section>
+
+<aside class="span-8 last">
+</aside>
+{% endblock %}

@@ -40,6 +40,7 @@ urlpatterns = patterns('',
         (r'^literatura/$', refs_page),
         (r'^blog/', include('articles.urls')),
         (r'^organizacao/$', org_page),
+        (r'^tudo/$', all_page),
 
         url(r'^tag/$', meta_list_page,
             {'model': Tag, 'plural': u'Marcadores'}),

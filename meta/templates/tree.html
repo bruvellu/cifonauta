@@ -39,7 +39,7 @@
     {% comment %}{% if node.rank in main_ranks %}{% endcomment %}
     {% if node.rank %}
     <li class="{{ node.rank|slugify }} {{ node.slug }}">
-    <span class="quiet">{{ node.rank }}</span> <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{% if node.rank == 'Gênero' or node.rank == 'Espécie' %}<em>{{ node.name }}</em>{% else %}{{ node.name }}{% endif %}</a>
+    <span class="quiet">{{ node.rank }}</span> <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{{ node|sp_em }}</a>
     {% if not node.is_leaf_node %}
     <ul class="children tree">
         {{ children }}

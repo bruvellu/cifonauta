@@ -294,6 +294,12 @@ div.external li:hover {
     font-weight:normal;
 }
 
+ul.biodb li div ul {
+    list-style: none;
+    padding:0;
+    margin:0;
+}
+
 ul#tophits {
     list-style: none;
     padding: 0;

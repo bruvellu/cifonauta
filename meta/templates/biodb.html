@@ -1,553 +1,186 @@
 <ul class="biodb">
-    <li>
-
-    GBIF
-
-    <div class="external shadow">
-        <h3>Global Biodiversity Information Facility</h3>
-
-        Táxon{{ media.taxon_set.all.count|pluralize }}:
-        <ul>
-            {% for taxon in media.taxon_set.all %}
-            {% if taxon.name %}
-            <li>
-            <a href="http://data.gbif.org/search/{{ taxon.name }}" title="{{ taxon.name }} no Global Biodiversity Information Facility" target="_blank">{{ taxon.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-
-        {% with media.genus_set.all|first as gen %}
-        {% if gen.name %}
-        Gênero{{ media.genus_set.all.count|pluralize }}:
-        <ul>
-            {% for genus in media.genus_set.all %}
-            {% if genus.name %}
-            <li>
-            <a href="http://data.gbif.org/species/genus/{{ genus.name }}" title="{{ genus.name }} no Global Biodiversity Information Facility" target="_blank">{{ genus.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-
-        {% with media.species_set.all|first as spp %}
-        {% if spp.name %}
-        Espécie{{ media.species_set.all.count|pluralize }}:
-        <ul>
-            {% for sp in media.species_set.all %}
-            {% if sp.name %}
-            <li>
-            <a href="http://data.gbif.org/species/species/{{ sp.parent.name }}_{{ sp.name }}" title="{{ sp.parent.name }} {{ sp.name }} no Global Biodiversity Information Facility" target="_blank">{{ sp.parent.name }} {{ sp.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
+    <li> 
+        GBIF
+        <div class="external shadow">
+            <h3>Global Biodiversity Information Facility</h3>
+            <ul>
+                {% for taxon in media.taxon_set.all %}
+                <li>
+                <span class="quiet">{{ taxon.rank }}</span> 
+                {% if taxon.rank == 'Gênero' %}
+                <a href="http://data.gbif.org/species/genus/{{ taxon.name }}" title="{{ taxon.name }} no Global Biodiversity Information Facility" target="_blank">
+                {% else %}
+                    {% if taxon.rank == 'Espécie' %}
+                    <a href="http://data.gbif.org/species/species/{{ taxon.name|wordsplit|first }}_{{ taxon.name|wordsplit|last }}" title="{{ taxon.name }} no Global Biodiversity Information Facility" target="_blank">
+                    {% else %}
+                    <a href="http://data.gbif.org/search/{{ taxon.name }}" title="{{ taxon.name }} no Global Biodiversity Information Facility" target="_blank">
+                    {% endif %}
+                {% endif %}
+                {{ taxon|sp_em }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </li>
 
     <li>
+        EoL
 
-    EoL
-
-    <div class="external shadow">
-        <h3>Encyclopedia of Life</h3>
-
-        Táxon{{ media.taxon_set.all.count|pluralize }}:
-        <ul>
-            {% for taxon in media.taxon_set.all %}
-            {% if taxon.name %}
-            <li>
-            <a href="http://www.eol.org/search?q={{ taxon.name }}" title="{{ taxon.name }} no Encyclopedia of Life" target="_blank">{{ taxon.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-
-        {% with media.genus_set.all|first as gen %}
-        {% if gen.name %}
-        Gênero{{ media.genus_set.all.count|pluralize }}:
-        <ul>
-            {% for genus in media.genus_set.all %}
-            {% if genus.name %}
-            <li>
-            <a href="http://www.eol.org/search?q={{ genus.name }}" title="{{ genus.name }} no Encyclopedia of Life" target="_blank">{{ genus.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-
-        {% with media.species_set.all|first as spp %}
-        {% if spp.name %}
-        Espécie{{ media.species_set.all.count|pluralize }}:
-        <ul>
-            {% for sp in media.species_set.all %}
-            {% if sp.name %}
-            <li>
-            <a href="http://www.eol.org/search?q={{ sp.parent.name }} {{ sp.name }}" title="{{ sp.parent.name }} {{ sp.name }} no Encyclopedia of Life" target="_blank">{{ sp.parent.name }} {{ sp.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
-    
+        <div class="external shadow">
+            <h3>Encyclopedia of Life</h3>
+            <ul>
+                {% for taxon in media.taxon_set.all %}
+                <li>
+                <span class="quiet">{{ taxon.rank }}</span> 
+                <a href="http://www.eol.org/search?q={{ taxon.name }}" title="{{ taxon.name }} no Encyclopedia of Life" target="_blank">{{ taxon|sp_em }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </li>
+
     <li>
-
-    ITIS
-    
-    <div class="external shadow">
-        <h3>Integrated Taxonomic Information System</h3>
-
-        Táxon{{ media.taxon_set.all.count|pluralize }}:
-        <ul>
-            {% for taxon in media.taxon_set.all %}
-            {% if taxon.name %}
-            <li>
-            <a href="http://www.itis.gov/servlet/SingleRpt/SingleRpt?search_topic=Scientific_Name&search_value={{ taxon.name }}&search_kingdom=every&search_span=exactly_for&categories=All&source=html&search_credRating=All" title="{{ taxon.name }} no Integrated Taxonomic Information System" target="_blank">{{ taxon.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-
-        {% with media.genus_set.all|first as gen %}
-        {% if gen.name %}
-        Gênero{{ media.genus_set.all.count|pluralize }}:
-        <ul>
-            {% for genus in media.genus_set.all %}
-            {% if genus.name %}
-            <li>
-            <a href="http://www.itis.gov/servlet/SingleRpt/SingleRpt?search_topic=Scientific_Name&search_value={{ genus.name }}&search_kingdom=every&search_span=exactly_for&categories=All&source=html&search_credRating=All" title="{{ genus.name }} no Integrated Taxonomic Information System" target="_blank">{{ genus.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-
-        {% with media.species_set.all|first as spp %}
-        {% if spp.name %}
-        Espécie{{ media.species_set.all.count|pluralize }}:
-        <ul>
-            {% for sp in media.species_set.all %}
-            {% if sp.name %}
-            <li>
-            <a href="http://www.itis.gov/servlet/SingleRpt/SingleRpt?search_topic=Scientific_Name&search_value={{ sp.parent.name }} {{ sp.name }}&search_kingdom=every&search_span=exactly_for&categories=All&source=html&search_credRating=All" title="{{ sp.parent.name }} {{ sp.name }} no Integrated Taxonomic Information System" target="_blank">{{ sp.parent.name }} {{ sp.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
-    
+        ITIS
+        <div class="external shadow">
+            <h3>Integrated Taxonomic Information System</h3>
+            <ul>
+                {% for taxon in media.taxon_set.all %}
+                <li>
+                <span class="quiet">{{ taxon.rank }}</span> 
+                <a href="http://www.itis.gov/servlet/SingleRpt/SingleRpt?search_topic=Scientific_Name&search_value={{ taxon.name }}&search_kingdom=every&search_span=exactly_for&categories=All&source=html&search_credRating=All" title="{{ taxon.name }} no Integrated Taxonomic Information System" target="_blank">{{ taxon|sp_em }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div> 
     </li>
+
     <li>
-
-    BHL
-    
-    <div class="external shadow">
-        <h3>Biodiversity Heritage Library</h3>
-
-        Táxon{{ media.taxon_set.all.count|pluralize }}:
-        <ul>
-            {% for taxon in media.taxon_set.all %}
-            {% if taxon.name %}
-            <li>
-            <a href="http://www.biodiversitylibrary.org/name/{{ taxon.name }}" title="{{ taxon.name }} no Biodiversity Heritage Library" target="_blank">{{ taxon.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-
-        {% with media.genus_set.all|first as gen %}
-        {% if gen.name %}
-        Gênero{{ media.genus_set.all.count|pluralize }}:
-        <ul>
-            {% for genus in media.genus_set.all %}
-            {% if genus.name %}
-            <li>
-            <a href="http://www.biodiversitylibrary.org/name/{{ genus.name }}" title="{{ genus.name }} no Biodiversity Heritage Library" target="_blank">{{ genus.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-
-        {% with media.species_set.all|first as spp %}
-        {% if spp.name %}
-        Espécie{{ media.species_set.all.count|pluralize }}:
-        <ul>
-            {% for sp in media.species_set.all %}
-            {% if sp.name %}
-            <li>
-            <a href="http://www.biodiversitylibrary.org/name/{{ sp.parent.name }}_{{ sp.name }}" title="{{ sp.parent.name }} {{ sp.name }} no Biodiversity Heritage Library" target="_blank">{{ sp.parent.name }} {{ sp.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
-    
+        BHL
+        <div class="external shadow">
+            <h3>Biodiversity Heritage Library</h3>
+            <ul>
+                {% for taxon in media.taxon_set.all %}
+                <li>
+                <span class="quiet">{{ taxon.rank }}</span> 
+                <a href="http://www.biodiversitylibrary.org/name/{{ taxon.name }}" title="{{ taxon.name }} no Biodiversity Heritage Library" target="_blank">{{ taxon|sp_em }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </li>
+
     <li>
-
-    OBIS
-
-    <div class="external shadow">
-        <h3>Ocean Biogeographic Information System</h3>
-
-        Táxon{{ media.taxon_set.all.count|pluralize }}:
-        <ul>
-            {% for taxon in media.taxon_set.all %}
-            {% if taxon.name %}
-            <li>
-            <a href="http://v2.iobis.org/OBISWEB/ObisControllerServlet?category=all&names=data&tableName=0&searchName={{ taxon.name }}&x=0&y=0" title="{{ taxon.name }} no Ocean Biogeographic Information System" target="_blank">{{ taxon.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-
-        {% with media.genus_set.all|first as gen %}
-        {% if gen.name %}
-        Gênero{{ media.genus_set.all.count|pluralize }}:
-        <ul>
-            {% for genus in media.genus_set.all %}
-            {% if genus.name %}
-            <li>
-            <a href="http://v2.iobis.org/OBISWEB/ObisControllerServlet?category=all&names=data&tableName=0&searchName={{ genus.name }}&x=0&y=0" title="{{ genus.name }} no Ocean Biogeographic Information System" target="_blank">{{ genus.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-
-        {% with media.species_set.all|first as spp %}
-        {% if spp.name %}
-        Espécie{{ media.species_set.all.count|pluralize }}:
-        <ul>
-            {% for sp in media.species_set.all %}
-            {% if sp.name %}
-            <li>
-            <a href="http://www.iobis.org/OBISWEB/ObisControllerServlet?searchCategory=/AdvancedSearchServlet&genus={{ sp.parent.name }}&species={{ sp.name }}&sciname={{ sp.parent.name }}+{{ sp.name }}" title="{{ sp.parent.name }} {{ sp.name }} no Ocean Biogeographic Information System" target="_blank">{{ sp.parent.name }} {{ sp.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
-    
+        OBIS
+        <div class="external shadow">
+            <h3>Ocean Biogeographic Information System</h3>
+            <ul>
+                {% for taxon in media.taxon_set.all %}
+                <li>
+                <span class="quiet">{{ taxon.rank }}</span> 
+                <a href="http://v2.iobis.org/OBISWEB/ObisControllerServlet?category=all&names=data&tableName=0&searchName={{ taxon.name }}&x=0&y=0" title="{{ taxon.name }} no Ocean Biogeographic Information System" target="_blank">{{ taxon|sp_em }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </li>
+
     <li>
-
-    WoRMS
-
-    <div class="external shadow">
-        <h3>World Register of Marine Species</h3>
-
-        Táxon{{ media.taxon_set.all.count|pluralize }}:
-        <ul>
-            {% for taxon in media.taxon_set.all %}
-            {% if taxon.name %}
-            <li>
-            <a href="http://www.marinespecies.org/aphia.php?p=taxlist&tName={{ taxon.name }}" title="{{ taxon.name }} no World Register of Marine Species" target="_blank">{{ taxon.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-
-        {% with media.genus_set.all|first as gen %}
-        {% if gen.name %}
-        Gênero{{ media.genus_set.all.count|pluralize }}:
-        <ul>
-            {% for genus in media.genus_set.all %}
-            {% if genus.name %}
-            <li>
-            <a href="http://www.marinespecies.org/aphia.php?p=taxlist&tName={{ genus.name }}" title="{{ genus.name }} no World Register of Marine Species" target="_blank">{{ genus.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-
-        {% with media.species_set.all|first as spp %}
-        {% if spp.name %}
-        Espécie{{ media.species_set.all.count|pluralize }}:
-        <ul>
-            {% for sp in media.species_set.all %}
-            {% if sp.name %}
-            <li>
-            <a href="http://www.marinespecies.org/aphia.php?p=taxlist&tName={{ sp.parent.name }} {{ sp.name }}" title="{{ sp.parent.name }} {{ sp.name }} no World Register of Marine Species" target="_blank">{{ sp.parent.name }} {{ sp.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
-    
-    
+        WoRMS
+        <div class="external shadow">
+            <h3>World Register of Marine Species</h3>
+            <ul>
+                {% for taxon in media.taxon_set.all %}
+                <li>
+                <span class="quiet">{{ taxon.rank }}</span> 
+                <a href="http://www.marinespecies.org/aphia.php?p=taxlist&tName={{ taxon.name }}" title="{{ taxon.name }} no World Register of Marine Species" target="_blank">{{ taxon|sp_em }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </li>
+
     <li>
-    
-    CoL
-
-    <div class="external shadow">
-        <h3>Catalogue of Life</h3>
-
-        Táxon{{ media.taxon_set.all.count|pluralize }}:
-        <ul>
-            {% for taxon in media.taxon_set.all %}
-            {% if taxon.name %}
-            <li>
-            <a href="http://www.catalogueoflife.org/annual-checklist/2006/search_results.php?search_string={{ taxon.name }}" title="{{ taxon.name }} no Catalogue of Life" target="_blank">{{ taxon.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-
-        {% with media.genus_set.all|first as gen %}
-        {% if gen.name %}
-        Gênero{{ media.genus_set.all.count|pluralize }}:
-        <ul>
-            {% for genus in media.genus_set.all %}
-            {% if genus.name %}
-            <li>
-            <a href="http://www.catalogueoflife.org/annual-checklist/2006/search_results.php?search_type=search_scientific&genus={{ genus.name }}&species=" title="{{ genus.name }} no Catalogue of Life" target="_blank">{{ genus.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-
-        {% with media.species_set.all|first as spp %}
-        {% if spp.name %}
-        Espécie{{ media.species_set.all.count|pluralize }}:
-        <ul>
-            {% for sp in media.species_set.all %}
-            {% if sp.name %}
-            <li>
-            <a href="http://www.catalogueoflife.org/annual-checklist/2006/search_results.php?search_type=search_scientific&genus={{ sp.parent.name }}&species={{ sp.name }}" title="{{ sp.parent.name }} {{ sp.name }} no Catalogue of Life" target="_blank">{{ sp.parent.name }} {{ sp.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
-    
+        CoL
+        <div class="external shadow">
+            <h3>Catalogue of Life</h3>
+            <ul>
+                {% for taxon in media.taxon_set.all %}
+                <li>
+                <span class="quiet">{{ taxon.rank }}</span> 
+                {% if taxon.rank == 'Gênero' %}
+                <a href="http://www.catalogueoflife.org/annual-checklist/2006/search_results.php?search_type=search_scientific&genus={{ taxon.name }}&species=" title="{{ taxon.name }} no Catalogue of Life" target="_blank">
+                {% else %}
+                    {% if taxon.rank == 'Espécie' %}
+                    <a href="http://www.catalogueoflife.org/annual-checklist/2006/search_results.php?search_type=search_scientific&genus={{ taxon.name|wordsplit|first }}&species={{ taxon.name|wordsplit|last }}" title="{{ taxon.name }} no Catalogue of Life" target="_blank">
+                    {% else %}
+                    <a href="http://www.catalogueoflife.org/annual-checklist/2006/search_results.php?search_string={{ taxon.name }}" title="{{ taxon.name }} no Catalogue of Life" target="_blank">
+                    {% endif %}
+                {% endif %}
+                {{ taxon|sp_em }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </li>
+
     <li>
-    
-    GenBank
-
-    <div class="external shadow">
-        <h3>NCBI GenBank</h3>
-
-        Táxon{{ media.taxon_set.all.count|pluralize }}:
-        <ul>
-            {% for taxon in media.taxon_set.all %}
-            {% if taxon.name %}
-            <li>
-            <a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?name={{ taxon.name }}" title="{{ taxon.name }} no NCBI GenBank" target="_blank">{{ taxon.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-
-        {% with media.genus_set.all|first as gen %}
-        {% if gen.name %}
-        Gênero{{ media.genus_set.all.count|pluralize }}:
-        <ul>
-            {% for genus in media.genus_set.all %}
-            {% if genus.name %}
-            <li>
-            <a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?name={{ genus.name }}" title="{{ genus.name }} no NCBI GenBank" target="_blank">{{ genus.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-
-        {% with media.species_set.all|first as spp %}
-        {% if spp.name %}
-        Espécie{{ media.species_set.all.count|pluralize }}:
-        <ul>
-            {% for sp in media.species_set.all %}
-            {% if sp.name %}
-            <li>
-            <a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?name={{ sp.parent.name }} {{ sp.name }}" title="{{ sp.parent.name }} {{ sp.name }} no NCBI GenBank" target="_blank">{{ sp.parent.name }} {{ sp.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
-    
+        GenBank
+        <div class="external shadow">
+            <h3>NCBI GenBank</h3>
+            <ul>
+                {% for taxon in media.taxon_set.all %}
+                <li>
+                <span class="quiet">{{ taxon.rank }}</span> 
+                <a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?name={{ taxon.name }}" title="{{ taxon.name }} no NCBI GenBank" target="_blank">{{ taxon|sp_em }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </li>
+
     <li>
-    
-    BOLD
-
-    <div class="external shadow">
-        <h3>Barcode of Life Data Systems</h3>
-
-        Táxon{{ media.taxon_set.all.count|pluralize }}:
-        <ul>
-            {% for taxon in media.taxon_set.all %}
-            {% if taxon.name %}
-            <li>
-            <a href="http://www.co1bank.uoguelph.ca/views/taxbrowser.php?taxon={{ taxon.name }}" title="{{ taxon.name }} no Barcode of Life Data Systems" target="_blank">{{ taxon.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-
-        {% with media.genus_set.all|first as gen %}
-        {% if gen.name %}
-        Gênero{{ media.genus_set.all.count|pluralize }}:
-        <ul>
-            {% for genus in media.genus_set.all %}
-            {% if genus.name %}
-            <li>
-            <a href="http://www.co1bank.uoguelph.ca/views/taxbrowser.php?taxon={{ genus.name }}" title="{{ genus.name }} no Barcode of Life Data Systems" target="_blank">{{ genus.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-
-        {% with media.species_set.all|first as spp %}
-        {% if spp.name %}
-        Espécie{{ media.species_set.all.count|pluralize }}:
-        <ul>
-            {% for sp in media.species_set.all %}
-            {% if sp.name %}
-            <li>
-            <a href="http://www.co1bank.uoguelph.ca/views/taxbrowser.php?taxon={{ sp.parent.name }} {{ sp.name }}" title="{{ sp.parent.name }} {{ sp.name }} no Barcode of Life Data Systems" target="_blank">{{ sp.parent.name }} {{ sp.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
-    
+        BOLD
+        <div class="external shadow">
+            <h3>Barcode of Life Data Systems</h3>
+            <ul>
+                {% for taxon in media.taxon_set.all %}
+                <li>
+                <span class="quiet">{{ taxon.rank }}</span> 
+                <a href="http://www.co1bank.uoguelph.ca/views/taxbrowser.php?taxon={{ taxon.name }}" title="{{ taxon.name }} no Barcode of Life Data Systems" target="_blank">{{ taxon|sp_em }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </li>
+
     <li>
-    
-    uBio
-
-    <div class="external shadow">
-        <h3>Universal Biological Indexer and Organizer</h3>
-
-        Táxon{{ media.taxon_set.all.count|pluralize }}:
-        <ul>
-            {% for taxon in media.taxon_set.all %}
-            {% if taxon.name %}
-            <li>
-            <a href="http://www.ubio.org/browser/search.php?search_all={{ taxon.name }}" title="{{ taxon.name }} no Universal Biological Indexer and Organizer" target="_blank">{{ taxon.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-
-        {% with media.genus_set.all|first as gen %}
-        {% if gen.name %}
-        Gênero{{ media.genus_set.all.count|pluralize }}:
-        <ul>
-            {% for genus in media.genus_set.all %}
-            {% if genus.name %}
-            <li>
-            <a href="http://www.ubio.org/browser/search.php?search_all={{ genus.name }}" title="{{ genus.name }} no Universal Biological Indexer and Organizer" target="_blank">{{ genus.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-
-        {% with media.species_set.all|first as spp %}
-        {% if spp.name %}
-        Espécie{{ media.species_set.all.count|pluralize }}:
-        <ul>
-            {% for sp in media.species_set.all %}
-            {% if sp.name %}
-            <li>
-            <a href="http://www.ubio.org/browser/search.php?search_all={{ sp.parent.name }} {{ sp.name }}" title="{{ sp.parent.name }} {{ sp.name }} no Universal Biological Indexer and Organizer" target="_blank">{{ sp.parent.name }} {{ sp.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
-    
+        uBio
+        <div class="external shadow">
+            <h3>Universal Biological Indexer and Organizer</h3>
+            <ul>
+                {% for taxon in media.taxon_set.all %}
+                <li>
+                <span class="quiet">{{ taxon.rank }}</span> 
+                <a href="http://www.ubio.org/browser/search.php?search_all={{ taxon.name }}" title="{{ taxon.name }} no Universal Biological Indexer and Organizer" target="_blank">{{ taxon|sp_em }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </li>
+
     <li>
-
-    MSIP
-
-    <div class="external shadow">
-        <h3>Marine Species Identification Portal</h3>
-
-        Táxon{{ media.taxon_set.all.count|pluralize }}:
-        <ul>
-            {% for taxon in media.taxon_set.all %}
-            {% if taxon.name %}
-            <li>
-            <a href="http://species-identification.org/search.php?search_for={{ taxon.name }}&image.x=0&image.y=0&search_mode=basic" title="{{ taxon.name }} no Marine Species Identification Portal" target="_blank">{{ taxon.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-
-        {% with media.genus_set.all|first as gen %}
-        {% if gen.name %}
-        Gênero{{ media.genus_set.all.count|pluralize }}:
-        <ul>
-            {% for genus in media.genus_set.all %}
-            {% if genus.name %}
-            <li>
-            <a href="http://species-identification.org/search.php?search_for={{ genus.name }}&image.x=0&image.y=0&search_mode=basic" title="{{ genus.name }} no Marine Species Identification Portal" target="_blank">{{ genus.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-
-        {% with media.species_set.all|first as spp %}
-        {% if spp.name %}
-        Espécie{{ media.species_set.all.count|pluralize }}:
-        <ul>
-            {% for sp in media.species_set.all %}
-            {% if sp.name %}
-            <li>
-            <a href="http://species-identification.org/search.php?search_for={{ sp.parent.name }}+{{ sp.name }}&image.x=0&image.y=0&search_mode=basic" title="{{ sp.parent.name }} {{ sp.name }} no Marine Species Identification Portal" target="_blank">{{ sp.parent.name }} {{ sp.name }}</a>
-            </li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-    </div>
-    
+        MSIP
+        <div class="external shadow">
+            <h3>Marine Species Identification Portal</h3>
+            <ul>
+                {% for taxon in media.taxon_set.all %}
+                <li>
+                <span class="quiet">{{ taxon.rank }}</span> 
+                <a href="http://species-identification.org/search.php?search_for={{ taxon.name }}&image.x=0&image.y=0&search_mode=basic" title="{{ taxon.name }} no Marine Species Identification Portal" target="_blank">{{ taxon|sp_em }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
     </li>
+
 </ul>

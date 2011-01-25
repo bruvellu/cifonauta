@@ -256,40 +256,26 @@ def refine_set(media_list, meta_instances):
     '''Identifica marcadores presentes nas imagens (via ForeignKey).'''
     refined = []
     for meta in meta_instances:
-        print 'TAG:'
-        print meta 
         for i in media_list:
-            print 'IMAGE:'
-            print i
             try:
                 meta.image_set.get(id=i.id)
-                print 'issa'
                 refined.append(meta)
                 break
             except:
                 print 'continua...'
-    print 'RESULTADO:'
-    print refined
     return refined
 
 def refine_many(media_list, meta_instances):
     '''Identifica marcadores presentes nas imagens (via ManyToMany).'''
     refined = []
     for meta in meta_instances:
-        print 'TAG:'
-        print meta 
         for i in media_list:
-            print 'IMAGE:'
-            print i
             try:
                 meta.images.get(id=i.id)
-                print 'issa'
                 refined.append(meta)
                 break
             except:
                 print 'continua...'
-    print 'RESULTADO:'
-    print refined
     return refined
 
 def extract_set(media_list):

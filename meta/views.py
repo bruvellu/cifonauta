@@ -411,6 +411,7 @@ def get_paginated(request, obj_list, n_page=16):
 
 def recurse(taxon, q=None):
     '''Recursivamente retorna todos os táxons-filho em um Q object.'''
+    #TODO Usar mptt para agilizar.
     if not q:
         q = []
     if taxon.children.all():

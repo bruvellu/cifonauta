@@ -87,6 +87,11 @@ header.main hgroup {
     font-variant:small-caps;
 }
 
+header.main h1, header.main h2 {
+    margin:0;
+    padding:0;
+}
+
 section#stats {
     font-size: 1.2em;
     color: #333333;

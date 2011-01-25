@@ -30,14 +30,14 @@ a img {border:none;}
 html {font-size:100.01%;}
 body {font-size:75%;color:#222;background:#fff;font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;}
 h1, h2, h3, h4, h5, h6 {font-weight:normal;color:#111;}
-h1 {font-size:2.4em;line-height:1;margin-bottom:0.2em;}
-h2 {font-size:1.6em;margin-bottom:0.4em;}
-h3 {font-size:1.4em;line-height:1;margin-bottom:1em;}
-h4 {font-size:1.2em;line-height:1.25;margin-bottom:1.25em;}
-h5 {font-size:1em;font-weight:bold;margin-bottom:1.5em;}
+h1 {font-size:2.333em;padding:0 0 0.4em 0;}
+h2 {font-size:1.778em;padding:0 0 0.3em 0;}
+h3 {font-size:1.333em;padding:0 0 0.2em 0;}
+h4 {font-size:1.2em;padding:0 0 1.25em 0;}
+h5 {font-size:1em;font-weight:bold;padding:0 0 1.5em 0;}
 h6 {font-size:1em;font-weight:bold;}
 h1 img, h2 img, h3 img, h4 img, h5 img, h6 img {margin:0;}
-p {margin:0 0 1.5em;}
+p {padding:0 0 1em;}
 p img.left {float:left;margin:1.5em 1.5em 1.5em 0;padding:0;}
 p img.right {float:right;margin:1.5em 0 1.5em 1.5em;}
 a:focus, a:hover {color:#324d61;}
@@ -263,7 +263,7 @@ input.span-24, textarea.span-24 {width:938px;}
 .push-22 {margin:0 -880px 1.5em 880px;}
 .push-23 {margin:0 -920px 1.5em 920px;}
 .push-24 {margin:0 -960px 1.5em 960px;}
-.push-1, .push-2, .push-3, .push-4, .push-5, .push-6, .push-7, .push-8, .push-9, .push-10, .push-11, .push-12, .push-13, .push-14, .push-15, .push-16, .push-17, .push-18, .push-19, .push-20, .push-21, .push-22, .push-23, .push-24 {float:right;position:relative;}
+.push-1, .push-2, .push-3, .push-4, .push-5, .push-6, .push-7, .push-8, .push-9, .push-10, .push-11, .push-12, .push-13, .push-14, .push-15, .push-16, .push-17, .push-18, .push-19, .ush-20, .push-21, .push-22, .push-23, .push-24 {float:right;position:relative;}
 .prepend-top {margin-top:1.5em;}
 .append-bottom {margin-bottom:1.5em;}
 .box {padding:1.5em;margin-bottom:1.5em;background:#E5ECF9;}
@@ -283,7 +283,7 @@ hr.space {background:#fff;color:#fff;visibility:hidden;}
 -------------------------------------------------------------- */
 
 /* Indentation instead of line shifts for sibling paragraphs. */
-   p + p { text-indent:2em; margin-top:-1.5em; }
+   p + p { text-indent:2em; margin-top:-1em; }
    form p + p  { text-indent: 0; } /* Don't want this in forms. */
 
 

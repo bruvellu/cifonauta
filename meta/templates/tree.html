@@ -3,7 +3,9 @@
 {% block extra-head %}
 <link rel="stylesheet" href="/site_media/js/jquery-treeview/jquery.treeview.css" /> 
  
+{% comment %}
 <script src="/site_media/js/jquery-treeview/lib/jquery.js" type="text/javascript"></script> 
+{% endcomment %}
 <script src="/site_media/js/jquery-treeview/lib/jquery.cookie.js" type="text/javascript"></script> 
 <script src="/site_media/js/jquery-treeview/jquery.treeview.js" type="text/javascript"></script> 
  
@@ -30,8 +32,8 @@
 </script>
 {% endblock %}
 
-{% if taxa %}
-<h2>Grupos ({{ taxa.count }})</h2>
+<h2>Grupos</h2>
+{% full_tree_for_model meta.Taxon as taxa %}
 <ul class="root tree" id="colaptree">
     {% recursetree taxa %}
     {% comment %}{% if node.rank in main_ranks %}{% endcomment %}
@@ -48,6 +50,3 @@
     {% comment %}{% endif %}{% endcomment %}
     {% endrecursetree %}
 </ul>
-{% else %}
-<h2>Nenhum táxon no banco</h2>
-{% endif %}

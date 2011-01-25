@@ -68,11 +68,9 @@ $(document).ready(function(){
             <div class="border-bottom" id="views">
                 {{ media.view_count }} visita{{ media.view_count|pluralize }}
             </div>
-            {% with media.taxon_set.all|first as tax %}
-            {% if tax.name %}
+            {% if media.taxon_set.all %}
                 {% include 'biodb.html' %}
             {% endif %}
-            {% endwith %}
 
             {% if media.size.name %}
             {% spaceless %}
@@ -193,7 +191,7 @@ $(document).ready(function(){
 {% block sidebar %}
 <aside class="main span-8 last">
 <div class="borders block shadow">
-{% show_tree %}
+    {% include 'tree.html' %}
 </div>
 </aside>
 {% endblock %}

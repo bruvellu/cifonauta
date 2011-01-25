@@ -237,9 +237,9 @@ def icount(value, field):
     return Image.objects.filter(**q).count() + Video.objects.filter(**q).count()
 
 @register.inclusion_tag('mais.html')
-def show_info(media_list, query, qsize):
+def show_info(image_list, video_list, query, qsize):
     '''Apenas manda extrair os metadados e envia para template.'''
-    authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(media_list)
+    authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(image_list, video_list)
     qlist = [slugify(q) for q in query.split()]
     return {
             'authors': authors, 'taxa': taxa, 'sizes': sizes,
@@ -252,24 +252,31 @@ def show_info(media_list, query, qsize):
 def show_set(set, prefix, suffix, sep, method='name'):
     return {'set': set, 'prefix': prefix, 'suffix': suffix, 'sep': sep, 'method': method}
 
-def extract_set(media_list):
+def extract_set(image_list, video_list):
     '''Extrai outros metadados das imagens buscadas.'''
+    #TODO Incluir vídeos nessas queries!
     # Salva IDs dos arquivos em uma lista.
-    media_values = media_list.values()
-    media_ids = []
-    for media in media_values.iterator():
-        media_ids.append(media['id'])
+    # Imagens.
+    image_values = image_list.values()
+    image_ids = []
+    for image in image_values.iterator():
+        image_ids.append(image['id'])
+    # Vídeos.
+    video_values = video_list.values()
+    video_ids = []
+    for video in video_values.iterator():
+        video_ids.append(video['id'])
 
     # ManyToMany relationships
-    refined_tags = Tag.objects.filter(images__pk__in=media_ids).distinct().order_by('name')
-    refined_authors = Author.objects.filter(images__pk__in=media_ids).distinct().order_by('name')
-    refined_taxa = Taxon.objects.filter(images__pk__in=media_ids).distinct().order_by('name')
+    refined_tags = Tag.objects.filter(images__pk__in=image_ids).distinct().order_by('name')
+    refined_authors = Author.objects.filter(images__pk__in=image_ids).distinct().order_by('name')
+    refined_taxa = Taxon.objects.filter(images__pk__in=image_ids).distinct().order_by('name')
 
     # ForeignKey relationships
-    refined_sizes = Size.objects.filter(image__pk__in=media_ids).distinct().order_by('name')
-    refined_sublocations = Sublocation.objects.filter(image__pk__in=media_ids).distinct().order_by('name')
-    refined_cities = City.objects.filter(image__pk__in=media_ids).distinct().order_by('name')
-    refined_states = State.objects.filter(image__pk__in=media_ids).distinct().order_by('name')
-    refined_countries = Country.objects.filter(image__pk__in=media_ids).distinct().order_by('name')
+    refined_sizes = Size.objects.filter(image__pk__in=image_ids).distinct().order_by('name')
+    refined_sublocations = Sublocation.objects.filter(image__pk__in=image_ids).distinct().order_by('name')
+    refined_cities = City.objects.filter(image__pk__in=image_ids).distinct().order_by('name')
+    refined_states = State.objects.filter(image__pk__in=image_ids).distinct().order_by('name')
+    refined_countries = Country.objects.filter(image__pk__in=image_ids).distinct().order_by('name')
 
     return refined_authors, refined_taxa, refined_sizes, refined_sublocations, refined_cities, refined_states, refined_countries, refined_tags

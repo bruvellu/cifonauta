@@ -280,24 +280,41 @@ def refine_many(media_list, meta_instances):
 
 def extract_set(media_list):
     '''Extrai outros metadados das imagens buscadas.'''
+    # Salva IDs dos arquivos.
+    media_values = media_list.values()
+    media_ids = []
+    for media in media_values.iterator():
+        media_ids.append(media['id'])
     # ManyToMany relationships
-    tags = Tag.objects.all().order_by('name')
-    refined_tags = refine_many(media_list, tags)
-    authors = Author.objects.all().order_by('name')
-    refined_authors = refine_many(media_list, authors)
-    taxa = Taxon.objects.all().order_by('name')
-    refined_taxa = refine_many(media_list, taxa)
+    refined_tags = Tag.objects.filter(images__pk__in=media_ids).distinct().order_by('name')
+    refined_authors = Author.objects.filter(images__pk__in=media_ids).distinct().order_by('name')
+    refined_taxa = Taxon.objects.filter(images__pk__in=media_ids).distinct().order_by('name')
+    #tags = Tag.objects.all().order_by('name')
+    #authors = Author.objects.all().order_by('name')
+    #taxa = Taxon.objects.all().order_by('name')
 
     # ForeignKey relationships
-    sizes = Size.objects.all().order_by('name')
-    refined_sizes = refine_set(media_list, sizes)
-    sublocations = Sublocation.objects.all().order_by('name')
-    refined_sublocations = refine_set(media_list, sublocations)
-    cities = City.objects.all().order_by('name')
-    refined_cities = refine_set(media_list, cities)
-    states = State.objects.all().order_by('name')
-    refined_states = refine_set(media_list, states)
-    countries = Country.objects.all().order_by('name')
-    refined_countries = refine_set(media_list, countries)
+    refined_sizes = Size.objects.filter(image__pk__in=media_ids).distinct().order_by('name')
+    refined_sublocations = Sublocation.objects.filter(image__pk__in=media_ids).distinct().order_by('name')
+    refined_cities = City.objects.filter(image__pk__in=media_ids).distinct().order_by('name')
+    refined_states = State.objects.filter(image__pk__in=media_ids).distinct().order_by('name')
+    refined_countries = Country.objects.filter(image__pk__in=media_ids).distinct().order_by('name')
+    #sizes = Size.objects.all().order_by('name')
+    #sublocations = Sublocation.objects.all().order_by('name')
+    #cities = City.objects.all().order_by('name')
+    #states = State.objects.all().order_by('name')
+    #countries = Country.objects.all().order_by('name')
+
+    ## ManyToMany relationships
+    #refined_tags = refine_many(media_list, tags)
+    #refined_authors = refine_many(media_list, authors)
+    #refined_taxa = refine_many(media_list, taxa)
+
+    ## ForeignKey relationships
+    #refined_sizes = refine_set(media_list, sizes)
+    #refined_sublocations = refine_set(media_list, sublocations)
+    #refined_cities = refine_set(media_list, cities)
+    #refined_states = refine_set(media_list, states)
+    #refined_countries = refine_set(media_list, countries)
     
     return refined_authors, refined_taxa, refined_sizes, refined_sublocations, refined_cities, refined_states, refined_countries, refined_tags

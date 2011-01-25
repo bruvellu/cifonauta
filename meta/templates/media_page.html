@@ -146,8 +146,15 @@ $(document).ready(function(){
         {% get_comment_list for media as media_comments %}
         <div id="comments" class="span-16 last">
             {% get_comment_count for media as comment_count %}
-            <div class="show-comment">Mostrar comentários ({{ comment_count }})</div>
-            <div class="hide-comment">Esconder comentários ({{ comment_count }})</div>
+            <div class="span-16 last">
+                <div class="span-4">
+                    <h2>Comentários ({{ comment_count }})</h2>
+                </div>
+                <div class="span-12 last">
+                    <div class="show-comment borders">mostrar</div>
+                    <div class="hide-comment borders">esconder</div>
+                </div>
+            </div>
             <div id="comment-box">
                 {% if media_comments %}
                     <ul id="comment-list">

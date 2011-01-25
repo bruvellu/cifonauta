@@ -555,9 +555,16 @@ ul#comment-list {
 }
 
 .hide-comment, .show-comment {
+    background:#fafafa;
     cursor: pointer;
     font-weight: bold;
     color:#4d7494;
+    padding:0.3em 12px;
+    float:left;
+    -moz-border-radius: 5px 5px 5px 5px;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    margin:0.3em 0 0 0 !important;
 }
 
 .hide-comment {

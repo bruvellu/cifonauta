@@ -53,15 +53,17 @@ def search_page(request):
     form = SearchForm()
 
     # Refinamentos.
-    qauthors = []
-    qtags = []
-    qsize = ''
-    qtaxa = []
-    qsublocations = []
-    qcities = []
-    qstates = []
-    qcountries = []
-    query = ''
+    queries = {
+            u'query': '',
+            u'author': [],
+            u'tag': [],
+            u'size': [],
+            u'taxon': [],
+            u'sublocation': [],
+            u'city': [],
+            u'state': [],
+            u'country': [],
+            }
 
     image_list = []
     video_list = []
@@ -73,6 +75,7 @@ def search_page(request):
         show_results = True
         # Query
         if 'query' in request.GET:
+            #TODO Lidar com queries no novo sistema de refinamento.
             query = request.GET['query'].strip()
             # Faz full-text search no banco de dados, usando o campo tsv.
             image_queryset = Image.objects.extra(
@@ -96,11 +99,12 @@ def search_page(request):
             image_list = image_queryset.exclude(is_public=False)
             video_list = video_queryset.exclude(is_public=False) 
             form = SearchForm({'query': query})
+            queries['query'] = query
 
         # Author
         if 'author' in request.GET:
             authors = request.GET['author'].split(',')
-            qauthors = Author.objects.filter(slug__in=authors)
+            queries['author'] = Author.objects.filter(slug__in=authors)
             if image_list and video_list:
                 for author in authors:
                     image_list = image_list.filter(author__slug=author)
@@ -117,7 +121,7 @@ def search_page(request):
         # Tag 
         if 'tag' in request.GET:
             tags = request.GET['tag'].split(',')
-            qtags = Tag.objects.filter(slug__in=tags)
+            queries['tag'] = Tag.objects.filter(slug__in=tags)
             if image_list and video_list:
                 for tag in tags:
                     image_list = image_list.filter(tag__slug=tag)
@@ -134,7 +138,7 @@ def search_page(request):
         # Size
         if 'size' in request.GET:
             size = request.GET['size']
-            qsize = Size.objects.filter(id=size)
+            queries['size'] = Size.objects.filter(id=size)
             if image_list and video_list:
                 image_list = image_list.filter(size=size)
                 video_list = video_list.filter(size=size)
@@ -145,7 +149,7 @@ def search_page(request):
         # Taxon
         if 'taxon' in request.GET:
             taxa = request.GET['taxon'].split(',')
-            qtaxa = Taxon.objects.filter(slug__in=taxa)
+            queries['taxon'] = Taxon.objects.filter(slug__in=taxa)
             if image_list and video_list:
                 for taxon in taxa:
                     image_list = image_list.filter(taxon__slug=taxon)
@@ -162,7 +166,7 @@ def search_page(request):
         # Sublocation
         if 'sublocation' in request.GET:
             sublocations = request.GET['sublocation'].split(',')
-            qsublocations = Sublocation.objects.filter(slug__in=sublocations)
+            queries['sublocation'] = Sublocation.objects.filter(slug__in=sublocations)
             if image_list and video_list:
                 for sublocation in sublocations:
                     image_list = image_list.filter(
@@ -185,7 +189,7 @@ def search_page(request):
         # City
         if 'city' in request.GET:
             cities = request.GET['city'].split(',')
-            qcities = City.objects.filter(slug__in=cities)
+            queries['city'] = City.objects.filter(slug__in=cities)
             if image_list and video_list:
                 for city in cities:
                     image_list = image_list.filter(city__slug=city)
@@ -202,7 +206,7 @@ def search_page(request):
         # State
         if 'state' in request.GET:
             states = request.GET['state'].split(',')
-            qstates = State.objects.filter(slug__in=states)
+            queries['state'] = State.objects.filter(slug__in=states)
             if image_list and video_list:
                 for state in states:
                     image_list = image_list.filter(state__slug=state)
@@ -219,7 +223,7 @@ def search_page(request):
         # Country
         if 'country' in request.GET:
             countries = request.GET['country'].split(',')
-            qcountries = Country.objects.filter(slug__in=countries)
+            queries['country'] = Country.objects.filter(slug__in=countries)
             if image_list and video_list:
                 for country in countries:
                     image_list = image_list.filter(country__slug=country)
@@ -242,17 +246,7 @@ def search_page(request):
         'image_list': image_list,
         'video_list': video_list,
         'show_results': show_results,
-        'queries': {
-            u'query': query,
-            u'author': qauthors,
-            u'tag': qtags,
-            u'size': qsize,
-            u'taxon': qtaxa,
-            u'sublocation': qsublocations,
-            u'city': qcities,
-            u'state': qstates,
-            u'country': qcountries,
-            }
+        'queries': queries,
         })
     return render_to_response('buscar.html', variables)
 
@@ -472,8 +466,13 @@ def meta_page(request, model_name, field, slug):
             u'state': [],
             u'country': [],
             }
+    #TODO Mandar meta do momento para ressaltar no template.
     qmodels = model_name.objects.filter(slug__in=slug)
     queries[field] = qmodels
+    print 'AAAAAAAA'
+    print qmodels
+    print field
+    print queries[field]
     model = get_object_or_404(model_name, slug=slug)
     filter_args = {field: model}
     try:

@@ -1,88 +1,43 @@
 <div class="block borders shadow">
     <h2>Refine sua busca</h2>
     <p>Use os metadados abaixo para refinar sua busca.</p>
-{% if tags %}
+{% if tags or queries.tag %}
 <h3>Marcadores | <a href="{% url meta.views.tags_page %}" title="Todos os marcadores">ver todos</a></h3>
-    {% for meta in tags %}{% include 'fino.html' %}{% if not forloop.last %},{% endif %}{% endfor %}
+{% refiner queries.tag tags 'tag' queries %}
 {% endif %}
 
-{% if authors %}
-<h3>Autores</h3>
-<ul>
-    {% for meta in authors %}
-    <li>
-    {% include 'fino.html' %}
-    </li>
-    {% endfor %}
-</ul>
+{% if authors or queries.author %}
+    <h3>Autores</h3>
+    {% refiner queries.author authors 'author' queries %}
 {% endif %}
 
-{% if taxa %}
+{% if taxa or queries.taxon %}
 <h3>Táxons</h3>
-<ul>
-    {% for meta in taxa %}
-    <li>
-    {% include 'fino.html' %}
-    </li>
-    {% endfor %}
-</ul>
+    {% refiner queries.taxon taxa 'taxon' queries %}
 {% endif %}
 
-{% if sizes %}
+{% if sizes or queries.size %}
 <h3>Tamanhos</h3>
-<ul>
-    {% for size in sizes %}
-    <li>
-    {% if qsize.id == size.id %}
-    <strong><a href="{{ size.get_absolute_url }}">{{ size }}</a></strong>
-    {% else %}
-    <a href="{{ size.get_absolute_url }}">{{ size }}</a> (<a href="/buscar/?query={{ query }}&size={{ size.id }}" title="Limitar busca para tamanho {{ size.name }}">+</a>)
-    {% endif %}
-    
-    </li>
-    {% endfor %}
-</ul>
+    {% refiner queries.size sizes 'size' queries %}
 {% endif %}
 
-{% if sublocations %}
+{% if sublocations or queries.sublocation %}
 <h3>Local</h3>
-<ul>
-    {% for meta in sublocations %}
-    <li>
-    {% include 'fino.html' %}
-    </li>
-    {% endfor %}
-</ul>
+    {% refiner queries.sublocation sublocations 'sublocation' queries %}
 {% endif %}
 
-{% if cities %}
+{% if cities or queries.city %}
 <h3>Cidades</h3>
-<ul>
-    {% for meta in cities %}
-    <li>
-    {% include 'fino.html' %}
-    </li>
-    {% endfor %}
-</ul>
+    {% refiner queries.city cities 'city' queries %}
 {% endif %}
-{% if states %}
+
+{% if states or queries.state %}
 <h3>Estados</h3>
-<ul>
-    {% for meta in states %}
-    <li>
-    {% include 'fino.html' %}
-    </li>
-    {% endfor %}
-</ul>
+    {% refiner queries.state states 'state' queries %}
 {% endif %}
-{% if countries %}
+
+{% if countries or queries.country %}
 <h3>Países</h3>
-<ul>
-    {% for meta in countries %}
-    <li>
-    {% include 'fino.html' %}
-    </li>
-    {% endfor %}
-</ul>
+    {% refiner queries.country countries 'country' queries %}
 {% endif %}
 </div>

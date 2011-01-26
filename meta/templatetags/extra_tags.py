@@ -238,16 +238,93 @@ def icount(value, field):
     return Image.objects.filter(**q).count() + Video.objects.filter(**q).count()
 
 @register.inclusion_tag('mais.html')
-def show_info(image_list, video_list, query, qsize):
+def show_info(image_list, video_list, queries):
     '''Apenas manda extrair os metadados e envia para template.'''
     authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(image_list, video_list)
-    qlist = [slugify(q) for q in query.split()]
+    for k, v in queries.iteritems():
+        if v:
+            if k == 'author':
+                authors = authors.exclude(pk__in=queries['author'].values_list('id'))
+            elif k == 'tag':
+                tags = tags.exclude(pk__in=queries['tag'].values_list('id'))
+            elif k == 'size':
+                sizes = sizes.exclude(pk__in=queries['size'].values_list('id'))
+            elif k == 'taxon':
+                taxa = taxa.exclude(pk__in=queries['taxon'].values_list('id'))
+            elif k == 'sublocation':
+                sublocations = sublocations.exclude(pk__in=queries['sublocation'].values_list('id'))
+            elif k == 'city':
+                cities = cities.exclude(pk__in=queries['city'].values_list('id'))
+            elif k == 'state':
+                states = states.exclude(pk__in=queries['state'].values_list('id'))
+            elif k == 'country':
+                countries = countries.exclude(pk__in=queries['country'].values_list('id'))
     return {
             'authors': authors, 'taxa': taxa, 'sizes': sizes,
             'sublocations': sublocations, 'cities': cities,
             'states': states, 'countries': countries, 'tags': tags,
-            'query': query, 'qsize': qsize, 'qlist': qlist
+            'queries': queries,
             }
+
+@register.inclusion_tag('fino.html')
+def refiner(actives, inactives, field, queries):
+    '''Gera lista de metadados ativos e inativos.'''
+    print
+    print field
+    print
+    print actives
+    print inactives
+    return {'actives': actives, 'inactives': inactives,
+            'field': field, 'queries': queries}
+
+@register.simple_tag
+def build_url(meta, field, queries):
+    '''Constrói o url para lidar com o refinamento.'''
+    first = True
+    prefix = '/buscar/?'
+    # Se o campo estiver vazio, já preencher com o valor do meta.
+    if not queries[field]:
+        if field == 'size':
+            queries[field] = [str(meta.id)]
+        else:
+            queries[field] = [meta.slug]
+    # Se o campo não estiver vazio, adicionar o valor do meta ao final.
+    else:
+        if isinstance(queries[field], list):
+            values_list = queries[field]
+        else:
+            if field == 'size':
+                values_list = queries[field].values_list('id', flat=True)
+                values_list = [str(n) for n in values_list]
+            else:
+                values_list = queries[field].values_list('slug', flat=True)
+        queries[field] = [meta.slug]
+        queries[field].extend(values_list)
+    for k, v in queries.iteritems():
+        if v:
+            if first:
+                prefix = prefix + k + '='
+                first = False
+            else:
+                prefix = prefix + '&' + k + '='
+            # Faz checagem antes de adicionar últimos valores.
+            if isinstance(v, list):
+                final_list = v
+            else:
+                if k == 'size':
+                    final_list = v.values_list('id', flat=True)
+                    final_list = [str(n) for n in final_list]
+                else:
+                    final_list = v.values_list('slug', flat=True)
+            prefix = prefix + ','.join(final_list)
+    url = prefix
+    # Como modificações no queries passa para próximos ítens, é necessário
+    # retirar o valor da variável (do queries) após criação do url.
+    if field == 'size':
+        queries[field].remove(str(meta.id))
+    else:
+        queries[field].remove(meta.slug)
+    return url
 
 @register.inclusion_tag('sets.html')
 def show_set(set, prefix, suffix, sep, method='name'):

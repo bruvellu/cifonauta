@@ -19,9 +19,7 @@
 {% block sidebar %}
 <aside class="main span-8 last">
 {% if show_results %}
-    {% if query %}
-    {% show_info image_list video_list query qsize %}
-    {% endif %}
+    {% show_info image_list video_list queries %}
 {% endif %}
 </aside>
 {% endblock %}

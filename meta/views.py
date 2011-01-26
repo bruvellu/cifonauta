@@ -51,17 +51,30 @@ def search_page(request):
     '''
     #TODO Implementar jQuery e AJAX para melhorar usabilidade.
     form = SearchForm()
+
+    # Refinamentos.
+    qauthors = []
+    qtags = []
     qsize = ''
+    qtaxa = []
+    qsublocations = []
+    qcities = []
+    qstates = []
+    qcountries = []
     query = ''
+
     image_list = []
     video_list = []
     images = []
     videos = []
     show_results = False
-    if 'query' in request.GET:
+
+    if 'query' in request.GET or 'author' in request.GET or 'size' in request.GET:
         show_results = True
-        query = request.GET['query'].strip()
-        if query:
+        # Query
+        if 'query' in request.GET:
+            query = request.GET['query'].strip()
+            # Faz full-text search no banco de dados, usando o campo tsv.
             image_queryset = Image.objects.extra(
                     select={
                         'rank': "ts_rank_cd(tsv, plainto_tsquery('portuguese', %s), 32)",
@@ -82,23 +95,164 @@ def search_page(request):
                     )
             image_list = image_queryset.exclude(is_public=False)
             video_list = video_queryset.exclude(is_public=False) 
-            if 'size' in request.GET:
-                size = request.GET['size']
-                qsize = Size.objects.get(id=size)
+            form = SearchForm({'query': query})
+
+        # Author
+        if 'author' in request.GET:
+            authors = request.GET['author'].split(',')
+            qauthors = Author.objects.filter(slug__in=authors)
+            if image_list and video_list:
+                for author in authors:
+                    image_list = image_list.filter(author__slug=author)
+                    video_list = video_list.filter(author__slug=author)
+            else:
+                for author in authors:
+                    if image_list and video_list:
+                        image_list = image_list.filter(author__slug=author)
+                        video_list = video_list.filter(author__slug=author)
+                    else:
+                        image_list = Image.objects.filter(author__slug=author)
+                        video_list = Video.objects.filter(author__slug=author)
+
+        # Tag 
+        if 'tag' in request.GET:
+            tags = request.GET['tag'].split(',')
+            qtags = Tag.objects.filter(slug__in=tags)
+            if image_list and video_list:
+                for tag in tags:
+                    image_list = image_list.filter(tag__slug=tag)
+                    video_list = video_list.filter(tag__slug=tag)
+            else:
+                for tag in tags:
+                    if image_list and video_list:
+                        image_list = image_list.filter(tag__slug=tag)
+                        video_list = video_list.filter(tag__slug=tag)
+                    else:
+                        image_list = Image.objects.filter(tag__slug=tag)
+                        video_list = Video.objects.filter(tag__slug=tag)
+
+        # Size
+        if 'size' in request.GET:
+            size = request.GET['size']
+            qsize = Size.objects.filter(id=size)
+            if image_list and video_list:
                 image_list = image_list.filter(size=size)
                 video_list = video_list.filter(size=size)
-            images = get_paginated(request, image_list)
-            videos = get_paginated(request, video_list)
-            form = SearchForm({'query': query})
+            else:
+                image_list = Image.objects.filter(size=size)
+                video_list = Video.objects.filter(size=size)
+
+        # Taxon
+        if 'taxon' in request.GET:
+            taxa = request.GET['taxon'].split(',')
+            qtaxa = Taxon.objects.filter(slug__in=taxa)
+            if image_list and video_list:
+                for taxon in taxa:
+                    image_list = image_list.filter(taxon__slug=taxon)
+                    video_list = video_list.filter(taxon__slug=taxon)
+            else:
+                for taxon in taxa:
+                    if image_list and video_list:
+                        image_list = image_list.filter(taxon__slug=taxon)
+                        video_list = video_list.filter(taxon__slug=taxon)
+                    else:
+                        image_list = Image.objects.filter(taxon__slug=taxon)
+                        video_list = Video.objects.filter(taxon__slug=taxon)
+
+        # Sublocation
+        if 'sublocation' in request.GET:
+            sublocations = request.GET['sublocation'].split(',')
+            qsublocations = Sublocation.objects.filter(slug__in=sublocations)
+            if image_list and video_list:
+                for sublocation in sublocations:
+                    image_list = image_list.filter(
+                            sublocation__slug=sublocation)
+                    video_list = video_list.filter(
+                            sublocation__slug=sublocation)
+            else:
+                for sublocation in sublocations:
+                    if image_list and video_list:
+                        image_list = image_list.filter(
+                                sublocation__slug=sublocation)
+                        video_list = video_list.filter(
+                                sublocation__slug=sublocation)
+                    else:
+                        image_list = Image.objects.filter(
+                                sublocation__slug=sublocation)
+                        video_list = Video.objects.filter(
+                                sublocation__slug=sublocation)
+
+        # City
+        if 'city' in request.GET:
+            cities = request.GET['city'].split(',')
+            qcities = City.objects.filter(slug__in=cities)
+            if image_list and video_list:
+                for city in cities:
+                    image_list = image_list.filter(city__slug=city)
+                    video_list = video_list.filter(city__slug=city)
+            else:
+                for city in cities:
+                    if image_list and video_list:
+                        image_list = image_list.filter(city__slug=city)
+                        video_list = video_list.filter(city__slug=city)
+                    else:
+                        image_list = Image.objects.filter(city__slug=city)
+                        video_list = Video.objects.filter(city__slug=city)
+
+        # State
+        if 'state' in request.GET:
+            states = request.GET['state'].split(',')
+            qstates = State.objects.filter(slug__in=states)
+            if image_list and video_list:
+                for state in states:
+                    image_list = image_list.filter(state__slug=state)
+                    video_list = video_list.filter(state__slug=state)
+            else:
+                for state in states:
+                    if image_list and video_list:
+                        image_list = image_list.filter(state__slug=state)
+                        video_list = video_list.filter(state__slug=state)
+                    else:
+                        image_list = Image.objects.filter(state__slug=state)
+                        video_list = Video.objects.filter(state__slug=state)
+
+        # Country
+        if 'country' in request.GET:
+            countries = request.GET['country'].split(',')
+            qcountries = Country.objects.filter(slug__in=countries)
+            if image_list and video_list:
+                for country in countries:
+                    image_list = image_list.filter(country__slug=country)
+                    video_list = video_list.filter(country__slug=country)
+            else:
+                for country in countries:
+                    if image_list and video_list:
+                        image_list = image_list.filter(country__slug=country)
+                        video_list = video_list.filter(country__slug=country)
+                    else:
+                        image_list = Image.objects.filter(country__slug=country)
+                        video_list = Video.objects.filter(country__slug=country)
+
+        images = get_paginated(request, image_list)
+        videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
-        'query': query,
         'form': form,
         'images': images,
         'videos': videos,
         'image_list': image_list,
         'video_list': video_list,
         'show_results': show_results,
-        'qsize': qsize,
+        'queries': {
+            u'query': query,
+            u'author': qauthors,
+            u'tag': qtags,
+            u'size': qsize,
+            u'taxon': qtaxa,
+            u'sublocation': qsublocations,
+            u'city': qcities,
+            u'state': qstates,
+            u'country': qcountries,
+            }
         })
     return render_to_response('buscar.html', variables)
 

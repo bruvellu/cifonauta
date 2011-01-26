@@ -1,13 +1,19 @@
-{% if meta.name|wordcount > 1 %}
-    {% if meta.name|wordsplit|first|slugify|in_list:qlist and meta.name|wordsplit|last|slugify|in_list:qlist %}
-    <strong><a href="{{ meta.get_absolute_url }}" title="{{ meta.name }}">{{ meta|sp_em }}</a></strong>
-    {% else %}
-        <a href="{{ meta.get_absolute_url }}" title="{{ meta.name }}">{{ meta|sp_em }}</a> (<a href="/buscar/?query={{ query }} {{ meta.name }}{% if qsize %}&size={{ qsize.id }}{% endif %}" title="Refinar busca com {{ meta.name }}">+</a>)
-    {% endif %}
-{% else %}
-    {% if meta.name|slugify|in_list:qlist %}
-        <strong><a href="{{ meta.get_absolute_url }}" title="{{ meta.name }}">{{ meta|sp_em }}</a></strong>
-    {% else %}
-    <a href="{{ meta.get_absolute_url }}" title="{{ meta.name }}">{{ meta|sp_em }}</a> (<a href="/buscar/?query={{ query }} {{ meta.name }}{% if qsize %}&size={{ qsize.id }}{% endif %}" title="Refinar busca com {{ meta.name }}">+</a>)
-    {% endif %}
+{% if actives %}
+<ul>
+    {% for active in actives %}
+    <li>
+    <strong><a href="{{ active.get_absolute_url }}" title="{{ active.name }}">{{ active|sp_em }}</a></strong>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if inactives %}
+<ul>
+    {% for inactive in inactives %}
+    <li>
+    <a href="{{ inactive.get_absolute_url }}" title="{{ inactive.name }}">{{ inactive|sp_em }}</a> (<a href="{% build_url inactive field queries %}" title="Refinar busca com {{ inactive.name }}">+</a>)
+    </li>
+    {% endfor %}
+</ul>
 {% endif %}

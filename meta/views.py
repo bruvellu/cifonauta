@@ -461,17 +461,9 @@ def meta_page(request, model_name, field, slug):
             u'state': [],
             u'country': [],
             }
-    #TODO Mandar meta do momento para ressaltar no template.
-    qmodels = model_name.objects.filter(slug__in=slug)
+    qmodels = model_name.objects.filter(slug__in=[slug])
     queries[field] = qmodels
-    print 'AAAAAAAA'
-    print qmodels
-    print model_name.objects.get(id=1)
-    print slug
-    print queries[field]
     model = get_object_or_404(model_name, slug=slug)
-    print field
-    print model
     filter_args = {field: model}
     try:
         q = [Q(**filter_args),]

@@ -69,7 +69,7 @@ def search_page(request):
     videos = []
     show_results = False
 
-    if 'query' in request.GET or 'author' in request.GET or 'size' in request.GET:
+    if 'query' in request.GET or 'author' in request.GET or 'size' in request.GET or 'tag' in request.GET or 'taxon' in request.GET or 'sublocation' in request.GET or 'city' in request.GET or 'state' in request.GET or 'country' in request.GET:
         show_results = True
         # Query
         if 'query' in request.GET:
@@ -461,6 +461,19 @@ def meta_page(request, model_name, field, slug):
 
     Mostra galeria com todas as imagens que o possuem.
     '''
+    queries = {
+            u'query': '',
+            u'author': [],
+            u'tag': [],
+            u'size': [],
+            u'taxon': [],
+            u'sublocation': [],
+            u'city': [],
+            u'state': [],
+            u'country': [],
+            }
+    qmodels = model_name.objects.filter(slug__in=slug)
+    queries[field] = qmodels
     model = get_object_or_404(model_name, slug=slug)
     filter_args = {field: model}
     try:
@@ -482,6 +495,7 @@ def meta_page(request, model_name, field, slug):
         'video_list': video_list,
         'meta': model,
         'field': field,
+        'queries': queries,
         })
     return render_to_response('meta_page.html', variables)
 

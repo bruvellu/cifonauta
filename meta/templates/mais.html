@@ -1,6 +1,7 @@
 <div class="block borders shadow">
     <h2>Refine sua busca</h2>
     <p>Use os metadados abaixo para refinar sua busca.</p>
+
 {% if tags or queries.tag %}
 <h3>Marcadores | <a href="{% url meta.views.tags_page %}" title="Todos os marcadores">ver todos</a></h3>
 {% refiner queries.tag tags 'tag' queries %}

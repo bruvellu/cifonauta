@@ -321,11 +321,9 @@ def fixtaxa_page(request):
     if request.method == 'POST':
         form = FixTaxaForm(request.POST)
         if form.is_valid():
-            print form.cleaned_data['revise']
             for name in form.cleaned_data['revise']:
                 try:
                     taxon = Itis(name)
-                    print taxon
                     if taxon.hierarchy:
                         valids.append(name)
                     else:
@@ -333,8 +331,6 @@ def fixtaxa_page(request):
                             # Gambiarra para encontrar gêneros nas tabelas.
                             genus = name.split()[0]
                             taxon = Itis(genus)
-                            print genus
-                            print taxon.hierarchy
                             if taxon.hierarchy:
                                 try:
                                     genus, new = Taxon.objects.get_or_create(name=genus)
@@ -368,7 +364,6 @@ def fixtaxa_page(request):
                         except:
                             invalids.append(name)
                 except:
-                    print name
                     invalids.append(name)
     else:
         form = FixTaxaForm()
@@ -471,9 +466,12 @@ def meta_page(request, model_name, field, slug):
     queries[field] = qmodels
     print 'AAAAAAAA'
     print qmodels
-    print field
+    print model_name.objects.get(id=1)
+    print slug
     print queries[field]
     model = get_object_or_404(model_name, slug=slug)
+    print field
+    print model
     filter_args = {field: model}
     try:
         q = [Q(**filter_args),]

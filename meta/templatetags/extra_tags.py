@@ -269,11 +269,6 @@ def show_info(image_list, video_list, queries):
 @register.inclusion_tag('fino.html')
 def refiner(actives, inactives, field, queries):
     '''Gera lista de metadados ativos e inativos.'''
-    print
-    print field
-    print
-    print actives
-    print inactives
     return {'actives': actives, 'inactives': inactives,
             'field': field, 'queries': queries}
 
@@ -308,15 +303,22 @@ def build_url(meta, field, queries):
             else:
                 prefix = prefix + '&' + k + '='
             # Faz checagem antes de adicionar últimos valores.
+            search_field = False
             if isinstance(v, list):
                 final_list = v
             else:
                 if k == 'size':
                     final_list = v.values_list('id', flat=True)
                     final_list = [str(n) for n in final_list]
+                elif k == 'query':
+                    search = v
+                    search_field = True
                 else:
                     final_list = v.values_list('slug', flat=True)
-            prefix = prefix + ','.join(final_list)
+            if search_field:
+                prefix = prefix + search
+            else:
+                prefix = prefix + ','.join(final_list)
     url = prefix
     # Como modificações no queries passa para próximos ítens, é necessário
     # retirar o valor da variável (do queries) após criação do url.

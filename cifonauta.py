@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 20 Jan 2011 05:22PM
+# Atualizado: 26 Jan 2011 10:26PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -41,7 +41,7 @@ __author__ = 'Bruno Vellutini'
 __copyright__ = 'Copyright 2010, CEBIMar-USP'
 __credits__ = 'Bruno C. Vellutini'
 __license__ = 'DEFINIR'
-__version__ = '0.8.4'
+__version__ = '0.8.5'
 __maintainer__ = 'Bruno Vellutini'
 __email__ = 'organelas at gmail dot com'
 __status__ = 'Development'

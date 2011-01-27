@@ -75,7 +75,6 @@ def search_page(request):
         show_results = True
         # Query
         if 'query' in request.GET:
-            #TODO Lidar com queries no novo sistema de refinamento.
             query = request.GET['query'].strip()
             # Faz full-text search no banco de dados, usando o campo tsv.
             image_queryset = Image.objects.extra(

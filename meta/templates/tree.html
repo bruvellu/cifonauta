@@ -9,13 +9,13 @@
 <script src="/site_media/js/jquery-treeview/lib/jquery.cookie.js" type="text/javascript"></script> 
 <script src="/site_media/js/jquery-treeview/jquery.treeview.js" type="text/javascript"></script> 
  
+{% comment %}
 <script type="text/javascript">
     $(function() {
             $("#colaptree").treeview(
                 {
                     collapsed: true,
                     animated: "fast",
-                    //control:"#sidetreecontrol",
                     persist: "location"
                 }
             );
@@ -30,6 +30,26 @@
             //{% endif %}
         })
 </script>
+{% endcomment %}
+
+<script type="text/javascript">
+    $(document).ready(function(){
+            $("#colaptree").treeview({
+                collapsed: true,
+                animated: "fast",
+                persist: "location"
+                });
+            {% if media.taxon_set.all %}
+                {% for taxon in media.taxon_set.all %}
+                    $(".{{ taxon.slug }}-hitarea").click();
+                    {% for ancestor in taxon.get_ancestors %}
+                        $(".{{ ancestor.slug }}-hitarea").click();
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+        });
+</script>
+
 {% endblock %}
 
 <h2>Grupos</h2>

@@ -32,10 +32,10 @@ body {font-size:75%;color:#222;background:#fff;font-family:"Helvetica Neue", Ari
 h1, h2, h3, h4, h5, h6 {font-weight:normal;color:#111;}
 h1 {font-size:2.333em;padding:0 0 0.4em 0;}
 h2 {font-size:1.778em;padding:0 0 0.3em 0;}
-h3 {font-size:1.333em;padding:0 0 0.2em 0;}
-h4 {font-size:1.2em;padding:0 0 1.25em 0;}
-h5 {font-size:1em;font-weight:bold;padding:0 0 1.5em 0;}
-h6 {font-size:1em;font-weight:bold;}
+h3 {font-size:1.333em;padding:0 0 0.3em 0;}
+h4 {font-size:1.2em;padding:0 0 0.15em 0;}
+h5 {font-size:1.1em;padding:0 0 0.2em 0;}
+h6 {font-size:1em;font-style:italic;}
 h1 img, h2 img, h3 img, h4 img, h5 img, h6 img {margin:0;}
 p {padding:0 0 1em;}
 p img.left {float:left;margin:1.5em 1.5em 1.5em 0;padding:0;}
@@ -49,7 +49,7 @@ dfn {font-weight:bold;}
 sup, sub {line-height:0;}
 abbr, acronym {border-bottom:1px dotted #666;}
 address {margin:0 0 1.5em;font-style:italic;}
-del {color:#666;}
+del {color:#ccc;}
 pre {margin:1.5em 0;white-space:pre;}
 pre, code, tt {font:1em 'andale mono', 'lucida console', monospace;line-height:1.5;}
 li ul, li ol {margin:0;}

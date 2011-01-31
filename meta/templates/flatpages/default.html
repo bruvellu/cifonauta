@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
+{% load markup %}
 {% block title %}{{ flatpage.title }} | {{ block.super }}{% endblock %}
 {% block content %}
 <section class="span-16">
 <header class="span-16 last"><h1>{{ flatpage.title }}</h1></header>
-{{ flatpage.content|linebreaks }}
+{{ flatpage.content|markdown|safe }}
 </section>
 {% endblock %}
 {% block sidebar %}

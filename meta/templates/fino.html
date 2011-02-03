@@ -2,7 +2,7 @@
 <ul>
     {% for active in actives %}
     <li>
-    <strong><a href="{{ active.get_absolute_url }}" title="{{ active.name }}">{{ active|sp_em }}</a></strong>
+    <strong><a href="{{ active.get_absolute_url }}" title="{{ active.name }}">{{ active|sp_em }}</a> (<a href="{% build_url active field queries 'True' %}" title="Remover {{ active.name }} da busca">−</a>)</strong>
     </li>
     {% endfor %}
 </ul>

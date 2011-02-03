@@ -239,7 +239,12 @@ def icount(value, field):
 
 @register.inclusion_tag('mais.html')
 def show_info(image_list, video_list, queries):
-    '''Apenas manda extrair os metadados e envia para template.'''
+    '''Extrair metadados e exclui o que estiver nas queries.
+    
+    Manda a lista de imagens e de vídeos para a função extrac_set que vai extrair todos os metadados associados a estes arquivos.
+    
+    Para identificar os valores que estão sendo procurados (queries), estes são excluídos de cada lista correspondente de metadados (authors, taxa, etc.)
+    '''
     authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(image_list, video_list)
     for k, v in queries.iteritems():
         if v:
@@ -273,28 +278,30 @@ def refiner(actives, inactives, field, queries):
             'field': field, 'queries': queries}
 
 @register.simple_tag
-def build_url(meta, field, queries):
+def build_url(meta, field, queries, remove=False):
     '''Constrói o url para lidar com o refinamento.'''
+    print
+    print 'REUSABLE QUERY: %s' % queries[field]
+    print
     first = True
     prefix = '/buscar/?'
-    # Se o campo estiver vazio, já preencher com o valor do meta.
-    if not queries[field]:
-        if field == 'size':
-            queries[field] = [str(meta.id)]
-        else:
-            queries[field] = [meta.slug]
-    # Se o campo não estiver vazio, adicionar o valor do meta ao final.
-    else:
-        if isinstance(queries[field], list):
-            values_list = queries[field]
-        else:
+    print meta, remove
+    
+    if remove:
+        print 'REMOVIDO!'
+        try:
+            queries[field] = queries[field].exclude(slug=meta.slug)
+        except:
+            # Só por segurança diferenciar o tamanho.
             if field == 'size':
-                values_list = queries[field].values_list('id', flat=True)
-                values_list = [str(n) for n in values_list]
+                queries[field].remove(str(meta.id))
             else:
-                values_list = queries[field].values_list('slug', flat=True)
-        queries[field] = [meta.slug]
-        queries[field].extend(values_list)
+                queries[field].remove(meta.slug)
+    else:
+        # Adiciona (ou retira) o metadado na lista de queries.
+        queries[field] = add_meta(meta, field, queries[field])
+
+    # Constrói o url de fato.
     for k, v in queries.iteritems():
         if v:
             if first:
@@ -319,13 +326,30 @@ def build_url(meta, field, queries):
                 prefix = prefix + search
             else:
                 prefix = prefix + ','.join(final_list)
+    if prefix[-1] == '?':
+        prefix = prefix[:-1]
     url = prefix
-    # Como modificações no queries passa para próximos ítens, é necessário
-    # retirar o valor da variável (do queries) após criação do url.
-    if field == 'size':
-        queries[field].remove(str(meta.id))
+    # É preciso recolocar o meta removido para não afetar os urls seguintes.
+    print 'Query pós-url: %s' % queries[field]
+    #FIXME NÃO ESTÁ FUNCIONANDO!
+    if remove:
+        # Adiciona o metadado na lista de queries.
+        queries[field] = add_meta(meta, field, queries[field])
     else:
-        queries[field].remove(meta.slug)
+        # Como modificações no queries passa para próximos ítens, é necessário
+        # retirar o valor da variável (do queries) após criação do url.
+        if field == 'size':
+            try:
+                queries[field].remove(str(meta.id))
+            except:
+                queries[field] = queries[field].exclude(id=meta.id)
+        else:
+            try:
+                queries[field].remove(meta.slug)
+            except:
+                queries[field] = queries[field].exclude(slug=meta.slug)
+    print 'Query pós-adição: %s' % queries[field]
+    print url
     return url
 
 @register.inclusion_tag('sets.html')
@@ -360,3 +384,30 @@ def extract_set(image_list, video_list):
     refined_countries = Country.objects.filter(image__pk__in=image_ids).distinct().order_by('name')
 
     return refined_authors, refined_taxa, refined_sizes, refined_sublocations, refined_cities, refined_states, refined_countries, refined_tags
+
+def add_meta(meta, field, query):
+    '''Adiciona metadado à lista de query.
+
+    Se a lista estiver vazia simplesmente cria uma nova com o metadado. Caso a lista já exista e tenha elementos, adiciona o metadado à ela.
+    '''
+    # Se o campo estiver vazio, já preencher com o valor do meta.
+    if not query:
+        if field == 'size':
+            query = [str(meta.id)]
+        else:
+            query = [meta.slug]
+    # Se o campo não estiver vazio, adicionar o valor do meta ao final.
+    else:
+        # Se for para remover o metadado, retirar do url.
+        if isinstance(query, list):
+            values_list = query
+        else:
+            if field == 'size':
+                values_list = query.values_list('id', flat=True)
+                values_list = [str(n) for n in values_list]
+            else:
+                values_list = query.values_list('slug', flat=True)
+        query = [meta.slug]
+        query.extend(values_list)
+    print 'Saída add_meta: %s' % query
+    return query

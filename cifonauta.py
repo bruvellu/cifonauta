@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 26 Jan 2011 10:26PM
+# Atualizado: 03 Feb 2011 03:28PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -757,10 +757,9 @@ class Photo:
             # Converte para 72dpi, JPG qualidade 50 e redimensiona as imagens
             # maiores que 640 (em altura ou largura)
             subprocess.call(['convert', self.source_filepath, '-density', '72', '-format', 'jpg',
-                '-quality', '50', '-resize', '800x800>', local_filepath])
+                '-quality', '70', '-resize', '800x800>', local_filepath])
             # Insere marca d'água no canto direito embaixo
-            subprocess.call(['composite', '-dissolve', '20', '-gravity',
-                'southeast', watermark, local_filepath, local_filepath])
+            subprocess.call(['composite', '-gravity', 'southwest', watermark, local_filepath, local_filepath])
             # Copia imagem para pasta web
             web_filepath = os.path.join(self.site_dir, self.filename)
             copy(local_filepath, web_filepath)
@@ -967,12 +966,18 @@ def usage():
     print '\tAtualiza banco de dados e refaz thumbnails de todas as entradas, '
     print '\tinclusive as que não foram modificadas.'
     print
+    print '  -v, --only-videos'
+    print '\tAtualiza apenas arquivos de vídeo.'
+    print
+    print '  -p, --only-photos'
+    print '\tAtualiza apenas arquivos de fotos.'
+    print
     print '  -r, --no-rename'
     print '\tNão executa a função de renomear arquivos.'
     print
     print 'Exemplo:'
-    print '  python cifonauta.py -f -n 15'
-    print '\tFaz a atualização forçada dos primeiros 15 arquivos que o programa'
+    print '  python cifonauta.py -fp -n 15'
+    print '\tFaz a atualização forçada dos primeiros 15 fotos que o programa'
     print '\tencontrar na pasta padrão (source_media; ver código).'
     print
 

@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 03 Feb 2011 03:28PM
+# Atualizado: 03 Feb 2011 03:54PM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -169,43 +169,6 @@ class Database:
         # Atualiza táxons
         entry = self.update_sets(entry, 'taxon', taxa)
         
-        # Atualiza gêneros e espécies
-        #XXX DEPRECATED
-        #genera = []
-        #spp = []
-        #for binomius in genus_sp:
-        #    # Faz o link entre espécie e gênero (apenas quando os 2 existem).
-        #    # Lineu é a forma binomial, novo formato do banco.
-        #    lineu = u'%s %s' % (binomius['genus'], binomius['sp'])
-        #    if binomius['sp'] and binomius['genus']:
-        #        sp = self.get_instance('species', lineu)
-        #        sp.parent = self.get_instance('genus', binomius['genus'])
-        #        sp.save()
-        #    # Apenas adiciona se existe.
-        #    if binomius['genus']:
-        #        genera.append(binomius['genus'])
-        #    if binomius['sp']:
-        #        spp.append(lineu)
-        ## Quando ligar ao pai?
-        #entry = self.update_sets(entry, 'genus', genera)
-        #entry = self.update_sets(entry, 'species', spp)
-
-        ## Liga gênero ao táxon
-        #if len(taxa) == len(genera) or len(taxa) > len(genera):
-        #    for index, genus in enumerate(genera):
-        #        gen = self.get_instance('genus', genus)
-        #        if taxa[index]:
-        #            gen.parent = self.get_instance('taxon', taxa[index])
-        #        gen.save()
-        #elif len(taxa) < len(genera):
-        #        for index, taxon in enumerate(taxa):
-        #            gen = self.get_instance('genus', genera[index])
-        #            if taxon:
-        #                gen.parent = self.get_instance('taxon', taxon)
-        #            gen.save()
-        #else:
-        #    print u'Erro para especificar pai do gênero.'
-
         # Atualiza marcadores
         entry = self.update_sets(entry, 'tag', tags)
 

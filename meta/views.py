@@ -45,10 +45,11 @@ def main_page(request):
     return render_to_response('main_page.html', variables)
 
 def search_page(request):
-    '''Página de busca com um formulário simples.
+    '''Página de busca.
     
     Procura termo no campo tsv do banco de dados, que possibilita o full-text search.
     '''
+    #TODO Documentar como funciona essa função.
     #TODO Implementar jQuery e AJAX para melhorar usabilidade.
     form = SearchForm()
 
@@ -73,11 +74,13 @@ def search_page(request):
 
     if 'query' in request.GET or 'author' in request.GET or 'size' in request.GET or 'tag' in request.GET or 'taxon' in request.GET or 'sublocation' in request.GET or 'city' in request.GET or 'state' in request.GET or 'country' in request.GET:
         show_results = True
+        qobj = Q()
+
         # Query
         if 'query' in request.GET:
             query = request.GET['query'].strip()
             # Faz full-text search no banco de dados, usando o campo tsv.
-            image_queryset = Image.objects.extra(
+            image_list = Image.objects.extra(
                     select={
                         'rank': "ts_rank_cd(tsv, plainto_tsquery('portuguese', %s), 32)",
                         },
@@ -86,7 +89,7 @@ def search_page(request):
                     select_params=[query, query],
                     order_by=('-rank',)
                     )
-            video_queryset = Video.objects.extra(
+            video_list = Video.objects.extra(
                     select={
                         'rank': "ts_rank_cd(tsv, plainto_tsquery('portuguese', %s), 32)",
                         },
@@ -95,146 +98,82 @@ def search_page(request):
                     select_params=[query, query],
                     order_by=('-rank',)
                     )
-            image_list = image_queryset.exclude(is_public=False)
-            video_list = video_queryset.exclude(is_public=False) 
             form = SearchForm({'query': query})
             queries['query'] = query
+        else:
+            # Só para passar a informação adiante.
+            query = []
 
         # Author
         if 'author' in request.GET:
             authors = request.GET['author'].split(',')
             queries['author'] = Author.objects.filter(slug__in=authors)
-            if image_list and video_list:
-                for author in authors:
-                    image_list = image_list.filter(author__slug=author)
-                    video_list = video_list.filter(author__slug=author)
-            else:
-                for author in authors:
-                    if image_list and video_list:
-                        image_list = image_list.filter(author__slug=author)
-                        video_list = video_list.filter(author__slug=author)
-                    else:
-                        image_list = Image.objects.filter(author__slug=author)
-                        video_list = Video.objects.filter(author__slug=author)
+            for author in authors:
+                qobj.add(Q(author__slug=author), Q.AND)
+
+        import pdb; pdb.set_trace()
 
         # Tag 
         if 'tag' in request.GET:
             tags = request.GET['tag'].split(',')
             queries['tag'] = Tag.objects.filter(slug__in=tags)
-            if image_list and video_list:
-                for tag in tags:
-                    image_list = image_list.filter(tag__slug=tag)
-                    video_list = video_list.filter(tag__slug=tag)
-            else:
-                for tag in tags:
-                    if image_list and video_list:
-                        image_list = image_list.filter(tag__slug=tag)
-                        video_list = video_list.filter(tag__slug=tag)
-                    else:
-                        image_list = Image.objects.filter(tag__slug=tag)
-                        video_list = Video.objects.filter(tag__slug=tag)
+            for tag in tags:
+                qobj.add(Q(tag__slug=tag), Q.AND)
+
+        import pdb; pdb.set_trace()
 
         # Size
         if 'size' in request.GET:
-            size = request.GET['size']
-            queries['size'] = Size.objects.filter(id=size)
-            if image_list and video_list:
-                image_list = image_list.filter(size=size)
-                video_list = video_list.filter(size=size)
-            else:
-                image_list = Image.objects.filter(size=size)
-                video_list = Video.objects.filter(size=size)
+            size_id = request.GET['size']
+            queries['size'] = Size.objects.filter(id=size_id)
+            qobj.add(Q(size__id=size_id), Q.AND)
 
         # Taxon
         if 'taxon' in request.GET:
             taxa = request.GET['taxon'].split(',')
             queries['taxon'] = Taxon.objects.filter(slug__in=taxa)
-            if image_list and video_list:
-                for taxon in taxa:
-                    image_list = image_list.filter(taxon__slug=taxon)
-                    video_list = video_list.filter(taxon__slug=taxon)
-            else:
-                for taxon in taxa:
-                    if image_list and video_list:
-                        image_list = image_list.filter(taxon__slug=taxon)
-                        video_list = video_list.filter(taxon__slug=taxon)
-                    else:
-                        image_list = Image.objects.filter(taxon__slug=taxon)
-                        video_list = Video.objects.filter(taxon__slug=taxon)
+            for taxon in taxa:
+                qobj.add(Q(taxon__slug=taxon), Q.AND)
 
         # Sublocation
         if 'sublocation' in request.GET:
             sublocations = request.GET['sublocation'].split(',')
             queries['sublocation'] = Sublocation.objects.filter(slug__in=sublocations)
-            if image_list and video_list:
-                for sublocation in sublocations:
-                    image_list = image_list.filter(
-                            sublocation__slug=sublocation)
-                    video_list = video_list.filter(
-                            sublocation__slug=sublocation)
-            else:
-                for sublocation in sublocations:
-                    if image_list and video_list:
-                        image_list = image_list.filter(
-                                sublocation__slug=sublocation)
-                        video_list = video_list.filter(
-                                sublocation__slug=sublocation)
-                    else:
-                        image_list = Image.objects.filter(
-                                sublocation__slug=sublocation)
-                        video_list = Video.objects.filter(
-                                sublocation__slug=sublocation)
+            for sublocation in sublocations:
+                qobj.add(Q(sublocation__slug=sublocation), Q.AND)
 
         # City
         if 'city' in request.GET:
             cities = request.GET['city'].split(',')
             queries['city'] = City.objects.filter(slug__in=cities)
-            if image_list and video_list:
-                for city in cities:
-                    image_list = image_list.filter(city__slug=city)
-                    video_list = video_list.filter(city__slug=city)
-            else:
-                for city in cities:
-                    if image_list and video_list:
-                        image_list = image_list.filter(city__slug=city)
-                        video_list = video_list.filter(city__slug=city)
-                    else:
-                        image_list = Image.objects.filter(city__slug=city)
-                        video_list = Video.objects.filter(city__slug=city)
+            for city in cities:
+                qobj.add(Q(city__slug=city), Q.AND)
 
         # State
         if 'state' in request.GET:
             states = request.GET['state'].split(',')
             queries['state'] = State.objects.filter(slug__in=states)
-            if image_list and video_list:
-                for state in states:
-                    image_list = image_list.filter(state__slug=state)
-                    video_list = video_list.filter(state__slug=state)
-            else:
-                for state in states:
-                    if image_list and video_list:
-                        image_list = image_list.filter(state__slug=state)
-                        video_list = video_list.filter(state__slug=state)
-                    else:
-                        image_list = Image.objects.filter(state__slug=state)
-                        video_list = Video.objects.filter(state__slug=state)
+            for state in states:
+                qobj.add(Q(state__slug=state), Q.AND)
 
         # Country
         if 'country' in request.GET:
             countries = request.GET['country'].split(',')
             queries['country'] = Country.objects.filter(slug__in=countries)
-            if image_list and video_list:
-                for country in countries:
-                    image_list = image_list.filter(country__slug=country)
-                    video_list = video_list.filter(country__slug=country)
-            else:
-                for country in countries:
-                    if image_list and video_list:
-                        image_list = image_list.filter(country__slug=country)
-                        video_list = video_list.filter(country__slug=country)
-                    else:
-                        image_list = Image.objects.filter(country__slug=country)
-                        video_list = Video.objects.filter(country__slug=country)
+            for country in countries:
+                qobj.add(Q(country__slug=country), Q.AND)
+        
+        # Passa o qobj para queryset do query ou cria novo com o qobj.
+        if query:
+            if image_list:
+                image_list = image_list.filter(qobj, is_public=True)
+            if video_list:
+                video_list = video_list.filter(qobj, is_public=True)
+        else:
+            image_list = Image.objects.filter(qobj, is_public=True)
+            video_list = Video.objects.filter(qobj, is_public=True)
+
+        import pdb; pdb.set_trace()
 
         images = get_paginated(request, image_list)
         videos = get_paginated(request, video_list)

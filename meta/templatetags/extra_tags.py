@@ -241,7 +241,7 @@ def icount(value, field):
 def show_info(image_list, video_list, queries):
     '''Extrair metadados e exclui o que estiver nas queries.
     
-    Manda a lista de imagens e de vídeos para a função extrac_set que vai extrair todos os metadados associados a estes arquivos.
+    Manda a lista de imagens e de vídeos para a função extract_set que vai extrair todos os metadados associados a estes arquivos.
     
     Para identificar os valores que estão sendo procurados (queries), estes são excluídos de cada lista correspondente de metadados (authors, taxa, etc.)
     '''
@@ -280,15 +280,11 @@ def refiner(actives, inactives, field, queries):
 @register.simple_tag
 def build_url(meta, field, queries, remove=False):
     '''Constrói o url para lidar com o refinamento.'''
-    print
-    print 'REUSABLE QUERY: %s' % queries[field]
-    print
     first = True
     prefix = '/buscar/?'
-    print meta, remove
     
+    # Se for para remover o metadado, remover.
     if remove:
-        print 'REMOVIDO!'
         try:
             queries[field] = queries[field].exclude(slug=meta.slug)
         except:
@@ -330,8 +326,6 @@ def build_url(meta, field, queries, remove=False):
         prefix = prefix[:-1]
     url = prefix
     # É preciso recolocar o meta removido para não afetar os urls seguintes.
-    print 'Query pós-url: %s' % queries[field]
-    #FIXME NÃO ESTÁ FUNCIONANDO!
     if remove:
         # Adiciona o metadado na lista de queries.
         queries[field] = add_meta(meta, field, queries[field])
@@ -348,8 +342,6 @@ def build_url(meta, field, queries, remove=False):
                 queries[field].remove(meta.slug)
             except:
                 queries[field] = queries[field].exclude(slug=meta.slug)
-    print 'Query pós-adição: %s' % queries[field]
-    print url
     return url
 
 @register.inclusion_tag('sets.html')
@@ -409,5 +401,4 @@ def add_meta(meta, field, query):
                 values_list = query.values_list('slug', flat=True)
         query = [meta.slug]
         query.extend(values_list)
-    print 'Saída add_meta: %s' % query
     return query

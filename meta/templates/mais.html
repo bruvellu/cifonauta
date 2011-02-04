@@ -1,19 +1,19 @@
 <div class="block borders shadow">
     <h2>Refine sua busca</h2>
-    <p>Use os metadados abaixo para refinar sua busca.</p>
+    <p>Use os sinais [<span class="sign plus">+</span>] e [<span class="sign minus">−</span>] para refinar sua busca ou clique no nome para abrir a página do metadado.</p>
 
 {% if tags or queries.tag %}
 <h3>Marcadores | <a href="{% url meta.views.tags_page %}" title="Todos os marcadores">ver todos</a></h3>
-{% refiner queries.tag tags 'tag' queries %}
+    {% refiner queries.tag tags 'tag' queries %}
 {% endif %}
 
 {% if authors or queries.author %}
-    <h3>Autores</h3>
+<h3>Autores | <a href="{% url meta.views.authors_page %}" title="Todos os autores">ver todos</a></h3>
     {% refiner queries.author authors 'author' queries %}
 {% endif %}
 
 {% if taxa or queries.taxon %}
-<h3>Táxons</h3>
+<h3>Táxons | <a href="{% url meta.views.taxa_page %}" title="Todos os táxons">ver todos</a></h3>
     {% refiner queries.taxon taxa 'taxon' queries %}
 {% endif %}
 

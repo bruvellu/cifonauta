@@ -273,6 +273,25 @@ ul.biodb li:hover {
     cursor: pointer;
 }
 
+ul.refine-active, ul.refine-inactive {
+    list-style:none;
+    padding-left:1em;
+}
+
+.sign {
+    font-size:1.8em;
+    line-height:1em;
+    vertical-align:middle;
+}
+
+.minus {
+}
+
+.meta-active {
+    font-weight:bold;
+    font-size:1.2em;
+}
+
 div.external {
     background: white;
     margin:-3.9em 0 0 65px;

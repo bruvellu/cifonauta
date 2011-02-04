@@ -1,18 +1,18 @@
 {% if actives %}
-<ul>
+<ul class="refine-active">
     {% for active in actives %}
     <li>
-    <strong><a href="{{ active.get_absolute_url }}" title="{{ active.name }}">{{ active|sp_em }}</a> (<a href="{% build_url active field queries 'True' %}" title="Remover {{ active.name }} da busca">−</a>)</strong>
+    [<a href="{% build_url active field queries 'True' %}" title="Remover {{ active.name }} da busca" class="sign minus">−</a>] <a class="meta-active" href="{{ active.get_absolute_url }}" title="{{ active.name }}">{{ active|sp_em }}</a>
     </li>
     {% endfor %}
 </ul>
 {% endif %}
 
 {% if inactives %}
-<ul>
+<ul class="refine-inactive">
     {% for inactive in inactives %}
     <li>
-    <a href="{{ inactive.get_absolute_url }}" title="{{ inactive.name }}">{{ inactive|sp_em }}</a> (<a href="{% build_url inactive field queries %}" title="Refinar busca com {{ inactive.name }}">+</a>)
+    [<a href="{% build_url inactive field queries %}" title="Refinar busca com {{ inactive.name }}" class="sign plus">+</a>] <a class="meta-inactive" href="{{ inactive.get_absolute_url }}" title="{{ inactive.name }}">{{ inactive|sp_em }}</a>
     </li>
     {% endfor %}
 </ul>

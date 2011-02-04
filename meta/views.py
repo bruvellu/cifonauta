@@ -73,6 +73,11 @@ def search_page(request):
     show_results = False
 
     if 'query' in request.GET or 'author' in request.GET or 'size' in request.GET or 'tag' in request.GET or 'taxon' in request.GET or 'sublocation' in request.GET or 'city' in request.GET or 'state' in request.GET or 'country' in request.GET:
+        # Iniciando querysets para serem filtrados para cada metadado presente na query.
+        #XXX Não sei se isso é muito eficiente..., mas por enquanto será assim.
+        image_list = Image.objects.filter(is_public=True)
+        video_list = Video.objects.filter(is_public=True)
+
         show_results = True
         qobj = Q()
 
@@ -80,7 +85,7 @@ def search_page(request):
         if 'query' in request.GET:
             query = request.GET['query'].strip()
             # Faz full-text search no banco de dados, usando o campo tsv.
-            image_list = Image.objects.extra(
+            image_list = image_list.extra(
                     select={
                         'rank': "ts_rank_cd(tsv, plainto_tsquery('portuguese', %s), 32)",
                         },
@@ -89,7 +94,7 @@ def search_page(request):
                     select_params=[query, query],
                     order_by=('-rank',)
                     )
-            video_list = Video.objects.extra(
+            video_list = video_list.extra(
                     select={
                         'rank': "ts_rank_cd(tsv, plainto_tsquery('portuguese', %s), 32)",
                         },
@@ -109,72 +114,66 @@ def search_page(request):
             authors = request.GET['author'].split(',')
             queries['author'] = Author.objects.filter(slug__in=authors)
             for author in authors:
-                qobj.add(Q(author__slug=author), Q.AND)
+                image_list = image_list.filter(author__slug=author)
+                video_list = video_list.filter(author__slug=author)
 
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
 
         # Tag 
         if 'tag' in request.GET:
             tags = request.GET['tag'].split(',')
             queries['tag'] = Tag.objects.filter(slug__in=tags)
             for tag in tags:
-                qobj.add(Q(tag__slug=tag), Q.AND)
-
-        import pdb; pdb.set_trace()
+                image_list = image_list.filter(tag__slug=tag)
+                video_list = video_list.filter(tag__slug=tag)
 
         # Size
         if 'size' in request.GET:
             size_id = request.GET['size']
             queries['size'] = Size.objects.filter(id=size_id)
-            qobj.add(Q(size__id=size_id), Q.AND)
+            image_list = image_list.filter(size__id=size_id)
+            video_list = video_list.filter(size__id=size_id)
 
         # Taxon
         if 'taxon' in request.GET:
             taxa = request.GET['taxon'].split(',')
             queries['taxon'] = Taxon.objects.filter(slug__in=taxa)
             for taxon in taxa:
-                qobj.add(Q(taxon__slug=taxon), Q.AND)
+                image_list = image_list.filter(taxon__slug=taxon)
+                video_list = video_list.filter(taxon__slug=taxon)
 
         # Sublocation
         if 'sublocation' in request.GET:
             sublocations = request.GET['sublocation'].split(',')
             queries['sublocation'] = Sublocation.objects.filter(slug__in=sublocations)
             for sublocation in sublocations:
-                qobj.add(Q(sublocation__slug=sublocation), Q.AND)
+                image_list = image_list.filter(sublocation__slug=sublocation)
+                video_list = video_list.filter(sublocation__slug=sublocation)
 
         # City
         if 'city' in request.GET:
             cities = request.GET['city'].split(',')
             queries['city'] = City.objects.filter(slug__in=cities)
             for city in cities:
-                qobj.add(Q(city__slug=city), Q.AND)
+                image_list = image_list.filter(city__slug=city)
+                video_list = video_list.filter(city__slug=city)
 
         # State
         if 'state' in request.GET:
             states = request.GET['state'].split(',')
             queries['state'] = State.objects.filter(slug__in=states)
             for state in states:
-                qobj.add(Q(state__slug=state), Q.AND)
+                image_list = image_list.filter(state__slug=state)
+                video_list = video_list.filter(state__slug=state)
 
         # Country
         if 'country' in request.GET:
             countries = request.GET['country'].split(',')
             queries['country'] = Country.objects.filter(slug__in=countries)
             for country in countries:
-                qobj.add(Q(country__slug=country), Q.AND)
+                image_list = image_list.filter(country__slug=country)
+                video_list = video_list.filter(country__slug=country)
         
-        # Passa o qobj para queryset do query ou cria novo com o qobj.
-        if query:
-            if image_list:
-                image_list = image_list.filter(qobj, is_public=True)
-            if video_list:
-                video_list = video_list.filter(qobj, is_public=True)
-        else:
-            image_list = Image.objects.filter(qobj, is_public=True)
-            video_list = Video.objects.filter(qobj, is_public=True)
-
-        import pdb; pdb.set_trace()
-
         images = get_paginated(request, image_list)
         videos = get_paginated(request, video_list)
     variables = RequestContext(request, {

@@ -185,7 +185,6 @@ $(document).ready(function(){
             {% autoescape off %}{{ ref.citation }}{% endautoescape %}
             </div>
             {% endfor %}
-            {% comment %}{% print_refs media.reference_set.all %}{% endcomment %}
         </div>
         {% endif %}
 
@@ -203,5 +202,77 @@ $(document).ready(function(){
 <div class="borders block shadow">
     {% include 'tree.html' %}
 </div>
+
+{% if user.is_authenticated %}
+<div class="borders block shadow" id="admin-controls">
+    <h2>Editar</h2>
+    <ul>
+        <li>
+            {% if media.datatype == 'photo' %}
+                Tipo: <a href="/admin/meta/image/{{ media.id }}/"><strong>FOTO</strong></a>
+            {% else %}
+                {% if media.datatype == 'video' %}
+                    Tipo: <a href="/admin/meta/video/{{ media.id }}/"><strong>VÍDEO</strong></a>
+                {% endif %}
+            {% endif %}
+        </li>
+        {% if media.tag_set.all %}
+        <li>Marcador(es)</li>
+        <ul>
+            {% for tag in media.tag_set.all %}
+            <li><a href="/admin/meta/tag/{{ tag.id }}/">{{ tag.name }}</a></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% if media.author_set.all %}
+        <li>Autor(es)</li>
+        <ul>
+            {% for author in media.author_set.all %}
+            <li><a href="/admin/meta/author/{{ author.id }}/">{{ author.name }}</a></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% if media.taxon_set.all %}
+        <li>Táxon(s)</li>
+        <ul>
+            {% for taxon in media.taxon_set.all %}
+            <li><a href="/admin/meta/taxon/{{ taxon.id }}/">{{ taxon.name }}</a></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% if media.source_set.all %}
+        <li>Especialista(s)</li>
+        <ul>
+            {% for source in media.source_set.all %}
+            <li><a href="/admin/meta/source/{{ source.id }}/">{{ source.name }}</a></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% if media.sublocation %}
+        <li>Local: <a href="/admin/meta/sublocation/{{ media.sublocation.id }}/">{{ media.sublocation.name }}</a></li>
+        {% endif %}
+        {% if media.city %}
+        <li>Cidade: <a href="/admin/meta/city/{{ media.city.id }}/">{{ media.city.name }}</a></li>
+        {% endif %}
+        {% if media.state %}
+        <li>Estado: <a href="/admin/meta/state/{{ media.state.id }}/">{{ media.state.name }}</a></li>
+        {% endif %}
+        {% if media.country %}
+        <li>País: <a href="/admin/meta/country/{{ media.country.id }}/">{{ media.country.name }}</a></li>
+        {% endif %}
+        {% if references %}
+        <li>Referência(s)</li>
+        <ul>
+            {% for ref in references %}
+            <li><a href="/admin/meta/references/{{ ref.id }}/">{{ ref.name }}</a></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+    </ul>
+            
+</div>
+{% endif %}
+
 </aside>
 {% endblock %}

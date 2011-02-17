@@ -239,56 +239,96 @@ class Reference(models.Model):
         return ('reference_url', [self.slug])
 
 
-def get_html(ref):
-    '''Retorna citação formatada em HTML.'''
-    #TODO E se não tiver issue ou url ou doi?
-    keys = ['year', 'title', 'publication_outlet', 'volume', 'issue', 'pages',
-            'url', 'authors']
-    # Fix
+def citation_html(ref):
+    '''Retorna citação formatada em HTML.
+    
+    Citação é gerada através do objeto que o Mendeley API retorna com os campos.
+    '''
+    citation = u''
+    keys = ['year', 'authors', 'title', 'publication_outlet', 'volume',
+            'issue', 'pages', 'doi', 'pmid', 'url']
+    # Padroniza None para keys que não existem.
     for key in keys:
-        if not key in ref:
-            ref[key] = ''
-    # DOI fix
-    if 'identifiers' in ref:
-        if not 'doi' in ref['identifiers']:
-            doi = ''
-        else:
-            doi = ', doi:<a href="http://dx.doi.org/%s">%s</a>' % (ref['identifiers']['doi'], ref['identifiers']['doi'])
-    else:
-        doi = ''
-    authors = []
-
-    for author in ref['authors']:
-        names = author.split()
-        last = names.pop()
-        initials = [name[:1] for name in names]
-        initials = ''.join(initials)
-        final = u'%s %s' % (last, initials)
-        authors.append(final)
-    authors = ', '.join(authors)
-
-    if ref['issue']:
-        issue = '(%s)' % ref['issue']
-    else:
-        issue = ''
-
-    if ref['url']:
-        url = '<br><a href="%s">%s</a>' % (ref['url'], ref['url'])
-    else:
-        url = ''
-
-    citation = u'<strong>%s</strong> %s. %s. %s, %s%s: %s%s%s' % (
-            ref['year'], authors, ref['title'],
-            ref['publication_outlet'], ref['volume'], issue,
-            ref['pages'], doi, url
-            )
+        # Verifica se doi existe e inclui na citação.
+        if key == 'doi':
+            if 'identifiers' in ref:
+                if 'doi' in ref['identifiers']:
+                    citation += u', doi:<a href="http://dx.doi.org/%s">%s</a>' % (ref['identifiers']['doi'], ref['identifiers']['doi'])
+        # Verifica se pmid existe e inclui na citação.
+        elif key == 'pmid':
+            if 'identifiers' in ref:
+                if 'pmid' in ref['identifiers']:
+                    citation += u', pmid:<a href="http://www.ncbi.nlm.nih.gov/pubmed/%s">%s</a>' % (ref['identifiers']['pmid'], ref['identifiers']['pmid'])
+        elif key in ref:
+            # Ano.
+            if key == 'year':
+                citation += u'<strong>%s</strong> ' % ref['year']
+            # Autores.
+            elif key == 'authors':
+                authors = []
+                for author in ref['authors']:
+                    names = author.split()
+                    last = names.pop()
+                    initials = [name[:1] for name in names]
+                    initials = ''.join(initials)
+                    final = u'%s %s' % (last, initials)
+                    authors.append(final)
+                authors = ', '.join(authors)
+                citation += u'%s.' % authors
+            # Título.
+            elif key == 'title':
+                citation += u' %s.' % ref['title']
+            # Revista.
+            elif key == 'publication_outlet':
+                citation += u' %s' % ref['publication_outlet']
+            elif key == 'volume':
+                citation += u', %s' % ref['volume']
+            elif key == 'issue':
+                citation += u'(%s)' % ref['issue']
+            elif key == 'pages':
+                citation += u': %s' % ref['pages']
+            elif key == 'url':
+                citation += u'<br><a href="%s">%s</a>' % (ref['url'], ref['url'])
     return citation
 
 def citation_pre_save(signal, instance, sender, **kwargs):
-    '''Cria citação em HTML a partir da bibkey.'''
+    '''Cria citação em HTML a partir da bibkey.
+    
+    Usa o ID da entrada (= Mendeley ID) para pegar os dados da referência via Mendeley API.
+    Manda o objeto para função que gera o html com a citação da referência.
+    Salva a citação no banco.
+
+    EXEMPLO DE REFERÊNCIA DO MENDELEY API:
+    {
+        "title":"Embryonic, larval, and juvenile development of the sea biscuit Clypeaster subdepressus (Echinodermata: Clypeasteroida).",
+        "type":"Journal Article",
+        "volume":"5",
+        "issue":"3",
+        "url":"http:\/\/www.ncbi.nlm.nih.gov\/pubmed\/20339592",
+        "pages":"e9654",
+        "year":"2010",
+        "abstract":"Sea biscuits and sand dollars diverged from other irregular echinoids approximately 55 million years ago and rapidly dispersed to oceans worldwide.",
+        "authors":[
+            "Bruno Cossermelli Vellutini",
+            "Alvaro Esteves Migotto"
+            ],
+        "editors":[],
+        "tags":["phd"],
+        "keywords":[],
+        "publication_outlet":"PloS one",
+        "identifiers":{
+            "doi":"10.1371\/journal.pone.0009654",
+            "issn":"1932-6203",
+            "pmid":"20339592"
+            },
+        "discipline":{
+            "discipline":"Biological Sciences",
+            "subdiscipline":"Embryology"}
+            }
+    '''
     ref_id = instance.name
     ref = mendeley.document_details(ref_id)
-    citation = get_html(ref)
+    citation = citation_html(ref)
     instance.citation = citation
 
 def slug_pre_save(signal, instance, sender, **kwargs):

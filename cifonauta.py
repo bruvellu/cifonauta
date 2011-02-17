@@ -6,7 +6,7 @@
 #
 #TODO Definir licença.
 #
-# Atualizado: 03 Feb 2011 03:54PM
+# Atualizado: 16 Feb 2011 01:09AM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -59,7 +59,7 @@ class Database:
 
     def search_db(self, media):
         '''Busca o registro no banco de dados pelo nome do arquivo.
-        
+
         Se encontrar, compara a data de modificação do arquivo e do registro.
         Se as datas forem iguais pula para próximo arquivo, se forem diferentes
         atualiza o registro.
@@ -67,8 +67,8 @@ class Database:
         print '\nVerificando se o arquivo está no banco de dados...'
         photopath = 'site_media/photos/'
         videopath = 'site_media/videos/'
-        
-        try :
+
+        try:
             if media.type == "photo":
                 # Busca pelo nome exato do arquivo, para evitar confusão.
                 record = Image.objects.get(web_filepath=photopath + media.filename)
@@ -168,7 +168,7 @@ class Database:
 
         # Atualiza táxons
         entry = self.update_sets(entry, 'taxon', taxa)
-        
+
         # Atualiza marcadores
         entry = self.update_sets(entry, 'tag', tags)
 
@@ -224,7 +224,7 @@ class Database:
 
     def update_sets(self, entry, field, meta):
         '''Atualiza campos many to many do banco de dados.
-        
+
         Verifica se o value não está em branco, para não adicionar entradas em
         branco no banco.
         '''
@@ -590,7 +590,7 @@ class Photo:
 
         # Prepara alguns campos para banco de dados
         self.meta = prepare_meta(self.meta)
-                
+
         # Extraindo metadados do EXIF
         exif = self.get_exif(self.source_filepath)
         date = self.get_date(exif)
@@ -858,7 +858,7 @@ def prepare_meta(meta):
     #meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')] 
     temp_taxa = [a.strip() for a in meta['taxon'].split(',')] 
     clean_taxa = []
-    for taxon in temp_taxa: 
+    for taxon in temp_taxa:
         tsplit = taxon.split()
         if len(tsplit) == 2 and tsplit[-1] in ['sp', 'sp.', 'spp']:
             tsplit.pop()

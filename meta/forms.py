@@ -27,8 +27,14 @@ class RelatedForm(forms.Form):
 
 class FixTaxaForm(forms.Form):
     def get_orphans():
+        '''Pega táxons sem parent e sem ranking.
+
+        Faz o processamento para serem carregadas no formulário.
+        '''
         taxa = Taxon.objects.filter(parent__isnull=True, rank='')
-        semitaxa = [(taxon.name, taxon.name) for taxon in taxa]
+        semitaxa = [(taxon.name, u'%s (id=%s)' % (taxon.name, taxon.id)) for taxon in taxa]
         orphans = tuple(semitaxa)
         return orphans
-    revise = forms.MultipleChoiceField(choices=get_orphans(), widget=forms.CheckboxSelectMultiple(attrs={'class':'check-taxon'}), required=False, label=u'Revisar táxons')
+    review = forms.MultipleChoiceField(choices=get_orphans(), 
+            widget=forms.CheckboxSelectMultiple(attrs={'class':'check-taxon'}), 
+            required=False, label=u'Revisar táxons')

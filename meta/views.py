@@ -252,56 +252,25 @@ def feedback_page(request):
     return render_to_response('feedback.html', variables)
 
 def fixtaxa_page(request):
-    '''Página mostrando táxons sem pai.'''
+    '''Página mostrando táxons órfãos e sem ranking.
+
+    Se o formulário foi enviado ele revisa os táxons selecionados.
+    '''
     invalids = []
     valids = []
     if request.method == 'POST':
         form = FixTaxaForm(request.POST)
         if form.is_valid():
-            for name in form.cleaned_data['revise']:
-                try:
-                    taxon = Itis(name)
-                    if taxon.hierarchy:
-                        valids.append(name)
-                    else:
-                        try:
-                            # Gambiarra para encontrar gêneros nas tabelas.
-                            genus = name.split()[0]
-                            taxon = Itis(genus)
-                            if taxon.hierarchy:
-                                try:
-                                    genus, new = Taxon.objects.get_or_create(name=genus)
-                                    for parent in taxon.parents:
-                                        newtaxon, new = Taxon.objects.get_or_create(name=parent.taxonName)
-                                        if new:
-                                            newtaxon.rank = parent.rankName
-                                            newtaxon.tsn = parent.tsn
-                                            if parent.parentName:
-                                                newtaxon.parent = Taxon.objects.get(name=parent.parentName)
-                                            newtaxon.save()
-                                            print u'Salvo!'
-                                        else:
-                                            print u'Já existe!'
-
-                                    if taxon.parent_name:
-                                        genus.parent = Taxon.objects.get(name=taxon.parent_name)
-                                    if taxon.tsn:
-                                        genus.tsn = taxon.tsn
-                                    if taxon.rank:
-                                        genus.rank = taxon.rank
-                                except:
-                                    print u'Não rolou pegar hierarquia...'
-                                genus.save()
-                                binomial = Taxon.objects.get(name=name)
-                                binomial.parent = genus
-                                binomial .save()
-                                valids.append(name.split()[0])
-                            else:
-                                invalids.append(name.split()[0])
-                        except:
-                            invalids.append(name)
-                except:
+            for name in form.cleaned_data['review']:
+                taxon = review_taxon(name)
+                if taxon:
+                    valids.append(name)
+                else:
                     invalids.append(name)
+            # Retira táxons concertados da lista.
+            for i, v in enumerate(form.fields['review'].choices):
+                if v[0] in valids:
+                    form.fields['review'].choices.pop(i)
     else:
         form = FixTaxaForm()
     variables = RequestContext(request, {
@@ -513,3 +482,83 @@ def recurse(taxon, q=None):
             q.append(Q(**{'taxon': child}))
             recurse(child, q)
     return q
+
+def insert_parents(taxon):
+    '''Gerencia atualização de um táxon no banco de dados.
+    
+    Pega ou cria cada parent, incluindo ranking, tsn e parent; pega o táxon em 
+    questão e atualiza seu ranking, tsn e parent.
+    '''
+    try:
+        # Iterate por cada parent.
+        for parent in taxon.parents:
+            print u'Criando %s...' % parent.taxonName
+            newtaxon, new = Taxon.objects.get_or_create(name=parent.taxonName)
+            if new:
+                newtaxon.rank = parent.rankName
+                newtaxon.tsn = parent.tsn
+                if parent.parentName:
+                    newtaxon.parent = Taxon.objects.get(name=parent.parentName)
+                newtaxon.save()
+                print u'Salvo!'
+            else:
+                print u'Já existe!'
+        # Táxon original para atualizar o ranking, tsn e parent.
+        original = Taxon.objects.get(name=taxon.name)
+        if taxon.parent_name:
+            original.parent = Taxon.objects.get(name=taxon.parent_name)
+            print u'Parent: %s' % original.parent
+        if taxon.tsn:
+            original.tsn = taxon.tsn
+            print u'TSN: %s' % original.tsn
+        if taxon.rank:
+            original.rank = taxon.rank
+            print u'Rank: %s' % original.rank
+        original.save()
+    except:
+        print u'Não rolou pegar hierarquia...'
+
+def review_taxon(name):
+    '''Revisa o táxon e atualiza banco de dados.
+
+    1. Busca o nome no Itis. Se encontrar, adiciona e atualiza banco de dados.  
+       E adicionado na lista de válidos.
+    2. Se for espécie, buscar pelo gênero. Se encontrar gênero, adicioná-lo 
+       junto com toda a hierarquia e, depois, adicionar como parent da espécie 
+       e incluir ranking da mesma.
+    3. Retorna True se tiver conseguido e False se não.
+    '''
+    #TODO revisar toda essa função...
+    try:
+        taxon = Itis(name)
+        if taxon.hierarchy:
+            # Atualiza parents
+            insert_parents(taxon)
+            return True
+        else:
+            name_split = name.split()
+            if len(name_split) > 1:
+                original = Taxon.objects.get(name=name)
+                original.rank = u'Espécie'
+                original.save()
+                try:
+                    # Gambiarra para encontrar gêneros nas tabelas.
+                    genus = name_split[0]
+                    taxon = Itis(genus)
+                    if taxon.hierarchy:
+                        genus, new = Taxon.objects.get_or_create(name=genus)
+                        # Atualiza parents
+                        insert_parents(genus)
+                        genus.save()
+                        # Atualiza ranking do táxon original.
+                        original.parent = genus
+                        original.save()
+                        return True
+                    else:
+                        return False
+                except:
+                    return False
+            else:
+                return False
+    except:
+        return False

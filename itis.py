@@ -242,7 +242,6 @@ class Itis:
                 #TODO O que fazer quando isso acontecer?
                 print u'Não conseguiu conectar...'
                 up = None
-            #import pdb; pdb.set_trace()
             if up.parentName and up.parentTsn:
                 self.rank = self.translate(up.rankName)
                 self.parent_rank = self.translate(

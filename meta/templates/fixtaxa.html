@@ -50,19 +50,4 @@
     <div class="notice"><strong>Dependendo do número de táxons selecionados a pesquisa pode levar vários minutos.</strong></div>
     <hr>
 
-{% comment %}
-{% if taxa %}
-<h2>Lista normal...</h2>
-<ul>
-    {% for taxon in taxa %}
-    <li>
-    <a href="{{ taxon.get_absolute_url }}">{{ taxon.name }}</a>
-    </li>
-{% endfor %}
-</ul>
-{% else %}
-Nenhum táxon para arrumar.
-{% endif %}
-{% endcomment %}
-
 {% endblock %}

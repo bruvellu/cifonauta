@@ -268,9 +268,17 @@ def fixtaxa_page(request):
                 else:
                     invalids.append(name)
             # Retira táxons concertados da lista.
+            fixed_indexes = []
             for i, v in enumerate(form.fields['review'].choices):
                 if v[0] in valids:
-                    form.fields['review'].choices.pop(i)
+                    fixed_indexes.append(i)
+            # Ordena lista de índices
+            fixed_indexes.sort()
+            fixed_indexes.reverse()
+            # Remove choices na ordem reversa para não alterar o índice e 
+            # excluir o táxon errado...
+            for i in fixed_indexes:
+                form.fields['review'].choices.pop(i)
     else:
         form = FixTaxaForm()
     variables = RequestContext(request, {

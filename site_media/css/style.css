@@ -105,7 +105,7 @@ nav #menu {
 #feedback {
     position:fixed;
     right:0;
-    top:15%;
+    top:10%;
     font-weight:bold;
     text-transform:lowercase;
     z-index:1000;

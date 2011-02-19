@@ -50,11 +50,15 @@
 
 {% block sidebar %}
 <aside class="main span-8 last">
-<div class="borders block shadow">
+<div class="block shadow">
     {% include 'tree.html' %}
 </div>
-<div class="borders block shadow">
+<!--
+<div class="block shadow">
+    {% comment %}
     {% show_hot %}
+    {% endcomment %}
 </div>
+-->
 </aside>
 {% endblock %}

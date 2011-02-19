@@ -200,9 +200,10 @@ def show_stats():
     cities = City.objects.count()
     states = State.objects.count()
     countries = Country.objects.count()
+    authors = Author.objects.count()
     tags = Tag.objects.count()
     references = Reference.objects.count()
-    return {'images': images, 'videos': videos, 'genera': genera, 'spp': spp, 'locations': locations, 'cities': cities, 'states': states, 'countries': countries, 'tags': tags, 'references': references}
+    return {'images': images, 'videos': videos, 'genera': genera, 'spp': spp, 'locations': locations, 'cities': cities, 'states': states, 'countries': countries, 'authors': authors, 'tags': tags, 'references': references}
 
 @register.filter
 def sp_em(meta, autoescape=None):

@@ -56,33 +56,38 @@
     <body>
         <section class="container prepend-1 append-1">
             <nav class="main span-24 last">
-                <div id="feedback"><a href="/feedback/">FEEDBACK</a></div>
+                <div id="feedback"><a href="/feedback/">feedback</a></div>
                 {% if user.is_authenticated %}
                 <span class="admin">
                     <a href="/admin/">admin</a> <a href="/privadas/">privadas</a> <a href="/fixtaxa/">fixtaxa</a>
                 </span>
                 {% endif %}
 
-                <ul id="menu">
-                    <li><a href="/">home</a></li>
-                    <li><a href="/sobre/">sobre</a></li>
-                    <li><a href="{% url meta.views.search_page %}">buscar</a></li>
-                    <li><a href="{% url meta.views.all_page %}">tudo</a></li>
+                <ul class="menu" id="media">
+                    <li><a href="{% url meta.views.all_page %}">fotos</a></li>
+                    <li><a href="{% url meta.views.all_page %}">vídeos</a></li>
                     <li><a href="{% url meta.views.taxa_page %}">táxons</a></li>
                     <li><a href="{% url meta.views.tags_page %}">marcadores</a></li>
-                    <!--<li><a href="/autor/">autores</a></li>-->
                     <li><a href="{% url meta.views.places_page %}">localidades</a></li>
                     <li><a href="{% url meta.views.authors_page %}">autores</a></li>
                     <li><a href="{% url meta.views.refs_page %}">referências</a></li>
+                </ul>
+                <ul class="menu" id="about">
+                    <li><a href="/">home</a></li>
+                    <li><a href="/sobre/">sobre</a></li>
+                    <li><a href="{% url meta.views.search_page %}">buscar</a></li>
                     <li><a href="/blog/">blog</a></li>
                 </ul>
             </nav>
-            <header class="main span-16">
+            <header class="main span-12">
                 <hgroup>
                     <h1>Cifonauta</h1>
                     <h2>banco de imagens de organismos marinhos</h2>
                 </hgroup>
             </header>
+            <div class="span-12 last">
+                {% show_stats %}
+            </div>
             <section class="main span-24 last" id="content">
                 {% block content %}{% endblock %}
                 {% block sidebar %}{% endblock %}

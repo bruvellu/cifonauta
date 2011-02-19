@@ -1,50 +1,54 @@
 {% extends 'base.html' %}
 {% block content %}
-<section class="main span-16">
-    <header class="shadow" id="slogan">
-        <h1>Descubra a biodiversidade marinha</h1>
-    </header>
-    {% show_stats %}
-    <div class="main span-16 last" id="intro">
-        <p>Nosso acervo digital é resultado de pesquisas científicas e atividades de extensão desenvolvidas no CEBIMar e tem como objetivo disponibilizar imagens de qualidade sobre biologia marinha para curiosos, estudantes, educadores e comunidade acadêmica. Comece a explorar ou <a href="/sobre/">saiba mais</a>!</p>
-    </div>
+<section class="main span-16 last">
+<header id="slogan">
+    <h1>Descubra a biodiversidade marinha</h1>
+</header>
+
+<div class="main span-16 last" id="intro">
     <div class="span-8">
-        <h2>Fotos</h2>
-        <strong><a href="{{ image.get_absolute_url }}">{{ image.title }}</a></strong><br>
-        <a href="{{ image.get_absolute_url }}"><img src="/{{ image.web_filepath }}" alt="{{ image.title }}" width="300" /></a>
+        <a href="{{ image.get_absolute_url }}"><img class="shadow" src="/{{ image.web_filepath }}" alt="{{ image.title }}" width="300" /></a>
     </div>
     <div class="span-8 last">
+        <p>Nosso acervo digital é resultado de pesquisas científicas e atividades de extensão desenvolvidas no CEBIMar e tem como objetivo disponibilizar imagens de qualidade sobre biologia marinha para curiosos, estudantes, educadores e comunidade acadêmica. Comece a explorar ou <a href="/sobre/">saiba mais</a>!</p>
+    </div>
+</div>
+
+<div class="main span-16 last" id="fotos">
+    <div class="span-10">
+        <h2>Fotos</h2>
+        <p>Nosso acervo digital é resultado de pesquisas científicas e atividades de extensão desenvolvidas no CEBIMar e tem como objetivo disponibilizar imagens de qualidade sobre biologia marinha para curiosos, estudantes, educadores e comunidade acadêmica. Comece a explorar ou <a href="/sobre/">saiba mais</a>!</p>
+    </div>
+    <div class="span-6 last">
+        <a href="{{ photo.get_absolute_url }}"><img class="shadow" src="/{{ photo.web_filepath }}" alt="{{ photo.title }}" width="220" /></a>
+    </div>
+</div>
+
+<div class="main span-16 last" id="videos">
+    <div class="span-10">
         <h2>Vídeos</h2>
-        <strong><a href="{{ video.get_absolute_url }}">{{ video.title }}</a></strong><br>
-        <a href="{{ video.get_absolute_url }}"><img src="/{{ video.large_thumb }}" alt="{{ video.title }}" width="300" /></a>
-        <!--<video poster="/{{ video.thumb_filepath }}" preload="preload" controls="controls" width="300" height="225">
-        <source src="/{{ video.web_filepath }}" type="video/ogg">
-        <img alt="Still do vídeo" src="/{{ video.large_thumb.url }}">
-        Seu navegador ainda não suporta HTML5...
-        </video>-->
+        <p>Nosso acervo digital é resultado de pesquisas científicas e atividades de extensão desenvolvidas no CEBIMar e tem como objetivo disponibilizar imagens de qualidade sobre biologia marinha para curiosos, estudantes, educadores e comunidade acadêmica. Comece a explorar ou <a href="/sobre/">saiba mais</a>!</p>
     </div>
-
-    {% if thumbs %}
-    <div id="highthumbs" class="main span-16 last">
-    <h2>Destaques</h2>
-        <ul class="thumbs">
-            {% for media in thumbs %}
-                {% if media.is_public %}
-                <li class="shadow size-{{ media.size.slug }}">
-                {% include 'thumb.html' %}
-                </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+    <div class="span-6 last">
+        <a href="{{ video.get_absolute_url }}"><img class="shadow" src="/{{ video.large_thumb }}" alt="{{ video.title }}" width="220" /></a>
     </div>
-    {% endif %}
+</div>
 
-    <div class="main span-16 last">
-        <h2>Marcadores</h2>
-        {% for tag in tags %}
-        <a href="{{ tag.get_absolute_url }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+{% if thumbs %}
+<div class="main span-16 last" id="highthumbs">
+<h2>Destaques</h2>
+    <ul class="thumbs">
+        {% for media in thumbs %}
+            {% if media.is_public %}
+            <li class="shadow size-{{ media.size.slug }}">
+            {% include 'thumb.html' %}
+            </li>
+            {% endif %}
         {% endfor %}
-    </div>
+    </ul>
+</div>
+{% endif %}
+
 </section>
 {% endblock %}
 

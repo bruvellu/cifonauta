@@ -21,9 +21,10 @@ def main_page(request):
     if not images:
         images = ['']
     image = images[0]
+    photo = images[1]
     if images[0] != '':
         # Retira imagem principal da lista de destaques.
-        thumbs = images.exclude(id=image.id)[:4]
+        thumbs = images.exclude(id=image.id).exclude(id=photo.id)[:5]
     else:
         thumbs = []
     # Tenta encontrar destaques.
@@ -33,14 +34,11 @@ def main_page(request):
     if not videos:
         videos = ['']
     video = videos[0]
-    tags = Tag.objects.all()
-    locations = Sublocation.objects.all()
     variables = RequestContext(request, {
         'image': image,
-        'thumbs': thumbs,
+        'photo': photo,
         'video': video,
-        'tags': tags,
-        'locations': locations,
+        'thumbs': thumbs,
         })
     return render_to_response('main_page.html', variables)
 

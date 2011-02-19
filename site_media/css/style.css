@@ -37,12 +37,18 @@ header.main h2 {
 }
 
 
-.admin {
-    float:left;
+#admin {
+    padding:0 4px;
+    position:fixed;
+    left:0;
 }
 
-.admin a {
+#admin a {
     color:#eee;
+}
+
+#admin a:hover {
+    color:#4d7494;
 }
 
 .subpages {
@@ -116,6 +122,9 @@ nav.main {
     top:4em;
     font-weight:bold;
     z-index:1000;
+    -moz-opacity:0.9;
+    opacity:0.9;
+    filter: alpha(opacity=90);
 }
 
 #feedback a {
@@ -355,7 +364,7 @@ div.external {
     border-radius: 10px;
     -moz-opacity:0.9;
     opacity:0.9;
-    filter: alpha(opacity=50);
+    filter: alpha(opacity=90);
 }
 
 div.external li:hover {

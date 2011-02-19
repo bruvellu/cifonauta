@@ -56,6 +56,7 @@
     <body>
         <section class="container prepend-1 append-1">
             <nav class="main span-24 last">
+                <div id="feedback"><a href="/feedback/">FEEDBACK</a></div>
                 {% if user.is_authenticated %}
                 <span class="admin">
                     <a href="/admin/">admin</a> <a href="/privadas/">privadas</a> <a href="/fixtaxa/">fixtaxa</a>
@@ -82,7 +83,6 @@
                     <h2>banco de imagens de organismos marinhos</h2>
                 </hgroup>
             </header>
-            <div id="feedback" class="span-8 last"><h1><a href="/feedback/">>> FEEDBACK <<</a></h1></div>
             <section class="main span-24 last" id="content">
                 {% block content %}{% endblock %}
                 {% block sidebar %}{% endblock %}

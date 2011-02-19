@@ -101,8 +101,27 @@ nav.main {
 }
 
 #feedback {
-    margin:2em 0 0 0;
-    text-align:right;
+    position:fixed;
+    right:0;
+    top:15%;
+    font-weight:bold;
+    text-transform:lowercase;
+}
+
+#feedback a {
+    background:#4d7494;
+    -moz-border-radius: 10px 0 0 10px;
+    -webkit-border-radius: 10px 0 0 10px;
+    border-radius: 10px 0 0 10px;
+    border-color:#fafafa #fff #fafafa #eeeeee;
+    border-style:solid none solid solid;
+    border-width:6px medium 6px 6px;
+    color:#fff;
+    padding:4px 12px 4px 16px;
+}
+
+#feedback a:hover {
+    background:#C6D880;
 }
 
 section#stats {

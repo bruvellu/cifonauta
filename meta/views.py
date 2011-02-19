@@ -546,6 +546,10 @@ def review_taxon(name):
         else:
             name_split = name.split()
             if len(name_split) > 1:
+                # XXX Se ele coloca o ranking, mas o gênero não é encontrado, o 
+                # retorno é False, logo, não será incluído na lista de válidos 
+                # e não será excluído do formulário. Aparentemente pode 
+                # acontecer alguma incongruência por causa disso...
                 original = Taxon.objects.get(name=name)
                 original.rank = u'Espécie'
                 original.save()

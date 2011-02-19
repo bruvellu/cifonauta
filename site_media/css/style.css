@@ -10,7 +10,32 @@ header,footer,article,section,hgroup,nav,figure,figcaption {
 header.main {
     margin:1em 0 2em;
     background:url("/site_media/logo.png") no-repeat scroll 0 0 transparent;
+    height:65px;
 }
+
+header.main hgroup {
+    margin:0 0 0 80px;
+    font-family: sans-serif;
+}
+
+header.main h1, header.main h2 {
+    margin:0;
+    padding:0;
+}
+
+header.main h1 {
+    letter-spacing:4px;
+    font-weight:bolder;
+    color:#4d7494;
+}
+
+header.main h2 {
+    color:#666666;
+    font-size:1.2em;
+    text-transform:uppercase;
+    font-weight:lighter;
+}
+
 
 .admin {
     float:left;
@@ -78,18 +103,6 @@ nav.main {
 #feedback {
     margin:2em 0 0 0;
     text-align:right;
-}
-
-header.main hgroup {
-    margin:0 0 0 80px;
-    letter-spacing: 4px;
-    font-family: sans-serif;
-    font-variant:small-caps;
-}
-
-header.main h1, header.main h2 {
-    margin:0;
-    padding:0;
 }
 
 section#stats {

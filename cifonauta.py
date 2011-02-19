@@ -854,7 +854,8 @@ def prepare_meta(meta):
     # Preparando referências para o banco de dados
     meta['references'] = [a.strip() for a in meta['references'].split(',')] 
     # Preparando taxon(s) para o banco de dados
-    #XXX Lidar com fortuitos sp.?
+    # XXX Lidar com fortuitos sp.?
+    # XXX Lidar com fortuitos aff. e espécies com 3 nomes?
     #meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')] 
     temp_taxa = [a.strip() for a in meta['taxon'].split(',')] 
     clean_taxa = []

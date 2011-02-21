@@ -108,14 +108,6 @@ nav.main {
     border-width:0 5px 5px 0;
 }
 
-#slogan h1 {
-    text-transform:uppercase;
-    color:#333;
-    text-align:center;
-    text-shadow: 0 0 1px #aaaaaa;
-    filter: dropshadow(color=#aaaaaa, offx=0, offy=0); 
-}
-
 #feedback {
     position:fixed;
     right:0;
@@ -174,8 +166,32 @@ div.main {
     margin-bottom:2em;
 }
 
+#intro {
+    margin-bottom:2em;
+    background:#fafafa;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    padding:12px 10px 8px;
+    border-color:#eee #fafafa;
+    border-style:solid;
+    border-width:5px;
+}
+
+#destaque {
+    margin-right:25px;
+}
+
+#intro h1 {
+    text-transform:uppercase;
+    color:#333;
+    text-align:center;
+    font-weight:bold;
+}
+
 #intro p {
     font-size:1.5em;
+    text-align:justify;
 }
 
 #fotos p, #videos p {
@@ -473,7 +489,7 @@ ul.thumbs, ul.rel-thumbs {
 }
 
 .main ul.thumbs img {
-    width:106px;
+    width:98px;
 }
 
 ul.thumbs li, ul.rel-thumbs li {

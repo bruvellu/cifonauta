@@ -36,8 +36,28 @@ ITEMS = (
         (896, 896),
         )
 
-class PerPageForm(forms.Form):
+ORDER = (
+        ('asc', 'ascendente'),
+        ('desc', 'descendente'),
+        )
+
+ORDER_BY = (
+        ('id', 'id'),
+        ('view_count', 'visitas'),
+        ('date', 'data da imagem'),
+        ('pub_date', 'data de publicação'),
+        ('timestamp', 'data de modificação'),
+        )
+
+class DisplayForm(forms.Form):
+    '''Formulário para alterar parâmetros dos resultados de buscas.
+
+    Pode ser alterado por qual metadado as imagens serão ordenadas, se esta ordem será ascendente ou descendente, o número de resultados por página e se é para mostrar apenas os destaques.
+    '''
     n = forms.ChoiceField(choices=ITEMS, label=u'Ítens por página')
+    orderby = forms.ChoiceField(choices=ORDER_BY, label=u'Ordenar por')
+    order = forms.ChoiceField(choices=ORDER, label=u'Ordem')
+    highlight = forms.BooleanField(required=False, initial=False, label=u'Somente destaques')
 
 class FixTaxaForm(forms.Form):
     '''Formulário que mostra os táxons órfãos.

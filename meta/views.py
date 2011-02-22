@@ -50,7 +50,7 @@ def search_page(request):
     # TODO Documentar como funciona essa função.
     # TODO Implementar jQuery e AJAX para melhorar usabilidade.
     form = SearchForm()
-    n_form = PerPageForm(initial={'n': 16})
+    n_form = DisplayForm(initial={'n': 16})
 
     # Refinamentos.
     queries = {
@@ -171,28 +171,63 @@ def search_page(request):
                 image_list = image_list.filter(country__slug=country)
                 video_list = video_list.filter(country__slug=country)
 
-        # Testando POST para n page.
-        # TODO Incluir outros métodos de ordenar.
+        # Usando POST para definir:
+        #   1. Número de resultados por página.
+        #   2. Ordenação por qual metadado (id, visitas, datas, etc).
+        #   3. Tipo de ordenação, ascendente ou descendente.
+        #   4. Mostrar apenas imagens de destaque.
         if request.method == 'POST':
-            n_form = PerPageForm(request.POST)
+            n_form = DisplayForm(request.POST)
             if n_form.is_valid:
                 n_page = n_form.data['n']
                 request.session['n'] = n_form.data['n']
+                orderby = n_form.data['orderby']
+                request.session['orderby'] = n_form.data['orderby']
+                order = n_form.data['order']
+                request.session['order'] = n_form.data['order']
+                # XXX Meio bizarro, formulário não está mandando False, quando 
+                # destaque é falso. Está enviando vazio e quando é True está 
+                # mandando a string 'on'.
+                try:
+                    highlight = n_form.data['highlight']
+                    request.session['highlight'] = n_form.data['highlight']
+                except:
+                    highlight = False
+                    request.session['highlight'] = False
         else:
             try:
-                n_form = PerPageForm(initial={'n': request.session['n']})
+                n_form = DisplayForm(initial={'n': request.session['n'], 
+                    'orderby': request.session['orderby'], 'order': 
+                    request.session['order'], 'highlight': 
+                    request.session['highlight']})
                 n_page = request.session['n']
+                orderby = request.session['orderby']
+                order = request.session['order']
+                highlight = request.session['highlight']
             except:
-                n_form = PerPageForm(initial={'n': 16})
+                n_form = DisplayForm(initial={'n': 16, 'orderby': 'id', 
+                    'order': 'asc', 'highlight': False})
                 n_page = 16
+                orderby = 'id'
+                order = 'asc'
+                highlight = False
+
         # Forçar int.
         n_page = int(n_page)
 
-        # Define número de imagens por página.
-        #if 'n' in request.GET:
-        #    n_page = int(request.GET['n'])
-        #else:
-        #    n_page = 16
+        # Restringe à destaques.
+        if highlight:
+            image_list = image_list.filter(highlight=True)
+            video_list = video_list.filter(highlight=True)
+
+        # Ordena por request.POST['orderby'].
+        image_list = image_list.order_by(orderby)
+        video_list = video_list.order_by(orderby)
+
+        # Reverte a ordem se necessário.
+        if order == 'desc':
+            image_list = image_list.reverse()
+            video_list = video_list.reverse()
 
         # Retorna lista paginada.
         images = get_paginated(request, image_list, n_page)

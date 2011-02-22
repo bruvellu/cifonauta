@@ -72,7 +72,7 @@ def search_page(request):
 
     if 'query' in request.GET or 'author' in request.GET or 'size' in request.GET or 'tag' in request.GET or 'taxon' in request.GET or 'sublocation' in request.GET or 'city' in request.GET or 'state' in request.GET or 'country' in request.GET:
         # Iniciando querysets para serem filtrados para cada metadado presente na query.
-        #XXX Não sei se isso é muito eficiente..., mas por enquanto será assim.
+        # XXX Não sei se é muito eficiente, mas por enquanto será assim.
         image_list = Image.objects.filter(is_public=True)
         video_list = Video.objects.filter(is_public=True)
 
@@ -169,9 +169,15 @@ def search_page(request):
             for country in countries:
                 image_list = image_list.filter(country__slug=country)
                 video_list = video_list.filter(country__slug=country)
-        
-        images = get_paginated(request, image_list)
-        videos = get_paginated(request, video_list)
+
+        if 'n' in request.GET:
+            n_page = int(request.GET['n'])
+        else:
+            n_page = 16
+
+        # Retorna lista paginada.
+        images = get_paginated(request, image_list, n_page)
+        videos = get_paginated(request, video_list, n_page)
     variables = RequestContext(request, {
         'form': form,
         'images': images,

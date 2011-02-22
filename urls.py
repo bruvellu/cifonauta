@@ -40,8 +40,12 @@ urlpatterns = patterns('',
         (r'^literatura/$', refs_page),
         (r'^blog/', include('articles.urls')),
         (r'^organizacao/$', org_page),
-        (r'^tudo/$', all_page),
+        (r'^fotos/$', browse_page,
+            {'model': Image, 'type': 'photo'}, 'photos_url'),
+        (r'^videos/$', browse_page,
+            {'model': Video, 'type': 'video'}, 'videos_url'),
 
+        # XXX Padronizar syntax de passar argumentos para views?
         url(r'^tag/$', meta_list_page,
             {'model': Tag, 'plural': u'Marcadores'}),
         url(r'^tag/(?P<slug>[\w\-]+)/$', meta_page,
@@ -87,10 +91,9 @@ urlpatterns = patterns('',
         url(r'^pais/(?P<slug>[^\d]+)/$', meta_page,
             extra(Country, 'country'), name='country_url'),
 
-        # Criar url para referências?
-
-        url(r'^imagem/(\d+)/$', image_page, name='image_url'),
+        url(r'^foto/(\d+)/$', photo_page, name='image_url'),
         url(r'^video/(\d+)/$', video_page, name='video_url'),
+
         # Admin
         (r'^admin/', include(admin.site.urls)),
         # Site media

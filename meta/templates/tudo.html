@@ -2,11 +2,13 @@
 {% block content %}
 <section class="span-16">
 <header>
-<h1>Todas as imagens: {{ images.paginator.count }} fotos, {{ videos.paginator.count }} vídeos</h1>
+<h1>Navegue por {{ count }} {% if type == 'photo' %}fotos{% else %}vídeos{% endif %}</h1>
 </header>
 {% include 'gallery.html' %}
 </section>
 
 <aside class="span-8 last">
+<h2>Ordenar por:</h2>
+
 </aside>
 {% endblock %}

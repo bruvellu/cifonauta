@@ -47,8 +47,8 @@ def search_page(request):
     
     Procura termo no campo tsv do banco de dados, que possibilita o full-text search.
     '''
-    #TODO Documentar como funciona essa função.
-    #TODO Implementar jQuery e AJAX para melhorar usabilidade.
+    # TODO Documentar como funciona essa função.
+    # TODO Implementar jQuery e AJAX para melhorar usabilidade.
     form = SearchForm()
 
     # Refinamentos.
@@ -114,8 +114,6 @@ def search_page(request):
             for author in authors:
                 image_list = image_list.filter(author__slug=author)
                 video_list = video_list.filter(author__slug=author)
-
-        #import pdb; pdb.set_trace()
 
         # Tag 
         if 'tag' in request.GET:
@@ -286,20 +284,8 @@ def fixtaxa_page(request):
         })
     return render_to_response('fixtaxa.html', variables)
 
-def all_page(request):
-    '''Página todas as imagens do site.'''
-    image_list = Image.objects.filter(is_public=True).order_by('?')
-    video_list = Video.objects.filter(is_public=True).order_by('?')
-    images = get_paginated(request, image_list)
-    videos = get_paginated(request, video_list)
-    variables = RequestContext(request, {
-        'images': images,
-        'videos': videos,
-        })
-    return render_to_response('tudo.html', variables)
-
 # Single
-def image_page(request, image_id):
+def photo_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''
     if request.method == 'POST':
         form = RelatedForm(request.POST)
@@ -314,7 +300,7 @@ def image_page(request, image_id):
             form = RelatedForm(initial={'type': 'author'})
             related = u'author'
     image = get_object_or_404(Image, id=image_id)
-    #TODO Checar sessão para evitar overdose de views
+    # TODO Checar sessão para evitar overdose de views
     image.view_count = image.view_count + 1
     image.save()
     tags = image.tag_set.all().order_by('name')
@@ -362,6 +348,7 @@ def meta_page(request, model_name, field, slug):
 
     Mostra galeria com todas as imagens que o possuem.
     '''
+    # TODO Documentar melhor como funciona.
     queries = {
             u'query': '',
             u'author': [],
@@ -414,6 +401,24 @@ def meta_list_page(request, model, plural):
     return render_to_response('meta_list_page.html', variables)
 
 # Menu
+
+def browse_page(request, model, type):
+    '''Página com todas as fotos ou vídeos do site.'''
+    images, videos = [], []
+    media_list = model.objects.filter(is_public=True).order_by('id')
+    count = media_list.count()
+    if type == 'photo':
+        images = get_paginated(request, media_list)
+    elif type == 'video':
+        videos = get_paginated(request, media_list)
+    variables = RequestContext(request, {
+        'images': images,
+        'videos': videos,
+        'count': count,
+        'type': type,
+        })
+    return render_to_response('tudo.html', variables)
+
 def taxa_page(request):
     '''Página mostrando grupos taxonômicos de maneira organizada.'''
     variables = RequestContext(request, {

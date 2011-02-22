@@ -488,7 +488,7 @@ ul.thumbs, ul.rel-thumbs {
     padding: 0;
 }
 
-.main ul.thumbs img {
+#highthumbs ul.thumbs img {
     width:98px;
 }
 

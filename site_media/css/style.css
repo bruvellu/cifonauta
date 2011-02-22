@@ -112,7 +112,6 @@ nav.main {
     position:fixed;
     right:0;
     top:4em;
-    font-weight:bold;
     z-index:1000;
     -moz-opacity:0.9;
     opacity:0.9;
@@ -121,6 +120,7 @@ nav.main {
 
 #feedback a {
     background:#94B1CA;
+    font-weight:bold;
     -moz-border-radius: 10px 0 0 10px;
     -webkit-border-radius: 10px 0 0 10px;
     border-radius: 10px 0 0 10px;
@@ -199,6 +199,36 @@ div.main {
 }
 
 input.fashion {
+    background:#94B1CA;
+    font-weight:bold;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border-radius:5px;
+    color:#fff;
+    padding:4px 12px;
+    border:none;
+    -webkit-box-shadow: 2px 2px 5px #ddd;
+    -moz-box-shadow: 2px 2px 5px #ddd;
+    box-shadow: 2px 2px 5px #ddd; 
+}
+
+input.fashion#display {
+    float:right;
+    margin:-1.5em 0 0 0;
+}
+
+#limpar {
+    color:#E5C86F;
+    font-weight:bold;
+}
+
+#limpar:hover {
+    color:#E5926F;
+}
+
+input.fashion:hover {
+    background:#C6D880;
+    cursor: pointer;
 }
 
 aside.main {
@@ -531,6 +561,7 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
 }
 
 #related {
+    margin:0.5em 0 0 0;
 }
 
 #related-form {
@@ -554,6 +585,7 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
 }
 
 #navbox {
+    padding:0 0 0 30px;
 }
 
 #crumbs {
@@ -654,16 +686,7 @@ ul#comment-list {
 }
 
 .hide-comment, .show-comment {
-    background:#fafafa;
     cursor: pointer;
-    font-weight: bold;
-    color:#4d7494;
-    padding:0.3em 12px;
-    float:left;
-    -moz-border-radius: 5px 5px 5px 5px;
-    -webkit-border-radius: 5px 5px 5px 5px;
-    border-radius: 5px 5px 5px 5px;
-    margin:0.3em 0 0 0 !important;
 }
 
 .hide-comment {

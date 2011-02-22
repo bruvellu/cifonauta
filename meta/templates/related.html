@@ -1,6 +1,6 @@
 <div id="related-form" class="span-15 last">
     <form action="." method="post">
-        <div class="span-10" id="crumbs">
+        <div class="span-9" id="crumbs">
         {{ form.type.label_tag }}<strong> {{ type }}:</strong>
         <span class="quiet">
             {% if not crumbs %}
@@ -16,7 +16,7 @@
         </div>
         <div class="span-5 last" id="navbox">
             {{ form.type }}
-            <input type="submit" value="Trocar" /> 
+            <input type="submit" value="Trocar" class="fashion" /> 
         </div>
         {% csrf_token %}
     </form>

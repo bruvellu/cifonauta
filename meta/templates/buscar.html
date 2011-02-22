@@ -6,7 +6,7 @@
 {% block content %}
 <section class="span-16">
 <form id="search-form" method="get" action=".">
-    {{ form.query.label_tag }}<strong>:</strong> {{ form.query }} <input type="submit" value="Encontrar" /> {{form.query.help_text }} <a href="{% url meta.views.search_page %}">Limpar</a>
+    {{ form.query.label_tag }}<strong>:</strong> {{ form.query }} <input type="submit" value="Encontrar" class="fashion" /> <a id="limpar" href="{% url meta.views.search_page %}">Limpar</a>
 </form>
 <hr class="space">
 <div id="search-results">
@@ -23,9 +23,7 @@
 <div class="block shadow">
     <form action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="post">
         {{ n_form.as_p}}
-        <p class="align-right">
-        <input class="fashion" type="submit" value="Atualizar" />
-        </p>
+        <input type="submit" value="Atualizar" class="fashion" id="display" />
         {% csrf_token %}
 </form>
 </div>

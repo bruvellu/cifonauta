@@ -24,7 +24,20 @@ METAS = (
 
 class RelatedForm(forms.Form):
     type = forms.ChoiceField(choices=METAS, label=u'Navegando por')
-    #TODO Incluir um checkbox para mostrar apenas highlights?
+    # TODO Incluir um checkbox para mostrar apenas highlights?
+
+ITEMS = (
+        (16, 16),
+        (48, 48),
+        (80, 80),
+        (112, 112),
+        (224, 224),
+        (448, 448),
+        (896, 896),
+        )
+
+class PerPageForm(forms.Form):
+    n = forms.ChoiceField(choices=ITEMS, label=u'Ítens por página')
 
 class FixTaxaForm(forms.Form):
     '''Formulário que mostra os táxons órfãos.

@@ -50,6 +50,7 @@ def search_page(request):
     # TODO Documentar como funciona essa função.
     # TODO Implementar jQuery e AJAX para melhorar usabilidade.
     form = SearchForm()
+    n_form = PerPageForm(initial={'n': 16})
 
     # Refinamentos.
     queries = {
@@ -170,10 +171,28 @@ def search_page(request):
                 image_list = image_list.filter(country__slug=country)
                 video_list = video_list.filter(country__slug=country)
 
-        if 'n' in request.GET:
-            n_page = int(request.GET['n'])
+        # Testando POST para n page.
+        # TODO Incluir outros métodos de ordenar.
+        if request.method == 'POST':
+            n_form = PerPageForm(request.POST)
+            if n_form.is_valid:
+                n_page = n_form.data['n']
+                request.session['n'] = n_form.data['n']
         else:
-            n_page = 16
+            try:
+                n_form = PerPageForm(initial={'n': request.session['n']})
+                n_page = request.session['n']
+            except:
+                n_form = PerPageForm(initial={'n': 16})
+                n_page = 16
+        # Forçar int.
+        n_page = int(n_page)
+
+        # Define número de imagens por página.
+        #if 'n' in request.GET:
+        #    n_page = int(request.GET['n'])
+        #else:
+        #    n_page = 16
 
         # Retorna lista paginada.
         images = get_paginated(request, image_list, n_page)
@@ -186,6 +205,7 @@ def search_page(request):
         'video_list': video_list,
         'show_results': show_results,
         'queries': queries,
+        'n_form': n_form,
         })
     return render_to_response('buscar.html', variables)
 

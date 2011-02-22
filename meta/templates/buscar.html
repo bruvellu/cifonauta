@@ -19,6 +19,12 @@
 {% block sidebar %}
 <aside class="span-8 last">
 {% if show_results %}
+
+<form action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="post">
+    {{ n_form.n.label_tag }}: {{ n_form.n }} <input type="submit" value="Trocar" />
+    {% csrf_token %}
+</form>
+
     {% show_info image_list video_list queries %}
 {% endif %}
 </aside>

@@ -159,8 +159,13 @@ div.tag-count {
 
 footer.media-tags {
     font-size:1.1em;
-    padding:0 0 1em;
+    padding:0 0 0.5em;
 }
+
+#single header h1 {
+    padding:0 0 0.2em 0;
+}
+
 
 div.main {
     margin-bottom:2em;

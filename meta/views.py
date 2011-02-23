@@ -64,7 +64,6 @@ def search_page(request):
             u'state': [],
             u'country': [],
             u'type': [],
-            u'limit': [],
             }
 
     image_list = []
@@ -73,7 +72,7 @@ def search_page(request):
     videos = []
     show_results = False
 
-    if 'query' in request.GET or 'author' in request.GET or 'size' in request.GET or 'tag' in request.GET or 'taxon' in request.GET or 'sublocation' in request.GET or 'city' in request.GET or 'state' in request.GET or 'country' in request.GET:
+    if 'query' in request.GET or 'type' in request.GET or 'author' in request.GET or 'size' in request.GET or 'tag' in request.GET or 'taxon' in request.GET or 'sublocation' in request.GET or 'city' in request.GET or 'state' in request.GET or 'country' in request.GET:
         # Iniciando querysets para serem filtrados para cada metadado presente na query.
         # XXX Não sei se é muito eficiente, mas por enquanto será assim.
         image_list = Image.objects.filter(is_public=True)
@@ -245,6 +244,9 @@ def search_page(request):
                 queries['type'] = 'video'
                 images = []
                 image_list = []
+            elif request.GET['type'] == 'all':
+                # Não precisa entrar no queries, para não poluir o url.
+                pass
 
     print queries
 

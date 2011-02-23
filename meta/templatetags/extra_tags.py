@@ -280,10 +280,15 @@ def refiner(actives, inactives, field, queries):
 
 @register.simple_tag
 def build_url(meta, field, queries, remove=False):
-    '''Constrói o url para lidar com o refinamento.'''
-    first = True
-    prefix = '/buscar/?'
+    '''Constrói o url para lidar com o refinamento.
     
+    Estou usando a infra para remover o tipo (photo/video) do url 
+    (remove=True). Se remove=False a adição não vai funcionar, se for preciso 
+    acrescentar código para lidar com o type.
+    '''
+    first = True
+    prefix = '/buscar/?' 
+
     # Se for para remover o metadado, remover.
     if remove:
         try:
@@ -302,7 +307,6 @@ def build_url(meta, field, queries, remove=False):
 
     # Constrói o url de fato.
     for k, v in queries.iteritems():
-        print k, v
         if v:
             if first:
                 prefix = prefix + k + '='
@@ -418,6 +422,8 @@ def add_meta(meta, field, query):
 
     Se a lista estiver vazia simplesmente cria uma nova com o metadado. Caso a lista já exista e tenha elementos, adiciona o metadado à ela.
     '''
+    print 'ADD META'
+    print meta, field, query
     # Se o campo estiver vazio, já preencher com o valor do meta.
     if not query:
         if field == 'size':

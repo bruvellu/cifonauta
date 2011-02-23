@@ -15,7 +15,7 @@
     Você está visualizando apenas fotos. Veja <a href="{% build_url 'photo' 'type' queries 'True' %}">fotos e vídeos</a> ou <a href="{% build_url 'photo' 'type' queries 'True' %}&type=video">apenas vídeos.</a>
     {% else %}
     {% if queries.type == 'video' %}
-    Você está visualizando apenas vídeos. Veja <a href="{% build_url 'photo' 'type' queries 'True' %}">fotos e vídeos</a> ou <a href="{% build_url 'photo' 'type' queries 'True' %}&type=photo">apenas fotos.</a>
+    Você está visualizando apenas vídeos. Veja <a href="{% build_url 'video' 'type' queries 'True' %}">fotos e vídeos</a> ou <a href="{% build_url 'video' 'type' queries 'True' %}&type=photo">apenas fotos.</a>
     {% else %}
     Você está visualizando fotos e vídeos. Veja <a href="{{ request.path }}?{{ request.META.QUERY_STRING }}&type=photo">apenas fotos</a> ou <a href="{{ request.path }}?{{ request.META.QUERY_STRING }}&type=video">apenas vídeos.</a>
     {% endif %}

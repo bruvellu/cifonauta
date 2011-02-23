@@ -246,6 +246,8 @@ def search_page(request):
                 images = []
                 image_list = []
 
+    print queries
+
     variables = RequestContext(request, {
         'form': form,
         'images': images,

@@ -40,10 +40,6 @@ urlpatterns = patterns('',
         (r'^literatura/$', refs_page),
         (r'^blog/', include('articles.urls')),
         (r'^organizacao/$', org_page),
-        (r'^fotos/$', browse_page,
-            {'model': Image, 'type': 'photo'}, 'photos_url'),
-        (r'^videos/$', browse_page,
-            {'model': Video, 'type': 'video'}, 'videos_url'),
 
         # XXX Padronizar syntax de passar argumentos para views?
         url(r'^tag/$', meta_list_page,

@@ -481,23 +481,6 @@ def meta_list_page(request, model, plural):
 
 # Menu
 
-def browse_page(request, model, type):
-    '''Página com todas as fotos ou vídeos do site.'''
-    images, videos = [], []
-    media_list = model.objects.filter(is_public=True).order_by('id')
-    count = media_list.count()
-    if type == 'photo':
-        images = get_paginated(request, media_list)
-    elif type == 'video':
-        videos = get_paginated(request, media_list)
-    variables = RequestContext(request, {
-        'images': images,
-        'videos': videos,
-        'count': count,
-        'type': type,
-        })
-    return render_to_response('tudo.html', variables)
-
 def taxa_page(request):
     '''Página mostrando grupos taxonômicos de maneira organizada.'''
     variables = RequestContext(request, {

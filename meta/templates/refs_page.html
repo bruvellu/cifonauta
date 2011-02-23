@@ -3,20 +3,22 @@
 {% block content %}
 <section class="span-24 last">
 <header><h1>Referências bibliográficas</h1></header>
-<div class="span-15"><h2>Citação</h2></div>
 <div class="span-4"><h2>Exemplo</h2></div>
+<div class="span-15"><h2>Citação</h2></div>
 <div class="span-5 last"><h2>Veja mais</h2></div>
 {% for ref in references %}
-<div class="span-15 citation">
+<div class="span-24 last citation">
+<div class="span-4">
+    {% print_thumb 'reference' ref %}
+</div>
+<div class="span-15">
     {% autoescape off %}
     {{ ref.citation }}
     {% endautoescape %}
 </div>
-<div class="span-4 citation-thumb">
-    {% print_thumb 'reference' ref %}
-</div>
 <div class="span-5 last">
     <a href="{{ ref.get_absolute_url }}">{{ ref|icount:'reference' }} image{{ ref|icount:'reference'|pluralize:'m,ns' }} ligada{{ ref|icount:'reference'|pluralize }} à este trabalho.</a>
+</div>
 </div>
 {% endfor %}
 </section>

@@ -480,7 +480,6 @@ def meta_list_page(request, model, plural):
     return render_to_response('meta_list_page.html', variables)
 
 # Menu
-
 def taxa_page(request):
     '''Página mostrando grupos taxonômicos de maneira organizada.'''
     variables = RequestContext(request, {

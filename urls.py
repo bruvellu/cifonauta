@@ -8,10 +8,6 @@ from meta.models import *
 from django import template
 template.add_to_builtins('weblarvae.meta.templatetags.extra_tags')
 
-#info_dict = {
-#        'queryset': Image.objects.all(),
-#        }
-
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -41,51 +37,47 @@ urlpatterns = patterns('',
         (r'^blog/', include('articles.urls')),
         (r'^organizacao/$', org_page),
 
-        # XXX Padronizar syntax de passar argumentos para views?
+        # XXX Lista com metadados, não utilizado. Será útil algum dia?
         url(r'^tag/$', meta_list_page,
             {'model': Tag, 'plural': u'Marcadores'}),
-        url(r'^tag/(?P<slug>[\w\-]+)/$', meta_page,
-            extra(Tag, 'tag'), name='tag_url'),
-
         url(r'^autor/$', meta_list_page,
             {'model': Author, 'plural': u'Autores'}),
-        url(r'^autor/(?P<slug>[^\d]+)/$', meta_page,
-            extra(Author, 'author'), name='author_url'),
-
         url(r'^especialista/$', meta_list_page,
             {'model': Source, 'plural': u'Especialista'}),
-        url(r'^especialista/(?P<slug>[^\d]+)/$', meta_page,
-            extra(Source, 'source'), name='source_url'),
-
         url(r'^taxon/$', meta_list_page,
             {'model': Taxon, 'plural': u'Táxons'}),
-        url(r'^taxon/(?P<slug>[^\d]+)/$', meta_page,
-            extra(Taxon, 'taxon'), name='taxon_url'),
-
         url(r'^tamanho/$', meta_list_page,
             {'model': Size, 'plural': u'Tamanhos'}),
-        url(r'^tamanho/(?P<slug>[\w\-]+)/$', meta_page,
-            extra(Size, 'size'), name='size_url'),
-
         url(r'^local/$', meta_list_page,
             {'model': Sublocation, 'plural': u'Locais'}),
-        url(r'^local/(?P<slug>[^\d]+)/$', meta_page,
-            extra(Sublocation, 'sublocation'), name='sublocation_url'),
-
         url(r'^cidade/$', meta_list_page,
             {'model': City, 'plural': u'Cidades'}),
-        url(r'^cidade/(?P<slug>[^\d]+)/$', meta_page,
-            extra(City, 'city'), name='city_url'),
-
         url(r'^estado/$', meta_list_page,
             {'model': State, 'plural': u'Estados'}),
-        url(r'^estado/(?P<slug>[^\d]+)/$', meta_page,
-            extra(State, 'state'), name='state_url'),
-
         url(r'^pais/$', meta_list_page,
             {'model': Country, 'plural': u'Países'}),
+
+        # XXX Padronizar syntax de passar argumentos para views?
+        url(r'^tag/(?P<slug>[\w\-]+)/$', meta_page,
+            extra(Tag, 'tag'), name='tag_url'),
+        url(r'^autor/(?P<slug>[^\d]+)/$', meta_page,
+            extra(Author, 'author'), name='author_url'),
+        url(r'^especialista/(?P<slug>[^\d]+)/$', meta_page,
+            extra(Source, 'source'), name='source_url'),
+        url(r'^taxon/(?P<slug>[^\d]+)/$', meta_page,
+            extra(Taxon, 'taxon'), name='taxon_url'),
+        url(r'^tamanho/(?P<slug>[\w\-]+)/$', meta_page,
+            extra(Size, 'size'), name='size_url'),
+        url(r'^local/(?P<slug>[^\d]+)/$', meta_page,
+            extra(Sublocation, 'sublocation'), name='sublocation_url'),
+        url(r'^cidade/(?P<slug>[^\d]+)/$', meta_page,
+            extra(City, 'city'), name='city_url'),
+        url(r'^estado/(?P<slug>[^\d]+)/$', meta_page,
+            extra(State, 'state'), name='state_url'),
         url(r'^pais/(?P<slug>[^\d]+)/$', meta_page,
             extra(Country, 'country'), name='country_url'),
+        url(r'^referencia/(?P<slug>[\w\-]+)/$', meta_page,
+            extra(Reference, 'reference'), name='reference_url'),
 
         url(r'^foto/(\d+)/$', photo_page, name='image_url'),
         url(r'^video/(\d+)/$', video_page, name='video_url'),

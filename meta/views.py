@@ -63,6 +63,8 @@ def search_page(request):
             u'city': [],
             u'state': [],
             u'country': [],
+            u'type': [],
+            u'limit': [],
             }
 
     image_list = []
@@ -232,6 +234,18 @@ def search_page(request):
         # Retorna lista paginada.
         images = get_paginated(request, image_list, n_page)
         videos = get_paginated(request, video_list, n_page)
+
+        # Exclui tipo.
+        if 'type' in request.GET:
+            if request.GET['type'] == 'photo':
+                queries['type'] = 'photo'
+                videos = []
+                video_list = []
+            elif request.GET['type'] == 'video':
+                queries['type'] = 'video'
+                images = []
+                image_list = []
+
     variables = RequestContext(request, {
         'form': form,
         'images': images,

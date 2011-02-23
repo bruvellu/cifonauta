@@ -292,6 +292,8 @@ def build_url(meta, field, queries, remove=False):
             # Só por segurança diferenciar o tamanho.
             if field == 'size':
                 queries[field].remove(str(meta.id))
+            elif field == 'type':
+                queries[field] = []
             else:
                 queries[field].remove(meta.slug)
     else:
@@ -300,6 +302,7 @@ def build_url(meta, field, queries, remove=False):
 
     # Constrói o url de fato.
     for k, v in queries.iteritems():
+        print k, v
         if v:
             if first:
                 prefix = prefix + k + '='
@@ -307,7 +310,9 @@ def build_url(meta, field, queries, remove=False):
             else:
                 prefix = prefix + '&' + k + '='
             # Faz checagem antes de adicionar últimos valores.
+            # Search field e type field são strings, tratados diferente.
             search_field = False
+            type_field = False
             if isinstance(v, list):
                 final_list = v
             else:
@@ -317,10 +322,16 @@ def build_url(meta, field, queries, remove=False):
                 elif k == 'query':
                     search = v
                     search_field = True
+                elif k == 'type':
+                    type = v
+                    type_field = True
                 else:
                     final_list = v.values_list('slug', flat=True)
-            if search_field:
-                prefix = prefix + search
+            if search_field or type_field:
+                if search_field:
+                    prefix = prefix + search
+                if type_field:
+                    prefix = prefix + type
             else:
                 prefix = prefix + ','.join(final_list)
     if prefix[-1] == '?':
@@ -353,16 +364,24 @@ def extract_set(image_list, video_list):
     '''Extrai outros metadados das imagens buscadas.'''
     #TODO Incluir vídeos nessas queries!
     # Salva IDs dos arquivos em uma lista.
+
     # Imagens.
-    image_values = image_list.values()
     image_ids = []
-    for image in image_values.iterator():
-        image_ids.append(image['id'])
+    try:
+        image_values = image_list.values()
+        for image in image_values.iterator():
+            image_ids.append(image['id'])
+    except:
+        pass
+
     # Vídeos.
-    video_values = video_list.values()
     video_ids = []
-    for video in video_values.iterator():
-        video_ids.append(video['id'])
+    try:
+        video_values = video_list.values()
+        for video in video_values.iterator():
+            video_ids.append(video['id'])
+    except:
+        pass
 
     # ManyToMany relationships
     refined_tags = Tag.objects.filter(images__pk__in=image_ids).distinct().order_by('name')
@@ -387,6 +406,8 @@ def add_meta(meta, field, query):
     if not query:
         if field == 'size':
             query = [str(meta.id)]
+        elif field == 'type':
+            query = [meta]
         else:
             query = [meta.slug]
     # Se o campo não estiver vazio, adicionar o valor do meta ao final.
@@ -395,7 +416,10 @@ def add_meta(meta, field, query):
         if isinstance(query, list):
             values_list = query
         else:
-            if field == 'size':
+            if field == 'type':
+                query = [meta]
+                return query
+            elif field == 'size':
                 values_list = query.values_list('id', flat=True)
                 values_list = [str(n) for n in values_list]
             else:

@@ -384,16 +384,32 @@ def extract_set(image_list, video_list):
         pass
 
     # ManyToMany relationships
-    refined_tags = Tag.objects.filter(images__pk__in=image_ids).distinct().order_by('name')
-    refined_authors = Author.objects.filter(images__pk__in=image_ids).distinct().order_by('name')
-    refined_taxa = Taxon.objects.filter(images__pk__in=image_ids).distinct().order_by('name')
+    refined_tags = Tag.objects.filter(
+            Q(images__pk__in=image_ids) | Q(videos__pk__in=video_ids)
+            ).distinct().order_by('name')
+    refined_authors = Author.objects.filter(
+            Q(images__pk__in=image_ids) | Q(videos__pk__in=video_ids)
+            ).distinct().order_by('name')
+    refined_taxa = Taxon.objects.filter(
+            Q(images__pk__in=image_ids) | Q(videos__pk__in=video_ids)
+            ).distinct().order_by('name')
 
     # ForeignKey relationships
-    refined_sizes = Size.objects.filter(image__pk__in=image_ids).distinct().order_by('name')
-    refined_sublocations = Sublocation.objects.filter(image__pk__in=image_ids).distinct().order_by('name')
-    refined_cities = City.objects.filter(image__pk__in=image_ids).distinct().order_by('name')
-    refined_states = State.objects.filter(image__pk__in=image_ids).distinct().order_by('name')
-    refined_countries = Country.objects.filter(image__pk__in=image_ids).distinct().order_by('name')
+    refined_sizes = Size.objects.filter(
+            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
+            ).distinct().order_by('name')
+    refined_sublocations = Sublocation.objects.filter(
+            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
+            ).distinct().order_by('name')
+    refined_cities = City.objects.filter(
+            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
+            ).distinct().order_by('name')
+    refined_states = State.objects.filter(
+            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
+            ).distinct().order_by('name')
+    refined_countries = Country.objects.filter(
+            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
+            ).distinct().order_by('name')
 
     return refined_authors, refined_taxa, refined_sizes, refined_sublocations, refined_cities, refined_states, refined_countries, refined_tags
 

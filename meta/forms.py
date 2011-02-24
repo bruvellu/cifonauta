@@ -47,6 +47,7 @@ ORDER_BY = (
         ('date', 'data da imagem'),
         ('pub_date', 'data de publicação'),
         ('timestamp', 'data de modificação'),
+        ('random', 'aleatório'),
         )
 
 class DisplayForm(forms.Form):

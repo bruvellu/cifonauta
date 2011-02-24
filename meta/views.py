@@ -221,6 +221,9 @@ def search_page(request):
             image_list = image_list.filter(highlight=True)
             video_list = video_list.filter(highlight=True)
 
+        # Substitui 'random' por '?'
+        if orderby == 'random':
+            orderby = '?'
         # Ordena por request.POST['orderby'].
         image_list = image_list.order_by(orderby)
         video_list = video_list.order_by(orderby)

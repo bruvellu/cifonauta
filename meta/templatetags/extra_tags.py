@@ -14,16 +14,9 @@ register = template.Library()
 
 main_ranks = [u'Reino', u'Filo', u'Classe', u'Ordem', u'Família', u'Gênero', u'Espécie']
 
-@register.inclusion_tag('tree.html')
-def show_tree():
-    #XXX Não está sendo usado mais. Apagar?
-    taxa = Taxon.tree.all()
-    #TODO Count não funciona com ManyToMany...
-    #taxa = Taxon.tree.add_related_count(Taxon.tree.all(), Taxon, 'images', 'image_count', cumulative=True)
-    return {'taxa': taxa, 'main_ranks': main_ranks}
-
 @register.inclusion_tag('splist.html')
 def show_spp():
+    '''Mostra lista simples de espécies presentes no banco.'''
     spp = Taxon.objects.filter(rank=u'Espécie').order_by('name')
     return {'spp': spp}
 

@@ -1,4 +1,3 @@
 {% load mptt_tags %}
 {% for ancestor in ancestors %}
-{{ ancestor.rank }} <a href="{{ ancestor.get_absolute_url }}" title="{{ ancestor.name }}">{{ ancestor.name }}</a>{% if not ancestor.is_leaf_node %} :: {% endif %}{% if forloop.last %}{{ taxon.rank }} <strong>{% if taxon.rank == 'Gênero' or taxon.rank == 'Espécie' %}<em>{{ taxon.name }}</em>{% else %}{{ taxon.name }}{% endif %}</strong>{% endif %}
-{% endfor %}
+{{ ancestor.rank }} <a href="{{ ancestor.get_absolute_url }}" title="{{ ancestor.name }}">{{ ancestor|sp_em }}</a>{% if not ancestor.is_leaf_node %} :: {% endif %}{% if forloop.last %}{{ taxon.rank }} <strong>{{ taxon|sp_em }}</strong>{% endif %}{% endfor %}

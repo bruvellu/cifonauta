@@ -1,9 +1,27 @@
 {% extends 'base.html' %}
-{% block title %}{{ meta.name }} | {{ block.super }}{% endblock %}
+{% block title %}
+
+{% if field == 'taxon' %}
+{{ meta.rank }}
+{% endif %} {{ meta.name }} | {{ block.super }}
+
+
+
+{% endblock %}
+
 {% block content %}
 <section class="span-16">
-<header><h1>{{ meta.name }}</h1></header>
-    {% include 'gallery.html' %}
+
+
+
+<header>
+{{ field|capfirst }}
+<h1>{% if field == 'taxon' %} {{ meta.rank }} {% endif %} {{ meta.name }}</h1>
+</header>
+
+
+
+{% include 'gallery.html' %}
 </section>
 {% endblock %}
 {% block sidebar %}

@@ -173,7 +173,6 @@ footer.media-tags {
     padding:0 0 0.2em 0;
 }
 
-
 div.main {
     margin-bottom:2em;
 }
@@ -364,6 +363,9 @@ ul.tree, ol.tree {
 
 hr {
     margin: 1.5em 0 1.5em 0 !important;
+}
+
+#metafield {
 }
 
 article.post footer {

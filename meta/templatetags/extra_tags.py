@@ -230,6 +230,32 @@ def sp_em(meta, autoescape=None):
 sp_em.needs_autoescape = True
 
 @register.filter
+def fielter(field):
+    '''Converte nome do campo em nome apresentável (taxon>Táxon).'''
+    if field == 'tag':
+    	return u'Marcador'
+    elif field == 'author':
+        return u'Autor'
+    elif field == 'source':
+        return u'Especialista'
+    elif field == 'taxon':
+        return u'Táxon'
+    elif field == 'size':
+        return u'Tamanho'
+    elif field == 'sublocation':
+        return u'Local'
+    elif field == 'city':
+        return u'Cidade'
+    elif field == 'state':
+        return u'Estado'
+    elif field == 'country':
+        return u'País'
+    elif field == 'reference':
+        return u'Referência'
+    else:
+    	return u'ERRO'
+
+@register.filter
 def islist(obj):
     '''Determina se objeto é uma lista.'''
     return isinstance(obj, list)

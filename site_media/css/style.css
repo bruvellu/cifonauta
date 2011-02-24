@@ -7,19 +7,19 @@ header,footer,article,section,hgroup,nav,figure,figcaption {
     clear: both;
 }
 
-header.main {
-    margin:1em 0 2em;
-    background:url("/site_media/logo.png") no-repeat scroll 0 0 transparent;
-    height:65px;
+#mainheader {
+    margin:0 0 2em 0;
 }
 
-header.main hgroup {
-    margin:0 0 0 80px;
+header.main hgroup.main {
+    margin:1em 0 0;
+    background:url("/site_media/logo.png") no-repeat scroll 0 0 transparent;
+    height:65px;
     font-family: sans-serif;
 }
 
 header.main h1, header.main h2 {
-    margin:0;
+    margin:0 0 0 80px;
     padding:0;
 }
 
@@ -35,7 +35,6 @@ header.main h2 {
     text-transform:uppercase;
     font-weight:lighter;
 }
-
 
 #admin {
     padding:0 4px;
@@ -141,6 +140,14 @@ nav.main {
     font-family:Georgia;
     letter-spacing:2px;
     text-align:right;
+}
+
+#stats-search {
+}
+
+#home-search {
+    text-align:right;
+    margin-top:2em;
 }
 
 .shadow {

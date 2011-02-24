@@ -205,6 +205,11 @@ def show_stats():
     references = Reference.objects.count()
     return {'images': images, 'videos': videos, 'genera': genera, 'spp': spp, 'locations': locations, 'cities': cities, 'states': states, 'countries': countries, 'authors': authors, 'tags': tags, 'references': references}
 
+@register.inclusion_tag('searchbox.html')
+def search_box():
+    form = SearchForm()
+    return {'form': form}
+
 @register.filter
 def sp_em(meta, autoescape=None):
     if autoescape:

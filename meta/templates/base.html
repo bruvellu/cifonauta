@@ -79,15 +79,20 @@
                     <li><a href="/blog/">blog</a></li>
                 </ul>
             </nav>
-            <header class="main span-12">
-                <hgroup>
+            <header class="main span-24 last" id="mainheader">
+                <hgroup class="main span-12">
                     <h1>Cifonauta</h1>
                     <h2>banco de imagens de organismos marinhos</h2>
                 </hgroup>
+                <div class="span-12 last" id="stats-search">
+                    {% show_stats %}
+                    {% if not request.path == '/buscar/' %}
+                    <div id="home-search">
+                        {% search_box %}
+                    </div>
+                    {% endif %}
+                </div>
             </header>
-            <div class="span-12 last">
-                {% show_stats %}
-            </div>
             <section class="main span-24 last" id="content">
                 {% block content %}{% endblock %}
                 {% block sidebar %}{% endblock %}

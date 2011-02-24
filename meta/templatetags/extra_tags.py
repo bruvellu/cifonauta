@@ -22,16 +22,20 @@ def show_spp():
 
 @register.inclusion_tag('taxon_paths.html')
 def taxon_paths(taxon):
+    '''Mostra classificação de um táxon de forma linear.'''
     ancestors = [t for t in taxon.get_ancestors() if t.rank in main_ranks]
     return {'taxon': taxon, 'ancestors': ancestors}
 
 @register.inclusion_tag('hot_images.html')
 def show_hot():
+    '''Mostra imagens mais acessadas.'''
+    # XXX Precisa ser repensado.
     hot_images = Image.objects.order_by('-view_count')[:4]
     return {'hot_images': hot_images}
 
 @register.inclusion_tag('thumb_org.html')
 def print_thumb(field, obj):
+    '''Gera thumbnail aleatório de determinado metadado.'''
     params = {field: obj, 'is_public': True}
     try:
         media = Image.objects.filter(**params).order_by('?')[0]
@@ -42,7 +46,7 @@ def print_thumb(field, obj):
 def slicer(query, media_id):
     '''Processa resultado do queryset.
 
-    Busca o metadado, encontra o índice da imagem e reduz amostra.
+    Busca o metadado, encontra o índice da imagem e reduz amostra. Usado para navegador linear.
     '''
     relative = {
             'ahead': '',
@@ -78,7 +82,10 @@ def slicer(query, media_id):
     return rel_query, relative
 
 def mediaque(media, qobj):
-    '''Retorna queryset de vídeo ou foto.'''
+    '''Retorna queryset de vídeo ou foto, baseado no datatype.
+    
+    Usado no navegador linear.
+    '''
     if media.datatype == 'photo':
         query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
     elif media.datatype == 'video':
@@ -185,6 +192,7 @@ def show_related(media, form, related):
 
 @register.inclusion_tag('stats.html')
 def show_stats():
+    '''Gera linha com estatísticas do banco.'''
     images = Image.objects.filter(is_public=True).count()
     videos = Video.objects.filter(is_public=True).count()
     genera = Taxon.objects.filter(rank=u'Gênero').count()
@@ -200,11 +208,13 @@ def show_stats():
 
 @register.inclusion_tag('searchbox.html')
 def search_box():
+    '''Gera buscador para ser usado no header do site.'''
     form = SearchForm()
     return {'form': form}
 
 @register.filter
 def sp_em(meta, autoescape=None):
+    '''Filtro que aplica itálico à espécies e gêneros.'''
     if autoescape:
         esc = conditional_escape
     else:
@@ -221,18 +231,22 @@ sp_em.needs_autoescape = True
 
 @register.filter
 def islist(obj):
+    '''Determina se objeto é uma lista.'''
     return isinstance(obj, list)
 
 @register.filter
 def in_list(value, arg):
+    '''Determina se um valor está na lista.'''
     return value in arg
 
 @register.filter
 def wordsplit(value):
+    '''Retorna lista de palavras.'''
     return value.split()
 
 @register.filter
 def icount(value, field):
+    '''Conta número de imagens+vídeos associados com metadado.'''
     q = {field:value}
     return Image.objects.filter(**q).count() + Video.objects.filter(**q).count()
 
@@ -360,11 +374,15 @@ def build_url(meta, field, queries, remove=False):
 
 @register.inclusion_tag('sets.html')
 def show_set(set, prefix, suffix, sep, method='name'):
+    '''Gera série a partir de um set.
+
+    Pega os elementos do set e cria lista separada por vírgulas ou qualquer outro separador. Um prefixo e um sufixo também podem ser indicados, além do método ('link' gera url, 'slug' gera slug e vazio mostra o nome normal).
+    '''
     return {'set': set, 'prefix': prefix, 'suffix': suffix, 'sep': sep, 'method': method}
 
 def extract_set(image_list, video_list):
     '''Extrai outros metadados das imagens buscadas.'''
-    #TODO Incluir vídeos nessas queries!
+    # XXX Q vídeos deixou meio lento, tem como melhorar?
     # Salva IDs dos arquivos em uma lista.
 
     # Imagens.
@@ -420,8 +438,6 @@ def add_meta(meta, field, query):
 
     Se a lista estiver vazia simplesmente cria uma nova com o metadado. Caso a lista já exista e tenha elementos, adiciona o metadado à ela.
     '''
-    print 'ADD META'
-    print meta, field, query
     # Se o campo estiver vazio, já preencher com o valor do meta.
     if not query:
         if field == 'size':

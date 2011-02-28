@@ -53,6 +53,10 @@ header.main h2 {
 .subpages {
 }
 
+#languages {
+    float:left;
+}
+
 nav.main {
     text-align:right;
     font-size: 1.4em;

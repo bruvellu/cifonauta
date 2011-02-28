@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 # Django settings for weblarvae project.
 
@@ -28,6 +29,14 @@ TIME_ZONE = 'America/Sao_Paulo'
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'pt-BR'
+
+ugettext = lambda s: s
+
+# Línguas disponíveis.
+LANGUAGES = (
+    ('pt-br', ugettext('Português')),
+    ('en', ugettext('English')),
+)
 
 SITE_ID = 1
 
@@ -60,10 +69,11 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
 )
 

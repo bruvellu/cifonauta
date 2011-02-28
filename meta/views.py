@@ -13,7 +13,7 @@ from itis import Itis
 # Main
 def main_page(request):
     '''Página principal mostrando destaques e pontos de partida para navegar.'''
-    #TODO Deixar página mais atrativa e eficiente.
+    # TODO Deixar página mais atrativa e eficiente.
     # Tenta encontrar destaques.
     images = Image.objects.filter(highlight=True, is_public=True).order_by('?')
     if not images:

@@ -21,6 +21,7 @@ def extra(model, field):
 
 urlpatterns = patterns('',
         (r'^$', main_page),
+        (r'^i18n/', include('django.conf.urls.i18n')),
         (r'^comentarios/', include('django.contrib.comments.urls')),
         (r'^feed/$', LatestMedia()),
 

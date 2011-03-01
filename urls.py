@@ -25,7 +25,7 @@ urlpatterns = patterns('',
         (r'^comentarios/', include('django.contrib.comments.urls')),
         (r'^feed/$', LatestMedia()),
 
-        (r'^traduzir/', include('rosetta.urls')),
+        (r'^rosetta/', include('rosetta.urls')),
 
         (r'^privadas/$', hidden_page),
         (r'^feedback/$', feedback_page),

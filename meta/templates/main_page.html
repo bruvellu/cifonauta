@@ -1,32 +1,46 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% block content %}
 <section class="main shadow span-23 last" id="intro">
     <div class="span-8" id="destaque">
         <a href="{{ image.get_absolute_url }}"><img class="shadow" src="/{{ image.web_filepath }}" alt="{{ image.title }}" width="300" /></a>
     </div>
     <div class="span-14 last">
-        <h1>Descubra a biodiversidade marinha</h1>
-        <p>Nosso acervo é resultado de pesquisas científicas e atividades de extensão ralizadas no CEBIMar e tem como objetivo disponibilizar imagens de qualidade sobre biologia marinha para curiosos, estudantes, educadores e comunidade acadêmica. Cada imagem possui informações sobre a espécie em questão, local de coleta, estágio de vida, habitat, modo de vida e muitos outros que podem ser explorados pelos <a href="{% url meta.views.tags_page %}">marcadores</a>. Saiba mais sobre o <strong>Cifonauta</strong> <a href="/sobre/">aqui</a>.</p>
+        <h1>{% trans 'Descubra a biodiversidade marinha' %}</h1>
+        <p>
+        {% url meta.views.tags_page as tags_page %}
+        {% blocktrans with tags_page as tags_url %}
+        Nosso acervo é resultado de pesquisas científicas e atividades de extensão ralizadas no CEBIMar e tem como objetivo disponibilizar imagens de qualidade sobre biologia marinha para curiosos, estudantes, educadores e comunidade acadêmica. Cada imagem possui informações sobre a espécie em questão, local de coleta, estágio de vida, habitat, modo de vida e muitos outros que podem ser explorados pelos <a href="{{ tags_url }}">marcadores</a>. Saiba mais sobre o <strong>Cifonauta</strong> <a href="/sobre/">aqui</a>.
+        {% endblocktrans %}
+        </p>
     </div>
 </section>
 
 <section class="main span-16 last">
 
 <div class="main span-7 append-1" id="fotos">
-        <h2>Fotos</h2>
+    <h2>{% trans 'Fotos' %}</h2>
         <a href="{{ photo.get_absolute_url }}"><img class="shadow" src="/{{ photo.web_filepath }}" alt="{{ photo.title }}" width="270" /></a>
-        <p>As fotografias...</p>
+        <p>
+        {% blocktrans %}
+        As fotografias...
+        {% endblocktrans %}
+        </p>
 </div>
 
 <div class="main span-7 append-1 last" id="videos">
-        <h2>Vídeos</h2>
+    <h2>{% trans 'Vídeos' %}</h2>
         <a href="{{ video.get_absolute_url }}"><img class="shadow" src="/{{ video.large_thumb }}" alt="{{ video.title }}" width="270" /></a>
-        <p>Os filmes...</p>
+        <p>
+        {% blocktrans %}
+        Os filmes...
+        {% endblocktrans %}
+        </p>
 </div>
 
 {% if thumbs %}
 <div class="main span-15 append-1 last" id="highthumbs">
-<h2>Destaques</h2>
+    <h2>{% trans 'Destaques' %}</h2>
     <ul class="thumbs">
         {% for media in thumbs %}
             {% if media.is_public %}
@@ -38,13 +52,12 @@
     </ul>
 </div>
 {% endif %}
-
 </section>
 {% endblock %}
 
 {% block sidebar %}
 <aside class="main span-8 last">
-    <h2>Navegue por grupos taxonômicos</h2>
+<h2>{% trans 'Navegue por grupos taxonômicos' %}</h2>
 <div class="block shadow">
     {% include 'tree.html' %}
 </div>

@@ -110,6 +110,7 @@ INSTALLED_APPS = (
     'articles',
     'south',
     'mptt',
+    'rosetta',
 )
 
 from settings_local import *

@@ -21,7 +21,10 @@ def main_page(request):
     if not images:
         images = ['']
     image = images[0]
-    photo = images[1]
+    if len(images) > 1:
+        photo = images[1]
+    else:
+        photo = images[0]
     if images[0] != '':
         # Retira imagem principal da lista de destaques.
         thumbs = images.exclude(id=image.id).exclude(id=photo.id)[:5]

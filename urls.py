@@ -26,6 +26,7 @@ urlpatterns = patterns('',
         (r'^feed/$', LatestMedia()),
 
         (r'^rosetta/', include('rosetta.urls')),
+        (r'^datatrans/', include('datatrans.urls')),
 
         (r'^privadas/$', hidden_page),
         (r'^feedback/$', feedback_page),

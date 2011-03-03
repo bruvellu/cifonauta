@@ -7,6 +7,8 @@ from mptt.models import MPTTModel
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 
+from datatrans.utils import register
+
 from external.mendeley import mendeley
 
 
@@ -102,6 +104,7 @@ class Video(File):
     class Meta:
         verbose_name = _('vídeo')
         verbose_name_plural = _('vídeos')
+
 
 class Author(models.Model):
     name = models.CharField(_('nome'), max_length=200, unique=True)
@@ -205,6 +208,7 @@ class Taxon(MPTTModel):
     class Meta:
         verbose_name = _('táxon')
         verbose_name_plural = _('táxons')
+
 
 class Size(models.Model):
     SIZES = (
@@ -327,6 +331,40 @@ class Reference(models.Model):
     class Meta:
         verbose_name = _('referência bibliográfica')
         verbose_name_plural = _('referências bibliográficas')
+
+
+# Registrando modelos para tradução.
+#class FileTranslation(object):
+#    fields = ('title', 'caption', 'notes',)
+#register(File, FileTranslation)
+
+#class ImageTranslation(object):
+#    fields = ('title', 'caption', 'notes',)
+#register(Image, ImageTranslation)
+#
+#class VideoTranslation(object):
+#    fields = ('title', 'caption', 'notes',)
+#register(Video, VideoTranslation)
+
+class TagTranslation(object):
+    fields = ('name', 'description',)
+register(Tag, TagTranslation)
+
+class TagCatTranslation(object):
+    fields = ('name', 'description',)
+register(Tag, TagCatTranslation)
+
+class TaxonTranslation(object):
+    fields = ('common', 'rank',)
+register(Taxon, TaxonTranslation)
+
+class SizeTranslation(object):
+    fields = ('description',)
+register(Size, SizeTranslation)
+
+class CountryTranslation(object):
+    fields = ('name',)
+register(Country, CountryTranslation)
 
 
 def citation_html(ref):

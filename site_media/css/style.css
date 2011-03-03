@@ -726,6 +726,10 @@ footer.main {
     letter-spacing: 2px;
     padding: 1em 0 0.6em;
     background: #fafafa;
+    border-style:solid;
+    border-color:#EEEEEE #FAFAFA #FFFFFF #FAFAFA;
+    border-width:5px 5px 0 5px;
+    margin:0 -5px;
     -moz-border-radius: 10px 10px 0 0;
     -webkit-border-radius: 10px 10px 0 0;
     border-radius: 10px 10px 0 0;

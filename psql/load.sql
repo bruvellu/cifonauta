@@ -27,12 +27,13 @@ DECLARE
 
 authors varchar;
 sources varchar;
-taxa varchar;
-parents varchar;
-tags varchar;
-
+taxa_name varchar;
 taxa_common varchar;
-parents_common varchar;
+taxa_rank varchar;
+taxa_parents_name varchar;
+taxa_parents_common varchar;
+tags varchar;
+tagcats varchar;
 
 sublocation varchar;
 city varchar;
@@ -44,6 +45,10 @@ caption_en varchar;
 notes_en varchar;
 country_en varchar;
 tags_en varchar;
+tagcats_en varchar;
+taxa_common_en varchar;
+taxa_rank_en varchar;
+taxa_parents_common_en varchar;
 
 BEGIN
 
@@ -65,59 +70,101 @@ END IF;
 SELECT concat((SELECT name FROM meta_tag WHERE id = tag_id)||' ') INTO tags FROM meta_tag_images WHERE image_id = NEW.id;
 SELECT concat((SELECT name FROM meta_author WHERE id = author_id)||' ') INTO authors FROM meta_author_images WHERE image_id = NEW.id;
 SELECT concat((SELECT name FROM meta_source WHERE id = source_id)||' ') INTO sources FROM meta_source_images WHERE image_id = NEW.id;
-SELECT concat((SELECT name FROM meta_taxon WHERE id = taxon_id)||' ') INTO taxa FROM meta_taxon_images WHERE image_id = NEW.id;
-
+SELECT concat((SELECT name FROM meta_taxon WHERE id = taxon_id)||' ') INTO taxa_name FROM meta_taxon_images WHERE image_id = NEW.id;
 SELECT concat((SELECT common FROM meta_taxon WHERE id = taxon_id)||' ') INTO taxa_common FROM meta_taxon_images WHERE image_id = NEW.id;
+SELECT concat((SELECT rank FROM meta_taxon WHERE id = taxon_id)||' ') INTO taxa_rank FROM meta_taxon_images WHERE image_id = NEW.id;
 
 -- Parent from taxa
-SELECT concat((SELECT name FROM meta_taxon WHERE id = (SELECT coalesce(parent_id, 1) FROM meta_taxon WHERE id = taxon_id))||' ') INTO parents FROM meta_taxon_images WHERE image_id = NEW.id;
-SELECT concat((SELECT common FROM meta_taxon WHERE id = (SELECT coalesce(parent_id, 1) FROM meta_taxon WHERE id = taxon_id))||' ') INTO parents_common FROM meta_taxon_images WHERE image_id = NEW.id;
+SELECT concat((SELECT name FROM meta_taxon WHERE id = (SELECT coalesce(parent_id, 1) FROM meta_taxon WHERE id = taxon_id))||' ') INTO taxa_parents_name FROM meta_taxon_images WHERE image_id = NEW.id;
+SELECT concat((SELECT common FROM meta_taxon WHERE id = (SELECT coalesce(parent_id, 1) FROM meta_taxon WHERE id = taxon_id))||' ') INTO taxa_parents_common FROM meta_taxon_images WHERE image_id = NEW.id;
+-- Parents from tags (tagcats)
+SELECT concat((SELECT name FROM meta_tagcategory WHERE id = (SELECT coalesce(parent_id, 1) FROM meta_tag WHERE id = tag_id))||' ') INTO tagcats FROM meta_tag_images WHERE image_id = NEW.id;
 
 -- Translations
-SELECT value INTO title_en FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=NEW.title AND language='pt-BR') AND language='en';
-SELECT value INTO caption_en FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=NEW.caption AND language='pt-BR') AND language='en';
-SELECT value INTO notes_en FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=NEW.notes AND language='pt-BR') AND language='en';
-SELECT value INTO country_en FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=country AND language='pt-BR') AND language='en';
+-- title
+SELECT value INTO title_en FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=NEW.title AND language='pt-br') AND language='en';
+-- caption
+SELECT value INTO caption_en FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=NEW.caption AND language='pt-br') AND language='en';
+-- notes
+SELECT value INTO notes_en FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=NEW.notes AND language='pt-br') AND language='en';
+-- country
+SELECT value INTO country_en FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=country AND language='pt-br') AND language='en';
 
 -- Many to many
-SELECT concat((SELECT (SELECT value FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=name AND language='pt-BR') AND language='en') FROM meta_tag WHERE id = tag_id)||' ') INTO tags_en FROM meta_tag_images WHERE image_id = NEW.id;
+-- tags
+SELECT concat((SELECT (SELECT value FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=name AND language='pt-br') AND language='en') FROM meta_tag WHERE id = tag_id)||' ') INTO tags_en FROM meta_tag_images WHERE image_id = NEW.id;
+-- tagcats
+SELECT concat((SELECT (SELECT value FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=name AND language='pt-br') AND language='en') FROM meta_tagcategory WHERE id = (SELECT coalesce(parent_id, 1) FROM meta_tag WHERE id = tag_id))||' ') INTO tagcats_en FROM meta_tag_images WHERE image_id = NEW.id;
+-- taxa common
+SELECT concat((SELECT (SELECT value FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=common AND language='pt-br') AND language='en') FROM meta_taxon WHERE id = taxon_id)||' ') INTO taxa_common_en FROM meta_taxon_images WHERE image_id = NEW.id;
+-- taxa rank
+SELECT concat((SELECT (SELECT value FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=rank AND language='pt-br') AND language='en') FROM meta_taxon WHERE id = taxon_id)||' ') INTO taxa_rank_en FROM meta_taxon_images WHERE image_id = NEW.id;
+-- taxa parents common
+SELECT concat((SELECT (SELECT value FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=common AND language='pt-br') AND language='en') FROM meta_taxon WHERE id = (SELECT coalesce(parent_id, 1) FROM meta_taxon WHERE id = taxon_id))||' ') INTO taxa_parents_common_en FROM meta_taxon_images WHERE image_id = NEW.id;
 
+SELECT concat((SELECT (SELECT value FROM datatrans_keyvalue WHERE digest=(SELECT digest FROM datatrans_keyvalue WHERE value=name AND language='pt-br') AND language='en') FROM meta_tagcategory WHERE id = (SELECT coalesce(parent_id, 1) FROM meta_tag WHERE id = tag_id))||' ') INTO tagcats_en FROM meta_tag_images WHERE image_id = NEW.id;
 
 NEW.tsv := 
+    -- tags
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(tags, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(tags), '')), 'A') ||
     setweight(to_tsvector('pg_catalog.english', COALESCE(tags_en, '')), 'A') ||
+    -- tagcats
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(tagcats, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(tagcats), '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.english', COALESCE(tagcats_en, '')), 'A') ||
+    -- title
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(NEW.title, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(NEW.title), '')), 'A') ||
     setweight(to_tsvector('pg_catalog.english', COALESCE(title_en, '')), 'A') ||
+    -- caption
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(NEW.caption, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(NEW.caption), '')), 'A') ||
     setweight(to_tsvector('pg_catalog.english', COALESCE(caption_en, '')), 'A') ||
+    -- notes
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(NEW.notes, '')), 'D') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(NEW.notes), '')), 'D') ||
     setweight(to_tsvector('pg_catalog.english', COALESCE(notes_en, '')), 'D') ||
+    -- authors
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(authors, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(authors), '')), 'A') ||
+    -- sources
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(sources, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(sources), '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(taxa, '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(taxa), '')), 'A') ||
+    -- taxa name
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(taxa_name, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.english', COALESCE(taxa_name, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(taxa_name), '')), 'A') ||
+    -- taxa common
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(taxa_common, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(taxa_common), '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.english', COALESCE(taxa_common_en, '')), 'A') ||
+    -- taxa rank
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(taxa_rank, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(taxa_rank), '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.english', COALESCE(taxa_rank_en, '')), 'A') ||
+    -- taxa parents name
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(taxa_parents_name, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.english', COALESCE(taxa_parents_name, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(taxa_parents_name), '')), 'A') ||
+    -- taxa parents common
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(taxa_parents_common, '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(taxa_parents_common), '')), 'A') ||
+    setweight(to_tsvector('pg_catalog.english', COALESCE(taxa_parents_common_en, '')), 'A') ||
+    -- sublocation
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(sublocation, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(sublocation), '')), 'A') ||
+    -- city
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(city, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(city), '')), 'A') ||
+    -- state
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(state, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(state), '')), 'A') ||
+    -- country
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(country, '')), 'A') ||
     setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(country), '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.english', COALESCE(country_en, '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(parents, '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(parents), '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(parents_common, '')), 'A') ||
-    setweight(to_tsvector('pg_catalog.portuguese', COALESCE(make_ai(parents_common), '')), 'A');
-return new;
+    setweight(to_tsvector('pg_catalog.english', COALESCE(country_en, '')), 'A');
+    return new;
 END
 $$ LANGUAGE plpgsql;
 

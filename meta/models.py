@@ -348,7 +348,7 @@ register(Tag, TagTranslation)
 
 class TagCatTranslation(object):
     fields = ('name', 'description',)
-register(Tag, TagCatTranslation)
+register(TagCategory, TagCatTranslation)
 
 class TaxonTranslation(object):
     fields = ('common', 'rank',)

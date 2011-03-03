@@ -310,6 +310,7 @@ class Movie:
                 'latitude': u'',
                 'longitude': u'',
                 'references': u'',
+                'notes': u'',
                 }
 
         # Verifica se arquivo acessório com meta dos vídeos existe.
@@ -572,6 +573,7 @@ class Photo:
                 'source': info.data['source'], # 115
                 'references': info.data['credit'], #110
                 'timestamp': self.timestamp,
+                'notes': u'',
                 }
 
         if new:

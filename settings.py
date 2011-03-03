@@ -28,10 +28,11 @@ TIME_ZONE = 'America/Sao_Paulo'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
+# XXX Tem que ser minúscula para evitar problema com datatrans
 LANGUAGE_CODE = 'pt-br'
+ADMIN_LANGUAGE_CODE = 'pt-br'
 
 ugettext = lambda s: s
-
 # Línguas disponíveis.
 LANGUAGES = (
     ('pt-br', ugettext('Português')),
@@ -65,7 +66,7 @@ SECRET_KEY = ''
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
     'django.template.loaders.app_directories.load_template_source',
-#     'django.template.loaders.eggs.load_template_source',
+    #'django.template.loaders.eggs.load_template_source',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -74,6 +75,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'utils.AdminLocaleURLMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
 )
 

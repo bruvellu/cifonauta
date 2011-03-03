@@ -334,17 +334,13 @@ class Reference(models.Model):
 
 
 # Registrando modelos para tradução.
-#class FileTranslation(object):
-#    fields = ('title', 'caption', 'notes',)
-#register(File, FileTranslation)
+class ImageTranslation(object):
+    fields = ('title', 'caption', 'notes',)
+register(Image, ImageTranslation)
 
-#class ImageTranslation(object):
-#    fields = ('title', 'caption', 'notes',)
-#register(Image, ImageTranslation)
-#
-#class VideoTranslation(object):
-#    fields = ('title', 'caption', 'notes',)
-#register(Video, VideoTranslation)
+class VideoTranslation(object):
+    fields = ('title', 'caption', 'notes',)
+register(Video, VideoTranslation)
 
 class TagTranslation(object):
     fields = ('name', 'description',)

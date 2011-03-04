@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% block title %}{{ media.title }} | {{ block.super }}{% endblock %}
 {% block extra-head %}
 <script type="text/javascript">
@@ -26,6 +27,16 @@ $(document).ready(function(){
                 $(this).find(".external").fadeOut(200);
             }
         );
+
+        // Collapsible cite 
+        $("#share-sideinfo").click(function(){
+            $("#sharing").slideToggle();
+            $(this).toggleClass("bg-merge");
+            });
+        $("#cite-sideinfo").click(function(){
+            $("#citation").slideToggle();
+            $(this).toggleClass("bg-merge");
+            });
 });
 </script>
 <script type="text/javascript">
@@ -67,7 +78,7 @@ $(document).ready(function(){
             {% endif %}
         </figure>
 
-        <div class="span-2 last border-top border-right border-bottom" id="sideinfo">
+        <div class="span-2 last border-top border-right border-bottom sideinfo" id="media-sideinfo">
             <div class="border-bottom" id="views">
                 {{ media.view_count }} visita{{ media.view_count|pluralize }}
             </div>
@@ -95,6 +106,15 @@ $(document).ready(function(){
         </div>
 
         <div class="span-13 last borders" id="meta">
+            <div id="sharing" class="span-13">
+                <h3>{% trans 'Compartilhar' %}:</h3>
+            </div>
+            <div id="citation" class="span-13">
+                <div>
+                    {% show_set media.author_set.all '' '.' ', ' '' %} <strong>{{ media.title }}</strong>. {% if media.datatype == 'photo' %}{% trans 'Fotografia' %}{% else %}{% if media.datatype == 'video' %}{% trans 'Vídeos' %}{% endif %}{% endif %} acessada no banco de imagens <em>Cifonauta</em> em {% now "F j, Y" %}
+                    Link: <a href="{{ media.get_absolute_url }}">http://{{ request.META.HTTP_HOST }}{{ media.get_absolute_url }}</a>
+                </div>
+            </div>
             <div class="span-7 taxonomy">
 
                 {% if media.taxon_set.all %}
@@ -109,7 +129,7 @@ $(document).ready(function(){
 
             <div class="span-6 last location">
                 {% if media.date and media.date|date:"Y" > "1910" %} 
-                <strong>Data: </strong> <span id="date"><datetime>{{ media.date }}</datetime></span>
+                <strong>Data: </strong> <span id="date"><datetime>{{ media.date|date:"DATETIME_FORMAT" }}</datetime></span>
                 <br />
                 {% endif %}
                 {% if media.sublocation.name or media.city.name or media.state.name or media.country.name %}
@@ -125,6 +145,12 @@ $(document).ready(function(){
                 <strong>Geolocalização:</strong> <a href="http://maps.google.com/maps?q={{ media.latitude }},{{ media.longitude }}" title="{{ media.geolocation }} no Google Maps">{{ media.geolocation }}</a>
                 {% endif %}
             </div>
+        </div>
+        <div class="span-2 last border-top border-right border-bottom sideinfo" id="share-sideinfo">
+            {% trans 'compartilhar' %}
+        </div>
+        <div class="span-2 last border-top border-right border-bottom sideinfo" id="cite-sideinfo">
+            {% trans 'como citar?' %}
         </div>
 
         {% if media.notes %}

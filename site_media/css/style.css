@@ -333,9 +333,12 @@ figcation {
     text-align:left;
 }
 
-div#sideinfo {
+div.sideinfo {
     background:#fafafa;
     padding:0.8em 10px 0;
+}
+
+#media-sideinfo {
     -moz-border-radius: 0 10px 0 0;
     -webkit-border-radius: 0 10px 0 0;
     border-radius: 0 10px 0 0;
@@ -350,6 +353,36 @@ div#sideinfo {
     -moz-border-radius: 0 10px 0 0;
     -webkit-border-radius: 0 10px 0 0;
     border-radius: 0 10px 0 0;
+}
+
+#cite-sideinfo, #share-sideinfo {
+    background:#fefefe;
+    padding:0.5em 10px;
+    text-align:center;
+    font-weight:bold;
+    -moz-border-radius: 0 5px 5px 0;
+    -webkit-border-radius: 0 5px 5px 0;
+    border-radius: 0 5px 5px 0;
+}
+#cite-sideinfo:hover {
+    color:#fff;
+    background-color:#94B1CA !important;
+    cursor: pointer;
+}
+#share-sideinfo:hover {
+    color:#fff;
+    background-color:#C6D880 !important;
+    cursor: pointer;
+}
+#sharing, #citation {
+    display:none;
+    border-bottom: 1px solid #EEEEEE;
+    margin: 0 0 1em;
+    padding: 0 0 1em;
+}
+
+.bg-merge{
+    background-color:#FAFAFA !important;
 }
 
 div#notes {

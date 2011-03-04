@@ -369,6 +369,11 @@ def fixtaxa_page(request):
         })
     return render_to_response('fixtaxa.html', variables)
 
+def translate_page(request):
+    '''Página inicial para traduções.'''
+    variables = RequestContext(request, {})
+    return render_to_response('translate.html', variables)
+
 # Single
 def photo_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''

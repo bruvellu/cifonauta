@@ -169,7 +169,6 @@ END
 $$ LANGUAGE plpgsql;
 
 -- Function that refreshes tsv column after translation table is updated
--- TODO Add in next commit.
 CREATE OR REPLACE FUNCTION refresh_tsv() RETURNS trigger AS $$
 BEGIN
     UPDATE meta_image SET tsv='';
@@ -183,8 +182,9 @@ CREATE TRIGGER update_imagetsv BEFORE INSERT OR UPDATE ON meta_image
     FOR EACH ROW EXECUTE PROCEDURE update_tsv();
 CREATE TRIGGER update_videotsv BEFORE INSERT OR UPDATE ON meta_video
     FOR EACH ROW EXECUTE PROCEDURE update_tsv();
--- TODO Add in next commit.
-CREATE TRIGGER refreshall_tsv AFTER INSERT OR UPDATE ON datatrans_keyvalue EXECUTE PROCEDURE refresh_tsv();
+-- XXX Taking too long to respond after translation updates. Find better way.
+--CREATE TRIGGER refreshall_tsv AFTER UPDATE ON datatrans_keyvalue EXECUTE 
+--PROCEDURE refresh_tsv();
 
 -- Create index to optimize search
 CREATE INDEX meta_image_tsv ON meta_image USING gin(tsv);

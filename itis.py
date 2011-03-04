@@ -88,7 +88,7 @@ class Itis:
                 'InfraOrder': u'Infraordem',
                 'Subkingdom': u'Subreino',
                 'Infraclass': u'Infraclasse',
-                'Subfamily': u'Subfamily',
+                'Subfamily': u'Subfamília',
                 'Class': u'Classe',
                 'Superfamily': u'Superfamília',
                 'Subdivision': u'Subdivisão',

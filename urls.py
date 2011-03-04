@@ -24,15 +24,18 @@ urlpatterns = patterns('',
         (r'^i18n/', include('django.conf.urls.i18n')),
         (r'^comentarios/', include('django.contrib.comments.urls')),
         (r'^feed/$', LatestMedia()),
-
+        # Auth
+        (r'^login/$', 'django.contrib.auth.views.login'),
+        (r'^logout/$', 'django.contrib.auth.views.logout'),
+        # Translate
         (r'^traduzir/$', translate_page),
         (r'^traduzir/apps/', include('rosetta.urls')),
         (r'^traduzir/models/', include('datatrans.urls')),
-
+        # Manage
         (r'^privadas/$', hidden_page),
         (r'^feedback/$', feedback_page),
         (r'^fixtaxa/$', fixtaxa_page),
-
+        # Menu
         (r'^buscar/$', search_page),
         (r'^tags/$', tags_page),
         (r'^taxa/$', taxa_page),

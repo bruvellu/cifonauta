@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.contrib.auth.decorators import login_required
 import operator
 from itis import Itis
 
@@ -369,6 +370,7 @@ def fixtaxa_page(request):
         })
     return render_to_response('fixtaxa.html', variables)
 
+@login_required
 def translate_page(request):
     '''Página inicial para traduções.'''
     variables = RequestContext(request, {})

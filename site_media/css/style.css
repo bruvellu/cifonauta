@@ -40,6 +40,12 @@ header.main h2 {
     padding:0 4px;
     position:fixed;
     left:0;
+    text-align:left;
+}
+#admin ul {
+    list-style-type:none;
+    margin:0;
+    padding:0;
 }
 
 #admin a {

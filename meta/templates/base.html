@@ -67,7 +67,17 @@
                 <div id="feedback"><a href="/feedback/">feedback</a></div>
                 {% if user.is_authenticated %}
                 <span id="admin">
-                    <a href="/admin/">admin</a> <a href="/privadas/">privadas</a> <a href="/fixtaxa/">fixtaxa</a>
+                    <ul>
+                        <li><a href="/admin/">admin</a></li>
+                        <li><a href="/privadas/">privadas</a></li>
+                        <li><a href="/fixtaxa/">fixtaxa</a></li>
+                        <li><a href="/traduzir/">traduzir</a></li>
+                        <li><a href="{% url django.contrib.auth.views.logout %}">logout</a></li>
+                    </ul>
+                </span>
+                {% else %}
+                <span id="admin">
+                    <a href="{% url django.contrib.auth.views.login %}">login</a>
                 </span>
                 {% endif %}
                 <div id="languages">

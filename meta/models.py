@@ -3,6 +3,7 @@
 from django.db import models
 from django.db.models import signals
 from django.db.models import permalink
+from django.contrib.flatpages.models import FlatPage
 from mptt.models import MPTTModel
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
@@ -361,6 +362,10 @@ register(Size, SizeTranslation)
 class CountryTranslation(object):
     fields = ('name',)
 register(Country, CountryTranslation)
+
+class FlatPageTranslation(object):
+    fields = ('title', 'content',)
+register(FlatPage, FlatPageTranslation)
 
 
 def citation_html(ref):

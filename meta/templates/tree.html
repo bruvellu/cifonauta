@@ -1,5 +1,4 @@
 {% load mptt_tags %}
-
 {% block extra-head %}
 <link rel="stylesheet" href="/site_media/js/jquery-treeview/jquery.treeview.css" /> 
  
@@ -22,7 +21,6 @@
             {% endif %}
         });
 </script>
-
 {% endblock %}
 
 <h2>Grupos</h2>
@@ -32,7 +30,7 @@
     {% comment %}{% if node.rank in main_ranks %}{% endcomment %}
     {% if node.rank %}
         {% comment %}Necessário para espécies sem hierarquia{% endcomment %}
-        {% if node.parent or node.rank == 'Reino' %}
+        {% if node.parent or node.rank == 'Reino' or node.rank == 'Kingdom' %}
             <li class="{{ node.rank|slugify }} {{ node.slug }}">
             <span class="quiet">{{ node.rank }}</span> <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{{ node|sp_em }}</a>
             {% if not node.is_leaf_node %}

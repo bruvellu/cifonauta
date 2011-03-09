@@ -12,6 +12,7 @@ from datatrans.utils import register
 
 from external.mendeley import mendeley
 
+# TODO Incluir help_text='' nos fields!
 
 class File(models.Model):
     # File
@@ -29,7 +30,7 @@ class File(models.Model):
             editable=False)
     is_public = models.BooleanField(_('público'), default=False)
     review = models.BooleanField(_('sob revisão'), default=False)
-    notes = models.TextField(_('anotações'), null=True, blank=True)
+    notes = models.TextField(_('anotações'), blank=True)
     pub_date = models.DateTimeField(_('data de publicação'), auto_now_add=True)
 
     # IPTC

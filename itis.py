@@ -22,6 +22,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 #logging.getLogger('suds.client').setLevel(logging.DEBUG)
 
+# FIXME testar busca de Watersipora subtorquata.
 
 #TODO Implementar o WoRMS
 #worms = 'http://www.marinespecies.org/aphia.php?p=soap&wsdl=1'

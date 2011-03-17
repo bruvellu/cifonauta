@@ -1,3 +1,8 @@
 {% load mptt_tags %}
+{% load i18n %}
+{% if ancestors %}
 {% for ancestor in ancestors %}
 {{ ancestor.rank }} <a href="{{ ancestor.get_absolute_url }}" title="{{ ancestor.name }}">{{ ancestor|sp_em }}</a>{% if not ancestor.is_leaf_node %} :: {% endif %}{% if forloop.last %}{{ taxon.rank }} <strong>{{ taxon|sp_em }}</strong>{% endif %}{% endfor %}
+{% else %}
+{{ taxon.rank }} <strong>{{ taxon|sp_em }}</strong> {% trans '(hierarquia não disponível)' %}
+{% endif %}

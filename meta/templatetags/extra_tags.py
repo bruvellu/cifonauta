@@ -317,6 +317,22 @@ def refiner(actives, inactives, field, queries):
             'field': field, 'queries': queries}
 
 @register.simple_tag
+def paged_url(query_string, page_number):
+    '''Constrói o url para lidar navegação paginada.'''
+    print query_string.split('&'), page_number
+    url = '?'
+    queries = query_string.split('&')
+    for query in queries:
+        if query.startswith('page'):
+            queries.remove(query)
+    if queries:
+        url = url + '&'.join(queries) + '&page=%d' % page_number
+    else:
+    	url = url + 'page=%d' % page_number
+    return url
+
+
+@register.simple_tag
 def build_url(meta, field, queries, remove=False):
     '''Constrói o url para lidar com o refinamento.
     

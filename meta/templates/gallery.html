@@ -23,6 +23,10 @@
     {% endif %}
 </div>
 
+<h2>{{ request.META.QUERY_STRING }}</h2>
+<h3>{{ queries }}</h3>
+<h4>{% paged_url request.META.QUERY_STRING images.previous_page_number %}</h4>
+
 {% if images.object_list %}
 <section id="photo-gallery">
 <header class="span-16 last">
@@ -39,13 +43,13 @@
     </ul>
 <footer class="pagination span-16 last">
 {% if images.has_previous %}
-<div class="span-2"><a href="?{% if query %}query={{ query }}&{% endif %}page={{ images.previous_page_number }}"><< anterior</a></div>
+<div class="span-2"><a href="{% paged_url request.META.QUERY_STRING images.previous_page_number %}"><< anterior</a></div>
 {% else %}
 <div class="span-2">&nbsp;</div>
 {% endif %}
 <div class="span-10 align-center">{{ images.number }} de {{ images.paginator.num_pages }}</div>
 {% if images.has_next %}
-<div class="span-4 last"><a href="?{% if query %}query={{ query }}&{% endif %}page={{ images.next_page_number }}">próxima >></a></div>
+<div class="span-4 last"><a href="{% paged_url request.META.QUERY_STRING images.next_page_number %}">próxima >></a></div>
 {% else %}
 <div class="span-4 last">&nbsp;</div>
 {% endif %}
@@ -73,13 +77,13 @@
 
 <footer class="span-16 pagination last">
 {% if videos.has_previous %}
-<div class="span-2"><a href="?{% if query %}query={{ query }}&{% endif %}page={{ videos.previous_page_number }}"><< anterior</a></div>
+<div class="span-2"><a href="{% paged_url request.META.QUERY_STRING videos.previous_page_number %}"><< anterior</a></div>
 {% else %}
 <div class="span-2">&nbsp;</div>
 {% endif %}
 <div class="span-10 align-center">{{ videos.number }} de {{ videos.paginator.num_pages }}</div>
 {% if videos.has_next %}
-<div class="span-4 last"><a href="?{% if query %}query={{ query }}&{% endif %}page={{ videos.next_page_number }}">próxima >></a></div>
+<div class="span-4 last"><a href="{% paged_url request.META.QUERY_STRING videos.next_page_number %}">próxima >></a></div>
 {% else %}
 <div class="span-4 last">&nbsp;</div>
 {% endif %}

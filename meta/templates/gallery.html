@@ -23,10 +23,6 @@
     {% endif %}
 </div>
 
-<h2>{{ request.META.QUERY_STRING }}</h2>
-<h3>{{ queries }}</h3>
-<h4>{% paged_url request.META.QUERY_STRING images.previous_page_number %}</h4>
-
 {% if images.object_list %}
 <section id="photo-gallery">
 <header class="span-16 last">

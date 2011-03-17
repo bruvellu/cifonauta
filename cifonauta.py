@@ -660,16 +660,16 @@ class Photo:
         gps_data = {}
         # Latitude
         gps['latref'] = exif['Exif.GPSInfo.GPSLatitudeRef'].value
-        gps['latdeg'] = self.resolve(exif['Exif.GPSInfo.GPSLatitude'].value[0])
-        gps['latmin'] = self.resolve(exif['Exif.GPSInfo.GPSLatitude'].value[1])
-        gps['latsec'] = self.resolve(exif['Exif.GPSInfo.GPSLatitude'].value[2])
+        gps['latdeg'] = exif['Exif.GPSInfo.GPSLatitude'].value[0]
+        gps['latmin'] = exif['Exif.GPSInfo.GPSLatitude'].value[1]
+        gps['latsec'] = exif['Exif.GPSInfo.GPSLatitude'].value[2]
         latitude = self.get_decimal(
                 gps['latref'], gps['latdeg'], gps['latmin'], gps['latsec'])
         # Longitude
         gps['longref'] = exif['Exif.GPSInfo.GPSLongitudeRef'].value
-        gps['longdeg'] = self.resolve(exif['Exif.GPSInfo.GPSLongitude'].value[0])
-        gps['longmin'] = self.resolve(exif['Exif.GPSInfo.GPSLongitude'].value[1])
-        gps['longsec'] = self.resolve(exif['Exif.GPSInfo.GPSLongitude'].value[2])
+        gps['longdeg'] = exif['Exif.GPSInfo.GPSLongitude'].value[0]
+        gps['longmin'] = exif['Exif.GPSInfo.GPSLongitude'].value[1]
+        gps['longsec'] = exif['Exif.GPSInfo.GPSLongitude'].value[2]
         longitude = self.get_decimal(
                 gps['longref'], gps['longdeg'], gps['longmin'], gps['longsec'])
 

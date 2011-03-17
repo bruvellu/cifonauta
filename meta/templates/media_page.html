@@ -80,7 +80,7 @@ $(document).ready(function(){
 
         <div class="span-2 last border-top border-right border-bottom sideinfo" id="media-sideinfo">
             <div class="border-bottom" id="views">
-                {{ media.view_count }} visita{{ media.view_count|pluralize }}
+                {{ media.view_count }} {% trans 'visita' %}{{ media.view_count|pluralize }}
             </div>
             {% if media.taxon_set.all %}
                 {% include 'biodb.html' %}
@@ -111,29 +111,39 @@ $(document).ready(function(){
             </div>
             <div id="citation" class="span-13">
                 <div>
-                    {% show_set media.author_set.all '' '.' ', ' '' %} <strong>{{ media.title }}</strong>. {% if media.datatype == 'photo' %}{% trans 'Fotografia' %}{% else %}{% if media.datatype == 'video' %}{% trans 'Vídeos' %}{% endif %}{% endif %} acessada no banco de imagens <em>Cifonauta</em> em {% now "F j, Y" %}
+                    {% show_set media.author_set.all '' '.' ', ' '' %} <strong>{{ media.title }}</strong>. {% if media.datatype == 'photo' %}{% trans 'Fotografia' %}{% else %}{% if media.datatype == 'video' %}{% trans 'Vídeos' %}{% endif %}{% endif %} {% trans 'acessada no banco de imagens <em>Cifonauta</em> em' %} {% now "F j, Y" %}
                     Link: <a href="{{ media.get_absolute_url }}">http://{{ request.META.HTTP_HOST }}{{ media.get_absolute_url }}</a>
                 </div>
             </div>
             <div class="span-7 taxonomy">
 
                 {% if media.taxon_set.all %}
-                <strong>Táxon{{ media.taxon_set.all.count|pluralize }}:</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
+                <strong>
+                    {% blocktrans count media.taxon_set.all.count as counter %}
+                    Táxon:
+                    {% plural %}
+                    Táxons:
+                    {% endblocktrans %}</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
                 <br />
                 {% endif %}
 
                 {% if media.source_set.all %}
-                <strong>Especialista{{ media.source_set.all.count|pluralize }}:</strong> <span id="source">{% show_set media.source_set.all '' '' ', ' '' %}</span>
+                <strong>
+                    {% blocktrans count media_source_set.all.count as counter %}
+                    Especialista:
+                    {% plural %}
+                    Especialistas:
+                    {% endblocktrans %}</strong> <span id="source">{% show_set media.source_set.all '' '' ', ' '' %}</span>
                 {% endif %}
             </div>
 
             <div class="span-6 last location">
                 {% if media.date and media.date|date:"Y" > "1910" %} 
-                <strong>Data: </strong> <span id="date"><datetime>{{ media.date|date:"DATETIME_FORMAT" }}</datetime></span>
+                <strong>{% trans 'Data' %}: </strong> <span id="date"><datetime>{{ media.date|date:"DATETIME_FORMAT" }}</datetime></span>
                 <br />
                 {% endif %}
                 {% if media.sublocation.name or media.city.name or media.state.name or media.country.name %}
-                    <strong>Local:</strong> 
+                <strong>{% trans 'Local' %}:</strong> 
                     {% if media.sublocation.name %}<span id="sublocation">{{ media.sublocation }},</span>{% endif %}
                     {% if media.city.name %}<span id="city">{{ media.city }},</span>{% endif %}
                     {% if media.state.name %}<span id="state">{{ media.state }},</span>{% endif %}
@@ -142,7 +152,7 @@ $(document).ready(function(){
                 {% endif %}
 
                 {% if media.geolocation %}
-                <strong>Geolocalização:</strong> <a href="http://maps.google.com/maps?q={{ media.latitude }},{{ media.longitude }}" title="{{ media.geolocation }} no Google Maps">{{ media.geolocation }}</a>
+                <strong>{% trans 'Geolocalização' %}:</strong> <a href="http://maps.google.com/maps?q={{ media.latitude }},{{ media.longitude }}" title="{{ media.geolocation }} no Google Maps">{{ media.geolocation }}</a>
                 {% endif %}
             </div>
         </div>
@@ -155,7 +165,7 @@ $(document).ready(function(){
 
         {% if media.notes %}
         <div id="notes" class="span-16 last">
-            <h2>Notas</h2>
+            <h2>{% trans 'Notas' %}</h2>
             {{ media.notes }}
             <hr>
         </div>
@@ -166,18 +176,29 @@ $(document).ready(function(){
         {% if media.taxon_set.all %}
         {% for taxon in media.taxon_set.all %}
         <footer class="span-16 last quiet" id="breadcrumbs">
-            <h2>Classificação</h2>
+            <h2>{% trans 'Classificação' %}</h2>
             {% taxon_paths taxon %}
         </footer>
         {% endfor %}
+        {% endif %}
+
+        {% if references %}
+        <div class="span-16 last" id="references">
+            <h2>{% trans 'Referências bibliográficas' %}</h2>
+            {% for ref in references %}
+            <div class="citation">
+            {% autoescape off %}{{ ref.citation }}{% endautoescape %}
+            </div>
+            {% endfor %}
+        </div>
         {% endif %}
 
         {% get_comment_list for media as media_comments %}
         <div id="comments" class="span-16 last">
             {% get_comment_count for media as comment_count %}
             <div class="span-16 last">
-                <h2 class="show-comment">Mostrar comentários ({{ comment_count }})</h2>
-                <h2 class="hide-comment">Esconder comentários ({{ comment_count }})</h2>
+                <h2 class="show-comment">{% trans 'Mostrar comentários' %} ({{ comment_count }})</h2>
+                <h2 class="hide-comment">{% trans 'Esconder comentários' %} ({{ comment_count }})</h2>
             </div>
             <div id="comment-box">
                 {% if media_comments %}
@@ -198,23 +219,12 @@ $(document).ready(function(){
             </div>
         </div>
 
-        {% if references %}
-        <div class="span-16 last" id="references">
-            <h2>Referências bibliográficas</h2>
-            {% for ref in references %}
-            <div class="citation">
-            {% autoescape off %}{{ ref.citation }}{% endautoescape %}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-
         {% else %}
-        <div class="private span-16 last">Esta imagem ainda não está disponível.</div>
+        <div class="private span-16 last">{% trans 'Esta imagem ainda não está disponível.' %}</div>
         {% endif %}
     </article>
     {% else %}
-    <div class="nomatch span-16 last">Nenhuma imagem encontrada.</div>
+    <div class="nomatch span-16 last">{% trans 'Nenhuma imagem encontrada.' %}</div>
     {% endif %}
 </section>
 {% endblock %}

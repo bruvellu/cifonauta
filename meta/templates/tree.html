@@ -9,7 +9,7 @@
             $("#colaptree").treeview({
                 collapsed: true,
                 animated: "fast",
-                persist: "location"
+                persist: "location",
                 });
             {% if media.taxon_set.all %}
                 {% for taxon in media.taxon_set.all %}

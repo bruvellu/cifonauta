@@ -290,7 +290,10 @@ figure.video {
     background: #ffffff;
     padding: 10px;
     text-align: center;
-    padding: 10px;
+    -moz-border-radius: 10px 0 0;
+    -webkit-border-radius: 10px 0 0;
+    border-radius: 10px 0 0;
+    min-height:277px;
 }
 
 footer.pagination {

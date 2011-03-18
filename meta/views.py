@@ -479,6 +479,16 @@ def meta_page(request, model_name, field, slug):
         })
     return render_to_response('meta_page.html', variables)
 
+def tour_page(request, slug):
+    '''Página única de cada tour.'''
+    tour = get_object_or_404(Tour, slug=slug)
+    tour.view_count = tour.view_count + 1
+    tour.save()
+    variables = RequestContext(request, {
+        'tour': tour,
+        })
+    return render_to_response('tour_page.html', variables)
+
 # Lists
 def meta_list_page(request, model, plural):
     '''Lista com todos os metadados.
@@ -540,6 +550,14 @@ def refs_page(request):
         'references': references,
         })
     return render_to_response('refs_page.html', variables)
+
+def tours_page(request):
+    '''Página mostrando lista de tours disponíveis.'''
+    tours = Tour.objects.order_by('name')
+    variables = RequestContext(request, {
+        'tours': tours,
+        })
+    return render_to_response('tours_page.html', variables)
 
 # Internal functions
 def get_paginated(request, obj_list, n_page=16):

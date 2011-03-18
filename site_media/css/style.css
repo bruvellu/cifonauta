@@ -637,6 +637,10 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
     margin:0 0 1em 0;
 }
 
+.tour {
+    margin-bottom:1em;
+}
+
 .citation {
     margin:0 0 1em;
 }
@@ -802,4 +806,3 @@ footer.main {
 .green {
     color:green;
 }
-/* Highslide */

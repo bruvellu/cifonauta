@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Tours | {{ block.super }}{% endblock %}
+{% block content %}
+<section class="span-24 last">
+<header><h1>Tours</h1></header>
+{% for tour in tours %}
+<div class="span-24 last tour">
+    <div class="span-4">
+        {% print_thumb 'tour' tour %}
+    </div>
+    <div class="span-20 last">
+        <h2>{{ tour.name }}</h2>
+        <p>
+        {{ tour.description }}
+        </p>
+        <strong><a href="{{ tour.get_absolute_url }}">Clique aqui para iniciar o tour</a></strong>.
+    </div>
+</div>
+{% endfor %}
+</section>
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}

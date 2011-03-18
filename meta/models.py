@@ -334,6 +334,29 @@ class Reference(models.Model):
         verbose_name = _('referência bibliográfica')
         verbose_name_plural = _('referências bibliográficas')
 
+class Tour(models.Model):
+    name = models.CharField(_('nome'), max_length=100, unique=True)
+    slug = models.SlugField(_('slug'), max_length=100, blank=True)
+    description = models.TextField(_('descrição'), blank=True)
+    view_count = models.PositiveIntegerField(_('visitas'), default=0, 
+            editable=False)
+    images = models.ManyToManyField(Image, null=True, blank=True, 
+            verbose_name=_('fotos'))
+    videos = models.ManyToManyField(Video, null=True, blank=True, 
+            verbose_name=_('vídeos'))
+    references = models.ManyToManyField(Reference, null=True, blank=True, 
+            verbose_name=_('referências'))
+
+    def __unicode__(self):
+        return self.name
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('tour_url', [self.slug])
+
+    class Meta:
+        verbose_name = _('tour')
+        verbose_name_plural = _('tours')
 
 # Registrando modelos para tradução.
 class ImageTranslation(object):
@@ -363,6 +386,10 @@ register(Size, SizeTranslation)
 class CountryTranslation(object):
     fields = ('name',)
 register(Country, CountryTranslation)
+
+class TourTranslation(object):
+    fields = ('name','description',)
+register(Tour, TourTranslation)
 
 class FlatPageTranslation(object):
     fields = ('title', 'content',)
@@ -480,5 +507,6 @@ signals.pre_save.connect(slug_pre_save, sender=City)
 signals.pre_save.connect(slug_pre_save, sender=State)
 signals.pre_save.connect(slug_pre_save, sender=Country)
 signals.pre_save.connect(slug_pre_save, sender=Reference)
+signals.pre_save.connect(slug_pre_save, sender=Tour)
 # Create citation with bibkey.
 signals.pre_save.connect(citation_pre_save, sender=Reference)

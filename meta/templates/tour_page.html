@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{{ tour.name }} | {{ block.super }}{% endblock %}
+{% block extra-head %}
+
+<script type="text/javascript" src="/site_media/js/galleria/galleria-1.2.2.js"></script>
+
+<script type="text/javascript">
+// JavaScript code goes here.
+$(document).ready(function(){
+        // Collapsible cite 
+        $("#share-sideinfo").click(function(){
+            $("#sharing").slideToggle();
+            $(this).toggleClass("bg-merge");
+            });
+        $("#cite-sideinfo").click(function(){
+            $("#citation").slideToggle();
+            $(this).toggleClass("bg-merge");
+            });
+});
+</script>
+
+
+{% endblock %}
+{% block content %}
+<section class="span-24 last">
+<article id="tour" class="{{ tour.slug }} views-{{ tour.view_count }}">
+<header class="span-24 last">
+<h1>{{ tour.name }}</h1>
+</header>
+<footer class="span-24 last">
+{{ tour.description }}
+</footer>
+
+<div class="span-24 last" id="gallery">
+    {% for media in tour.images.all %}
+    <a href="/{{ media.web_filepath }}">
+        <img src="/{{ media.web_filepath }}" alt="{{ media.caption }}" title="{{ media.title }}" />
+    </a>
+    {% endfor %}
+</div>
+<script>
+    Galleria.loadTheme("/site_media/js/galleria/themes/classic/galleria.classic.min.js");
+    $("#gallery").galleria({
+        width: 800,
+        height: 800,
+        preload: 5,
+        transition: "fade",
+        });
+</script>
+</article>
+{% if references %}
+<div class="span-24 last">
+    <h2>{% trans 'Referências bibliográficas' %}</h2>
+    {% for ref in references %}
+    <div class="citation">
+        {% autoescape off %}{{ ref.citation }}{% endautoescape %}
+    </div>
+    {% endfor %}
+    </div>
+</div>
+{% endif %}
+</section>
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}

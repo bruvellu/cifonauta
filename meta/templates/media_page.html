@@ -122,7 +122,7 @@ $(document).ready(function(){
                     {% plural %}
                     Táxons:
                     {% endblocktrans %}</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
-                <br />
+                <br>
                 {% endif %}
 
                 {% if media.source_set.all %}
@@ -138,7 +138,7 @@ $(document).ready(function(){
             <div class="span-6 last location">
                 {% if media.date and media.date|date:"Y" > "1910" %} 
                 <strong>{% trans 'Data' %}: </strong> <span id="date"><datetime>{{ media.date|date:"DATETIME_FORMAT" }}</datetime></span>
-                <br />
+                <br>
                 {% endif %}
                 {% if media.sublocation.name or media.city.name or media.state.name or media.country.name %}
                 <strong>{% trans 'Local' %}:</strong> 
@@ -146,7 +146,7 @@ $(document).ready(function(){
                     {% if media.city.name %}<span id="city">{{ media.city }},</span>{% endif %}
                     {% if media.state.name %}<span id="state">{{ media.state }},</span>{% endif %}
                     {% if media.country.name %}<span id="country">{{ media.country }}</span>{% endif %}
-                <br />
+                <br>
                 {% endif %}
 
                 {% if media.geolocation %}

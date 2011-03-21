@@ -33,7 +33,7 @@
 </div>
 <div class="span-7 prepend-1 last">
     <h2>Ficha Técnica</h2>
-    <ul>
+    <ul class="tags">
         <li>
         <strong>Número de imagens:</strong> {{ tour.images.all|length }}
         </li>
@@ -55,6 +55,7 @@
     <div class="span-1">
         <a href="#" class="prev"><img src="/site_media/js/slides/arrow-prev.png" width="24" height="43" alt="Anterior"></a>
     </div>
+    {% comment %}TODO adapt to HTML5{% endcomment %}
     <div class="slides_container shadow span-21">
         {% for media in tour.images.all %}
         <div class="span-21 eachslide last">
@@ -63,7 +64,60 @@
             </div>
             <div class="span-8 last">
                 <h2>{{ media.title }}</h2>
+                {% if media.caption %}
                 <p>{{ media.caption }}</p>
+                {% else %}
+                <p>SEM LEGENDA</p>
+                {% endif %}
+                <div>
+                    <strong>
+                    {% blocktrans count media.author_set.all.count as counter %}
+                        Autor:
+                        {% plural %}
+                        Autores:
+                        {% endblocktrans %}</strong> <span>{% show_set media.author_set.all '' '' ', ' '' %}</span>
+                    <br>
+
+                    {% if media.taxon_set.all %}
+                    <strong>
+                        {% blocktrans count media.taxon_set.all.count as counter %}
+                        Táxon:
+                        {% plural %}
+                        Táxons:
+                        {% endblocktrans %}</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
+                    <br>
+                    {% endif %}
+
+                    {% if media.size %}
+                    <strong>Tamanho:</strong> <span>{{ media.size }}</span>
+                    <br>
+                    {% endif %}
+
+                    {% if media.sublocation.name or media.city.name or media.state.name or media.country.name %}
+                    <strong>{% trans 'Local' %}:</strong> 
+                    {% if media.sublocation.name %}<span id="sublocation">{{ media.sublocation }},</span>{% endif %}
+                    {% if media.city.name %}<span id="city">{{ media.city }},</span>{% endif %}
+                    {% if media.state.name %}<span id="state">{{ media.state }},</span>{% endif %}
+                    {% if media.country.name %}<span id="country">{{ media.country }}</span>{% endif %}
+                    <br>
+                    {% endif %}
+
+                    {% if media.tag_set.all %}
+                    <strong>
+                        {% blocktrans count media.tag_set.all.count as counter %}
+                        Marcador:
+                        {% plural %}
+                        Marcadores:
+                        {% endblocktrans %}</strong> <span>{% show_set media.tag_set.all '' '' ', ' '' %}</span>
+                    <br>
+                    {% endif %}
+
+                    <div class="align-right">
+                        <br>
+                        <a href="{{ media.get_absolute_url }}"><strong>veja mais detalhes</strong></a>
+                    </div>
+
+                </div>
             </div>
         </div>
         {% endfor %}

@@ -2,6 +2,7 @@
 
 from meta.models import *
 from meta.forms import *
+from meta.templatetags.extra_tags import extract_set
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
@@ -482,10 +483,13 @@ def meta_page(request, model_name, field, slug):
 def tour_page(request, slug):
     '''Página única de cada tour.'''
     tour = get_object_or_404(Tour, slug=slug)
+    authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(tour.images.all(), tour.videos.all())
     tour.view_count = tour.view_count + 1
     tour.save()
     variables = RequestContext(request, {
         'tour': tour,
+        'taxa': taxa,
+        'tags': tags,
         })
     return render_to_response('tour_page.html', variables)
 

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load markup %}
-{% block title %}{{ tour.name }} | {{ block.super }}{% endblock %}
+{% block title %}{{ tour.name }} | Tour | {{ block.super }}{% endblock %}
 {% block extra-head %}
 
 <script type="text/javascript" src="/site_media/js/slides/slides.min.jquery.js"></script>
@@ -28,8 +28,27 @@
 <header class="span-24 last">
 <h1>{{ tour.name }}</h1>
 </header>
-<div class="span-24 last" id="tour-description">
+<div class="span-16" id="tour-description">
     {{ tour.description|markdown }}
+</div>
+<div class="span-7 prepend-1 last">
+    <h2>Ficha Técnica</h2>
+    <ul>
+        <li>
+        <strong>Número de imagens:</strong> {{ tour.images.all|length }}
+        </li>
+        <li>
+        <strong>Data de criação:</strong> {{ tour.pub_date }}
+        </li>
+        <li>
+        <strong>Última modificação:</strong> {{ tour.timestamp }}
+        </li>
+        <li>
+        <strong>Táxons representados:</strong> {% show_set taxa '' '' ', ' 'link' %}
+        </li>
+        <li>
+        <strong>Marcadores presentes:</strong> {% show_set tags '' '' ', ' 'link' %}
+        </li>
 </div>
 
 <div class="span-24 last" id="slides">

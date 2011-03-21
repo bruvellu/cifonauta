@@ -881,6 +881,14 @@ Reset list default style
     float:left;
     padding:0 5px 0 0;
 }
+
+#slides .pagination li.current { 
+    -moz-opacity:0.4;
+    opacity:0.4;
+    filter:alpha(opacity=40);
+    zoom:1;
+}
+
 #slides .pagination img {
     width:90px;
 }

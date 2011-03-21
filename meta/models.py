@@ -338,6 +338,9 @@ class Tour(models.Model):
     name = models.CharField(_('nome'), max_length=100, unique=True)
     slug = models.SlugField(_('slug'), max_length=100, blank=True)
     description = models.TextField(_('descrição'), blank=True)
+    is_public = models.BooleanField(_('público'), default=False)
+    pub_date = models.DateTimeField(_('data de publicação'), auto_now_add=True)
+    timestamp = models.DateTimeField(_('data de modificação'), auto_now=True)
     view_count = models.PositiveIntegerField(_('visitas'), default=0, 
             editable=False)
     images = models.ManyToManyField(Image, null=True, blank=True, 

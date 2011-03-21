@@ -1,53 +1,70 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load markup %}
 {% block title %}{{ tour.name }} | {{ block.super }}{% endblock %}
 {% block extra-head %}
 
-<script type="text/javascript" src="/site_media/js/galleria/galleria-1.2.2.js"></script>
+<script type="text/javascript" src="/site_media/js/slides/slides.min.jquery.js"></script>
 
-<script type="text/javascript">
-// JavaScript code goes here.
-$(document).ready(function(){
-        // Collapsible cite 
-        $("#share-sideinfo").click(function(){
-            $("#sharing").slideToggle();
-            $(this).toggleClass("bg-merge");
-            });
-        $("#cite-sideinfo").click(function(){
-            $("#citation").slideToggle();
-            $(this).toggleClass("bg-merge");
-            });
-});
+<script>
+    $(function(){
+        $('#slides').slides({
+            preload: true,
+            preloadImage: '/site_media/js/slides/loading.gif',
+            autoHeight: true,
+            play: 4000,
+            hoverPause: true,
+            slideSpeed: 400,
+            generatePagination: false
+        });
+    });
 </script>
 
-
 {% endblock %}
+
 {% block content %}
 <section class="span-24 last">
 <article id="tour" class="{{ tour.slug }} views-{{ tour.view_count }}">
 <header class="span-24 last">
 <h1>{{ tour.name }}</h1>
 </header>
-<footer class="span-24 last">
-{{ tour.description }}
-</footer>
-
-<div class="span-24 last" id="gallery">
-    {% for media in tour.images.all %}
-    <a href="/{{ media.web_filepath }}">
-        <img src="/{{ media.web_filepath }}" alt="{{ media.caption }}" title="{{ media.title }}" />
-    </a>
-    {% endfor %}
+<div class="span-24 last" id="tour-description">
+    {{ tour.description|markdown }}
 </div>
-<script>
-    Galleria.loadTheme("/site_media/js/galleria/themes/classic/galleria.classic.min.js");
-    $("#gallery").galleria({
-        width: 800,
-        height: 800,
-        preload: 5,
-        transition: "fade",
-        });
-</script>
+
+<div class="span-24 last" id="slides">
+    <div class="span-1">
+        <a href="#" class="prev"><img src="/site_media/js/slides/arrow-prev.png" width="24" height="43" alt="Anterior"></a>
+    </div>
+    <div class="slides_container shadow span-21">
+        {% for media in tour.images.all %}
+        <div class="span-21 eachslide last">
+            <div class="span-13">
+                {% include 'photo.html' %}
+            </div>
+            <div class="span-8 last">
+                <h2>{{ media.title }}</h2>
+                <p>{{ media.caption }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="span-1 last">
+        <a href="#" class="next"><img src="/site_media/js/slides/arrow-next.png" width="24" height="43" alt="Próximo"></a>
+    </div>
+
+    <div class="span-24 last" id="paginator-container">
+        <ul class="pagination">
+            {% for media in tour.images.all %}
+            <li>
+            <a href="#"><img class="shadow" src="/{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" /></a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
 </article>
 {% if references %}
 <div class="span-24 last">

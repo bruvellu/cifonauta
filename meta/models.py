@@ -182,7 +182,7 @@ class TagCategory(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = _('categoria de marcador')
+        verbose_name = _('categoria de marcadores')
         verbose_name_plural = _('categorias de marcadores')
 
 

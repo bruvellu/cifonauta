@@ -450,9 +450,9 @@ ul.refine-active, ul.refine-inactive {
 }
 
 .sign {
-    font-size:1.8em;
+    font-size:1.4em;
     line-height:1em;
-    vertical-align:middle;
+    vertical-align:text-top;
 }
 
 .minus {

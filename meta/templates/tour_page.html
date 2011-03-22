@@ -44,6 +44,9 @@
         <strong>{% trans 'Data de criação' %}:</strong> {{ tour.pub_date }}
         </li>
         <li>
+        <strong>{% trans 'Número de visitas' %}:</strong> {{ tour.view_count }}
+        </li>
+        <li>
         <strong>{% trans 'Última modificação' %}:</strong> {{ tour.timestamp }}
         </li>
         <li>
@@ -73,21 +76,11 @@
                 <p>SEM LEGENDA</p>
                 {% endif %}
                 <div>
-                    <strong>
-                    {% blocktrans count media.author_set.all.count as counter %}
-                        Autor:
-                        {% plural %}
-                        Autores:
-                        {% endblocktrans %}</strong> <span>{% show_set media.author_set.all '' '' ', ' '' %}</span>
+                    <strong>{% blocktrans count media.author_set.all.count as counter %}Autor{% plural %}Autores{% endblocktrans %}:</strong> <span>{% show_set media.author_set.all '' '' ', ' '' %}</span>
                     <br>
 
                     {% if media.taxon_set.all %}
-                    <strong>
-                        {% blocktrans count media.taxon_set.all.count as counter %}
-                        Táxon:
-                        {% plural %}
-                        Táxons:
-                        {% endblocktrans %}</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
+                    <strong>{% blocktrans count media.taxon_set.all.count as counter %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
                     <br>
                     {% endif %}
 
@@ -106,12 +99,7 @@
                     {% endif %}
 
                     {% if media.tag_set.all %}
-                    <strong>
-                        {% blocktrans count media.tag_set.all.count as counter %}
-                        Marcador:
-                        {% plural %}
-                        Marcadores:
-                        {% endblocktrans %}</strong> <span>{% show_set media.tag_set.all '' '' ', ' '' %}</span>
+                    <strong>{% blocktrans count media.tag_set.all.count as counter %}Marcador{% plural %}Marcadores{% endblocktrans %}:</strong> <span>{% show_set media.tag_set.all '' '' ', ' '' %}</span>
                     <br>
                     {% endif %}
 
@@ -144,7 +132,8 @@
 </article>
 {% if references %}
 <div class="span-24 last">
-    <h2>{% trans 'Referências bibliográficas' %}</h2>
+    {% comment %}Translators: list of references rendered on a page{% endcomment %}
+    <h2>{% trans 'Referências' %}</h2>
     {% for ref in references %}
     <div class="citation">
         {% autoescape off %}{{ ref.citation }}{% endautoescape %}

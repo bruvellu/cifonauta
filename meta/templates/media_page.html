@@ -109,29 +109,18 @@ $(document).ready(function(){
             </div>
             <div id="citation" class="span-13">
                 <div>
-                    {% show_set media.author_set.all '' '.' ', ' '' %} <strong>{{ media.title }}</strong>. {% if media.datatype == 'photo' %}{% trans 'Fotografia' %}{% else %}{% if media.datatype == 'video' %}{% trans 'Vídeos' %}{% endif %}{% endif %} {% trans 'acessada no banco de imagens <em>Cifonauta</em> em' %} {% now "F j, Y" %}
-                    Link: <a href="{{ media.get_absolute_url }}">http://{{ request.META.HTTP_HOST }}{{ media.get_absolute_url }}</a>
+                    {% show_set media.author_set.all '' '.' ', ' '' %} <strong>{{ media.title }}</strong>. {% trans 'Imagem' %} {% trans 'acessada no banco de imagens <em>Cifonauta</em> em' %} {% now "F j, Y" %}. Link: <a href="{{ media.get_absolute_url }}">http://{{ request.META.HTTP_HOST }}{{ media.get_absolute_url }}</a>
                 </div>
             </div>
             <div class="span-7 taxonomy">
 
                 {% if media.taxon_set.all %}
-                <strong>
-                    {% blocktrans count media.taxon_set.all.count as counter %}
-                    Táxon:
-                    {% plural %}
-                    Táxons:
-                    {% endblocktrans %}</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
+                <strong>{% blocktrans count media.taxon_set.all.count as counter %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
                 <br>
                 {% endif %}
 
                 {% if media.source_set.all %}
-                <strong>
-                    {% blocktrans count media_source_set.all.count as counter %}
-                    Especialista:
-                    {% plural %}
-                    Especialistas:
-                    {% endblocktrans %}</strong> <span id="source">{% show_set media.source_set.all '' '' ', ' '' %}</span>
+                <strong>{% blocktrans count media_source_set.all.count as counter %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set media.source_set.all '' '' ', ' '' %}</span>
                 {% endif %}
             </div>
 

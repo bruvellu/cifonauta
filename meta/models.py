@@ -331,8 +331,8 @@ class Reference(models.Model):
         return ('reference_url', [self.slug])
 
     class Meta:
-        verbose_name = _('referência bibliográfica')
-        verbose_name_plural = _('referências bibliográficas')
+        verbose_name = _('referência')
+        verbose_name_plural = _('referências')
 
 class Tour(models.Model):
     name = models.CharField(_('nome'), max_length=100, unique=True)

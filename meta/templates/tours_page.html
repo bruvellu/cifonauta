@@ -4,6 +4,7 @@
 <section class="span-24 last">
 <header><h1>Tours</h1></header>
 {% for tour in tours %}
+{% if tour.is_public %}
 <div class="span-24 last tour">
     <div class="span-4">
         {% print_thumb 'tour' tour %}
@@ -11,11 +12,12 @@
     <div class="span-20 last">
         <h2>{{ tour.name }}</h2>
         <p>
-        {{ tour.description }}
+        {{ tour.description|truncatewords:44 }}
         </p>
         <strong><a href="{{ tour.get_absolute_url }}">Clique aqui para iniciar o tour</a></strong>.
     </div>
 </div>
+{% endif %}
 {% endfor %}
 </section>
 {% endblock %}

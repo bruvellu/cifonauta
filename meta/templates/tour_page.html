@@ -14,7 +14,7 @@
             autoHeight: true,
             play: 4000,
             hoverPause: true,
-            slideSpeed: 400,
+            slideSpeed: 300,
             generatePagination: false
         });
     });
@@ -26,34 +26,37 @@
 <section class="span-24 last">
 <article id="tour" class="{{ tour.slug }} views-{{ tour.view_count }}">
 <header class="span-24 last">
+<div class="quiet" id="metafield">
+    {% trans 'Tour' %}:
+</div>
 <h1>{{ tour.name }}</h1>
 </header>
 <div class="span-16" id="tour-description">
     {{ tour.description|markdown }}
 </div>
 <div class="span-7 prepend-1 last">
-    <h2>Ficha Técnica</h2>
+    <h2>{% trans 'Ficha Técnica' %}</h2>
     <ul class="tags">
         <li>
-        <strong>Número de imagens:</strong> {{ tour.images.all|length }}
+        <strong>{% trans 'Número de imagens' %}:</strong> {{ tour.images.all|length }}
         </li>
         <li>
-        <strong>Data de criação:</strong> {{ tour.pub_date }}
+        <strong>{% trans 'Data de criação' %}:</strong> {{ tour.pub_date }}
         </li>
         <li>
-        <strong>Última modificação:</strong> {{ tour.timestamp }}
+        <strong>{% trans 'Última modificação' %}:</strong> {{ tour.timestamp }}
         </li>
         <li>
-        <strong>Táxons representados:</strong> {% show_set taxa '' '' ', ' 'link' %}
+        <strong>{% trans 'Táxons representados' %}:</strong> {% show_set taxa '' '' ', ' 'link' %}
         </li>
         <li>
-        <strong>Marcadores presentes:</strong> {% show_set tags '' '' ', ' 'link' %}
+        <strong>{% trans 'Marcadores presentes' %}:</strong> {% show_set tags '' '' ', ' 'link' %}
         </li>
 </div>
 
 <div class="span-24 last" id="slides">
     <div class="span-1">
-        <a href="#" class="prev"><img src="/site_media/js/slides/arrow-prev.png" width="24" height="43" alt="Anterior"></a>
+        <a href="#" class="prev"><img src="/site_media/js/slides/arrow-prev.png" width="24" height="43" alt="{% trans 'Anterior' %}"></a>
     </div>
     {% comment %}TODO adapt to HTML5{% endcomment %}
     <div class="slides_container shadow span-21">
@@ -89,7 +92,7 @@
                     {% endif %}
 
                     {% if media.size %}
-                    <strong>Tamanho:</strong> <span>{{ media.size }}</span>
+                    <strong>{% trans 'Tamanho' %}:</strong> <span>{{ media.size }}</span>
                     <br>
                     {% endif %}
 
@@ -114,7 +117,7 @@
 
                     <div class="align-right">
                         <br>
-                        <a href="{{ media.get_absolute_url }}"><strong>veja mais detalhes</strong></a>
+                        <a href="{{ media.get_absolute_url }}"><strong>{% trans 'veja mais detalhes' %}</strong></a>
                     </div>
 
                 </div>
@@ -124,7 +127,7 @@
     </div>
 
     <div class="span-1 last">
-        <a href="#" class="next"><img src="/site_media/js/slides/arrow-next.png" width="24" height="43" alt="Próximo"></a>
+        <a href="#" class="next"><img src="/site_media/js/slides/arrow-next.png" width="24" height="43" alt="{% trans 'Próximo' %}"></a>
     </div>
 
     <div class="span-24 last" id="paginator-container">

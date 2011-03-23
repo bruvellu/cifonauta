@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-03-23 10:24-0300\n"
-"PO-Revision-Date: 2011-03-23 10:25\n"
+"PO-Revision-Date: 2011-03-23 10:31\n"
 "Last-Translator: <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -364,8 +364,9 @@ msgid "Autores e especialistas"
 msgstr "Authors and experts"
 
 #: templates/authors_page.html:25
+#, fuzzy
 msgid "Especialistas"
-msgstr "Experts"
+msgstr ""
 
 #: templates/base.html:9
 msgid "Banco de Imagens de Biologia Marinha"

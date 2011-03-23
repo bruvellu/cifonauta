@@ -120,7 +120,7 @@ $(document).ready(function(){
                 {% endif %}
 
                 {% if media.source_set.all %}
-                <strong>{% blocktrans count media_source_set.all.count as counter %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set media.source_set.all '' '' ', ' '' %}</span>
+                <strong>{% blocktrans count media.source_set.all.count as counter %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set media.source_set.all '' '' ', ' '' %}</span>
                 {% endif %}
             </div>
 

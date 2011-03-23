@@ -389,6 +389,7 @@ class Movie:
         else:
             call.extend(['-vf', 'scale=512:384', '-aspect', '4:3'])
         # Audio codecs
+        # Exemplo para habilitar som no vídeo: filepath_comsom_.avi
         if 'comsom' in self.source_filepath.split('_') and ipass == 2:
             if filepath.endswith('mp4'):
                 call.extend(['-acodec', 'libfaac', '-ab', '128k',

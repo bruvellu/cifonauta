@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-22 22:20-0300\n"
-"PO-Revision-Date: 2011-03-22 22:21\n"
+"POT-Creation-Date: 2011-03-23 10:24-0300\n"
+"PO-Revision-Date: 2011-03-23 10:25\n"
 "Last-Translator: <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,6 +25,36 @@ msgstr "Search for"
 #: forms.py:13
 msgid "(digite um ou mais termos)"
 msgstr "(type one or more terms)"
+
+#: forms.py:17 templates/tour_page.html:79
+msgid "Autor"
+msgstr "Author"
+
+#: forms.py:18 templates/media_page.html:118 templates/tour_page.html:83
+msgid "Táxon"
+msgstr "Taxon"
+
+#: forms.py:19 templates/organizacao.html:14 templates/organizacao.html.py:20
+#: templates/tour_page.html:88
+msgid "Tamanho"
+msgstr "Size"
+
+#: forms.py:20 templates/mais.html:27 templates/media_page.html:133
+#: templates/tour_page.html:93
+msgid "Local"
+msgstr "Place"
+
+#: forms.py:21
+msgid "Cidade"
+msgstr "City"
+
+#: forms.py:22
+msgid "Estado"
+msgstr "State"
+
+#: forms.py:23
+msgid "País"
+msgstr "Country"
 
 #: forms.py:27
 msgid "Navegando por"
@@ -195,7 +225,7 @@ msgstr "mp4 file"
 msgid "thumbnail grande"
 msgstr "large thumbnail"
 
-#: models.py:107 templates/gallery.html:9
+#: models.py:107 templates/gallery.html:9 templates/related.html:73
 msgid "vídeo"
 msgstr "video"
 
@@ -468,6 +498,7 @@ msgid "Foto"
 msgstr "Photo"
 
 #: templates/gallery.html:43 templates/gallery.html.py:77
+#: templates/related.html:58
 msgid "anterior"
 msgstr "previous"
 
@@ -476,6 +507,7 @@ msgid "de"
 msgstr "of"
 
 #: templates/gallery.html:49 templates/gallery.html.py:83
+#: templates/related.html:65
 msgid "próxima"
 msgstr "next"
 
@@ -568,11 +600,6 @@ msgstr "All taxa"
 msgid "Tamanhos"
 msgstr "Sizes"
 
-#: templates/mais.html:27 templates/media_page.html:133
-#: templates/tour_page.html:93
-msgid "Local"
-msgstr "Place"
-
 #: templates/mais.html:32 templates/places_page.html:27
 msgid "Cidades"
 msgstr "Cities"
@@ -600,12 +627,6 @@ msgstr "Image"
 #: templates/media_page.html:112
 msgid "acessada no banco de imagens <em>Cifonauta</em> em"
 msgstr "accessed at <em>Cifonauta</em> image database in"
-
-#: templates/media_page.html:118 templates/tour_page.html:83
-msgid "Táxon"
-msgid_plural "Táxons"
-msgstr[0] "Taxon"
-msgstr[1] "Taxa"
 
 #: templates/media_page.html:123
 msgid "Especialista"
@@ -664,11 +685,6 @@ msgstr ""
 #: templates/organizacao.html:12
 msgid "A classificação biológica utilizada não adota nenhuma proposta em particular. Em grande parte, seguimos a classificação mais consensual ou tradicional, visando facilitar a visualização da hierarquia taxonômica e a navegação entre as imagens. Em alguns casos, empregamos a proposta de classificação seguida pelo especialista que identificou a espécie ilustrada."
 msgstr ""
-
-#: templates/organizacao.html:14 templates/organizacao.html.py:20
-#: templates/tour_page.html:88
-msgid "Tamanho"
-msgstr "Size"
 
 #: templates/organizacao.html:16
 msgid "Para dar uma ideia das dimensões dos organismos das imagens, 5 classes de tamanho foram criadas arbitrariamente. A fauna bentônica recebeu uma classificação adicional de tamanho: macrofauna, meiofauna e microfauna (ver item Modo de Vida, abaixo). Fotos dos ambientes não contêm informações de tamanho, mas caso estejam ilustrando algum organismo (por exemplo, cracas no costão), podem vir acompanhadas da escala relativa a esse organismo. As classes de tamanho são:"
@@ -742,6 +758,28 @@ msgid "%(counter)s imagem ligada à este trabalho."
 msgid_plural "%(counter)s imagens ligadas à este trabalho."
 msgstr[0] "%(counter)s image linked to this reference."
 msgstr[1] "%(counter)s images linked to this reference."
+
+#: templates/related.html:8
+msgid "Esta imagem não tem"
+msgstr "Image does not have"
+
+#: templates/related.html:20
+msgid "Trocar"
+msgstr "Change"
+
+#: templates/related.html:35
+msgid "última"
+msgstr "last"
+
+#: templates/related.html:38
+msgid "primeira"
+msgstr "first"
+
+#: templates/related.html:73
+msgid "imagem"
+msgid_plural "imagens"
+msgstr[0] "image"
+msgstr[1] "images"
 
 #: templates/searchbox.html:3
 msgid "Buscar"
@@ -846,12 +884,6 @@ msgstr "Previous"
 #: templates/tour_page.html:76
 msgid "SEM LEGENDA"
 msgstr "NO CAPTION"
-
-#: templates/tour_page.html:79
-msgid "Autor"
-msgid_plural "Autores"
-msgstr[0] "Author"
-msgstr[1] "Authors"
 
 #: templates/tour_page.html:102
 msgid "Marcador"

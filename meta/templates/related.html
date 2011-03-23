@@ -1,10 +1,11 @@
+{% load i18n %}
 <div id="related-form" class="span-15 last">
     <form action="." method="post">
         <div class="span-9" id="crumbs">
         {{ form.type.label_tag }}<strong> {{ type }}:</strong>
         <span class="quiet">
             {% if not crumbs %}
-            Esta imagem não tem {{ type }}.
+            {% trans 'Esta imagem não tem' %} {{ type }}.
             {% else %}
                 {% if crumbs|islist %}
                     {% show_set crumbs '' '' ', ' '' %}
@@ -16,7 +17,7 @@
         </div>
         <div class="span-5 last" id="navbox">
             {{ form.type }}
-            <input type="submit" value="Trocar" class="fashion" /> 
+            <input type="submit" value="{% trans 'Trocar' %}" class="fashion" /> 
         </div>
         {% csrf_token %}
     </form>
@@ -31,10 +32,10 @@
             <img src="/{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" />
             {% if relative.next or relative.previous %}
                 {% if not relative.next %}
-                <div id="next-last">última</div>
+                <div id="next-last">{% trans 'última' %}</div>
                 {% endif %}
                 {% if not relative.previous %}
-                <div id="prev-first">primeira</div>
+                <div id="prev-first">{% trans 'primeira' %}</div>
                 {% endif %}
             {% endif %}
 
@@ -54,20 +55,22 @@
         {% if relative.previous %}
         +{{ relative.behind }} 
         <a href="{{ relative.previous.get_absolute_url }}" title="{{ relative.previous.title }}">
-            {% autoescape on %}&lt;&lt; {% endautoescape %}anterior
+            {% autoescape on %}&lt;&lt; {% endautoescape %}{% trans 'anterior' %}
         </a>
         {% endif %}
     </div>
     <div class="linear" id="next">
         {% if relative.next %}
         <a href="{{ relative.next.get_absolute_url }}" title="{{ relative.next.title }}">
-            próxima{% autoescape on %} &gt;&gt;{% endautoescape %}</a> +{{ relative.ahead }}
+            {% trans 'próxima' %}{% autoescape on %} &gt;&gt;{% endautoescape %}</a> +{{ relative.ahead }}
         
         {% endif %}
     </div>
 </div>
 {% endif %}
 <div class="span-13 last quiet" id="total">
-    {{ relative.behind|add:relative.ahead|add:"1" }} {% if current.datatype == 'photo' %}image{{ relative.behind|add:relative.ahead|add:"1"|pluralize:'m,ns' }}{% else %}{% if current.datatype == 'video' %}vídeo{{ relative.behind|add:relative.ahead|add:"1"|pluralize }}{% endif %}{% endif %}
+    {% with relative.behind|add:relative.ahead|add:1 as n %}
+    {{ n }} {% if current.datatype == 'photo' %}{% blocktrans count n as counter %}imagem{% plural %}imagens{% endblocktrans %}{% else %}{% if current.datatype == 'video' %}{% blocktrans count n as counter %}vídeo{% plural %}vídeos{% endblocktrans %}{% endif %}{% endif %}
+    {% endwith %}
 </div>
 {% endif %}

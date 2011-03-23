@@ -14,13 +14,13 @@ class SearchForm(forms.Form):
             )
 
 METAS = (
-        (u'author', u'Autor'),
-        (u'taxon', u'Táxon'),
-        (u'size', u'Tamanho'),
-        (u'sublocation', u'Local'),
-        (u'city', u'Cidade'),
-        (u'state', u'Estado'),
-        (u'country', u'País'),
+        (u'author', _('Autor')),
+        (u'taxon', _('Táxon')),
+        (u'size', _('Tamanho')),
+        (u'sublocation', _('Local')),
+        (u'city', _('Cidade')),
+        (u'state', _('Estado')),
+        (u'country', _('País')),
         )
 
 class RelatedForm(forms.Form):

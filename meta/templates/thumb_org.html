@@ -1,9 +1,10 @@
+{% load i18n %}
 {% if media %}
 <div class="thumbs-org shadow size-{{ media.size.slug }}">
     {% include 'thumb.html' %}
 </div>
 {% else %}
 <div class="thumbs-org shadow semfoto">
-    sem foto
+    {% trans 'sem foto' %}
 </div>
 {% endif %}

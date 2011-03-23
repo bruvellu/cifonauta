@@ -1,5 +1,6 @@
+{% load i18n %}
 {% if spp %}
-<h2>Espécie{{ spp.count|pluralize }} ({{ spp.count }})</h2>
+<h2>{% trans 'Espécies' %} ({{ spp.count }})</h2>
 <ul class="root tree">
     {% for sp in spp %}
     <li class="children tree">
@@ -8,5 +9,5 @@
     {% endfor %}
 </ul>
 {% else %}
-<h2>Nenhuma espécie no banco</h2>
+<h2>{% trans 'Nenhuma espécie no banco' %}</h2>
 {% endif %}

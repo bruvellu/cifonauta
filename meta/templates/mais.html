@@ -1,44 +1,45 @@
+{% load i18n %}
 <div class="block shadow">
-    <h2>Refine sua busca</h2>
-    <p>Use os sinais [<span class="sign plus">+</span>] e [<span class="sign minus">−</span>] para refinar sua busca ou clique no nome para abrir a página do metadado.</p>
+    <h2>{% trans 'Refine sua busca' %}</h2>
+    <p>{% blocktrans %}Use os sinais [<span class="sign plus">+</span>] e [<span class="sign minus">−</span>] para refinar sua busca ou clique no nome para abrir a página do metadado.{% endblocktrans %}</p>
 
 {% if tags or queries.tag %}
-<h3>Marcadores | <a href="{% url meta.views.tags_page %}" title="Todos os marcadores">ver todos</a></h3>
+<h3>{% trans 'Marcadores' %} | <a href="{% url meta.views.tags_page %}" title="{% trans 'Todos os marcadores' %}">{% trans 'ver todos' %}</a></h3>
     {% refiner queries.tag tags 'tag' queries %}
 {% endif %}
 
 {% if authors or queries.author %}
-<h3>Autores | <a href="{% url meta.views.authors_page %}" title="Todos os autores">ver todos</a></h3>
+<h3>{% trans 'Autores' %} | <a href="{% url meta.views.authors_page %}" title="{% trans 'Todos os autores' %}">{% trans 'ver todos' %}</a></h3>
     {% refiner queries.author authors 'author' queries %}
 {% endif %}
 
 {% if taxa or queries.taxon %}
-<h3>Táxons | <a href="{% url meta.views.taxa_page %}" title="Todos os táxons">ver todos</a></h3>
+<h3>{% trans 'Táxons' %} | <a href="{% url meta.views.taxa_page %}" title="{% trans 'Todos os táxons' %}">{% trans 'ver todos' %}</a></h3>
     {% refiner queries.taxon taxa 'taxon' queries %}
 {% endif %}
 
 {% if sizes or queries.size %}
-<h3>Tamanhos</h3>
+<h3>{% trans 'Tamanhos' %}</h3>
     {% refiner queries.size sizes 'size' queries %}
 {% endif %}
 
 {% if sublocations or queries.sublocation %}
-<h3>Local</h3>
+<h3>{% trans 'Local' %}</h3>
     {% refiner queries.sublocation sublocations 'sublocation' queries %}
 {% endif %}
 
 {% if cities or queries.city %}
-<h3>Cidades</h3>
+<h3>{% trans 'Cidades' %}</h3>
     {% refiner queries.city cities 'city' queries %}
 {% endif %}
 
 {% if states or queries.state %}
-<h3>Estados</h3>
+<h3>{% trans 'Estados' %}</h3>
     {% refiner queries.state states 'state' queries %}
 {% endif %}
 
 {% if countries or queries.country %}
-<h3>Países</h3>
+<h3>{% trans 'Países' %}</h3>
     {% refiner queries.country countries 'country' queries %}
 {% endif %}
 </div>

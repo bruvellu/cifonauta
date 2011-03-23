@@ -1,3 +1,4 @@
+{% load i18n %}
 <form id="header-search" method="get" action="/buscar/">
-    {{ form.query }} <input type="submit" value="Buscar" class="fashion" />
+    {{ form.query }} <input type="submit" value="{% trans 'Buscar' %}" class="fashion" />
 </form>

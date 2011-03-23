@@ -1,3 +1,4 @@
+{% load i18n %}
 {% block extra-head %}
 {% endblock %}
 
@@ -5,19 +6,19 @@
     {% if images.paginator.count or videos.paginator.count %}
     <div class="success">
         {% if images.paginator.count %}
-        {{ images.paginator.count }} foto{{ images.paginator.count|pluralize }} {% endif %}{% if images.paginator.count and videos.paginator.count %}e {% endif %}{% if videos.paginator.count %}{{ videos.paginator.count }} vídeo{{ videos.paginator.count|pluralize }} {% endif %}
+        {{ images.paginator.count }} {% trans 'foto' %}{{ images.paginator.count|pluralize }} {% endif %}{% if images.paginator.count and videos.paginator.count %}{% trans 'e' %} {% endif %}{% if videos.paginator.count %}{{ videos.paginator.count }} {% trans 'vídeo' %}{{ videos.paginator.count|pluralize }} {% endif %}
     </div>
     {% endif %}
 
     {% if not images.object_list or not videos.object_list %}
     <div class="notice">
         {% if not images.object_list %}
-        Nenhuma foto
+        {% trans 'Nenhuma foto' %}
         {% endif %}
         {% if not videos.object_list and not images.object_list %}
-        e nenhum vídeo
+        {% trans 'e nenhum vídeo' %}
         {% else %}
-        Nenhum vídeo
+        {% trans 'Nenhum vídeo' %}
         {% endif %}
     </div>
     {% endif %}
@@ -26,7 +27,7 @@
 {% if images.object_list %}
 <section id="photo-gallery">
 <header class="span-16 last">
-<h2 class="span-10">Foto{{ images.paginator.count|pluralize }} ({{ images.paginator.count }})</h2>
+<h2 class="span-10">{% trans 'Foto' %}{{ images.paginator.count|pluralize }} ({{ images.paginator.count }})</h2>
 </header>
     <ul class="thumbs">
         {% for media in images.object_list %}
@@ -39,13 +40,13 @@
     </ul>
 <footer class="pagination span-16 last">
 {% if images.has_previous %}
-<div class="span-2"><a href="{% paged_url request.META.QUERY_STRING images.previous_page_number %}"><< anterior</a></div>
+<div class="span-2"><a href="{% paged_url request.META.QUERY_STRING images.previous_page_number %}"><< {% trans 'anterior' %}</a></div>
 {% else %}
 <div class="span-2">&nbsp;</div>
 {% endif %}
-<div class="span-10 align-center">{{ images.number }} de {{ images.paginator.num_pages }}</div>
+<div class="span-10 align-center">{{ images.number }} {% trans 'de' %} {{ images.paginator.num_pages }}</div>
 {% if images.has_next %}
-<div class="span-4 last"><a href="{% paged_url request.META.QUERY_STRING images.next_page_number %}">próxima >></a></div>
+<div class="span-4 last"><a href="{% paged_url request.META.QUERY_STRING images.next_page_number %}">{% trans 'próxima' %} >></a></div>
 {% else %}
 <div class="span-4 last">&nbsp;</div>
 {% endif %}
@@ -59,7 +60,7 @@
 {% if videos.object_list %}
 <section id="video-gallery">
 <header class="span-16 last">
-<h2 class="span-10">Vídeo{{ videos.paginator.count|pluralize }} ({{ videos.paginator.count }})</h2>
+<h2 class="span-10">{% trans 'Vídeo' %}{{ videos.paginator.count|pluralize }} ({{ videos.paginator.count }})</h2>
 </header>
     <ul class="thumbs">
         {% for media in videos.object_list %}
@@ -73,13 +74,13 @@
 
 <footer class="span-16 pagination last">
 {% if videos.has_previous %}
-<div class="span-2"><a href="{% paged_url request.META.QUERY_STRING videos.previous_page_number %}"><< anterior</a></div>
+<div class="span-2"><a href="{% paged_url request.META.QUERY_STRING videos.previous_page_number %}"><< {% trans 'anterior' %}</a></div>
 {% else %}
 <div class="span-2">&nbsp;</div>
 {% endif %}
-<div class="span-10 align-center">{{ videos.number }} de {{ videos.paginator.num_pages }}</div>
+<div class="span-10 align-center">{{ videos.number }} {% trans 'de' %} {{ videos.paginator.num_pages }}</div>
 {% if videos.has_next %}
-<div class="span-4 last"><a href="{% paged_url request.META.QUERY_STRING videos.next_page_number %}">próxima >></a></div>
+<div class="span-4 last"><a href="{% paged_url request.META.QUERY_STRING videos.next_page_number %}">{% trans 'próxima' %} >></a></div>
 {% else %}
 <div class="span-4 last">&nbsp;</div>
 {% endif %}

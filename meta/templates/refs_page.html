@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}Referências bibliográficas | {{ block.super }}{% endblock %}
+{% load i18n %}
+{% block title %}{% trans 'Referências' %} | {{ block.super }}{% endblock %}
 {% block content %}
 <section class="span-24 last">
-<header><h1>Referências bibliográficas</h1></header>
-<div class="span-4"><h2>Exemplo</h2></div>
-<div class="span-15"><h2>Citação</h2></div>
-<div class="span-5 last"><h2>Veja mais</h2></div>
+<header><h1>{% trans 'Referências' %}</h1></header>
+<div class="span-4"><h2>{% trans 'Exemplo' %}</h2></div>
+<div class="span-15"><h2>{% trans 'Citação' %}</h2></div>
+<div class="span-5 last"><h2>{% trans 'Veja mais' %}</h2></div>
 {% for ref in references %}
 <div class="span-24 last citation">
 <div class="span-4">
@@ -17,7 +18,7 @@
     {% endautoescape %}
 </div>
 <div class="span-5 last">
-    <a href="{{ ref.get_absolute_url }}">{{ ref|icount:'reference' }} image{{ ref|icount:'reference'|pluralize:'m,ns' }} ligada{{ ref|icount:'reference'|pluralize }} à este trabalho.</a>
+    <a href="{{ ref.get_absolute_url }}">{% blocktrans count ref|icount:'reference' as counter %}{{ counter }} imagem ligada à este trabalho.{% plural %}{{ counter }} imagens ligadas à este trabalho.{% endblocktrans %}</a>
 </div>
 </div>
 {% endfor %}

@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="quiet" id="stats">
-    {{ images }} foto{{ images|pluralize }} | {{ videos }} vídeo{{ videos|pluralize }}{% comment %} | {{ authors }} auto{{ authors|pluralize:'r,res' }}{% endcomment %} | {{ tags }} marcadore{{ tags|pluralize }} | {{ spp }} espécie{{ spp|pluralize }} | {{ locations }} loca{{ locations|pluralize:'l,is' }}{% comment %} | {{ references }} referência{{ references|pluralize }}{% endcomment %}
+    {{ images }} {% trans 'fotos' %} | {{ videos }} {% trans 'vídeos' %} | {{ tags }} {% trans 'marcadores' %} | {{ spp }} {% trans 'espécies' %} | {{ locations }} {% trans 'locais' %}
 </div>

@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
-{% block title %}Táxons | {{ block.super }}{% endblock %}
+{% load i18n %}
+{% block title %}{% trans 'Táxons' %} | {{ block.super }}{% endblock %}
 {% block content %}
 <section class="span-24 last">
-    <header><h1>Táxons</h1></header>
+<header><h1>{% trans 'Táxons' %}</h1></header>
+<div id="taxa" class="span-16">
+    {% include 'tree.html' %}
+</div>
 
-    <div id="taxa" class="span-16">
-        {% include 'tree.html' %}
-    </div>
-
-    <div id="species" class="span-8 last">
-        {% show_spp %}
-    </div>
+<div id="species" class="span-8 last">
+    {% show_spp %}
+</div>
 </section>
 {% endblock %}
 

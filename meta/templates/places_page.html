@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% comment %}
 Mostra todas as localidades em 4 colunas. Código bem objetivo, usando icount para contar linhas da tabela.
 {% endcomment %}
-{% block title %}Localidades | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'Localidades' %} | {{ block.super }}{% endblock %}
 {% block content %}
 <section class="span-24 last">
-    <header><h1>Localidades</h1></header>
+<header><h1>{% trans 'Localidades' %}</h1></header>
 
     <div id="sublocations" class="span-6">
-        <h2>Locais</h2>
+        <h2>{% trans 'Locais' %}</h2>
         <ul class="tags">
         {% for subloc in sublocations %}
             <li>
@@ -23,7 +24,7 @@ Mostra todas as localidades em 4 colunas. Código bem objetivo, usando icount pa
         </ul>
     </div>
     <div id="cities" class="span-6">
-        <h2>Cidades</h2>
+        <h2>{% trans 'Cidades' %}</h2>
         <ul class="tags">
         {% for city in cities %}
             <li>
@@ -38,7 +39,7 @@ Mostra todas as localidades em 4 colunas. Código bem objetivo, usando icount pa
         </ul>
     </div>
     <div id="states" class="span-6">
-        <h2>Estados</h2>
+        <h2>{% trans 'Estados' %}</h2>
         <ul class="tags">
         {% for state in states %}
             <li>
@@ -53,7 +54,7 @@ Mostra todas as localidades em 4 colunas. Código bem objetivo, usando icount pa
         </ul>
     </div>
     <div id="countries" class="span-6 last">
-        <h2>Países</h2>
+        <h2>{% trans 'Países' %}</h2>
         <ul class="tags">
         {% for country in countries %}
             <li>

@@ -1,3 +1,4 @@
+{% load i18n %}
             <a href="{{ media.get_absolute_url }}">
                 <img src="/{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" />
             </a>
@@ -10,6 +11,6 @@
                 <div class="float-left">{{ media.caption }}</div>
                 {% endif %}
                 <div class="float-right">
-                    <a href="{{ media.get_absolute_url }}">ver detalhes</a>
+                    <a href="{{ media.get_absolute_url }}">{% trans 'ver mais detalhes' %}</a>
                 </div>
             </div>

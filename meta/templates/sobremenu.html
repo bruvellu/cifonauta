@@ -1,14 +1,15 @@
+{% load i18n %}
 <div class="block borders subpages">
-    <h2>Índice</h2>
+    <h2>{% trans 'Páginas' %}</h2>
     <ul>
-        <li><a href="/sobre/">Sobre</a></li>
-        <li><a href="/conteudo/">Conteúdo</a></li>
-        <li><a href="{% url meta.views.org_page %}">Organização do banco</a></li>
-        <li><a href="/creditos/">Créditos e apoio</a></li>
-        <li><a href="/detalhes/">Detalhes técnicos</a></li>
-        <li><a href="/desenvolvimento/">Desenvolvimento do banco</a></li>
-        <li><a href="/ideias/">Idéias planejadas</a></li>
-        <li><a href="/termos/">Termos de uso</a></li>
+        <li><a href="/sobre/">{% trans 'Sobre' %}</a></li>
+        <li><a href="/conteudo/">{% trans 'Conteúdo' %}</a></li>
+        <li><a href="{% url meta.views.org_page %}">{% trans 'Organização do banco' %}</a></li>
+        <li><a href="/creditos/">{% trans 'Créditos e apoio' %}</a></li>
+        <li><a href="/detalhes/">{% trans 'Detalhes técnicos' %}</a></li>
+        <li><a href="/desenvolvimento/">{% trans 'Desenvolvimento do banco' %}</a></li>
+        <li><a href="/ideias/">{% trans 'Idéias planejadas' %}</a></li>
+        <li><a href="/termos/">{% trans 'Termos de uso' %}</a></li>
         <!--<li><a href="/stats/">Estatísticas</a></li>-->
     </ul>
 </div>

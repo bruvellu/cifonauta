@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% comment %}
 Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o regroup para criar objetos de cada categoria, usa o cycle para definir o span de cada coluna adequadamente e o icount para contar o número de linhas de cada tabela.
 {% endcomment %}
-{% block title %}Marcadores | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'Marcadores' %} | {{ block.super }}{% endblock %}
 {% block content %}
 <section class="span-24 last">
-    <header><h1>Marcadores</h1></header>
+<header><h1>{% trans 'Marcadores' %}</h1></header>
 
     {% regroup tags by parent as tag_groups %}
 
     <div class="span-6">
-        <h2>Tamanhos</h2>
+        <h2>{% trans 'Tamanhos' %}</h2>
         <ul class="tags">
             {% for size in sizes %}
             <li>

@@ -3,13 +3,14 @@
 from django import forms
 from meta.models import *
 from django.db.models import Q
+from django.utils.translation import ugettext_lazy as _
 
-    
+
 class SearchForm(forms.Form):
     query = forms.CharField(
-            label=u'Buscar por',
+            label=_('Buscar por'),
             widget=forms.TextInput(attrs={'size': 32}),
-            help_text=u'(digite um ou mais termos)',
+            help_text=_('(digite um ou mais termos)'),
             )
 
 METAS = (
@@ -23,31 +24,31 @@ METAS = (
         )
 
 class RelatedForm(forms.Form):
-    type = forms.ChoiceField(choices=METAS, label=u'Navegando por')
+    type = forms.ChoiceField(choices=METAS, label=_('Navegando por'))
     # TODO Incluir um checkbox para mostrar apenas highlights?
 
 ITEMS = (
         (16, 16),
-        (48, 48),
+        (40, 40),
         (80, 80),
-        (112, 112),
-        (224, 224),
-        (448, 448),
-        (896, 896),
+        (120, 120),
+        (220, 220),
+        (460, 460),
+        (900, 900),
         )
 
 ORDER = (
-        ('asc', 'ascendente'),
-        ('desc', 'descendente'),
+        ('asc', _('ascendente')),
+        ('desc', _('descendente')),
         )
 
 ORDER_BY = (
-        ('id', 'id'),
-        ('view_count', 'visitas'),
-        ('date', 'data da imagem'),
-        ('pub_date', 'data de publicação'),
-        ('timestamp', 'data de modificação'),
-        ('random', 'aleatório'),
+        ('id', _('id')),
+        ('view_count', _('visitas')),
+        ('date', _('data da imagem')),
+        ('pub_date', _('data de publicação')),
+        ('timestamp', _('data de modificação')),
+        ('random', _('aleatório')),
         )
 
 class DisplayForm(forms.Form):
@@ -55,10 +56,10 @@ class DisplayForm(forms.Form):
 
     Pode ser alterado por qual metadado as imagens serão ordenadas, se esta ordem será ascendente ou descendente, o número de resultados por página e se é para mostrar apenas os destaques.
     '''
-    n = forms.ChoiceField(choices=ITEMS, label=u'Ítens por página')
-    orderby = forms.ChoiceField(choices=ORDER_BY, label=u'Ordenar por')
-    order = forms.ChoiceField(choices=ORDER, label=u'Ordem')
-    highlight = forms.BooleanField(required=False, initial=False, label=u'Somente destaques')
+    n = forms.ChoiceField(choices=ITEMS, label=_('Ítens por página'))
+    orderby = forms.ChoiceField(choices=ORDER_BY, label=_('Ordenar por'))
+    order = forms.ChoiceField(choices=ORDER, label=_('Ordem'))
+    highlight = forms.BooleanField(required=False, initial=False, label=_('Somente destaques'))
 
 class FixTaxaForm(forms.Form):
     '''Formulário que mostra os táxons órfãos.
@@ -71,6 +72,7 @@ class FixTaxaForm(forms.Form):
 
         Faz o processamento para serem carregadas no formulário.
         '''
+        # TODO Ver se esse rank=Reino direto não compromete o funcionamento.
         taxa = Taxon.objects.filter(Q(parent__isnull=True) & ~Q(rank='Reino') | 
                 Q(rank=''))
         semitaxa = [(taxon.name, u'%s (id=%s)' % (taxon.name, taxon.id)) for 
@@ -80,4 +82,5 @@ class FixTaxaForm(forms.Form):
 
     review = forms.MultipleChoiceField(choices=get_orphans(), 
             widget=forms.CheckboxSelectMultiple(attrs={'class':'check-taxon'}), 
-            required=False, label=u'Revisar táxons')
+            required=False, label=_('Revisar táxons'))
+

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load markup %}
-{% block title %}{{ tour.name }} | Tour | {{ block.super }}{% endblock %}
+{% block title %}{{ tour.name }} | {% trans 'Tour' %} | {{ block.super }}{% endblock %}
 {% block extra-head %}
 
 <script type="text/javascript" src="/site_media/js/slides/slides.min.jquery.js"></script>
@@ -73,7 +73,7 @@
                 {% if media.caption %}
                 <p>{{ media.caption }}</p>
                 {% else %}
-                <p>SEM LEGENDA</p>
+                <p>{% trans 'SEM LEGENDA' %}</p>
                 {% endif %}
                 <div>
                     <strong>{% blocktrans count media.author_set.all.count as counter %}Autor{% plural %}Autores{% endblocktrans %}:</strong> <span>{% show_set media.author_set.all '' '' ', ' '' %}</span>

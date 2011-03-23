@@ -1,4 +1,5 @@
 {% load mptt_tags %}
+{% load i18n %}
 {% block extra-head %}
 <link rel="stylesheet" href="/site_media/js/jquery-treeview/jquery.treeview.css" /> 
  
@@ -23,7 +24,7 @@
 </script>
 {% endblock %}
 
-<h2>Grupos</h2>
+<h2>{% trans 'Grupos' %}</h2>
 {% full_tree_for_model meta.Taxon as taxa %}
 <ul class="root tree" id="colaptree">
     {% recursetree taxa %}

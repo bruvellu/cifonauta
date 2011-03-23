@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}Autores | {{ block.super }}{% endblock %}
+{% load i18n %}
+{% block title %}{% trans 'Autores' %} | {{ block.super }}{% endblock %}
 {% block content %}
 <section class="span-24 last">
-    <header><h1>Autores e especialistas</h1></header>
+<header><h1>{% trans 'Autores e especialistas' %}</h1></header>
 
     <div id="authors" class="span-12">
-        <h2>Autores</h2>
+        <h2>{% trans 'Autores' %}</h2>
         <ul class="tags">
             {% for author in authors %}
             <li>
@@ -21,7 +22,7 @@
     </div>
 
     <div id="sources" class="span-12 last">
-        <h2>Especialistas</h2>
+        <h2>{% trans 'Especialistas' %}</h2>
         <ul class="tags">
             {% for source in sources %}
             <li>

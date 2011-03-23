@@ -1,22 +1,23 @@
 {% extends 'base.html' %}
-{% block title %}Buscador | {{ block.super }}{% endblock %}
+{% load i18n %}
+{% block title %}{% trans 'Buscador' %} | {{ block.super }}{% endblock %}
 {% block extra-head %}
 <!--<script type="text/javascript" src="/site_media/js/buscador.js"></script>-->
 {% endblock %}
 {% block content %}
 <section class="span-16">
 <form id="search-form" method="get" action=".">
-    {{ form.query.label_tag }}<strong>:</strong> {{ form.query }} <input type="submit" value="Encontrar" class="fashion" /> <a id="limpar" href="{% url meta.views.search_page %}">Limpar</a>
+    {{ form.query.label_tag }}<strong>:</strong> {{ form.query }} <input type="submit" value="{% trans 'Encontrar' %}" class="fashion" /> <a id="limpar" href="{% url meta.views.search_page %}">{% trans 'Limpar' %}</a>
 </form>
 <div id="search-results">
     {% if show_results %}
         {% if queries.type == 'photo' %}
-        Mostrando apenas <strong>fotos</strong>. Exibir <a href="{% build_url 'photo' 'type' queries 'True' %}">fotos e vídeos</a> ou <a href="{% build_url 'photo' 'type' queries 'True' %}&type=video">apenas vídeos.</a>
+        {% blocktrans %}Mostrando apenas <strong>fotos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{% build_url 'photo' 'type' queries 'True' %}">{% trans 'fotos e vídeos' %}</a> {% trans 'ou' %} <a href="{% build_url 'photo' 'type' queries 'True' %}&type=video">{% trans 'apenas vídeos' %}.</a>
         {% else %}
         {% if queries.type == 'video' %}
-        Mostrando apenas <strong>vídeos</strong>. Exibir <a href="{% build_url 'video' 'type' queries 'True' %}">fotos e vídeos</a> ou <a href="{% build_url 'video' 'type' queries 'True' %}&type=photo">apenas fotos.</a>
+        {% blocktrans %}Mostrando apenas <strong>vídeos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{% build_url 'video' 'type' queries 'True' %}">{% trans 'fotos e vídeos' %}</a> {% trans 'ou' %} <a href="{% build_url 'video' 'type' queries 'True' %}&type=photo">{% trans 'apenas fotos' %}.</a>
         {% else %}
-        Mostrando <strong>fotos</strong> e <strong>vídeos</strong>. Exibir <a href="{{ request.path }}?{{ request.META.QUERY_STRING }}&type=photo">apenas fotos</a> ou <a href="{{ request.path }}?{{ request.META.QUERY_STRING }}&type=video">apenas vídeos.</a>
+        {% blocktrans %}Mostrando <strong>fotos</strong> e <strong>vídeos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{{ request.path }}?{{ request.META.QUERY_STRING }}&type=photo">{% trans 'apenas fotos' %}</a> {% trans 'ou' %} <a href="{{ request.path }}?{{ request.META.QUERY_STRING }}&type=video">{% trans 'apenas vídeos' %}.</a>
         {% endif %}
         {% endif %}
         <hr class="space">
@@ -33,14 +34,14 @@
 <div class="block shadow">
     <form action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="post">
         {{ n_form.as_p}}
-        <input type="submit" value="Atualizar" class="fashion" id="display" />
+        <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display" />
         {% csrf_token %}
     </form>
 </div>
     {% show_info image_list video_list queries %}
 {% else %}
 <div id="showall">
-<a href="/buscar/?type=all">ou clique para mostrar tudo</a>
+    <a href="/buscar/?type=all">{% trans 'ou clique para mostrar tudo' %}</a>
 </div>
 {% endif %}
 </aside>

@@ -371,8 +371,7 @@ class Movie:
 
     def build_call(self, filepath, ipass):
         '''Constrói o subprocesso para converter o vídeo com o FFmpeg.'''
-        #TODO Fazer transcoding do m2t primeiro?
-        #FIXME Descobrir jeito de forçar width e height serem par!
+        # FIXME Descobrir jeito de forçar width e height serem par!
 
         # Básico
         call = [
@@ -386,9 +385,9 @@ class Movie:
         #TODO Achar um jeito mais confiável de saber se é HD...
         if self.source_filepath.endswith('m2ts'):
             # Ideal seria ser reconhecida direito no desktop...
-            call.extend(['-vf', 'scale=512:-1', '-aspect', '16:9'])
+            call.extend(['-vf', 'scale=512:288', '-aspect', '4:3'])
         else:
-            call.extend(['-vf', 'scale=512:-1', '-aspect', '4:3'])
+            call.extend(['-vf', 'scale=512:384', '-aspect', '4:3'])
         # Audio codecs
         if 'comsom' in self.source_filepath.split('_') and ipass == 2:
             if filepath.endswith('mp4'):
@@ -415,7 +414,6 @@ class Movie:
             call.extend(['-vpre', 'veryslow'])
         # Finaliza com nome do arquivo
         call.append(filepath)
-        print call
         return call
 
     def process_video(self):
@@ -501,17 +499,11 @@ class Movie:
             # Cria thumb grande a partir de 1 frame no segundo 5
             #XXX Lembrar de deixar do mesmo tamanho do vídeo...
             if self.source_filepath.endswith('m2ts'):
-                subprocess.call(['ffmpeg', '-i', self.source_filepath,
-                    '-vframes', '1', '-vf', 'scale=512:-1', '-aspect', '16:9', '-ss', '1', '-f',
-                    'image2', local_filepath_large])
+            	subprocess.call(['ffmpeg', '-i', self.source_filepath, '-vframes', '1', '-vf', 'scale=512:288', '-aspect', '16:9', '-ss', '1', '-f', 'image2', local_filepath_large])
             else:
-                subprocess.call(['ffmpeg', '-i', self.source_filepath,
-                    '-vframes', '1', '-vf', 'scale=512:-1', '-ss', '1', '-f',
-                    'image2', local_filepath_large])
+                subprocess.call(['ffmpeg', '-i', self.source_filepath, '-vframes', '1', '-vf', 'scale=512:384', '-ss', '1', '-f', 'image2', local_filepath_large])
             # Cria thumb normal (pequeno)
-            subprocess.call(['convert', '-define', 'jpeg:size=200x150',
-                local_filepath_large, '-thumbnail', '120x90^', '-gravity',
-                'center', '-extent', '120x90', 'PNG8:%s' % local_filepath])
+            subprocess.call(['convert', '-define', 'jpeg:size=200x150', local_filepath_large, '-thumbnail', '120x90^', '-gravity', 'center', '-extent', '120x90', 'PNG8:%s' % local_filepath])
         except IOError:
             #TODO Criar entrada no log.
             print 'Não consegui criar o thumbnail...'

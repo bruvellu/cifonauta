@@ -427,12 +427,18 @@ def video_page(request, video_id):
     video.save()
     tags = video.tag_set.all().order_by('name')
     references = video.reference_set.all().order_by('-citation')
+    # Para lidar com tamanhos de vídeos.
+    if video.old_filepath.endswith('m2ts'):
+    	height = 288
+    else:
+    	height = 384
     variables = RequestContext(request, {
         'media': video,
         'tags': tags,
         'references': references,
         'form': form,
         'related': related,
+        'height': height,
         })
     return render_to_response('media_page.html', variables)
 

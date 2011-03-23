@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-23 10:36-0300\n"
+"POT-Creation-Date: 2011-03-23 17:20-0300\n"
 "PO-Revision-Date: 2011-03-23 10:36\n"
 "Last-Translator: <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -951,6 +951,14 @@ msgstr "Click to start the tour"
 #: templates/tree.html:27
 msgid "Grupos"
 msgstr "Groups"
+
+#: templates/video.html:18
+msgid "Playback de vídeo indisponível"
+msgstr ""
+
+#: templates/video.html:20
+msgid "Tem algo muito errado no seu navegador..."
+msgstr ""
 
 #~ msgid "Índice"
 #~ msgstr "Index"

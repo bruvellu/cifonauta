@@ -12,12 +12,12 @@
 <div id="search-results">
     {% if show_results %}
         {% if queries.type == 'photo' %}
-        {% blocktrans %}Mostrando apenas <strong>fotos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{% build_url 'photo' 'type' queries 'True' %}">{% trans 'fotos e vídeos' %}</a> {% trans 'ou' %} <a href="{% build_url 'photo' 'type' queries 'True' %}&type=video">{% trans 'apenas vídeos' %}.</a>
+        {% blocktrans %}Mostrando apenas <strong>fotos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{% build_url 'photo' 'type' queries 'True' %}">{% trans 'fotos e vídeos' %}</a> {% trans 'ou' %} <a href="{% build_url 'photo' 'type' queries 'True' %}&type=video">{% trans 'apenas vídeos' %}</a>.
         {% else %}
         {% if queries.type == 'video' %}
-        {% blocktrans %}Mostrando apenas <strong>vídeos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{% build_url 'video' 'type' queries 'True' %}">{% trans 'fotos e vídeos' %}</a> {% trans 'ou' %} <a href="{% build_url 'video' 'type' queries 'True' %}&type=photo">{% trans 'apenas fotos' %}.</a>
+        {% blocktrans %}Mostrando apenas <strong>vídeos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{% build_url 'video' 'type' queries 'True' %}">{% trans 'fotos e vídeos' %}</a> {% trans 'ou' %} <a href="{% build_url 'video' 'type' queries 'True' %}&type=photo">{% trans 'apenas fotos' %}</a>.
         {% else %}
-        {% blocktrans %}Mostrando <strong>fotos</strong> e <strong>vídeos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{{ request.path }}?{{ request.META.QUERY_STRING }}&type=photo">{% trans 'apenas fotos' %}</a> {% trans 'ou' %} <a href="{{ request.path }}?{{ request.META.QUERY_STRING }}&type=video">{% trans 'apenas vídeos' %}.</a>
+        {% blocktrans %}Mostrando <strong>fotos</strong> e <strong>vídeos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{{ request.path }}?{{ request.META.QUERY_STRING }}&type=photo">{% trans 'apenas fotos' %}</a> {% trans 'ou' %} <a href="{{ request.path }}?{{ request.META.QUERY_STRING }}&type=video">{% trans 'apenas vídeos' %}</a>.
         {% endif %}
         {% endif %}
         <hr class="space">

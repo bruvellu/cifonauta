@@ -2,20 +2,20 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-23 10:24-0300\n"
-"PO-Revision-Date: 2011-03-23 10:31\n"
+"POT-Creation-Date: 2011-03-23 10:36-0300\n"
+"PO-Revision-Date: 2011-03-23 10:36\n"
 "Last-Translator: <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "X-Translated-Using: django-rosetta 0.5.6\n"
 
 #: forms.py:11
@@ -364,9 +364,8 @@ msgid "Autores e especialistas"
 msgstr "Authors and experts"
 
 #: templates/authors_page.html:25
-#, fuzzy
 msgid "Especialistas"
-msgstr ""
+msgstr "Experts"
 
 #: templates/base.html:9
 msgid "Banco de Imagens de Biologia Marinha"
@@ -413,8 +412,12 @@ msgid "Licença Creative Commons"
 msgstr "Creative Commons License"
 
 #: templates/base.html:139
-msgid "O conteúdo deste website está sob uma licença Creative Commons Atribuição-Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional"
-msgstr "The content of this website is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License"
+msgid ""
+"O conteúdo deste website está sob uma licença Creative Commons Atribuição-"
+"Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional"
+msgstr ""
+"The content of this website is licensed under a Creative Commons Attribution-"
+"NonCommercial-ShareAlike 3.0 Unported License"
 
 #: templates/base.html:142
 msgid "Apoio"
@@ -524,8 +527,13 @@ msgstr "Discover the marine biodiversity"
 #, python-format
 msgid ""
 "\n"
-"        O acervo é resultado de pesquisas científicas e atividades de ensino e extensão e tem como objetivo disponibilizar imagens sobre biologia marinha para curiosos, estudantes, educadores e comunidade acadêmica.\n"
-"        Cada imagem possui informações sobre a espécie em questão, local de coleta, estágio de vida, habitat, modo de vida e muitos outros que podem ser explorados pelos <a href=\"%(tags_url)s\">marcadores</a>. Saiba mais sobre o <strong>Cifonauta</strong> <a href=\"/sobre/\">aqui</a>.\n"
+"        O acervo é resultado de pesquisas científicas e atividades de ensino "
+"e extensão e tem como objetivo disponibilizar imagens sobre biologia marinha "
+"para curiosos, estudantes, educadores e comunidade acadêmica.\n"
+"        Cada imagem possui informações sobre a espécie em questão, local de "
+"coleta, estágio de vida, habitat, modo de vida e muitos outros que podem ser "
+"explorados pelos <a href=\"%(tags_url)s\">marcadores</a>. Saiba mais sobre o "
+"<strong>Cifonauta</strong> <a href=\"/sobre/\">aqui</a>.\n"
 "        "
 msgstr ""
 
@@ -568,8 +576,13 @@ msgid "Refine sua busca"
 msgstr "Refine your query"
 
 #: templates/mais.html:4
-msgid "Use os sinais [<span class=\"sign plus\">+</span>] e [<span class=\"sign minus\">−</span>] para refinar sua busca ou clique no nome para abrir a página do metadado."
-msgstr "Use [<span class=\"sign plus\">+</span>] and [<span class=\"sign minus\">−</span>] to refine your query or click on the name to open metadata's page."
+msgid ""
+"Use os sinais [<span class=\"sign plus\">+</span>] e [<span class=\"sign "
+"minus\">−</span>] para refinar sua busca ou clique no nome para abrir a "
+"página do metadado."
+msgstr ""
+"Use [<span class=\"sign plus\">+</span>] and [<span class=\"sign minus\">−</"
+"span>] to refine your query or click on the name to open metadata's page."
 
 #: templates/mais.html:7 templates/tags_page.html:6
 #: templates/tags_page.html.py:9
@@ -680,15 +693,36 @@ msgid "Nenhuma imagem encontrada."
 msgstr "No image found."
 
 #: templates/organizacao.html:8
-msgid "As fotos e vídeos carregados no site podem ser pesquisadas por meio das informações básicas (metadados), como espécie, local, autor, tamanho. Às imagens estão também associados marcadores (tags), termos que as qualificam de acordo com categorias como, técnica fotográfica, estágio de vida, habitat etc. Desse modo, é possível navegar pelas imagens usando os marcadores. Por exemplo, você pode querer procurar fotos de larvas de moluscos tiradas em microscopia confocal, ou apenas navegar pelos estágios adultos de organismos planctônicos. A categorização das imagens e a explicação de alguns dos marcadores utilizados encontra-se abaixo."
+msgid ""
+"As fotos e vídeos carregados no site podem ser pesquisadas por meio das "
+"informações básicas (metadados), como espécie, local, autor, tamanho. Às "
+"imagens estão também associados marcadores (tags), termos que as qualificam "
+"de acordo com categorias como, técnica fotográfica, estágio de vida, habitat "
+"etc. Desse modo, é possível navegar pelas imagens usando os marcadores. Por "
+"exemplo, você pode querer procurar fotos de larvas de moluscos tiradas em "
+"microscopia confocal, ou apenas navegar pelos estágios adultos de organismos "
+"planctônicos. A categorização das imagens e a explicação de alguns dos "
+"marcadores utilizados encontra-se abaixo."
 msgstr ""
 
 #: templates/organizacao.html:12
-msgid "A classificação biológica utilizada não adota nenhuma proposta em particular. Em grande parte, seguimos a classificação mais consensual ou tradicional, visando facilitar a visualização da hierarquia taxonômica e a navegação entre as imagens. Em alguns casos, empregamos a proposta de classificação seguida pelo especialista que identificou a espécie ilustrada."
+msgid ""
+"A classificação biológica utilizada não adota nenhuma proposta em "
+"particular. Em grande parte, seguimos a classificação mais consensual ou "
+"tradicional, visando facilitar a visualização da hierarquia taxonômica e a "
+"navegação entre as imagens. Em alguns casos, empregamos a proposta de "
+"classificação seguida pelo especialista que identificou a espécie ilustrada."
 msgstr ""
 
 #: templates/organizacao.html:16
-msgid "Para dar uma ideia das dimensões dos organismos das imagens, 5 classes de tamanho foram criadas arbitrariamente. A fauna bentônica recebeu uma classificação adicional de tamanho: macrofauna, meiofauna e microfauna (ver item Modo de Vida, abaixo). Fotos dos ambientes não contêm informações de tamanho, mas caso estejam ilustrando algum organismo (por exemplo, cracas no costão), podem vir acompanhadas da escala relativa a esse organismo. As classes de tamanho são:"
+msgid ""
+"Para dar uma ideia das dimensões dos organismos das imagens, 5 classes de "
+"tamanho foram criadas arbitrariamente. A fauna bentônica recebeu uma "
+"classificação adicional de tamanho: macrofauna, meiofauna e microfauna (ver "
+"item Modo de Vida, abaixo). Fotos dos ambientes não contêm informações de "
+"tamanho, mas caso estejam ilustrando algum organismo (por exemplo, cracas no "
+"costão), podem vir acompanhadas da escala relativa a esse organismo. As "
+"classes de tamanho são:"
 msgstr ""
 
 #: templates/organizacao.html:21 templates/organizacao.html.py:40
@@ -709,7 +743,13 @@ msgid "Técnicas fotográficas"
 msgstr "Photographic techniques"
 
 #: templates/organizacao.html:35
-msgid "As diferentes técnicas utilizadas para capturar as imagens do banco foram divididas em 4 categorias: <strong>submersa</strong>, <strong>macrofotografia</strong>, <strong>paisagem</strong> e <strong>microscopia</strong>. Para abarcar a variedade de técnicas de microscopia este último foi subdividido. Segue então a lista dos marcadores referentes às técnicas fotográficas:"
+msgid ""
+"As diferentes técnicas utilizadas para capturar as imagens do banco foram "
+"divididas em 4 categorias: <strong>submersa</strong>, "
+"<strong>macrofotografia</strong>, <strong>paisagem</strong> e "
+"<strong>microscopia</strong>. Para abarcar a variedade de técnicas de "
+"microscopia este último foi subdividido. Segue então a lista dos marcadores "
+"referentes às técnicas fotográficas:"
 msgstr ""
 
 #: templates/organizacao.html:39

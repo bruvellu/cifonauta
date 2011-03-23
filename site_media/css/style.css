@@ -449,6 +449,10 @@ ul.refine-active, ul.refine-inactive {
     padding-left:1em;
 }
 
+ul.refine-active li a.meta-active,
+ul.refine-inactive li a.meta-inactive {
+}
+
 .sign {
     font-size:1.4em;
     line-height:1em;

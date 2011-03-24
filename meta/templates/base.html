@@ -130,7 +130,7 @@
                         {% if fullpath == '/' %}class="selected"{% endif %}href="/">{% trans 'home' %}</a>
                     </li>
                     <li><a 
-                        {% if fullpath == '/sobre/' or '/conteudo/' or '/organizacao/' or '/creditos/' or '/detalhes/' or '/desenvolvimento/' or '/ideias/' or '/termos/' %}class="selected"{% endif %}href="/sobre/">{% trans 'sobre' %}</a>
+                        {% if fullpath == '/sobre/' or fullpath == '/conteudo/' or fullpath == '/organizacao/' or fullpath == '/creditos/' or fullpath == '/detalhes/' or fullpath == '/desenvolvimento/' or fullpath == '/ideias/' or fullpath == '/termos/' %}class="selected"{% endif %}href="/sobre/">{% trans 'sobre' %}</a>
                     </li>
                     <li><a 
                         {% if request.path == '/buscar/' %}class="selected"{% endif %}href="{% url meta.views.search_page %}">{% trans 'buscar' %}</a>

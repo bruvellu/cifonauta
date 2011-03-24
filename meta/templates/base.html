@@ -91,22 +91,55 @@
                 </form>
                 </div>
 
+                {% with request.get_full_path as fullpath %}
                 <ul class="menu" id="media">
-                    <li><a href="/buscar/?type=photo">{% trans 'fotos' %}</a></li>
-                    <li><a href="/buscar/?type=video">{% trans 'vídeos' %}</a></li>
-                    <li><a href="{% url meta.views.tours_page %}">{% trans 'tours' %}</a></li>
-                    <li><a href="{% url meta.views.taxa_page %}">{% trans 'táxons' %}</a></li>
-                    <li><a href="{% url meta.views.tags_page %}">{% trans 'marcadores' %}</a></li>
-                    <li><a href="{% url meta.views.places_page %}">{% trans 'localidades' %}</a></li>
-                    <li><a href="{% url meta.views.authors_page %}">{% trans 'autores' %}</a></li>
-                    <li><a href="{% url meta.views.refs_page %}">{% trans 'referências' %}</a></li>
+                    <li><a 
+                        {% if fullpath == '/buscar/?type=photo' %}class="selected"{% endif %}
+                        href="/buscar/?type=photo">{% trans 'fotos' %}</a>
+                    </li>
+                    <li><a 
+                        {% if fullpath == '/buscar/?type=video' %}class="selected"{% endif %}
+                        href="/buscar/?type=video">{% trans 'vídeos' %}</a>
+                    </li>
+                    <li><a 
+                        {% if fullpath == '/tours/' %}class="selected"{% endif %}
+                        href="{% url meta.views.tours_page %}">{% trans 'tours' %}</a>
+                    </li>
+                    <li><a 
+                        {% if fullpath == '/taxa/' %}class="selected"{% endif %}
+                        href="{% url meta.views.taxa_page %}">{% trans 'táxons' %}</a>
+                    </li>
+                    <li><a 
+                        {% if fullpath == '/tags/' %}class="selected"{% endif %}
+                        href="{% url meta.views.tags_page %}">{% trans 'marcadores' %}</a>
+                    </li>
+                    <li><a 
+                        {% if fullpath == '/locais/' %}class="selected"{% endif %}
+                        href="{% url meta.views.places_page %}">{% trans 'localidades' %}</a>
+                    </li>
+                    <li><a 
+                        {% if fullpath == '/autores/' %}class="selected"{% endif %}
+                        href="{% url meta.views.authors_page %}">{% trans 'autores' %}</a>
+                    </li>
+                    <li><a {% if fullpath == '/literatura/' %}class="selected"{% endif %}
+                        href="{% url meta.views.refs_page %}">{% trans 'referências' %}</a>
+                    </li>
                 </ul>
                 <ul class="menu" id="about">
-                    <li><a href="/">{% trans 'home' %}</a></li>
-                    <li><a href="/sobre/">{% trans 'sobre' %}</a></li>
-                    <li><a href="{% url meta.views.search_page %}">{% trans 'buscar' %}</a></li>
-                    <li><a href="/blog/">{% trans 'blog' %}</a></li>
+                    <li><a 
+                        {% if fullpath == '/' %}class="selected"{% endif %}href="/">{% trans 'home' %}</a>
+                    </li>
+                    <li><a 
+                        {% if fullpath == '/sobre/' or '/conteudo/' or '/organizacao/' or '/creditos/' or '/detalhes/' or '/desenvolvimento/' or '/ideias/' or '/termos/' %}class="selected"{% endif %}href="/sobre/">{% trans 'sobre' %}</a>
+                    </li>
+                    <li><a 
+                        {% if request.path == '/buscar/' %}class="selected"{% endif %}href="{% url meta.views.search_page %}">{% trans 'buscar' %}</a>
+                    </li>
+                    <li><a 
+                        {% if fullpath == '/blog/' %}class="selected"{% endif %}href="/blog/">{% trans 'blog' %}</a>
+                    </li>
                 </ul>
+                {% endwith %}
             </nav>
             <header class="main span-24 last" id="mainheader">
                 <hgroup class="main span-11">

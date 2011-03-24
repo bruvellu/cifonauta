@@ -8,65 +8,22 @@ Mostra todas as localidades em 4 colunas. Código bem objetivo, usando icount pa
 <section class="span-24 last">
 <header><h1>{% trans 'Localidades' %}</h1></header>
 
-    <div id="sublocations" class="span-6">
+    <div id="sublocations" class="span-5 metagroup">
         <h2>{% trans 'Locais' %}</h2>
-        <ul class="tags">
-        {% for subloc in sublocations %}
-            <li>
-            <div>
-                <div class="tag-item">
-                <a href="{{ subloc.get_absolute_url }}">{{ subloc.name }}</a>
-                </div>
-                <div class="tag-count quiet">{{ subloc|icount:'sublocation' }}</div>
-            </div>
-            </li>
-        {% endfor %}
-        </ul>
+        {% print_metalist sublocations 'sublocation' %}
     </div>
-    <div id="cities" class="span-6">
+    <div id="cities" class="span-5 metagroup">
         <h2>{% trans 'Cidades' %}</h2>
-        <ul class="tags">
-        {% for city in cities %}
-            <li>
-            <div>
-                <div class="tag-item">
-                <a href="{{ city.get_absolute_url }}">{{ city.name }}</a>
-                </div>
-                <div class="tag-count quiet">{{ city|icount:'city' }}</div>
-            </div>
-            </li>
-        {% endfor %}
-        </ul>
+        {% print_metalist cities 'city' %}
     </div>
-    <div id="states" class="span-6">
+    <div id="states" class="span-5 metagroup">
         <h2>{% trans 'Estados' %}</h2>
-        <ul class="tags">
-        {% for state in states %}
-            <li>
-            <div>
-                <div class="tag-item">
-                <a href="{{ state.get_absolute_url }}">{{ state.name }}</a>
-                </div>
-                <div class="tag-count quiet">{{ state|icount:'state' }}</div>
-            </div>
-            </li>
-        {% endfor %}
-        </ul>
+        <ul class="metalist">
+        {% print_metalist states 'state' %}
     </div>
-    <div id="countries" class="span-6 last">
+    <div id="countries" class="span-5 last metagroup">
         <h2>{% trans 'Países' %}</h2>
-        <ul class="tags">
-        {% for country in countries %}
-            <li>
-            <div>
-                <div class="tag-item">
-                <a href="{{ country.get_absolute_url }}">{{ country.name }}</a>
-                </div>
-                <div class="tag-count quiet">{{ country|icount:'country' }}</div>
-            </div>
-            </li>
-        {% endfor %}
-        </ul>
+        {% print_metalist countries 'country' %}
     </div>
 </section>
 {% endblock %}

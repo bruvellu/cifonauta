@@ -10,32 +10,18 @@ Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o re
 
     {% regroup tags by parent as tag_groups %}
 
-    <div class="span-5 tag-group">
+    <div class="span-5 metagroup">
         <h2>{% trans 'Tamanhos' %}</h2>
-        <ul class="taglist">
-            {% for size in sizes %}
-            <li class="tag-item {% cycle 'darkrow' 'lightrow' %}">
-                <a href="{{ size.get_absolute_url }}" title="{{ size.description }}">{{ size.name }}</a>
-                <span class="tag-count quiet">{{ size|icount:'size' }}</span>
-            </li>
-            {% endfor %}
-        </ul>
+        {% print_metalist sizes 'size' %}
     </div>
 
     {% for item in tag_groups %}
-    <div class="span-{% cycle '5' '5' '5 last' '5' %} tag-group">
+    <div class="span-{% cycle '5' '5' '5 last' '5' %} metagroup">
         <h2>{{ item.grouper }}</h2>
         {% if item.grouper.description %}
             <p class="quiet">{{ item.grouper.description }}</p>
         {% endif %}
-        <ul class="taglist">
-            {% for tag in item.list %}
-            <li class="tag-item {% cycle 'darkrow' 'lightrow' %}">
-                <a href="{{ tag.get_absolute_url }}" title="{{ tag.description }}">{{ tag.name }}</a>
-                <span class="tag-count quiet">{{ tag|icount:'tag' }}</span>
-            </li>
-            {% endfor %}
-        </ul>
+        {% print_metalist item.list 'tag' %}
     </div>
     {% endfor %}
 

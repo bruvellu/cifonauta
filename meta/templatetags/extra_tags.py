@@ -20,6 +20,11 @@ def show_spp():
     spp = Taxon.objects.filter(rank=u'Espécie').order_by('name')
     return {'spp': spp}
 
+@register.inclusion_tag('metalist.html')
+def print_metalist(metalist, field):
+    '''Mostra lista de metadados com contador de imagens.'''
+    return {'metalist': metalist, 'field': field}
+
 @register.inclusion_tag('taxon_paths.html')
 def taxon_paths(taxon):
     '''Mostra classificação de um táxon de forma linear.'''
@@ -330,7 +335,6 @@ def paged_url(query_string, page_number):
     else:
     	url = url + 'page=%d' % page_number
     return url
-
 
 @register.simple_tag
 def build_url(meta, field, queries, remove=False):

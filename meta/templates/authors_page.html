@@ -5,36 +5,16 @@
 <section class="span-24 last">
 <header><h1>{% trans 'Autores e especialistas' %}</h1></header>
 
-    <div id="authors" class="span-12">
+    <div id="authors" class="span-11 metagroup">
         <h2>{% trans 'Autores' %}</h2>
-        <ul class="tags">
-            {% for author in authors %}
-            <li>
-            <div>
-                <div class="tag-item">
-                    <a href="{{ author.get_absolute_url }}">{{ author }}</a>
-                </div>
-                <div class="tag-count quiet">{{ author|icount:'author'}}</div>
-            </div>
-            </li>
-            {% endfor %}
-        </ul>
+        <p class="quiet">{% trans 'Pessoa que capturou a imagem.' %}</p>
+        {% print_metalist authors 'author' %}
     </div>
 
-    <div id="sources" class="span-12 last">
+    <div id="sources" class="span-11 last metagroup">
         <h2>{% trans 'Especialistas' %}</h2>
-        <ul class="tags">
-            {% for source in sources %}
-            <li>
-            <div>
-                <div class="tag-item">
-                    <a href="{{ source.get_absolute_url }}">{{ source }}</a>
-                </div>
-                <div class="tag-count quiet">{{ source|icount:'source'}}</div>
-            </div>
-            </li>
-            {% endfor %}
-        </ul>
+        <p class="quiet">{% trans 'Pessoa que coletou ou identificou o organismo.' %}</p>
+        {% print_metalist sources 'source' %}
     </div>
 </section>
 {% endblock %}

@@ -12,13 +12,14 @@
 
     {% if not images.object_list or not videos.object_list %}
     <div class="notice">
-        {% if not images.object_list %}
-        {% trans 'Nenhuma foto' %}
-        {% endif %}
         {% if not videos.object_list and not images.object_list %}
-        {% trans 'e nenhum vídeo' %}
+            {% trans 'Nenhuma foto e nenhum vídeo' %}
         {% else %}
-        {% trans 'Nenhum vídeo' %}
+            {% if not images.object_list %}
+                {% trans 'Nenhuma foto' %}
+            {% else %}
+                {% trans 'Nenhum vídeo' %}
+            {% endif %}
         {% endif %}
     </div>
     {% endif %}

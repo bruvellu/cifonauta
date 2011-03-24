@@ -56,7 +56,8 @@ class DisplayForm(forms.Form):
 
     Pode ser alterado por qual metadado as imagens serão ordenadas, se esta ordem será ascendente ou descendente, o número de resultados por página e se é para mostrar apenas os destaques.
     '''
-    n = forms.ChoiceField(choices=ITEMS, label=_('Ítens por página'))
+    # FIXME Incluir caracteres especiais quebra a tradução!
+    n = forms.ChoiceField(choices=ITEMS, label=_('Exibir'))
     orderby = forms.ChoiceField(choices=ORDER_BY, label=_('Ordenar por'))
     order = forms.ChoiceField(choices=ORDER, label=_('Ordem'))
     highlight = forms.BooleanField(required=False, initial=False, label=_('Somente destaques'))

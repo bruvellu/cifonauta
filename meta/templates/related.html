@@ -69,8 +69,8 @@
 </div>
 {% endif %}
 <div class="span-13 last quiet" id="total">
-    {% with relative.behind|add:relative.ahead|add:1 as n %}
-    {{ n }} {% if current.datatype == 'photo' %}{% blocktrans count n as counter %}imagem{% plural %}imagens{% endblocktrans %}{% else %}{% if current.datatype == 'video' %}{% blocktrans count n as counter %}vídeo{% plural %}vídeos{% endblocktrans %}{% endif %}{% endif %}
+    {% with relative.behind|add:relative.ahead|add:1 as number %}
+    {{ number }} {% if current.datatype == 'photo' %}{% blocktrans count number as counter %}imagem{% plural %}imagens{% endblocktrans %}{% else %}{% if current.datatype == 'video' %}{% blocktrans count number as counter %}vídeo{% plural %}vídeos{% endblocktrans %}{% endif %}{% endif %}
     {% endwith %}
 </div>
 {% endif %}

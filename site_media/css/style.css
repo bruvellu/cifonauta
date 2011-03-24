@@ -286,17 +286,16 @@ figure.photo {
     -moz-border-radius: 10px 0 0;
     -webkit-border-radius: 10px 0 0;
     border-radius: 10px 0 0;
-    min-height:277px;
+    min-height:288px;
 }
 
 figure.video {
     background: #ffffff;
     padding: 10px;
-    text-align: center;
     -moz-border-radius: 10px 0 0;
     -webkit-border-radius: 10px 0 0;
     border-radius: 10px 0 0;
-    min-height:277px;
+    min-height:288px;
 }
 
 footer.pagination {
@@ -686,7 +685,7 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
     position:absolute;
     text-align:center;
     color:#ffffff;
-    font-size:2em;
+    font-size:1.8em;
     width:88px;
     text-shadow: 2px 2px 5px #000;
     filter: dropshadow(color=#000000, offx=2, offy=2);
@@ -697,7 +696,7 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
     position:absolute;
     text-align:center;
     color:#ffffff;
-    font-size:2em;
+    font-size:1.8em;
     width:88px;
     text-shadow: 2px 2px 5px #000;
     filter: dropshadow(color=#000000, offx=2, offy=2);

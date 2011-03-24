@@ -10,37 +10,31 @@ Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o re
 
     {% regroup tags by parent as tag_groups %}
 
-    <div class="span-6">
+    <div class="span-5 tag-group">
         <h2>{% trans 'Tamanhos' %}</h2>
-        <ul class="tags">
+        <ul class="taglist">
             {% for size in sizes %}
-            <li>
-            <!-- div container para evitar bug no chrome -->
-            <div>
-                <div class="tag-item">
-                    <a href="{{ size.get_absolute_url }}">{{ size.name }}</a>
-                </div>
-                <div class="tag-count quiet">{{ size|icount:'size' }}</div>
-            </div>
+            <li class="tag-item {% cycle 'darkrow' 'lightrow' %}">
+                <a href="{{ size.get_absolute_url }}" title="{{ size.description }}">{{ size.name }}</a>
+                <span class="tag-count quiet">{{ size|icount:'size' }}</span>
             </li>
             {% endfor %}
         </ul>
     </div>
 
     {% for item in tag_groups %}
-    <div class="span-{% cycle '6' '6' '6 last' '6' %}">
+    <div class="span-{% cycle '5' '5' '5 last' '5' %} tag-group">
         <h2>{{ item.grouper }}</h2>
-        <ul class="tags">
-        {% for tag in item.list %}
-            <li>
-            <div>
-                <div class="tag-item">
-                    <a href="{{ tag.get_absolute_url }}">{{ tag.name }}</a>
-                </div>
-                <div class="tag-count quiet">{{ tag|icount:'tag' }}</div>
-            </div>
+        {% if item.grouper.description %}
+            <p class="quiet">{{ item.grouper.description }}</p>
+        {% endif %}
+        <ul class="taglist">
+            {% for tag in item.list %}
+            <li class="tag-item {% cycle 'darkrow' 'lightrow' %}">
+                <a href="{{ tag.get_absolute_url }}" title="{{ tag.description }}">{{ tag.name }}</a>
+                <span class="tag-count quiet">{{ tag|icount:'tag' }}</span>
             </li>
-        {% endfor %}
+            {% endfor %}
         </ul>
     </div>
     {% endfor %}

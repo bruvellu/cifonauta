@@ -31,10 +31,10 @@
 </div>
 <h1>{{ tour.name }}</h1>
 </header>
-<div class="span-16" id="tour-description">
+<div class="span-15" id="tour-description">
     {{ tour.description|markdown }}
 </div>
-<div class="span-7 prepend-1 last">
+<div class="span-8 last metagroup">
     <h2>{% trans 'Ficha Técnica' %}</h2>
     <ul class="padlist">
         <li>
@@ -42,9 +42,6 @@
         </li>
         <li>
         <strong>{% trans 'Data de criação' %}:</strong> {{ tour.pub_date }}
-        </li>
-        <li>
-        <strong>{% trans 'Número de visitas' %}:</strong> {{ tour.view_count }}
         </li>
         <li>
         <strong>{% trans 'Última modificação' %}:</strong> {{ tour.timestamp }}
@@ -55,6 +52,10 @@
         <li>
         <strong>{% trans 'Marcadores presentes' %}:</strong> {% show_set tags '' '' ', ' 'link' %}
         </li>
+        <li>
+        <strong>{% trans 'Número de visitas' %}:</strong> {{ tour.view_count }}
+        </li>
+    </ul>
 </div>
 
 <div class="span-24 last" id="slides">

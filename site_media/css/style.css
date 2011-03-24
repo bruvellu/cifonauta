@@ -457,8 +457,9 @@ article.post {
 }
 
 ul.padlist {
-    margin:0 1em 1.5em 0;
-    padding-left:17px;
+    margin:0 0 1em 0;
+    padding-left:0px;
+    list-style: none;
 }
 
 ul.biodb {
@@ -669,8 +670,16 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
 #references {
 }
 
+.upper {
+    text-transform:uppercase;
+}
 .tour {
     margin-bottom:1em;
+    padding:1em 0 !important;
+}
+
+.tour .thumbs-org {
+    margin-left:1em;
 }
 
 .citation {

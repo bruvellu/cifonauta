@@ -6,16 +6,30 @@
 <header><h1>{% trans 'Tours' %}</h1></header>
 {% for tour in tours %}
 {% if tour.is_public %}
-<div class="span-24 last tour">
+<div class="span-24 last tour metagroup">
     <div class="span-4">
         {% print_thumb 'tour' tour %}
     </div>
-    <div class="span-20 last">
+    <div class="span-13">
         <h2>{{ tour.name }}</h2>
         <p>
-        {{ tour.description|truncatewords:44 }}
+        {{ tour.description|truncatewords:30 }}
+        <a href="{{ tour.get_absolute_url }}"><strong>{% trans 'Clique aqui para continuar lendo e iniciar o tour' %}</strong></a>.
         </p>
-        <strong><a href="{{ tour.get_absolute_url }}">{% trans 'Clique aqui para iniciar o tour' %}</a></strong>.
+    </div>
+    <div class="span-6 last">
+        <h3>{% trans 'Ficha Técnica' %}</h3>
+        <p class="upper">{{ tour.images.all|length }} {% trans 'imagens' %}, {{ tour.view_count }} {% trans 'visitas' %}</p>
+        <ul class="padlist">
+            <li>
+            <strong>{% trans 'Criação' %}:</strong> {{ tour.pub_date }}
+            </li>
+            <li>
+            <strong>{% trans 'Modificado' %}:</strong> {{ tour.timestamp }}
+            </li>
+            <li>
+            </li>
+        </ul>
     </div>
 </div>
 {% endif %}

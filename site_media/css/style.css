@@ -628,6 +628,7 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
 }
 
 #breadcrumbs {
+    margin:0 0 1em 0;
 }
 
 #related {
@@ -639,7 +640,6 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
 }
 
 #references {
-    margin:0 0 1em 0;
 }
 
 .tour {
@@ -743,7 +743,7 @@ ul.thumbs li.size-100-mm, .size-100-mm {
 }
 
 div#comments {
-    padding:1em 0;
+    margin:0 0 1em 0;
 }
 
 ul#comment-list {

@@ -162,10 +162,10 @@ $(document).ready(function(){
 
         {% if media.taxon_set.all %}
         {% for taxon in media.taxon_set.all %}
-        <footer class="span-16 last quiet" id="breadcrumbs">
+        <div class="span-16 last quiet" id="breadcrumbs">
             <h2>{% trans 'Classificação' %}</h2>
             {% taxon_paths taxon %}
-        </footer>
+        </div>
         {% endfor %}
         {% endif %}
 

@@ -722,19 +722,19 @@ ul.rel-thumbs img {
 }
 
 ul.thumbs li.size-01-mm, .size-01-mm {
-    background: #fbb4ae !important;
+    background: #94B1CA !important;
 }
 ul.thumbs li.size-01-10-mm, .size-01-10-mm {
-    background: #b3cde3 !important;
+    background: #BACC70 !important;
 }
 ul.thumbs li.size-10-10-mm, .size-10-10-mm {
-    background: #ccebc5 !important;
+    background: #FFE866 !important;
 }
 ul.thumbs li.size-10-100-mm, .size-10-100-mm {
-    background: #decbe4 !important;
+    background: #FFB566 !important;
 }
 ul.thumbs li.size-100-mm, .size-100-mm {
-    background: #fed9a6 !important;
+    background: #B25959 !important;
 }
 
 #comment-box {

@@ -9,6 +9,7 @@ from django.template.defaultfilters import slugify, striptags
 from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 from base64 import encodestring
+from datatrans.utils import register
 import mimetypes
 import re
 import urllib
@@ -401,3 +402,8 @@ class Attachment(models.Model):
 
         return content_type
 
+
+
+class ArticleTranslation(object):
+    fields = ('title', 'rendered_content',)
+register(Article, ArticleTranslation)

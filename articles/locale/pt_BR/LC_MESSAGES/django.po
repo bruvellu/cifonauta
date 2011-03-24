@@ -2,19 +2,21 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-06 19:33-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-03-24 16:24-0300\n"
+"PO-Revision-Date: 2011-03-24 16:26\n"
+"Last-Translator: <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+"X-Translated-Using: django-rosetta 0.5.6\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: admin.py:55
@@ -34,92 +36,85 @@ msgstr "Mude o status dos selecionados para \"%s\""
 msgid "Words that describe this article"
 msgstr "Palavras que descrevam este artigo"
 
-#: models.py:23
+#: models.py:24
 msgid "HTML/Plain Text"
 msgstr ""
 
-#: models.py:24
+#: models.py:25
 msgid "Markdown"
 msgstr ""
 
-#: models.py:25
+#: models.py:26
 msgid "ReStructured Text"
 msgstr ""
 
-#: models.py:26
+#: models.py:27
 msgid "Textile"
 msgstr ""
 
-#: models.py:105
+#: models.py:106
 msgid "Article statuses"
 msgstr "Status dos artigos"
 
-#: models.py:138
+#: models.py:139
 msgid ""
 "Select the type of markup you are using in this article.\n"
 "<ul>\n"
-"<li><a href=\"http://daringfireball.net/projects/markdown/basics\" target="
-"\"_blank\">Markdown Guide</a></li>\n"
-"<li><a href=\"http://docutils.sourceforge.net/docs/user/rst/quickref.html\" "
-"target=\"_blank\">ReStructured Text Guide</a></li>\n"
-"<li><a href=\"http://thresholdstate.com/articles/4312/the-textile-reference-"
-"manual\" target=\"_blank\">Textile Guide</a></li>\n"
+"<li><a href=\"http://daringfireball.net/projects/markdown/basics\" target=\"_blank\">Markdown Guide</a></li>\n"
+"<li><a href=\"http://docutils.sourceforge.net/docs/user/rst/quickref.html\" target=\"_blank\">ReStructured Text Guide</a></li>\n"
+"<li><a href=\"http://thresholdstate.com/articles/4312/the-textile-reference-manual\" target=\"_blank\">Textile Guide</a></li>\n"
 "</ul>"
 msgstr ""
 
-#: models.py:152
+#: models.py:153
 msgid "If omitted, the keywords will be the same as the article tags."
 msgstr ""
 
-#: models.py:153
-msgid ""
-"If omitted, the description will be determined by the first bit of the "
-"article's content."
+#: models.py:154
+msgid "If omitted, the description will be determined by the first bit of the article's content."
 msgstr ""
 
-#: models.py:159
+#: models.py:160
 msgid "Tags that describe this article"
 msgstr "Marcadores que descrevam este artigo"
 
-#: models.py:160
+#: models.py:161
 msgid "Select any other articles that this article follows up on."
 msgstr ""
 
-#: models.py:163
+#: models.py:164
 msgid "The date and time this article shall appear online."
 msgstr ""
 
-#: models.py:164
+#: models.py:165
 msgid "Leave blank if the article does not expire."
 msgstr ""
 
-#: models.py:167
+#: models.py:168
 msgid "Enable this if users must login before they can read this article."
 msgstr ""
 
-#: models.py:169
+#: models.py:170
 msgid "Show AddThis button"
 msgstr ""
 
-#: models.py:169
+#: models.py:170
 msgid "Check this to show an AddThis bookmark button when viewing an article."
 msgstr ""
 
-#: models.py:170
+#: models.py:171
 msgid "Use article author's username"
 msgstr ""
 
-#: models.py:170
-msgid ""
-"Check this if you want to use the article author's username for the AddThis "
-"button.  Respected only if the username field is left empty."
+#: models.py:171
+msgid "Check this if you want to use the article author's username for the AddThis button.  Respected only if the username field is left empty."
 msgstr ""
 
-#: models.py:171
+#: models.py:172
 msgid "AddThis Username"
 msgstr ""
 
-#: models.py:171
+#: models.py:172
 msgid "The AddThis username to use for the button."
 msgstr ""
 
@@ -150,8 +145,16 @@ msgstr "por"
 msgid "View articles posted by"
 msgstr "Veja notícias publicadas por"
 
+#: templates/articles/_article_content.html:10
+msgid "Attachments"
+msgstr "Anexos"
+
+#: templates/articles/_article_content.html:14
+msgid "Size"
+msgstr "Tamanho"
+
 #: templates/articles/_articles.html:3 templates/articles/_related.html:17
-#: templates/articles/base.html:42
+#: templates/articles/base.html:43 templates/articles/base.html.py:47
 msgid "Read this article"
 msgstr "Leia esta notícia"
 
@@ -163,15 +166,23 @@ msgstr "Continue lendo"
 msgid "read more"
 msgstr "leia mais"
 
+#: templates/articles/_comments.html:5
+msgid "Show comments"
+msgstr "Mostrar comentários"
+
+#: templates/articles/_comments.html:6
+msgid "Hide comments"
+msgstr "Esconder comentários"
+
 #: templates/articles/_meta.html:4
 msgid "Tags"
 msgstr "Marcadores"
 
-#: templates/articles/_meta.html:15
+#: templates/articles/_meta.html:13
 msgid "Previous"
 msgstr "Anterior"
 
-#: templates/articles/_meta.html:23
+#: templates/articles/_meta.html:21
 msgid "Next"
 msgstr "Próximo"
 
@@ -215,21 +226,25 @@ msgstr "Notícias"
 msgid "page"
 msgstr "página"
 
+#: templates/articles/base.html:6
+msgid "Latest Blog Articles RSS Feed"
+msgstr "RSS Feed dos Últimos Artigos"
+
 #: templates/articles/base.html:38
 msgid "Recent Articles"
 msgstr "Notícias Recentes"
 
-#: templates/articles/base.html:48
-msgid "Tag Cloud"
-msgstr "Nuvem de Marcadores"
-
-#: templates/articles/base.html:53
+#: templates/articles/base.html:52
 msgid "Article Archives"
 msgstr "Arquivos"
 
-#: templates/articles/base.html:61
+#: templates/articles/base.html:60
 msgid "View articles posted in this month"
 msgstr "Veja notícias publicadas neste mês"
+
+#: templates/articles/base.html:71
+msgid "Tag Cloud"
+msgstr "Nuvem de Marcadores"
 
 #: templates/articles/by_author.html:4
 msgid "Articles By Author"
@@ -261,9 +276,6 @@ msgstr "Notícias não-categorizadas"
 
 #~ msgid "Read other articles by this author"
 #~ msgstr "Leia outras notícias por este autor"
-
-#~ msgid "Comments"
-#~ msgstr "Comentários"
 
 #~ msgid "Word Count"
 #~ msgstr "N° de Palavras"

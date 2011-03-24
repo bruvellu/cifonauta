@@ -3,7 +3,7 @@
 
 {% block extra-head %}
     {{ block.super }}
-    <link rel="alternate" type="application/rss+xml" title="Latest Blog Articles RSS Feed" href="{% url articles_feed 'latest' %}" />
+    <link rel="alternate" type="application/rss+xml" title="{% trans 'Latest Blog Articles RSS Feed' %}" href="{% url articles_feed 'latest' %}" />
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@
     {% block articles-content %}{% endblock %}
 
     {% if paginator and page_obj %}
-        {% ifnotequal paginator.page_range|length 1 %}
+        {% if paginator.page_range|length != 1 %}
             {% for p in paginator.page_range %}
                 {% if forloop.first %}<ul class="pagination-pages">
                 {% if page_obj.has_previous %}
@@ -19,7 +19,7 @@
                     <li><a href="{% get_page_url page_obj.previous_page_number %}">&lsaquo;</a></li>
                 {% endif %}
                 {% endif %}
-                    <li><a href="{% get_page_url p %}"{% ifequal p page_obj.number %} class="current-page"{% endifequal %}>{{ p }}</a></li>
+                    <li><a href="{% get_page_url p %}"{% if p == page_obj.number %} class="current-page"{% endif %}>{{ p }}</a></li>
                 {% if forloop.last %}
                 {% if page_obj.has_next %}
                     <li><a href="{% get_page_url page_obj.next_page_number %}">&rsaquo;</a></li>
@@ -27,7 +27,7 @@
                 {% endif %}
                 </ul>{% endif %}
             {% endfor %}
-        {% endifnotequal %}
+        {% endif %}
     {% endif %}
     </section>
 {% endblock %}
@@ -43,6 +43,8 @@
             <li><a href="{{ article.get_absolute_url }}" title="{% trans 'Read this article' %}">{{ article.title }}</a></li>
         {% if forloop.last %}</ul>{% endif %}
         {% endfor %}
+        {% else %}
+        <a href="{{ recent.get_absolute_url }}" title="{% trans 'Read this article' %}">{{ recent.title }}</a>
         {% endif %}
     </div>
 

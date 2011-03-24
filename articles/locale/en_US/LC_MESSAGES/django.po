@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-articles dev\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-06 19:33-0300\n"
+"POT-Creation-Date: 2011-03-24 16:24-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Josh VanderLinden <codekoala@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,27 +34,27 @@ msgstr ""
 msgid "Words that describe this article"
 msgstr ""
 
-#: models.py:23
+#: models.py:24
 msgid "HTML/Plain Text"
 msgstr ""
 
-#: models.py:24
+#: models.py:25
 msgid "Markdown"
 msgstr ""
 
-#: models.py:25
+#: models.py:26
 msgid "ReStructured Text"
 msgstr ""
 
-#: models.py:26
+#: models.py:27
 msgid "Textile"
 msgstr ""
 
-#: models.py:105
+#: models.py:106
 msgid "Article statuses"
 msgstr ""
 
-#: models.py:138
+#: models.py:139
 msgid ""
 "Select the type of markup you are using in this article.\n"
 "<ul>\n"
@@ -66,59 +67,59 @@ msgid ""
 "</ul>"
 msgstr ""
 
-#: models.py:152
+#: models.py:153
 msgid "If omitted, the keywords will be the same as the article tags."
 msgstr ""
 
-#: models.py:153
+#: models.py:154
 msgid ""
 "If omitted, the description will be determined by the first bit of the "
 "article's content."
 msgstr ""
 
-#: models.py:159
+#: models.py:160
 msgid "Tags that describe this article"
 msgstr ""
 
-#: models.py:160
+#: models.py:161
 msgid "Select any other articles that this article follows up on."
 msgstr ""
 
-#: models.py:163
+#: models.py:164
 msgid "The date and time this article shall appear online."
 msgstr ""
 
-#: models.py:164
+#: models.py:165
 msgid "Leave blank if the article does not expire."
 msgstr ""
 
-#: models.py:167
+#: models.py:168
 msgid "Enable this if users must login before they can read this article."
 msgstr ""
 
-#: models.py:169
+#: models.py:170
 msgid "Show AddThis button"
 msgstr ""
 
-#: models.py:169
+#: models.py:170
 msgid "Check this to show an AddThis bookmark button when viewing an article."
 msgstr ""
 
-#: models.py:170
+#: models.py:171
 msgid "Use article author's username"
 msgstr ""
 
-#: models.py:170
+#: models.py:171
 msgid ""
 "Check this if you want to use the article author's username for the AddThis "
 "button.  Respected only if the username field is left empty."
 msgstr ""
 
-#: models.py:171
+#: models.py:172
 msgid "AddThis Username"
 msgstr ""
 
-#: models.py:171
+#: models.py:172
 msgid "The AddThis username to use for the button."
 msgstr ""
 
@@ -149,8 +150,16 @@ msgstr ""
 msgid "View articles posted by"
 msgstr ""
 
+#: templates/articles/_article_content.html:10
+msgid "Attachments"
+msgstr ""
+
+#: templates/articles/_article_content.html:14
+msgid "Size"
+msgstr ""
+
 #: templates/articles/_articles.html:3 templates/articles/_related.html:17
-#: templates/articles/base.html:42
+#: templates/articles/base.html:43 templates/articles/base.html.py:47
 msgid "Read this article"
 msgstr ""
 
@@ -162,15 +171,23 @@ msgstr ""
 msgid "read more"
 msgstr ""
 
+#: templates/articles/_comments.html:5
+msgid "Show comments"
+msgstr ""
+
+#: templates/articles/_comments.html:6
+msgid "Hide comments"
+msgstr ""
+
 #: templates/articles/_meta.html:4
 msgid "Tags"
 msgstr ""
 
-#: templates/articles/_meta.html:15
+#: templates/articles/_meta.html:13
 msgid "Previous"
 msgstr ""
 
-#: templates/articles/_meta.html:23
+#: templates/articles/_meta.html:21
 msgid "Next"
 msgstr ""
 
@@ -214,20 +231,24 @@ msgstr ""
 msgid "page"
 msgstr ""
 
+#: templates/articles/base.html:6
+msgid "Latest Blog Articles RSS Feed"
+msgstr ""
+
 #: templates/articles/base.html:38
 msgid "Recent Articles"
 msgstr ""
 
-#: templates/articles/base.html:48
-msgid "Tag Cloud"
-msgstr ""
-
-#: templates/articles/base.html:53
+#: templates/articles/base.html:52
 msgid "Article Archives"
 msgstr ""
 
-#: templates/articles/base.html:61
+#: templates/articles/base.html:60
 msgid "View articles posted in this month"
+msgstr ""
+
+#: templates/articles/base.html:71
+msgid "Tag Cloud"
 msgstr ""
 
 #: templates/articles/by_author.html:4

@@ -1,9 +1,9 @@
-{% load comments %}
+{% load i18n comments %}
 {% get_comment_list for article as article_comments %}
 <div id="comments" class="span-16 last">
     {% get_comment_count for article as comment_count %}
-    <div class="show-comment">Mostrar comentários ({{ comment_count }})</div>
-    <div class="hide-comment">Esconder comentários ({{ comment_count }})</div>
+    <div class="show-comment"><h2>{% trans 'Show comments' %} ({{ comment_count }})</h2></div>
+    <div class="hide-comment"><h2>{% trans 'Hide comments' %} ({{ comment_count }})</h2></div>
     <div id="comment-box">
         {% if article_comments %}
             <ul id="comment-list">

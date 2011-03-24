@@ -8,8 +8,6 @@
 </footer>
 {% endif %}
 
-<hr>
-
 {% if article.get_previous_article %}
 <div class="span-8">
     <strong>{% trans 'Previous' %}</strong>: <a href="{{ article.get_previous_article.get_absolute_url }}">{{ article.get_previous_article.title }}</a>

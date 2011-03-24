@@ -424,6 +424,9 @@ article.post footer#comment-count, article.post footer#article-tags {
     margin-top:1em;
 }
 
+article.post h1 {
+    padding:0;
+}
 article.post {
     margin:1em 0;
     padding:0;

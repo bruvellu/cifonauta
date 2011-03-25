@@ -1056,7 +1056,19 @@ def main(argv):
                 cbm.update_db(media, update=True)
                 n_up += 1
     n = len(filepaths)
-    
+
+    # Força salvar todas as imagens para atualizar o TSV com traduções novas.
+    print u'\nATUALIZANDO TSV (pode demorar)'
+    images = Image.objects.all()
+    videos = Video.objects.all()
+    print u'das imagens...'
+    for image in images:
+    	image.save()
+    print u'dos vídeos...'
+    for video in videos:
+    	video.save()
+    print u'Feito! TSV atualizado.'
+
     # Deletando arquivo log se ele estiver vazio
     if log.read(1024) == '':
         log.close()

@@ -92,6 +92,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 # Required for Debug Toolbar
 INTERNAL_IPS = ('127.0.0.1',)
 
+DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS': False,
+    }
+
 ROOT_URLCONF = 'weblarvae.urls'
 
 TEMPLATE_DIRS = (

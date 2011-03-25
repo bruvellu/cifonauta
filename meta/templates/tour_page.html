@@ -31,32 +31,6 @@
 </div>
 <h1>{{ tour.name }}</h1>
 </header>
-<div class="span-15" id="tour-description">
-    {{ tour.description|markdown }}
-</div>
-<div class="span-8 last metagroup">
-    <h2>{% trans 'Ficha Técnica' %}</h2>
-    <ul class="padlist">
-        <li>
-        <strong>{% trans 'Número de imagens' %}:</strong> {{ tour.images.all|length }}
-        </li>
-        <li>
-        <strong>{% trans 'Data de criação' %}:</strong> {{ tour.pub_date }}
-        </li>
-        <li>
-        <strong>{% trans 'Última modificação' %}:</strong> {{ tour.timestamp }}
-        </li>
-        <li>
-        <strong>{% trans 'Táxons representados' %}:</strong> {% show_set taxa '' '' ', ' 'link' %}
-        </li>
-        <li>
-        <strong>{% trans 'Marcadores presentes' %}:</strong> {% show_set tags '' '' ', ' 'link' %}
-        </li>
-        <li>
-        <strong>{% trans 'Número de visitas' %}:</strong> {{ tour.view_count }}
-        </li>
-    </ul>
-</div>
 
 <div class="span-24 last" id="slides">
     <div class="span-1">
@@ -130,6 +104,33 @@
     </div>
 </div>
 
+<div class="span-15" id="tour-description">
+    <h2>{{ tour.name }}</h2>
+    {{ tour.description|markdown }}
+</div>
+<div class="span-8 last metagroup">
+    <h2>{% trans 'Ficha Técnica' %}</h2>
+    <ul class="padlist">
+        <li>
+        <strong>{% trans 'Número de imagens' %}:</strong> {{ tour.images.all|length }}
+        </li>
+        <li>
+        <strong>{% trans 'Data de criação' %}:</strong> {{ tour.pub_date }}
+        </li>
+        <li>
+        <strong>{% trans 'Última modificação' %}:</strong> {{ tour.timestamp }}
+        </li>
+        <li>
+        <strong>{% trans 'Táxons representados' %}:</strong> {% show_set taxa '' '' ', ' 'link' %}
+        </li>
+        <li>
+        <strong>{% trans 'Marcadores presentes' %}:</strong> {% show_set tags '' '' ', ' 'link' %}
+        </li>
+        <li>
+        <strong>{% trans 'Número de visitas' %}:</strong> {{ tour.view_count }}
+        </li>
+    </ul>
+</div>
 </article>
 {% if references %}
 <div class="span-24 last">

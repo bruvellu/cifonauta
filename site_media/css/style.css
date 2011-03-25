@@ -243,8 +243,13 @@ div.main {
     text-align:justify;
 }
 
+div#photos, div#videos, div#tours {
+}
+
 .main #photos p, #videos p, #tours p {
-    font-size:1.2em;
+    font-size:1.1em;
+    width:300px;
+    text-align:justify;
 }
 
 #showall {

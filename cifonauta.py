@@ -931,13 +931,16 @@ def usage():
     print '  -p, --only-photos'
     print '\tAtualiza apenas arquivos de fotos.'
     print
+    print '  -t, --no-tsv'
+    print '\tNão força atualização do TSV.'
+    print
     print '  -r, --no-rename'
     print '\tNão executa a função de renomear arquivos.'
     print
     print 'Exemplo:'
     print '  python cifonauta.py -fp -n 15'
     print '\tFaz a atualização forçada dos primeiros 15 fotos que o programa'
-    print '\tencontrar na pasta padrão (source_media; ver código).'
+    print '\tencontrar na pasta padrão e atualiza TSV de todas as imagens.'
     print
 
 def main(argv):
@@ -956,15 +959,17 @@ def main(argv):
     single_img = False
     only_videos = False
     only_photos = False
+    update_tsv = True
 
     # Verifica se argumentos foram passados com a execução do programa
     try:
-        opts, args = getopt.getopt(argv, 'hfrvpn:', [
+        opts, args = getopt.getopt(argv, 'hfrvptn:', [
             'help',
             'force-update',
             'no-rename',
             'only-videos',
             'only-photos',
+            'no-tsv',
             'n='])
     except getopt.GetoptError:
         print 'Algo de errado nos argumentos...'
@@ -986,7 +991,9 @@ def main(argv):
             only_videos = True
         elif opt in ('-p', '--only-photos'):
             only_photos = True
-    
+        elif opt in ('-t', '--no-tsv'):
+            update_tsv = False
+
     # Imprime resumo do que o programa vai fazer
     if force_update is True:
         print u'\n%d arquivos serão atualizadas de forma forçada.' % n_max
@@ -1058,16 +1065,17 @@ def main(argv):
     n = len(filepaths)
 
     # Força salvar todas as imagens para atualizar o TSV com traduções novas.
-    print u'\nATUALIZANDO TSV (pode demorar)'
-    images = Image.objects.all()
-    videos = Video.objects.all()
-    print u'das imagens...'
-    for image in images:
-    	image.save()
-    print u'dos vídeos...'
-    for video in videos:
-    	video.save()
-    print u'Feito! TSV atualizado.'
+    if update_tsv:
+        print u'\nATUALIZANDO TSV (pode demorar)'
+        images = Image.objects.all()
+        videos = Video.objects.all()
+        print u'das imagens...'
+        for image in images:
+            image.save()
+        print u'dos vídeos...'
+        for video in videos:
+            video.save()
+        print u'Feito! TSV atualizado.'
 
     # Deletando arquivo log se ele estiver vazio
     if log.read(1024) == '':

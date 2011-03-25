@@ -75,6 +75,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'utils.AdminLocaleURLMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
 )
@@ -87,6 +88,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.messages.context_processors.messages',
     )
+
+# Required for Debug Toolbar
+INTERNAL_IPS = ('127.0.0.1',)
 
 ROOT_URLCONF = 'weblarvae.urls'
 
@@ -114,6 +118,7 @@ INSTALLED_APPS = (
     'mptt',
     'rosetta',
     'datatrans',
+    'debug_toolbar',
 )
 
 from settings_local import *

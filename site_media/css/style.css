@@ -243,7 +243,7 @@ div.main {
     text-align:justify;
 }
 
-#fotos p, #videos p {
+.main #photos p, #videos p, #tours p {
     font-size:1.2em;
 }
 

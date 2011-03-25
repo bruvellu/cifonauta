@@ -17,11 +17,11 @@
     </div>
 </section>
 
-<section class="main span-16 last">
+<section class="main span-24 last">
 
-<div class="main span-7 append-1" id="fotos">
+<div class="main span-8" id="photos">
     <h2>{% trans 'Fotos' %}</h2>
-        <a href="{{ photo.get_absolute_url }}"><img class="shadow" src="/{{ photo.web_filepath }}" alt="{{ photo.title }}" width="270" /></a>
+        <a href="{{ photo.get_absolute_url }}"><img class="shadow" src="/{{ photo.web_filepath }}" alt="{{ photo.title }}" width="300" /></a>
         <p>
         {% blocktrans %}
         As fotografias...
@@ -29,9 +29,9 @@
         </p>
 </div>
 
-<div class="main span-7 append-1 last" id="videos">
+<div class="main span-8" id="videos">
     <h2>{% trans 'Vídeos' %}</h2>
-        <a href="{{ video.get_absolute_url }}"><img class="shadow" src="/{{ video.large_thumb }}" alt="{{ video.title }}" width="270" /></a>
+        <a href="{{ video.get_absolute_url }}"><img class="shadow" src="/{{ video.large_thumb }}" alt="{{ video.title }}" width="300" /></a>
         <p>
         {% blocktrans %}
         Os filmes...
@@ -39,8 +39,21 @@
         </p>
 </div>
 
+<div class="main span-8 last" id="tours">
+    <h2>{% trans 'Tours' %}</h2>
+        <a href="{{ tour.get_absolute_url }}"><img class="shadow" src="/{{ tour_image.web_filepath }}" alt="{{ tour_image.title }}" width="300" /></a>
+        <p>
+        {% blocktrans %}
+        Os tours...
+        {% endblocktrans %}
+        </p>
+</div>
+
+</section>
+
+<section class="main span-16">
 {% if thumbs %}
-<div class="main span-15 append-1 last" id="highthumbs">
+<div class="main span-16" id="highthumbs">
     <h2>{% trans 'Destaques' %}</h2>
     <ul class="thumbs">
         {% for media in thumbs %}
@@ -54,6 +67,7 @@
 </div>
 {% endif %}
 </section>
+
 {% endblock %}
 
 {% block sidebar %}

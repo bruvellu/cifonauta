@@ -39,10 +39,14 @@ def main_page(request):
     if not videos:
         videos = ['']
     video = videos[0]
+    tour = Tour.objects.all().order_by('?')[0]
+    tour_image = tour.images.exclude(id=image.id).exclude(id=photo.id).order_by('?')[0]
     variables = RequestContext(request, {
         'image': image,
         'photo': photo,
         'video': video,
+        'tour': tour,
+        'tour_image': tour_image,
         'thumbs': thumbs,
         })
     return render_to_response('main_page.html', variables)

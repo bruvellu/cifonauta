@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Página dinâmica para teste | {{ block.super }}{% endblock %}
+
+{% block content %}
+<section class="span-24 last">
+<article>
+<header>
+<h1>Página dinâmica com {{ images.count }} imagens para teste</h1>
+</header>
+{% for media in images %}
+<div class="span-13">
+    <img src="/{{ media.web_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" width="510" />
+</div>
+<div class="span-11 last">
+    <img src="/{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" /><br>
+    {{ media.thumb_filepath }}<br>
+    {{ media.timestamp }}<br>
+    {{ media.view_count }}<br>
+    {{ media.pub_date }}<br>
+    {{ media.title }}<br>
+    {{ media.caption }}<br>
+    {{ media.size }}<br>
+    {{ media.rights }}<br>
+    {{ media.sublocation }}<br>
+    {{ media.city }}<br>
+    {{ media.state }}<br>
+    {{ media.country }}<br>
+    {{ media.date }}<br>
+    {{ media.geolocation }}<br>
+    {{ media.latitude }}<br>
+    {{ media.longitude }}<br>
+    {{ media.datatype }}<br>
+    {% if media.tag_set.all %}
+    {% for tag in media.tag_set.all %}
+    {{ tag }}{% if not forloop.last %},{% endif %}
+    {% endfor %}<br>
+    {% endif %}
+    {% if media.taxon_set.all %}
+    {% for taxon in media.taxon_set.all %}
+    {{ taxon }}{% if not forloop.last %},{% endif %}
+    {% endfor %}<br>
+    {% endif %}
+    {% if media.author_set.all %}
+    {% for author in media.author_set.all %}
+    {{ author }}{% if not forloop.last %},{% endif %}
+    {% endfor %}<br>
+    {% endif %}
+</div>
+{% endfor %}
+</article>
+{% endblock %}

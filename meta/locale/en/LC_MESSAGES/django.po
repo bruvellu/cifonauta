@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-03-29 13:52-0300\n"
-"PO-Revision-Date: 2011-03-29 14:03\n"
+"PO-Revision-Date: 2011-03-29 14:06\n"
 "Last-Translator: <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -623,7 +623,7 @@ msgstr "Explore the marine biodiversity"
 
 #: templates/main_page.html:11
 msgid "O banco de imagens <em>Cifonauta</em> contém uma grande variedade de fotos e vídeos provenientes de atividades científicas em biologia marinha. As imagens carregam marcadores com classificação taxonômica, estágio de vida, habitat e outras informações que permitem navegar de maneira intuitiva e didática."
-msgstr "<em>Cifonauta</em> image database contains a wide variety of photos and videos from scientific activities in marine biology. The images hold tags with taxonomic classification, life stage, habitat, and other information that let you browse intuitively."
+msgstr "<em>Cifonauta</em> is an image database containing a wide variety of photos and videos from scientific activities in marine biology. The images hold tags with taxonomic classification, life stage, habitat, and other information that let you browse intuitively."
 
 #: templates/main_page.html:21
 msgid "saiba mais sobre o banco"

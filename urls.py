@@ -45,6 +45,10 @@ urlpatterns = patterns('',
         (r'^autores/$', authors_page),
         (r'^literatura/$', refs_page),
         (r'^tours/$', tours_page),
+        # Tests
+        (r'^teste/vazio/$', empty_page),
+        (r'^teste/estatico/$', static_page),
+        (r'^teste/dinamico/$', dynamic_page),
 
         # XXX Lista com metadados, não utilizado. Será útil algum dia?
         url(r'^tag/$', meta_list_page,

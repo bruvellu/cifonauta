@@ -552,6 +552,25 @@ def refs_page(request):
         })
     return render_to_response('refs_page.html', variables)
 
+# Tests
+def empty_page(request):
+    '''Página com template vazio somente para testes de performance.'''
+    variables = RequestContext(request, {})
+    return render_to_response('empty_page.html', variables)
+
+def static_page(request):
+    '''Página estática somente para testes de performance.'''
+    variables = RequestContext(request, {})
+    return render_to_response('static_page.html', variables)
+
+def dynamic_page(request):
+    '''Página dinâmica somente para testes de performance.'''
+    images = Image.objects.filter(tag__name='adulto', is_public=True).order_by('view_count')[:20]
+    variables = RequestContext(request, {
+        'images': images,
+        })
+    return render_to_response('dynamic_page.html', variables)
+
 def tours_page(request):
     '''Página mostrando lista de tours disponíveis.'''
     tours = Tour.objects.order_by('name')

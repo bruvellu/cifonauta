@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{{ title }} | {{ block.super }}{% endblock %}
+{% block title %}{% trans 'Organização do banco' %} | {{ block.super }}{% endblock %}
 {% block content %}
 <section class="span-16">
-<header class="span-16 last"><h1>{{ title }}</h1></header>
+<header class="span-16 last"><h1>{% trans 'Organização do banco' %}</h1></header>
 
 <p>{% blocktrans %}As fotos e vídeos carregados no site podem ser pesquisadas por meio das informações básicas (metadados), como espécie, local, autor, tamanho. Às imagens estão também associados marcadores (tags), termos que as qualificam de acordo com categorias como, técnica fotográfica, estágio de vida, habitat etc. Desse modo, é possível navegar pelas imagens usando os marcadores. Por exemplo, você pode querer procurar fotos de larvas de moluscos tiradas em microscopia confocal, ou apenas navegar pelos estágios adultos de organismos planctônicos. A categorização das imagens e a explicação de alguns dos marcadores utilizados encontra-se abaixo.{% endblocktrans %}</p>
 
@@ -40,7 +40,7 @@
         <th>{% trans 'Descrição' %}</th>
         <th>{% trans 'Exemplo' %}</th>
     </tr>
-    {% for tag in tecnica.tags.all %}
+    {% for tag in technique.tags.all %}
     <tr>
         <td class="bold">{{ tag }}</td>
         <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
@@ -55,7 +55,7 @@
         <th></th>
         <th></th>
     </tr>
-    {% for tag in microscopia.tags.all %}
+    {% for tag in microscopy.tags.all %}
     <tr>
         <td class="bold">{{ tag }}</td>
         <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
@@ -64,8 +64,8 @@
     {% endfor %}
 </table>
 
-<h2>{{ estagio.name }}</h2>
-<p>{{ estagio.description }}</p>
+<h2>{{ stage.name }}</h2>
+<p>{{ stage.description }}</p>
 
 <table>
     <tr>
@@ -73,7 +73,7 @@
         <th>{% trans 'Descrição' %}</th>
         <th>{% trans  'Exemplo' %}</th>
     </tr>
-    {% for tag in estagios %}
+    {% for tag in stages %}
     <tr>
         <td class="bold">{{ tag }}</td>
         <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
@@ -82,16 +82,16 @@
     {% endfor %}
 </table>
 
-<h2>{{ pelagicos.parent }}</h2>
-<p>{{ pelagicos.parent.description }}</p>
+<h2>{{ pelagic.parent }}</h2>
+<p>{{ pelagic.parent.description }}</p>
 
 <table>
     <tr>
-        <th>{{ pelagicos.name }}</th>
-        <th>{{ pelagicos.description }}</th>
+        <th>{{ pelagic.name }}</th>
+        <th>{{ pelagic.description }}</th>
         <th>{% trans 'Exemplo' %}</th>
     </tr>
-    {% for tag in pelagicos.tags.all %}
+    {% for tag in pelagic.tags.all %}
     <tr>
         <td class="bold">{{ tag }}</td>
         <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
@@ -102,11 +102,11 @@
 
 <table>
     <tr>
-        <th>{{ bentonicos.name }}</th>
-        <th>{{ bentonicos.description }}</th>
+        <th>{{ benthic.name }}</th>
+        <th>{{ benthic.description }}</th>
         <th>{% trans 'Exemplo' %}</th>
     </tr>
-    {% for tag in bentonicos.tags.all %}
+    {% for tag in benthic.tags.all %}
     <tr>
         <td class="bold">{{ tag }}</td>
         <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
@@ -133,8 +133,8 @@
     {% endfor %}
 </table>
 
-<h2>{{ diversos.name }}</h2>
-<p>{{ diversos.description }}</p>
+<h2>{{ assorted.name }}</h2>
+<p>{{ assorted.description }}</p>
 
 <table>
     <tr>
@@ -142,7 +142,7 @@
         <th>{% trans 'Descrição' %}</th>
         <th>{% trans 'Exemplo' %}</th>
     </tr>
-    {% for tag in diversos.tags.all %}
+    {% for tag in assorted.tags.all %}
     <tr>
         <td class="bold">{{ tag }}</td>
         <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>

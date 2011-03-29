@@ -282,29 +282,28 @@ def org_page(request):
     # Tamanhos
     sizes = Size.objects.order_by('position')
     # Técnicas
-    tecnica = TagCategory.objects.get(name=u'Técnica')
-    microscopia = TagCategory.objects.get(name=u'Microscopia')
+    technique = TagCategory.objects.get(name=u'Técnica')
+    microscopy = TagCategory.objects.get(name=u'Microscopia')
     # Estágios
-    estagio = TagCategory.objects.get(name=u'Estágio de vida')
-    estagios = estagio.tags.order_by('position')
+    stage = TagCategory.objects.get(name=u'Estágio de vida')
+    stages = stage.tags.order_by('position')
     # Modos
-    pelagicos = TagCategory.objects.get(name=u'Pelágicos')
-    bentonicos = TagCategory.objects.get(name=u'Bentônicos')
+    pelagic = TagCategory.objects.get(name=u'Pelágicos')
+    benthic = TagCategory.objects.get(name=u'Bentônicos')
     # Habitat
     habitat = TagCategory.objects.get(name=u'Habitat')
     # Diversos 
-    diversos = TagCategory.objects.get(name=u'Diversos')
+    assorted = TagCategory.objects.get(name=u'Diversos')
     variables = RequestContext(request, {
         'sizes': sizes,
-        'microscopia': microscopia,
-        'tecnica': tecnica,
-        'estagios': estagios,
-        'estagio': estagio,
-        'pelagicos': pelagicos,
-        'bentonicos': bentonicos,
+        'microscopy': microscopy,
+        'technique': technique,
+        'stages': stages,
+        'stage': stage,
+        'pelagic': pelagic,
+        'benthic': benthic,
         'habitat': habitat,
-        'diversos': diversos,
-        'title': u'Organização do banco',
+        'assorted': assorted,
         })
     return render_to_response('organizacao.html', variables)
 

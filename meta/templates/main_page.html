@@ -8,9 +8,7 @@
     <div class="span-14 last">
         <h1>{% trans 'Explore a biodiversidade marinha' %}</h1>
         <p>
-        {% blocktrans %}
-        O banco de imagens <em>Cifonauta</em> contém uma grande variedade de fotos e vídeos provenientes de atividades científicas em biologia marinha. As imagens carregam marcadores com classificação taxonômica, estágio de vida, habitat e outras informações que permitem navegar de maneira intuitiva e didática. 
-        {% endblocktrans %}
+        {% blocktrans %}O banco de imagens <em>Cifonauta</em> contém uma grande variedade de fotos e vídeos provenientes de atividades científicas em biologia marinha. As imagens carregam marcadores com classificação taxonômica, estágio de vida, habitat e outras informações que permitem navegar de maneira intuitiva e didática.{% endblocktrans %}
 {% comment %}
 
 We expect the database to be used widely and to become a reliable source for everyone in need of unique and diversified marine biology images.
@@ -31,9 +29,7 @@ para curiosos, estudantes, educadores e pesquisadores.
     <h2>{% trans 'Fotos' %}</h2>
         <a href="{{ photo.get_absolute_url }}"><img class="shadow" src="/{{ photo.web_filepath }}" alt="{{ photo.title }}" width="300" /></a>
         <p class="quiet">
-        {% blocktrans %}
-        Além de fotos representativas de cada grupo disponibilizamos séries de um mesmo organismo possibilitando uma visualização mais completa de sua morfologia e tridimensionalidade.
-        {% endblocktrans %}
+        {% blocktrans %}Além de fotos representativas de cada grupo disponibilizamos séries de um mesmo organismo possibilitando uma visualização mais completa de sua morfologia e tridimensionalidade.{% endblocktrans %}
         </p>
 </div>
 
@@ -41,9 +37,7 @@ para curiosos, estudantes, educadores e pesquisadores.
     <h2>{% trans 'Vídeos' %}</h2>
         <a href="{{ video.get_absolute_url }}"><img class="shadow" src="/{{ video.large_thumb }}" alt="{{ video.title }}" width="300" /></a>
         <p class="quiet">
-        {% blocktrans %}
-        Mostram aspectos da biologia dos organismos como desenvolvimento, locomoção, comportamento e reprodução em vídeos de curta duração.
-        {% endblocktrans %}
+        {% blocktrans %}Mostram aspectos da biologia dos organismos como desenvolvimento, locomoção, comportamento e reprodução em vídeos de curta duração.{% endblocktrans %}
         </p>
 </div>
 
@@ -51,9 +45,7 @@ para curiosos, estudantes, educadores e pesquisadores.
     <h2>{% trans 'Tours' %}</h2>
         <a href="{{ tour.get_absolute_url }}"><img class="shadow" src="/{{ tour_image.web_filepath }}" alt="{{ tour_image.title }}" width="300" /></a>
         <p class="quiet">
-        {% blocktrans %}
-        Seleção de imagens do banco sobre um tema específico com texto descritivo e slideshow. Conheça os <a href="/tours/">tours disponíveis</a>.
-        {% endblocktrans %}
+        {% blocktrans %}Seleção de imagens do banco sobre um tema específico com texto descritivo e slideshow. Conheça os <a href="/tours/">tours disponíveis</a>.{% endblocktrans %}
         </p>
 </div>
 

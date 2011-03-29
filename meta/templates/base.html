@@ -161,6 +161,7 @@
             </section>
             <footer class="main span-24 last quiet">
 
+            <div class="span-24 last" id="footerbase">
             <div class="span-13">
                 <div class="span-13 last">
                     &nbsp; &copy;{% now "Y" %} {% trans 'Centro de Biologia Marinha da Universidade de São Paulo' %}
@@ -173,6 +174,57 @@
             </div>
 
             <div class="span-5 last cnpq">{% trans 'Apoio' %}: <a href="http://www.cnpq.br/" title="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}"><img width="90" alt="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}" src="/site_media/cnpq.png" /></a></div>
+        </div>
+
+            <div class="span-24 last" id="sitelinks">
+                <div class="span-6">
+                    <h4>{% trans 'Informações básicas' %}</h4>
+                    <ul class="padlist">
+                        <li><a href="/sobre/">{% trans 'Sobre' %}</a></li>
+                        <li><a href="/conteudo/">{% trans 'Conteúdo' %}</a></li>
+                        <li><a href="/organizacao/">{% trans 'Organização' %}</a></li>
+                        <li><a href="/creditos/">{% trans 'Créditos e apoio' %}</a></li>
+                        <li><a href="/cifokit/">{% trans 'Kit imprensa' %}</a></li>
+                        <li><a href="/termos/">{% trans 'Termos de uso e direitos' %}</a></li>
+                    </ul>
+                </div>
+                <div class="span-4">
+                    <h4>{% trans 'Explorar' %}</h4>
+                    <ul class="padlist">
+                        <li><a href="/buscar/">{% trans 'Buscador' %}</a></li>
+                        <li><a href="/tours/">{% trans 'Tours' %}</a></li>
+                        <li><a href="/buscar/?type=photo">{% trans 'Fotos' %}</a></li>
+                        <li><a href="/buscar/?type=video">{% trans 'Vídeos' %}</a></li>
+                    </ul>
+                </div>
+                <div class="span-4">
+                    <h4>{% trans 'Metadados' %}</h4>
+                    <ul class="padlist">
+                        <li><a href="/tags/">{% trans 'Marcadores' %}</a></li>
+                        <li><a href="/taxa/">{% trans 'Táxons' %}</a></li>
+                        <li><a href="/locais/">{% trans 'Localidades' %}</a></li>
+                        <li><a href="/autores/">{% trans 'Autores' %}</a></li>
+                        <li><a href="/literatura/">{% trans 'Referências' %}</a></li>
+                    </ul>
+                </div>
+                <div class="span-4">
+                    <h4>{% trans 'Novidades' %}</h4>
+                    <ul class="padlist">
+                        <li><a href="/blog/">{% trans 'Blog' %}</a></li>
+                        <li><a href="/">{% trans 'Twitter' %}</a></li>
+                        <li><a href="/">{% trans 'Facebook' %}</a></li>
+                    </ul>
+                </div>
+                <div class="span-4 last">
+                    <h4>{% trans 'Desenvolvimento' %}</h4>
+                    <ul class="padlist">
+                        <li><a href="/detalhes/">{% trans 'Detalhes técnicos' %}</a></li>
+                        <li><a href="/desenvolvimento/">{% trans 'Atualizações' %}</a></li>
+                        <li><a href="/ideias/">{% trans 'Idéias planejadas' %}</a></li>
+                        <li><a href="/feedback/">{% trans 'Feedback' %}</a></li>
+                    </ul>
+                </div>
+            </div>
             </footer>
         </section>
     </body>

@@ -158,6 +158,7 @@ class Tag(models.Model):
             verbose_name=_('vídeos'))
     parent = models.ForeignKey('TagCategory', blank=True, null=True,
             related_name='tags', verbose_name=_('pai'))
+    position = models.PositiveIntegerField(_('posição'), default=0)
 
     def __unicode__(self):
         return self.name

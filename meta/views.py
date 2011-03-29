@@ -280,25 +280,13 @@ def org_page(request):
     Além de buscar as descrições de cada categoria, mostra exemplos aleatórios de imagens.
     '''
     # Tamanhos
-    sizes = Size.objects.all().order_by('position')
+    sizes = Size.objects.order_by('position')
     # Técnicas
     tecnica = TagCategory.objects.get(name=u'Técnica')
     microscopia = TagCategory.objects.get(name=u'Microscopia')
     # Estágios
     estagio = TagCategory.objects.get(name=u'Estágio de vida')
-    tmp = ['','','','','']
-    for fase in estagio.tags.all():
-        if fase.name == 'gameta':
-            tmp[0] = fase
-        elif fase.name == 'embrião':
-            tmp[1] = fase
-        elif fase.name == 'larva':
-            tmp[2] = fase
-        elif fase.name == 'juvenil':
-            tmp[3] = fase
-        elif fase.name == 'adulto':
-            tmp[4] = fase
-    estagios = tmp
+    estagios = estagio.tags.order_by('position')
     # Modos
     pelagicos = TagCategory.objects.get(name=u'Pelágicos')
     bentonicos = TagCategory.objects.get(name=u'Bentônicos')

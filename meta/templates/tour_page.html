@@ -97,7 +97,7 @@
         <ul class="pagination">
             {% for media in tour.images.all %}
             <li>
-            <a href="#"><img class="shadow" src="/{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" /></a>
+            <a href="#"><img class="shadow" src="{{ MEDIA_URL }}{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" /></a>
             </li>
             {% endfor %}
         </ul>

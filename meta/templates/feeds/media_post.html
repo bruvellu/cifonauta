@@ -10,12 +10,12 @@
 
     <div>
     {% if obj.datatype == 'photo' %}
-    <img width="510" src="http://{{ site.domain }}/{{ obj.web_filepath }}" alt="{{ obj.title }}" title="{{ obj.title }}" />
+    <img width="510" src="http://{{ site.domain }}{{ MEDIA_URL }}{{ obj.web_filepath }}" alt="{{ obj.title }}" title="{{ obj.title }}" />
     {% else %}
         {% if obj.datatype == 'video' %}
-        <video poster="http://{{ site.domain }}/{{ obj.thumb_filepath }}" preload="preload" controls="controls">
-        <source src="http://{{site.domain }}/{{ obj.web_filepath }}" type="video/ogg">
-        <img alt="Still do vídeo" src="http://{{ site.domain }}/{{ obj.thumb_filepath }}">
+        <video poster="http://{{ site.domain }}{{ MEDIA_URL }}{{ obj.thumb_filepath }}" preload="preload" controls="controls">
+        <source src="http://{{site.domain }}{{ MEDIA_URL }}{{ obj.web_filepath }}" type="video/ogg">
+        <img alt="Still do vídeo" src="http://{{ site.domain }}{{ MEDIA_URL }}{{ obj.thumb_filepath }}">
         Seu navegador ainda não suporta HTML5...
         </video>
         {% endif %}

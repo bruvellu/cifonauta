@@ -38,15 +38,16 @@ def show_hot():
     hot_images = Image.objects.order_by('-view_count')[:4]
     return {'hot_images': hot_images}
 
-@register.inclusion_tag('thumb_org.html')
-def print_thumb(field, obj):
+@register.inclusion_tag('thumb_org.html', takes_context=True)
+def print_thumb(context, field, obj):
     '''Gera thumbnail aleatório de determinado metadado.'''
+    media_url = context['MEDIA_URL']
     params = {field: obj, 'is_public': True}
     try:
         media = Image.objects.filter(**params).order_by('?')[0]
     except:
         media = ''
-    return {'media': media}
+    return {'media': media, 'MEDIA_URL': media_url}
 
 def slicer(query, media_id):
     '''Processa resultado do queryset.
@@ -99,9 +100,10 @@ def mediaque(media, qobj):
         print '%s é um datatype desconhecido.' % media.datatype
     return query
 
-@register.inclusion_tag('related.html')
-def show_related(media, form, related):
+@register.inclusion_tag('related.html', takes_context=True)
+def show_related(context, media, form, related):
     '''Usa metadados da imagem para encontrar imagens relacionadas.'''
+    media_url = context['MEDIA_URL']
     # Limpa imagens relacionadas.
     rel_media = ''
     relative = ''
@@ -193,7 +195,7 @@ def show_related(media, form, related):
 
     current = media
 
-    return {'current': current, 'rel_media': rel_media, 'relative': relative, 'form': form, 'related': related, 'type': choices[related], 'crumbs': crumbs}
+    return {'current': current, 'rel_media': rel_media, 'relative': relative, 'form': form, 'related': related, 'type': choices[related], 'crumbs': crumbs, 'MEDIA_URL': media_url}
 
 @register.inclusion_tag('stats.html')
 def show_stats():

@@ -1,5 +1,5 @@
-<a href="/{{ media.web_filepath }}" class="highslide" onclick="return hs.expand(this)">
-    <img src="/{{ media.web_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" width="510" />
+<a href="{{ MEDIA_URL }}{{ media.web_filepath }}" class="highslide" onclick="return hs.expand(this)">
+    <img src="{{ MEDIA_URL }}{{ media.web_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" width="510" />
 </a>
 
 {% if media.title %}

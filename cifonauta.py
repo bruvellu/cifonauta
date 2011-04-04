@@ -65,8 +65,8 @@ class Database:
         atualiza o registro.
         '''
         print '\nVerificando se o arquivo está no banco de dados...'
-        photopath = 'site_media/photos/'
-        videopath = 'site_media/videos/'
+        photopath = 'photos/'
+        videopath = 'videos/'
 
         try:
             if media.type == "photo":
@@ -363,9 +363,9 @@ class Movie:
         self.meta = prepare_meta(self.meta)
 
         for k, v in web_paths.iteritems():
-            self.meta[k] = v
-        self.meta['thumb_filepath'] = thumb_filepath
-        self.meta['large_thumb'] = large_thumb
+            self.meta[k] = v.strip('site_media/')
+        self.meta['thumb_filepath'] = thumb_filepath.strip('site_media/')
+        self.meta['large_thumb'] = large_thumb.strip('site_media/')
 
         return self.meta
 
@@ -611,8 +611,8 @@ class Photo:
         web_filepath, thumb_filepath = self.process_image()
         if not web_filepath:
             return None
-        self.meta['web_filepath'] = web_filepath
-        self.meta['thumb_filepath'] = thumb_filepath
+        self.meta['web_filepath'] = web_filepath.strip('site_media/')
+        self.meta['thumb_filepath'] = thumb_filepath.strip('site_media/')
 
         print
         print u'\tVariável\tMetadado'

@@ -29,15 +29,23 @@ $(document).ready(function(){
         );
 
         // Collapsible cite 
-        $("#share-sideinfo").click(function(){
-            $("#sharing").slideToggle();
-            $(this).toggleClass("bg-merge");
-            });
         $("#cite-sideinfo").click(function(){
             $("#citation").slideToggle();
             $(this).toggleClass("bg-merge");
             });
 });
+</script>
+
+{% comment %}
+ShareThis
+{% endcomment %}
+<script type="text/javascript">var switchTo5x=true;</script>
+<script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+<script type="text/javascript">stLight.options({
+    publisher:'c581e214-c1ef-43a0-9fa6-ce8c0de234df',
+    tracking:'google',
+    onhover:false,
+    });
 </script>
 {% endblock %}
 {% block content %}
@@ -104,9 +112,6 @@ $(document).ready(function(){
         </div>
 
         <div class="span-13 last borders" id="meta">
-            <div id="sharing" class="span-13">
-                <h3>{% trans 'Compartilhar' %}:</h3>
-            </div>
             <div id="citation" class="span-13">
                 <div>
                     {% show_set media.author_set.all '' '.' ', ' '' %} <strong>{{ media.title }}</strong>. {% trans 'Imagem' %} {% trans 'acessada no banco de imagens <em>Cifonauta</em> em' %} {% now "F j, Y" %}. Link: <a href="{{ media.get_absolute_url }}">http://{{ request.META.HTTP_HOST }}{{ media.get_absolute_url }}</a>
@@ -142,9 +147,6 @@ $(document).ready(function(){
                 <strong>{% trans 'Geolocalização' %}:</strong> <a href="http://maps.google.com/maps?q={{ media.latitude }},{{ media.longitude }}" title="{{ media.geolocation }} no Google Maps">{{ media.geolocation }}</a>
                 {% endif %}
             </div>
-        </div>
-        <div class="span-2 last border-top border-right border-bottom sideinfo" id="share-sideinfo">
-            {% trans 'compartilhar' %}
         </div>
         <div class="span-2 last border-top border-right border-bottom sideinfo" id="cite-sideinfo">
             {% trans 'como citar' %}
@@ -217,10 +219,18 @@ $(document).ready(function(){
 {% endblock %}
 {% block sidebar %}
 <aside class="main span-8 last">
+
+{% comment %}Plugins sociais{% endcomment %}
+<div class="align-center borders block shadow">
+    {% include 'social.html' %}
+</div>
+
+{% comment %}Hierarquia taxonômica{% endcomment %}
 <div class="borders block shadow">
     {% include 'tree.html' %}
 </div>
 
+{% comment %}Admin{% endcomment %}
 {% if user.is_authenticated %}
 <div class="borders block shadow" id="admin-controls">
     <h2>Editar (admin)</h2>

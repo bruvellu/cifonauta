@@ -4,13 +4,13 @@
 {% block title %}{{ tour.name }} | {% trans 'Tour' %} | {{ block.super }}{% endblock %}
 {% block extra-head %}
 
-<script type="text/javascript" src="/site_media/js/slides/slides.min.jquery.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/slides/slides.min.jquery.js"></script>
 
 <script>
     $(function(){
         $('#slides').slides({
             preload: true,
-            preloadImage: '/site_media/js/slides/loading.gif',
+            preloadImage: '{{ MEDIA_URL }}js/slides/loading.gif',
             autoHeight: true,
             play: 4000,
             hoverPause: true,
@@ -34,7 +34,7 @@
 
 <div class="span-24 last" id="slides">
     <div class="span-1">
-        <a href="#" class="prev"><img src="/site_media/js/slides/arrow-prev.png" width="24" height="43" alt="{% trans 'Anterior' %}"></a>
+        <a href="#" class="prev"><img src="{{ MEDIA_URL }}js/slides/arrow-prev.png" width="24" height="43" alt="{% trans 'Anterior' %}"></a>
     </div>
     {% comment %}TODO adapt to HTML5{% endcomment %}
     <div class="slides_container shadow span-21">
@@ -90,7 +90,7 @@
     </div>
 
     <div class="span-1 last">
-        <a href="#" class="next"><img src="/site_media/js/slides/arrow-next.png" width="24" height="43" alt="{% trans 'Próximo' %}"></a>
+        <a href="#" class="next"><img src="{{ MEDIA_URL }}js/slides/arrow-next.png" width="24" height="43" alt="{% trans 'Próximo' %}"></a>
     </div>
 
     <div class="span-24 last" id="paginator-container">

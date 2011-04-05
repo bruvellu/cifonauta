@@ -10,8 +10,8 @@
 
 <meta property="og:title" content="{{ media.title }}" />
 <meta property="og:type" content="" />
-<meta property="og:url" content="{{ request.get_full_path }}" />
-<meta property="og:image" content="{{ MEDIA_URL }}{% if media.datatype == 'photo' %}{{ media.web_filepath }}{% else %}{{ media.large_thumb }}{% endif %}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.thumb_filepath }}" />
 <meta property="og:description" content="{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %} {% trans 'Por' %} {% show_set media.author_set.all '' '' ', ' '' %}." />
 <meta property="og:site_name" content="{{ block.super }}" />
 

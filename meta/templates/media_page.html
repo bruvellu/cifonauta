@@ -1,7 +1,20 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block title %}{{ media.title }} | {{ block.super }}{% endblock %}
+
+{% block meta-keywords %}{% show_set media.tag_set.all '' '' ', ' '' %}, {% show_set media.author_set.all '' '' ', ' '' %}, {% show_set media.taxon_set.all '' '' ', ' '' %}, {% show_set media.source_set.all '' '' ', ' '' %}, {{ media.sublocation.name }}, {{ media.city.name }}, {{ media.state.name }}, {{ media.country.slug }}{% endblock %}
+{% block meta-description %}{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %} {% trans 'Por' %} {% show_set media.author_set.all '' '' ', ' '' %}.{% endblock %}
+{% block meta-author %}{% show_set media.author_set.all '' '' ', ' '' %}{% endblock %}
+
 {% block extra-head %}
+
+<meta property="og:title" content="{{ media.title }}" />
+<meta property="og:type" content="" />
+<meta property="og:url" content="{{ request.get_full_path }}" />
+<meta property="og:image" content="{{ MEDIA_URL }}{% if media.datatype == 'photo' %}{{ media.web_filepath }}{% else %}{{ media.large_thumb }}{% endif %}" />
+<meta property="og:description" content="{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %} {% trans 'Por' %} {% show_set media.author_set.all '' '' ', ' '' %}." />
+<meta property="og:site_name" content="{{ block.super }}" />
+
 <script type="text/javascript">
 // JavaScript code goes here.
 $(document).ready(function(){

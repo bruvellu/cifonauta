@@ -1,6 +1,4 @@
-{% spaceless %}
 {% comment %}
 Está ilegível assim para evitar espaços em branco...
 {% endcomment %}
-{% for meta in set %}{% if prefix %}{{ prefix }}{% endif %}{% if method == 'slug' %}{{ meta.slug }}{% else %}{% if method == 'link' %}<a href="{{ meta.get_absolute_url }}" title="{{ meta.name }}">{{ meta|sp_em }}</a>{% else %}{{ meta|sp_em }}{% endif %}{% endif %}{% if not forloop.last %}{{ sep }}{% endif %}{% if suffix %}{{ suffix }}{% endif %}{% endfor %}
-{% endspaceless %}
+{% spaceless %}{% for meta in set %}{% if prefix %}{{ prefix }}{% endif %}{% if method == 'slug' %}{{ meta.slug }}{% else %}{% if method == 'link' %}<a href="{{ meta.get_absolute_url }}" title="{{ meta.name }}">{{ meta|sp_em }}</a>{% else %}{{ meta|sp_em }}{% endif %}{% endif %}{% if not forloop.last %}{{ sep }}{% endif %}{% if suffix %}{{ suffix }}{% endif %}{% endfor %}{% endspaceless %}

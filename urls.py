@@ -95,6 +95,7 @@ urlpatterns = patterns('',
 
         url(r'^foto/(\d+)/$', photo_page, name='image_url'),
         url(r'^video/(\d+)/$', video_page, name='video_url'),
+        url(r'^embed/(\d+)/$', embed_page, name='embed_url'),
 
         # Admin
         (r'^admin/', include(admin.site.urls)),

@@ -433,6 +433,17 @@ def video_page(request, video_id):
         })
     return render_to_response('media_page.html', variables)
 
+def embed_page(request, video_id):
+    '''Página para embed dos vídeos.'''
+    video = get_object_or_404(Video, id=video_id)
+    # TODO Checar sessão para evitar overdose de views
+    video.view_count = video.view_count + 1
+    video.save()
+    variables = RequestContext(request, {
+        'media': video,
+        })
+    return render_to_response('embed.html', variables)
+
 def meta_page(request, model_name, field, slug):
     '''Página de um metadado.
 

@@ -956,3 +956,19 @@ Show the current slide in the pagination
 .pagination .current a {
 color:red;
 }
+
+/* Embed */
+#embed-page {
+    width:100%;
+    height:100%;
+    margin:0;
+    padding:0;
+    overflow:hidden;
+}
+
+#embed-page .full-frame {
+    position:absolute;
+    width:100%;
+    height:100%;
+}
+

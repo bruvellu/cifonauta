@@ -31,6 +31,12 @@ def taxon_paths(taxon):
     ancestors = [t for t in taxon.get_ancestors() if t.rank in main_ranks]
     return {'taxon': taxon, 'ancestors': ancestors}
 
+@register.inclusion_tag('tree.html', takes_context=True)
+def show_tree(context):
+    '''Gera árvore taxonômica.'''
+    taxa = Taxon.tree.all()
+    return {'taxa': taxa}
+
 @register.inclusion_tag('hot_images.html')
 def show_hot():
     '''Mostra imagens mais acessadas.'''
@@ -207,6 +213,12 @@ def show_stats():
     locations = Sublocation.objects.count()
     return {'photos': photos, 'videos': videos, 'spp': spp, 'locations': locations}
 
+@register.inclusion_tag('tree.html')
+def show_tree():
+    '''Passa objeto para gerar árvore.'''
+    taxa = Taxon.tree.select_related().all()
+    return {'taxa': taxa}
+
 @register.inclusion_tag('searchbox.html')
 def search_box():
     '''Gera buscador para ser usado no header do site.'''
@@ -310,6 +322,12 @@ def show_info(image_list, video_list, queries):
             'states': states, 'countries': countries, 'tags': tags,
             'queries': queries,
             }
+
+@register.inclusion_tag('fino.html')
+def refiner(actives, inactives, field, queries):
+    '''Gera lista de metadados ativos e inativos.'''
+    return {'actives': actives, 'inactives': inactives,
+            'field': field, 'queries': queries}
 
 @register.inclusion_tag('fino.html')
 def refiner(actives, inactives, field, queries):

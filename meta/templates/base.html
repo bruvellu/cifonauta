@@ -10,33 +10,46 @@
             {% block title %}{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %} | CEBIMar USP{% endblock %}
         </title>
         <link rel="shortcut icon" href="{{ MEDIA_URL }}favicon.ico">
+
+        <!-- Estilos -->
         <link rel="stylesheet" href="{{ MEDIA_URL }}css/style.css" type="text/css">
         <link rel="stylesheet" href="{{ MEDIA_URL }}css/screen.css" type="text/css" media="screen, projection">
-        <link rel="stylesheet" href="{{ MEDIA_URL }}css/print.css" type="text/css" media="print">	
+        <link rel="stylesheet" href="{{ MEDIA_URL }}css/print.css" type="text/css" media="print">
         <!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+
+        <!-- Google Web Fonts -->
         <link href="http://fonts.googleapis.com/css?family=Lato:light,regular,regularitalic,bold,bolditalic|Ubuntu:light,regular,italic,bold" rel="stylesheet" type="text/css">
+
+        <!-- jQuery -->
         <script src="{{ MEDIA_URL }}js/jquery.js" type="text/javascript"></script> 
+
+        <!-- MediaElement.Js -->
         <script src="{{ MEDIA_URL }}js/mediaelement/mediaelement-and-player.min.js" type="text/javascript"></script>
         <link rel="stylesheet" href="{{ MEDIA_URL }}js/mediaelement/mediaelementplayer.css" type="text/css">
+
         {% if not request.path == '/fixtaxa/' %}
-        {% comment %}
-        Impede desaparecimento das mensagens.
-        {% endcomment %}
+        {% comment %} Impede desaparecimento das mensagens na fixtaxa. {% endcomment %}
         <script type="text/javascript">
         $(document).ready(function(){
                 // Esconde avisos.
                 $(".success, .notice, .error").delay(10000).fadeOut('slow');
-
-                // Trigger do seletor de línguas.
-                $('#languages select').change(function () {
-                        var myform = $(this).parent();
-                        if ($(this).val() != "{{ request.LANGUAGE_CODE }}") {
-                            myform.submit();};
-                            });
                 });
         </script>
         {% endif %}
 
+        <!-- Language Trigger -->
+        <script type="text/javascript">
+            $(document).ready(function(){
+                    // Trigger do seletor de línguas.
+                    $('#languages select').change(function () {
+                        var myform = $(this).parent();
+                        if ($(this).val() != "{{ request.LANGUAGE_CODE }}") {
+                        myform.submit();};
+                        });
+                    });
+        </script>
+
+        <!-- Highslide -->
         <script type="text/javascript" src="{{ MEDIA_URL }}js/highslide/highslide.js"></script>
         <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}js/highslide/highslide.css" />
         <script type="text/javascript">
@@ -46,9 +59,14 @@
             hs.showCredits = false;
         </script>
 
+        <!-- jQuery Treeview -->
+        <link rel="stylesheet" href="{{ MEDIA_URL }}js/jquery-treeview/jquery.treeview.css" />
+        <script src="{{ MEDIA_URL }}js/jquery-treeview/lib/jquery.cookie.js" type="text/javascript"></script>
+        <script src="{{ MEDIA_URL }}js/jquery-treeview/jquery.treeview.js" type="text/javascript"></script> 
+
         {% block extra-head %}{% endblock %}
 
-        {% comment %} ANALYTICS {% endcomment %}
+        <!-- ANALYTICS -->
         <script type="text/javascript">
             var _gaq = _gaq || [];
             _gaq.push(['_setAccount', 'UA-20878697-1']);

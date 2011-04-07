@@ -17,7 +17,8 @@ def main_page(request):
     '''Página principal mostrando destaques e pontos de partida para navegar.'''
     #TODO Deixar página mais atrativa e eficiente.
     # Tenta encontrar destaques.
-    images = Image.objects.filter(highlight=True, is_public=True).order_by('?')
+    images = Image.objects.select_related('size').filter(highlight=True, 
+            is_public=True).order_by('?')
     image = images[0]
     photo = images[1]
     # Retira imagem principal da lista de destaques.

@@ -25,7 +25,7 @@ METAS = (
 
 class RelatedForm(forms.Form):
     type = forms.ChoiceField(choices=METAS, label=_('Navegando por'))
-    # TODO Incluir um checkbox para mostrar apenas highlights?
+    #TODO Incluir um checkbox para mostrar apenas highlights?
 
 ITEMS = (
         (16, 16),
@@ -56,7 +56,7 @@ class DisplayForm(forms.Form):
 
     Pode ser alterado por qual metadado as imagens serão ordenadas, se esta ordem será ascendente ou descendente, o número de resultados por página e se é para mostrar apenas os destaques.
     '''
-    # FIXME Incluir caracteres especiais quebra a tradução!
+    #FIXME Incluir caracteres especiais quebra a tradução!
     n = forms.ChoiceField(choices=ITEMS, label=_('Exibir'))
     orderby = forms.ChoiceField(choices=ORDER_BY, label=_('Ordenar por'))
     order = forms.ChoiceField(choices=ORDER, label=_('Ordem'))
@@ -73,7 +73,7 @@ class FixTaxaForm(forms.Form):
 
         Faz o processamento para serem carregadas no formulário.
         '''
-        # TODO Ver se esse rank=Reino direto não compromete o funcionamento.
+        #TODO Ver se esse rank=Reino direto não compromete o funcionamento.
         taxa = Taxon.objects.filter(Q(parent__isnull=True) & ~Q(rank='Reino') | 
                 Q(rank=''))
         semitaxa = [(taxon.name, u'%s (id=%s)' % (taxon.name, taxon.id)) for 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # CIFONAUTA
-# Copyleft 2010 - Bruno C. Vellutini | organelas.ccom
+# Copyleft 2010 - Bruno C. Vellutini | organelas.com
 #
 #TODO Definir licença.
 #
@@ -371,7 +371,7 @@ class Movie:
 
     def build_call(self, filepath, ipass):
         '''Constrói o subprocesso para converter o vídeo com o FFmpeg.'''
-        # FIXME Descobrir jeito de forçar width e height serem par!
+        #FIXME Descobrir jeito de forçar width e height serem par!
 
         # Básico
         call = [
@@ -764,15 +764,17 @@ class Folder:
 
     def get_files(self):
         '''Busca recursivamente arquivos de uma pasta.
-        
+
         Identifica a extensão do arquivo e salva tipo junto com o caminho.
         Retorna lista de tuplas com caminho e tipo.
         '''
         n = 0
+
         # Tuplas para o endswith()
         photo_extensions = ('jpg', 'JPG', 'jpeg', 'JPEG')
         video_extensions = ('avi', 'AVI', 'mov', 'MOV', 'mp4', 'MP4', 'ogg', 'OGG', 'ogv', 'OGV', 'dv', 'DV', 'mpg', 'MPG', 'mpeg', 'MPEG', 'flv', 'FLV', 'm2ts', 'M2TS', 'wmv', 'WMV')
         ignore_extensions = ('~')
+
         # Buscador de arquivos em ação
         for root, dirs, files in os.walk(self.folder_path):
             for filename in files:
@@ -849,8 +851,8 @@ def prepare_meta(meta):
     # Preparando referências para o banco de dados
     meta['references'] = [a.strip() for a in meta['references'].split(',')] 
     # Preparando taxon(s) para o banco de dados
-    # XXX Lidar com fortuitos sp.?
-    # XXX Lidar com fortuitos aff. e espécies com 3 nomes?
+    #XXX Lidar com fortuitos sp.?
+    #XXX Lidar com fortuitos aff. e espécies com 3 nomes?
     #meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')] 
     temp_taxa = [a.strip() for a in meta['taxon'].split(',')] 
     clean_taxa = []
@@ -975,7 +977,7 @@ def main(argv):
         print 'Algo de errado nos argumentos...'
         usage()
         sys.exit(2)
-    
+
     # Define o que fazer de acordo com o argumento passado
     for opt, arg in opts:
         if opt in ('-h', '--help'):

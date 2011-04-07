@@ -15,7 +15,7 @@ from itis import Itis
 # Main
 def main_page(request):
     '''Página principal mostrando destaques e pontos de partida para navegar.'''
-    # TODO Deixar página mais atrativa e eficiente.
+    #TODO Deixar página mais atrativa e eficiente.
     # Tenta encontrar destaques.
     images = Image.objects.filter(highlight=True, is_public=True).order_by('?')
     if not images:
@@ -56,8 +56,8 @@ def search_page(request):
     
     Procura termo no campo tsv do banco de dados, que possibilita o full-text search.
     '''
-    # TODO Documentar como funciona essa função.
-    # TODO Implementar jQuery e AJAX para melhorar usabilidade.
+    #TODO Documentar como funciona essa função.
+    #TODO Implementar jQuery e AJAX para melhorar usabilidade.
     form = SearchForm()
     n_form = DisplayForm(initial={'n': 16})
 
@@ -83,7 +83,7 @@ def search_page(request):
 
     if 'query' in request.GET or 'type' in request.GET or 'author' in request.GET or 'size' in request.GET or 'tag' in request.GET or 'taxon' in request.GET or 'sublocation' in request.GET or 'city' in request.GET or 'state' in request.GET or 'country' in request.GET:
         # Iniciando querysets para serem filtrados para cada metadado presente na query.
-        # XXX Não sei se é muito eficiente, mas por enquanto será assim.
+        #XXX Não sei se é muito eficiente, mas por enquanto será assim.
         image_list = Image.objects.filter(is_public=True)
         video_list = Video.objects.filter(is_public=True)
 
@@ -195,7 +195,7 @@ def search_page(request):
                 request.session['orderby'] = n_form.data['orderby']
                 order = n_form.data['order']
                 request.session['order'] = n_form.data['order']
-                # XXX Meio bizarro, formulário não está mandando False, quando 
+                #XXX Meio bizarro, formulário não está mandando False, quando 
                 # destaque é falso. Está enviando vazio e quando é True está 
                 # mandando a string 'on'.
                 try:
@@ -384,7 +384,7 @@ def photo_page(request, image_id):
             form = RelatedForm(initial={'type': 'author'})
             related = u'author'
     image = get_object_or_404(Image, id=image_id)
-    # TODO Checar sessão para evitar overdose de views
+    #TODO Checar sessão para evitar overdose de views
     image.view_count = image.view_count + 1
     image.save()
     tags = image.tag_set.all().order_by('name')
@@ -436,7 +436,7 @@ def video_page(request, video_id):
 def embed_page(request, video_id):
     '''Página para embed dos vídeos.'''
     video = get_object_or_404(Video, id=video_id)
-    # TODO Checar sessão para evitar overdose de views
+    #TODO Checar sessão para evitar overdose de views
     video.view_count = video.view_count + 1
     video.save()
     variables = RequestContext(request, {
@@ -449,7 +449,7 @@ def meta_page(request, model_name, field, slug):
 
     Mostra galeria com todas as imagens que o possuem.
     '''
-    # TODO Documentar melhor como funciona.
+    #TODO Documentar melhor como funciona.
     queries = {
             u'query': '',
             u'author': [],

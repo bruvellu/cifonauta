@@ -200,18 +200,12 @@ def show_related(context, media, form, related):
 @register.inclusion_tag('stats.html')
 def show_stats():
     '''Gera linha com estatísticas do banco.'''
-    images = Image.objects.filter(is_public=True).count()
+    photos = Image.objects.filter(is_public=True).count()
     videos = Video.objects.filter(is_public=True).count()
-    genera = Taxon.objects.filter(rank=u'Gênero').count()
+    tags = Tag.objects.count()
     spp = Taxon.objects.filter(rank=u'Espécie').count()
     locations = Sublocation.objects.count()
-    cities = City.objects.count()
-    states = State.objects.count()
-    countries = Country.objects.count()
-    authors = Author.objects.count()
-    tags = Tag.objects.count()
-    references = Reference.objects.count()
-    return {'images': images, 'videos': videos, 'genera': genera, 'spp': spp, 'locations': locations, 'cities': cities, 'states': states, 'countries': countries, 'authors': authors, 'tags': tags, 'references': references}
+    return {'photos': photos, 'videos': videos, 'spp': spp, 'locations': locations}
 
 @register.inclusion_tag('searchbox.html')
 def search_box():

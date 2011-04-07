@@ -18,31 +18,17 @@ def main_page(request):
     #TODO Deixar página mais atrativa e eficiente.
     # Tenta encontrar destaques.
     images = Image.objects.filter(highlight=True, is_public=True).order_by('?')
-    if not images:
-        images = Image.objects.filter(is_public=True).order_by('?')
-    if not images:
-        images = ['']
     image = images[0]
-    if len(images) > 1:
-        photo = images[1]
-    else:
-        photo = images[0]
-    if images[0] != '':
-        # Retira imagem principal da lista de destaques.
-        thumbs = images.exclude(id=image.id).exclude(id=photo.id)[:5]
-    else:
-        thumbs = []
+    photo = images[1]
+    # Retira imagem principal da lista de destaques.
+    thumbs = images[2:7]
     # Tenta encontrar destaques.
-    videos = Video.objects.filter(highlight=True, is_public=True).order_by('?')
-    if not videos:
-        videos = Video.objects.filter(is_public=True).order_by('?')
-    if not videos:
-        videos = ['']
-    video = videos[0]
-    tour = Tour.objects.all().order_by('?')[0]
+    video = Video.objects.filter(highlight=True, 
+            is_public=True).order_by('?')[0]
+    tour = Tour.objects.order_by('?')[0]
     tour_image = tour.images.exclude(id=image.id).exclude(id=photo.id).order_by('?')[0]
     variables = RequestContext(request, {
-        'image': image,
+        'main_image': image,
         'photo': photo,
         'video': video,
         'tour': tour,

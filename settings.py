@@ -28,7 +28,7 @@ TIME_ZONE = 'America/Sao_Paulo'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-# XXX Tem que ser minúscula para evitar problema com datatrans
+#XXX Tem que ser minúscula para evitar problema com datatrans
 LANGUAGE_CODE = 'pt-br'
 ADMIN_LANGUAGE_CODE = 'pt-br'
 

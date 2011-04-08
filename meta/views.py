@@ -15,19 +15,16 @@ from itis import Itis
 # Main
 def main_page(request):
     '''Página principal mostrando destaques e pontos de partida para navegar.'''
-    #TODO Deixar página mais atrativa e eficiente.
     # Tenta encontrar destaques.
-    images = Image.objects.select_related('size').filter(highlight=True, 
-            is_public=True).order_by('?')
+    images = Image.objects.select_related('size').filter(highlight=True, is_public=True).defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')
     image = images[0]
     photo = images[1]
     # Retira imagem principal da lista de destaques.
     thumbs = images[2:7]
     # Tenta encontrar destaques.
-    video = Video.objects.filter(highlight=True, 
-            is_public=True).order_by('?')[0]
+    video = Video.objects.filter(highlight=True, is_public=True).defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude', 'webm_filepath', 'ogg_filepath', 'mp4_filepath').order_by('?')[0]
     tour = Tour.objects.order_by('?')[0]
-    tour_image = tour.images.exclude(id=image.id).exclude(id=photo.id).order_by('?')[0]
+    tour_image = tour.images.exclude(id=image.id).exclude(id=photo.id).defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')[0]
     variables = RequestContext(request, {
         'main_image': image,
         'photo': photo,

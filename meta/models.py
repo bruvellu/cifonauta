@@ -146,6 +146,7 @@ class Source(models.Model):
     class Meta:
         verbose_name = _('especialista')
         verbose_name_plural = _('especialistas')
+        ordering = ['name']
 
 
 class Tag(models.Model):
@@ -170,6 +171,7 @@ class Tag(models.Model):
     class Meta:
         verbose_name = _('marcador')
         verbose_name_plural = _('marcadores')
+        ordering = ['name']
 
 
 class TagCategory(models.Model):
@@ -185,6 +187,7 @@ class TagCategory(models.Model):
     class Meta:
         verbose_name = _('categoria de marcadores')
         verbose_name_plural = _('categorias de marcadores')
+        ordering = ['name']
 
 
 class Taxon(MPTTModel):
@@ -237,6 +240,7 @@ class Size(models.Model):
     class Meta:
         verbose_name = _('tamanho')
         verbose_name_plural = _('tamanhos')
+        ordering = ['position']
 
 
 class Rights(models.Model):
@@ -265,6 +269,7 @@ class Sublocation(models.Model):
     class Meta:
         verbose_name = _('local')
         verbose_name_plural = _('locais')
+        ordering = ['name']
 
 
 class City(models.Model):
@@ -281,6 +286,7 @@ class City(models.Model):
     class Meta:
         verbose_name = _('cidade')
         verbose_name_plural = _('cidades')
+        ordering = ['name']
 
 
 class State(models.Model):
@@ -297,6 +303,7 @@ class State(models.Model):
     class Meta:
         verbose_name = _('estado')
         verbose_name_plural = _('estados')
+        ordering = ['name']
 
 
 class Country(models.Model):
@@ -313,6 +320,7 @@ class Country(models.Model):
     class Meta:
         verbose_name = _('país')
         verbose_name_plural = _('país')
+        ordering = ['name']
 
 
 class Reference(models.Model):
@@ -334,6 +342,7 @@ class Reference(models.Model):
     class Meta:
         verbose_name = _('referência')
         verbose_name_plural = _('referências')
+        ordering = ['-citation']
 
 class Tour(models.Model):
     name = models.CharField(_('nome'), max_length=100, unique=True)

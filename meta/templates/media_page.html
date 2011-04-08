@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{{ media.title }} | {{ block.super }}{% endblock %}
 
-{% block meta-keywords %}{% show_set media.tag_set.all '' '' ', ' '' %}, {% show_set media.author_set.all '' '' ', ' '' %}, {% show_set media.taxon_set.all '' '' ', ' '' %}, {% show_set media.source_set.all '' '' ', ' '' %}, {{ media.sublocation.name }}, {{ media.city.name }}, {{ media.state.name }}, {{ media.country.slug }}{% endblock %}
+{% block meta-keywords %}{% show_set media.tag_set.iterator '' '' ', ' '' %}, {% show_set media.author_set.all '' '' ', ' '' %}, {% show_set media.taxon_set.all '' '' ', ' '' %}, {% show_set media.source_set.all '' '' ', ' '' %}, {{ media.sublocation.name }}, {{ media.city.name }}, {{ media.state.name }}, {{ media.country.slug }}{% endblock %}
 {% block meta-description %}{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %} {% trans 'Por' %} {% show_set media.author_set.all '' '' ', ' '' %}.{% endblock %}
 {% block meta-author %}{% show_set media.author_set.all '' '' ', ' '' %}{% endblock %}
 
@@ -75,7 +75,7 @@ ShareThis
             {% comment %}
             <span class="quiet">Marcadores:</span>
             {% endcomment %}
-                {% show_set tags '' '' ', ' 'link' %}
+                {% show_set media.tag_set.all '' '' ', ' 'link' %}
             </footer>
         {% endif %}
 

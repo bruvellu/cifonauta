@@ -6,7 +6,7 @@ from meta.templatetags.extra_tags import extract_set
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
-from django.db.models import Q
+from django.db.models import Q, F
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
 import operator
@@ -367,15 +367,16 @@ def photo_page(request, image_id):
         except:
             form = RelatedForm(initial={'type': 'author'})
             related = u'author'
-    image = get_object_or_404(Image, id=image_id)
+    image = get_object_or_404(Image.objects.select_related(), id=image_id)
     #TODO Checar sessão para evitar overdose de views
-    image.view_count = image.view_count + 1
-    image.save()
-    tags = image.tag_set.all().order_by('name')
-    references = image.reference_set.all().order_by('-citation')
+    #XXX Será o save() mais eficiente que o update()?
+    # Deixando assim por enquanto, pois update() dá menos queries.
+    #image.view_count += 1
+    #image.save()
+    Image.objects.filter(id=image_id).update(view_count=F('view_count') + 1)
+    references = image.reference_set.order_by('-citation')
     variables = RequestContext(request, {
         'media': image,
-        'tags': tags,
         'references': references,
         'form': form,
         'related': related,

@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load i18n %}
+
 {% block content %}
+
 <section class="main shadow span-23 last" id="intro">
     <div class="span-8" id="destaque">
         <a href="{{ main_image.get_absolute_url }}"><img class="shadow" src="{{ MEDIA_URL }}{{ main_image.web_filepath }}" alt="{{ main_image.title }}" width="300" /></a>
@@ -41,7 +43,6 @@
         {% blocktrans %}Seleção de imagens do banco sobre um tema específico com texto descritivo e slideshow. Conheça os <a href="/tours/">tours disponíveis</a>.{% endblocktrans %}
         </p>
 </div>
-
 </section>
 
 <section class="main span-16">
@@ -62,17 +63,12 @@
 {% endblock %}
 
 {% block sidebar %}
+
 <aside class="main span-8 last">
 <h2>{% trans 'Navegue por táxons' %}</h2>
 <div class="block shadow">
     {% show_tree %}
 </div>
-<!--
-<div class="block shadow">
-    {% comment %}
-    {% show_hot %}
-    {% endcomment %}
-</div>
--->
 </aside>
+
 {% endblock %}

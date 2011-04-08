@@ -5,13 +5,9 @@
         {{ form.type.label_tag }}<strong> {{ type }}:</strong>
         <span class="quiet">
             {% if not crumbs %}
-            {% trans 'Esta imagem não tem' %} {{ type }}.
+                {% trans 'Esta imagem não tem' %} {{ type }}.
             {% else %}
-                {% if crumbs|islist %}
-                    {% show_set crumbs '' '' ', ' '' %}
-                {% else %}
-                    {{ crumbs }}
-                {% endif %}
+                {% show_set crumbs '' '' ', ' '' %}
             {% endif %}
         </span>
         </div>

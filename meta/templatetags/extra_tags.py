@@ -99,9 +99,9 @@ def mediaque(media, qobj):
     Usado no navegador linear.
     '''
     if media.datatype == 'photo':
-        query = Image.objects.filter(qobj, is_public=True).distinct().order_by('id')
+        query = Image.objects.filter(qobj, is_public=True).distinct().select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by('id')
     elif media.datatype == 'video':
-        query = Video.objects.filter(qobj, is_public=True).distinct().order_by('id')
+        query = Video.objects.filter(qobj, is_public=True).distinct().select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by('id')
     else:
         print '%s é um datatype desconhecido.' % media.datatype
     return query
@@ -119,14 +119,20 @@ def show_related(context, media, form, related):
     for c in form_choices:
         choices[c[0]] = c[1]
 
+    # Se o choice escolhido no navegador for:
     if related == u'author':
-        if media.author_set.all():
+        # Salva queryset para performance.
+        authors = media.author_set.all()
+        if authors:
             qobj = Q()
-            for meta in media.author_set.all():
+            for meta in authors:
+                # Adiciona parâmetros para futuro query usando Q.
                 if meta.name:
                     qobj.add(Q(author=meta), Q.OR)
             if qobj.__len__():
+                # Se objeto não estiver vazio, descobrir seu tipo (foto ou vídeo) e gerar o queryset.
                 query = mediaque(media, qobj)
+                # Processar queryset para se adaptar ao navegador linear.
                 rel_media, relative = slicer(query, media.id) 
             else:
                 rel_media = ''
@@ -134,9 +140,10 @@ def show_related(context, media, form, related):
             rel_media = ''
 
     elif related == u'taxon':
-        if media.taxon_set.all():
+        taxa = media.taxon_set.all()
+        if taxa:
             qobj = Q()
-            for meta in media.taxon_set.all():
+            for meta in taxa:
                 if meta.name:
                     qobj.add(Q(taxon=meta), Q.OR)
             if qobj.__len__():
@@ -190,14 +197,14 @@ def show_related(context, media, form, related):
     else:
         rel_media = ''
 
-    if related in [u'author', u'taxon',]:
-        crumbs = eval('list(media.%s_set.all())' % related)
-        pseudo = crumbs
-        for index, item in enumerate(pseudo):
-            if not item.name:
-                crumbs.pop(index)
+    # Mostra os valores avaliados para o navegador linear.
+    if related == u'author':
+        crumbs = authors
+    elif related == u'taxon':
+        crumbs = taxa
     else:
-        crumbs = eval('media.%s' % related)
+        #XXX Necessário forçar a criação de uma lista.
+        crumbs = [eval('media.%s' % related)]
 
     current = media
 

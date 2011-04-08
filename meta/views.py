@@ -367,19 +367,26 @@ def photo_page(request, image_id):
         except:
             form = RelatedForm(initial={'type': 'author'})
             related = u'author'
-    image = get_object_or_404(Image.objects.select_related(), id=image_id)
-    #TODO Checar sessão para evitar overdose de views
+    image = get_object_or_404(Image.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath'), id=image_id)
     #XXX Será o save() mais eficiente que o update()?
     # Deixando assim por enquanto, pois update() dá menos queries.
     #image.view_count += 1
+    #image.view_count = F('view_count') + 1
     #image.save()
+    #TODO Checar sessão para evitar overdose de views
     Image.objects.filter(id=image_id).update(view_count=F('view_count') + 1)
-    references = image.reference_set.order_by('-citation')
+    tags = image.tag_set.all()
+    authors = image.author_set.all()
+    taxa = image.taxon_set.all()
+    sources = image.source_set.all()
     variables = RequestContext(request, {
         'media': image,
-        'references': references,
         'form': form,
         'related': related,
+        'tags': tags,
+        'authors': authors,
+        'taxa': taxa,
+        'sources': sources,
         })
     return render_to_response('media_page.html', variables)
 

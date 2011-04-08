@@ -2,9 +2,9 @@
 {% load i18n %}
 {% block title %}{{ media.title }} | {{ block.super }}{% endblock %}
 
-{% block meta-keywords %}{% show_set media.tag_set.iterator '' '' ', ' '' %}, {% show_set media.author_set.all '' '' ', ' '' %}, {% show_set media.taxon_set.all '' '' ', ' '' %}, {% show_set media.source_set.all '' '' ', ' '' %}, {{ media.sublocation.name }}, {{ media.city.name }}, {{ media.state.name }}, {{ media.country.slug }}{% endblock %}
-{% block meta-description %}{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %} {% trans 'Por' %} {% show_set media.author_set.all '' '' ', ' '' %}.{% endblock %}
-{% block meta-author %}{% show_set media.author_set.all '' '' ', ' '' %}{% endblock %}
+{% block meta-keywords %}{% show_set tags '' '' ', ' '' %}, {% show_set authors '' '' ', ' '' %}, {% show_set taxa '' '' ', ' '' %}, {% show_set sources '' '' ', ' '' %}, {{ media.sublocation.name }}, {{ media.city.name }}, {{ media.state.name }}, {{ media.country.slug }}{% endblock %}
+{% block meta-description %}{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %} {% trans 'Por' %} {% show_set authors '' '' ', ' '' %}.{% endblock %}
+{% block meta-author %}{% show_set authors '' '' ', ' '' %}{% endblock %}
 
 {% block extra-head %}
 
@@ -12,7 +12,7 @@
 <meta property="og:type" content="" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.thumb_filepath }}" />
-<meta property="og:description" content="{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %} {% trans 'Por' %} {% show_set media.author_set.all '' '' ', ' '' %}." />
+<meta property="og:description" content="{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %} {% trans 'Por' %} {% show_set authors '' '' ', ' '' %}." />
 <meta property="og:site_name" content="{{ block.super }}" />
 
 <script type="text/javascript">
@@ -49,9 +49,7 @@ $(document).ready(function(){
 });
 </script>
 
-{% comment %}
-ShareThis
-{% endcomment %}
+<!-- ShareThis -->
 <script type="text/javascript">var switchTo5x=true;</script>
 <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
 <script type="text/javascript">stLight.options({
@@ -61,21 +59,19 @@ ShareThis
     });
 </script>
 {% endblock %}
+
 {% block content %}
 {% load comments %}
 <section class="span-16">
     {% if media %}
-    <article id="single" class="{{ media.datatype }} {% show_set media.author_set.all 'author-' '' ' ' 'slug' %} {% show_set media.taxon_set.all 'taxon-' '' ' ' 'slug' %} size-{{ media.size.slug }} {% show_set media.source_set.all 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ media.view_count }}">
+    <article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} size-{{ media.size.slug }} {% show_set sources 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ media.view_count }}">
         <header class="span-16 last">
             <h1>{{ media.title }}</h1>
         </header>
         {% if media.is_public %}
-        {% if media.tag_set.all %}
+        {% if tags %}
             <footer class="span-16 last media-tags">
-            {% comment %}
-            <span class="quiet">Marcadores:</span>
-            {% endcomment %}
-                {% show_set media.tag_set.all '' '' ', ' 'link' %}
+                {% show_set tags '' '' ', ' 'link' %}
             </footer>
         {% endif %}
 
@@ -89,10 +85,10 @@ ShareThis
             {% endif %}
             {% if media.caption %}
                 <figcation class="span-13 last">{{ media.caption }}</figcaption>
-                <div class="span-13 last align-right" id="author">{% show_set media.author_set.all '' '' ', ' '' %}</div>
+                <div class="span-13 last align-right" id="author">{% show_set authors '' '' ', ' '' %}</div>
             {% else %}
             <div class="span-13 last" id="author">
-                {% show_set media.author_set.all '' '' ', ' '' %}
+                {% show_set authors '' '' ', ' '' %}
             </div>
             {% endif %}
         </figure>
@@ -101,7 +97,7 @@ ShareThis
             <div class="border-bottom" id="views">
                 {{ media.view_count }} {% trans 'visita' %}{{ media.view_count|pluralize }}
             </div>
-            {% if media.taxon_set.all %}
+            {% if taxa %}
                 {% include 'biodb.html' %}
             {% endif %}
 
@@ -127,18 +123,18 @@ ShareThis
         <div class="span-13 last borders" id="meta">
             <div id="citation" class="span-13">
                 <div>
-                    {% show_set media.author_set.all '' '.' ', ' '' %} <strong>{{ media.title }}</strong>. {% trans 'Imagem' %} {% trans 'acessada no banco de imagens <em>Cifonauta</em> em' %} {% now "F j, Y" %}. Link: <a href="{{ media.get_absolute_url }}">http://{{ request.META.HTTP_HOST }}{{ media.get_absolute_url }}</a>
+                    {% show_set authors '' '.' ', ' '' %} <strong>{{ media.title }}</strong>. {% trans 'Imagem' %} {% trans 'acessada no banco de imagens <em>Cifonauta</em> em' %} {% now "F j, Y" %}. Link: <a href="{{ media.get_absolute_url }}">http://{{ request.META.HTTP_HOST }}{{ media.get_absolute_url }}</a>
                 </div>
             </div>
             <div class="span-7 taxonomy">
 
-                {% if media.taxon_set.all %}
-                <strong>{% blocktrans count media.taxon_set.all.count as counter %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
+                {% if taxa %}
+                <strong>{% blocktrans count taxa.count as counter %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set taxa '' '' ', ' '' %}</span>
                 <br>
                 {% endif %}
 
-                {% if media.source_set.all %}
-                <strong>{% blocktrans count media.source_set.all.count as counter %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set media.source_set.all '' '' ', ' '' %}</span>
+                {% if sources %}
+                <strong>{% blocktrans count sources.count as counter %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set sources '' '' ', ' '' %}</span>
                 {% endif %}
             </div>
 
@@ -175,8 +171,8 @@ ShareThis
 
         {% show_related media form related %}
 
-        {% if media.taxon_set.all %}
-        {% for taxon in media.taxon_set.all %}
+        {% if taxa %}
+        {% for taxon in taxa %}
         <div class="span-16 last quiet" id="breadcrumbs">
             <h2>{% trans 'Classificação' %}</h2>
             {% taxon_paths taxon %}
@@ -184,10 +180,10 @@ ShareThis
         {% endfor %}
         {% endif %}
 
-        {% if references %}
+        {% if media.reference_set.all %}
         <div class="span-16 last" id="references">
             <h2>{% trans 'Referências bibliográficas' %}</h2>
-            {% for ref in references %}
+            {% for ref in media.reference_set.all %}
             <div class="citation">
             {% autoescape off %}{{ ref.citation }}{% endautoescape %}
             </div>
@@ -257,34 +253,34 @@ ShareThis
                 {% endif %}
             {% endif %}
         </li>
-        {% if media.tag_set.all %}
+        {% if tags %}
         <li>Marcador(es)</li>
         <ul>
-            {% for tag in media.tag_set.all %}
+            {% for tag in tags %}
             <li><a href="/admin/meta/tag/{{ tag.id }}/">{{ tag.name }}</a></li>
             {% endfor %}
         </ul>
         {% endif %}
-        {% if media.author_set.all %}
+        {% if authors %}
         <li>Autor(es)</li>
         <ul>
-            {% for author in media.author_set.all %}
+            {% for author in authors %}
             <li><a href="/admin/meta/author/{{ author.id }}/">{{ author.name }}</a></li>
             {% endfor %}
         </ul>
         {% endif %}
-        {% if media.taxon_set.all %}
+        {% if taxa %}
         <li>Táxon(s)</li>
         <ul>
-            {% for taxon in media.taxon_set.all %}
+            {% for taxon in taxa %}
             <li><a href="/admin/meta/taxon/{{ taxon.id }}/">{{ taxon.name }}</a></li>
             {% endfor %}
         </ul>
         {% endif %}
-        {% if media.source_set.all %}
+        {% if sources %}
         <li>Especialista(s)</li>
         <ul>
-            {% for source in media.source_set.all %}
+            {% for source in sources %}
             <li><a href="/admin/meta/source/{{ source.id }}/">{{ source.name }}</a></li>
             {% endfor %}
         </ul>
@@ -301,10 +297,10 @@ ShareThis
         {% if media.country %}
         <li>País: <a href="/admin/meta/country/{{ media.country.id }}/">{{ media.country.name }}</a></li>
         {% endif %}
-        {% if references %}
+        {% if media.reference_set.all %}
         <li>Referência(s)</li>
         <ul>
-            {% for ref in references %}
+            {% for ref in media.reference_set.all %}
             <li><a href="/admin/meta/references/{{ ref.id }}/">{{ ref.name }}</a></li>
             {% endfor %}
         </ul>

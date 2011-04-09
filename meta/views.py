@@ -379,6 +379,7 @@ def photo_page(request, image_id):
     authors = image.author_set.all()
     taxa = image.taxon_set.all()
     sources = image.source_set.all()
+    references = image.reference_set.all()
     variables = RequestContext(request, {
         'media': image,
         'form': form,
@@ -387,6 +388,7 @@ def photo_page(request, image_id):
         'authors': authors,
         'taxa': taxa,
         'sources': sources,
+        'references': references,
         })
     return render_to_response('media_page.html', variables)
 

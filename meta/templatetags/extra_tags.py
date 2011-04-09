@@ -27,7 +27,11 @@ def print_metalist(metalist, field):
 
 @register.inclusion_tag('taxon_paths.html')
 def taxon_paths(taxon):
-    '''Mostra classificação de um táxon de forma linear.'''
+    '''Mostra classificação de um táxon de forma linear.
+
+    Exclui subrankings da lista.
+    '''
+    #XXX É a forma mais eficaz de retirar os subrankings?
     ancestors = [t for t in taxon.get_ancestors() if t.rank in main_ranks]
     return {'taxon': taxon, 'ancestors': ancestors}
 

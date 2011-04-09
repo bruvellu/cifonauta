@@ -127,8 +127,7 @@ def show_related(context, media, form, related):
             qobj = Q()
             for meta in authors:
                 # Adiciona parâmetros para futuro query usando Q.
-                if meta.name:
-                    qobj.add(Q(author=meta), Q.OR)
+                qobj.add(Q(author=meta), Q.OR)
             if qobj.__len__():
                 # Se objeto não estiver vazio, descobrir seu tipo (foto ou vídeo) e gerar o queryset.
                 query = mediaque(media, qobj)
@@ -144,8 +143,7 @@ def show_related(context, media, form, related):
         if taxa:
             qobj = Q()
             for meta in taxa:
-                if meta.name:
-                    qobj.add(Q(taxon=meta), Q.OR)
+                qobj.add(Q(taxon=meta), Q.OR)
             if qobj.__len__():
                 query = mediaque(media, qobj)
                 rel_media, relative = slicer(query, media.id)
@@ -156,7 +154,7 @@ def show_related(context, media, form, related):
 
     elif related == u'size':
         if media.size:
-            qobj = Q(size=media.size.id)
+            qobj = Q(size=media.size_id)
             query = mediaque(media, qobj)
             rel_media, relative = slicer(query, media.id) 
         else:
@@ -164,7 +162,7 @@ def show_related(context, media, form, related):
 
     elif related == u'sublocation':
         if media.sublocation:
-            qobj = Q(sublocation=media.sublocation.id)
+            qobj = Q(sublocation=media.sublocation_id)
             query = mediaque(media, qobj)
             rel_media, relative = slicer(query, media.id) 
         else:
@@ -172,7 +170,7 @@ def show_related(context, media, form, related):
 
     elif related == u'city':
         if media.city:
-            qobj = Q(city=media.city.id)
+            qobj = Q(city=media.city_id)
             query = mediaque(media, qobj)
             rel_media, relative = slicer(query, media.id) 
         else:
@@ -180,7 +178,7 @@ def show_related(context, media, form, related):
 
     elif related == u'state':
         if media.state:
-            qobj = Q(state=media.state.id)
+            qobj = Q(state=media.state_id)
             query = mediaque(media, qobj)
             rel_media, relative = slicer(query, media.id) 
         else:
@@ -188,7 +186,7 @@ def show_related(context, media, form, related):
 
     elif related == u'country':
         if media.country:
-            qobj = Q(country=media.country.id)
+            qobj = Q(country=media.country_id)
             query = mediaque(media, qobj)
             rel_media, relative = slicer(query, media.id) 
         else:

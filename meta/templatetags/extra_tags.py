@@ -237,12 +237,18 @@ def search_box():
 @register.filter
 def sp_em(meta, autoescape=None):
     '''Filtro que aplica itálico à espécies e gêneros.'''
+    # Tem que levar em conta tradução...
+    italics = [
+            u'Gênero', u'Genus',
+            u'Subgênero', u'Subgenus',
+            u'Espécie', u'Species'
+            ]
     if autoescape:
         esc = conditional_escape
     else:
         esc = lambda x: x
     try:
-        if meta.rank == u'Gênero' or meta.rank == u'Espécie':
+        if meta.rank in italics:
             output = u'<em>%s</em>' % esc(meta.name)
         else:
             output = esc(meta.name)

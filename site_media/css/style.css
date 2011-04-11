@@ -440,6 +440,7 @@ ul.tree, ol.tree {
 
 hr {
     margin: 1.5em 0 1.5em 0 !important;
+    height: 1px !important;
 }
 
 #metafield {

@@ -1,9 +1,18 @@
 {% extends '../templates/base.html' %}
 {% load article_tags i18n %}
 
+{% block meta-description %}{% if article %}{{ article.rendered_content|striptags|safe|truncatewords:100 }}{% else %}{% trans 'Weblog for Cifonauta image database' %}{% endif %}{% endblock %}
+{% block meta-author %}{% if article %}{{ article.author.get_name }}{% else %}Alvaro E. Migotto, Bruno C. Vellutini{% endif %}{% endblock %}
+
 {% block extra-head %}
     {{ block.super }}
     <link rel="alternate" type="application/rss+xml" title="{% trans 'Latest Blog Articles RSS Feed' %}" href="{% url articles_feed 'latest' %}" />
+    <meta property="og:title" content="{% if article %}{{ article.title }}{% else %}{% trans 'Articles for Cifonauta weblog' %}{% endif %}" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <meta property="og:type" content="{% if article %}article{% else %}blog{% endif %}" />
+    <meta property="og:description" content="{% if article %}{{ article.rendered_content|striptags|safe|truncatewords:100 }}{% else %}{% trans 'Weblog for Cifonauta image database' %}{% endif %}" />
+    <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+
 {% endblock %}
 
 {% block content %}

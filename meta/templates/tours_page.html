@@ -7,7 +7,6 @@
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
-
 <meta property="og:title" content="{% trans 'Tours' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:description" content="{% trans 'Tours educativos do banco de imagens Cifonauta.' %}" />
@@ -25,7 +24,7 @@
         {% print_thumb 'tour' tour %}
     </div>
     <div class="span-13">
-        <h2>{{ tour.name }}</h2>
+        <h2><a href="{{ tour.get_absolute_url }}" title="{% trans 'Clique aqui para continuar lendo e iniciar o tour' %}"><strong>{{ tour.name }}</strong></a></h2>
         <p>
         {{ tour.description|truncatewords:30 }}
         <a href="{{ tour.get_absolute_url }}"><strong>{% trans 'Clique aqui para continuar lendo e iniciar o tour' %}</strong></a>.

@@ -4,11 +4,10 @@
 <h2>{% trans 'Grupos' %}</h2>
 <ul class="root tree" id="colaptree">
     {% recursetree taxa %}
-    {% comment %}{% if node.rank in main_ranks %}{% endcomment %}
     {% if node.rank %}
         {% comment %}Necessário para espécies sem hierarquia{% endcomment %}
         {% if node.parent or node.rank == 'Reino' or node.rank == 'Kingdom' %}
-            <li class="{{ node.rank|slugify }} {{ node.slug }}">
+        <li class="{{ node.rank|slugify }} {{ node.slug }} {% if node in current %}open{% endif %}">
             <span class="quiet">{{ node.rank }}</span> <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{{ node|sp_em }}</a>
             {% if not node.is_leaf_node %}
                 <ul class="children tree">
@@ -18,22 +17,13 @@
             </li>
         {% endif %}
     {% endif %}
-    {% comment %}{% endif %}{% endcomment %}
     {% endrecursetree %}
 </ul>
 
 <script type="text/javascript">
-            $("#colaptree").treeview({
-                collapsed: true,
-                animated: "fast",
-                persist: "location",
-                });
-            {% if media.taxon_set.all %}
-                {% for taxon in media.taxon_set.all %}
-                    $(".{{ taxon.slug }}-hitarea").click();
-                    {% for ancestor in taxon.get_ancestors %}
-                        $(".{{ ancestor.slug }}-hitarea").click();
-                    {% endfor %}
-                {% endfor %}
-            {% endif %}
+    $("#colaptree").treeview({
+        collapsed: true,
+        animated: "fast",
+        persist: "location",
+    });
 </script>

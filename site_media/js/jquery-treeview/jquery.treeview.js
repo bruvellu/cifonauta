@@ -59,6 +59,7 @@
 				this.filter(":last-child:not(ul)").addClass(CLASSES.last);
 				// collapse whole tree, or only those marked as closed, anyway except those marked as open
 				this.filter((settings.collapsed ? "" : "." + CLASSES.closed) + ":not(." + CLASSES.open + ")").find(">ul").hide();
+				this.filter("." + CLASSES.open).parents().find(">ul").show();
 			}
 			// return all items with sublists
 			return this.filter(":has(>ul)");
@@ -73,7 +74,7 @@
 			
 			if (!settings.prerendered) {
 				// handle closed ones first
-				this.filter(":has(>ul:hidden)")
+				this.filter(":has(>ul:hidden)").not("." + CLASSES.open)
 						.addClass(CLASSES.expandable)
 						.replaceClass(CLASSES.last, CLASSES.lastExpandable);
 						
@@ -81,6 +82,11 @@
 				this.not(":has(>ul:hidden)")
 						.addClass(CLASSES.collapsable)
 						.replaceClass(CLASSES.last, CLASSES.lastCollapsable);
+				
+				// handle fully openned ones
+				this.filter("." + CLASSES.open)
+				    .addClass(CLASSES.collapsable)
+				    .replaceClass(CLASSES.last, CLASSES.lastCollapsable);
 						
 	            // create hitarea if not present
 				var hitarea = this.find("div." + CLASSES.hitarea);

@@ -406,12 +406,16 @@ def video_page(request, video_id):
         except:
             form = RelatedForm(initial={'type': 'author'})
             related = u'author'
-    video = get_object_or_404(Video, id=video_id)
+    video = get_object_or_404(Video.objects.select_related('size', 
+        'sublocation', 'city', 'state', 'country', 
+        'rights').defer('source_filepath',), id=video_id)
     #TODO Checar sessão para evitar overdose de views
-    video.view_count = video.view_count + 1
-    video.save()
-    tags = video.tag_set.all().order_by('name')
-    references = video.reference_set.all().order_by('-citation')
+    Video.objects.filter(id=video_id).update(view_count=F('view_count') + 1)
+    tags = video.tag_set.all()
+    authors = video.author_set.all()
+    taxa = video.taxon_set.all()
+    sources = video.source_set.all()
+    references = video.reference_set.all()
     # Para lidar com tamanhos de vídeos.
     if video.old_filepath.endswith('m2ts'):
     	height = 288
@@ -419,11 +423,14 @@ def video_page(request, video_id):
     	height = 384
     variables = RequestContext(request, {
         'media': video,
-        'tags': tags,
-        'references': references,
         'form': form,
         'related': related,
         'height': height,
+        'tags': tags,
+        'authors': authors,
+        'taxa': taxa,
+        'sources': sources,
+        'references': references,
         })
     return render_to_response('media_page.html', variables)
 

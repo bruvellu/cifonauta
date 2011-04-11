@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block title %}{{ media.title }} | {{ block.super }}{% endblock %}
-
 {% block meta-keywords %}{% show_set tags '' '' ', ' '' %}, {% show_set authors '' '' ', ' '' %}, {% show_set taxa '' '' ', ' '' %}, {% show_set sources '' '' ', ' '' %}, {{ media.sublocation.name }}, {{ media.city.name }}, {{ media.state.name }}, {{ media.country.slug }}{% endblock %}
 {% block meta-description %}{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %} {% trans 'Por' %} {% show_set authors '' '' ', ' '' %}.{% endblock %}
 {% block meta-author %}{% show_set authors '' '' ', ' '' %}{% endblock %}
@@ -9,11 +8,20 @@
 {% block extra-head %}
 
 <meta property="og:title" content="{{ media.title }}" />
-<meta property="og:type" content="" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.thumb_filepath }}" />
-<meta property="og:description" content="{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %} {% trans 'Por' %} {% show_set authors '' '' ', ' '' %}." />
-<meta property="og:site_name" content="{{ block.super }}" />
+<meta property="og:description" content="{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %}; {% show_set authors '' '' ', ' '' %}" />
+<meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+
+{% if media.datatype == 'video' %}
+<meta property="og:video" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.mp4_filepath }}" />
+<meta property="og:video:height" content="{{ height }}" />
+<meta property="og:video:width" content="512" />
+<meta property="og:video:type" content="application/x-shockwave-flash" />
+<meta property="og:type" content="cifonauta:video" />
+{% else %}
+<meta property="og:type" content="cifonauta:photo" />
+{% endif %}
 
 <script type="text/javascript">
 // JavaScript code goes here.

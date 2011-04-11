@@ -1,6 +1,20 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
+{% block meta-keywords %}{% trans 'biologia marinha, biodiversidade, banco de imagens, oceano' %}{% endblock %}
+{% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
+
+{% block extra-head %}
+
+<meta property="og:title" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ main_image.thumb_filepath }}" />
+<meta property="og:description" content="{% blocktrans %}O banco de imagens <em>Cifonauta</em> contém uma grande variedade de fotos e vídeos provenientes de atividades científicas em biologia marinha. As imagens carregam marcadores com classificação taxonômica, estágio de vida, habitat e outras informações que permitem navegar de maneira intuitiva e didática.{% endblocktrans %}" />
+<meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+
+{% endblock %}
+
 {% block content %}
 
 <section class="main shadow span-23 last" id="intro">

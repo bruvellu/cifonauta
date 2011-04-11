@@ -499,6 +499,7 @@ def tour_page(request, slug):
         'tour': tour,
         'taxa': taxa,
         'tags': tags,
+        'authors': authors,
         })
     return render_to_response('tour_page.html', variables)
 

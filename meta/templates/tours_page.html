@@ -1,6 +1,20 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block title %}{% trans 'Tours' %} | {{ block.super }}{% endblock %}
+
+{% block meta-keywords %}{% trans 'tour, galeria, slideshow, apresentação' %}{% endblock %}
+{% block meta-description %}{% trans 'Tours educativos do banco de imagens Cifonauta.' %}{% endblock %}
+{% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
+
+{% block extra-head %}
+
+<meta property="og:title" content="{% trans 'Tours' %}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:description" content="{% trans 'Tours educativos do banco de imagens Cifonauta.' %}" />
+<meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+<meta property="og:type" content="article" />
+{% endblock %}
+
 {% block content %}
 <section class="span-24 last">
 <header><h1>{% trans 'Tours' %}</h1></header>

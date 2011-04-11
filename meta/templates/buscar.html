@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block title %}{% trans 'Buscador' %} | {{ block.super }}{% endblock %}
+{% block meta-keywords %}{% for k, v in queries.items %}{% if v %}{% comment %} Checa se o marcador é objeto ou string. {% endcomment %}{% if v|islist or v.0.name %}{% for query in v %}{{ query }}, {% endfor %}{% else %}{{ v }}{% if not forloop.last %}, {% endif %}{% endif %}{% endif %}{% endfor %}{% endblock %}
+{% block meta-description %}{% trans 'Buscador do banco de imagens Cifonauta.' %}{% endblock %}
+{% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
+
 {% block extra-head %}
+
+<meta property="og:title" content="{% trans 'Buscador' %}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:type" content="article" />
+<meta property="og:description" content="{% trans 'Buscador do banco de imagens Cifonauta.' %}" />
+<meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+
 <!--<script type="text/javascript" src="{{ MEDIA_URL }}js/buscador.js"></script>-->
 {% endblock %}
 {% block content %}

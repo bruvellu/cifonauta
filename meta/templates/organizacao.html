@@ -1,6 +1,21 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block title %}{% trans 'Organização do banco' %} | {{ block.super }}{% endblock %}
+
+{% block meta-keywords %}{% trans 'Organização do banco' %}{% endblock %}
+{% block meta-description %}{% blocktrans %}As fotos e vídeos carregados no site podem ser pesquisadas por meio das informações básicas (metadados), como espécie, local, autor, tamanho. Às imagens estão também associados marcadores (tags), termos que as qualificam de acordo com categorias como, técnica fotográfica, estágio de vida, habitat etc. Desse modo, é possível navegar pelas imagens usando os marcadores. Por exemplo, você pode querer procurar fotos de larvas de moluscos tiradas em microscopia confocal, ou apenas navegar pelos estágios adultos de organismos planctônicos. A categorização das imagens e a explicação de alguns dos marcadores utilizados encontra-se abaixo.{% endblocktrans %}{% endblock %}
+{% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
+
+{% block extra-head %}
+
+<meta property="og:title" content="{% trans 'Organização do banco' %}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:type" content="article" />
+<meta property="og:description" content="{% blocktrans %}As fotos e vídeos carregados no site podem ser pesquisadas por meio das informações básicas (metadados), como espécie, local, autor, tamanho. Às imagens estão também associados marcadores (tags), termos que as qualificam de acordo com categorias como, técnica fotográfica, estágio de vida, habitat etc. Desse modo, é possível navegar pelas imagens usando os marcadores. Por exemplo, você pode querer procurar fotos de larvas de moluscos tiradas em microscopia confocal, ou apenas navegar pelos estágios adultos de organismos planctônicos. A categorização das imagens e a explicação de alguns dos marcadores utilizados encontra-se abaixo.{% endblocktrans %}" />
+<meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+
+{% endblock %}
+
 {% block content %}
 <section class="span-16">
 <header class="span-16 last"><h1>{% trans 'Organização do banco' %}</h1></header>

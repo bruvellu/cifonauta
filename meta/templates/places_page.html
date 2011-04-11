@@ -4,6 +4,17 @@
 Mostra todas as localidades em 4 colunas. Código bem objetivo, usando icount para contar linhas da tabela.
 {% endcomment %}
 {% block title %}{% trans 'Localidades' %} | {{ block.super }}{% endblock %}
+{% block meta-keywords %}{% trans 'locais, biologia marinha, biodiversidade' %}{% endblock %}
+{% block meta-description %}{% trans 'Localidades incluídas no banco de imagens Cifonauta.' %}{% endblock %}
+{% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
+
+{% block extra-head %}
+<meta property="og:title" content="{% trans 'Localidades' %}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:description" content="{% trans 'Localidades incluídas no banco de imagens Cifonauta.' %}" />
+<meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+<meta property="og:type" content="article" />
+{% endblock %}
 {% block content %}
 <section class="span-24 last">
 <header><h1>{% trans 'Localidades' %}</h1></header>

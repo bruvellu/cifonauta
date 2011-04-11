@@ -1,6 +1,19 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block title %}{% trans 'Táxons' %} | {{ block.super }}{% endblock %}
+
+{% block meta-keywords %}{% trans 'táxons, espécies, biodiversidade' %}{% endblock %}
+{% block meta-description %}{% trans 'Lista de táxons incluídos no banco de imagens Cifonauta.' %}{% endblock %}
+{% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
+
+{% block extra-head %}
+<meta property="og:title" content="{% trans 'Táxons' %}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:description" content="{% trans 'Lista de táxons incluídos no banco de imagens Cifonauta.' %}" />
+<meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+<meta property="og:type" content="article" />
+{% endblock %}
+
 {% block content %}
 <section class="span-24 last">
 <header><h1>{% trans 'Táxons' %}</h1></header>

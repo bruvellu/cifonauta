@@ -1,6 +1,18 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block title %}{% trans 'Referências' %} | {{ block.super }}{% endblock %}
+{% block meta-keywords %}{% trans 'referências, biologia marinha, biodiversidade' %}{% endblock %}
+{% block meta-description %}{% trans 'Referências bibliográficas citadas no banco de imagens Cifonauta.' %}{% endblock %}
+{% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
+
+{% block extra-head %}
+
+<meta property="og:title" content="{% trans 'Referências' %}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:description" content="{% trans 'Referências bibliográficas citadas no banco de imagens Cifonauta.' %}" />
+<meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+<meta property="og:type" content="article" />
+{% endblock %}
 {% block content %}
 <section class="span-24 last">
 <header><h1>{% trans 'Referências' %}</h1></header>

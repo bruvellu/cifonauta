@@ -4,6 +4,19 @@
 Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o regroup para criar objetos de cada categoria, usa o cycle para definir o span de cada coluna adequadamente e o icount para contar o número de linhas de cada tabela.
 {% endcomment %}
 {% block title %}{% trans 'Marcadores' %} | {{ block.super }}{% endblock %}
+
+{% block meta-keywords %}{% trans 'marcadores, biodiversidade, biologia marinha' %}{% endblock %}
+{% block meta-description %}{% trans 'Marcadores presentes no banco de imagens Cifonauta.' %}{% endblock %}
+{% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
+
+{% block extra-head %}
+
+<meta property="og:title" content="{% trans 'Marcadores' %}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:description" content="{% trans 'Marcadores presentes no banco de imagens Cifonauta.' %}" />
+<meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+<meta property="og:type" content="article" />
+{% endblock %}
 {% block content %}
 <section class="span-24 last">
 <header><h1>{% trans 'Marcadores' %}</h1></header>

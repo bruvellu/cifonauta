@@ -495,11 +495,22 @@ def meta_page(request, model_name, field, slug):
 def tour_page(request, slug):
     '''Página única de cada tour.'''
     tour = get_object_or_404(Tour, slug=slug)
-    authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(tour.images.all(), tour.videos.all())
-    tour.view_count = tour.view_count + 1
-    tour.save()
+    photos = tour.images.select_related(
+            'size', 'sublocation', 'city', 'state', 'country')
+    videos = tour.videos.select_related(
+            'size', 'sublocation', 'city', 'state', 'country')
+    thumb = photos.values_list('thumb_filepath', flat=True)[0]
+
+    # Extrair metadados das imagens.
+    authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(photos, videos)
+
+    # Atualiza contador de visualizações.
+    Tour.objects.filter(slug=slug).update(view_count=F('view_count') + 1)
     variables = RequestContext(request, {
         'tour': tour,
+        'photos': photos,
+        'videos': videos,
+        'thumb': thumb,
         'taxa': taxa,
         'tags': tags,
         'authors': authors,

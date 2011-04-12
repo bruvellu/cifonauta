@@ -2,16 +2,14 @@
 {% load i18n %}
 {% load markup %}
 {% block title %}{{ tour.name }} | {% trans 'Tour' %} | {{ block.super }}{% endblock %}
-
 {% block meta-keywords %}{{ tour.name }}, {% show_set tags '' '' ', ' '' %}, {% show_set taxa '' '' ', ' '' %}{% endblock %}
 {% block meta-description %}{{ tour.description|markdown|striptags|truncatewords:30 }}{% endblock %}
 {% block meta-author %}{% show_set authors '' '' ', ' '' %}{% endblock %}
 
 {% block extra-head %}
-
 <meta property="og:title" content="{{ tour.name }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ tour.images.all.1.thumb_filepath }}" />
+<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ thumb }}" />
 <meta property="og:description" content="{{ tour.description|markdown|striptags|truncatewords:30 }}" />
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 <meta property="og:type" content="cifonauta:tour" />
@@ -50,7 +48,7 @@
     </div>
     {% comment %}TODO adapt to HTML5{% endcomment %}
     <div class="slides_container shadow span-21">
-        {% for media in tour.images.all %}
+        {% for media in photos %}
         <div class="span-21 eachslide last">
             <div class="span-13">
                 {% include 'photo.html' %}
@@ -63,13 +61,19 @@
                 <p>{% trans 'SEM LEGENDA' %}</p>
                 {% endif %}
                 <div>
-                    <strong>{% blocktrans count media.author_set.all.count as counter %}Autor{% plural %}Autores{% endblocktrans %}:</strong> <span>{% show_set media.author_set.all '' '' ', ' '' %}</span>
-                    <br>
-
-                    {% if media.taxon_set.all %}
-                    <strong>{% blocktrans count media.taxon_set.all.count as counter %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set media.taxon_set.all '' '' ', ' '' %}</span>
+                    {% with media.author_set.all as author_all %}
+                    {% if author_all %}
+                    <strong>{% blocktrans count author_all.count as counter %}Autor{% plural %}Autores{% endblocktrans %}:</strong> <span>{% show_set author_all '' '' ', ' '' %}</span>
                     <br>
                     {% endif %}
+                    {% endwith %}
+
+                    {% with media.taxon_set.all as taxa_all %}
+                    {% if taxa_all %}
+                    <strong>{% blocktrans count taxa_all.count as counter %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set taxa_all '' '' ', ' '' %}</span>
+                    <br>
+                    {% endif %}
+                    {% endwith %}
 
                     {% if media.size %}
                     <strong>{% trans 'Tamanho' %}:</strong> <span>{{ media.size }}</span>
@@ -85,10 +89,12 @@
                     <br>
                     {% endif %}
 
-                    {% if media.tag_set.all %}
-                    <strong>{% blocktrans count media.tag_set.all.count as counter %}Marcador{% plural %}Marcadores{% endblocktrans %}:</strong> <span>{% show_set media.tag_set.all '' '' ', ' '' %}</span>
+                    {% with media.tag_set.all as tag_all %}
+                    {% if tag_all %}
+                    <strong>{% blocktrans count tag_all.count as counter %}Marcador{% plural %}Marcadores{% endblocktrans %}:</strong> <span>{% show_set tag_all '' '' ', ' '' %}</span>
                     <br>
                     {% endif %}
+                    {% endwith %}
 
                     <div class="align-right">
                         <br>
@@ -107,7 +113,7 @@
 
     <div class="span-24 last" id="paginator-container">
         <ul class="pagination">
-            {% for media in tour.images.all %}
+            {% for media in photos %}
             <li>
             <a href="#"><img class="shadow" src="{{ MEDIA_URL }}{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" /></a>
             </li>
@@ -124,7 +130,7 @@
     <h2>{% trans 'Ficha Técnica' %}</h2>
     <ul class="metalist">
         <li>
-        <strong>{% trans 'Número de imagens' %}:</strong> {{ tour.images.all|length }}
+        <strong>{% trans 'Número de imagens' %}:</strong> {{ photos.count }}
         </li>
         <li>
         <strong>{% trans 'Data de criação' %}:</strong> {{ tour.pub_date }}

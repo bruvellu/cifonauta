@@ -10,12 +10,12 @@
     </div>
     {% endif %}
 
-    {% if not images.object_list or not videos.object_list %}
+    {% if not images.paginator.count or not videos.paginator.count %}
     <div class="notice">
-        {% if not videos.object_list and not images.object_list %}
+        {% if not videos.paginator.count and not images.paginator.count %}
             {% trans 'Nenhuma foto e nenhum vídeo' %}
         {% else %}
-            {% if not images.object_list %}
+            {% if not images.paginator.count %}
                 {% trans 'Nenhuma foto' %}
             {% else %}
                 {% trans 'Nenhum vídeo' %}
@@ -25,7 +25,7 @@
     {% endif %}
 </div>
 
-{% if images.object_list %}
+{% if images.paginator.count %}
 <section id="photo-gallery">
 <header class="span-16 last">
 <h2 class="span-10">{% trans 'Foto' %}{{ images.paginator.count|pluralize }} ({{ images.paginator.count }})</h2>
@@ -58,7 +58,7 @@
 
 {% endif %}
 
-{% if videos.object_list %}
+{% if videos.paginator.count %}
 <section id="video-gallery">
 <header class="span-16 last">
 <h2 class="span-10">{% trans 'Vídeo' %}{{ videos.paginator.count|pluralize }} ({{ videos.paginator.count }})</h2>

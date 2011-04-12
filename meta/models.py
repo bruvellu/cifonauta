@@ -126,6 +126,7 @@ class Author(models.Model):
     class Meta:
         verbose_name = _('autor')
         verbose_name_plural = _('autores')
+        ordering = ['name']
 
 
 class Source(models.Model):
@@ -171,7 +172,7 @@ class Tag(models.Model):
     class Meta:
         verbose_name = _('marcador')
         verbose_name_plural = _('marcadores')
-        ordering = ['name']
+        ordering = ['position', 'name']
 
 
 class TagCategory(models.Model):
@@ -214,6 +215,7 @@ class Taxon(MPTTModel):
     class Meta:
         verbose_name = _('táxon')
         verbose_name_plural = _('táxons')
+        ordering = ['name']
 
 
 class Size(models.Model):
@@ -253,6 +255,7 @@ class Rights(models.Model):
     class Meta:
         verbose_name = _('detentor dos direitos')
         verbose_name_plural = _('detentores dos direitos')
+        ordering = ['name']
 
 
 class Sublocation(models.Model):
@@ -344,6 +347,7 @@ class Reference(models.Model):
         verbose_name_plural = _('referências')
         ordering = ['-citation']
 
+
 class Tour(models.Model):
     name = models.CharField(_('nome'), max_length=100, unique=True)
     slug = models.SlugField(_('slug'), max_length=100, blank=True)
@@ -370,6 +374,8 @@ class Tour(models.Model):
     class Meta:
         verbose_name = _('tour')
         verbose_name_plural = _('tours')
+        ordering = ['name']
+
 
 # Registrando modelos para tradução.
 class ImageTranslation(object):

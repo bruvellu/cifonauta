@@ -306,9 +306,9 @@ def icount(value, field):
 @register.inclusion_tag('mais.html')
 def show_info(image_list, video_list, queries):
     '''Extrair metadados e exclui o que estiver nas queries.
-    
+
     Manda a lista de imagens e de vídeos para a função extract_set que vai extrair todos os metadados associados a estes arquivos.
-    
+
     Para identificar os valores que estão sendo procurados (queries), estes são excluídos de cada lista correspondente de metadados (authors, taxa, etc.)
     '''
     authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(image_list, video_list)
@@ -367,7 +367,7 @@ def paged_url(query_string, page_number):
 @register.simple_tag
 def build_url(meta, field, queries, remove=False):
     '''Constrói o url para lidar com o refinamento.
-    
+
     Estou usando a infra para remover o tipo (photo/video) do url 
     (remove=True). Se remove=False a adição não vai funcionar, se for preciso 
     acrescentar código para lidar com o type.
@@ -393,6 +393,7 @@ def build_url(meta, field, queries, remove=False):
 
     # Constrói o url de fato.
     for k, v in queries.iteritems():
+        #XXX Query necessária?
         if v:
             if first:
                 prefix = prefix + k + '='
@@ -423,6 +424,7 @@ def build_url(meta, field, queries, remove=False):
                 if type_field:
                     prefix = prefix + type
             else:
+                #XXX Outra query, necessária?
                 prefix = prefix + ','.join(final_list)
     if prefix[-1] == '?':
         prefix = prefix[:-1]
@@ -456,54 +458,41 @@ def show_set(set, prefix, suffix, sep, method='name'):
 
 def extract_set(image_list, video_list):
     '''Extrai outros metadados das imagens buscadas.'''
-    # XXX Q vídeos deixou meio lento, tem como melhorar?
     # Salva IDs dos arquivos em uma lista.
-
     # Imagens.
-    image_ids = []
-    try:
-        image_values = image_list.values()
-        for image in image_values.iterator():
-            image_ids.append(image['id'])
-    except:
-        pass
-
+    image_ids = image_list.values_list('id', flat=True)
     # Vídeos.
-    video_ids = []
-    try:
-        video_values = video_list.values()
-        for video in video_values.iterator():
-            video_ids.append(video['id'])
-    except:
-        pass
+    video_ids = video_list.values_list('id', flat=True)
 
     # ManyToMany relationships
+    #TODO fazer um select_related('parent') para as tags?
+    # Talvez seja útil para mostrar a categoria delas no refinador.
     refined_tags = Tag.objects.filter(
             Q(images__pk__in=image_ids) | Q(videos__pk__in=video_ids)
-            ).distinct().order_by('name')
+            ).distinct()
     refined_authors = Author.objects.filter(
             Q(images__pk__in=image_ids) | Q(videos__pk__in=video_ids)
-            ).distinct().order_by('name')
+            ).distinct()
     refined_taxa = Taxon.objects.filter(
             Q(images__pk__in=image_ids) | Q(videos__pk__in=video_ids)
-            ).distinct().order_by('name')
+            ).distinct()
 
     # ForeignKey relationships
     refined_sizes = Size.objects.filter(
             Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
-            ).distinct().order_by('name')
+            ).distinct()
     refined_sublocations = Sublocation.objects.filter(
             Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
-            ).distinct().order_by('name')
+            ).distinct()
     refined_cities = City.objects.filter(
             Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
-            ).distinct().order_by('name')
+            ).distinct()
     refined_states = State.objects.filter(
             Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
-            ).distinct().order_by('name')
+            ).distinct()
     refined_countries = Country.objects.filter(
             Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
-            ).distinct().order_by('name')
+            ).distinct()
 
     return refined_authors, refined_taxa, refined_sizes, refined_sublocations, refined_cities, refined_states, refined_countries, refined_tags
 
@@ -534,6 +523,7 @@ def add_meta(meta, field, query):
                 values_list = [str(n) for n in values_list]
             else:
                 values_list = query.values_list('slug', flat=True)
+        #XXX Usa uma query... necessário?
         query = [meta.slug]
         query.extend(values_list)
     return query

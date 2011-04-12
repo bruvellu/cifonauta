@@ -37,8 +37,9 @@ def main_page(request):
 
 def search_page(request):
     '''Página de busca.
-    
-    Procura termo no campo tsv do banco de dados, que possibilita o full-text search.
+
+    Procura termo no campo tsv do banco de dados, que possibilita o full-text 
+    search.
     '''
     #TODO Documentar como funciona essa função.
     #TODO Implementar jQuery e AJAX para melhorar usabilidade.
@@ -68,8 +69,12 @@ def search_page(request):
     if 'query' in request.GET or 'type' in request.GET or 'author' in request.GET or 'size' in request.GET or 'tag' in request.GET or 'taxon' in request.GET or 'sublocation' in request.GET or 'city' in request.GET or 'state' in request.GET or 'country' in request.GET:
         # Iniciando querysets para serem filtrados para cada metadado presente na query.
         #XXX Não sei se é muito eficiente, mas por enquanto será assim.
-        image_list = Image.objects.filter(is_public=True)
-        video_list = Video.objects.filter(is_public=True)
+        image_list = Image.objects.select_related(
+                'size').filter(is_public=True).defer(
+                        'source_filepath', 'old_filepath')
+        video_list = Video.objects.select_related(
+                'size').filter(is_public=True).defer(
+                        'source_filepath', 'old_filepath')
 
         show_results = True
         qobj = Q()
@@ -243,8 +248,6 @@ def search_page(request):
             elif request.GET['type'] == 'all':
                 # Não precisa entrar no queries, para não poluir o url.
                 pass
-
-    print queries
 
     variables = RequestContext(request, {
         'form': form,

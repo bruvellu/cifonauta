@@ -32,15 +32,13 @@
     </div>
     <div class="span-6 last">
         <h3>{% trans 'Ficha Técnica' %}</h3>
-        <p class="upper">{{ tour.images.all|length }} {% trans 'imagens' %}, {{ tour.view_count }} {% trans 'visitas' %}</p>
+        <p class="upper">{{ tour.images.count }} {% trans 'imagens' %}, {{ tour.view_count }} {% trans 'visitas' %}</p>
         <ul class="padlist">
             <li>
             <strong>{% trans 'Criação' %}:</strong> {{ tour.pub_date }}
             </li>
             <li>
             <strong>{% trans 'Modificado' %}:</strong> {{ tour.timestamp }}
-            </li>
-            <li>
             </li>
         </ul>
     </div>

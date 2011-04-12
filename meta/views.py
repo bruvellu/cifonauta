@@ -553,7 +553,7 @@ def places_page(request):
 
 def tags_page(request):
     '''Página mostrando tags organizados por categoria.'''
-    tags = Tag.objects.order_by('parent')
+    tags = Tag.objects.select_related('parent').order_by('parent')
     sizes = Size.objects.order_by('id')
     variables = RequestContext(request, {
         'tags': tags,

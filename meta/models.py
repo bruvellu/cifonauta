@@ -161,6 +161,8 @@ class Tag(models.Model):
     parent = models.ForeignKey('TagCategory', blank=True, null=True,
             related_name='tags', verbose_name=_('pai'))
     position = models.PositiveIntegerField(_('posição'), default=0)
+    image_count = models.PositiveIntegerField(_('número de fotos'), default=0, editable=False)
+    video_count = models.PositiveIntegerField(_('número de vídeos'), default=0, editable=False)
 
     def __unicode__(self):
         return self.name
@@ -168,6 +170,16 @@ class Tag(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('tag_url', [self.slug])
+
+    def counter(self):
+        '''Conta o número de imagens+vídeos associados.
+
+        Atualiza os respectivos campos image_count e video_count.
+        '''
+        self.image_count = self.images.count()
+        self.video_count = self.videos.count()
+        print self.image_count, self.video_count
+        self.save()
 
     class Meta:
         verbose_name = _('marcador')
@@ -414,7 +426,7 @@ class FlatPageTranslation(object):
     fields = ('title', 'content',)
 register(FlatPage, FlatPageTranslation)
 
-
+# Signals
 def citation_html(ref):
     '''Retorna citação formatada em HTML.
     
@@ -513,6 +525,14 @@ def slug_pre_save(signal, instance, sender, **kwargs):
         slug = slugify(instance.name)
         instance.slug = slug
 
+def update_count(signal, instance, sender, **kwargs):
+    '''Atualiza o contador de fotos e vídeos.'''
+    # Tags
+    tags = instance.tag_set.all()
+    for tag in tags:
+        print tag.name
+        tag.counter()
+
 # Slugify before saving.
 signals.pre_save.connect(slug_pre_save, sender=Author)
 signals.pre_save.connect(slug_pre_save, sender=Tag)
@@ -529,3 +549,8 @@ signals.pre_save.connect(slug_pre_save, sender=Reference)
 signals.pre_save.connect(slug_pre_save, sender=Tour)
 # Create citation with bibkey.
 signals.pre_save.connect(citation_pre_save, sender=Reference)
+# Update models autocount field.
+signals.post_save.connect(update_count, sender=Image)
+signals.post_delete.connect(update_count, sender=Image)
+signals.post_save.connect(update_count, sender=Video)
+signals.post_delete.connect(update_count, sender=Video)

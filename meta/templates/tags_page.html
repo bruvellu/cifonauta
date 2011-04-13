@@ -25,7 +25,9 @@ Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o re
 
     <div class="span-5 metagroup">
         <h2>{% trans 'Tamanhos' %}</h2>
+        {% comment %}FIXME Preciso alterar o modelo antes...
         {% print_metalist sizes 'size' %}
+        {% endcomment %}
     </div>
 
     {% for item in tag_groups %}

@@ -179,7 +179,6 @@ class Tag(models.Model):
         '''
         self.image_count = self.images.count()
         self.video_count = self.videos.count()
-        print self.image_count, self.video_count
         self.save()
 
     class Meta:
@@ -528,12 +527,10 @@ def slug_pre_save(signal, instance, sender, **kwargs):
 
 def update_count(signal, instance, sender, **kwargs):
     '''Atualiza o contador de fotos e vídeos.'''
-    print signal, instance, sender
+    #TODO Incluir os outros modelos!
     # Tags
     tags = instance.tag_set.all()
-    print tags
     for tag in tags:
-        print tag.name
         tag.counter()
 
 # Slugify before saving.

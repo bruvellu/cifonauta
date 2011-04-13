@@ -2,7 +2,7 @@
     {% for meta in metalist %}
     <li class="metaitem {% cycle 'darkrow' 'lightrow' %}">
     <a href="{{ meta.get_absolute_url }}" {% if meta.description %}title="{{ meta.description }}"{% endif %}>{{ meta.name }}</a>
-        <span class="metacount quiet">{{ meta|icount:field }}</span>
+        <span class="metacount quiet">{{ meta.image_count|add:meta.video_count }}</span>
     </li>
     {% endfor %}
 </ul>

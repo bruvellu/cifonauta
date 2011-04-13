@@ -114,7 +114,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.markup',
     'django.contrib.syndication',
-    'weblarvae.meta',
+    'meta',
     'articles',
     'south',
     'mptt',

@@ -14,6 +14,7 @@ from external.mendeley import mendeley
 
 #TODO Incluir help_text='' nos fields!
 
+
 class File(models.Model):
     # File
     source_filepath = models.CharField(_('arquivo fonte local'), 
@@ -527,8 +528,10 @@ def slug_pre_save(signal, instance, sender, **kwargs):
 
 def update_count(signal, instance, sender, **kwargs):
     '''Atualiza o contador de fotos e vídeos.'''
+    print signal, instance, sender
     # Tags
     tags = instance.tag_set.all()
+    print tags
     for tag in tags:
         print tag.name
         tag.counter()

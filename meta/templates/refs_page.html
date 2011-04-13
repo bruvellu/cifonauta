@@ -29,7 +29,7 @@
     {% endautoescape %}
 </div>
 <div class="span-5 last">
-    <a href="{{ ref.get_absolute_url }}">{% blocktrans count ref|icount:'reference' as counter %}{{ counter }} imagem ligada à este trabalho.{% plural %}{{ counter }} imagens ligadas à este trabalho.{% endblocktrans %}</a>
+    <a href="{{ ref.get_absolute_url }}">{% blocktrans count ref.image_count|add:ref.video_count as counter %}{{ counter }} imagem ligada à este trabalho.{% plural %}{{ counter }} imagens ligadas à este trabalho.{% endblocktrans %}</a>
 </div>
 </div>
 {% endfor %}

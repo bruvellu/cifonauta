@@ -460,9 +460,15 @@ def extract_set(image_list, video_list):
     '''Extrai outros metadados das imagens buscadas.'''
     # Salva IDs dos arquivos em uma lista.
     # Imagens.
-    image_ids = image_list.values_list('id', flat=True)
+    if image_list:
+        image_ids = image_list.values_list('id', flat=True)
+    else:
+        image_ids = []
     # Vídeos.
-    video_ids = video_list.values_list('id', flat=True)
+    if video_list:
+        video_ids = video_list.values_list('id', flat=True)
+    else:
+        video_ids = []
 
     # ManyToMany relationships
     #TODO fazer um select_related('parent') para as tags?

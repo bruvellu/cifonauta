@@ -365,30 +365,63 @@ def paged_url(query_string, page_number):
     return url
 
 @register.simple_tag
-def build_url(meta, field, queries, remove=False):
+def build_url(meta, field, queries, remove=False, append=None):
     '''Constrói o url para lidar com o refinamento.
 
-    Estou usando a infra para remover o tipo (photo/video) do url 
-    (remove=True). Se remove=False a adição não vai funcionar, se for preciso 
-    acrescentar código para lidar com o type.
+    Descrição dos campos:
+        - meta: valor do campo do request.GET, pode ser 'photo' ou o slug de 
+          algum metadado.
+        - field: nome do campo do request.GET, 'type', 'author', 'tag', etc.
+        - queries: dicionário com field:meta passados pelo request.GET, será 
+          usado para construir o url.
+        - remove: se verdadeiro, a função irá limpar dos queries o meta do 
+          field passado como argumento excluindo o valor do url final.
+        - append: string extra que pode ser passada como argumento para ter 
+          maior flexibilidade na hora de criar os urls no template.
+
+    A função começa com o prefixo base '/buscar/?' e acrescenta ou remove os 
+    valores de acordo com os parâmetros acima.
+
+    Se remove=True o valor meta é retirado das queries, caso contrário é 
+    adicionado. Para cada ítem não-vazio é criado uma string concatenada e 
+    adicionada ao prefixo original. Os valores podem ser strings (type e query) 
+    ou listas (tags, authors, etc). Por isso é preciso usar condicionais para 
+    diferenciar os dois tipos na hora de criar a string a ser adicionada.
+
+    Após adicionar todos os valores das queries ele checa a existência do 
+    append e acrescenta ao final do prefixo. O único caso peculiar é não 
+    incluir o type=all no url quando houver os parâmetros. O type=all só é 
+    usado quando o url estiver vazio (ie, '/buscar/?type=all') para mostrar 
+    todos os arquivos sem nenhum refinamento.
+
+    Por fim, é extremamente importante que as queries saiam da função 
+    exatamente como entraram (com os mesmos valores). Nos loops do refinador 
+    para gerar os urls dos metadados, uma modificação nas queries afeta a 
+    construção do próximo url. Assim, se o valor de meta foi removido ele deve 
+    ser recolocado e se o valor foi adicionado ele deve ser removido.
+
+    A função retorna uma string com o url.
     '''
+    # Usado para diferenciar o primeiro query que não precisa do '&'.
     first = True
-    prefix = '/buscar/?' 
+    prefix = '/buscar/?'
 
     # Se for para remover o metadado, remover.
     if remove:
+        # Se for queryset tentar:
         try:
             queries[field] = queries[field].exclude(slug=meta.slug)
+        # Se não for queryset é lista ou string.
         except:
             # Só por segurança diferenciar o tamanho.
             if field == 'size':
                 queries[field].remove(str(meta.id))
             elif field == 'type':
-                queries[field] = []
+                queries[field] = ''
             else:
                 queries[field].remove(meta.slug)
     else:
-        # Adiciona (ou retira) o metadado na lista de queries.
+        # Adiciona o valor meta do seu respectivo field na lista de queries.
         queries[field] = add_meta(meta, field, queries[field])
 
     # Constrói o url de fato.
@@ -426,8 +459,14 @@ def build_url(meta, field, queries, remove=False):
             else:
                 #XXX Outra query, necessária?
                 prefix = prefix + ','.join(final_list)
-    if prefix[-1] == '?':
-        prefix = prefix[:-1]
+    if append:
+        if prefix[-1] == '?':
+            prefix = prefix + append
+        else:
+            # Não acrescentar o type=all quando o url não estiver vazio (outros 
+            # metadados presentes).
+            if not append == 'type=all':
+                prefix = prefix + '&' + append
     url = prefix
     # É preciso recolocar o meta removido para não afetar os urls seguintes.
     if remove:
@@ -512,17 +551,16 @@ def add_meta(meta, field, query):
         if field == 'size':
             query = [str(meta.id)]
         elif field == 'type':
-            query = [meta]
+            query = meta
         else:
             query = [meta.slug]
     # Se o campo não estiver vazio, adicionar o valor do meta ao final.
     else:
-        # Se for para remover o metadado, retirar do url.
         if isinstance(query, list):
             values_list = query
         else:
             if field == 'type':
-                query = [meta]
+                query = meta
                 return query
             elif field == 'size':
                 values_list = query.values_list('id', flat=True)

@@ -3,6 +3,8 @@
 from django.db.models import signals
 from django.template.defaultfilters import slugify
 
+from external.mendeley import mendeley
+
 # Não é signal, apenas função acessória.
 def citation_html(ref):
     '''Retorna citação formatada em HTML.
@@ -107,7 +109,51 @@ def slug_pre_save(signal, instance, sender, **kwargs):
 def update_count(signal, instance, sender, **kwargs):
     '''Atualiza o contador de fotos e vídeos.'''
     #TODO Incluir os outros modelos!
+    ## Many 2 Many
+    # Authors
+    authors = instance.author_set.all()
+    if authors:
+        for author in authors:
+            author.counter()
+    # Sources
+    sources = instance.source_set.all()
+    if sources:
+        for source in sources:
+            source.counter()
+    # Taxa
+    taxa = instance.taxon_set.all()
+    if taxa:
+        for taxon in taxa:
+            taxon.counter()
     # Tags
     tags = instance.tag_set.all()
-    for tag in tags:
-        tag.counter()
+    if tags:
+        for tag in tags:
+            tag.counter()
+    # References
+    references = instance.reference_set.all()
+    if references:
+        for reference in references:
+            reference.counter()
+    # Tours
+    tours = instance.tour_set.all()
+    if tours:
+        for tour in tours:
+            tour.counter()
+
+    ## Foreign Key
+    # Size
+    if instance.size:
+        instance.size.counter()
+    # Sublocation
+    if instance.sublocation:
+        instance.sublocation.counter()
+    # City
+    if instance.city:
+        instance.city.counter()
+    # State
+    if instance.state:
+        instance.state.counter()
+    # Country
+    if instance.country:
+        instance.country.counter()

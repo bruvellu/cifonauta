@@ -10,7 +10,6 @@ from meta.signals import citation_pre_save, slug_pre_save, update_count
 
 from datatrans.utils import register
 
-from external.mendeley import mendeley
 
 #TODO Incluir help_text='' nos fields!
 
@@ -116,6 +115,9 @@ class Author(models.Model):
             verbose_name=_('fotos'))
     videos = models.ManyToManyField(Video, null=True, blank=True, 
             verbose_name=_('vídeos'))
+    image_count = models.PositiveIntegerField(_('número de fotos'), default=0, 
+            editable=False)
+    video_count = models.PositiveIntegerField(_('número de vídeos'), default=0, editable=False)
 
     def __unicode__(self):
         return self.name
@@ -123,6 +125,15 @@ class Author(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('author_url', [self.slug])
+
+    def counter(self):
+        '''Conta o número de imagens+vídeos associados.
+
+        Atualiza os respectivos campos image_count e video_count.
+        '''
+        self.image_count = self.images.count()
+        self.video_count = self.videos.count()
+        self.save()
 
     class Meta:
         verbose_name = _('autor')
@@ -137,6 +148,9 @@ class Source(models.Model):
             verbose_name=_('fotos'))
     videos = models.ManyToManyField(Video, null=True, blank=True, 
             verbose_name=_('vídeos'))
+    image_count = models.PositiveIntegerField(_('número de fotos'), default=0, 
+            editable=False)
+    video_count = models.PositiveIntegerField(_('número de vídeos'), default=0, editable=False)
 
     def __unicode__(self):
         return self.name
@@ -144,6 +158,15 @@ class Source(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('source_url', [self.slug])
+
+    def counter(self):
+        '''Conta o número de imagens+vídeos associados.
+
+        Atualiza os respectivos campos image_count e video_count.
+        '''
+        self.image_count = self.images.count()
+        self.video_count = self.videos.count()
+        self.save()
 
     class Meta:
         verbose_name = _('especialista')
@@ -173,7 +196,7 @@ class Tag(models.Model):
         return ('tag_url', [self.slug])
 
     def counter(self):
-        '''Conta o número de imagens+vídeos associados.
+        '''Conta o número de imagens+vídeos associados à M2M.
 
         Atualiza os respectivos campos image_count e video_count.
         '''
@@ -193,6 +216,8 @@ class TagCategory(models.Model):
     slug = models.SlugField(_('slug'), max_length=64, blank=True)
     parent = models.ForeignKey('self', blank=True, null=True, 
             related_name='tagcat_children', verbose_name=_('pai'))
+    #TODO? Toda vez que uma tag é salva, atualizar a contagem das imagens e 
+    # vídeos das categorias. Seria a soma dos marcadores, só?
 
     def __unicode__(self):
         return self.name
@@ -216,6 +241,9 @@ class Taxon(MPTTModel):
             verbose_name=_('fotos'))
     videos = models.ManyToManyField(Video, null=True, blank=True, 
             verbose_name=_('vídeos'))
+    image_count = models.PositiveIntegerField(_('número de fotos'), default=0, 
+            editable=False)
+    video_count = models.PositiveIntegerField(_('número de vídeos'), default=0, editable=False)
 
     def __unicode__(self):
         return self.name
@@ -223,6 +251,15 @@ class Taxon(MPTTModel):
     @models.permalink
     def get_absolute_url(self):
         return ('taxon_url', [self.slug])
+
+    def counter(self):
+        '''Conta o número de imagens+vídeos associados.
+
+        Atualiza os respectivos campos image_count e video_count.
+        '''
+        self.image_count = self.images.count()
+        self.video_count = self.videos.count()
+        self.save()
 
     class Meta:
         verbose_name = _('táxon')
@@ -243,6 +280,10 @@ class Size(models.Model):
     description = models.TextField(_('descrição'), blank=True)
     slug = models.SlugField(_('slug'), max_length=32, blank=True)
     position = models.PositiveIntegerField(_('posição'), default=0)
+    image_count = models.PositiveIntegerField(
+            _('número de fotos'), default=0, editable=False)
+    video_count = models.PositiveIntegerField(
+            _('número de vídeos'), default=0, editable=False)
 
     def __unicode__(self):
         return self.name
@@ -250,6 +291,15 @@ class Size(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('size_url', [self.slug])
+
+    def counter(self):
+        '''Conta o número de imagens+vídeos associados à ForeignKey.
+
+        Atualiza os respectivos campos image_count e video_count.
+        '''
+        self.image_count = self.image_set.count()
+        self.video_count = self.video_set.count()
+        self.save()
 
     class Meta:
         verbose_name = _('tamanho')
@@ -273,6 +323,10 @@ class Rights(models.Model):
 class Sublocation(models.Model):
     name = models.CharField(_('nome'), max_length=64, unique=True)
     slug = models.SlugField(_('slug'), max_length=64, blank=True)
+    image_count = models.PositiveIntegerField(
+            _('número de fotos'), default=0, editable=False)
+    video_count = models.PositiveIntegerField(
+            _('número de vídeos'), default=0, editable=False)
 
     def __unicode__(self):
         return self.name
@@ -280,6 +334,15 @@ class Sublocation(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('sublocation_url', [self.slug])
+
+    def counter(self):
+        '''Conta o número de imagens+vídeos associados à ForeignKey.
+
+        Atualiza os respectivos campos image_count e video_count.
+        '''
+        self.image_count = self.image_set.count()
+        self.video_count = self.video_set.count()
+        self.save()
 
     class Meta:
         verbose_name = _('local')
@@ -290,6 +353,10 @@ class Sublocation(models.Model):
 class City(models.Model):
     name = models.CharField(_('nome'), max_length=64, unique=True)
     slug = models.SlugField(_('slug'), max_length=64, blank=True)
+    image_count = models.PositiveIntegerField(
+            _('número de fotos'), default=0, editable=False)
+    video_count = models.PositiveIntegerField(
+            _('número de vídeos'), default=0, editable=False)
 
     def __unicode__(self):
         return self.name
@@ -297,6 +364,15 @@ class City(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('city_url', [self.slug])
+
+    def counter(self):
+        '''Conta o número de imagens+vídeos associados à ForeignKey.
+
+        Atualiza os respectivos campos image_count e video_count.
+        '''
+        self.image_count = self.image_set.count()
+        self.video_count = self.video_set.count()
+        self.save()
 
     class Meta:
         verbose_name = _('cidade')
@@ -307,6 +383,10 @@ class City(models.Model):
 class State(models.Model):
     name = models.CharField(_('nome'), max_length=64, unique=True)
     slug = models.SlugField(_('slug'), max_length=64, blank=True)
+    image_count = models.PositiveIntegerField(
+            _('número de fotos'), default=0, editable=False)
+    video_count = models.PositiveIntegerField(
+            _('número de vídeos'), default=0, editable=False)
 
     def __unicode__(self):
         return self.name
@@ -314,6 +394,15 @@ class State(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('state_url', [self.slug])
+
+    def counter(self):
+        '''Conta o número de imagens+vídeos associados à ForeignKey.
+
+        Atualiza os respectivos campos image_count e video_count.
+        '''
+        self.image_count = self.image_set.count()
+        self.video_count = self.video_set.count()
+        self.save()
 
     class Meta:
         verbose_name = _('estado')
@@ -324,6 +413,10 @@ class State(models.Model):
 class Country(models.Model):
     name = models.CharField(_('nome'), max_length=64, unique=True)
     slug = models.SlugField(_('slug'), max_length=64, blank=True)
+    image_count = models.PositiveIntegerField(
+            _('número de fotos'), default=0, editable=False)
+    video_count = models.PositiveIntegerField(
+            _('número de vídeos'), default=0, editable=False)
 
     def __unicode__(self):
         return self.name
@@ -331,6 +424,15 @@ class Country(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('country_url', [self.slug])
+
+    def counter(self):
+        '''Conta o número de imagens+vídeos associados à ForeignKey.
+
+        Atualiza os respectivos campos image_count e video_count.
+        '''
+        self.image_count = self.image_set.count()
+        self.video_count = self.video_set.count()
+        self.save()
 
     class Meta:
         verbose_name = _('país')
@@ -346,6 +448,10 @@ class Reference(models.Model):
             verbose_name=_('fotos'))
     videos = models.ManyToManyField(Video, null=True, blank=True, 
             verbose_name=_('vídeos'))
+    image_count = models.PositiveIntegerField(
+            _('número de fotos'), default=0, editable=False)
+    video_count = models.PositiveIntegerField(
+            _('número de vídeos'), default=0, editable=False)
 
     def __unicode__(self):
         return self.name
@@ -353,6 +459,16 @@ class Reference(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('reference_url', [self.slug])
+
+    def counter(self):
+        '''Conta o número de imagens+vídeos associados à M2M.
+
+        Atualiza os respectivos campos image_count e video_count.
+        '''
+        #XXX Fiz desse jeito para não chamar o save(), já que ele se conecta ao 
+        # Mendeley no signal pre_save (deixando o save() lento...).
+        Reference.objects.filter(id=self.id).update(image_count=self.images.count())
+        Reference.objects.filter(id=self.id).update(video_count=self.videos.count())
 
     class Meta:
         verbose_name = _('referência')
@@ -373,6 +489,10 @@ class Tour(models.Model):
             verbose_name=_('fotos'))
     videos = models.ManyToManyField(Video, null=True, blank=True, 
             verbose_name=_('vídeos'))
+    image_count = models.PositiveIntegerField(
+            _('número de fotos'), default=0, editable=False)
+    video_count = models.PositiveIntegerField(
+            _('número de vídeos'), default=0, editable=False)
     references = models.ManyToManyField(Reference, null=True, blank=True, 
             verbose_name=_('referências'))
 
@@ -382,6 +502,15 @@ class Tour(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('tour_url', [self.slug])
+
+    def counter(self):
+        '''Conta o número de imagens+vídeos associados à M2M.
+
+        Atualiza os respectivos campos image_count e video_count.
+        '''
+        self.image_count = self.images.count()
+        self.video_count = self.videos.count()
+        self.save()
 
     class Meta:
         verbose_name = _('tour')

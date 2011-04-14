@@ -371,9 +371,7 @@ class Movie:
 
     def build_call(self, filepath, ipass):
         '''Constrói o subprocesso para converter o vídeo com o FFmpeg.'''
-        #FIXME Descobrir jeito de forçar width e height serem par!
-
-        # Básico
+        # Base
         call = [
                 'ffmpeg', '-y', '-i', self.source_filepath,
                 '-metadata', 'title="%s"' % self.meta['title'],
@@ -381,13 +379,22 @@ class Movie:
                 '-b', '600k', '-g', '15', '-bf', '2',
                 '-threads', '0', '-pass', str(ipass),
                 ]
-        # HD
         #TODO Achar um jeito mais confiável de saber se é HD...
+        # Comando cria objeto da marca d'água e redimensiona para 100px de 
+        # largura, redimensiona o vídeo para o tamanho certo de acordo com seu 
+        # tipo e insere a marca no canto esquerdo embaixo.
         if self.source_filepath.endswith('m2ts'):
-            # Ideal seria ser reconhecida direito no desktop...
-            call.extend(['-vf', 'scale=512:288', '-aspect', '4:3'])
+            call.extend([
+                '-vf', 'movie=marca.png:f=png, scale=100:-1 [wm];[in] '
+                'scale=512:288, [wm] overlay=5:H-h-5:1',
+                '-aspect', '16:9'
+                ])
         else:
-            call.extend(['-vf', 'scale=512:384', '-aspect', '4:3'])
+            call.extend([
+                '-vf', 'movie=marca.png:f=png, scale=100:-1 [wm];[in] '
+                'scale=512:384, [wm] overlay=5:H-h-5:1',
+                '-aspect', '4:3'
+                ])
         # Audio codecs
         # Exemplo para habilitar som no vídeo: filepath_comsom_.avi
         if 'comsom' in self.source_filepath.split('_') and ipass == 2:
@@ -419,9 +426,33 @@ class Movie:
 
     def process_video(self):
         '''Redimensiona o vídeo, inclui marca d'água e comprime.'''
-        # Exemplo:
-        #       /usr/local/bin/ffmpeg -y -i pelagosfera004.m2ts -vf "scale=510:-1" -aspect 16:9 -pass 1 -vcodec libvpx -b 300k -g 15 -bf 2 -vpre veryslow_firstpass -acodec libvorbis -ab 128k -ac 2 -ar 44100 -threads 2 teste2.webm
-        #       /usr/local/bin/ffmpeg -y -i pelagosfera004.m2ts -vf "scale=510:-1" -aspect 16:9 -pass 2 -vcodec libvpx -b 300k -g 15 -bf 2 -vpre veryslow -acodec libvorbis -ab 128k -ac 2 -ar 44100 -threads 2 teste2.webm
+        # Exemplo DV (4:3):
+        #   Pass 1:
+        #       ffmpeg -y -i video_in.avi -vf "movie=marca.png:f=png, 
+        #       scale=100:-1 [wm];[in] scale=512:384, [wm] overlay=5:H-h-5:1" 
+        #       -aspect 4:3 -pass 1 -vcodec libvpx -b 300k -g 15 -bf 2 -vpre 
+        #       veryslow_firstpass -acodec libvorbis -ab 128k -ac 2 -ar 44100 
+        #       -threads 2 video_out.webm
+        #   Pass 2:
+        #       ffmpeg -y -i video_in.avi -vf "movie=marca.png:f=png, 
+        #       scale=100:-1 [wm];[in] scale=512:384, [wm] overlay=5:H-h-5:1" 
+        #       -aspect 16:9 -pass 2 -vcodec libvpx -b 300k -g 15 -bf 2 -vpre 
+        #       veryslow -acodec libvorbis -ab 128k -ac 2 -ar 44100 -threads 2 
+        #       video_out.webm
+        #
+        # Exemplo HD (16:9):
+        #   Pass 1:
+        #       ffmpeg -y -i video_in.m2ts -vf "movie=marca.png:f=png, 
+        #       scale=100:-1 [wm];[in] scale=512:288, [wm] overlay=5:H-h-5:1" 
+        #       -aspect 16:9 -pass 1 -vcodec libvpx -b 300k -g 15 -bf 2 -vpre 
+        #       veryslow_firstpass -acodec libvorbis -ab 128k -ac 2 -ar 44100 
+        #       -threads 2 video_out.webm
+        #   Pass 2:
+        #       ffmpeg -y -i video_in.m2ts -vf "movie=marca.png:f=png, 
+        #       scale=100:-1 [wm];[in] scale=512:288, [wm] overlay=5:H-h-5:1" 
+        #       -aspect 16:9 -pass 2 -vcodec libvpx -b 300k -g 15 -bf 2 -vpre 
+        #       veryslow -acodec libvorbis -ab 128k -ac 2 -ar 44100 -threads 2 
+        #       video_out.webm
         #FIXME O que fazer quando vídeos forem menores que isso?
         print '\nProcessando o vídeo...'
         web_paths = {}

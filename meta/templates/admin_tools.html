@@ -1,0 +1,73 @@
+<h2>Editar (admin)</h2>
+<ul>
+    <li>
+        {% if media.datatype == 'photo' %}
+            Tipo: <a href="/admin/meta/image/{{ media.id }}/"><strong>FOTO</strong></a>
+        {% else %}
+            {% if media.datatype == 'video' %}
+                Tipo: <a href="/admin/meta/video/{{ media.id }}/"><strong>VÍDEO</strong></a>
+            {% endif %}
+        {% endif %}
+    </li>
+
+    {% if tags %}
+    <li>Marcador(es)</li>
+    <ul>
+        {% for tag in tags %}
+        <li><a href="/admin/meta/tag/{{ tag.id }}/">{{ tag.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if authors %}
+    <li>Autor(es)</li>
+    <ul>
+        {% for author in authors %}
+        <li><a href="/admin/meta/author/{{ author.id }}/">{{ author.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if taxa %}
+    <li>Táxon(s)</li>
+    <ul>
+        {% for taxon in taxa %}
+        <li><a href="/admin/meta/taxon/{{ taxon.id }}/">{{ taxon.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if sources %}
+    <li>Especialista(s)</li>
+    <ul>
+        {% for source in sources %}
+        <li><a href="/admin/meta/source/{{ source.id }}/">{{ source.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if media.sublocation %}
+    <li>Local: <a href="/admin/meta/sublocation/{{ media.sublocation.id }}/">{{ media.sublocation.name }}</a></li>
+    {% endif %}
+
+    {% if media.city %}
+    <li>Cidade: <a href="/admin/meta/city/{{ media.city.id }}/">{{ media.city.name }}</a></li>
+    {% endif %}
+
+    {% if media.state %}
+    <li>Estado: <a href="/admin/meta/state/{{ media.state.id }}/">{{ media.state.name }}</a></li>
+    {% endif %}
+
+    {% if media.country %}
+    <li>País: <a href="/admin/meta/country/{{ media.country.id }}/">{{ media.country.name }}</a></li>
+    {% endif %}
+
+    {% if references %}
+    <li>Referência(s)</li>
+    <ul>
+        {% for ref in references %}
+        <li><a href="/admin/meta/references/{{ ref.id }}/">{{ ref.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</ul>

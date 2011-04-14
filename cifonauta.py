@@ -390,7 +390,7 @@ class Movie:
         else:
             self.meta['source_filepath'] = os.path.abspath(self.source_filepath)
 
-        # Inclui informações sobre o vídeo.
+        # Inclui duração, dimensões e codec do vídeo.
         infos = self.get_info(self.meta['source_filepath'])
         self.meta.update(infos)
 

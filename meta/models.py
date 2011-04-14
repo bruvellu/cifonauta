@@ -95,6 +95,10 @@ class Video(File):
             default='video')
     large_thumb = models.ImageField(_('thumbnail grande'), 
             upload_to='site_media/images/thumbs')
+    duration = models.CharField(_('duração'), max_length=20, 
+            default='00:00:00.00')
+    dimensions = models.CharField(_('dimensões'), max_length=20, default='0x0')
+    codec = models.CharField(_('codec'), max_length=20, default='')
 
     def __unicode__(self):
         return self.title

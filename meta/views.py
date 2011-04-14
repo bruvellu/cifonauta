@@ -20,7 +20,9 @@ def main_page(request):
         # Tenta encontrar destaques.
         images = Image.objects.select_related('size').filter(highlight=True, is_public=True).defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')
         image = images[0]
-        photo = images[1]
+        images = images.exclude(id=image.id)
+        photo = images[0]
+        images = images.exclude(id=photo.id)
         # Retira imagem principal da lista de destaques.
         thumbs = images[2:7]
     except:

@@ -301,11 +301,15 @@ class Movie:
         # Necessário converter pra string pra ser objeto permanente.
         info = str(call.stderr.read())
         # Encontra a duração do arquivo.
-        length_re = re.search('(?<=Duration: )\d+:\d+:\d+\.\d+', info)
+        length_re = re.search('(?<=Duration: )\d+:\d+:\d+', info)
         # Encontra o codec e dimensões.
         precodec_re = re.search('(?<=Video: ).+, .+, \d+x\d+', info)
         # Processando os outputs brutos.
         #XXX Melhorar isso e definir o formato oficial dos valores.
+        # Exemplo (guardar em segundos e converter depois):
+        #   >>> import datetime
+        #   >>> str(datetime.timedelta(seconds=666))
+        #   '0:11:06'
         duration = length_re.group(0)
         codecs = precodec_re.group(0).split(', ')
         codec = codecs[0].split(' ')[0]

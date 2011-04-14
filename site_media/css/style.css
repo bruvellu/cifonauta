@@ -660,6 +660,14 @@ ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
     border-radius: 0 5px 0 5px;
 }
 
+.thumb-duration {
+    color: #EEEEEE;
+    float: left;
+    font-size: 0.9em;
+    padding: 0 2px;
+    position: absolute;
+}
+
 #breadcrumbs {
     margin:0 0 1em 0;
 }

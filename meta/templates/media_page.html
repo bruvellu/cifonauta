@@ -92,12 +92,10 @@ $(document).ready(function(){
                 {% endif %}
             {% endif %}
             {% if media.caption %}
-                <figcation class="span-13 last">{{ media.caption }}</figcaption>
+                <figcation class="span-13 last">{% if media.datatype == 'video' %}<span class="quiet" id="media-duration">{{ media.duration|slice:'3:' }}</span>{% endif %}{{ media.caption }}</figcaption>
                 <div class="span-13 last align-right" id="author">{% show_set authors '' '' ', ' '' %}</div>
             {% else %}
-            <div class="span-13 last" id="author">
-                {% show_set authors '' '' ', ' '' %}
-            </div>
+                <div class="span-13 last" id="author">{% show_set authors '' '' ', ' '' %}{% if media.datatype == 'video' %}<span class="quiet" id="media-duration">{{ media.duration|slice:'3:' }}</span>{% endif %}</div>
             {% endif %}
         </figure>
 

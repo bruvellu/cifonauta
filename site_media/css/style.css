@@ -15,6 +15,8 @@ header.main hgroup.main {
     margin:1em 0 0;
     background:url("/site_media/logo.png") no-repeat scroll 0 0 transparent;
     height:65px;
+    overflow:hidden;
+    text-indent:-9999px;
 }
 
 h1, h2, h3, h4, h5, h6 {

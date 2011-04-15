@@ -191,7 +191,7 @@ def search_page(request):
         #   4. Mostrar apenas imagens de destaque.
         if request.method == 'POST':
             n_form = DisplayForm(request.POST)
-            if n_form.is_valid:
+            if n_form.is_valid():
                 n_page = n_form.data['n']
                 request.session['n'] = n_form.data['n']
                 orderby = n_form.data['orderby']
@@ -308,6 +308,13 @@ def org_page(request):
         })
     return render_to_response('organizacao.html', variables)
 
+def feedback_page(request):
+    '''Montada para receber o feedback dos usuários durante os testes.'''
+    variables = RequestContext(request, {})
+    return render_to_response('feedback.html', variables)
+
+# Manage
+@login_required
 def hidden_page(request):
     '''Página mostrando imagens não públicas.
 
@@ -321,11 +328,7 @@ def hidden_page(request):
         })
     return render_to_response('hidden.html', variables)
 
-def feedback_page(request):
-    '''Montada para receber o feedback dos usuários durante os testes.'''
-    variables = RequestContext(request, {})
-    return render_to_response('feedback.html', variables)
-
+@login_required
 def fixtaxa_page(request):
     '''Página mostrando táxons órfãos e sem ranking.
 
@@ -372,19 +375,73 @@ def translate_page(request):
 # Single
 def photo_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''
-    if request.method == 'POST':
+    image = get_object_or_404(Image.objects.select_related('size', 
+        'sublocation', 'city', 'state', 'country', 
+        'rights').defer('source_filepath', 'old_filepath'), id=image_id)
+    # Tentando contornar o uso de dois forms em uma view...
+    form, admin_form = None, None
+    # Processa o formulário das imagens relacionadas.
+    if request.method == 'POST' and 'related' in request.POST:
         form = RelatedForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             related = form.data['type']
             request.session['rel_type'] = form.data['type']
-    else:
+    # Processa formulário do administrador.
+    elif request.method == 'POST' and 'admin' in request.POST:
+        admin_form = AdminForm(request.POST)
+        if admin_form.is_valid():
+            # Se algum tour tiver sido submetido no formulário.
+            if 'tours' in request.POST:
+                # Pega a lista de tours ligadas à imagem.
+                image_tours = image.tour_set.values_list('id', flat=True)
+                # Define lista de tours submetidos no formulário.
+                form_tours = [int(id) for id in 
+                        admin_form.cleaned_data['tours']]
+                # Usa sets para descobrir images que foram removidas,
+                remove_image = set(image_tours) - set(form_tours)
+                # e imagens que devem ser adicionadas.
+                add_image = set(form_tours) - set(image_tours)
+                # Remove imagem de cada tour.
+                for tour_id in remove_image:
+                    tour = Tour.objects.get(id=tour_id)
+                    tour.images.remove(image)
+                    tour.save()
+                # Adiciona imagem em cada tour.
+                for tour_id in add_image:
+                    tour = Tour.objects.get(id=tour_id)
+                    tour.images.add(image)
+                    tour.save()
+            # Caso nenhum tour tenha sido selecionado.
+            else:
+                # Se tours estiverem desmarcados, retirar imagem de todos.
+                image_tours = image.tour_set.all()
+                # Mas, somente se ela está em algum.
+                if image_tours:
+                    for tour in image_tours:
+                        tour.images.remove(image)
+                        tour.save()
+            # Atualiza campo do destaque.
+            if 'highlight' in request.POST:
+                image.highlight = True
+            else:
+                image.highlight = False
+            # Salva imagem.
+            image.save()
+    if not form:
         try:
             form = RelatedForm(initial={'type': request.session['rel_type']})
             related = request.session['rel_type']
         except:
             form = RelatedForm(initial={'type': 'author'})
             related = u'author'
-    image = get_object_or_404(Image.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath'), id=image_id)
+    if not admin_form:
+        try:
+            tour_list = image.tour_set.values_list('id', flat=True)
+            admin_form = AdminForm(initial={'highlight': image.highlight,
+                    'tours': tour_list})
+        except:
+            admin_form = AdminForm(initial={'highlight': False})
+
     #XXX Será o save() mais eficiente que o update()?
     # Deixando assim por enquanto, pois update() dá menos queries.
     #image.view_count += 1
@@ -400,6 +457,7 @@ def photo_page(request, image_id):
     variables = RequestContext(request, {
         'media': image,
         'form': form,
+        'admin_form': admin_form,
         'related': related,
         'tags': tags,
         'authors': authors,
@@ -413,7 +471,7 @@ def video_page(request, video_id):
     '''Página única de cada vídeo com todas as informações.'''
     if request.method == 'POST':
         form = RelatedForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             related = form.data['type']
             request.session['rel_type'] = form.data['type']
     else:

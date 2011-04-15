@@ -1,4 +1,15 @@
-<h2>Editar (admin)</h2>
+<h2>Editar</h2>
+<h3>Tours e destaques</h3>
+
+<form action="." method="post">
+    {{ admin_form.as_p }}
+    <input id="display" class="fashion" name="admin" type="submit" value="Salvar" />
+    {% csrf_token %}
+</form>
+
+<hr>
+
+<h3>Atalhos administração</h3>
 <ul>
     <li>
         {% if media.datatype == 'photo' %}

@@ -13,7 +13,7 @@
         </div>
         <div class="span-5 last" id="navbox">
             {{ form.type }}
-            <input type="submit" value="{% trans 'Trocar' %}" class="fashion" /> 
+            <input name="related" type="submit" value="{% trans 'Trocar' %}" class="fashion" /> 
         </div>
         {% csrf_token %}
     </form>

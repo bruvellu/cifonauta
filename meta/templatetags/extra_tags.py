@@ -467,6 +467,9 @@ def build_url(meta, field, queries, remove=False, append=None):
             # metadados presentes).
             if not append == 'type=all':
                 prefix = prefix + '&' + append
+    elif not append:
+        if prefix[-1] == '?':
+            prefix = prefix[:-1]
     url = prefix
     # É preciso recolocar o meta removido para não afetar os urls seguintes.
     if remove:

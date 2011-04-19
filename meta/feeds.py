@@ -92,8 +92,7 @@ class MetaMedia(Feed):
 
     def get_object(self, request, field, slug, type='all'):
         keywords = {'slug': slug}
-        model = eval('get_object_or_404(%s, **%s)' % (field.capitalize(), 
-            keywords))
+        model = eval('get_object_or_404(%s, **%s)' % (field.capitalize(), keywords))
         obj = {
                 'instance': model,
                 'field': field,

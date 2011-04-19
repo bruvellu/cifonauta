@@ -379,7 +379,7 @@ def build_url(meta, field, queries, remove=False, append=None):
         - append: string extra que pode ser passada como argumento para ter 
           maior flexibilidade na hora de criar os urls no template.
 
-    A função começa com o prefixo base '/buscar/?' e acrescenta ou remove os 
+    A função começa com o prefixo base '/search/?' e acrescenta ou remove os 
     valores de acordo com os parâmetros acima.
 
     Se remove=True o valor meta é retirado das queries, caso contrário é 
@@ -391,7 +391,7 @@ def build_url(meta, field, queries, remove=False, append=None):
     Após adicionar todos os valores das queries ele checa a existência do 
     append e acrescenta ao final do prefixo. O único caso peculiar é não 
     incluir o type=all no url quando houver os parâmetros. O type=all só é 
-    usado quando o url estiver vazio (ie, '/buscar/?type=all') para mostrar 
+    usado quando o url estiver vazio (ie, '/search/?type=all') para mostrar 
     todos os arquivos sem nenhum refinamento.
 
     Por fim, é extremamente importante que as queries saiam da função 
@@ -404,7 +404,7 @@ def build_url(meta, field, queries, remove=False, append=None):
     '''
     # Usado para diferenciar o primeiro query que não precisa do '&'.
     first = True
-    prefix = '/buscar/?'
+    prefix = '/search/?'
 
     # Se for para remover o metadado, remover.
     if remove:

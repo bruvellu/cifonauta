@@ -149,7 +149,7 @@
                         {% if fullpath == '/' %}class="selected"{% endif %}href="/">{% trans 'home' %}</a>
                     </li>
                     <li><a 
-                        {% if fullpath == '/sobre/' or fullpath == '/conteudo/' or fullpath == '/organization/' or fullpath == '/creditos/' or fullpath == '/detalhes/' or fullpath == '/desenvolvimento/' or fullpath == '/ideias/' or fullpath == '/termos/' %}class="selected"{% endif %}href="/sobre/">{% trans 'sobre' %}</a>
+                        {% if fullpath == '/about/' or fullpath == '/content/' or fullpath == '/organization/' or fullpath == '/credits/' or fullpath == '/details/' or fullpath == '/development/' or fullpath == '/roadmap/' or fullpath == '/terms/' %}class="selected"{% endif %}href="/about/">{% trans 'sobre' %}</a>
                     </li>
                     <li><a 
                         {% if request.path == '/search/' %}class="selected"{% endif %}href="{% url meta.views.search_page %}">{% trans 'buscar' %}</a>
@@ -199,12 +199,12 @@
                 <div class="span-6">
                     <h4>{% trans 'Informações básicas' %}</h4>
                     <ul class="padlist">
-                        <li><a href="/sobre/">{% trans 'Sobre' %}</a></li>
-                        <li><a href="/conteudo/">{% trans 'Conteúdo' %}</a></li>
+                        <li><a href="/about/">{% trans 'Sobre' %}</a></li>
+                        <li><a href="/content/">{% trans 'Conteúdo' %}</a></li>
                         <li><a href="/organization/">{% trans 'Organização' %}</a></li>
-                        <li><a href="/creditos/">{% trans 'Créditos e apoio' %}</a></li>
+                        <li><a href="/credits/">{% trans 'Créditos e apoio' %}</a></li>
                         <li><a href="/cifokit/">{% trans 'Kit imprensa' %}</a></li>
-                        <li><a href="/termos/">{% trans 'Termos de uso e direitos' %}</a></li>
+                        <li><a href="/terms/">{% trans 'Termos de uso e direitos' %}</a></li>
                     </ul>
                 </div>
                 <div class="span-4">
@@ -237,9 +237,9 @@
                 <div class="span-4 last">
                     <h4>{% trans 'Desenvolvimento' %}</h4>
                     <ul class="padlist">
-                        <li><a href="/detalhes/">{% trans 'Detalhes técnicos' %}</a></li>
-                        <li><a href="/desenvolvimento/">{% trans 'Atualizações' %}</a></li>
-                        <li><a href="/ideias/">{% trans 'Idéias planejadas' %}</a></li>
+                        <li><a href="/details/">{% trans 'Detalhes técnicos' %}</a></li>
+                        <li><a href="/development/">{% trans 'Atualizações' %}</a></li>
+                        <li><a href="/roadmap/">{% trans 'Idéias planejadas' %}</a></li>
                         <li><a href="/feedback/">{% trans 'Feedback' %}</a></li>
                     </ul>
                 </div>

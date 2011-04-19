@@ -589,19 +589,6 @@ def tour_page(request, slug):
         })
     return render_to_response('tour_page.html', variables)
 
-# Lists
-def meta_list_page(request, model, plural):
-    '''Lista com todos os metadados.
-    
-    Não utilizado?
-    '''
-    objects = model.objects.order_by('name')
-    variables = RequestContext(request, {
-        'metas': objects,
-        'plural': plural,
-        })
-    return render_to_response('meta_list_page.html', variables)
-
 # Menu
 def taxa_page(request):
     '''Página mostrando grupos taxonômicos de maneira organizada.'''

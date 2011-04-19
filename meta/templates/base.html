@@ -87,9 +87,9 @@
                 <span id="admin">
                     <ul>
                         <li><a href="/admin/">admin</a></li>
-                        <li><a href="/privadas/">privadas</a></li>
+                        <li><a href="/private/">privadas</a></li>
                         <li><a href="/fixtaxa/">fixtaxa</a></li>
-                        <li><a href="/traduzir/">traduzir</a></li>
+                        <li><a href="/translate/">traduzir</a></li>
                         <li><a href="{% url django.contrib.auth.views.logout %}">logout</a></li>
                     </ul>
                 </span>
@@ -113,12 +113,12 @@
                 {% with request.get_full_path as fullpath %}
                 <ul class="menu" id="media">
                     <li><a 
-                        {% if fullpath == '/buscar/?type=photo' %}class="selected"{% endif %}
-                        href="/buscar/?type=photo">{% trans 'fotos' %}</a>
+                        {% if fullpath == '/search/?type=photo' %}class="selected"{% endif %}
+                        href="/search/?type=photo">{% trans 'fotos' %}</a>
                     </li>
                     <li><a 
-                        {% if fullpath == '/buscar/?type=video' %}class="selected"{% endif %}
-                        href="/buscar/?type=video">{% trans 'vídeos' %}</a>
+                        {% if fullpath == '/search/?type=video' %}class="selected"{% endif %}
+                        href="/search/?type=video">{% trans 'vídeos' %}</a>
                     </li>
                     <li><a 
                         {% if fullpath == '/tours/' %}class="selected"{% endif %}
@@ -133,14 +133,14 @@
                         href="{% url meta.views.tags_page %}">{% trans 'marcadores' %}</a>
                     </li>
                     <li><a 
-                        {% if fullpath == '/locais/' %}class="selected"{% endif %}
+                        {% if fullpath == '/places/' %}class="selected"{% endif %}
                         href="{% url meta.views.places_page %}">{% trans 'localidades' %}</a>
                     </li>
                     <li><a 
-                        {% if fullpath == '/autores/' %}class="selected"{% endif %}
+                        {% if fullpath == '/authors/' %}class="selected"{% endif %}
                         href="{% url meta.views.authors_page %}">{% trans 'autores' %}</a>
                     </li>
-                    <li><a {% if fullpath == '/literatura/' %}class="selected"{% endif %}
+                    <li><a {% if fullpath == '/literature/' %}class="selected"{% endif %}
                         href="{% url meta.views.refs_page %}">{% trans 'referências' %}</a>
                     </li>
                 </ul>
@@ -149,10 +149,10 @@
                         {% if fullpath == '/' %}class="selected"{% endif %}href="/">{% trans 'home' %}</a>
                     </li>
                     <li><a 
-                        {% if fullpath == '/sobre/' or fullpath == '/conteudo/' or fullpath == '/organizacao/' or fullpath == '/creditos/' or fullpath == '/detalhes/' or fullpath == '/desenvolvimento/' or fullpath == '/ideias/' or fullpath == '/termos/' %}class="selected"{% endif %}href="/sobre/">{% trans 'sobre' %}</a>
+                        {% if fullpath == '/sobre/' or fullpath == '/conteudo/' or fullpath == '/organization/' or fullpath == '/creditos/' or fullpath == '/detalhes/' or fullpath == '/desenvolvimento/' or fullpath == '/ideias/' or fullpath == '/termos/' %}class="selected"{% endif %}href="/sobre/">{% trans 'sobre' %}</a>
                     </li>
                     <li><a 
-                        {% if request.path == '/buscar/' %}class="selected"{% endif %}href="{% url meta.views.search_page %}">{% trans 'buscar' %}</a>
+                        {% if request.path == '/search/' %}class="selected"{% endif %}href="{% url meta.views.search_page %}">{% trans 'buscar' %}</a>
                     </li>
                     <li><a 
                         {% if fullpath == '/blog/' %}class="selected"{% endif %}href="/blog/">{% trans 'blog' %}</a>
@@ -167,7 +167,7 @@
                 </hgroup>
                 <div class="span-13 last" id="stats-search">
                     {% show_stats %}
-                    {% if not request.path == '/buscar/' %}
+                    {% if not request.path == '/search/' %}
                     <div id="home-search">
                         {% search_box %}
                     </div>
@@ -201,7 +201,7 @@
                     <ul class="padlist">
                         <li><a href="/sobre/">{% trans 'Sobre' %}</a></li>
                         <li><a href="/conteudo/">{% trans 'Conteúdo' %}</a></li>
-                        <li><a href="/organizacao/">{% trans 'Organização' %}</a></li>
+                        <li><a href="/organization/">{% trans 'Organização' %}</a></li>
                         <li><a href="/creditos/">{% trans 'Créditos e apoio' %}</a></li>
                         <li><a href="/cifokit/">{% trans 'Kit imprensa' %}</a></li>
                         <li><a href="/termos/">{% trans 'Termos de uso e direitos' %}</a></li>
@@ -210,10 +210,10 @@
                 <div class="span-4">
                     <h4>{% trans 'Explorar' %}</h4>
                     <ul class="padlist">
-                        <li><a href="/buscar/">{% trans 'Buscador' %}</a></li>
+                        <li><a href="/search/">{% trans 'Buscador' %}</a></li>
                         <li><a href="/tours/">{% trans 'Tours' %}</a></li>
-                        <li><a href="/buscar/?type=photo">{% trans 'Fotos' %}</a></li>
-                        <li><a href="/buscar/?type=video">{% trans 'Vídeos' %}</a></li>
+                        <li><a href="/search/?type=photo">{% trans 'Fotos' %}</a></li>
+                        <li><a href="/search/?type=video">{% trans 'Vídeos' %}</a></li>
                     </ul>
                 </div>
                 <div class="span-4">
@@ -221,9 +221,9 @@
                     <ul class="padlist">
                         <li><a href="/tags/">{% trans 'Marcadores' %}</a></li>
                         <li><a href="/taxa/">{% trans 'Táxons' %}</a></li>
-                        <li><a href="/locais/">{% trans 'Localidades' %}</a></li>
-                        <li><a href="/autores/">{% trans 'Autores' %}</a></li>
-                        <li><a href="/literatura/">{% trans 'Referências' %}</a></li>
+                        <li><a href="/places/">{% trans 'Localidades' %}</a></li>
+                        <li><a href="/authors/">{% trans 'Autores' %}</a></li>
+                        <li><a href="/literature/">{% trans 'Referências' %}</a></li>
                     </ul>
                 </div>
                 <div class="span-4">

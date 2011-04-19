@@ -30,7 +30,7 @@
         {% else %}
         {% blocktrans %}Mostrando <strong>fotos</strong> e <strong>vídeos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{{ request.path }}?{{ request.META.QUERY_STRING }}&type=photo">{% trans 'apenas fotos' %}</a> {% trans 'ou' %} <a href="{{ request.path }}?{{ request.META.QUERY_STRING }}&type=video">{% trans 'apenas vídeos' %}</a>.
         {% comment %}
-        Não é preciso chamar o build_url, apenas acrescentar o tipo da mídia no final do url, já que o padrão é NÃO usar o type=all no url quando outras queries estão presentes. Ele só é usado quando está sozinho (ie, '/buscar/?type=all').
+        Não é preciso chamar o build_url, apenas acrescentar o tipo da mídia no final do url, já que o padrão é NÃO usar o type=all no url quando outras queries estão presentes. Ele só é usado quando está sozinho (ie, '/search/?type=all').
         {% endcomment %}
         {% endif %}
         {% endif %}
@@ -55,7 +55,7 @@
     {% show_info image_list video_list queries %}
 {% else %}
 <div id="showall">
-    <a href="/buscar/?type=all">{% trans 'ou clique para mostrar tudo' %}</a>
+    <a href="/search/?type=all">{% trans 'ou clique para mostrar tudo' %}</a>
 </div>
 {% endif %}
 </aside>

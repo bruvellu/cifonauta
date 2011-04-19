@@ -16,6 +16,11 @@
 <meta property="og:description" content="{{ meta.description }}" />
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 
+
+<link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: fotos e vídeos' %} ({{ field }}={{ meta.name }})" href="/{{ field }}/{{ meta.slug }}/feed/all/" />
+<link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: fotos' %} ({{ field }}={{ meta.name }})" href="/{{ field }}/{{ meta.slug }}/feed/photos/" />
+<link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: vídeos' %} ({{ field }}={{ meta.name }})" href="/{{ field }}/{{ meta.slug }}/feed/videos/" />
+
 {% endblock %}
 
 {% block content %}

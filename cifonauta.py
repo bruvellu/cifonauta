@@ -183,8 +183,7 @@ class Database:
 
     def get_instance(self, table, value):
         '''Retorna o id a partir do nome.'''
-        metadatum, new = eval('%s.objects.get_or_create(name="%s")' %
-                (table.capitalize(), value))
+        metadatum, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), value))
         if table == 'taxon' and new:
             # Consulta ITIS para extrair táxons.
             taxon = self.get_itis(value)

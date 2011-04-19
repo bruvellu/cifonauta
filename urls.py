@@ -27,6 +27,7 @@ urlpatterns = patterns('',
         (r'^feed/latest/$', LatestMedia()),
         (r'^feed/latest/(?P<type>[^\d]+)/$', LatestMedia()),
         (r'^(?P<field>[^\d]+)/(?P<slug>[\w\-]+)/feed/$', MetaMedia()),
+        (r'^(?P<field>[^\d]+)/(?P<slug>[\w\-]+)/feed/(?P<type>[^\d]+)/$', MetaMedia()),
 
         # Auth
         (r'^login/$', 'django.contrib.auth.views.login'),

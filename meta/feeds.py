@@ -2,6 +2,7 @@
 from django.contrib.syndication.views import Feed, FeedDoesNotExist
 from meta.models import *
 from django.utils.translation import ugettext_lazy as _
+from django.shortcuts import get_object_or_404
 
 from itertools import chain
 
@@ -89,52 +90,64 @@ class MetaMedia(Feed):
     feed_copyright = _(
             'Centro de Biologia Marinha da Universidade de São Paulo')
 
-    #TODO Continuar... interrompi para arrumar urls...
-    def get_object(self, request, field, slug):
-        return type
+    def get_object(self, request, field, slug, type='all'):
+        keywords = {'slug': slug}
+        model = eval('get_object_or_404(%s, **%s)' % (field.capitalize(), 
+            keywords))
+        obj = {
+                'instance': model,
+                'field': field,
+                'slug': slug,
+                'type': type,
+                }
+        return obj
 
     def title(self, obj):
-        if obj == 'all':
-            return _('Cifonauta: últimas fotos e vídeos')
-        elif obj == 'photos':
-            return _('Cifonauta: últimas fotos')
-        elif obj == 'videos':
-            return _('Cifonauta: últimos vídeos')
+        if obj['type'] == 'all':
+            return _('Cifonauta: fotos e vídeos (%s=%s)' % (obj['field'], 
+                obj['instance'].name))
+        elif obj['type'] == 'photos':
+            return _('Cifonauta: fotos (%s=%s)' % (obj['field'], 
+                obj['instance'].name))
+        elif obj['type'] == 'videos':
+            return _('Cifonauta: vídeos (%s=%s)' % (obj['field'], 
+                obj['instance'].name))
         else:
             return None
 
     def link(self, obj):
-        if obj == 'all':
-            return '/feed/latest/all/'
-        elif obj == 'photos':
-            return '/feed/latest/photos/'
-        elif obj == 'videos':
-            return '/feed/latest/videos/'
+        if obj['type'] == 'all':
+            return '/%s/%s/feed/all/' % (obj['field'], obj['slug'])
+        elif obj['type'] == 'photos':
+            return '/%s/%s/feed/photos/' % (obj['field'], obj['slug'])
+        elif obj['type'] == 'videos':
+            return '/%s/%s/feed/videos/' % (obj['field'], obj['slug'])
         else:
             return None
 
     def description(self, obj):
-        if obj == 'all':
-            return _('Fotos e vídeos recentes do banco de imagens Cifonauta.')
-        elif obj == 'photos':
-            return _('Fotos recentes do banco de imagens Cifonauta.')
-        elif obj == 'videos':
-            return _('Vídeos recentes do banco de imagens Cifonauta.')
+        if obj['type'] == 'all':
+            return _('Fotos e vídeos do banco de imagens Cifonauta com %s=%s.' % (obj['field'], obj['instance'].name))
+        elif obj['type'] == 'photos':
+            return _('Fotos do banco de imagens Cifonauta com %s=%s.' % (obj['field'], obj['instance'].name))
+        elif obj['type'] == 'videos':
+            return _('Vídeos do banco de imagens Cifonauta com %s=%s.' % (obj['field'], obj['instance'].name))
         else:
             return None
 
     def items(self, obj):
-        if obj == 'all':
+        keywords = {obj['field']: obj['instance']}
+        if obj['type'] == 'all':
             results = chain(
-                    Image.objects.order_by('-pub_date')[:10],
-                    Video.objects.order_by('-pub_date')[:10],
+                    Image.objects.filter(**keywords).order_by('-pub_date')[:10],
+                    Video.objects.filter(**keywords).order_by('-pub_date')[:10],
                     )
             return sorted(results, key=lambda x: x.pub_date,
                     reverse=True)
-        elif obj == 'photos':
-            return Image.objects.order_by('-pub_date')[:20]
-        elif obj == 'videos':
-            return Video.objects.order_by('-pub_date')[:20]
+        elif obj['type'] == 'photos':
+            return Image.objects.filter(**keywords).order_by('-pub_date')[:20]
+        elif obj['type'] == 'videos':
+            return Video.objects.filter(**keywords).order_by('-pub_date')[:20]
         else:
             return None
 

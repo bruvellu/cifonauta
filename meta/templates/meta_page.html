@@ -29,7 +29,7 @@
         <div class="quiet" id="metafield">
             {{ field|fielter }}{% if field == 'tag' %} ({{ meta.parent }}){% else %}{% if field == 'taxon' %} ({{ meta.rank }}){% endif %}{% endif %}:
         </div>
-        <h1>{{ meta|sp_em }}</h1>
+        <h1>{{ meta|sp_em }} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/all/" title="{% trans 'Cifonauta: fotos e vídeos' %} ({{ field }}={{ meta.name }})"><img src="{{ MEDIA_URL }}feed.png" alt="RSS" /></a></span></h1>
     </header>
     {% include 'gallery.html' %}
 </section>

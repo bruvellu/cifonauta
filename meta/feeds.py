@@ -106,10 +106,10 @@ class MetaMedia(Feed):
             return _('Cifonauta: fotos e vídeos (%s=%s)' % (obj['field'], 
                 obj['instance'].name))
         elif obj['type'] == 'photos':
-            return _('Cifonauta: fotos (%s=%s)' % (obj['field'], 
+            return _('Cifonauta: apenas fotos (%s=%s)' % (obj['field'], 
                 obj['instance'].name))
         elif obj['type'] == 'videos':
-            return _('Cifonauta: vídeos (%s=%s)' % (obj['field'], 
+            return _('Cifonauta: apenas vídeos (%s=%s)' % (obj['field'], 
                 obj['instance'].name))
         else:
             return None

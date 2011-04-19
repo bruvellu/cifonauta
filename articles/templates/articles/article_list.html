@@ -4,7 +4,7 @@
 {% block title %}{% trans 'Articles' %} | {{ block.super }}{% endblock %}
 
 {% block articles-content %}
-<h2 class="title">{% trans 'Articles' %}{% if paginator.num_pages != 1 %}, {% trans 'page' %} {{ page_obj.number }}{% endif %}<span class="feed-icon"><a href="{% url articles_feed 'latest' %}" title="{% trans 'Cifonauta: latest blog articles' %}">RSS</a></span></h2>
+<h2 class="title">{% trans 'Articles' %}{% if paginator.num_pages != 1 %}, {% trans 'page' %} {{ page_obj.number }}{% endif %} <span class="feed-icon"><a href="{% url articles_feed 'latest' %}" title="{% trans 'Cifonauta: latest blog articles' %}"><img src="{{ MEDIA_URL }}feed.png" alt="RSS" /></a></span></h2>
 
         {% for article in page_obj.object_list %}
             {% include 'articles/_articles.html' %}

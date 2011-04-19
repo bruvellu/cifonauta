@@ -1,23 +1,18 @@
+{% load i18n %}
 <div style="width:510px;">
-    <div>
     {% if obj.tag_set.all %}
-    <strong>Marcadores: </strong>
-        {% for tag in obj.tag_set.all %}
-        <a href="{{ tag.get_absolute_url }}" title="{{ tag.name }}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
-        {% endfor %}
-    {% endif %}
-    </div>
-
     <div>
-    {% if obj.datatype == 'photo' %}
-    <img width="510" src="http://{{ site.domain }}{{ MEDIA_URL }}{{ obj.web_filepath }}" alt="{{ obj.title }}" title="{{ obj.title }}" />
-    {% else %}
+        <strong>{% trans 'Marcadores' %}: </strong>
+        {% show_set obj.tag_set.all '' '' ', ' '' %}
+    </div>
+    {% endif %}
+
+    <div style="margin-bottom:10px;">
+        {% if obj.datatype == 'photo' %}
+        <img width="510" src="http://{{ site.domain }}{{ MEDIA_URL }}{{ obj.web_filepath }}" alt="{{ obj.title }}" title="{{ obj.title }}" />
+        {% else %}
         {% if obj.datatype == 'video' %}
-        <video poster="http://{{ site.domain }}{{ MEDIA_URL }}{{ obj.thumb_filepath }}" preload="preload" controls="controls">
-        <source src="http://{{site.domain }}{{ MEDIA_URL }}{{ obj.web_filepath }}" type="video/ogg">
-        <img alt="Still do vídeo" src="http://{{ site.domain }}{{ MEDIA_URL }}{{ obj.thumb_filepath }}">
-        Seu navegador ainda não suporta HTML5...
-        </video>
+        <iframe class="cifonauta-player" type="text/html" width="512" height="384" src="http://{{ site.domain }}/embed/{{ obj.id }}/" frameborder="0"></iframe>
         {% endif %}
     {% endif %}
 
@@ -26,46 +21,42 @@
     {% endif %}
     </div>
 
-    <div style="margin:10px 0; padding:10px; background:#fafafa;">
-        {% if obj.author.name %}
-        <strong>Autor:</strong> <span id="author">{{ obj.author }}</span><br>
-        {% endif %}
-        {% if obj.genus.name %}
-        <strong>Espécie:</strong> <span id="genus">{{ obj.genus }}</span>
-        {% if obj.species.name != 'sp.' %}
-            <span id="species">{{ obj.species }}</span>
-        {% else %}
-            <span>{{ obj.species }}</span>
-        {% endif %}
-        <br>
+    <div style="margin-bottom:10px; padding:10px; background:#fafafa;">
+        {% if obj.author_set.all %}
+        <strong>{% blocktrans count obj.author_set.count as counter %}Autor{% plural %}Autores{% endblocktrans %}:</strong> <span id="author">{% show_set obj.author_set.all '' '' ', ' '' %}</span><br>
         {% endif %}
 
-        {% if obj.taxon.name %}
-        <strong>Táxon:</strong> <span id="taxon">{{ obj.taxon }}</span><br>
-        {% endif %}
-        {% if obj.size.name %}
-        <strong>Tamanho:</strong> <span id="size">{{ obj.size }}</span><br>
-        {% endif %}
-        {% if obj.source.name %}
-        <strong>Especialista:</strong> <span id="source">{{ obj.source }}</span><br>
+        {% if obj.taxon_set.all %}
+        <strong>{% blocktrans count obj.taxon_set.count as counter %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set obj.taxon_set.all '' '' ', ' '' %}</span><br>
         {% endif %}
 
-        {% if obj.date %}
-        <strong>Data: </strong> <span id="date"><datetime>{{ obj.date }}</datetime></span>
-        <br />
+        {% if obj.source_set.all %}
+        <strong>{% blocktrans count obj.source_set.count as counter %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set obj.source_set.all '' '' ', ' '' %}</span><br>
         {% endif %}
 
-        {% if obj.sublocation.name or obj.city.name or obj.state.name or obj.country.name %}
-            <strong>Local:</strong> 
-            {% if obj.sublocation.name %}<span id="sublocation">{{ obj.sublocation }},</span>{% endif %}
-            {% if obj.city.name %}<span id="city">{{ obj.city }},</span>{% endif %}
-            {% if obj.state.name %}<span id="state">{{ obj.state }},</span>{% endif %}
-            {% if obj.country.name %}<span id="country">{{ obj.country }}</span>{% endif %}
-        <br />
+        {% if obj.duration %}
+        <strong>{% trans 'Duração' %}: </strong> <span id="duration">{{ obj.duration|slice:'3:' }}</span><br>
+        {% endif %}
+
+        {% if obj.date and obj.date|date:"Y" > "1910" %}
+        <strong>{% trans 'Data' %}: </strong> <span id="date"><datetime>{{ obj.date|date:"DATETIME_FORMAT" }}</datetime></span><br>
+        {% endif %}
+
+        {% if obj.sublocation or obj.city or obj.state or obj.country %}
+        <strong>{% trans 'Local' %}:</strong>
+        {% if obj.sublocation %}<span id="sublocation">{{ obj.sublocation }},</span>{% endif %}
+        {% if obj.city %}<span id="city">{{ obj.city }},</span>{% endif %}
+        {% if obj.state %}<span id="state">{{ obj.state }},</span>{% endif %}
+        {% if obj.country %}<span id="country">{{ obj.country }}</span>{% endif %}<br>
         {% endif %}
 
         {% if obj.geolocation %}
-        <strong>Geolocalização:</strong> <a href="http://maps.google.com/maps?q={{ obj.latitude }},{{ obj.longitude }}" title="{{ obj.geolocation }} no Google Maps">{{ obj.geolocation }}</a>
+        <strong>{% trans 'Geolocalização' %}:</strong> <a href="http://maps.google.com/maps?q={{ obj.latitude }},{{ obj.longitude }}" title="{{ obj.geolocation }} no Google Maps">{{ obj.geolocation }}</a>
         {% endif %}
     </div>
+
+    <div>
+        {% show_set obj.author_set.all '' '.' ', ' '' %} <strong>{{ obj.title }}</strong>. {% blocktrans with site.domain as host and obj.get_absolute_url as media_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a href="{{ media_url }}">http://{{ host }}{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
+    </div>
+    <div style="text-align:right;">{% blocktrans with site.domain as host %}Conheça os <a href="http://{{ host }}/termos/">termos de uso</a>.{% endblocktrans %}</div>
 </div>

@@ -23,7 +23,9 @@ urlpatterns = patterns('',
         (r'^$', main_page),
         (r'^i18n/', include('django.conf.urls.i18n')),
         (r'^comentarios/', include('django.contrib.comments.urls')),
-        (r'^feed/$', LatestMedia()),
+        # Feeds
+        (r'^feed/latest/$', LatestMedia()),
+        (r'^feed/latest/(?P<type>[^\d]+)/$', LatestMedia()),
         # Auth
         (r'^login/$', 'django.contrib.auth.views.login'),
         (r'^logout/$', 'django.contrib.auth.views.logout'),

@@ -150,6 +150,7 @@ $(document).ready(function(){
                 <strong>{% trans 'Data' %}: </strong> <span id="date"><datetime>{{ media.date|date:"DATETIME_FORMAT" }}</datetime></span>
                 <br>
                 {% endif %}
+                {% comment %} Retirar o "name" desnecessário... {% endcomment %}
                 {% if media.sublocation.name or media.city.name or media.state.name or media.country.name %}
                 <strong>{% trans 'Local' %}:</strong> 
                     {% if media.sublocation.name %}<span id="sublocation">{{ media.sublocation }},</span>{% endif %}

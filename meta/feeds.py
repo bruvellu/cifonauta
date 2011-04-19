@@ -1,20 +1,67 @@
 # -*- coding: utf-8 -*-
-from django.contrib.syndication.views import Feed
+from django.contrib.syndication.views import Feed, FeedDoesNotExist
 from meta.models import *
+from django.utils.translation import ugettext_lazy as _
+
+from itertools import chain
 
 class LatestMedia(Feed):
     description_template = 'feeds/media_post.html'
-    title = u'Últimas imagens | CEBIMar USP'
-    link = u'/feed/'
-    description = 'Imagens e vídeos recentes do CEBIMar USP.'
     author_name = 'Cifonauta'
     author_email = 'cebimar@usp.br'
-    author_link = 'http://www.usp.br/cbm/'
-    categories = ('biologia marinha', 'fotos', 'vídeos', 'biologia')
-    feed_copyright = 'Centro de Biologia Marinha da Universidade de São Paulo'
+    author_link = 'http://cifonauta.cebimar.usp.br/'
+    categories = (_('biologia marinha'), _('fotos'), _('vídeos'), 
+            _('biologia'))
+    feed_copyright = _(
+            'Centro de Biologia Marinha da Universidade de São Paulo')
 
-    def items(self):
-        return Image.objects.order_by('-pub_date')[:15]
+    def get_object(self, request, type='all'):
+        return type
+
+    def title(self, obj):
+        if obj == 'all':
+            return _('Cifonauta: últimas fotos e vídeos')
+        elif obj == 'photos':
+            return _('Cifonauta: últimas fotos')
+        elif obj == 'videos':
+            return _('Cifonauta: últimos vídeos')
+        else:
+            return None
+
+    def link(self, obj):
+        if obj == 'all':
+            return '/feed/latest/all/'
+        elif obj == 'photos':
+            return '/feed/latest/photos/'
+        elif obj == 'videos':
+            return '/feed/latest/videos/'
+        else:
+            return None
+
+    def description(self, obj):
+        if obj == 'all':
+            return _('Fotos e vídeos recentes do banco de imagens Cifonauta.')
+        elif obj == 'photos':
+            return _('Fotos recentes do banco de imagens Cifonauta.')
+        elif obj == 'videos':
+            return _('Vídeos recentes do banco de imagens Cifonauta.')
+        else:
+            return None
+
+    def items(self, obj):
+        if obj == 'all':
+            results = chain(
+                    Image.objects.order_by('-pub_date')[:10],
+                    Video.objects.order_by('-pub_date')[:10],
+                    )
+            return sorted(results, key=lambda x: x.pub_date,
+                    reverse=True)
+        elif obj == 'photos':
+            return Image.objects.order_by('-pub_date')[:20]
+        elif obj == 'videos':
+            return Video.objects.order_by('-pub_date')[:20]
+        else:
+            return None
 
     def item_title(self, item):
         return item.title

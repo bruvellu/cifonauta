@@ -27,7 +27,7 @@
         <p>
         {% blocktrans %}O banco de imagens <em>Cifonauta</em> contém uma grande variedade de fotos e vídeos provenientes de atividades científicas em biologia marinha. As imagens carregam marcadores com classificação taxonômica, estágio de vida, habitat e outras informações que permitem navegar de maneira intuitiva e didática.{% endblocktrans %}
         </p>
-        <div class="align-center">
+        <div class="align-center" id="main-more">
             <a href="/about/">{% trans 'saiba mais sobre o banco' %}</a> | <a href="/organization/">{% trans 'entenda a organização do conteúdo' %}</a> | <a href="/terms/">{% trans 'leia os termos de uso das imagens' %}</a>
         </div>
     </div>
@@ -35,8 +35,12 @@
 
 <section class="main span-24 last">
 
+<div class="align-center quiet span-24 last" id="main-feeds">
+    Inscreva-se nos feeds: <span class="feed-icon"><a href="/feed/latest/all/" title="{% trans 'Cifonauta: últimas fotos e vídeos' %}"><img src="{{ MEDIA_URL }}feed.png" alt="RSS" /> {% trans 'últimas fotos e vídeos' %}</a></span> <span class="feed-icon"><a href="/blog/feed/latest/" title="{% trans 'Cifonauta: últimas notícias' %}"><img src="{{ MEDIA_URL }}feed.png" alt="RSS" /> {% trans 'notícias recentes' %}</a></span> &nbsp; | &nbsp; {% include 'social.html' %}
+</div>
+
 <div class="main span-8" id="photos">
-    <h2>{% trans 'Fotos' %}</h2>
+    <h2><a href="/search/?type=photo">{% trans 'Fotos' %}</a></h2>
     <a href="{{ photo.get_absolute_url }}"><img class="shadow" src="{{ MEDIA_URL }}{{ photo.web_filepath }}" alt="{{ photo.title }}" width="300" /></a>
         <p class="quiet">
         {% blocktrans %}Além de fotos representativas de cada grupo disponibilizamos séries de um mesmo organismo possibilitando uma visualização mais completa de sua morfologia e tridimensionalidade.{% endblocktrans %}
@@ -44,7 +48,7 @@
 </div>
 
 <div class="main span-8" id="videos">
-    <h2>{% trans 'Vídeos' %}</h2>
+    <h2><a href="/search/?type=video">{% trans 'Vídeos' %}</a></h2>
     <a href="{{ video.get_absolute_url }}"><img class="shadow" src="{{ MEDIA_URL }}{{ video.large_thumb }}" alt="{{ video.title }}" width="300" /></a>
         <p class="quiet">
         {% blocktrans %}Mostram aspectos da biologia dos organismos como desenvolvimento, locomoção, comportamento e reprodução em vídeos de curta duração.{% endblocktrans %}
@@ -52,7 +56,7 @@
 </div>
 
 <div class="main span-8 last" id="tours">
-    <h2>{% trans 'Tours' %}</h2>
+    <h2><a href="/tours/">{% trans 'Tours' %}</a></h2>
     <a href="{{ tour.get_absolute_url }}"><img class="shadow" src="{{ MEDIA_URL }}{{ tour_image.web_filepath }}" alt="{{ tour_image.title }}" width="300" /></a>
         <p class="quiet">
         {% blocktrans %}Seleção de imagens do banco sobre um tema específico com texto descritivo e slideshow. Conheça os <a href="/tours/">tours disponíveis</a>.{% endblocktrans %}

@@ -228,7 +228,7 @@ div.main {
 }
 
 #intro {
-    margin-bottom:2em;
+    margin-bottom:1em;
     background:#fafafa;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -254,6 +254,17 @@ div.main {
 #intro p {
     font-size:1.2em;
     text-align:justify;
+}
+
+#main-feeds {
+    margin-bottom:1em;
+}
+
+.feed-icon {
+}
+
+.feed-icon img {
+    vertical-align:text-top;
 }
 
 div#photos, div#videos, div#tours {

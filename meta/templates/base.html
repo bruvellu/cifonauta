@@ -69,6 +69,16 @@
         <link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: últimas fotos' %}" href="/feed/latest/photos/" />
         <link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: últimos vídeos' %}" href="/feed/latest/videos/" />
 
+        <!-- ShareThis -->
+        <script type="text/javascript">var switchTo5x=true;</script>
+        <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+        <script type="text/javascript">stLight.options({
+            publisher:'c581e214-c1ef-43a0-9fa6-ce8c0de234df',
+            tracking:'google',
+            onhover:false,
+            });
+        </script>
+
         {% block extra-head %}{% endblock %}
 
         <!-- ANALYTICS -->

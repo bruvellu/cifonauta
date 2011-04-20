@@ -1,9 +1,10 @@
 {% load i18n %}
 
-<p>
+{% if media %}<p>{% endif %}
 <span class="st_fb_like_hcount" displayText="{% trans 'Curtir' %}"></span>
-<span class="st_twitter_hcount" displayText="{% trans 'Tuíte' %}"></span><br>
-</p>
+<span class="st_twitter_hcount" displayText="{% trans 'Tuíte' %}"></span>
+{% if media %}<br>
+</p>{% endif %}
 <span class='st_email' ></span>
 <span class='st_gbuzz' ></span>
 <span class='st_tumblr' ></span>

@@ -47,7 +47,7 @@ class LatestEntries(Feed):
     def item_description(self, item):
         return item.rendered_content
 
-    def item_author(self, item):
+    def item_author_name(self, item):
         return item.author.username
 
     def item_pubdate(self, item):

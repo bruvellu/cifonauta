@@ -39,7 +39,7 @@
 <div class="quiet" id="metafield">
     {% trans 'Tour' %}:
 </div>
-<h1>{{ tour.name }}</h1>
+<h1>{{ tour.name }} <span class="feed-icon"><a href="/tour/{{ tour.slug }}/feed/all/" title="{% trans 'Cifonauta: fotos e vídeos' %} (tour={{ tour.name }})"><img src="{{ MEDIA_URL }}feed.png" alt="RSS" /></a></span></h1>
 </header>
 
 <div class="span-24 last" id="slides">

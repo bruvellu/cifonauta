@@ -1,0 +1,19 @@
+{% load i18n %}
+{% load markup %}
+<div style="width:510px;">
+    <div style="margin-bottom:10px;">
+        {{ obj.description|markdown }}
+    </div>
+
+    <div style="">
+        {% with obj.images.all.0 as photo %}
+        <img style="float:left; padding-right:1em;" src="http://{{ site.domain }}{{ MEDIA_URL }}{{ photo.thumb_filepath }}" alt="{{ photo.title }}" title="{{ photo.title }} | {{ obj.name }}" />
+        {% endwith %}
+        {% comment %} image_count não funciona? {% endcomment %}
+        <strong>{% trans 'Número de imagens' %}:</strong> {{ obj.images.count }}<br>
+        <strong>{% trans 'Data de criação' %}:</strong> {{ obj.pub_date }}<br>
+        <strong>{% trans 'Última modificação' %}:</strong> {{ obj.timestamp }}<br>
+        <strong>{% trans 'Número de visitas' %}:</strong> {{ obj.view_count }}<br>
+        {% blocktrans with site.domain as host and obj.name as tour_name %}Conheça o tour <a href="http://{{ host }}/termos/">{{ tour_name }}</a>.{% endblocktrans %}
+    </div>
+</div>

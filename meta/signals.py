@@ -140,7 +140,6 @@ def update_count(signal, instance, sender, **kwargs):
     if tours:
         for tour in tours:
             tour.counter()
-
     ## Foreign Key
     # Size
     if instance.size:

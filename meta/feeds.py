@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 
 from itertools import chain
 
+
 class LatestMedia(Feed):
     description_template = 'feeds/media_post.html'
     author_name = 'Cifonauta'
@@ -164,3 +165,31 @@ class MetaMedia(Feed):
 
     def item_categories(self, item):
         return item.tag_set.all()
+
+
+class LatestTours(Feed):
+    description_template = 'feeds/tours.html'
+    author_name = 'Cifonauta'
+    author_email = 'cebimar@usp.br'
+    author_link = 'http://cifonauta.cebimar.usp.br/'
+    categories = (_('biologia marinha'), _('fotos'), _('vídeos'), 
+            _('biologia'))
+    feed_copyright = _(
+            'Centro de Biologia Marinha da Universidade de São Paulo')
+    title = _('Cifonauta: últimos tours')
+    link = '/tours/feed/'
+    description = _('Tours recentes do banco de imagens Cifonauta.')
+
+    def items(self):
+        return Tour.objects.order_by('-pub_date')[:10]
+
+    def item_title(self, item):
+        return item.name
+
+    def item_description(self, item):
+        return item.description
+
+    item_author_name = u'Cifonauta'
+
+    def item_pubdate(self, item):
+        return item.pub_date

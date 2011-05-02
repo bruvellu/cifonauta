@@ -442,11 +442,13 @@ def photo_page(request, image_id):
         try:
             tour_list = image.tour_set.values_list('id', flat=True)
             admin_form = AdminForm(initial={'highlight': image.highlight,
-                    'tours': tour_list})
+                'tours': tour_list})
         except:
             tour_list = Tour.objects.values_list('id', flat=True)
-            admin_form = AdminForm(initial={'highlight': False, 'tours': 
-                tour_list})
+            admin_form = AdminForm(initial={'highlight': False,
+                'tours': tour_list})
+            print 'TOURS:'
+            print tour_list
 
     #XXX Será o save() mais eficiente que o update()?
     # Deixando assim por enquanto, pois update() dá menos queries.
@@ -543,11 +545,11 @@ def video_page(request, video_id):
         try:
             tour_list = video.tour_set.values_list('id', flat=True)
             admin_form = AdminForm(initial={'highlight': video.highlight,
-                    'tours': tour_list})
+                'tours': tour_list})
         except:
             tour_list = Tour.objects.values_list('id', flat=True)
-            admin_form = AdminForm(initial={'highlight': False, 'tours': 
-                tour_list})
+            admin_form = AdminForm(initial={'highlight': False,
+                'tours': tour_list})
 
     #TODO Checar sessão para evitar overdose de views
     Video.objects.filter(id=video_id).update(view_count=F('view_count') + 1)

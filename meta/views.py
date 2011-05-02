@@ -375,17 +375,21 @@ def translate_page(request):
 # Single
 def photo_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''
+    # Pega o objeto.
     image = get_object_or_404(Image.objects.select_related('size', 
         'sublocation', 'city', 'state', 'country', 
         'rights').defer('source_filepath', 'old_filepath'), id=image_id)
+
     # Tentando contornar o uso de dois forms em uma view...
     form, admin_form = None, None
+
     # Processa o formulário das imagens relacionadas.
     if request.method == 'POST' and 'related' in request.POST:
         form = RelatedForm(request.POST)
         if form.is_valid():
             related = form.data['type']
             request.session['rel_type'] = form.data['type']
+
     # Processa formulário do administrador.
     elif request.method == 'POST' and 'admin' in request.POST:
         admin_form = AdminForm(request.POST)
@@ -397,7 +401,7 @@ def photo_page(request, image_id):
                 # Define lista de tours submetidos no formulário.
                 form_tours = [int(id) for id in 
                         admin_form.cleaned_data['tours']]
-                # Usa sets para descobrir images que foram removidas,
+                # Usa sets para descobrir imagens que foram removidas,
                 remove_image = set(image_tours) - set(form_tours)
                 # e imagens que devem ser adicionadas.
                 add_image = set(form_tours) - set(image_tours)
@@ -471,21 +475,80 @@ def photo_page(request, image_id):
 
 def video_page(request, video_id):
     '''Página única de cada vídeo com todas as informações.'''
-    if request.method == 'POST':
+    # Pega o objeto.
+    video = get_object_or_404(Video.objects.select_related('size', 
+        'sublocation', 'city', 'state', 'country', 
+        'rights').defer('source_filepath',), id=video_id)
+
+    # Tentando contornar o uso de dois forms em uma view...
+    form, admin_form = None, None
+
+    # Processa o formulário das imagens relacionadas.
+    if request.method == 'POST' and 'related' in request.POST:
         form = RelatedForm(request.POST)
         if form.is_valid():
             related = form.data['type']
             request.session['rel_type'] = form.data['type']
-    else:
+
+    # Processa formulário do administrador.
+    elif request.method == 'POST' and 'admin' in request.POST:
+        admin_form = AdminForm(request.POST)
+        if admin_form.is_valid():
+            # Se algum tour tiver sido submetido no formulário.
+            if 'tours' in request.POST:
+                # Pega a lista de tours ligadas ao vídeo.
+                video_tours = video.tour_set.values_list('id', flat=True)
+                # Define lista de tours submetidos no formulário.
+                form_tours = [int(id) for id in 
+                        admin_form.cleaned_data['tours']]
+                # Usa sets para descobrir vídeos que foram removidas,
+                remove_video = set(video_tours) - set(form_tours)
+                # e imagens que devem ser adicionadas.
+                add_video = set(form_tours) - set(video_tours)
+                # Remove imagem de cada tour.
+                for tour_id in remove_video:
+                    tour = Tour.objects.get(id=tour_id)
+                    tour.videos.remove(video)
+                    tour.save()
+                # Adiciona imagem em cada tour.
+                for tour_id in add_video:
+                    tour = Tour.objects.get(id=tour_id)
+                    tour.videos.add(video)
+                    tour.save()
+
+            # Caso nenhum tour tenha sido selecionado.
+            else:
+                # Se tours estiverem desmarcados, retirar vídeo de todos.
+                video_tours = video.tour_set.all()
+                # Mas, somente se ela está em algum.
+                if video_tours:
+                    for tour in video_tours:
+                        tour.videos.remove(video)
+                        tour.save()
+            # Atualiza campo do destaque.
+            if 'highlight' in request.POST:
+                video.highlight = True
+            else:
+                video.highlight = False
+            # Salva imagem.
+            video.save()
+    if not form:
         try:
             form = RelatedForm(initial={'type': request.session['rel_type']})
             related = request.session['rel_type']
         except:
             form = RelatedForm(initial={'type': 'author'})
             related = u'author'
-    video = get_object_or_404(Video.objects.select_related('size', 
-        'sublocation', 'city', 'state', 'country', 
-        'rights').defer('source_filepath',), id=video_id)
+    if not admin_form:
+        try:
+            tour_list = video.tour_set.values_list('id', flat=True)
+            admin_form = AdminForm(initial={'highlight': video.highlight,
+                    'tours': tour_list})
+        except:
+            tour_list = Tour.objects.values_list('id', flat=True)
+            admin_form = AdminForm(initial={'highlight': False, 'tours': 
+                tour_list})
+
     #TODO Checar sessão para evitar overdose de views
     Video.objects.filter(id=video_id).update(view_count=F('view_count') + 1)
     tags = video.tag_set.all()
@@ -501,6 +564,7 @@ def video_page(request, video_id):
     variables = RequestContext(request, {
         'media': video,
         'form': form,
+        'admin_form': admin_form,
         'related': related,
         'height': height,
         'tags': tags,

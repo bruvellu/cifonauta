@@ -61,6 +61,11 @@ header.main h2 {
     color:#4d7494;
 }
 
+#admin-controls form ul {
+    list-style-type:none;
+    padding-left:20px;
+}
+
 .subpages {
 }
 

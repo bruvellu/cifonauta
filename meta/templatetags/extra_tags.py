@@ -214,7 +214,7 @@ def show_stats():
     tags = Tag.objects.count()
     spp = Taxon.objects.filter(rank=u'Espécie').count()
     locations = Sublocation.objects.count()
-    return {'photos': photos, 'videos': videos, 'spp': spp, 'locations': locations}
+    return {'photos': photos, 'videos': videos, 'spp': spp, 'locations': locations, 'tags': tags}
 
 @register.inclusion_tag('tree.html')
 def show_tree(current=None):

@@ -440,7 +440,9 @@ def photo_page(request, image_id):
             admin_form = AdminForm(initial={'highlight': image.highlight,
                     'tours': tour_list})
         except:
-            admin_form = AdminForm(initial={'highlight': False})
+            tour_list = Tour.objects.values_list('id', flat=True)
+            admin_form = AdminForm(initial={'highlight': False, 'tours': 
+                tour_list})
 
     #XXX Será o save() mais eficiente que o update()?
     # Deixando assim por enquanto, pois update() dá menos queries.

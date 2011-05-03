@@ -481,7 +481,7 @@ article.post footer {
     margin-bottom:1em;
 }
 
-article.post footer#comment-count, article.post footer#article-tags {
+article.post footer#article-tags {
     margin-top:1em;
 }
 
@@ -847,37 +847,8 @@ ul.thumbs li.size-100-mm, .size-100-mm {
     background:none;
 }
 
-#comment-box {
-    display:none;
-}
-
 div#comments {
     margin:0 0 1em 0;
-}
-
-ul#comment-list {
-    list-style:none;
-    padding:0;
-}
-
-#user-name {
-    margin-top:1em;
-}
-
-#comment-itself {
-    display:block;
-}
-
-.hide-comment, .show-comment {
-    cursor: pointer;
-}
-
-.hide-comment {
-    display:none;
-}
-
-#comment-box label {
-    display: block;
 }
 
 footer.main {

@@ -125,7 +125,7 @@
                 </form>
                 </div>
 
-                {% with request.get_full_path as fullpath %}
+                {% with fullpath=request.get_full_path %}
                 <ul class="menu" id="media">
                     <li><a 
                         {% if fullpath == '/search/?type=photo' %}class="selected"{% endif %}

@@ -59,13 +59,12 @@
         {% if relative.next %}
         <a href="{{ relative.next.get_absolute_url }}" title="{{ relative.next.title }}">
             {% trans 'próxima' %}{% autoescape on %} &gt;&gt;{% endautoescape %}</a> +{{ relative.ahead }}
-        
         {% endif %}
     </div>
 </div>
 {% endif %}
 <div class="span-13 last quiet" id="total">
-    {% with relative.behind|add:relative.ahead|add:1 as number %}
+    {% with number=relative.behind|add:relative.ahead|add:1 %}
     {{ number }} {% if current.datatype == 'photo' %}{% blocktrans count number as counter %}imagem{% plural %}imagens{% endblocktrans %}{% else %}{% if current.datatype == 'video' %}{% blocktrans count number as counter %}vídeo{% plural %}vídeos{% endblocktrans %}{% endif %}{% endif %}
     {% endwith %}
 </div>

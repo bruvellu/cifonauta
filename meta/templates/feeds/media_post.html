@@ -56,7 +56,7 @@
     </div>
 
     <div>
-        {% show_set obj.author_set.all '' '.' ', ' '' %} <strong>{{ obj.title }}</strong>. {% blocktrans with site.domain as host and obj.get_absolute_url as media_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a href="{{ media_url }}">http://{{ host }}{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
+        {% show_set obj.author_set.all '' '.' ', ' '' %} <strong>{{ obj.title }}</strong>. {% blocktrans with host=site.domain and media_url=obj.get_absolute_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a href="{{ media_url }}">http://{{ host }}{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
     </div>
-    <div style="text-align:right;">{% blocktrans with site.domain as host %}Conheça os <a href="http://{{ host }}/termos/">termos de uso</a>.{% endblocktrans %}</div>
+    <div style="text-align:right;">{% blocktrans with host=site.domain %}Conheça os <a href="http://{{ host }}/termos/">termos de uso</a>.{% endblocktrans %}</div>
 </div>

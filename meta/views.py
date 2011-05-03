@@ -634,6 +634,7 @@ def meta_page(request, model_name, field, slug):
 def tour_page(request, slug):
     '''Página única de cada tour.'''
     tour = get_object_or_404(Tour, slug=slug)
+    references = tour.references.all()
     photos = tour.images.select_related(
             'size', 'sublocation', 'city', 'state', 'country')
     videos = tour.videos.select_related(
@@ -653,6 +654,7 @@ def tour_page(request, slug):
         'taxa': taxa,
         'tags': tags,
         'authors': authors,
+        'references': references,
         })
     return render_to_response('tour_page.html', variables)
 

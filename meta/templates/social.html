@@ -1,9 +1,9 @@
 {% load i18n %}
 
-{% if media %}<p>{% endif %}
+{% if linear %}{% else %}<p>{% endif %}
 <span class="st_fb_like_hcount" displayText="{% trans 'Curtir' %}"></span>
 <span class="st_twitter_hcount" displayText="{% trans 'Tuíte' %}"></span>
-{% if media %}<br>
+{% if linear %}{% else %}<br>
 </p>{% endif %}
 <span class='st_email' ></span>
 <span class='st_gbuzz' ></span>

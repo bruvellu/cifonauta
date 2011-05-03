@@ -43,6 +43,9 @@
 
 {% block sidebar %}
 <aside class="span-8 last">
+    <div class="align-center borders block shadow">
+        {% include 'social.html' %}
+    </div>
     <div class="borders block shadow">
     <h2 class="title">{% trans 'Recent Articles' %}</h2>
         {% get_articles 10 as recent %}

@@ -841,6 +841,12 @@ ul.thumbs li.size-100-mm, .size-100-mm {
     background: #B25959 !important;
 }
 
+#comments table,
+#comments td,
+#comments th {
+    background:none;
+}
+
 #comment-box {
     display:none;
 }

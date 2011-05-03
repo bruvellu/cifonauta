@@ -59,7 +59,6 @@ $(document).ready(function(){
 {% endblock %}
 
 {% block content %}
-{% load comments %}
 <section class="span-16">
     {% if media %}
     <article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} size-{{ media.size.slug }} {% show_set sources 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ media.view_count }}">
@@ -189,31 +188,24 @@ $(document).ready(function(){
         </div>
         {% endif %}
 
-        {% get_comment_list for media as media_comments %}
         <div id="comments" class="span-16 last">
-            {% get_comment_count for media as comment_count %}
-            <div class="span-16 last">
-                <h2 class="show-comment">{% trans 'Mostrar comentários' %} ({{ comment_count }})</h2>
-                <h2 class="hide-comment">{% trans 'Esconder comentários' %} ({{ comment_count }})</h2>
-            </div>
-            <div id="comment-box">
-                {% if media_comments %}
-                    <ul id="comment-list">
-                    {% for comment in media_comments %}
-                    <li>
-                        <div id="user-name">
-                            <a href="{{ comment.user_url }}">{{ comment.user_name }}</a> | <a href="{% get_comment_permalink comment %}" title="permalink">{{ comment.submit_date|date:"DATETIME_FORMAT" }}</a>
-                        </div>
-                        <div id="comment-itself">
-                            {{ comment.comment }}
-                        </div>
-                    </li>
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-                {% render_comment_form for media %}
-            </div>
+            <!-- Disqus -->
+            <div id="disqus_thread"></div>
+            <script type="text/javascript">
+                var disqus_shortname = 'cifonauta';
+                var disqus_identifier = '{{ media.datatype }}_{{ media.id }}';
+                var disqus_url = '{{ request.build_absolute_uri }}';
+                var disqus_developer = 1; // developer mode is on
+
+                (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            </script>
+            <noscript>{% trans 'Por favor ative o Javascript para ver os <a href="http://disqus.com/?ref_noscript">comentários.' %}</a></noscript>
         </div>
+
 
         {% else %}
         <div class="private span-16 last">{% trans 'Esta imagem não está disponível.' %}</div>

@@ -56,7 +56,9 @@ def citation_html(ref):
             elif key == 'pages':
                 citation += u': %s' % ref['pages']
             elif key == 'url':
-                citation += u'<br><a href="%s">%s</a>' % (ref['url'], ref['url'])
+                # Lidar com múltiplos urls por citação.
+                first_url = ref['url'].split('\n')[0]
+                citation += u'<br><a href="%s">%s</a>' % (first_url, first_url)
     return citation
 
 def citation_pre_save(signal, instance, sender, **kwargs):
@@ -67,13 +69,15 @@ def citation_pre_save(signal, instance, sender, **kwargs):
     Manda o objeto para função que gera o html com a citação da referência.
     Salva a citação no banco.
 
+    Notar que múltiplos urls são separados por um \n
+
     EXEMPLO DE REFERÊNCIA DO MENDELEY API:
     {
         "title":"Embryonic, larval, and juvenile development of the sea biscuit Clypeaster subdepressus (Echinodermata: Clypeasteroida).",
         "type":"Journal Article",
         "volume":"5",
         "issue":"3",
-        "url":"http:\/\/www.ncbi.nlm.nih.gov\/pubmed\/20339592",
+        "url":"http:\/\/www.ncbi.nlm.nih.gov\/pubmed\/20339592\nhttp:\/\/www.ncbi.nlm.nih.gov\/pubmed\/20339592",
         "pages":"e9654",
         "year":"2010",
         "abstract":"Sea biscuits and sand dollars diverged from other irregular echinoids approximately 55 million years ago and rapidly dispersed to oceans worldwide.",

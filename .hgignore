@@ -3,5 +3,16 @@ syntax: glob
 
 *.pyc
 *.swp
+*.log
+*.mbtree
+settings_local.py
+fabfile.py
+backups/*
 fotos/*
 localweb/*
+source_media/*
+local_media/*
+benchmarks/*
+site_media/photos/*
+site_media/videos/*
+meta/migrations/*

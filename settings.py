@@ -105,8 +105,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
     )
 
-# Required for Debug Toolbar
+# Required for Debug Toolbar and sorl-thumbnail
 INTERNAL_IPS = ('127.0.0.1',)
+
+THUMBNAIL_DEBUG = True
 
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
@@ -135,6 +137,7 @@ INSTALLED_APPS = (
     'rosetta',
     'datatrans',
     'debug_toolbar',
+    'sorl.thumbnail',
 )
 
 from settings_local import *

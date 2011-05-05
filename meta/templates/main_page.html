@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n thumbnail %}
 
 {% block meta-keywords %}{% trans 'biologia marinha, biodiversidade, banco de imagens, oceano' %}{% endblock %}
 {% block meta-description %}{% blocktrans %}O banco de imagens <em>Cifonauta</em> contém uma grande variedade de fotos e vídeos provenientes de atividades científicas em biologia marinha. As imagens carregam marcadores com classificação taxonômica, estágio de vida, habitat e outras informações que permitem navegar de maneira intuitiva e didática.{% endblocktrans %}{% endblock %}
@@ -20,7 +20,9 @@
 
 <section class="main shadow span-23 last" id="intro">
     <div class="span-8" id="destaque">
-        <a href="{{ main_image.get_absolute_url }}"><img class="shadow" src="{{ MEDIA_URL }}{{ main_image.web_filepath }}" alt="{{ main_image.title }}" width="300" /></a>
+        {% thumbnail main_image.web_filepath "300" crop="center" as im %}
+        <a href="{{ main_image.get_absolute_url }}"><img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ main_image.title }}"></a>
+        {% endthumbnail %}
     </div>
     <div class="span-14 last">
         <h1>{% trans 'Explore a biodiversidade marinha' %}</h1>
@@ -41,26 +43,38 @@
 
 <div class="main span-8" id="photos">
     <h2><a href="/search/?type=photo">{% trans 'Fotos' %}</a></h2>
-    <a href="{{ photo.get_absolute_url }}"><img class="shadow" src="{{ MEDIA_URL }}{{ photo.web_filepath }}" alt="{{ photo.title }}" width="300" /></a>
-        <p class="quiet">
-        {% blocktrans %}Além de fotos representativas de cada grupo disponibilizamos séries de um mesmo organismo possibilitando uma visualização mais completa de sua morfologia e tridimensionalidade.{% endblocktrans %}
-        </p>
+
+    {% thumbnail photo.web_filepath "300x200" crop="center" as im %}
+    <a href="{{ photo.get_absolute_url }}"><img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ photo.title }}"></a>
+    {% endthumbnail %}
+    
+    <p class="quiet">
+    {% blocktrans %}Além de fotos representativas de cada grupo disponibilizamos séries de um mesmo organismo possibilitando uma visualização mais completa de sua morfologia e tridimensionalidade.{% endblocktrans %}
+    </p>
 </div>
 
 <div class="main span-8" id="videos">
     <h2><a href="/search/?type=video">{% trans 'Vídeos' %}</a></h2>
-    <a href="{{ video.get_absolute_url }}"><img class="shadow" src="{{ MEDIA_URL }}{{ video.large_thumb }}" alt="{{ video.title }}" width="300" /></a>
-        <p class="quiet">
-        {% blocktrans %}Mostram aspectos da biologia dos organismos como desenvolvimento, locomoção, comportamento e reprodução em vídeos de curta duração.{% endblocktrans %}
-        </p>
+
+    {% thumbnail video.large_thumb "300x200" crop="center" as im %}
+    <a href="{{ video.get_absolute_url }}"><img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ video.title }}"></a>
+    {% endthumbnail %}
+
+    <p class="quiet">
+    {% blocktrans %}Mostram aspectos da biologia dos organismos como desenvolvimento, locomoção, comportamento e reprodução em vídeos de curta duração.{% endblocktrans %}
+    </p>
 </div>
 
 <div class="main span-8 last" id="tours">
     <h2><a href="/tours/">{% trans 'Tours' %}</a></h2>
-    <a href="{{ tour.get_absolute_url }}"><img class="shadow" src="{{ MEDIA_URL }}{{ tour_image.web_filepath }}" alt="{{ tour_image.title }}" width="300" /></a>
-        <p class="quiet">
-        {% blocktrans %}Seleção de imagens do banco sobre um tema específico com texto descritivo e slideshow. Conheça os <a href="/tours/">tours disponíveis</a>.{% endblocktrans %}
-        </p>
+
+    {% thumbnail tour_image.web_filepath "300x200" crop="center" as im %}
+    <a href="{{ tour.get_absolute_url }}"><img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ tour_image.title }}"></a>
+    {% endthumbnail %}
+
+    <p class="quiet">
+    {% blocktrans %}Seleção de imagens do banco sobre um tema específico com texto descritivo e slideshow. Conheça os <a href="/tours/">tours disponíveis</a>.{% endblocktrans %}
+    </p>
 </div>
 </section>
 

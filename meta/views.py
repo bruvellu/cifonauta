@@ -83,12 +83,8 @@ def search_page(request):
     if 'query' in request.GET or 'type' in request.GET or 'author' in request.GET or 'size' in request.GET or 'tag' in request.GET or 'taxon' in request.GET or 'sublocation' in request.GET or 'city' in request.GET or 'state' in request.GET or 'country' in request.GET:
         # Iniciando querysets para serem filtrados para cada metadado presente na query.
         #XXX Não sei se é muito eficiente, mas por enquanto será assim.
-        image_list = Image.objects.select_related(
-                'size').filter(is_public=True).defer(
-                        'source_filepath', 'old_filepath')
-        video_list = Video.objects.select_related(
-                'size').filter(is_public=True).defer(
-                        'source_filepath', 'old_filepath')
+        image_list = Image.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').exclude(is_public=False)
+        video_list = Video.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).exclude(is_public=False)
 
         show_results = True
         qobj = Q()
@@ -609,7 +605,9 @@ def meta_page(request, model_name, field, slug):
             u'state': [],
             u'country': [],
             }
-    #XXX Pra que serve isso mesmo? Identificar field na meta_page?
+    #XXX Serve para identificar o field na meta_page. Mas precisa ser 
+    # um queryset para rolar o values_list do show_info no extra_tags.
+    # Se possível otimizar isso.
     qmodels = model_name.objects.filter(slug__in=[slug])
     queries[field] = qmodels
     # Pega objeto.
@@ -619,13 +617,11 @@ def meta_page(request, model_name, field, slug):
         q = [Q(**filter_args),]
         if field == 'taxon':
             q = recurse(model, q)
-        image_list = Image.objects.filter(reduce(operator.or_,
-            q)).exclude(is_public=False).distinct().order_by('-id')
-        video_list = Video.objects.filter(reduce(operator.or_,
-            q)).exclude(is_public=False).distinct().order_by('-id')
+        image_list = Image.objects.filter(reduce(operator.or_, q)).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').exclude(is_public=False).distinct().order_by('-id')
+        video_list = Video.objects.filter(reduce(operator.or_, q)).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).exclude(is_public=False).distinct().order_by('-id')
     except:
-        image_list = Image.objects.filter(**filter_args).exclude(is_public=False).distinct().order_by('-id')
-        video_list = Video.objects.filter(**filter_args).exclude(is_public=False).distinct().order_by('-id')
+        image_list = Image.objects.filter(**filter_args).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').exclude(is_public=False).distinct().order_by('-id')
+        video_list = Video.objects.filter(**filter_args).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).exclude(is_public=False).distinct().order_by('-id')
     images = get_paginated(request, image_list)
     videos = get_paginated(request, video_list)
     variables = RequestContext(request, {

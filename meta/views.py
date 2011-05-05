@@ -604,13 +604,16 @@ def meta_page(request, model_name, field, slug):
             u'state': [],
             u'country': [],
             }
+    #XXX Pra que serve isso mesmo? Identificar field na meta_page?
     qmodels = model_name.objects.filter(slug__in=[slug])
     queries[field] = qmodels
+    # Pega objeto.
     model = get_object_or_404(model_name, slug=slug)
     filter_args = {field: model}
     try:
         q = [Q(**filter_args),]
-        q = recurse(model, q)
+        if field == 'taxon':
+            q = recurse(model, q)
         image_list = Image.objects.filter(reduce(operator.or_,
             q)).exclude(is_public=False).distinct().order_by('-id')
         video_list = Video.objects.filter(reduce(operator.or_,
@@ -752,13 +755,11 @@ def get_paginated(request, obj_list, n_page=16):
 
 def recurse(taxon, q=None):
     '''Recursivamente retorna todos os táxons-filho em um Q object.'''
-    #TODO Usar mptt para agilizar.
     if not q:
         q = []
-    if taxon.children.all():
-        for child in taxon.children.all():
-            q.append(Q(**{'taxon': child}))
-            recurse(child, q)
+    children = taxon.get_descendants()
+    for child in children:
+        q.append(Q(**{'taxon': child}))
     return q
 
 def insert_parents(taxon):

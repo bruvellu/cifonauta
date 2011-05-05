@@ -148,9 +148,14 @@ def search_page(request):
         if 'taxon' in request.GET:
             taxa = request.GET['taxon'].split(',')
             queries['taxon'] = Taxon.objects.filter(slug__in=taxa)
-            for taxon in taxa:
-                image_list = image_list.filter(taxon__slug=taxon)
-                video_list = video_list.filter(taxon__slug=taxon)
+            # Precisa listar descendentes também, logo use o recurse:
+            q =[]
+            for taxon_slug in taxa:
+                taxon = Taxon.objects.get(slug=taxon_slug)
+                q.append(Q(**{'taxon':taxon}))
+                q = recurse(taxon, q)
+            image_list = image_list.filter(reduce(operator.or_, q))
+            video_list = video_list.filter(reduce(operator.or_, q))
 
         # Sublocation
         if 'sublocation' in request.GET:

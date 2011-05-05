@@ -83,11 +83,9 @@
     <h2>{% trans 'Destaques' %}</h2>
     <ul class="thumbs">
         {% for media in thumbs.iterator %}
-            {% if media.is_public %}
             <li class="shadow size-{{ media.size.slug }}">
             {% include 'thumb.html' %}
             </li>
-            {% endif %}
         {% endfor %}
     </ul>
 </div>

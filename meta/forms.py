@@ -94,6 +94,6 @@ class AdminForm(forms.Form):
         tuple_tours = tuple(tuplelist_tours)
         return tuple_tours
 
-    highlight = forms.BooleanField(required=False, initial=False, 
-            label=_('Destaque'))
+    highlight = forms.BooleanField(required=False, initial=False, label=_('Destaque'))
+    cover = forms.BooleanField(required=False, initial=False, label=_('Imagem de capa'))
     tours = forms.MultipleChoiceField(choices=get_tours(), widget=forms.CheckboxSelectMultiple(attrs={'class':'check-taxon'}), required=False, label=_('Escolher tour(s)'))

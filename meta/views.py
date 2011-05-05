@@ -17,26 +17,33 @@ def main_page(request):
     '''Página principal mostrando destaques e pontos de partida para navegar.'''
     # Fotos
     try:
-        # Tenta encontrar destaques.
-        images = Image.objects.select_related('size').filter(highlight=True, is_public=True).defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')
+        # Tenta encontrar destaques capa.
+        images = Image.objects.filter(cover=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')
         image = images[0]
         images = images.exclude(id=image.id)
         photo = images[0]
         images = images.exclude(id=photo.id)
-        # Retira imagem principal da lista de destaques.
-        thumbs = images[2:7]
+        # Faz lista de destaques.
+        thumbs = Image.objects.filter(highlight=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude')
+        # Exclui imagens principais se elas também forem highlights.
+        if image.highlight:
+            thumbs = thumbs.exclude(id=image.id)
+        if photo.highlight:
+            thumbs = thumbs.exclude(id=photo.id)
+        # Randomiza e limita queryset.
+        thumbs = thumbs.order_by('?')[0:10]
     except:
         image, photo, thumbs = '', '', []
     # Vídeos
     try:
-        # Tenta encontrar destaques.
-        video = Video.objects.filter(highlight=True, is_public=True).defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude', 'webm_filepath', 'ogg_filepath', 'mp4_filepath').order_by('?')[0]
+        # Tenta encontrar destaques de capa.
+        video = Video.objects.filter(cover=True, is_public=True).defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude', 'webm_filepath', 'ogg_filepath', 'mp4_filepath').order_by('?')[0]
     except:
         video = ''
     # Tour
     try:
         tour = Tour.objects.order_by('?')[0]
-        tour_image = tour.images.exclude(id=image.id).exclude(id=photo.id).defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')[0]
+        tour_image = tour.images.defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').exclude(id=image.id).exclude(id=photo.id).order_by('?')[0]
     except:
         tour, tour_image = '', ''
     variables = RequestContext(request, {
@@ -430,6 +437,11 @@ def photo_page(request, image_id):
                 image.highlight = True
             else:
                 image.highlight = False
+            # Atualiza campo do destaque de capa.
+            if 'cover' in request.POST:
+                image.cover = True
+            else:
+                image.cover = False
             # Salva imagem.
             image.save()
     if not form:
@@ -442,14 +454,18 @@ def photo_page(request, image_id):
     if not admin_form:
         try:
             tour_list = image.tour_set.values_list('id', flat=True)
-            admin_form = AdminForm(initial={'highlight': image.highlight,
-                'tours': tour_list})
+            admin_form = AdminForm(initial={
+                'highlight': image.highlight,
+                'cover': image.cover,
+                'tours': tour_list
+                })
         except:
             tour_list = Tour.objects.values_list('id', flat=True)
-            admin_form = AdminForm(initial={'highlight': False,
-                'tours': tour_list})
-            print 'TOURS:'
-            print tour_list
+            admin_form = AdminForm(initial={
+                'highlight': False,
+                'cover': False,
+                'tours': tour_list
+                })
 
     #XXX Será o save() mais eficiente que o update()?
     # Deixando assim por enquanto, pois update() dá menos queries.
@@ -533,6 +549,11 @@ def video_page(request, video_id):
                 video.highlight = True
             else:
                 video.highlight = False
+            # Atualiza campo do destaque de capa.
+            if 'cover' in request.POST:
+                video.cover = True
+            else:
+                video.cover = False
             # Salva imagem.
             video.save()
     if not form:
@@ -545,12 +566,18 @@ def video_page(request, video_id):
     if not admin_form:
         try:
             tour_list = video.tour_set.values_list('id', flat=True)
-            admin_form = AdminForm(initial={'highlight': video.highlight,
-                'tours': tour_list})
+            admin_form = AdminForm(initial={
+                'highlight': video.highlight,
+                'cover': video.cover,
+                'tours': tour_list
+                })
         except:
             tour_list = Tour.objects.values_list('id', flat=True)
-            admin_form = AdminForm(initial={'highlight': False,
-                'tours': tour_list})
+            admin_form = AdminForm(initial={
+                'highlight': False,
+                'cover': False,
+                'tours': tour_list
+                })
 
     #TODO Checar sessão para evitar overdose de views
     Video.objects.filter(id=video_id).update(view_count=F('view_count') + 1)

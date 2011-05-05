@@ -26,6 +26,7 @@ class File(models.Model):
 
     # Website
     highlight = models.BooleanField(_('destaque'), default=False)
+    cover = models.BooleanField(_('imagens de capa'), default=False)
     view_count = models.PositiveIntegerField(_('visitas'), default=0, 
             editable=False)
     is_public = models.BooleanField(_('público'), default=False)

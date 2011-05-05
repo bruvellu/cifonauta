@@ -3,7 +3,7 @@
 {% block title %}{% trans 'Organização do banco' %} | {{ block.super }}{% endblock %}
 
 {% block meta-keywords %}{% trans 'Organização do banco' %}{% endblock %}
-{% block meta-description %}{% blocktrans %}As fotos e vídeos carregados no site podem ser pesquisadas por meio das informações básicas (metadados), como espécie, local, autor, tamanho. Às imagens estão também associados marcadores (tags), termos que as qualificam de acordo com categorias como, técnica fotográfica, estágio de vida, habitat etc. Desse modo, é possível navegar pelas imagens usando os marcadores. Por exemplo, você pode querer procurar fotos de larvas de moluscos tiradas em microscopia confocal, ou apenas navegar pelos estágios adultos de organismos planctônicos. A categorização das imagens e a explicação de alguns dos marcadores utilizados encontra-se abaixo.{% endblocktrans %}{% endblock %}
+{% block meta-description %}{% blocktrans %}As fotos e vídeos carregados no site podem ser pesquisadas por meio de informações básicas (metadados), como espécie, localidade, autor, tamanho, etc. Estes marcadores organizados em categorias como técnica fotográfica, estágio de vida, habitat, etc, deixam a navegação mais informativa e interessante.{% endblocktrans %}{% endblock %}
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
@@ -11,7 +11,7 @@
 <meta property="og:title" content="{% trans 'Organização do banco' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:type" content="article" />
-<meta property="og:description" content="{% blocktrans %}As fotos e vídeos carregados no site podem ser pesquisadas por meio das informações básicas (metadados), como espécie, local, autor, tamanho. Às imagens estão também associados marcadores (tags), termos que as qualificam de acordo com categorias como, técnica fotográfica, estágio de vida, habitat etc. Desse modo, é possível navegar pelas imagens usando os marcadores. Por exemplo, você pode querer procurar fotos de larvas de moluscos tiradas em microscopia confocal, ou apenas navegar pelos estágios adultos de organismos planctônicos. A categorização das imagens e a explicação de alguns dos marcadores utilizados encontra-se abaixo.{% endblocktrans %}" />
+<meta property="og:description" content="{% blocktrans %}As fotos e vídeos carregados no site podem ser pesquisadas por meio de informações básicas (metadados), como espécie, localidade, autor, tamanho, etc. Estes marcadores organizados em categorias como técnica fotográfica, estágio de vida, habitat, etc, deixam a navegação mais informativa e interessante.{% endblocktrans %}" />
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 
 {% endblock %}
@@ -20,15 +20,15 @@
 <section class="span-16">
 <header class="span-16 last"><h1>{% trans 'Organização do banco' %}</h1></header>
 
-<p>{% blocktrans %}As fotos e vídeos carregados no site podem ser pesquisadas por meio das informações básicas (metadados), como espécie, local, autor, tamanho. Às imagens estão também associados marcadores (tags), termos que as qualificam de acordo com categorias como, técnica fotográfica, estágio de vida, habitat etc. Desse modo, é possível navegar pelas imagens usando os marcadores. Por exemplo, você pode querer procurar fotos de larvas de moluscos tiradas em microscopia confocal, ou apenas navegar pelos estágios adultos de organismos planctônicos. A categorização das imagens e a explicação de alguns dos marcadores utilizados encontra-se abaixo.{% endblocktrans %}</p>
+<p>{% blocktrans %}As fotos e vídeos carregados no site podem ser pesquisadas por meio de informações básicas (metadados), como espécie, localidade, autor, tamanho, etc. Estes marcadores organizados em categorias como técnica fotográfica, estágio de vida, habitat, etc, deixam a navegação mais informativa e interessante. Por exemplo, você pode querer procurar fotos de larvas de moluscos tiradas em campo escuro, ou apenas navegar pelos estágios adultos de organismos planctônicos. A categorização das imagens e a descrição de cada marcador (com um exemplo aleatório) encontra-se abaixo.{% endblocktrans %}</p>
 
 <h2>{% trans 'Táxons' %}</h2>
 
-<p>{% blocktrans %}A classificação biológica utilizada não adota nenhuma proposta em particular. Em grande parte, seguimos a classificação mais consensual ou tradicional, visando facilitar a visualização da hierarquia taxonômica e a navegação entre as imagens. Em alguns casos, empregamos a proposta de classificação seguida pelo especialista que identificou a espécie ilustrada.{% endblocktrans %}</p>
+<p>{% blocktrans %}A classificação biológica utilizada não adota nenhuma proposta em particular, mas segue quase estritamente a hierarquia taxonômica publicada pelo ITIS. Portanto, nem sempre a classificação estará de acordo com os últimos avanços de cada área. Em alguns casos, empregamos a proposta de classificação seguida pelo especialista que identificou a espécie ilustrada.{% endblocktrans %}</p>
 
 <h2>{% trans 'Tamanho' %}</h2>
 
-<p>{% blocktrans %}Para dar uma ideia das dimensões dos organismos das imagens, 5 classes de tamanho foram criadas arbitrariamente. A fauna bentônica recebeu uma classificação adicional de tamanho: macrofauna, meiofauna e microfauna (ver item Modo de Vida, abaixo). Fotos dos ambientes não contêm informações de tamanho, mas caso estejam ilustrando algum organismo (por exemplo, cracas no costão), podem vir acompanhadas da escala relativa a esse organismo. As classes de tamanho são:{% endblocktrans %}</p>
+<p>{% blocktrans %}Para dar uma ideia das dimensões dos organismos, criamos 5 classes de tamanho arbitrariamente. A fauna bentônica recebeu uma classificação adicional de tamanho: macrofauna, meiofauna e microfauna (ver item Modo de Vida, abaixo). Fotos dos ambientes não contêm informações de tamanho, mas caso estejam ilustrando algum organismo (por exemplo, cracas no costão), podem vir acompanhadas da escala relativa a esse organismo. As classes de tamanho são:{% endblocktrans %}</p>
 
 <table>
     <tr>

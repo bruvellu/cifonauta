@@ -56,9 +56,11 @@
             <div class="span-8 last">
                 <h2>{{ media.title }}</h2>
                 {% if media.caption %}
-                <p>{{ media.caption }}</p>
+                    <p>{{ media.caption }}</p>
                 {% else %}
-                <p>{% trans 'SEM LEGENDA' %}</p>
+                    {% if user.is_authenticated %}
+                    <p>{% trans 'SEM LEGENDA' %}</p>
+                    {% endif %}
                 {% endif %}
                 <div>
                     {% with author_all=media.author_set.all %}

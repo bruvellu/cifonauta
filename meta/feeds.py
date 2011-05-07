@@ -104,14 +104,14 @@ class MetaMedia(Feed):
 
     def title(self, obj):
         if obj['type'] == 'all':
-            return _('Cifonauta: fotos e vídeos (%s=%s)' % (obj['field'], 
-                obj['instance'].name))
+            return _('Cifonauta: fotos e vídeos (%(field)s=%(name)s)' % {
+                'field': obj['field'], 'name': obj['instance'].name})
         elif obj['type'] == 'photos':
-            return _('Cifonauta: apenas fotos (%s=%s)' % (obj['field'], 
-                obj['instance'].name))
+            return _('Cifonauta: apenas fotos (%(field)s=%(name)s)' % {
+                'field': obj['field'], 'name': obj['instance'].name})
         elif obj['type'] == 'videos':
-            return _('Cifonauta: apenas vídeos (%s=%s)' % (obj['field'], 
-                obj['instance'].name))
+            return _('Cifonauta: apenas vídeos (%(field)s=%(name)s)' % {
+                'field': obj['field'], 'name': obj['instance'].name})
         else:
             return None
 
@@ -127,11 +127,11 @@ class MetaMedia(Feed):
 
     def description(self, obj):
         if obj['type'] == 'all':
-            return _('Fotos e vídeos do banco de imagens Cifonauta com %s=%s.' % (obj['field'], obj['instance'].name))
+            return _('Fotos e vídeos do banco de imagens Cifonauta com %(field)s=%(name)s.' % {'field': obj['field'], 'name': obj['instance'].name})
         elif obj['type'] == 'photos':
-            return _('Fotos do banco de imagens Cifonauta com %s=%s.' % (obj['field'], obj['instance'].name))
+            return _('Fotos do banco de imagens Cifonauta com %(field)s=%(name)s.' % {'field': obj['field'], 'name': obj['instance'].name})
         elif obj['type'] == 'videos':
-            return _('Vídeos do banco de imagens Cifonauta com %s=%s.' % (obj['field'], obj['instance'].name))
+            return _('Vídeos do banco de imagens Cifonauta com %(field)s=%(name)s.' % {'field': obj['field'], 'name': obj['instance'].name})
         else:
             return None
 

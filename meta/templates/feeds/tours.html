@@ -14,6 +14,6 @@
         <strong>{% trans 'Data de criação' %}:</strong> {{ obj.pub_date }}<br>
         <strong>{% trans 'Última modificação' %}:</strong> {{ obj.timestamp }}<br>
         <strong>{% trans 'Número de visitas' %}:</strong> {{ obj.view_count }}<br>
-        {% blocktrans with host=site.domain tour_name=obj.name %}Conheça o tour <a href="http://{{ host }}/termos/">{{ tour_name }}</a>.{% endblocktrans %}
+        {% blocktrans with host=site.domain tour_name=obj.name tour_slug=obj.slug %}Conheça o tour <a href="http://{{ host }}/tour/{{ tour_slug }}">{{ tour_name }}</a>.{% endblocktrans %}
     </div>
 </div>

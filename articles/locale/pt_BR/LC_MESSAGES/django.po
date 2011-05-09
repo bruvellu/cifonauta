@@ -8,16 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-24 16:24-0300\n"
-"PO-Revision-Date: 2011-03-24 16:26\n"
-"Last-Translator: <organelas@gmail.com>\n"
+"POT-Creation-Date: 2011-05-09 14:44-0300\n"
+"PO-Revision-Date: 2011-05-09 15:19\n"
+"Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: \n"
-"X-Translated-Using: django-rosetta 0.5.6\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Translated-Using: django-rosetta 0.6.0\n"
 
 #: admin.py:55
 msgid "Mark select articles as active"
@@ -31,6 +31,35 @@ msgstr "Marque artigos selecionados como inativos"
 #, python-format
 msgid "Set status of selected to \"%s\""
 msgstr "Mude o status dos selecionados para \"%s\""
+
+#: feeds.py:20
+msgid "marine biology"
+msgstr "biologia marinha"
+
+#: feeds.py:20
+msgid "photos"
+msgstr "fotos"
+
+#: feeds.py:20
+msgid "videos"
+msgstr "vídeos"
+
+#: feeds.py:21
+msgid "biology"
+msgstr "biologia"
+
+#: feeds.py:23
+msgid "Marine Biology Center of University of São Paulo"
+msgstr "Centro de Biologia Marinha da Universidade de São Paulo"
+
+#: feeds.py:26
+#, python-format
+msgid "%s Articles"
+msgstr "%s Notícias"
+
+#: feeds.py:32
+msgid "Latest blog articles from Cifonauta image database."
+msgstr "Últimos artigos do blog do banco de imagens Cifonauta."
 
 #: forms.py:8
 msgid "Words that describe this article"
@@ -71,7 +100,9 @@ msgid "If omitted, the keywords will be the same as the article tags."
 msgstr ""
 
 #: models.py:154
-msgid "If omitted, the description will be determined by the first bit of the article's content."
+msgid ""
+"If omitted, the description will be determined by the first bit of the "
+"article's content."
 msgstr ""
 
 #: models.py:160
@@ -107,7 +138,9 @@ msgid "Use article author's username"
 msgstr ""
 
 #: models.py:171
-msgid "Check this if you want to use the article author's username for the AddThis button.  Respected only if the username field is left empty."
+msgid ""
+"Check this if you want to use the article author's username for the "
+"AddThis button.  Respected only if the username field is left empty."
 msgstr ""
 
 #: models.py:172
@@ -154,7 +187,7 @@ msgid "Size"
 msgstr "Tamanho"
 
 #: templates/articles/_articles.html:3 templates/articles/_related.html:17
-#: templates/articles/base.html:43 templates/articles/base.html.py:47
+#: templates/articles/base.html:55 templates/articles/base.html.py:59
 msgid "Read this article"
 msgstr "Leia esta notícia"
 
@@ -166,13 +199,13 @@ msgstr "Continue lendo"
 msgid "read more"
 msgstr "leia mais"
 
-#: templates/articles/_comments.html:5
-msgid "Show comments"
-msgstr "Mostrar comentários"
-
-#: templates/articles/_comments.html:6
-msgid "Hide comments"
-msgstr "Esconder comentários"
+#: templates/articles/_comments.html:17
+msgid ""
+"Please enable JavaScript to view the <a "
+"href=\"http://disqus.com/?ref_noscript\">comments."
+msgstr ""
+"Ative o JavaScript para visualizar os <a "
+"href=\"http://disqus.com/?ref_noscript\">comentários."
 
 #: templates/articles/_meta.html:4
 msgid "Tags"
@@ -226,25 +259,33 @@ msgstr "Notícias"
 msgid "page"
 msgstr "página"
 
-#: templates/articles/base.html:6
-msgid "Latest Blog Articles RSS Feed"
-msgstr "RSS Feed dos Últimos Artigos"
+#: templates/articles/article_list.html:7 templates/articles/base.html:9
+msgid "Cifonauta: latest blog articles"
+msgstr "Cifonauta: últimos artigos do blog"
 
-#: templates/articles/base.html:38
+#: templates/articles/base.html:4 templates/articles/base.html.py:13
+msgid "Weblog for Cifonauta image database"
+msgstr "Blog do banco de imagens Cifonauta"
+
+#: templates/articles/base.html:10
+msgid "Articles for Cifonauta weblog"
+msgstr "Artigos do blog do Cifonauta"
+
+#: templates/articles/base.html:14
+msgid "Cifonauta: Banco de Imagens de Biologia Marinha"
+msgstr "Cifonauta: Marine Biology Image Database"
+
+#: templates/articles/base.html:50
 msgid "Recent Articles"
 msgstr "Notícias Recentes"
 
-#: templates/articles/base.html:52
+#: templates/articles/base.html:64
 msgid "Article Archives"
 msgstr "Arquivos"
 
-#: templates/articles/base.html:60
+#: templates/articles/base.html:72
 msgid "View articles posted in this month"
 msgstr "Veja notícias publicadas neste mês"
-
-#: templates/articles/base.html:71
-msgid "Tag Cloud"
-msgstr "Nuvem de Marcadores"
 
 #: templates/articles/by_author.html:4
 msgid "Articles By Author"
@@ -267,6 +308,18 @@ msgstr "Notícias de"
 #: templates/articles/uncategorized_article_list.html:7
 msgid "Uncategorized Articles"
 msgstr "Notícias não-categorizadas"
+
+#~ msgid "Show comments"
+#~ msgstr "Mostrar comentários"
+
+#~ msgid "Hide comments"
+#~ msgstr "Esconder comentários"
+
+#~ msgid "Latest Blog Articles RSS Feed"
+#~ msgstr "RSS Feed dos Últimos Artigos"
+
+#~ msgid "Tag Cloud"
+#~ msgstr "Nuvem de Marcadores"
 
 #~ msgid "Published"
 #~ msgstr "Publicado"

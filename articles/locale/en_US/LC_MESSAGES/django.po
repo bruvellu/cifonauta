@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-articles dev\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-24 16:24-0300\n"
+"POT-Creation-Date: 2011-05-09 14:44-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Josh VanderLinden <codekoala@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,6 +28,35 @@ msgstr ""
 #: admin.py:69 admin.py:74
 #, python-format
 msgid "Set status of selected to \"%s\""
+msgstr ""
+
+#: feeds.py:20
+msgid "marine biology"
+msgstr ""
+
+#: feeds.py:20
+msgid "photos"
+msgstr ""
+
+#: feeds.py:20
+msgid "videos"
+msgstr ""
+
+#: feeds.py:21
+msgid "biology"
+msgstr ""
+
+#: feeds.py:23
+msgid "Marine Biology Center of University of São Paulo"
+msgstr ""
+
+#: feeds.py:26
+#, python-format
+msgid "%s Articles"
+msgstr ""
+
+#: feeds.py:32
+msgid "Latest blog articles from Cifonauta image database."
 msgstr ""
 
 #: forms.py:8
@@ -159,7 +188,7 @@ msgid "Size"
 msgstr ""
 
 #: templates/articles/_articles.html:3 templates/articles/_related.html:17
-#: templates/articles/base.html:43 templates/articles/base.html.py:47
+#: templates/articles/base.html:55 templates/articles/base.html.py:59
 msgid "Read this article"
 msgstr ""
 
@@ -171,12 +200,10 @@ msgstr ""
 msgid "read more"
 msgstr ""
 
-#: templates/articles/_comments.html:5
-msgid "Show comments"
-msgstr ""
-
-#: templates/articles/_comments.html:6
-msgid "Hide comments"
+#: templates/articles/_comments.html:17
+msgid ""
+"Please enable JavaScript to view the <a href=\"http://disqus.com/?"
+"ref_noscript\">comments."
 msgstr ""
 
 #: templates/articles/_meta.html:4
@@ -231,24 +258,32 @@ msgstr ""
 msgid "page"
 msgstr ""
 
-#: templates/articles/base.html:6
-msgid "Latest Blog Articles RSS Feed"
+#: templates/articles/article_list.html:7 templates/articles/base.html:9
+msgid "Cifonauta: latest blog articles"
 msgstr ""
 
-#: templates/articles/base.html:38
+#: templates/articles/base.html:4 templates/articles/base.html.py:13
+msgid "Weblog for Cifonauta image database"
+msgstr ""
+
+#: templates/articles/base.html:10
+msgid "Articles for Cifonauta weblog"
+msgstr ""
+
+#: templates/articles/base.html:14
+msgid "Cifonauta: Banco de Imagens de Biologia Marinha"
+msgstr ""
+
+#: templates/articles/base.html:50
 msgid "Recent Articles"
 msgstr ""
 
-#: templates/articles/base.html:52
+#: templates/articles/base.html:64
 msgid "Article Archives"
 msgstr ""
 
-#: templates/articles/base.html:60
+#: templates/articles/base.html:72
 msgid "View articles posted in this month"
-msgstr ""
-
-#: templates/articles/base.html:71
-msgid "Tag Cloud"
 msgstr ""
 
 #: templates/articles/by_author.html:4

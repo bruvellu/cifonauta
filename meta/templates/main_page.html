@@ -20,7 +20,7 @@
 
 <section class="main shadow span-23 last" id="intro">
     <div class="span-8" id="destaque">
-        {% thumbnail main_image.web_filepath "300" crop="center" as im %}
+        {% thumbnail main_image.web_filepath "300x200" crop="center" as im %}
         <a href="{{ main_image.get_absolute_url }}"><img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ main_image.title }}"></a>
         {% endthumbnail %}
     </div>

@@ -26,6 +26,6 @@ urlpatterns += patterns('',
     url(r'^ajax/tag/autocomplete/$', views.ajax_tag_autocomplete, name='articles_tag_autocomplete'),
 
     # RSS
-    url(r'^feeds/(?P<url>.*)/$', LatestEntries(), name='articles_feed'),
+    url(r'^feed/(?P<url>.*)/$', LatestEntries(), name='articles_feed'),
 
 )

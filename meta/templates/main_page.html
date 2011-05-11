@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n thumbnail %}
+{% load i18n thumbnail cache %}
 
 {% block meta-keywords %}{% trans 'biologia marinha, biodiversidade, banco de imagens, oceano' %}{% endblock %}
 {% block meta-description %}{% blocktrans %}O banco de imagens <em>Cifonauta</em> contém uma grande variedade de fotos e vídeos provenientes de atividades científicas em biologia marinha. As imagens carregam marcadores com classificação taxonômica, estágio de vida, habitat e outras informações que permitem navegar de maneira intuitiva e didática.{% endblocktrans %}{% endblock %}
@@ -82,7 +82,7 @@
 <div class="main span-16" id="highthumbs">
     <h2>{% trans 'Destaques' %}</h2>
     <ul class="thumbs">
-        {% for media in thumbs.iterator %}
+        {% for media in thumbs %}
             <li class="shadow size-{{ media.size.slug }}">
             {% include 'thumb.html' %}
             </li>
@@ -98,7 +98,9 @@
 <aside class="main span-8 last">
 <h2>{% trans 'Navegue por táxons' %}</h2>
 <div class="block shadow">
-    {% show_tree %}
+    {% cache 86400 tree %}
+        {% show_tree %}
+    {% endcache %}
 </div>
 </aside>
 

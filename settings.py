@@ -31,6 +31,8 @@ CACHES = {
 CACHE_MIDDLEWARE_ALIAS = 'default'
 CACHE_MIDDLEWARE_SECONDS = 600
 CACHE_MIDDLEWARE_KEY_PREFIX = ''
+#XXX Melhor maneira?
+CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -90,7 +92,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'utils.AdminLocaleURLMiddleware',
-    #'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
@@ -136,7 +138,7 @@ INSTALLED_APPS = (
     'mptt',
     'rosetta',
     'datatrans',
-    #'debug_toolbar',
+    'debug_toolbar',
     'sorl.thumbnail',
 )
 

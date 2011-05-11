@@ -1,6 +1,7 @@
-{% load i18n %}
+{% load i18n cache %}
+{% get_current_language as LANGUAGE_CODE %}
 <!doctype html>
-<html lang="{{ request.LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE }}">
     <head>
         <meta charset="UTF-8">
         <meta name="keywords" content="{% block meta-keywords %}{% endblock %}" />
@@ -181,7 +182,11 @@
                     <h2>{% trans 'banco de imagens de biologia marinha' %}</h2>
                 </hgroup>
                 <div class="span-13 last" id="stats-search">
-                    {% show_stats %}
+                    {% cache 86400 stats LANGUAGE_CODE %}
+                    <div class="quiet" id="stats">
+                        {% show_stats %}
+                    </div>
+                    {% endcache %}
                     {% if not request.path == '/search/' %}
                     <div id="home-search">
                         {% search_box %}
@@ -196,19 +201,21 @@
             <footer class="main span-24 last quiet">
 
             <div class="span-24 last" id="footerbase">
-            <div class="span-13">
-                <div class="span-13 last">
-                    &nbsp; &copy;{% now "Y" %} {% trans 'Centro de Biologia Marinha da Universidade de São Paulo' %}
+                {% cache 86400 footer %}
+                <div class="span-13">
+                    <div class="span-13 last">
+                        &nbsp; &copy;{% now "Y" %} {% trans 'Centro de Biologia Marinha da Universidade de São Paulo' %}
+                    </div>
+                    <div class="span-13 last">&nbsp; <a href="http://www.usp.br/cbm/">www.usp.br/cbm</a></div>
                 </div>
-                <div class="span-13 last">&nbsp; <a href="http://www.usp.br/cbm/">www.usp.br/cbm</a></div>
-            </div>
 
-            <div class="span-6 cnpq">{% trans 'Licença de uso' %}:
-                <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="{% trans 'Licença Creative Commons' %}" style="border-width:0" title="{% trans 'O conteúdo deste website está sob uma licença Creative Commons Atribuição-Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional' %}" src="{{ MEDIA_URL }}cc.png" /></a></a>.
-            </div>
+                <div class="span-6 cnpq">{% trans 'Licença de uso' %}:
+                    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="{% trans 'Licença Creative Commons' %}" style="border-width:0" title="{% trans 'O conteúdo deste website está sob uma licença Creative Commons Atribuição-Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional' %}" src="{{ MEDIA_URL }}cc.png" /></a></a>.
+                </div>
 
-            <div class="span-5 last cnpq">{% trans 'Apoio' %}: <a href="http://www.cnpq.br/" title="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}"><img width="90" alt="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}" src="{{ MEDIA_URL }}cnpq.png" /></a></div>
-        </div>
+                <div class="span-5 last cnpq">{% trans 'Apoio' %}: <a href="http://www.cnpq.br/" title="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}"><img width="90" alt="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}" src="{{ MEDIA_URL }}cnpq.png" /></a></div>
+            </div>
+            {% endcache %}
 
             <div class="span-24 last" id="sitelinks">
                 <div class="span-6">

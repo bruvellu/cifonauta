@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q, F
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
-from django.core.cache import cache
+#from django.core.cache import cache
 import operator
 from itis import Itis
 
@@ -18,66 +18,33 @@ def main_page(request):
     '''Página principal mostrando destaques e pontos de partida para navegar.'''
     # Fotos
     try:
-        # Busca cover images no cache.
-        cached_covers = cache.get('cover_images')
-        if cached_covers:
-            images = cached_covers
-        else:
-            # Tenta encontrar destaques capa.
-            images = Image.objects.filter(cover=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')
-            #TODO Necessário transformar em lista para guardar no cache.
-            # http://www.indirecthit.com/2008/04/28/django-caching-querysets/
-            images = list(images)
-            cache.set('cover_images', images, 86400)
+        # Tenta encontrar destaques capa.
+        images = Image.objects.filter(cover=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')
+
         # Processa queryset, definindo imagens de capa.
         image = images[0]
         photo = images[1]
 
-        cached_thumbs = cache.get('cover_thumbs')
-        if cached_thumbs:
-            thumbs = cached_thumbs
-        else:
-            # Faz lista de destaques.
-            thumbs = Image.objects.filter(highlight=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')[:10]
-            thumbs = list(thumbs)
-            cache.set('cover_thumbs', thumbs, 86400)
+        # Faz lista de destaques.
+        thumbs = Image.objects.filter(highlight=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')[:10]
     except:
         image, photo, thumbs = '', '', []
     # Vídeos
     try:
-        cached_videos = cache.get('cover_videos')
-        if cached_videos:
-            videos = cached_videos
-        else:
-            # Tenta encontrar destaques de capa.
-            videos = Video.objects.filter(cover=True, is_public=True).defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude', 'webm_filepath', 'ogg_filepath', 'mp4_filepath').order_by('?')[:10]
-            videos = list(videos)
-            cache.set('cover_videos', videos, 86400)
+        # Tenta encontrar destaques de capa.
+        videos = Video.objects.filter(cover=True, is_public=True).defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude', 'webm_filepath', 'ogg_filepath', 'mp4_filepath').order_by('?')[:10]
         video = videos[0]
     except:
         video = ''
     # Tour
     try:
-        cached_tours = cache.get('cover_tours')
-        if cached_tours:
-            tours = cached_tours
-        else:
-            tours = Tour.objects.order_by('?')
-            tours = list(tours)
-            cache.set('cover_tours', tours, 86400)
+        tours = Tour.objects.order_by('?')
         tour = tours[0]
-        if cached_tours:
-            cached_tour_images = cache.get('tour_cover_images')
-            if cached_tour_images:
-                tour_images = cached_tour_images
-            else:
-                tour_images = tour.images.defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').exclude(id=image.id).exclude(id=photo.id).order_by('?')[:10]
-                tour_images = list(tour_images)
-                cache.set('tour_cover_images', tour_images, 86400)
-        else:
-            tour_images = tour.images.defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').exclude(id=image.id).exclude(id=photo.id).order_by('?')[:10]
-            tour_images = list(tour_images)
-            cache.set('tour_cover_images', tour_images, 86400)
+        tour_images = tour.images.defer('source_filepath', 'old_filepath', 
+                'timestamp', 'view_count', 'notes', 'review', 'pub_date', 
+                'rights', 'sublocation', 'city', 'state', 'country', 'date', 
+                'geolocation', 'latitude', 
+                'longitude').exclude(id=image.id).exclude(id=photo.id).order_by('?')[:10]
         tour_image = tour_images[0]
     except:
         tour, tour_image = '', ''

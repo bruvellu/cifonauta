@@ -25,12 +25,19 @@ CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
             'LOCATION': '127.0.0.1:11211',
+            },
+        'johnny': {
+            'BACKEND': 'johnny.backends.memcached.MemcachedCache',
+            'LOCATION': '127.0.0.1:11211',
+            'JOHNNY_CACHE': True,
             }
         }
 
+JOHNNY_MIDDLEWARE_KEY_PREFIX = 'jc_cifo'
+
 CACHE_MIDDLEWARE_ALIAS = 'default'
 CACHE_MIDDLEWARE_SECONDS = 600
-CACHE_MIDDLEWARE_KEY_PREFIX = ''
+CACHE_MIDDLEWARE_KEY_PREFIX = 'cifo'
 #XXX Melhor maneira?
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
@@ -82,20 +89,21 @@ SECRET_KEY = ''
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
     'django.template.loaders.app_directories.load_template_source',
-    #'django.template.loaders.eggs.load_template_source',
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.cache.UpdateCacheMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'utils.AdminLocaleURLMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+        'johnny.middleware.LocalStoreClearMiddleware',
+        'johnny.middleware.QueryCacheMiddleware',
+        'django.middleware.cache.UpdateCacheMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.middleware.locale.LocaleMiddleware',
+        'utils.AdminLocaleURLMiddleware',
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+        'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

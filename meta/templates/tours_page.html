@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n markup %}
 {% block title %}{% trans 'Tours' %} | {{ block.super }}{% endblock %}
 
 {% block meta-keywords %}{% trans 'tour, galeria, slideshow, apresentação' %}{% endblock %}
@@ -26,7 +26,7 @@
     <div class="span-13">
         <h2><a href="{{ tour.get_absolute_url }}" title="{% trans 'Clique aqui para continuar lendo e iniciar o tour' %}"><strong>{{ tour.name }}</strong></a></h2>
         <p>
-        {{ tour.description|truncatewords:30 }}
+        {{ tour.description|markdown|striptags|truncatewords:30 }}
         <a href="{{ tour.get_absolute_url }}"><strong>{% trans 'Clique aqui para continuar lendo e iniciar o tour' %}</strong></a>.
         </p>
     </div>

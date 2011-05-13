@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
-{% load markup %}
+{% load i18n markup %}
 {% block title %}{{ tour.name }} | {% trans 'Tour' %} | {{ block.super }}{% endblock %}
 {% block meta-keywords %}{{ tour.name }}, {% show_set tags '' '' ', ' '' %}, {% show_set taxa '' '' ', ' '' %}{% endblock %}
 {% block meta-description %}{{ tour.description|markdown|striptags|truncatewords:30 }}{% endblock %}

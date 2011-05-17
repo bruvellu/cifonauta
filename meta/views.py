@@ -228,11 +228,11 @@ def search_page(request):
                 order = request.session['order']
                 highlight = request.session['highlight']
             except:
-                n_form = DisplayForm(initial={'n': 16, 'orderby': 'id', 
-                    'order': 'asc', 'highlight': False})
+                n_form = DisplayForm(initial={'n': 16, 'orderby': 'pub_date', 
+                    'order': 'desc', 'highlight': False})
                 n_page = 16
-                orderby = 'id'
-                order = 'asc'
+                orderby = 'pub_date'
+                order = 'desc'
                 highlight = False
 
         # Forçar int.

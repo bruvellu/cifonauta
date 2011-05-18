@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-12 12:55-0300\n"
+"POT-Creation-Date: 2011-05-17 17:51-0300\n"
 "PO-Revision-Date: 2011-05-09 15:48\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -105,22 +105,22 @@ msgstr "Cifonauta: latest tours"
 msgid "Tours recentes do banco de imagens Cifonauta."
 msgstr "Latest tours from Cifonauta image database."
 
-#: forms.py:10 templates/tour_page.html:69 templates/feeds/media_post.html:26
+#: forms.py:10 templates/tour_page.html:68 templates/feeds/media_post.html:26
 msgid "Autor"
 msgstr "Author"
 
-#: forms.py:11 templates/media_page.html:115 templates/tour_page.html:76
+#: forms.py:11 templates/media_page.html:115 templates/tour_page.html:75
 #: templates/feeds/media_post.html:30
 msgid "Táxon"
 msgstr "Taxon"
 
 #: forms.py:12 templates/organizacao.html:29 templates/organizacao.html.py:35
-#: templates/tour_page.html:82
+#: templates/tour_page.html:81
 msgid "Tamanho"
 msgstr "Size"
 
 #: forms.py:13 templates/mais.html:27 templates/media_page.html:132
-#: templates/tour_page.html:87 templates/feeds/media_post.html:46
+#: templates/tour_page.html:86 templates/feeds/media_post.html:46
 msgid "Local"
 msgstr "Place"
 
@@ -493,7 +493,7 @@ msgstr "Authors included in the Cifonauta image database."
 #: templates/meta_page.html:17 templates/organizacao.html:15
 #: templates/places_page.html:15 templates/refs_page.html:12
 #: templates/tags_page.html:17 templates/taxa_page.html:13
-#: templates/tour_page.html:14 templates/tours_page.html:13
+#: templates/tour_page.html:13 templates/tours_page.html:13
 #: templates/flatpages/default.html:15
 msgid "Cifonauta: Banco de Imagens de Biologia Marinha"
 msgstr "Cifonauta: Marine Biology Image Database"
@@ -632,7 +632,7 @@ msgstr "Places"
 #. Translators: list of references rendered on a page
 #: templates/base.html:247 templates/refs_page.html:3
 #: templates/refs_page.html.py:9 templates/refs_page.html:17
-#: templates/tour_page.html:159
+#: templates/tour_page.html:158
 msgid "Referências"
 msgstr "References"
 
@@ -964,7 +964,7 @@ msgid "Nenhuma imagem encontrada."
 msgstr "No image found."
 
 #: templates/meta_page.html:20 templates/meta_page.html.py:32
-#: templates/tour_page.html:42
+#: templates/tour_page.html:41
 msgid "Cifonauta: fotos e vídeos"
 msgstr "Cifonauta: photos and videos"
 
@@ -1189,57 +1189,57 @@ msgstr "see image details"
 msgid "sem foto"
 msgstr "no photo"
 
-#: templates/tour_page.html:4 templates/tour_page.html.py:40
+#: templates/tour_page.html:3 templates/tour_page.html.py:39
 msgid "Tour"
 msgstr "Tour"
 
-#: templates/tour_page.html:47
+#: templates/tour_page.html:46
 msgid "Anterior"
 msgstr "Previous"
 
-#: templates/tour_page.html:63
+#: templates/tour_page.html:62
 msgid "SEM LEGENDA"
 msgstr "NO CAPTION"
 
-#: templates/tour_page.html:97
+#: templates/tour_page.html:96
 msgid "Marcador"
 msgid_plural "Marcadores"
 msgstr[0] "Tag"
 msgstr[1] "Tags"
 
-#: templates/tour_page.html:104
+#: templates/tour_page.html:103
 msgid "veja mais detalhes"
 msgstr "see image details"
 
-#: templates/tour_page.html:114
+#: templates/tour_page.html:113
 msgid "Próximo"
 msgstr "Next"
 
-#: templates/tour_page.html:133 templates/tours_page.html:34
+#: templates/tour_page.html:132 templates/tours_page.html:34
 msgid "Ficha Técnica"
 msgstr "Fact sheet"
 
-#: templates/tour_page.html:136 templates/feeds/tours.html:14
+#: templates/tour_page.html:135 templates/feeds/tours.html:14
 msgid "Número de imagens"
 msgstr "Number of images"
 
-#: templates/tour_page.html:139 templates/feeds/tours.html:15
+#: templates/tour_page.html:138 templates/feeds/tours.html:15
 msgid "Data de criação"
 msgstr "Creation date"
 
-#: templates/tour_page.html:142 templates/feeds/tours.html:16
+#: templates/tour_page.html:141 templates/feeds/tours.html:16
 msgid "Última modificação"
 msgstr "Last updated"
 
-#: templates/tour_page.html:145
+#: templates/tour_page.html:144
 msgid "Táxons representados"
 msgstr "Contained taxa"
 
-#: templates/tour_page.html:148
+#: templates/tour_page.html:147
 msgid "Marcadores presentes"
 msgstr "Contained tags"
 
-#: templates/tour_page.html:151 templates/feeds/tours.html:17
+#: templates/tour_page.html:150 templates/feeds/tours.html:17
 msgid "Número de visitas"
 msgstr "Number of views"
 

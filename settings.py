@@ -118,8 +118,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 # Required for Debug Toolbar and sorl-thumbnail
 INTERNAL_IPS = ('127.0.0.1',)
 
-THUMBNAIL_DEBUG = True
-
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
     }

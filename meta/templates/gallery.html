@@ -28,7 +28,7 @@
 {% if images.paginator.count %}
 <section id="photo-gallery">
 <header class="span-16 last">
-<h2 class="span-10">{% trans 'Foto' %}{{ images.paginator.count|pluralize }} ({{ images.paginator.count }}){% if field %} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/photos/" title="{% trans 'Cifonauta: apenas fotos' %} ({{ field }}={{ meta.name }})"><img src="{{ MEDIA_URL }}feed.png" alt="RSS" /></a></span>{% endif %}</h2>
+<h2 class="span-10">{% trans 'Foto' %}{{ images.paginator.count|pluralize }} ({{ images.paginator.count }}){% if field %} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/photos/" title="{% trans 'Cifonauta: apenas fotos' %} ({{ field }}={{ meta.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span>{% endif %}</h2>
 </header>
     <ul class="thumbs">
         {% for media in images.object_list %}
@@ -61,7 +61,7 @@
 {% if videos.paginator.count %}
 <section id="video-gallery">
 <header class="span-16 last">
-<h2 class="span-10">{% trans 'Vídeo' %}{{ videos.paginator.count|pluralize }} ({{ videos.paginator.count }}){% if field %} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/videos/" title="{% trans 'Cifonauta: apenas vídeos' %} ({{ field }}={{ meta.name }})"><img src="{{ MEDIA_URL }}feed.png" alt="RSS" /></a></span>{% endif %}</h2>
+<h2 class="span-10">{% trans 'Vídeo' %}{{ videos.paginator.count|pluralize }} ({{ videos.paginator.count }}){% if field %} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/videos/" title="{% trans 'Cifonauta: apenas vídeos' %} ({{ field }}={{ meta.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span>{% endif %}</h2>
 </header>
     <ul class="thumbs">
         {% for media in videos.object_list %}

@@ -16,7 +16,7 @@
 
 {% block content %}
 <section class="span-24 last">
-<header><h1>{% trans 'Tours' %} <span class="feed-icon"><a href="/tours/feed/" title="{% trans 'Cifonauta: últimos tours' %}"><img src="{{ MEDIA_URL }}feed.png" alt="RSS" /></a></span></h1></header>
+<header><h1>{% trans 'Tours' %} <span class="feed-icon"><a href="/tours/feed/" title="{% trans 'Cifonauta: últimos tours' %}"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span></h1></header>
 {% for tour in tours %}
 {% if tour.is_public %}
 <div class="span-24 last tour metagroup">

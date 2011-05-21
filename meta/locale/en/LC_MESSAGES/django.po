@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-18 14:56-0300\n"
+"POT-Creation-Date: 2011-05-19 19:32-0300\n"
 "PO-Revision-Date: 2011-05-09 15:48\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -180,8 +180,8 @@ msgstr "(type one or more terms)"
 msgid "Navegando por"
 msgstr "Browsing by"
 
-#: forms.py:63 templates/buscar.html:27 templates/buscar.html.py:30
-#: templates/buscar.html:32
+#: forms.py:63 templates/buscar.html:26 templates/buscar.html.py:29
+#: templates/buscar.html:31
 msgid "Exibir"
 msgstr "Show"
 
@@ -668,48 +668,48 @@ msgstr "Feedback"
 msgid "Buscador do banco de imagens Cifonauta."
 msgstr "Cifonauta image database search engine."
 
-#: templates/buscar.html:22
+#: templates/buscar.html:21
 msgid "Encontrar"
 msgstr "Find"
 
-#: templates/buscar.html:22
+#: templates/buscar.html:21
 msgid "Limpar"
 msgstr "Clear"
 
-#: templates/buscar.html:27
+#: templates/buscar.html:26
 msgid "Mostrando apenas <strong>fotos</strong>."
 msgstr "Displaying only <strong>photos</strong>."
 
-#: templates/buscar.html:27 templates/buscar.html.py:30
+#: templates/buscar.html:26 templates/buscar.html.py:29
 msgid "fotos e vídeos"
 msgstr "photos and videos"
 
-#: templates/buscar.html:27 templates/buscar.html.py:30
-#: templates/buscar.html:32
+#: templates/buscar.html:26 templates/buscar.html.py:29
+#: templates/buscar.html:31
 msgid "ou"
 msgstr "or"
 
-#: templates/buscar.html:27 templates/buscar.html.py:32
+#: templates/buscar.html:26 templates/buscar.html.py:31
 msgid "apenas vídeos"
 msgstr "only videos"
 
-#: templates/buscar.html:30
+#: templates/buscar.html:29
 msgid "Mostrando apenas <strong>vídeos</strong>."
 msgstr "Displaying only <strong>videos</strong>."
 
-#: templates/buscar.html:30 templates/buscar.html.py:32
+#: templates/buscar.html:29 templates/buscar.html.py:31
 msgid "apenas fotos"
 msgstr "only photos"
 
-#: templates/buscar.html:32
+#: templates/buscar.html:31
 msgid "Mostrando <strong>fotos</strong> e <strong>vídeos</strong>."
 msgstr "Displaying <strong>photos</strong> and <strong>videos</strong>."
 
-#: templates/buscar.html:53
+#: templates/buscar.html:52
 msgid "Atualizar"
 msgstr "Update"
 
-#: templates/buscar.html:60
+#: templates/buscar.html:59
 msgid "ou clique para mostrar tudo"
 msgstr "or click to show everything"
 

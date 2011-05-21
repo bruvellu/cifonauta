@@ -6,7 +6,7 @@ from django.db.models import signals
 from django.contrib.flatpages.models import FlatPage
 from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel
-from meta.signals import citation_pre_save, slug_pre_save, update_count
+from meta.signals import *
 
 from datatrans.utils import register
 
@@ -27,6 +27,8 @@ class File(models.Model):
     # Website
     highlight = models.BooleanField(_('destaque'), default=False)
     cover = models.BooleanField(_('imagem de capa'), default=False)
+    stats = models.OneToOneField('Stats', null=True, 
+            verbose_name=_('estatísticas'))
     view_count = models.PositiveIntegerField(_('visitas'), default=0, 
             editable=False)
     is_public = models.BooleanField(_('público'), default=False)
@@ -488,6 +490,8 @@ class Tour(models.Model):
     is_public = models.BooleanField(_('público'), default=False)
     pub_date = models.DateTimeField(_('data de publicação'), auto_now_add=True)
     timestamp = models.DateTimeField(_('data de modificação'), auto_now=True)
+    stats = models.OneToOneField('Stats', null=True, 
+            verbose_name=_('estatísticas'))
     view_count = models.PositiveIntegerField(_('visitas'), default=0, 
             editable=False)
     images = models.ManyToManyField(Image, null=True, blank=True, 
@@ -521,6 +525,26 @@ class Tour(models.Model):
         verbose_name = _('tour')
         verbose_name_plural = _('tours')
         ordering = ['name']
+
+
+class Stats(models.Model):
+    '''Modelo para abrigar estatísticas sobre modelos.'''
+    pageviews = models.PositiveIntegerField(_('visitas'), default=0, 
+            editable=False)
+
+    def __unicode__(self):
+        try:
+            related = self.image
+        except:
+            try:
+                related = self.video
+            except:
+                related = self.tour
+        return '%s visitas (%s, id=%d)' % (self.pageviews, related, related.id)
+    
+    class Meta:
+        verbose_name = _('estatísticas')
+        verbose_name_plural = _('estatísticas')
 
 
 # Registrando modelos para tradução.
@@ -581,3 +605,7 @@ signals.post_save.connect(update_count, sender=Image)
 signals.post_delete.connect(update_count, sender=Image)
 signals.post_save.connect(update_count, sender=Video)
 signals.post_delete.connect(update_count, sender=Video)
+# Create stats object before object creation
+signals.pre_save.connect(makestats, sender=Image)
+signals.pre_save.connect(makestats, sender=Video)
+signals.pre_save.connect(makestats, sender=Tour)

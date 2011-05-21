@@ -160,3 +160,11 @@ def update_count(signal, instance, sender, **kwargs):
     # Country
     if instance.country:
         instance.country.counter()
+
+def makestats(signal, instance, sender, **kwargs):
+    '''Cria objeto stats se não existir.'''
+    if not instance.stats:
+        from meta.models import Stats
+        newstats = Stats()
+        newstats.save()
+        instance.stats = newstats

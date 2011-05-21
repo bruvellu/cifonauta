@@ -13,13 +13,13 @@
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 <meta property="og:type" content="cifonauta:tour" />
 
-<script type="text/javascript" src="{{ MEDIA_URL }}js/slides/slides.min.jquery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/slides/slides.min.jquery.js"></script>
 
 <script>
     $(function(){
         $('#slides').slides({
             preload: true,
-            preloadImage: '{{ MEDIA_URL }}js/slides/loading.gif',
+            preloadImage: '{{ STATIC_URL }}js/slides/loading.gif',
             autoHeight: true,
             play: 4000,
             hoverPause: true,
@@ -38,12 +38,12 @@
 <div class="quiet" id="metafield">
     {% trans 'Tour' %}:
 </div>
-<h1>{{ tour.name }} <span class="feed-icon"><a href="/tour/{{ tour.slug }}/feed/all/" title="{% trans 'Cifonauta: fotos e vídeos' %} (tour={{ tour.name }})"><img src="{{ MEDIA_URL }}feed.png" alt="RSS" /></a></span></h1>
+<h1>{{ tour.name }} <span class="feed-icon"><a href="/tour/{{ tour.slug }}/feed/all/" title="{% trans 'Cifonauta: fotos e vídeos' %} (tour={{ tour.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span></h1>
 </header>
 
 <div class="span-24 last" id="slides">
     <div class="span-1">
-        <a href="#" class="prev"><img src="{{ MEDIA_URL }}js/slides/arrow-prev.png" width="24" height="43" alt="{% trans 'Anterior' %}"></a>
+        <a href="#" class="prev"><img src="{{ STATIC_URL }}js/slides/arrow-prev.png" width="24" height="43" alt="{% trans 'Anterior' %}"></a>
     </div>
     {% comment %}TODO adapt to HTML5{% endcomment %}
     <div class="slides_container shadow span-21">
@@ -109,7 +109,7 @@
     </div>
 
     <div class="span-1 last">
-        <a href="#" class="next"><img src="{{ MEDIA_URL }}js/slides/arrow-next.png" width="24" height="43" alt="{% trans 'Próximo' %}"></a>
+        <a href="#" class="next"><img src="{{ STATIC_URL }}js/slides/arrow-next.png" width="24" height="43" alt="{% trans 'Próximo' %}"></a>
     </div>
 
     <div class="span-24 last" id="paginator-container">

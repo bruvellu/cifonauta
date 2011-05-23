@@ -48,7 +48,7 @@ $(document).ready(function(){
 {% block content %}
 <section class="span-16">
     {% if media %}
-    <article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} size-{{ media.size.slug }} {% show_set sources 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ media.view_count }}">
+    <article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} size-{{ media.size.slug }} {% show_set sources 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ pageviews }}">
         <header class="span-16 last">
             <h1>{{ media.title }}</h1>
         </header>
@@ -77,7 +77,7 @@ $(document).ready(function(){
 
         <div class="span-2 last border-top border-right border-bottom sideinfo" id="media-sideinfo">
             <div class="border-bottom" id="views">
-                {{ media.view_count }} {% trans 'visita' %}{{ media.view_count|pluralize }}
+                {{ pageviews }} {% trans 'visita' %}{{ pageviews|pluralize }}
             </div>
             {% if taxa %}
                 {% include 'biodb.html' %}

@@ -470,12 +470,13 @@ def photo_page(request, image_id):
                 })
 
     #XXX Será o save() mais eficiente que o update()?
-    # Deixando assim por enquanto, pois update() dá menos queries.
-    #image.view_count += 1
-    #image.view_count = F('view_count') + 1
-    #image.save()
+    # Este era o comando antigo para atualizar, só pra lembrar.
+    #Image.objects.filter(id=image_id).update(view_count=F('view_count') + 1)
     #TODO Checar sessão para evitar overdose de views
-    Image.objects.filter(id=image_id).update(view_count=F('view_count') + 1)
+    stats = image.stats
+    stats.pageviews = stats.pageviews + 1
+    stats.save()
+    pageviews = stats.pageviews
     tags = image.tag_set.all()
     authors = image.author_set.all()
     taxa = image.taxon_set.all()
@@ -491,6 +492,7 @@ def photo_page(request, image_id):
         'taxa': taxa,
         'sources': sources,
         'references': references,
+        'pageviews': pageviews,
         })
     return render_to_response('media_page.html', variables)
 
@@ -582,7 +584,10 @@ def video_page(request, video_id):
                 })
 
     #TODO Checar sessão para evitar overdose de views
-    Video.objects.filter(id=video_id).update(view_count=F('view_count') + 1)
+    stats = video.stats
+    stats.pageviews = stats.pageviews + 1
+    stats.save()
+    pageviews = stats.pageviews
     tags = video.tag_set.all()
     authors = video.author_set.all()
     taxa = video.taxon_set.all()
@@ -604,6 +609,7 @@ def video_page(request, video_id):
         'taxa': taxa,
         'sources': sources,
         'references': references,
+        'pageviews': pageviews,
         })
     return render_to_response('media_page.html', variables)
 
@@ -678,7 +684,10 @@ def tour_page(request, slug):
     authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(photos, videos)
 
     # Atualiza contador de visualizações.
-    Tour.objects.filter(slug=slug).update(view_count=F('view_count') + 1)
+    stats = tour.stats
+    stats.pageviews = stats.pageviews + 1
+    stats.save()
+    pageviews = stats.pageviews
     variables = RequestContext(request, {
         'tour': tour,
         'photos': photos,
@@ -688,6 +697,7 @@ def tour_page(request, slug):
         'tags': tags,
         'authors': authors,
         'references': references,
+        'pageviews': pageviews,
         })
     return render_to_response('tour_page.html', variables)
 

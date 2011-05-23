@@ -33,7 +33,7 @@
 
 {% block content %}
 <section class="span-24 last">
-<article id="tour" class="{{ tour.slug }} views-{{ tour.view_count }}">
+<article id="tour" class="{{ tour.slug }} views-{{ pageviews }}">
 <header class="span-24 last">
 <div class="quiet" id="metafield">
     {% trans 'Tour' %}:
@@ -146,7 +146,7 @@
         <strong>{% trans 'Marcadores presentes' %}:</strong> {% show_set tags '' '' ', ' 'link' %}
         </li>
         <li>
-        <strong>{% trans 'Número de visitas' %}:</strong> {{ tour.view_count }}
+        <strong>{% trans 'Número de visitas' %}:</strong> {{ pageviews }}
         </li>
     </ul>
 </div>

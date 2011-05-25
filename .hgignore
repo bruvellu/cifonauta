@@ -15,4 +15,6 @@ local_media/*
 benchmarks/*
 site_media/photos/*
 site_media/videos/*
+site_media/cache/*
 meta/migrations/*
+static/*

@@ -1672,17 +1672,127 @@ color:red;
  * Inlined to avoid required HTTP connection: www.phpied.com/delay-loading-your-print-css/
  */
 @media print {
-  * { background: transparent !important; color: black !important; text-shadow: none !important; filter:none !important;
-  -ms-filter: none !important; } /* Black prints faster: sanbeiji.com/archives/953 */
-  a, a:visited { color: #444 !important; text-decoration: underline; }
-  a[href]:after { content: " (" attr(href) ")"; }
-  abbr[title]:after { content: " (" attr(title) ")"; }
-  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }  /* Don't show links for images, or javascript/internal links */
-  pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
-  thead { display: table-header-group; } /* css-discuss.incutio.com/wiki/Printing_Tables */
-  tr, img { page-break-inside: avoid; }
-  img { max-width: 100% !important; }
-  @page { margin: 0.5cm; }
-  p, h2, h3 { orphans: 3; widows: 3; }
-  h2, h3{ page-break-after: avoid; }
+    * {
+        background: transparent !important;
+        color: black !important;
+        text-shadow: none !important;
+        filter:none !important;
+        -ms-filter: none !important;
+    } /* Black prints faster: sanbeiji.com/archives/953 */
+
+    body {
+        line-height:1.5;
+        font-family:"Helvetica Neue", Arial, Helvetica, sans-serif;
+        color:#000;
+        background:none;
+        font-size:10pt;
+    }
+    
+    .container {
+        background:none;
+    }
+    
+    
+    a, a:link, a:visited {
+        color: #444 !important;
+        text-decoration: underline;
+        background:transparent;
+        font-weight:700;
+    }
+    
+    a[href]:after, a:link:after, a:visited:after {
+        content: " (" attr(href) ")";
+        font-size:90%;
+    }
+    
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+    
+    .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after {
+        content: "";
+    }  /* Don't show links for images, or javascript/internal links */
+    
+    pre, blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+        margin:1.5em;
+        padding:1em;
+        font-style:italic;
+        font-size:.9em;
+    }
+
+    code {
+        font:.9em "Courier New", Monaco, Courier, monospace;
+    }
+    
+    thead {
+        display: table-header-group;
+    } /* css-discuss.incutio.com/wiki/Printing_Tables */
+    
+    tr, img {
+        page-break-inside: avoid;
+    }
+    
+    img {
+        max-width: 100% !important;
+    }
+
+    a img {
+        border:none;
+    }
+    
+    p img.top {
+        margin-top:0;
+    }
+    
+    
+    @page {
+        margin: 0.5cm;
+    }
+    
+    p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+    }
+    
+    h2, h3{
+        page-break-after: avoid;
+    }
+    
+    hr {
+        background:#ccc;
+        color:#ccc;
+        width:100%;
+        height:2px;
+        margin:2em 0;
+        padding:0;
+        border:none;
+    }
+    
+    hr.space {
+        background:#fff;
+        color:#fff;
+        visibility:hidden;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        font-family:"Helvetica Neue", Arial, "Lucida Grande", sans-serif;
+    }
+    
+    .small {
+        font-size:.9em;
+    }
+
+    .large {
+        font-size:1.1em;
+    }
+
+    .quiet {
+        color:#999;
+    }
+    
+    .hide {
+        display:none;
+    }
 }

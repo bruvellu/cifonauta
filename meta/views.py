@@ -19,20 +19,20 @@ def main_page(request):
     # Fotos
     try:
         # Tenta encontrar destaques capa.
-        images = Image.objects.filter(cover=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')
+        images = Image.objects.filter(cover=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'stats', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')
 
         # Processa queryset, definindo imagens de capa.
         image = images[0]
         photo = images[1]
 
         # Faz lista de destaques.
-        thumbs = Image.objects.filter(highlight=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')[:10]
+        thumbs = Image.objects.filter(highlight=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'stats', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')[:10]
     except:
         image, photo, thumbs = '', '', []
     # Vídeos
     try:
         # Tenta encontrar destaques de capa.
-        videos = Video.objects.filter(cover=True, is_public=True).defer('source_filepath', 'old_filepath', 'timestamp', 'view_count', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude', 'webm_filepath', 'ogg_filepath', 'mp4_filepath').order_by('?')[:10]
+        videos = Video.objects.filter(cover=True, is_public=True).defer('source_filepath', 'old_filepath', 'timestamp', 'stats', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude', 'webm_filepath', 'ogg_filepath', 'mp4_filepath').order_by('?')[:10]
         video = videos[0]
     except:
         video = ''
@@ -41,7 +41,7 @@ def main_page(request):
         tours = Tour.objects.order_by('?')
         tour = tours[0]
         tour_images = tour.images.defer('source_filepath', 'old_filepath', 
-                'timestamp', 'view_count', 'notes', 'review', 'pub_date', 
+                'timestamp', 'stats', 'notes', 'review', 'pub_date', 
                 'rights', 'sublocation', 'city', 'state', 'country', 'date', 
                 'geolocation', 'latitude', 
                 'longitude').exclude(id=image.id).exclude(id=photo.id).order_by('?')[:10]
@@ -386,7 +386,7 @@ def translate_page(request):
 def photo_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''
     # Pega o objeto.
-    image = get_object_or_404(Image.objects.select_related('size', 
+    image = get_object_or_404(Image.objects.select_related('stats', 'size', 
         'sublocation', 'city', 'state', 'country', 
         'rights').defer('source_filepath', 'old_filepath'), id=image_id)
 
@@ -499,7 +499,7 @@ def photo_page(request, image_id):
 def video_page(request, video_id):
     '''Página única de cada vídeo com todas as informações.'''
     # Pega o objeto.
-    video = get_object_or_404(Video.objects.select_related('size', 
+    video = get_object_or_404(Video.objects.select_related('stats', 'size', 
         'sublocation', 'city', 'state', 'country', 
         'rights').defer('source_filepath',), id=video_id)
 
@@ -652,11 +652,11 @@ def meta_page(request, model_name, field, slug):
         q = [Q(**filter_args),]
         if field == 'taxon':
             q = recurse(model, q)
-        image_list = Image.objects.filter(reduce(operator.or_, q)).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').exclude(is_public=False).distinct().order_by('-id')
-        video_list = Video.objects.filter(reduce(operator.or_, q)).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).exclude(is_public=False).distinct().order_by('-id')
+        image_list = Image.objects.filter(reduce(operator.or_, q)).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').exclude(is_public=False).distinct().order_by('-id')
+        video_list = Video.objects.filter(reduce(operator.or_, q)).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).exclude(is_public=False).distinct().order_by('-id')
     except:
-        image_list = Image.objects.filter(**filter_args).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').exclude(is_public=False).distinct().order_by('-id')
-        video_list = Video.objects.filter(**filter_args).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).exclude(is_public=False).distinct().order_by('-id')
+        image_list = Image.objects.filter(**filter_args).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').exclude(is_public=False).distinct().order_by('-id')
+        video_list = Video.objects.filter(**filter_args).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).exclude(is_public=False).distinct().order_by('-id')
     images = get_paginated(request, image_list)
     videos = get_paginated(request, video_list)
     variables = RequestContext(request, {
@@ -674,10 +674,8 @@ def tour_page(request, slug):
     '''Página única de cada tour.'''
     tour = get_object_or_404(Tour, slug=slug)
     references = tour.references.all()
-    photos = tour.images.select_related(
-            'size', 'sublocation', 'city', 'state', 'country')
-    videos = tour.videos.select_related(
-            'size', 'sublocation', 'city', 'state', 'country')
+    photos = tour.images.select_related('stats', 'size', 'sublocation', 'city', 'state', 'country')
+    videos = tour.videos.select_related('stats', 'size', 'sublocation', 'city', 'state', 'country')
     thumb = photos.values_list('thumb_filepath', flat=True)[0]
 
     # Extrair metadados das imagens.
@@ -763,7 +761,7 @@ def static_page(request):
 
 def dynamic_page(request):
     '''Página dinâmica somente para testes de performance.'''
-    images = Image.objects.filter(tag__name='adulto', is_public=True).order_by('view_count')[:20]
+    images = Image.objects.filter(tag__name='adulto', is_public=True).order_by('stats__views')[:20]
     variables = RequestContext(request, {
         'images': images,
         })

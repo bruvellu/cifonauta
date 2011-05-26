@@ -219,8 +219,8 @@ input:invalid, textarea:invalid {
 
 /* typography.css */
 html {font-size:100.01%;}
+body {font-size:75%;}
 body, select, input, textarea {
-    font-size:75%;
     color:#444444;
     background:#ffffff;
     font-family:Ubuntu,"Helvetica Neue", Arial, Helvetica, sans-serif;

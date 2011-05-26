@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-26 12:02-0300\n"
+"POT-Creation-Date: 2011-05-26 12:22-0300\n"
 "PO-Revision-Date: 2011-05-09 15:48\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -709,11 +709,11 @@ msgstr "only photos"
 msgid "Mostrando <strong>fotos</strong> e <strong>vídeos</strong>."
 msgstr "Displaying <strong>photos</strong> and <strong>videos</strong>."
 
-#: templates/buscar.html:52
+#: templates/buscar.html:48
 msgid "Atualizar"
 msgstr "Update"
 
-#: templates/buscar.html:59
+#: templates/buscar.html:55
 msgid "ou clique para mostrar tudo"
 msgstr "or click to show everything"
 

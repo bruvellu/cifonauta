@@ -633,29 +633,28 @@ p.incr, .incr p {
 }
 
 header.main hgroup.main {
-    margin:1em 0 0;
-    background:url("/static/logo.png") no-repeat scroll 0 0 transparent;
-    height:65px;
+    background:url("/static/logo.png") no-repeat scroll 270px 18px transparent;
     overflow:hidden;
-    text-indent:-9999px;
 }
 
 header.main h1, header.main h2 {
-    margin:0 0 0 80px;
     padding:0;
 }
 
 header.main h1 {
     letter-spacing:2px;
     font-weight:bolder;
-    color:#4d7494;
+    font-size:450%;
 }
 
 header.main h2 {
     color:#666666;
-    font-size:1.1em;
+    font-size:92%;
     text-transform:uppercase;
     font-weight:lighter;
+    margin:-20px 0 0 0px;
+    text-align:right;
+    width:268px;
 }
 
 #admin {
@@ -754,11 +753,13 @@ nav.main {
     font-family:Georgia;
     letter-spacing:2px;
     text-align:right;
+    padding-right:1em;
 }
 
 #home-search {
     text-align:right;
     margin-top:2em;
+    padding-right:1em;
 }
 
 #feedback {

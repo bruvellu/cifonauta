@@ -29,8 +29,6 @@ class File(models.Model):
     cover = models.BooleanField(_('imagem de capa'), default=False)
     stats = models.OneToOneField('Stats', null=True, 
             verbose_name=_('estatísticas'))
-    view_count = models.PositiveIntegerField(_('visitas'), default=0, 
-            editable=False)
     is_public = models.BooleanField(_('público'), default=False)
     review = models.BooleanField(_('sob revisão'), default=False)
     notes = models.TextField(_('anotações'), blank=True)
@@ -492,8 +490,6 @@ class Tour(models.Model):
     timestamp = models.DateTimeField(_('data de modificação'), auto_now=True)
     stats = models.OneToOneField('Stats', null=True, 
             verbose_name=_('estatísticas'))
-    view_count = models.PositiveIntegerField(_('visitas'), default=0, 
-            editable=False)
     images = models.ManyToManyField(Image, null=True, blank=True, 
             verbose_name=_('fotos'))
     videos = models.ManyToManyField(Video, null=True, blank=True, 

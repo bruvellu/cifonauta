@@ -2,21 +2,21 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-26 12:22-0300\n"
-"PO-Revision-Date: 2011-05-09 15:48\n"
+"POT-Creation-Date: 2011-05-26 16:42-0300\n"
+"PO-Revision-Date: 2011-05-26 16:45\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Translated-Using: django-rosetta 0.6.0\n"
+"Language: \n"
+"X-Translated-Using: django-rosetta 0.6.1\n"
 
 #: feeds.py:15 feeds.py:89 feeds.py:175
 msgid "biologia marinha"
@@ -38,7 +38,7 @@ msgstr "videos"
 msgid "biologia"
 msgstr "biology"
 
-#: feeds.py:18 feeds.py:92 feeds.py:178 templates/base.html:166
+#: feeds.py:18 feeds.py:92 feeds.py:178 templates/base.html:168
 msgid "Centro de Biologia Marinha da Universidade de São Paulo"
 msgstr "Marine Biology Center of University of São Paulo"
 
@@ -85,7 +85,8 @@ msgstr "Cifonauta: only videos (%(field)s=%(name)s)"
 #, python-format
 msgid "Fotos e vídeos do banco de imagens Cifonauta com %(field)s=%(name)s."
 msgstr ""
-"Photos and videos of Cifonauta image database where %(field)s=%(name)s."
+"Photos and videos of Cifonauta image database where "
+"%(field)s=%(name)s."
 
 #: feeds.py:132
 #, python-format
@@ -235,7 +236,7 @@ msgstr "cover image"
 
 #: models.py:31 models.py:492 models.py:542 models.py:543
 msgid "estatísticas"
-msgstr ""
+msgstr "statistics"
 
 #: models.py:32 models.py:488
 msgid "público"
@@ -478,7 +479,7 @@ msgid "tours"
 msgstr "tours"
 
 #: templates/authors_page.html:3 templates/authors_page.html.py:9
-#: templates/authors_page.html:21 templates/base.html:206
+#: templates/authors_page.html:21 templates/base.html:208
 #: templates/mais.html:12
 msgid "Autores"
 msgstr "Authors"
@@ -538,133 +539,134 @@ msgstr "search"
 msgid "blog"
 msgstr "blog"
 
-#: templates/base.html:144
+#: templates/base.html:145
 msgid "banco de imagens de biologia marinha"
 msgstr "marine biology image database"
 
-#: templates/base.html:171
+#: templates/base.html:173
 msgid "Licença de uso"
 msgstr "Content license"
 
-#: templates/base.html:172
+#: templates/base.html:174
 msgid "Licença Creative Commons"
 msgstr "Creative Commons License"
 
-#: templates/base.html:172
+#: templates/base.html:174
 msgid ""
-"O conteúdo deste website está sob uma licença Creative Commons Atribuição-"
-"Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional"
+"O conteúdo deste website está sob uma licença Creative Commons "
+"Atribuição-Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 "
+"internacional"
 msgstr ""
-"The content of this website is licensed under a Creative Commons Attribution-"
-"NonCommercial-ShareAlike 3.0 Unported License"
+"The content of this website is licensed under a Creative Commons "
+"Attribution-NonCommercial-ShareAlike 3.0 Unported License"
 
-#: templates/base.html:175
+#: templates/base.html:177
 msgid "Apoio"
 msgstr "Support"
 
-#: templates/base.html:175
+#: templates/base.html:177
 msgid "CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico"
 msgstr "CNPq - National Council for Scientific and Technological Development"
 
-#: templates/base.html:180
+#: templates/base.html:182
 msgid "Informações básicas"
 msgstr "Basic information"
 
-#: templates/base.html:182 templates/sobremenu.html:5
+#: templates/base.html:184 templates/sobremenu.html:5
 msgid "Sobre"
 msgstr "About"
 
-#: templates/base.html:183 templates/sobremenu.html:6
+#: templates/base.html:185 templates/sobremenu.html:6
 msgid "Conteúdo"
 msgstr "Content"
 
-#: templates/base.html:184 templates/sobremenu.html:7
+#: templates/base.html:186 templates/sobremenu.html:7
 msgid "Organização"
 msgstr "Organization"
 
-#: templates/base.html:185 templates/sobremenu.html:8
+#: templates/base.html:187 templates/sobremenu.html:8
 msgid "Créditos e apoio"
 msgstr "Credits and support"
 
-#: templates/base.html:186
+#: templates/base.html:188
 msgid "Termos de uso e direitos"
 msgstr "Terms of use and rights"
 
-#: templates/base.html:192
+#: templates/base.html:194
 msgid "Explorar"
 msgstr "Explore"
 
-#: templates/base.html:194 templates/buscar.html:3 templates/buscar.html.py:11
+#: templates/base.html:196 templates/buscar.html:3 templates/buscar.html.py:11
 msgid "Buscador"
 msgstr "Search"
 
-#: templates/base.html:195 templates/main_page.html:69
+#: templates/base.html:197 templates/main_page.html:69
 #: templates/tours_page.html:3 templates/tours_page.html.py:10
 #: templates/tours_page.html:19
 msgid "Tours"
 msgstr "Tours"
 
-#: templates/base.html:196 templates/main_page.html:45
+#: templates/base.html:198 templates/main_page.html:45
 msgid "Fotos"
 msgstr "Photos"
 
-#: templates/base.html:197 templates/main_page.html:57
+#: templates/base.html:199 templates/main_page.html:57
 msgid "Vídeos"
 msgstr "Videos"
 
-#: templates/base.html:201
+#: templates/base.html:203
 msgid "Metadados"
 msgstr "Metadata"
 
-#: templates/base.html:203 templates/mais.html:7 templates/tags_page.html:6
+#: templates/base.html:205 templates/mais.html:7 templates/tags_page.html:6
 #: templates/tags_page.html.py:14 templates/tags_page.html:22
 #: templates/feeds/media_post.html:5
 msgid "Marcadores"
 msgstr "Tags"
 
-#: templates/base.html:204 templates/mais.html:17
+#: templates/base.html:206 templates/mais.html:17
 #: templates/organizacao.html:25 templates/taxa_page.html:3
 #: templates/taxa_page.html.py:10 templates/taxa_page.html:19
 msgid "Táxons"
 msgstr "Taxa"
 
-#: templates/base.html:205 templates/places_page.html:6
+#: templates/base.html:207 templates/places_page.html:6
 #: templates/places_page.html.py:12 templates/places_page.html:20
 msgid "Localidades"
 msgstr "Places"
 
 #. Translators: list of references rendered on a page
-#: templates/base.html:207 templates/refs_page.html:3
+#: templates/base.html:209 templates/refs_page.html:3
 #: templates/refs_page.html.py:9 templates/refs_page.html:17
 #: templates/tour_page.html:142
 msgid "Referências"
 msgstr "References"
 
-#: templates/base.html:211
+#: templates/base.html:213
 msgid "Novidades"
 msgstr "News"
 
-#: templates/base.html:213
+#: templates/base.html:215
 msgid "Blog"
 msgstr "Blog"
 
-#: templates/base.html:219 templates/sobremenu.html:10
+#: templates/base.html:221 templates/sobremenu.html:10
 msgid "Desenvolvimento"
 msgstr "Development"
 
-#: templates/base.html:221 templates/sobremenu.html:9
+#: templates/base.html:223 templates/sobremenu.html:9
 msgid "Detalhes técnicos"
 msgstr "Technical details"
 
-#: templates/base.html:222
+#: templates/base.html:224
 msgid "Atualizações"
 msgstr "Updates"
 
-#: templates/base.html:223 templates/sobremenu.html:11
+#: templates/base.html:225 templates/sobremenu.html:11
 msgid "Idéias planejadas"
 msgstr "Planned features"
 
-#: templates/base.html:224
+#: templates/base.html:226
 msgid "Feedback"
 msgstr "Feedback"
 
@@ -782,16 +784,16 @@ msgstr "marine biology, biodiversity, image database, ocean"
 #: templates/main_page.html:5 templates/main_page.html.py:14
 #: templates/main_page.html:30
 msgid ""
-"O banco de imagens <em>Cifonauta</em> contém uma grande variedade de fotos e "
-"vídeos provenientes de atividades científicas em biologia marinha. As "
-"imagens carregam marcadores com classificação taxonômica, estágio de vida, "
-"habitat e outras informações que permitem navegar de maneira intuitiva e "
-"didática."
+"O banco de imagens <em>Cifonauta</em> contém uma grande variedade de "
+"fotos e vídeos provenientes de atividades científicas em biologia "
+"marinha. As imagens carregam marcadores com classificação taxonômica, "
+"estágio de vida, habitat e outras informações que permitem navegar de "
+"maneira intuitiva e didática."
 msgstr ""
-"<em>Cifonauta</em> is an image database containing a wide variety of photos "
-"and videos from scientific activities in marine biology. The images hold "
-"tags with taxonomic classification, life stage, habitat, and other "
-"information that let you browse intuitively."
+"<em>Cifonauta</em> is an image database containing a wide variety of "
+"photos and videos from scientific activities in marine biology. The "
+"images hold tags with taxonomic classification, life stage, habitat, "
+"and other information that let you browse intuitively."
 
 #: templates/main_page.html:28
 msgid "Explore a biodiversidade marinha"
@@ -823,29 +825,31 @@ msgstr "latest news"
 
 #: templates/main_page.html:52
 msgid ""
-"Além de fotos representativas de cada grupo disponibilizamos séries de um "
-"mesmo organismo possibilitando uma visualização mais completa de sua "
-"morfologia e tridimensionalidade."
+"Além de fotos representativas de cada grupo disponibilizamos séries de "
+"um mesmo organismo possibilitando uma visualização mais completa de sua"
+" morfologia e tridimensionalidade."
 msgstr ""
 "In addition to representative photos of each taxon we made available "
-"sequential images of the same organism to allow a more complete view of "
-"their morphology and dimensionality."
+"sequential images of the same organism to allow a more complete view "
+"of their morphology and dimensionality."
 
 #: templates/main_page.html:64
 msgid ""
-"Mostram aspectos da biologia dos organismos como desenvolvimento, locomoção, "
-"comportamento e reprodução em vídeos de curta duração."
+"Mostram aspectos da biologia dos organismos como desenvolvimento, "
+"locomoção, comportamento e reprodução em vídeos de curta duração."
 msgstr ""
-"Short footage material showing aspects of the biology of organisms such as "
-"development, locomotion, behavior, and reproduction."
+"Short footage material showing aspects of the biology of organisms "
+"such as development, locomotion, behavior, and reproduction."
 
 #: templates/main_page.html:76
 msgid ""
-"Seleção de imagens do banco sobre um tema específico com texto descritivo e "
-"slideshow. Conheça os <a href=\"/tours/\">tours disponíveis</a>."
+"Seleção de imagens do banco sobre um tema específico com texto "
+"descritivo e slideshow. Conheça os <a href=\"/tours/\">tours "
+"disponíveis</a>."
 msgstr ""
-"Selection of images from the database on a specific topic with descriptive "
-"text and slideshow. See our <a href=\"/tours/\">available tours</a>."
+"Selection of images from the database on a specific topic with "
+"descriptive text and slideshow. See our <a href=\"/tours/\">available "
+"tours</a>."
 
 #: templates/main_page.html:83
 msgid "Destaques"
@@ -865,8 +869,9 @@ msgid ""
 "minus\">−</span>] para refinar sua busca ou clique no nome para abrir a "
 "página do metadado."
 msgstr ""
-"Use [<span class=\"sign plus\">+</span>] and [<span class=\"sign minus\">−</"
-"span>] to refine your query or click on the name to open metadata's page."
+"Use [<span class=\"sign plus\">+</span>] and [<span class=\"sign "
+"minus\">−</span>] to refine your query or click on the name to open "
+"metadata's page."
 
 #: templates/mais.html:7
 msgid "Todos os marcadores"
@@ -911,11 +916,11 @@ msgstr "view"
 #: templates/media_page.html:88 templates/feeds/media_post.html:59
 #, python-format
 msgid ""
-"Banco de imagens <em>Cifonauta</em>. Disponível em: <a href=\"%(media_url)s"
-"\">http://%(host)s%(media_url)s</a> Acesso em:"
+"Banco de imagens <em>Cifonauta</em>. Disponível em: <a "
+"href=\"%(media_url)s\">http://%(host)s%(media_url)s</a> Acesso em:"
 msgstr ""
-"<em>Cifonauta</em> image database. Available at: <a href=\"%(media_url)s"
-"\">http://%(host)s%(media_url)s</a> Acessed:"
+"<em>Cifonauta</em> image database. Available at: <a "
+"href=\"%(media_url)s\">http://%(host)s%(media_url)s</a> Acessed:"
 
 #: templates/media_page.html:90
 msgid "Conheça os <a href=\"/termos/\">termos de uso</a>."
@@ -953,11 +958,11 @@ msgstr "References"
 
 #: templates/media_page.html:173
 msgid ""
-"Por favor ative o Javascript para ver os <a href=\"http://disqus.com/?"
-"ref_noscript\">comentários."
+"Por favor ative o Javascript para ver os <a "
+"href=\"http://disqus.com/?ref_noscript\">comentários."
 msgstr ""
-"Please activate Javascript to see <a href=\"http://disqus.com/?ref_noscript"
-"\">comments.   "
+"Please activate Javascript to see <a "
+"href=\"http://disqus.com/?ref_noscript\">comments.   "
 
 #: templates/media_page.html:178
 msgid "Esta imagem não está disponível."
@@ -987,46 +992,46 @@ msgstr "Database organization"
 
 #: templates/organizacao.html:6 templates/organizacao.html.py:14
 msgid ""
-"As fotos e vídeos carregados no site podem ser pesquisadas por meio de "
-"informações básicas (metadados), como espécie, localidade, autor, tamanho, "
-"etc. Estes marcadores organizados em categorias como técnica fotográfica, "
-"estágio de vida, habitat, etc, deixam a navegação mais informativa e "
+"As fotos e vídeos podem ser pesquisadas por meio de informações básicas"
+" (metadados), como espécie, localidade, autor, tamanho, etc. Estes "
+"marcadores organizados em categorias como técnica fotográfica, estágio "
+"de vida, habitat, etc, deixam a navegação mais informativa e "
 "interessante."
 msgstr ""
 
 #: templates/organizacao.html:23
 msgid ""
-"As fotos e vídeos carregados no site podem ser pesquisadas por meio de "
-"informações básicas (metadados), como espécie, localidade, autor, tamanho, "
-"etc. Estes marcadores organizados em categorias como técnica fotográfica, "
-"estágio de vida, habitat, etc, deixam a navegação mais informativa e "
-"interessante. Por exemplo, você pode querer procurar <a href=\"/search/?"
-"tag=campo-escuro,larva&taxon=crustacea\">fotos de larvas de crustáceos "
-"tiradas em campo escuro</a>, ou apenas navegar pelos <a href=\"/search/?"
-"tag=adulto,planctonico\">estágios adultos de organismos planctônicos</a>. A "
-"categorização das imagens e a descrição de cada marcador (com um exemplo "
-"aleatório) encontra-se abaixo."
+"As fotos e vídeos do <strong>Cifonauta</strong> podem ser pesquisadas "
+"por meio de informações básicas (metadados), como espécie, localidade, "
+"autor, tamanho, etc. Estes marcadores organizados em categorias como "
+"técnica fotográfica, estágio de vida, habitat, etc, deixam a navegação "
+"mais informativa e interessante. Por exemplo, você pode querer procurar"
+" <a href=\"/search/?tag=campo-escuro,larva&taxon=crustacea\">fotos de "
+"larvas de crustáceos tiradas em campo escuro</a>, ou apenas navegar "
+"pelos <a href=\"/search/?tag=adulto,planctonico\">estágios adultos de "
+"organismos planctônicos</a>. A categorização das imagens e a descrição "
+"de cada marcador (com um exemplo aleatório) encontra-se abaixo."
 msgstr ""
 
 #: templates/organizacao.html:27
 msgid ""
 "A classificação biológica utilizada não adota nenhuma proposta em "
-"particular, mas segue quase estritamente a hierarquia taxonômica publicada "
-"pelo <a href=\"http://www.itis.gov/\">ITIS</a>. Portanto, nem sempre a "
-"classificação estará de acordo com os últimos avanços de cada área. Em "
-"alguns casos, empregamos a proposta de classificação seguida pelo "
-"especialista que identificou a espécie ilustrada."
+"particular, mas segue quase estritamente a hierarquia taxonômica "
+"publicada pelo <a href=\"http://www.itis.gov/\">ITIS</a>. Portanto, nem "
+"sempre a classificação estará de acordo com os últimos avanços de cada "
+"área. Em alguns casos, empregamos a proposta de classificação seguida "
+"pelo especialista que identificou a espécie ilustrada."
 msgstr ""
 
 #: templates/organizacao.html:31
 msgid ""
 "Para dar uma ideia das dimensões dos organismos, criamos 5 classes de "
 "tamanho arbitrariamente. A fauna bentônica recebeu uma classificação "
-"adicional de tamanho: macrofauna, meiofauna e microfauna (ver item Modo de "
-"Vida, abaixo). Fotos dos ambientes não contêm informações de tamanho, mas "
-"caso estejam ilustrando algum organismo (por exemplo, cracas no costão), "
-"podem vir acompanhadas da escala relativa a esse organismo. As classes de "
-"tamanho são:"
+"adicional de tamanho: macrofauna, meiofauna e microfauna (ver item Modo"
+" de Vida, abaixo). Fotos dos ambientes não contêm informações de "
+"tamanho, mas caso estejam ilustrando algum organismo (por exemplo, "
+"cracas no costão), podem vir acompanhadas da escala relativa a esse "
+"organismo. As classes de tamanho são:"
 msgstr ""
 
 #: templates/organizacao.html:36 templates/organizacao.html.py:55
@@ -1048,12 +1053,12 @@ msgstr "Photographic techniques"
 
 #: templates/organizacao.html:50
 msgid ""
-"As diferentes técnicas utilizadas para capturar as imagens do banco foram "
-"divididas em 4 categorias: <strong>submersa</strong>, "
+"As diferentes técnicas utilizadas para capturar as imagens do banco "
+"foram divididas em 4 categorias: <strong>submersa</strong>, "
 "<strong>macrofotografia</strong>, <strong>paisagem</strong> e "
 "<strong>microscopia</strong>. Para abarcar a variedade de técnicas de "
-"microscopia este último foi subdividido. Segue então a lista dos marcadores "
-"referentes às técnicas fotográficas:"
+"microscopia este último foi subdividido. Segue então a lista dos "
+"marcadores referentes às técnicas fotográficas:"
 msgstr ""
 
 #: templates/organizacao.html:54
@@ -1287,11 +1292,11 @@ msgstr "Read the <a href=\"http://%(host)s/termos/\">terms of use</a>."
 #: templates/feeds/tours.html:18
 #, python-format
 msgid ""
-"Conheça o tour <a href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</"
-"a>."
+"Conheça o tour <a "
+"href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</a>."
 msgstr ""
-"Visit the tour <a href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</"
-"a>."
+"Visit the tour <a "
+"href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</a>."
 
 #~ msgid "Ir"
 #~ msgstr "Go"

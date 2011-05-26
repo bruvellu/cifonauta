@@ -30,14 +30,7 @@
         <!-- CSS: implied media="all" -->
         <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
 
-        <!-- Disabling styles, need to integrate with file above #TODO
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css">
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/screen.css" type="text/css" media="screen, projection">
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/print.css" type="text/css" media="print">
-        {% comment %}
         <!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
-        {% endcomment %}
-        -->
 
         <!-- Google Web Fonts -->
         <link href="http://fonts.googleapis.com/css?family=Ubuntu:light,regular,italic,bold" rel="stylesheet" type="text/css">
@@ -255,30 +248,15 @@
                 });
         </script>
 
-        <!-- Language Trigger -->
-        <script type="text/javascript">
-            $(document).ready(function(){
-                    // Esconde avisos.
-                    $(".success, .notice, .error").delay(10000).fadeOut('slow');
-
-                    // Trigger do seletor de línguas.
-                    $('#languages select').change(function () {
-                        var myform = $(this).parent();
-                        if ($(this).val() != "{{ request.LANGUAGE_CODE }}") {
-                        myform.submit();};
-                        });
-                    });
-        </script>
-
         <!-- Highslide -->
-        <script type="text/javascript" src="{{ STATIC_URL }}js/highslide/highslide.js"></script>
-        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}js/highslide/highslide.css" />
         <script type="text/javascript">
             hs.graphicsDir = '{{ STATIC_URL }}js/highslide/graphics/';
             hs.outlineType = 'rounded-white';
             hs.align = 'center';
             hs.showCredits = false;
         </script>
+
+        {% block extra-foot %}{% endblock %}
 
         <!-- ShareThis -->
         <script type="text/javascript">var switchTo5x=true;</script>
@@ -289,8 +267,6 @@
             onhover:false,
             });
         </script>
-
-        {% block extra-foot %}{% endblock %}
 
         <!-- ANALYTICS -->
         <script>

@@ -23,6 +23,8 @@
 <meta property="og:type" content="cifonauta:photo" />
 {% endif %}
 
+<link rel="stylesheet" href="{{ STATIC_URL }}js/mediaelement/mediaelementplayer.css" type="text/css">
+
 {% endblock %}
 
 {% block content %}
@@ -206,10 +208,8 @@
 {% endblock %}
 
 {% block extra-foot %}
-
-<!-- MediaElement.Js -->
 <script src="{{ STATIC_URL }}js/mediaelement/mediaelement-and-player.min.js" type="text/javascript"></script>
-<link rel="stylesheet" href="{{ STATIC_URL }}js/mediaelement/mediaelementplayer.css" type="text/css">
+
 <script type="text/javascript">
     // MediaElement.js
     $('video').mediaelementplayer({

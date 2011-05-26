@@ -1,3 +1,10 @@
+// Treeview
+$("#colaptree").treeview({
+    collapsed: true,
+    animated: "fast",
+    persist: "location",
+});
+
 // Document ready functions.
 $(document).ready(function(){
 

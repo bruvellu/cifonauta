@@ -616,8 +616,9 @@ def video_page(request, video_id):
 def embed_page(request, video_id):
     '''Página para embed dos vídeos.'''
     video = get_object_or_404(Video, id=video_id)
-    #TODO Checar sessão para evitar overdose de views
-    Video.objects.filter(id=video_id).update(view_count=F('view_count') + 1)
+    stats = video.stats
+    stats.pageviews = stats.pageviews + 1
+    stats.save()
     variables = RequestContext(request, {
         'media': video,
         })

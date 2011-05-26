@@ -39,7 +39,7 @@
             {% endif %}
         {% endfor %}
     </ul>
-<footer class="pagination span-16 last">
+<footer class="paginator span-16 last">
 {% if images.has_previous %}
 <div class="span-2"><a href="{% paged_url request.META.QUERY_STRING images.previous_page_number %}"><< {% trans 'anterior' %}</a></div>
 {% else %}
@@ -73,7 +73,7 @@
         {% endfor %}
     </ul>
 
-<footer class="span-16 pagination last">
+<footer class="paginator span-16 last">
 {% if videos.has_previous %}
 <div class="span-2"><a href="{% paged_url request.META.QUERY_STRING videos.previous_page_number %}"><< {% trans 'anterior' %}</a></div>
 {% else %}

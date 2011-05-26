@@ -13,22 +13,6 @@
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 <meta property="og:type" content="cifonauta:tour" />
 
-<script type="text/javascript" src="{{ STATIC_URL }}js/slides/slides.min.jquery.js"></script>
-
-<script>
-    $(function(){
-        $('#slides').slides({
-            preload: true,
-            preloadImage: '{{ STATIC_URL }}js/slides/loading.gif',
-            autoHeight: true,
-            play: 4000,
-            hoverPause: true,
-            slideSpeed: 300,
-            generatePagination: false
-        });
-    });
-</script>
-
 {% endblock %}
 
 {% block content %}
@@ -167,4 +151,22 @@
 {% endblock %}
 
 {% block sidebar %}
+{% endblock %}
+
+{% block extra-foot %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/slides/slides.min.jquery.js"></script>
+
+<script>
+    $(function(){
+        $('#slides').slides({
+            preload: true,
+            preloadImage: '{{ STATIC_URL }}js/slides/loading.gif',
+            autoHeight: true,
+            play: 4000,
+            hoverPause: true,
+            slideSpeed: 300,
+            generatePagination: false
+        });
+    });
+</script>
 {% endblock %}

@@ -23,26 +23,6 @@
 <meta property="og:type" content="cifonauta:photo" />
 {% endif %}
 
-<script type="text/javascript">
-// JavaScript code goes here.
-$(document).ready(function(){
-        // External DB hovers
-        $(".biodb li").hover(
-            function () {
-                $(this).find(".external").fadeIn(200);
-            },
-            function () {
-                $(this).find(".external").fadeOut(200);
-            }
-        );
-
-        // Collapsible cite 
-        $("#cite-sideinfo").click(function(){
-            $("#citation").slideToggle();
-            $(this).toggleClass("bg-merge");
-            });
-});
-</script>
 {% endblock %}
 
 {% block content %}
@@ -103,7 +83,7 @@ $(document).ready(function(){
         </div>
 
         <div class="span-13 last borders" id="meta">
-            <div id="citation" class="span-13">
+            <div id="citethis" class="span-13">
                 <div>
                     {% show_set authors '' '.' ', ' '' %} <strong>{{ media.title }}</strong>. {% blocktrans with host=request.META.HTTP_HOST media_url=media.get_absolute_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a href="{{ media_url }}">http://{{ host }}{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
                 </div>
@@ -149,7 +129,6 @@ $(document).ready(function(){
         <div id="notes" class="span-16 last">
             <h2>{% trans 'Notas' %}</h2>
             {{ media.notes }}
-            <hr>
         </div>
         {% endif %}
 
@@ -224,4 +203,27 @@ $(document).ready(function(){
 {% endif %}
 
 </aside>
+{% endblock %}
+
+{% block extra-foot %}
+<script type="text/javascript">
+    // JavaScript code goes here.
+    $(document).ready(function(){
+        // External DB hovers
+        $(".biodb li").hover(
+            function () {
+                $(this).find(".external").fadeIn(200);
+            },
+            function () {
+                $(this).find(".external").fadeOut(200);
+            }
+        );
+
+        // Collapsible cite 
+        $("#cite-sideinfo").click(function(){
+            $("#citethis").slideToggle();
+            $(this).toggleClass("bg-merge");
+            });
+        });
+</script>
 {% endblock %}

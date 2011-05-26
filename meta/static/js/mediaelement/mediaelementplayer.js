@@ -33,6 +33,8 @@
 		loop: false,
 		// resize to media dimensions
 		enableAutosize: true,
+		// forces the hour marker (##:00:00)
+		alwaysShowHours: false,
 		// features to show
 		features: ['playpause','current','progress','duration','tracks','volume','fullscreen']		
 	};
@@ -258,6 +260,7 @@
 							t['build' + feature](t, t.controls, t.layers, t.media);
 						} catch (e) {
 							// TODO: report control error
+							//throw e;
 						}
 					}
 				}
@@ -318,6 +321,18 @@
 						t.controls.css('visibility','visible');
 					}
 				}, true);
+				
+				// resize on the first play
+				t.media.addEventListener('loadedmetadata', function(e) {
+					if (t.updateDuration) {
+						t.updateDuration();
+					}
+					if (t.updateCurrent) {
+						t.updateCurrent();
+					}
+					
+					t.setControlsSize();
+				}, true);
 
 
 				// webkit has trouble doing this without a delay
@@ -352,7 +367,7 @@
 				.width(t.width)
 				.height(t.height);
 
-			t.layers.children('div.mejs-layer')
+			t.layers.children('.mejs-layer')
 				.width(t.width)
 				.height(t.height);
 		},
@@ -607,7 +622,9 @@
 		'</div>')
 			.appendTo(controls);
 
-		var total = controls.find('.mejs-time-total'),
+		var 
+			t = this,
+			total = controls.find('.mejs-time-total'),
 			loaded  = controls.find('.mejs-time-loaded'),
 			current  = controls.find('.mejs-time-current'),
 			handle  = controls.find('.mejs-time-handle'),
@@ -670,6 +687,7 @@
 
 		// loading
 		media.addEventListener('progress', function (e) {
+			player.setProgressRail(e);
 			player.setCurrentRail(e);
 		}, false);
 
@@ -678,15 +696,20 @@
 			player.setProgressRail(e);
 			player.setCurrentRail(e);
 		}, false);
+		
+		
+		// store for later use
+		t.loaded = loaded;
+		t.total = total;
+		t.current = current;
+		t.handle = handle;
 	}
 	MediaElementPlayer.prototype.setProgressRail = function(e) {
 
 		var
 			t = this,
 			target = (e != undefined) ? e.target : t.media,
-			percent = null,
-			loaded = t.controls.find('.mejs-time-loaded'),
-			total = t.controls.find('.mejs-time-total');			
+			percent = null;			
 
 		// newest HTML5 spec has buffered array (FF4, Webkit)
 		if (target && target.buffered && target.buffered.length > 0 && target.buffered.end && target.duration) {
@@ -709,25 +732,22 @@
 		if (percent !== null) {
 			percent = Math.min(1, Math.max(0, percent));
 			// update loaded bar
-			loaded.width(total.width() * percent);
+			t.loaded.width(t.total.width() * percent);
 		}
 	}
 	MediaElementPlayer.prototype.setCurrentRail = function() {
 
-		var t = this,
-			handle  = t.controls.find('.mejs-time-handle'),
-			current  = t.controls.find('.mejs-time-current'),
-			total = t.controls.find('.mejs-time-total');
+		var t = this;
 	
 		if (t.media.currentTime != undefined && t.media.duration) {
 
 			// update bar and handle
 			var 
-				newWidth = total.width() * t.media.currentTime / t.media.duration,
-				handlePos = newWidth - (handle.outerWidth(true) / 2);
+				newWidth = t.total.width() * t.media.currentTime / t.media.duration,
+				handlePos = newWidth - (t.handle.outerWidth(true) / 2);
 
-			current.width(newWidth);
-			handle.css('left', handlePos);
+			t.current.width(newWidth);
+			t.handle.css('left', handlePos);
 		}
 
 	}	
@@ -737,36 +757,49 @@
 	// current and duration 00:00 / 00:00
 	MediaElementPlayer.prototype.buildcurrent = function(player, controls, layers, media) {
 		$('<div class="mejs-time">'+
-				'<span class="mejs-currenttime">00:00</span>'+
+				'<span class="mejs-currenttime">' + (player.options.alwaysShowHours ? '00:' : '') + '00:00</span>'+
 			'</div>')
 			.appendTo(controls);
+		
+		this.currenttime = this.controls.find('.mejs-currenttime');
 
 		media.addEventListener('timeupdate',function() {
-			if (media.currentTime) {
-				controls.find('.mejs-currenttime').html(mejs.Utility.secondsToTimeCode(media.currentTime));
-			}
+			player.updateCurrent();
 		}, false);
 	};
 
 	MediaElementPlayer.prototype.buildduration = function(player, controls, layers, media) {
 		if (controls.children().last().find('.mejs-currenttime').length > 0) {
 			$(' <span> | </span> '+
-			   '<span class="mejs-duration">00:00</span>')
+			   '<span class="mejs-duration">' + (player.options.alwaysShowHours ? '00:' : '') + '00:00</span>')
 				.appendTo(controls.find('.mejs-time'));
 		} else {
 
 			$('<div class="mejs-time">'+
-				'<span class="mejs-duration">00:00</span>'+
+				'<span class="mejs-duration">' + (player.options.alwaysShowHours ? '00:' : '') + '00:00</span>'+
 			'</div>')
 			.appendTo(controls);
 		}
+		
+		this.durationD = this.controls.find('.mejs-duration');
 
 		media.addEventListener('timeupdate',function() {
-			if (media.duration) {
-				controls.find('.mejs-duration').html(mejs.Utility.secondsToTimeCode(media.duration));
-			}
+			player.updateDuration();
 		}, false);
 	};
+	
+	MediaElementPlayer.prototype.updateCurrent = function() {
+		var t = this;
+
+		t.currenttime.html(mejs.Utility.secondsToTimeCode(t.media.currentTime | 0, t.options.alwaysShowHours || t.media.duration > 3600 ));
+	}
+	MediaElementPlayer.prototype.updateDuration = function() {	
+		var t = this;
+		
+		if (t.media.duration) {
+			this.durationD.html(mejs.Utility.secondsToTimeCode(t.media.duration, t.options.alwaysShowHours));
+		}		
+	};	
 
 })(jQuery);
 (function($) {
@@ -1117,7 +1150,7 @@
 				});
 				
 			// check for autoplay
-			if (media.getAttribute('autoplay') !== null) {
+			if (player.node.getAttribute('autoplay') !== null) {
 				player.chapters.css('visibility','hidden');
 			}				
 
@@ -1191,7 +1224,7 @@
 			if (track.isTranslation) {
 
 				// translate the first track
-				mejs.SrtParser.translateSrt(t.tracks[0].entries, t.tracks[0].srclang, track.srclang, t.options.googleApiKey, function(newOne) {
+				mejs.TrackFormatParser.translateTrackText(t.tracks[0].entries, t.tracks[0].srclang, track.srclang, t.options.googleApiKey, function(newOne) {
 
 					// store the new translation
 					track.entries = newOne;
@@ -1205,7 +1238,7 @@
 					success: function(d) {
 
 						// parse the loaded file
-						track.entries = mejs.SrtParser.parse(d);
+						track.entries = mejs.TrackFormatParser.parse(d);
 						after();
 
 						if (track.kind == 'chapters' && t.media.duration > 0) {
@@ -1410,7 +1443,10 @@
 	};
 
 	/*
-	Parses SRT format which should be formatted as
+	Parses WebVVT format which should be formatted as
+	================================
+	WEBVTT
+	
 	1
 	00:00:01,1 --> 00:00:05,000
 	A line of text
@@ -1418,25 +1454,24 @@
 	2
 	00:01:15,1 --> 00:02:05,000
 	A second line of text
+	
+	===============================
 
 	Adapted from: http://www.delphiki.com/html5/playr
 	*/
-	mejs.SrtParser = {
+	mejs.TrackFormatParser = {
 		pattern_identifier: /^[0-9]+$/,
 		pattern_timecode: /^([0-9]{2}:[0-9]{2}:[0-9]{2}(,[0-9]{1,3})?) --\> ([0-9]{2}:[0-9]{2}:[0-9]{2}(,[0-9]{3})?)(.*)$/,
-		timecodeToSeconds: function(timecode){
-			var tab = timecode.split(':');
-			return tab[0]*60*60 + tab[1]*60 + parseFloat(tab[2].replace(',','.'));
-		},
+
 		split2: function (text, regex) {
 			// normal version for compliant browsers
 			// see below for IE fix
 			return text.split(regex);
 		},
-		parse: function(srtText) {
+		parse: function(trackText) {
 			var 
 				i = 0,
-				lines = this.split2(srtText, /\r?\n/),
+				lines = this.split2(trackText, /\r?\n/),
 				entries = {text:[], times:[]},
 				timecode,
 				text;
@@ -1461,8 +1496,8 @@
 						entries.text.push(text);
 						entries.times.push(
 						{
-							start: this.timecodeToSeconds(timecode[1]),
-							stop: this.timecodeToSeconds(timecode[3]),
+							start: mejs.Utility.timeCodeToSeconds(timecode[1]),
+							stop: mejs.Utility.timeCodeToSeconds(timecode[3]),
 							settings: timecode[5]
 						});
 					}
@@ -1472,26 +1507,26 @@
 			return entries;
 		},
 
-		translateSrt: function(srtData, fromLang, toLang, googleApiKey, callback) {
+		translateTrackText: function(trackData, fromLang, toLang, googleApiKey, callback) {
 
 			var 
 				entries = {text:[], times:[]},
 				lines,
 				i
 
-			this.translateText( srtData.text.join(' <a></a>'), fromLang, toLang, googleApiKey, function(result) {
+			this.translateText( trackData.text.join(' <a></a>'), fromLang, toLang, googleApiKey, function(result) {
 				// split on separators
 				lines = result.split('<a></a>');
 
 				// create new entries
-				for (i=0;i<srtData.text.length; i++) {
+				for (i=0;i<trackData.text.length; i++) {
 					// add translated line
 					entries.text[i] = lines[i];
 					// copy existing times
 					entries.times[i] = {
-						start: srtData.times[i].start,
-						stop: srtData.times[i].stop,
-						settings: srtData.times[i].settings
+						start: trackData.times[i].start,
+						stop: trackData.times[i].stop,
+						settings: trackData.times[i].settings
 					};
 				}
 
@@ -1510,7 +1545,7 @@
 				nextChunk= function() {
 					if (chunks.length > 0) {
 						chunk = chunks.shift();
-						mejs.SrtParser.translateChunk(chunk, fromLang, toLang, googleApiKey, function(r) {
+						mejs.TrackFormatParser.translateChunk(chunk, fromLang, toLang, googleApiKey, function(r) {
 							if (r != 'undefined') {
 								result += r;
 							}
@@ -1564,7 +1599,7 @@
 	// test for browsers with bad String.split method.
 	if ('x\n\ny'.split(/\n/gi).length != 3) {
 		// add super slow IE8 and below version
-		mejs.SrtParser.split2 = function(text, regex) {
+		mejs.TrackFormatParser.split2 = function(text, regex) {
 			var 
 				parts = [], 
 				chunk = '',

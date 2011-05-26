@@ -206,7 +206,18 @@
 {% endblock %}
 
 {% block extra-foot %}
+
+<!-- MediaElement.Js -->
+<script src="{{ STATIC_URL }}js/mediaelement/mediaelement-and-player.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}js/mediaelement/mediaelementplayer.css" type="text/css">
 <script type="text/javascript">
+    // MediaElement.js
+    $('video').mediaelementplayer({
+        mode: 'shim',
+        //enableAutosize: true,
+        features: ['playpause','progress','current','duration','tracks','volume','fullscreen'],
+    });
+
     // JavaScript code goes here.
     $(document).ready(function(){
         // External DB hovers

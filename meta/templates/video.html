@@ -1,10 +1,4 @@
 {% load i18n %}
-{% block extra-head %}
-{% endblock %}
-
-{% comment %}
-<video width="510" src="{{ MEDIA_URL }}{{ media.mp4_filepath }}" type="video/mp4" id="player1" poster="{{ MEDIA_URL }}{{ media.large_thumb }}" controls="controls" preload="none"></video>
-{% endcomment %}
 
 <video poster="{{ MEDIA_URL }}{{ media.large_thumb }}" preload="none" controls="controls" tabindex="0" width="512" height="{{ height }}">
 <source type="video/mp4" src="{{ MEDIA_URL }}{{ media.mp4_filepath }}" />
@@ -17,12 +11,3 @@
 </object>
 {% trans 'Tem algo muito errado no seu navegador...' %}
 </video>
-
-<script>
-    // MediaElement.js
-    $('video').mediaelementplayer({
-    	mode: 'shim',
-        //enableAutosize: true,
-        features: ['playpause','progress','current','duration','tracks','volume','fullscreen'],
-    });
-</script>

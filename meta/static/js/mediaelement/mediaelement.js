@@ -15,7 +15,7 @@
 var mejs = mejs || {};
 
 // version number
-mejs.version = '2.1.2';
+mejs.version = '2.1.4';
 
 // player number (for missing, same id attr)
 mejs.meIndex = 0;
@@ -70,13 +70,23 @@ mejs.Utility = {
 		}
 		return path;
 	},
-	secondsToTimeCode: function(seconds) {
+	secondsToTimeCode: function(seconds,forceHours) {
 		seconds = Math.round(seconds);
-		var minutes = Math.floor(seconds / 60);
+		var hours,
+		    minutes = Math.floor(seconds / 60);
+		if (minutes >= 60) {
+		    hours = Math.floor(minutes / 60);
+		    minutes = minutes % 60;
+		}
+		hours = hours === undefined ? "00" : (hours >= 10) ? hours : "0" + hours;
 		minutes = (minutes >= 10) ? minutes : "0" + minutes;
 		seconds = Math.floor(seconds % 60);
 		seconds = (seconds >= 10) ? seconds : "0" + seconds;
-		return minutes + ":" + seconds;
+		return ((hours > 0 || forceHours === true) ? hours + ":" :'') + minutes + ":" + seconds;
+	},
+	timeCodeToSeconds: function(timecode){
+		var tab = timecode.split(':');
+		return tab[0]*60*60 + tab[1]*60 + parseFloat(tab[2].replace(',','.'));
 	}
 };
 
@@ -215,6 +225,10 @@ mejs.MediaFeatures = {
 		// detect native JavaScript fullscreen (Safari only, Chrome fails)
 		this.hasNativeFullScreen = (typeof v.webkitEnterFullScreen !== 'undefined');
 		if (this.isChrome) {
+			this.hasNativeFullScreen = false;
+		}
+		// OS X 10.5 can't do this even if it says it can :(
+		if (this.hasNativeFullScreen && ua.match(/mac os x 10_5/i)) {
 			this.hasNativeFullScreen = false;
 		}
 	}
@@ -792,6 +806,7 @@ mejs.HtmlMediaElementShim = {
 			'autoplay=' + ((autoplay) ? "true" : "false"),
 			'preload=' + preload,
 			'width=' + width,
+			'startvolume=' + options.startVolume,
 			'timerrate=' + options.timerRate,
 			'height=' + height];
 

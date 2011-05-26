@@ -1,7 +1,6 @@
 // Document ready functions.
 $(document).ready(function(){
-    
-    // Highslide
+
     // Esconde avisos.
     $(".success, .notice, .error").delay(10000).fadeOut('slow');
 

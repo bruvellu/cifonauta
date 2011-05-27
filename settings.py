@@ -124,6 +124,7 @@ MIDDLEWARE_CLASSES = (
         'johnny.middleware.QueryCacheMiddleware',
         'django.middleware.cache.UpdateCacheMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.middleware.locale.LocaleMiddleware',

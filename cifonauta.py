@@ -146,7 +146,6 @@ class Database:
                 del media_meta[k]
 
         if not update:
-            media_meta['view_count'] = 0
             if media.type == 'photo':
                 entry = Image(**media_meta)
             elif media.type == 'video':

@@ -28,8 +28,9 @@ class File(models.Model):
     # Website
     highlight = models.BooleanField(_('destaque'), default=False, help_text=_('Imagem que merece destaque.'))
     cover = models.BooleanField(_('imagem de capa'), default=False, help_text=_('Imagem esteticamente bela, para usar na página principal.'))
-    stats = models.OneToOneField('Stats', null=True, 
-            verbose_name=_('estatísticas'), help_text=_('Reúne estatísticas sobre a imagem.'))
+    stats = models.OneToOneField('Stats', null=True, editable=False, 
+            verbose_name=_('estatísticas'),
+            help_text=_('Reúne estatísticas sobre a imagem.'))
     is_public = models.BooleanField(_('público'), default=False, help_text=_('Informa se imagem está visível para visitantes anônimos do site.'))
     review = models.BooleanField(_('sob revisão'), default=False, help_text=_('Informa se imagem deve ser revisada.'))
     notes = models.TextField(_('anotações'), blank=True, help_text=_('Campo de anotações extras sobre a imagem.'))
@@ -488,8 +489,9 @@ class Tour(models.Model):
     is_public = models.BooleanField(_('público'), default=False, help_text=_('Informa se o tour está visível para visitantes anônimos.'))
     pub_date = models.DateTimeField(_('data de publicação'), auto_now_add=True, help_text=_('Data de publicação do tour no Cifonauta.'))
     timestamp = models.DateTimeField(_('data de modificação'), auto_now=True, help_text=_('Data da última modificação do tour.'))
-    stats = models.OneToOneField('Stats', null=True, 
-            verbose_name=_('estatísticas'), help_text=_('Guarda estatísticas de acesso ao tour.'))
+    stats = models.OneToOneField('Stats', null=True, editable=False,
+            verbose_name=_('estatísticas'),
+            help_text=_('Guarda estatísticas de acesso ao tour.'))
     images = models.ManyToManyField(Image, null=True, blank=True, 
             verbose_name=_('fotos'), help_text=_('Fotos associadas a este tour.'))
     videos = models.ManyToManyField(Video, null=True, blank=True, 

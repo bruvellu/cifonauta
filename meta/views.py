@@ -73,6 +73,10 @@ def search_page(request):
         'highlight': True
         })
 
+    # Define highlight quando não estiver na sessão do usuário.
+    if not 'highlight' in request.session:
+        request.session['highlight'] = True
+
     # Refinamentos.
     queries = {
             u'query': '',

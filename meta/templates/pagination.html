@@ -1,0 +1,14 @@
+{% load i18n %}
+<footer class="paginator span-16 last">
+    {% if media.has_previous %}
+        <div class="span-2"><a href="{% paged_url request.META.QUERY_STRING media.previous_page_number %}"><< {% trans 'anterior' %}</a></div>
+    {% else %}
+        <div class="span-2">&nbsp;</div>
+    {% endif %}
+    <div class="span-10 align-center">{{ media.number }} {% trans 'de' %} {{ media.paginator.num_pages }}</div>
+    {% if media.has_next %}
+        <div class="span-4 last"><a href="{% paged_url request.META.QUERY_STRING media.next_page_number %}">{% trans 'próxima' %} >></a></div>
+    {% else %}
+        <div class="span-4 last">&nbsp;</div>
+    {% endif %}
+</footer>

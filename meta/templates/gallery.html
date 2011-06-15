@@ -9,6 +9,9 @@
 <header class="span-16 last">
 <h2 class="span-10">{% trans 'Foto' %}{{ images.paginator.count|pluralize }} ({{ images.paginator.count }}){% if field %} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/photos/" title="{% trans 'Cifonauta: apenas fotos' %} ({{ field }}={{ meta.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span>{% endif %}</h2>
 </header>
+
+{% include 'pagination.html' with media=images %}
+
     <ul class="thumbs">
         {% for media in images.object_list %}
             {% if media.is_public %}
@@ -18,19 +21,9 @@
             {% endif %}
         {% endfor %}
     </ul>
-<footer class="paginator span-16 last">
-{% if images.has_previous %}
-<div class="span-2"><a href="{% paged_url request.META.QUERY_STRING images.previous_page_number %}"><< {% trans 'anterior' %}</a></div>
-{% else %}
-<div class="span-2">&nbsp;</div>
-{% endif %}
-<div class="span-10 align-center">{{ images.number }} {% trans 'de' %} {{ images.paginator.num_pages }}</div>
-{% if images.has_next %}
-<div class="span-4 last"><a href="{% paged_url request.META.QUERY_STRING images.next_page_number %}">{% trans 'próxima' %} >></a></div>
-{% else %}
-<div class="span-4 last">&nbsp;</div>
-{% endif %}
-</footer>
+
+{% include 'pagination.html' with media=images %}
+
 </section>
 
 <hr class="space">
@@ -42,6 +35,9 @@
 <header class="span-16 last">
 <h2 class="span-10">{% trans 'Vídeo' %}{{ videos.paginator.count|pluralize }} ({{ videos.paginator.count }}){% if field %} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/videos/" title="{% trans 'Cifonauta: apenas vídeos' %} ({{ field }}={{ meta.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span>{% endif %}</h2>
 </header>
+
+{% include 'pagination.html' with media=videos %}
+
     <ul class="thumbs">
         {% for media in videos.object_list %}
             {% if media.is_public %}
@@ -52,18 +48,7 @@
         {% endfor %}
     </ul>
 
-<footer class="paginator span-16 last">
-{% if videos.has_previous %}
-<div class="span-2"><a href="{% paged_url request.META.QUERY_STRING videos.previous_page_number %}"><< {% trans 'anterior' %}</a></div>
-{% else %}
-<div class="span-2">&nbsp;</div>
-{% endif %}
-<div class="span-10 align-center">{{ videos.number }} {% trans 'de' %} {{ videos.paginator.num_pages }}</div>
-{% if videos.has_next %}
-<div class="span-4 last"><a href="{% paged_url request.META.QUERY_STRING videos.next_page_number %}">{% trans 'próxima' %} >></a></div>
-{% else %}
-<div class="span-4 last">&nbsp;</div>
-{% endif %}
-</footer>
+{% include 'pagination.html' with media=videos %}
+
 </section>
 {% endif %}

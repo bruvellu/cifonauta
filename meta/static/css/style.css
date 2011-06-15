@@ -1159,6 +1159,11 @@ div.main {
 }
 
 /* SEARCH PAGE */
+div#search-results {
+}
+div#search-status {
+}
+
 #showall {
     font-size:2em;
 }

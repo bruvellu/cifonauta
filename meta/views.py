@@ -67,7 +67,11 @@ def search_page(request):
     #TODO Documentar como funciona essa função.
     #TODO Implementar jQuery e AJAX para melhorar usabilidade.
     form = SearchForm()
-    n_form = DisplayForm(initial={'n': 16})
+    n_form = DisplayForm(initial={
+        'n': 16,
+        'order': 'random',
+        'highlight': True
+        })
 
     # Refinamentos.
     queries = {
@@ -228,12 +232,13 @@ def search_page(request):
                 order = request.session['order']
                 highlight = request.session['highlight']
             except:
-                n_form = DisplayForm(initial={'n': 16, 'orderby': 'pub_date', 
-                    'order': 'desc', 'highlight': False})
+                n_form = DisplayForm(
+                        initial={'n': 16, 'orderby': 'random',
+                            'order': 'desc', 'highlight': True})
                 n_page = 16
-                orderby = 'pub_date'
+                orderby = 'random'
                 order = 'desc'
-                highlight = False
+                highlight = True
 
         # Forçar int.
         n_page = int(n_page)

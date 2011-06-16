@@ -303,6 +303,26 @@ def icount(value, field):
     q = {field:value}
     return Image.objects.filter(**q).count() + Video.objects.filter(**q).count()
 
+
+@register.filter
+def truncate(value, arg):
+    """
+    Truncates a string after a given number of chars  
+    Argument: Number of chars to truncate after
+
+    From: http://djangosnippets.org/snippets/163/
+    """
+    try:
+        length = int(arg)
+    except ValueError: # invalid literal for int()
+        return value # Fail silently.
+    if not isinstance(value, basestring):
+        value = str(value)
+    if (len(value) > length):
+        return value[:length] + "..."
+    else:
+        return value
+
 @register.inclusion_tag('mais.html')
 def show_info(image_list, video_list, queries):
     '''Extrair metadados e exclui o que estiver nas queries.

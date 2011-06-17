@@ -6,7 +6,7 @@ from meta.templatetags.extra_tags import extract_set
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
-from django.db.models import Q, F
+from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
 #from django.core.cache import cache

@@ -33,7 +33,7 @@ ORDER = (
 
 ORDER_BY = (
         ('id', _('id')),
-        ('view_count', _('visitas')),
+        ('stats__pageviews', _('visitas')),
         ('date', _('data da imagem')),
         ('pub_date', _('data de publicação')),
         ('timestamp', _('data de modificação')),

@@ -35,13 +35,6 @@ def taxon_paths(taxon):
     ancestors = [t for t in taxon.get_ancestors() if t.rank in main_ranks]
     return {'taxon': taxon, 'ancestors': ancestors}
 
-@register.inclusion_tag('hot_images.html')
-def show_hot():
-    '''Mostra imagens mais acessadas.'''
-    # XXX Precisa ser repensado.
-    hot_images = Image.objects.order_by('-view_count')[:4]
-    return {'hot_images': hot_images}
-
 @register.inclusion_tag('thumb_org.html', takes_context=True)
 def print_thumb(context, field, obj):
     '''Gera thumbnail aleatório de determinado metadado.'''

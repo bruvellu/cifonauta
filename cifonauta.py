@@ -950,7 +950,7 @@ def dir_ready(*dirs):
 
 def remove_broken():
     '''Deleta entradas de imagens oficiais apagadas.
-    
+
     Script linking.py salva um pickle do dicionário com os arquivos que devem
     ser apagados.
     '''
@@ -1086,6 +1086,10 @@ def main(argv):
     logname = 'log_%s' % time.strftime('%Y.%m.%d_%I:%M:%S', time.localtime())
     log = open(logname, 'a+b')
 
+    print 'Verificando e atualizando os links da pasta oficial...'
+    linking.main()
+    remove_broken()
+
     # Cria instância do bd
     cbm = Database()
 
@@ -1177,8 +1181,5 @@ def main(argv):
 if __name__ == '__main__':
     # Marca a hora inicial
     t0 = time.time()
-    print 'Verificando e atualizando os links da pasta oficial...'
-    linking.main()
-    remove_broken()
     # Inicia função principal, lendo os argumentos (se houver)
     main(sys.argv[1:])

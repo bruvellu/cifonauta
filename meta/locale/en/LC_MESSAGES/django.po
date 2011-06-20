@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-17 16:07-0300\n"
-"PO-Revision-Date: 2011-06-15 13:27\n"
+"POT-Creation-Date: 2011-06-20 20:23-0300\n"
+"PO-Revision-Date: 2011-06-20 20:23\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -150,7 +150,7 @@ msgstr "id"
 
 #: forms.py:36 models.py:530 templates/tours_page.html:35
 msgid "visitas"
-msgstr "views"
+msgstr "pageviews"
 
 #: forms.py:37
 msgid "data da imagem"
@@ -1332,7 +1332,7 @@ msgstr "By"
 
 #: templates/media_page.html:62
 msgid "visita"
-msgstr "view"
+msgstr "pageview"
 
 #: templates/media_page.html:90 templates/feeds/media_post.html:59
 #, python-format
@@ -1341,7 +1341,7 @@ msgid ""
 "\">http://%(host)s%(media_url)s</a> Acesso em:"
 msgstr ""
 "<em>Cifonauta</em> image database. Available at: <a href=\"%(media_url)s"
-"\">http://%(host)s%(media_url)s</a> Acessed:"
+"\">http://%(host)s%(media_url)s</a> Accessed:"
 
 #: templates/media_page.html:92
 msgid "Conheça os <a href=\"/termos/\">termos de uso</a>."
@@ -1728,7 +1728,7 @@ msgstr "Contained tags"
 
 #: templates/tour_page.html:134 templates/feeds/tours.html:17
 msgid "Número de visitas"
-msgstr "Number of views"
+msgstr "Number of pageviews"
 
 #: templates/tours_page.html:5
 msgid "tour, galeria, slideshow, apresentação"

@@ -504,12 +504,12 @@ def build_url(meta, field, queries, remove=False, append=None):
     return url
 
 @register.inclusion_tag('sets.html')
-def show_set(set, prefix, suffix, sep, method='name'):
+def show_set(set, prefix, suffix, sep, method='name', before='', after=''):
     '''Gera série a partir de um set.
 
     Pega os elementos do set e cria lista separada por vírgulas ou qualquer outro separador. Um prefixo e um sufixo também podem ser indicados, além do método ('link' gera url, 'slug' gera slug e vazio mostra o nome normal).
     '''
-    return {'set': set, 'prefix': prefix, 'suffix': suffix, 'sep': sep, 'method': method}
+    return {'set': set, 'prefix': prefix, 'suffix': suffix, 'sep': sep, 'method': method, 'before': before, 'after': after}
 
 def extract_set(image_list, video_list):
     '''Extrai outros metadados das imagens buscadas.'''

@@ -45,7 +45,7 @@ def citation_html(ref):
                 citation += u'%s.' % authors
             # Título.
             elif key == 'title':
-                citation += u' %s.' % ref['title']
+                citation += u' <strong>%s</strong>.' % ref['title']
             # Revista.
             elif key == 'publication_outlet':
                 citation += u' %s' % ref['publication_outlet']
@@ -58,7 +58,8 @@ def citation_html(ref):
             elif key == 'url':
                 # Lidar com múltiplos urls por citação.
                 first_url = ref['url'].split('\n')[0]
-                citation += u'<br><a href="%s">%s</a>' % (first_url, first_url)
+                citation += u', url:<a href="%s">%s</a>' % (first_url, 
+                        first_url)
     return citation
 
 def citation_pre_save(signal, instance, sender, **kwargs):

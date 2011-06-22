@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 import pickle
 from iptcinfo import IPTCInfo
@@ -202,5 +203,7 @@ def main():
 
 # Início do programa
 if __name__ == '__main__':
-    # Inicia função principal, lendo os argumentos (se houver)
+    #FIXME Não está importando o logger :(
+    logger = logging.getLogger('cifonauta.linking')
+    logger.info('Verificando e atualizando os links da pasta oficial...')
     main()

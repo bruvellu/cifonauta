@@ -15,22 +15,23 @@ metadados, reconhecendo marquivos modificados e atualizando o website.
 Centro de Biologia Marinha da Universidade de São Paulo.
 '''
 
-import os
-import sys
-import re
-import subprocess
-import time
 import getopt
+import logging
+import os
 import pickle
 import random
+import re
+import sys
+import subprocess
+import time
 
-from datetime import datetime
-from shutil import copy
-from iptcinfo import IPTCInfo
 import pyexiv2
+from datetime import datetime
+from iptcinfo import IPTCInfo
+from shutil import copy
 
-from itis import Itis
 import linking
+from itis import Itis
 
 # Django environment import
 from django.core.management import setup_environ
@@ -1021,7 +1022,7 @@ def usage():
 
 def main(argv):
     ''' Função principal do programa.
-    
+
     Lê os argumentos se houver e chama as outras funções.
     '''
     n = 0
@@ -1048,8 +1049,9 @@ def main(argv):
             'no-tsv',
             'n='])
     except getopt.GetoptError:
-        print 'Algo de errado nos argumentos...'
         usage()
+        logger.critical('Algo errado nos argumentos "%s". Abortando...',
+                ' '.join(argv))
         sys.exit(2)
 
     # Define o que fazer de acordo com o argumento passado
@@ -1071,23 +1073,12 @@ def main(argv):
             update_tsv = False
 
     # Imprime resumo do que o programa vai fazer
-    if force_update is True:
-        print u'\n%d arquivos serão atualizadas de forma forçada.' % n_max
-        print u'(argumento "-f" utilizado)'
-    else:
-        print u'\n%d arquivos serão verificadas e registradas no banco de ' \
-                'dados.' % n_max
-    if only_videos is True:
-        print u'\nApenas vídeos serão atualizadas.'
-    elif only_photos is True:
-        print u'\nApenas fotos serão atualizadas.'
+    logger.debug('Argumentos: n=%d, force_update=%s, only_photos=%s, only_videos=%s, update_tsv=%s.',
+            n_max, force_update, only_photos, only_videos, update_tsv)
 
-    # Cria o arquivo log
-    logname = 'log_%s' % time.strftime('%Y.%m.%d_%I:%M:%S', time.localtime())
-    log = open(logname, 'a+b')
-
-    print 'Verificando e atualizando os links da pasta oficial...'
+    # Verifica e atualiza links entre pasta "oficial" e "source_media".
     linking.main()
+
     remove_broken()
 
     # Cria instância do bd
@@ -1157,15 +1148,6 @@ def main(argv):
             video.save()
         print u'Feito! TSV atualizado.'
 
-    # Deletando arquivo log se ele estiver vazio
-    if log.read(1024) == '':
-        log.close()
-        # Deletando log vazio
-        os.remove(logname)
-    else:
-        # Fechando arquivo de log
-        log.close()
-    
     #TODO Melhorar as estatísticas daqui...
     print '\n%d ARQUIVOS ANALISADOS' % n
     print '%d novos' % n_new
@@ -1179,7 +1161,31 @@ def main(argv):
 
 # Início do programa
 if __name__ == '__main__':
+    # Criando o logger.
+    logger = logging.getLogger('cifonauta')
+    logger.setLevel(logging.DEBUG)
+    logger.propagate = False
+    # Define formato das mensagens.
+    formatter = logging.Formatter('[%(levelname)s] %(asctime)s @ %(module)s %(funcName)s (l%(lineno)d): %(message)s')
+
+    # Cria o manipulador do console.
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.DEBUG)
+    # Define a formatação para o console.
+    console_handler.setFormatter(formatter)
+    # Adiciona o console para o logger.
+    logger.addHandler(console_handler)
+
+    # Cria o manipulador do arquivo.log.
+    file_handler = logging.FileHandler('logs/cifonauta.log')
+    file_handler.setLevel(logging.DEBUG)
+    # Define a formatação para o arquivo.log.
+    file_handler.setFormatter(formatter)
+    # Adiciona o arquivo.log para o logger.
+    logger.addHandler(file_handler)
+
     # Marca a hora inicial
     t0 = time.time()
+    logger.info('Cifonauta iniciando...')
     # Inicia função principal, lendo os argumentos (se houver)
     main(sys.argv[1:])

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Gerenciamento de imagens</h1>
+{% if paths %}
+<div class="span-24 last">
+    <h2>Última ação: {{ deleted|length }} arquivos removidos e {{ not_deleted|length }} erros</h2>
+    {% if deleted %}
+    <h3>Arquivos deletados</h3>
+    <ul>
+        {% for path in deleted %}
+        <li>{{ path }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% if not_deleted %}
+    <h3>Arquivos não-deletados (algum erro ocorreu, provavelmente os arquivos não existem)</h3>
+    <ul>
+        {% for path in not_deleted %}
+        <li>{{ path }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endif %}
+<div class="span-24 last">
+    <h2>Órfãs ({{ orphaned|length }})</h2>
+    {% if orphaned %}
+    Quando o arquivo original não está mais presente.
+    <ul class="thumbs">
+        {% for media in orphaned %}
+        <li>
+            {% include 'thumb.html' %}<br>
+            {{ media.datatype }} id={{ media.id }}
+            <form action="." method="post">
+                <input type="submit" value="remover" class="fashion float-right" id="fixmedia" />
+                <input type="hidden" value="{{ media.id }}" name="{{ media.datatype }}" />
+                {% csrf_token %}
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    Nenhuma imagem órfã.
+    {% endif %}
+</div>
+<div class="span-24 last">
+    <h2>Duplicadas ({{ duplicates|length }})</h2>
+    {% if duplicates %}
+    Quando mais de uma entrada no banco de dados aponta para um único arquivo original. Remover as imagens com <strong>ID mais alto</strong>.
+    <div class="span-24 last">
+        {% for entry in duplicates %}
+        <div class="span-24 last">
+            <h3>{{ entry.path }}</h3>
+            <ul class="thumbs">
+                {% for media in entry.replicas %}
+                <li>
+                {% include 'thumb.html' %}<br>
+                    {{ media.datatype }} id={{ media.id }}
+                    <form action="." method="post">
+                        <input type="submit" value="remover" class="fashion float-right" id="fixmedia" />
+                        <input type="hidden" value="{{ media.id }}" name="{{ media.datatype }}" />
+                        {% csrf_token %}
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    Nenhuma imagem duplicada.
+    {% endif %}
+</div>
+{% endblock %}

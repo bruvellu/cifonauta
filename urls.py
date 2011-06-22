@@ -41,6 +41,7 @@ urlpatterns = patterns('',
         (r'^private/$', hidden_page),
         (r'^feedback/$', feedback_page),
         (r'^fixtaxa/$', fixtaxa_page),
+        (r'^fixmedia/$', fixmedia_page),
         # Menu
         (r'^organization/$', org_page),
         (r'^search/$', search_page),

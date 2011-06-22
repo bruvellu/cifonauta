@@ -27,9 +27,8 @@ def check(photos, videos):
     print 'id estão beleza, continuando...'
     return True
 
-def delete(media):
-    '''Executa a deleção.'''
-    original_file = os.readlink(media.source_filepath)
+def compile_paths(media):
+    '''Agrega arquivos que serão excluídos.'''
     to_be_removed = [
             #media.old_filepath,
             media.source_filepath,
@@ -66,10 +65,17 @@ def delete(media):
         to_be_removed.append(media.web_filepath.path.replace(
             'site_media', 'local_media'))
     print '\tESTES ARQUIVOS SERÃO REMOVIDOS:'''
-    for p in to_be_removed:
-        print '\t', p
+    for path in to_be_removed:
+        print '\t', path
     print
 
+    return to_be_removed
+
+
+def delete(media):
+    '''Executa a deleção.'''
+    original_file = os.readlink(media.source_filepath)
+    to_be_removed = compile_paths(media)
     proceed = raw_input('Deseja continuar? (s ou n): ')
     if proceed == 's':
         print '\nDeletando objeto...'
@@ -125,8 +131,6 @@ def main(argv):
     ready = check(photos, videos)
     if ready:
         prepare(photos, videos)
-
-
 
 # Início do programa
 if __name__ == '__main__':

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from remove import compile_paths
+import os
 from meta.models import *
 from meta.forms import *
 from meta.templatetags.extra_tags import extract_set
@@ -384,6 +386,61 @@ def fixtaxa_page(request):
         'valids': valids,
         })
     return render_to_response('fixtaxa.html', variables)
+
+@login_required
+def fixmedia_page(request):
+    '''Página para gerenciar imagens órfãs e duplicadas.'''
+    deleted, not_deleted, paths = [], [], []
+    if request.method == 'POST':
+        try:
+            photo_id = request.POST['photo']
+            media = Image.objects.get(id=photo_id)
+        except:
+            video_id = request.POST['video']
+            media = Video.objects.get(id=video_id)
+        try:
+            paths = compile_paths(media)
+            try:
+                media.delete()
+            except:
+                print 'Não rolou apagar do banco de dados?'
+            for path in paths:
+                try:
+                    os.remove(path)
+                    deleted.append(path)
+                except:
+                    not_deleted.append(path)
+        except:
+            print 'Algo deu errado para ler os caminhos.'
+        #FIXME Não está funcionando no servidor!!!
+        removal = open('toremove.txt', 'a')
+        for path in paths:
+            removal.write(path + '\n')
+        removal.close()
+    # Pega todas as fotos.
+    photos = Image.objects.all()
+    orphaned_photos, duplicated_photos = get_orphans(photos)
+    # Pega todos os vídeos.
+    videos = Video.objects.all()
+    orphaned_videos, duplicated_videos = get_orphans(videos)
+
+    # Cria lista de órfãs e dic de duplicadas.
+    orphaned = orphaned_photos
+    duplicates = duplicated_photos
+    # Adiciona vídeos à lista.
+    orphaned.extend(orphaned_videos)
+    duplicates.extend(duplicated_videos)
+
+    print orphaned, duplicates
+
+    variables = RequestContext(request, {
+        'orphaned': orphaned,
+        'duplicates': duplicates,
+        'paths': paths,
+        'deleted': deleted,
+        'not_deleted': not_deleted,
+        })
+    return render_to_response('fixmedia.html', variables)
 
 @login_required
 def translate_page(request):
@@ -893,3 +950,32 @@ def review_taxon(name):
                 return False
     except:
         return False
+
+def get_orphans(entries):
+    '''Get orphans and duplicates from a queryset.
+
+    Works for photos and videos, returns 2 lists.'''
+    # Cria lista de órfãs e dic de duplicadas.
+    orphaned = []
+    duplicates = []
+    dups = {}
+    # Le o link com o caminho para o arquivo original.
+    # Se o original não existir, é orfã.
+    for entry in entries:
+        try:
+            original = os.readlink(entry.source_filepath)
+            if dups.has_key(original):
+                dups[original].append(entry)
+            else:
+                dups[original] = [entry]
+        except OSError:
+            orphaned.append(entry)
+        else:
+            pass
+    # Coloca na lista tudo é duplicado.
+    for k, v in dups.iteritems():
+        if len(v) > 1:
+            duplicates.append({'path': k, 'replicas': v})
+    print orphaned, duplicates
+    print
+    return orphaned, duplicates

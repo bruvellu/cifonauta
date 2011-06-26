@@ -1164,7 +1164,7 @@ if __name__ == '__main__':
     # Criando o logger.
     logger = logging.getLogger('cifonauta')
     logger.setLevel(logging.DEBUG)
-    logger.propagate = False
+    #logger.propagate = False
     # Define formato das mensagens.
     formatter = logging.Formatter('[%(levelname)s] %(asctime)s @ %(module)s %(funcName)s (l%(lineno)d): %(message)s')
 

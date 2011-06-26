@@ -71,7 +71,6 @@ def compile_paths(media):
 
     return to_be_removed
 
-
 def delete(media):
     '''Executa a deleção.'''
     original_file = os.readlink(media.source_filepath)

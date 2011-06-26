@@ -949,41 +949,6 @@ def dir_ready(*dirs):
             print 'Criando diretório inexistente...'
             os.mkdir(dir)
 
-def remove_broken():
-    '''Deleta entradas de imagens oficiais apagadas.
-
-    Script linking.py salva um pickle do dicionário com os arquivos que devem
-    ser apagados.
-    '''
-    try:
-        file = open('to_del', 'rb')
-        lost = pickle.load(file)
-    except:
-        print 'Nenhum arquivo pra deletar.'
-        return
-    for k, v in lost.iteritems():
-        name = os.path.basename(k)
-        if name.endswith('txt'):
-            os.remove(k)
-        try:
-            media = Image.objects.get(web_filepath__icontains=name)
-        except:
-            try:
-                media = Video.objects.get(webm_filepath__icontains=name)
-            except:
-                print 'Nenhum imagem com nome %s' % name
-                continue
-        if media:
-            #TODO Deletar os thumbs e site media também?
-            media.is_public = False
-            media.review = True
-            os.remove(media.source_filepath)
-            media.save()
-            print 'Link problemático apagado e imagem não está mais pública.'
-    print 'Apagando arquivo pickle...'
-    file.close()
-    os.remove('to_del')
-
 def usage():
     '''Imprime manual de uso e argumentos disponíveis.'''
     print
@@ -1079,8 +1044,7 @@ def main(argv):
     # Verifica e atualiza links entre pasta "oficial" e "source_media".
     linking.main()
 
-    remove_broken()
-
+    #TODO Continuar o logging a partir daqui.
     # Cria instância do bd
     cbm = Database()
 
@@ -1164,7 +1128,7 @@ if __name__ == '__main__':
     # Criando o logger.
     logger = logging.getLogger('cifonauta')
     logger.setLevel(logging.DEBUG)
-    #logger.propagate = False
+    logger.propagate = False
     # Define formato das mensagens.
     formatter = logging.Formatter('[%(levelname)s] %(asctime)s @ %(module)s %(funcName)s (l%(lineno)d): %(message)s')
 

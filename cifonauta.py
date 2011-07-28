@@ -537,6 +537,11 @@ class Movie:
                     # Copia vídeo para pasta web
                     mp4_site_filepath = os.path.join(self.site_dir, mp4_name)
                     copy(mp4_filepath, mp4_site_filepath)
+                    try:
+                        subprocess.call(['qt-faststart', mp4_site_filepath,
+                            mp4_site_filepath])
+                    except:
+                        print 'qt-faststart não funcionou!'
                 except:
                     print 'Não conseguiu copiar para o site.'
                 web_paths['mp4_filepath'] = mp4_site_filepath

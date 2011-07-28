@@ -35,11 +35,10 @@ def citation_html(ref):
             elif key == 'authors':
                 authors = []
                 for author in ref['authors']:
-                    names = author.split()
-                    last = names.pop()
-                    initials = [name[:1] for name in names]
+                    forenames = author['forename'].split()
+                    initials = [name[:1] for name in forenames]
                     initials = ''.join(initials)
-                    final = u'%s %s' % (last, initials)
+                    final = u'%s %s' % (author['surname'], initials)
                     authors.append(final)
                 authors = ', '.join(authors)
                 citation += u'%s.' % authors
@@ -72,6 +71,8 @@ def citation_pre_save(signal, instance, sender, **kwargs):
 
     Notar que múltiplos urls são separados por um \n
 
+    Nome de autor agora é dicionário com 'forename' e 'surname'
+
     EXEMPLO DE REFERÊNCIA DO MENDELEY API:
     {
         "title":"Embryonic, larval, and juvenile development of the sea biscuit Clypeaster subdepressus (Echinodermata: Clypeasteroida).",
@@ -83,8 +84,8 @@ def citation_pre_save(signal, instance, sender, **kwargs):
         "year":"2010",
         "abstract":"Sea biscuits and sand dollars diverged from other irregular echinoids approximately 55 million years ago and rapidly dispersed to oceans worldwide.",
         "authors":[
-            "Bruno Cossermelli Vellutini",
-            "Alvaro Esteves Migotto"
+            {"forename": "Bruno Cossermelli", "surname": "Vellutini"},
+            {"forename": "Alvaro Esteves", "surname": "Migotto"}
             ],
         "editors":[],
         "tags":["phd"],

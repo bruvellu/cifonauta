@@ -521,7 +521,7 @@ class Movie:
                 subprocess.call(webm_firstcall)
                 subprocess.call(webm_secondcall)
                 try:
-                    # Copia imagem para pasta web
+                    # Copia vídeo para pasta web
                     webm_site_filepath = os.path.join(self.site_dir, webm_name)
                     copy(webm_filepath, webm_site_filepath)
                 except:
@@ -534,7 +534,7 @@ class Movie:
                 subprocess.call(mp4_firstcall)
                 subprocess.call(mp4_secondcall)
                 try:
-                    # Copia imagem para pasta web
+                    # Copia vídeo para pasta web
                     mp4_site_filepath = os.path.join(self.site_dir, mp4_name)
                     copy(mp4_filepath, mp4_site_filepath)
                 except:
@@ -547,7 +547,7 @@ class Movie:
                 subprocess.call(ogg_firstcall)
                 subprocess.call(ogg_secondcall)
                 try:
-                    # Copia imagem para pasta web
+                    # Copia vídeo para pasta web
                     ogg_site_filepath = os.path.join(self.site_dir, ogg_name)
                     copy(ogg_filepath, ogg_site_filepath)
                 except:

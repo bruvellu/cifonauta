@@ -1,10 +1,11 @@
 {% load i18n %}
 
 {% if linear %}{% else %}<p>{% endif %}
+<span class="st_plusone_hcount" st_url="{{ request.build_absolute_uri }}"></span>
 <span class="st_fb_like_hcount" displayText="{% trans 'Curtir' %}"></span>
 <span class="st_twitter_hcount" displayText="{% trans 'Tuíte' %}"></span>
-{% if linear %}{% else %}<br>
-</p>{% endif %}
+
+{% if linear %}{% else %}<br></p>{% endif %}
 <span class='st_email' ></span>
 <span class='st_gbuzz' ></span>
 <span class='st_tumblr' ></span>
@@ -14,5 +15,10 @@
 <span class='st_sharethis' ></span>
 
 {% if media.datatype == 'video' %}
-<label class="quiet">embed:</label> <input id="embed-code" type="text" width="100%" value='<iframe class="cifonauta-player" type="text/html" width="512" height="{{ height }}" src="http://{{ request.get_host }}/embed/{{ media.id }}/" frameborder="0"></iframe>' onclick="this.focus(); this.select();">
+<p><label class="quiet">embed:</label> <input id="embed-code" type="text"
+width="100%" value='<iframe class="cifonauta-player" type="text/html"
+    width="512" height="{{ height }}" src="http://{{ request.get_host
+    }}/embed/{{ media.id }}/" frameborder="0"></iframe>' onclick="this.focus();
+this.select();"></p>
 {% endif %}
+

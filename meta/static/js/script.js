@@ -18,4 +18,15 @@ $(document).ready(function(){
             myform.submit();};
     });
 
+    // Share This
+    var switchTo5x=true;
+    $.getScript("http://w.sharethis.com/button/buttons.js");
+    stLight.options({
+        publisher:'c581e214-c1ef-43a0-9fa6-ce8c0de234df',
+        tracking:'google',
+        onhover:false,
+    });
+
 });
+
+

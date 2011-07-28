@@ -303,6 +303,7 @@ def org_page(request):
     '''
     # Tamanhos
     sizes = Size.objects.order_by('position')
+    #FIXME Does not work when locale is different!
     # Técnicas
     technique = TagCategory.objects.get(name=u'Técnica')
     microscopy = TagCategory.objects.get(name=u'Microscopia')
@@ -328,11 +329,6 @@ def org_page(request):
         'assorted': assorted,
         })
     return render_to_response('organizacao.html', variables)
-
-def feedback_page(request):
-    '''Montada para receber o feedback dos usuários durante os testes.'''
-    variables = RequestContext(request, {})
-    return render_to_response('feedback.html', variables)
 
 # Manage
 @login_required

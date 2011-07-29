@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from remove import compile_paths
+import logging
+import operator
 import os
-from meta.models import *
 from meta.forms import *
+from meta.models import *
 from meta.templatetags.extra_tags import extract_set
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -12,8 +13,11 @@ from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
 #from django.core.cache import cache
-import operator
 from itis import Itis
+from remove import compile_paths
+
+# Instancia logger do cifonauta.
+logger = logging.getLogger('central.views')
 
 # Main
 def main_page(request):
@@ -396,23 +400,21 @@ def fixmedia_page(request):
             media = Video.objects.get(id=video_id)
         try:
             paths = compile_paths(media)
-            try:
-                media.delete()
-            except:
-                print 'Não rolou apagar do banco de dados?'
             for path in paths:
                 try:
                     os.remove(path)
                     deleted.append(path)
                 except:
                     not_deleted.append(path)
+            try:
+                media.delete()
+            except:
+                print 'Não rolou apagar do banco de dados?'
         except:
             print 'Algo deu errado para ler os caminhos.'
-        #FIXME Não está funcionando no servidor!!!
-        removal = open('toremove.txt', 'a')
+        # Insere no log?
         for path in paths:
-            removal.write(path + '\n')
-        removal.close()
+            logger.debug('Supostamente removido: %s', path)
     # Pega todas as fotos.
     photos = Image.objects.all()
     orphaned_photos, duplicated_photos = get_orphans(photos)

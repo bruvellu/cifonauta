@@ -205,7 +205,7 @@ class LinkManager:
                     try:
                         media = Video.objects.get(webm_filepath__icontains=name)
                     except:
-                        logger.debug('Nenhum imagem com nome %s', name)
+                        logger.debug('Nenhuma imagem com nome %s', name)
                         continue
                 if media:
                     try:

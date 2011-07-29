@@ -73,7 +73,6 @@ def compile_paths(media):
 
 def delete(media):
     '''Executa a deleção.'''
-    original_file = os.readlink(media.source_filepath)
     to_be_removed = compile_paths(media)
     proceed = raw_input('Deseja continuar? (s ou n): ')
     if proceed == 's':
@@ -89,9 +88,13 @@ def delete(media):
                 jump = raw_input('Continuar? (s ou n): ')
                 if jump == 'n':
                     sys.exit(2)
-    original = raw_input('\nDeseja apagar o arquivo original? (s ou n):\n%s ' % original_file)
-    if original == 's':
-        os.remove(original_file)
+    try:
+        original_file = os.readlink(media.source_filepath)
+        original = raw_input('\nDeseja apagar o arquivo original? (s ou n):\n%s ' % original_file)
+        if original == 's':
+            os.remove(original_file)
+    except:
+        print 'Arquivo original já não existe...'
 
 def prepare(photos, videos):
     '''Prepara a deleção.'''

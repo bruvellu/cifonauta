@@ -556,7 +556,10 @@ def photo_page(request, image_id):
         'references': references,
         'pageviews': pageviews,
         })
-    return render_to_response('media_page.html', variables)
+    if request.is_ajax():
+        return render_to_response('disqus.html', variables)
+    else:
+        return render_to_response('media_page.html', variables)
 
 def video_page(request, video_id):
     '''Página única de cada vídeo com todas as informações.'''
@@ -673,7 +676,10 @@ def video_page(request, video_id):
         'references': references,
         'pageviews': pageviews,
         })
-    return render_to_response('media_page.html', variables)
+    if request.is_ajax():
+        return render_to_response('disqus.html', variables)
+    else:
+        return render_to_response('media_page.html', variables)
 
 def embed_page(request, video_id):
     '''Página para embed dos vídeos.'''

@@ -1450,6 +1450,7 @@ article.post {
 /* COMMENTS */
 div#comments {
     margin:0 0 1em 0;
+    cursor:pointer;
 }
 
 /* FIXTAXA */
@@ -1465,7 +1466,6 @@ Set to display none, prevents content flash
 .slides_container {
     width:830px;
     display:none;
-    
     margin-bottom:2em;
     background:#fafafa;
     -moz-border-radius: 10px;

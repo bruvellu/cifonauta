@@ -157,21 +157,8 @@
         {% endif %}
 
         <div id="comments" class="span-16 last">
-            <!-- Disqus -->
-            <div id="disqus_thread"></div>
-            <script type="text/javascript">
-                var disqus_shortname = 'cifonauta';
-                var disqus_identifier = '{{ media.datatype }}_{{ media.id }}';
-                var disqus_url = '{{ request.build_absolute_uri }}';
-                var disqus_developer = 1; // developer mode is on
-
-                (function() {
-                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-                })();
-            </script>
-            <noscript>{% trans 'Por favor ative o Javascript para ver os <a href="http://disqus.com/?ref_noscript">comentários.' %}</a></noscript>
+            <h2>{% trans 'Comentários' %}</h2>
+            <p>{% trans 'Clique para abrir.' %}</p>
         </div>
 
 
@@ -217,24 +204,5 @@
         //enableAutosize: true,
         features: ['playpause','progress','current','duration','tracks','volume','fullscreen'],
     });
-
-    // JavaScript code goes here.
-    $(document).ready(function(){
-        // External DB hovers
-        $(".biodb li").hover(
-            function () {
-                $(this).find(".external").fadeIn(200);
-            },
-            function () {
-                $(this).find(".external").fadeOut(200);
-            }
-        );
-
-        // Collapsible cite 
-        $("#cite-sideinfo").click(function(){
-            $("#citethis").slideToggle();
-            $(this).toggleClass("bg-merge");
-            });
-        });
 </script>
 {% endblock %}

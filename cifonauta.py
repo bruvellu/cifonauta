@@ -580,7 +580,7 @@ class Movie:
             # Cria thumb grande a partir de 1 frame no segundo 5
             #XXX Lembrar de deixar do mesmo tamanho do vídeo...
             if self.source_filepath.endswith('m2ts'):
-            	subprocess.call(['ffmpeg', '-i', self.source_filepath, '-vframes', '1', '-vf', 'scale=512:288', '-aspect', '16:9', '-ss', '1', '-f', 'image2', local_filepath_large])
+                subprocess.call(['ffmpeg', '-i', self.source_filepath, '-vframes', '1', '-vf', 'scale=512:288', '-aspect', '16:9', '-ss', '1', '-f', 'image2', local_filepath_large])
             else:
                 subprocess.call(['ffmpeg', '-i', self.source_filepath, '-vframes', '1', '-vf', 'scale=512:384', '-ss', '1', '-f', 'image2', local_filepath_large])
             # Cria thumb normal (pequeno)
@@ -594,6 +594,9 @@ class Movie:
         # Define caminho para o thumb do site.
         site_filepath = os.path.join(self.site_thumb_dir, thumbname)
         site_filepath_large = os.path.join(self.site_thumb_dir, large_thumbname)
+        # Otimiza imagens.
+        optimize(site_filepath, 'png')
+        optimize(site_filepath_large, 'jpg', all=True)
         return site_filepath, site_filepath_large
 
 
@@ -832,6 +835,7 @@ class Photo:
         copy(local_filepath, self.site_thumb_dir)
         # Define caminho para o thumb do site.
         site_filepath = os.path.join(self.site_thumb_dir, thumbname)
+        optimize(site_filepath, 'png')
         return site_filepath
 
 
@@ -881,6 +885,29 @@ class Folder:
 
 # Funções principais
 
+def optimize(filepath, extension, all=False):
+    '''Otimiza as imagens para o site.
+
+    Utiliza o "jpegoptim" para otimizar JPGs e o "optipng" para PNGs.
+
+    Os JPGs aceitam a opção de retirar todos os metadados, ou apenas parte.
+    '''
+    print 'Otimizando...'
+    #TODO Checar se programas estão instalados.
+    #TODO Checar se permissões estão certas e o que fazer se der erro.
+    if extension == 'png':
+        call = ['optipng', '-o7', filepath]
+    elif extension == 'jpg':
+        if all:
+            call = ['jpegoptim', '--strip-all', filepath]
+        else:
+            call = ['jpegoptim', '--strip-icc', filepath]
+    try:
+        subprocess.call(call)
+        return True
+    except:
+        print 'ERRO', call[0], call[-1]
+
 def rename_file(filename, authors):
     '''Renomeia arquivo com iniciais e identificador.'''
     print u'%s, hora de renomeá-lo!' % filename
@@ -912,7 +939,7 @@ def create_id():
 
 def prepare_meta(meta):
     '''Processa as strings dos metadados convertendo para bd.
-    
+
     Transforma None em string vazia, transforma autores e táxons em lista,
     espécies em dicionário.
     '''

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-01 17:48-0300\n"
+"POT-Creation-Date: 2011-08-01 22:10-0300\n"
 "PO-Revision-Date: 2011-06-20 20:23\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1639,13 +1639,13 @@ msgstr "Pages"
 msgid "Termos de uso"
 msgstr "Terms of use"
 
-#: templates/social.html:5
-msgid "Curtir"
-msgstr "Like"
+#: templates/social.html:22
+msgid "Tweet"
+msgstr ""
 
-#: templates/social.html:6
-msgid "Tuíte"
-msgstr "Twit"
+#: templates/social.html:36
+msgid "Share"
+msgstr ""
 
 #: templates/splist.html:3
 msgid "Espécies"
@@ -1786,6 +1786,12 @@ msgid ""
 msgstr ""
 "Visit the tour <a href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</"
 "a>."
+
+#~ msgid "Curtir"
+#~ msgstr "Like"
+
+#~ msgid "Tuíte"
+#~ msgstr "Twit"
 
 #~ msgid "Ir"
 #~ msgstr "Go"

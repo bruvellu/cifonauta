@@ -1,18 +1,68 @@
 {% load i18n %}
 
-{% if linear %}{% else %}<p>{% endif %}
-<span class="st_plusone_hcount" st_url="{{ request.build_absolute_uri }}"></span>
-<span class="st_fb_like_hcount" displayText="{% trans 'Curtir' %}"></span>
-<span class="st_twitter_hcount" displayText="{% trans 'Tuíte' %}"></span>
+<!-- Google Plus -->
+<div class="g-plusone" data-size="{% if linear %}medium{% else %}tall{% endif %}" data-count="true"></div>
+<script type="text/javascript">
+    window.___gcfg = {
+        lang: '{{ LANGUAGE_CODE }}'
+    };
+    (function() {
+        var po = document.createElement('script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(po, s);
+    })();
+</script>
 
-{% if linear %}{% else %}<br></p>{% endif %}
-<span class='st_email' ></span>
-<span class='st_gbuzz' ></span>
-<span class='st_tumblr' ></span>
-<span class='st_stumbleupon' ></span>
-<span class='st_delicious' ></span>
-<span class='st_facebook' ></span>
-<span class='st_sharethis' ></span>
+<!-- Twitter -->
+<script defer src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
+<a href="http://twitter.com/share" class="twitter-share-button"
+    data-count="{% if linear %}horizontal{% else %}vertical{% endif %}">{% trans 'Tweet' %}</a>
+
+<!-- Facebook -->
+{% if linear %}
+<iframe src="http://www.facebook.com/plugins/like.php?href&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;locale={% if LANGUAGE_CODE == 'pt-br' %}pt_BR{% else %}en_US{% endif %}" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:21px;" allowTransparency="true"></iframe>
+{% else %}
+<iframe src="http://www.facebook.com/plugins/like.php?href&amp;send=false&amp;layout={% if linear %}button_count{% else %}box_count{% endif %}&amp;width=55&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=60&amp;locale={% if LANGUAGE_CODE == 'pt-br' %}pt_BR{% else %}en_US{% endif %}" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:55px; height:60px;" allowTransparency="true"></iframe>
+{% endif %}
+
+{% if not linear %}<br>{% endif %}
+
+<!-- Add2Any -->
+<a class="share-this a2a_target" href="http://www.addtoany.com/share_save">
+    <img src="http://static.addtoany.com/buttons/share_save_171_16.png"
+    border="0" alt="{% trans 'Share' %}"/>
+</a>
+
+<script type="text/javascript">
+// A custom "onReady" function for AddToAny
+function my_addtoany_onready() {
+    a2a_config.target = '.share-this';
+    a2a.init('page');
+}
+
+// Setup AddToAny "onReady" callback
+var a2a_config = a2a_config || {};
+a2a_config.tracking_callback = {
+    ready: my_addtoany_onready
+};
+// Additional a2a_config properties may go here
+
+// Load AddToAny script asynchronously
+(function(){
+    var a = document.createElement('script');
+    a.type = 'text/javascript';
+    a.async = true;
+    a.src = 'http://static.addtoany.com/menu/page.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(a, s);
+})();
+</script>
+
+
+<!-- Video embed code -->
 
 {% if media.datatype == 'video' %}
 <p><label class="quiet">embed:</label> <input id="embed-code" type="text"
@@ -21,18 +71,3 @@ width="100%" value='<iframe class="cifonauta-player" type="text/html"
     }}/embed/{{ media.id }}/" frameborder="0"></iframe>' onclick="this.focus();
 this.select();"></p>
 {% endif %}
-
-
-<!-- ShareThis -->
-<script type="text/javascript">
-    var switchTo5x=true;
-    var __st_loadLate=true;
-</script>
-<script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
-<script type="text/javascript">
-    stLight.options({
-        publisher:'c581e214-c1ef-43a0-9fa6-ce8c0de234df',
-        tracking:'google',
-        onhover:false,
-        });
-</script>

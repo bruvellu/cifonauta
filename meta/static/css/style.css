@@ -984,25 +984,11 @@ div.external li:hover {
     font-weight:normal;
 }
 
-#cite-sideinfo {
-    background:#fefefe;
-    padding:0.5em 10px;
-    text-align:center;
-    -moz-border-radius: 0 5px 5px 0;
-    -webkit-border-radius: 0 5px 5px 0;
-    border-radius: 0 5px 5px 0;
-}
-#cite-sideinfo:hover {
-    color:#fff;
-    background-color:#94B1CA !important;
-    cursor: pointer;
-}
 
 #citethis {
-    display:none;
-    border-bottom: 1px solid #EEEEEE;
-    margin: 0 0 1em;
-    padding: 0 0 1em;
+    border-top: 1px solid #EEEEEE;
+    margin: 1em 0 0 0;
+    padding: 1em 0 0 0;
 }
 
 .bg-merge{

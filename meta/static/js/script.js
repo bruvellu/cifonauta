@@ -25,12 +25,6 @@ $(document).ready(function(){
         }
     );
 
-    // Collapsible cite 
-    $("#cite-sideinfo").click(function(){
-        $("#citethis").slideToggle();
-        $(this).toggleClass("bg-merge");
-        });
-
     // Disqus
     $('#comments').click(load_disqus);
 

@@ -85,12 +85,6 @@
         </div>
 
         <div class="span-13 last borders" id="meta">
-            <div id="citethis" class="span-13">
-                <div>
-                    {% show_set authors '' '' ', ' '' '' '.' %} <strong>{{ media.title }}</strong>. {% blocktrans with host=request.META.HTTP_HOST media_url=media.get_absolute_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a href="{{ media_url }}">http://{{ host }}{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
-                </div>
-                <div class="align-right quiet">{% blocktrans %}Conheça os <a href="/termos/">termos de uso</a>.{% endblocktrans %}</div>
-            </div>
             <div class="span-7 taxonomy">
 
                 {% if taxa %}
@@ -122,9 +116,13 @@
                 <strong>{% trans 'Geolocalização' %}:</strong> <a href="http://maps.google.com/maps?q={{ media.latitude }},{{ media.longitude }}" title="{{ media.geolocation }} no Google Maps">{{ media.geolocation }}</a>
                 {% endif %}
             </div>
-        </div>
-        <div class="span-2 last border-top border-right border-bottom sideinfo" id="cite-sideinfo">
-            {% trans 'como citar' %}
+
+            <div id="citethis" class="span-13">
+                <div>
+                    {% show_set authors '' '' ', ' '' '' '.' %} <strong>{{ media.title }}</strong>. {% blocktrans with host=request.META.HTTP_HOST media_url=media.get_absolute_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a href="{{ media_url }}">http://{{ host }}{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
+                </div>
+                <div class="align-right quiet">{% blocktrans %}Conheça os <a href="/termos/">termos de uso</a>.{% endblocktrans %}</div>
+            </div>
         </div>
 
         {% if media.notes %}

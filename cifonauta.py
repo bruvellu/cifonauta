@@ -48,7 +48,7 @@ __maintainer__ = 'Bruno Vellutini'
 __email__ = 'organelas at gmail dot com'
 __status__ = 'Development'
 
-# Diretório com os arquivos 
+# Diretório com os arquivos
 source_dir = u'source_media'
 # Arquivo com marca d'água
 watermark = u'marca.png'
@@ -840,13 +840,23 @@ class Photo:
 
 
 class Folder:
-    '''Classes de objetos para lidar com as pastas e seus arquivos.'''
+    '''Classes de objetos para lidar com as pastas e seus arquivos.
+    
+    >>> dir = 'source_media'
+    >>> folder = Folder(dir, 100)
+    >>> os.path.isdir(folder.folder_path)
+    True
+    >>> filepaths = folder.get_files()
+    >>> isinstance(filepaths, list)
+    True
+    '''
     def __init__(self, folder, n_max):
         self.folder_path = folder
         self.n_max = n_max
         self.files = []
+        logger.debug('Pasta a ser analisada: %s', self.folder_path)
 
-    def get_files(self):
+    def get_files(self, type=None):
         '''Busca recursivamente arquivos de uma pasta.
 
         Identifica a extensão do arquivo e salva tipo junto com o caminho.
@@ -862,23 +872,23 @@ class Folder:
         # Buscador de arquivos em ação
         for root, dirs, files in os.walk(self.folder_path):
             for filename in files:
-                if filename.endswith(photo_extensions) and n < self.n_max:
+                if filename.endswith(photo_extensions) and not type == 'video' and n < self.n_max:
                     filepath = os.path.join(root, filename)
                     self.files.append((filepath, 'photo'))
                     n += 1
                     continue
-                if filename.endswith(video_extensions) and n < self.n_max:
+                if filename.endswith(video_extensions) and not type == 'photo' and n < self.n_max:
                     filepath = os.path.join(root, filename)
                     self.files.append((filepath, 'video'))
                     n += 1
                     continue
                 elif filename.endswith(ignore_extensions):
-                    print 'Ignorando %s' % filename
+                    logger.debug('Ignorando %s', filename)
                     continue
             else:
                 continue
         else:
-            print '\n%d arquivos encontrados.' % n
+            logger.info('%d arquivos encontrados.', n)
 
         return self.files
 
@@ -1076,27 +1086,24 @@ def main(argv):
     # Verifica e atualiza links entre pasta "oficial" e "source_media".
     linking.main()
 
-    #TODO Continuar o logging a partir daqui.
     # Cria instância do bd
     cbm = Database()
 
+    #TODO Continuar o logging a partir daqui.
     # Inicia o cifonauta buscando pasta...
     folder = Folder(source_dir, n_max)
-    filepaths = folder.get_files()
+    if only_photos:
+        filepaths = folder.get_files(type='photo')
+    if only_videos:
+        filepaths = folder.get_files(type='video')
+    else:
+        filepaths = folder.get_files()
     for path in filepaths:
         # Reconhece se é foto ou vídeo
         if path[1] == 'photo':
-            if not only_videos:
-                media = Photo(path[0])
-            else:
-                # Caso seja apenas vídeos, pular para próximo ítem.
-                continue
+            media = Photo(path[0])
         elif path[1] == 'video':
-            if not only_photos:
-                media = Movie(path[0])
-            else:
-                # Caso seja apenas fotos, pular para próximo ítem.
-                continue
+            media = Movie(path[0])
         # Busca nome do arquivo no banco de dados
         query = cbm.search_db(media)
         if not query:

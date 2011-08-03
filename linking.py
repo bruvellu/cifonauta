@@ -88,6 +88,7 @@ class LinkManager:
                     logger.debug('%s mudou de lugar.', v)
                     # Imprime opções na tela.
                     print 'Indique a imagem correspondente no diretório oficial:\n'
+                    print '\t%s\n' % v
                     for idx, val in enumerate(matches):
                         print '\t[%d] ' % idx + val
                     index = raw_input('\nDigite o número da imagem certa ' \

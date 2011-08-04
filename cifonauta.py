@@ -605,7 +605,12 @@ class Photo:
     def __init__(self, filepath):
         self.source_filepath = filepath
         self.filename = os.path.basename(filepath)
-        self.timestamp = datetime.fromtimestamp(os.path.getmtime(filepath))
+        #TODO Checar se arquivo existe antes.
+        if check_file(self.source_filepath):
+            self.timestamp = datetime.fromtimestamp(
+                    os.path.getmtime(self.source_filepath))
+        else:
+            logger.critical('Arquivo não existe: %s', self.source_filepath)
         self.type = 'photo'
 
         # Diretórios
@@ -841,7 +846,7 @@ class Photo:
 
 class Folder:
     '''Classes de objetos para lidar com as pastas e seus arquivos.
-    
+
     >>> dir = 'source_media'
     >>> folder = Folder(dir, 100)
     >>> os.path.isdir(folder.folder_path)
@@ -917,6 +922,11 @@ def optimize(filepath, extension, all=False):
         return True
     except:
         print 'ERRO', call[0], call[-1]
+
+def check_file(filepath):
+    '''Checa se arquivo existe.'''
+    media_file = os.path.isfile(filepath)
+    return media_file
 
 def rename_file(filename, authors):
     '''Renomeia arquivo com iniciais e identificador.'''
@@ -1038,7 +1048,7 @@ def main(argv):
     # Valores padrão para argumentos
     force_update = False
     no_rename = False
-    n_max = 10000
+    n_max = 20000
     web_upload = False
     single_img = False
     only_videos = False
@@ -1089,7 +1099,6 @@ def main(argv):
     # Cria instância do bd
     cbm = Database()
 
-    #TODO Continuar o logging a partir daqui.
     # Inicia o cifonauta buscando pasta...
     folder = Folder(source_dir, n_max)
     if only_photos:
@@ -1099,6 +1108,7 @@ def main(argv):
     else:
         filepaths = folder.get_files()
     for path in filepaths:
+    #TODO Continuar o logging a partir daqui.
         # Reconhece se é foto ou vídeo
         if path[1] == 'photo':
             media = Photo(path[0])

@@ -17,9 +17,17 @@
 </script>
 
 <!-- Twitter -->
-<script defer src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>
-<a href="http://twitter.com/share" class="twitter-share-button"
-    data-count="{% if linear %}horizontal{% else %}vertical{% endif %}">{% trans 'Tweet' %}</a>
+{% comment %}<script defer src="http://platform.twitter.com/widgets.js"
+    type="text/javascript"></script>{% endcomment %}
+
+<a href="http://twitter.com/share" class="twitter-share-button" data-count="{% if linear %}horizontal{% else %}vertical{% endif %}">{% trans 'Tweet' %}</a>
+<script id="deferedjs" type="text/javascript">
+    var b = document.createElement('script');
+    b.type = 'text/javascript';
+    b.src = ('http://platform.twitter.com/widgets.js');
+    var a=document.getElementById("deferedjs");
+    a.parentNode.insertBefore(b,a);
+</script>
 
 <!-- Facebook -->
 {% if linear %}

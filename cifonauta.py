@@ -66,7 +66,8 @@ class Database:
         Se as datas forem iguais pula para próximo arquivo, se forem diferentes
         atualiza o registro.
         '''
-        print '\nVerificando se o arquivo está no banco de dados...'
+        logger.info('Verificando se %s (%s) está no banco de dados...',
+                media.filename, media.source_filepath)
         photopath = 'photos/'
         videopath = 'videos/'
 
@@ -84,18 +85,19 @@ class Database:
                         try:
                             record = Video.objects.get(ogg_filepath=videopath + media.filename.split('.')[0] + '.ogv')
                         except:
-                            print 'Não bateu nenhum!'
+                            logger.debug('%s não está no banco de dados.',
+                                    media.filename)
                             return False
-            print 'Bingo! Registro de %s encontrado.' % media.filename
-            print 'Comparando a data de modificação do arquivo com o registro...'
+            logger.debug('Bingo! Registro de %s encontrado.', media.filename)
+            logger.info('Comparando timestamp do arquivo com o registro...')
             if record.timestamp != media.timestamp:
-                print 'Arquivo mudou!'
+                logger.debug('Arquivo mudou! Retorna 1')
                 return 1
             else:
-                print 'Arquivo não mudou!'
+                logger.debug('Arquivo não mudou! Retorna 2')
                 return 2
         except Image.DoesNotExist:
-            print 'Registro não encontrado.'
+            logger.debug('Registro não encontrado (Image.DoesNotExist).')
             return False
 
     def update_db(self, media, update=False):
@@ -605,7 +607,7 @@ class Photo:
     def __init__(self, filepath):
         self.source_filepath = filepath
         self.filename = os.path.basename(filepath)
-        #TODO Checar se arquivo existe antes.
+        # Checar se arquivo existe antes.
         if check_file(self.source_filepath):
             self.timestamp = datetime.fromtimestamp(
                     os.path.getmtime(self.source_filepath))
@@ -628,12 +630,14 @@ class Photo:
 
         Usa a biblioteca do arquivo iptcinfo.py para padrão IPTC e pyexiv2 para EXIF.
         '''
-        print u'Lendo os metadados de %s e criando variáveis.' % self.filename
+        #TODO Criar teste.
+        logger.info('Lendo os metadados de %s e criando variáveis.',
+                self.filename)
         # Criar objeto com metadados
         info = IPTCInfo(self.source_filepath, True, charset)
         # Checando se o arquivo tem dados IPTC
         if len(info.data) < 4:
-            print '%s não tem dados IPTC!' % self.filename
+            logger.warning('%s não tem dados IPTC!', self.filename)
 
         # Limpa metadados pra não misturar com o anterior.
         self.meta = {}
@@ -1028,9 +1032,6 @@ def usage():
     print '  -t, --no-tsv'
     print '\tNão força atualização do TSV.'
     print
-    print '  -r, --no-rename'
-    print '\tNão executa a função de renomear arquivos.'
-    print
     print 'Exemplo:'
     print '  python cifonauta.py -fp -n 15'
     print '\tFaz a atualização forçada dos primeiros 15 fotos que o programa'
@@ -1047,7 +1048,6 @@ def main(argv):
     n_up = 0
     # Valores padrão para argumentos
     force_update = False
-    no_rename = False
     n_max = 20000
     web_upload = False
     single_img = False
@@ -1057,10 +1057,9 @@ def main(argv):
 
     # Verifica se argumentos foram passados com a execução do programa
     try:
-        opts, args = getopt.getopt(argv, 'hfrvptn:', [
+        opts, args = getopt.getopt(argv, 'hfvptn:', [
             'help',
             'force-update',
-            'no-rename',
             'only-videos',
             'only-photos',
             'no-tsv',
@@ -1080,8 +1079,6 @@ def main(argv):
             n_max = int(arg)
         elif opt in ('-f', '--force-update'):
             force_update = True
-        elif opt in ('-r', '--no-rename'):
-            no_rename = True
         elif opt in ('-v', '--only-videos'):
             only_videos = True
         elif opt in ('-p', '--only-photos'):
@@ -1118,15 +1115,12 @@ def main(argv):
         query = cbm.search_db(media)
         if not query:
             # Se mídia for nova
-            print '\nARQUIVO NOVO, CRIANDO ENTRADA NO BANCO DE DADOS...'
-            if no_rename:
-                # Caso o arquivo esteja corrompido, pular
-                if not media.create_meta():
-                    continue
-            else:
-                # Caso o arquivo esteja corrompido, pular
-                if not media.create_meta(new=True):
-                    continue
+            logger.info('ARQUIVO NOVO: %s. CRIANDO ENTRADA NO BANCO DE DADOS...', media.filename)
+            # Caso o arquivo esteja corrompido, pular
+            #XXX Este é o melhor jeito de checar se o arquivo está
+            # corrompido? O que o create_meta retorna?
+            if not media.create_meta(new=True):
+                continue
             cbm.update_db(media)
             n_new += 1
         else:

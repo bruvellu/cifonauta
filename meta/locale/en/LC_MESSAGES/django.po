@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-04 11:36-0300\n"
+"POT-Creation-Date: 2011-08-10 10:45-0300\n"
 "PO-Revision-Date: 2011-06-20 20:23\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1635,11 +1635,11 @@ msgstr "Pages"
 msgid "Termos de uso"
 msgstr "Terms of use"
 
-#: templates/social.html:22
+#: templates/social.html:24
 msgid "Tweet"
 msgstr ""
 
-#: templates/social.html:36
+#: templates/social.html:45
 msgid "Share"
 msgstr ""
 

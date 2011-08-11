@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-10 10:45-0300\n"
+"POT-Creation-Date: 2011-08-11 00:52-0300\n"
 "PO-Revision-Date: 2011-06-20 20:23\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -109,7 +109,7 @@ msgstr "Latest tours from Cifonauta image database."
 msgid "Autor"
 msgstr "Author"
 
-#: forms.py:11 templates/media_page.html:91 templates/tour_page.html:59
+#: forms.py:11 templates/media_page.html:95 templates/tour_page.html:59
 #: templates/feeds/media_post.html:30
 msgid "Táxon"
 msgstr "Taxon"
@@ -119,7 +119,7 @@ msgstr "Taxon"
 msgid "Tamanho"
 msgstr "Size"
 
-#: forms.py:13 templates/mais.html:27 templates/media_page.html:108
+#: forms.py:13 templates/mais.html:27 templates/media_page.html:112
 #: templates/tour_page.html:70 templates/feeds/media_post.html:46
 msgid "Local"
 msgstr "Place"
@@ -1181,15 +1181,15 @@ msgstr ""
 "Please activate Javascript to see <a href=\"http://disqus.com/?ref_noscript"
 "\">comments.   "
 
-#: templates/embed.html:22 templates/video.html:10
+#: templates/embed.html:25 templates/video.html:28
 msgid "Still do vídeo"
 msgstr "Still"
 
-#: templates/embed.html:22 templates/video.html:10
+#: templates/embed.html:25 templates/video.html:29
 msgid "Playback de vídeo indisponível"
 msgstr "Video playback not available"
 
-#: templates/embed.html:24 templates/video.html:12
+#: templates/embed.html:27 templates/video.html:31
 msgid "Tem algo muito errado no seu navegador..."
 msgstr "Something is very wrong with your browser..."
 
@@ -1340,25 +1340,25 @@ msgstr "Countries"
 msgid "Por"
 msgstr "By"
 
-#: templates/media_page.html:62
+#: templates/media_page.html:66
 msgid "visita"
 msgstr "pageview"
 
-#: templates/media_page.html:96 templates/feeds/media_post.html:34
+#: templates/media_page.html:100 templates/feeds/media_post.html:34
 msgid "Especialista"
 msgid_plural "Especialistas"
 msgstr[0] "Expert"
 msgstr[1] "Experts"
 
-#: templates/media_page.html:102 templates/feeds/media_post.html:42
+#: templates/media_page.html:106 templates/feeds/media_post.html:42
 msgid "Data"
 msgstr "Date"
 
-#: templates/media_page.html:117 templates/feeds/media_post.html:54
+#: templates/media_page.html:121 templates/feeds/media_post.html:54
 msgid "Geolocalização"
 msgstr "Geolocation"
 
-#: templates/media_page.html:123 templates/feeds/media_post.html:59
+#: templates/media_page.html:127 templates/feeds/media_post.html:59
 #, python-format
 msgid ""
 "Banco de imagens <em>Cifonauta</em>. Disponível em: <a href=\"%(media_url)s"
@@ -1367,36 +1367,36 @@ msgstr ""
 "<em>Cifonauta</em> image database. Available at: <a href=\"%(media_url)s"
 "\">http://%(host)s%(media_url)s</a> Accessed:"
 
-#: templates/media_page.html:125
+#: templates/media_page.html:129
 msgid "Conheça os <a href=\"/termos/\">termos de uso</a>."
 msgstr "Read the <a href=\"/termos/\">terms of use</a>."
 
-#: templates/media_page.html:131
+#: templates/media_page.html:135
 msgid "Notas"
 msgstr "Notes"
 
-#: templates/media_page.html:141
+#: templates/media_page.html:145
 msgid "Classificação"
 msgstr "Classification"
 
-#: templates/media_page.html:149
+#: templates/media_page.html:153
 msgid "Referências bibliográficas"
 msgstr "References"
 
-#: templates/media_page.html:159
+#: templates/media_page.html:163
 #, fuzzy
 msgid "Comentários"
 msgstr "Show comments"
 
-#: templates/media_page.html:160
+#: templates/media_page.html:164
 msgid "Clique para abrir."
 msgstr ""
 
-#: templates/media_page.html:165
+#: templates/media_page.html:168
 msgid "Esta imagem não está disponível."
 msgstr "Image not available."
 
-#: templates/media_page.html:169
+#: templates/media_page.html:172
 msgid "Nenhuma imagem encontrada."
 msgstr "No image found."
 

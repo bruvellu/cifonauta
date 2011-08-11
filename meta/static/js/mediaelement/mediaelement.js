@@ -7,7 +7,7 @@
 * for browsers that don't understand HTML5 or can't play the provided codec
 * Can play MP4 (H.264), Ogg, WebM, FLV, WMV, WMA, ACC, and MP3
 *
-* Copyright 2010, John Dyer (http://johndyer.me)
+* Copyright 2010-2011, John Dyer (http://j.hn)
 * Dual licensed under the MIT or GPL Version 2 licenses.
 *
 */
@@ -15,7 +15,7 @@
 var mejs = mejs || {};
 
 // version number
-mejs.version = '2.1.4';
+mejs.version = '2.1.9';
 
 // player number (for missing, same id attr)
 mejs.meIndex = 0;
@@ -39,7 +39,7 @@ mejs.Utility = {
 		return encodeURIComponent(url); //.replace(/\?/gi,'%3F').replace(/=/gi,'%3D').replace(/&/gi,'%26');
 	},
 	escapeHTML: function(s) {
-		return s.split('&').join('&amp;').split('<').join('&lt;').split('"').join('&quot;');
+		return s.toString().split('&').join('&amp;').split('<').join('&lt;').split('"').join('&quot;');
 	},
 	absolutizeUrl: function(url) {
 		var el = document.createElement('div');
@@ -192,14 +192,6 @@ PluginDetector.addPlugin('acrobat','Adobe Acrobat','application/pdf','AcroPDF.PD
 	return version;
 });
 */
-
-// special case for Android which sadly doesn't implement the canPlayType function (always returns '')
-if (mejs.PluginDetector.ua.match(/android 2\.[12]/) !== null) {
-	HTMLMediaElement.canPlayType = function(type) {
-		return (type.match(/video\/(mp4|m4v)/gi) !== null) ? 'probably' : '';
-	};
-}
-
 // necessary detection (fixes for <IE9)
 mejs.MediaFeatures = {
 	init: function() {
@@ -214,8 +206,10 @@ mejs.MediaFeatures = {
 		this.isiPad = (ua.match(/ipad/i) !== null);
 		this.isiPhone = (ua.match(/iphone/i) !== null);
 		this.isAndroid = (ua.match(/android/i) !== null);
+		this.isBustedAndroid = (ua.match(/android 2\.[12]/) !== null);
 		this.isIE = (nav.appName.toLowerCase().indexOf("microsoft") != -1);
 		this.isChrome = (ua.match(/chrome/gi) !== null);
+		this.isFirefox = (ua.match(/firefox/gi) !== null);
 
 		// create HTML5 media elements for IE before 9, get a <video> element for fullscreen detection
 		for (i=0; i<html5Elements.length; i++) {
@@ -223,7 +217,7 @@ mejs.MediaFeatures = {
 		}
 
 		// detect native JavaScript fullscreen (Safari only, Chrome fails)
-		this.hasNativeFullScreen = (typeof v.webkitEnterFullScreen !== 'undefined');
+		this.hasNativeFullScreen = (typeof v.webkitRequestFullScreen !== 'undefined');
 		if (this.isChrome) {
 			this.hasNativeFullScreen = false;
 		}
@@ -615,6 +609,14 @@ mejs.HtmlMediaElementShim = {
 		playback = this.determinePlayback(htmlMediaElement, options, isVideo, supportsMediaTag);
 
 		if (playback.method == 'native') {
+			// second fix for android
+			if (mejs.MediaFeatures.isBustedAndroid) {
+				htmlMediaElement.src = playback.url;
+				htmlMediaElement.addEventListener('click', function() {
+						htmlMediaElement.play();
+				}, true);
+			}
+		
 			// add methods to native HTMLMediaElement
 			return this.updateNative( htmlMediaElement, options, autoplay, preload, playback);
 		} else if (playback.method !== '') {
@@ -640,15 +642,19 @@ mejs.HtmlMediaElementShim = {
 			pluginName,
 			pluginVersions,
 			pluginInfo;
-
+			
+		// clean up src attr
+		if (src == 'undefined' || src == '' || src === null) 
+			src = null;
+			
 		// STEP 1: Get URL and type from <video src> or <source src>
 
 		// supplied type overrides all HTML
 		if (typeof (options.type) != 'undefined' && options.type !== '') {
-			mediaFiles.push({type:options.type, url:null});
+			mediaFiles.push({type:options.type, url:src});
 
 		// test for src attribute first
-		} else if (src  != 'undefined' && src  !== null) {
+		} else if (src  !== null) {
 			type = this.checkType(src, htmlMediaElement.getAttribute('type'), isVideo);
 			mediaFiles.push({type:type, url:src});
 
@@ -666,6 +672,14 @@ mejs.HtmlMediaElementShim = {
 		}
 
 		// STEP 2: Test for playback method
+		
+		// special case for Android which sadly doesn't implement the canPlayType function (always returns '')
+		if (mejs.MediaFeatures.isBustedAndroid) {
+			htmlMediaElement.canPlayType = function(type) {
+				return (type.match(/video\/(mp4|m4v)/gi) !== null) ? 'maybe' : '';
+			};
+		}		
+		
 
 		// test for native playback first
 		if (supportsMediaTag && (options.mode === 'auto' || options.mode === 'native')) {
@@ -890,7 +904,8 @@ mejs.HtmlMediaElementShim = {
 			htmlMediaElement[m] = mejs.HtmlMediaElement[m];
 		}
 
-		
+		/*
+		Chrome now supports preload="none"
 		if (mejs.MediaFeatures.isChrome) {
 		
 			// special case to enforce preload attribute (Chrome doesn't respect this)
@@ -915,6 +930,7 @@ mejs.HtmlMediaElementShim = {
 				htmlMediaElement.play();
 			}
 		}
+		*/
 
 		// fire success code
 		options.success(htmlMediaElement, htmlMediaElement);

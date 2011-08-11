@@ -23,7 +23,11 @@
 <meta property="og:type" content="cifonauta:photo" />
 {% endif %}
 
+{% comment %}
 <link rel="stylesheet" href="{{ STATIC_URL }}js/mediaelement/mediaelementplayer.css" type="text/css">
+{% endcomment %}
+
+<link rel="stylesheet" href="{{ STATIC_URL }}js/videojs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
 
 {% endblock %}
 
@@ -192,14 +196,32 @@
 {% endblock %}
 
 {% block extra-foot %}
-<script src="{{ STATIC_URL }}js/mediaelement/mediaelement-and-player.min.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-    // MediaElement.js
-    $('video').mediaelementplayer({
-        mode: 'shim',
-        //enableAutosize: true,
-        features: ['playpause','progress','current','duration','tracks','volume','fullscreen'],
+<script src="{{ STATIC_URL }}/js/videojs/video.js" type="text/javascript" charset="utf-8"></script>
+<script defer type="text/javascript" charset="utf-8">
+    // Add VideoJS to all video tags on the page when the DOM is ready
+    VideoJS.setupAllWhenReady({
+        returnToStart: true,
     });
 </script>
+
+{% comment %}
+<script src="{{ STATIC_URL }}js/mediaelement/mediaelement-and-player.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    //$('video').mediaelementplayer({
+    //    //mode: 'shim',
+    //    //enableAutosize: true,
+    //    features: ['playpause','progress','current','duration','tracks','volume','fullscreen'],
+    //    });
+    // MediaElement.js
+    var player = new MediaElementPlayer('#cifovideo', {
+        mode: 'shim',
+        features: ['playpause','progress','current','duration','tracks','volume','fullscreen'],
+        success: function(me) {
+            me.addEventListener('loadeddata', function() {
+                me.play(); }, false)
+        },
+    });
+</script>
+{% endcomment %}
 {% endblock %}

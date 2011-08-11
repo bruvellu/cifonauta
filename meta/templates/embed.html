@@ -5,37 +5,36 @@
         <title>{{ media.title }} | {% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %} | CEBIMar USP
         </title>
         <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css">
-        <link rel="stylesheet" href="{{ STATIC_URL }}js/mediaelement/mediaelementplayer.css" type="text/css">
+        <link rel="stylesheet" href="{{ STATIC_URL }}js/videojs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/libs/jquery-1.6.1.min.js">\x3C/script>')</script>
-        <script src="{{ STATIC_URL }}js/mediaelement/mediaelement-and-player.min.js" type="text/javascript"></script>
+        <script src="{{ STATIC_URL }}/js/videojs/video.js" type="text/javascript" charset="utf-8"></script>
     </head>
     <body id="embed-page">
         <div class="full-frame">
-            <video poster="{{ MEDIA_URL }}{{ media.large_thumb }}" preload="none" controls="controls" tabindex="0" width="100%" height="100%">
-            <source type="video/mp4" src="{{ MEDIA_URL }}{{ media.mp4_filepath }}" />
-            <source type="video/webm" src="{{ MEDIA_URL }}{{ media.webm_filepath }}" />
-            <source type="video/ogg" src="{{ MEDIA_URL }}{{ media.ogg_filepath }}" />
-            <object width="100%" height="100%" type="application/x-shockwave-flash" data="{{ STATIC_URL }}js/mediaelement/flashmediaelement.swf">
-                <param name="movie" value="{{ STATIC_URL }}js/mediaelement/flashmediaelement.swf" />
-                <param name="flashvars" value="controls=true&poster={{ MEDIA_URL }}{{ media.large_thumb }}&file={{ MEDIA_URL }}{{ media.mp4_filepath }}" />
-                <img alt="{% trans 'Still do vídeo' %}" src="{{ MEDIA_URL }}{{ media.large_thumb }}" width="100%" height="100%" title="{% trans 'Playback de vídeo indisponível' %}" />
-            </object>
-            {% trans 'Tem algo muito errado no seu navegador...' %}
-            </video>
-            <script>
-                // Gambiarra para funcionar o width:100%, ver https://github.com/johndyer/mediaelement/issues/#issue/42
-                var h = $('.full-frame').height();
-                var w = $('.full-frame').width();
-                // MediaElement.js
-                $('video').mediaelementplayer({
-                    mode: 'shim',
-                    features: ['playpause','progress','current','duration','tracks','volume','fullscreen'],
-                    videoHeight: h,
-                    videoWidth: w,
-                    });
-            </script>
+            <div class="video-js-box">
+                <video id="cifovideo" class="video-js" tabindex="0" width="100%" height="100%" poster="{{ MEDIA_URL }}{{ media.large_thumb }}" controls preload loop>
+                <source src="{{ MEDIA_URL }}{{ media.mp4_filepath }}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+                <source src="{{ MEDIA_URL }}{{ media.webm_filepath }}m" type='video/webm; codecs="vp8, vorbis"' />
+                <source src="{{ MEDIA_URL }}{{ media.ogg_filepath }}" type='video/ogg; codecs="theora, vorbis"' />
+                <object id="cifovideo-flash" class="vjs-flash-fallback" width="100%" height="100%" type="application/x-shockwave-flash" data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">
+                    <param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />
+                    <param name="wmode" value="opaque" />
+                    <param name="allowfullscreen" value="true" />
+                    <param name="flashvars" value='config={"playlist":["{{ MEDIA_URL }}{{ media.large_thumb }}", {"url": "{{ MEDIA_URL }}{{ media.mp4_filepath }}","autoPlay":false,"autoBuffering":true}]}' />
+                    <img src="{{ MEDIA_URL }}{{ media.large_thumb }}" width="100%" height="100%" alt="{% trans 'Still do vídeo' %}" title="{% trans 'Playback de vídeo indisponível' %}" />
+                </object>
+                {% trans 'Tem algo muito errado no seu navegador...' %}
+                </video>
+            </div>
         </div>
+
+        <script defer type="text/javascript" charset="utf-8">
+            // Add VideoJS to all video tags on the page when the DOM is ready
+            VideoJS.setupAllWhenReady({
+                returnToStart: true,
+            });
+        </script>
         <script>
             var _gaq=[['_setAccount','UA-20878697-1'],['_trackPageview'],['_trackPageLoadTime']];
             (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;

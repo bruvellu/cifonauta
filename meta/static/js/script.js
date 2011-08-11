@@ -1,10 +1,3 @@
-// Treeview
-$("#colaptree").treeview({
-    collapsed: true,
-    animated: "fast",
-    persist: "location",
-});
-
 // Load Disqus on demand.
 function load_disqus() {
     var url = $(location).attr("href");

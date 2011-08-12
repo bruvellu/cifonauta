@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-12 10:48-0300\n"
+"POT-Creation-Date: 2011-08-12 11:55-0300\n"
 "PO-Revision-Date: 2011-08-12 09:56\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1031,11 +1031,11 @@ msgstr "About"
 msgid "Conteúdo"
 msgstr "Content"
 
-#: templates/base.html:193 templates/sobremenu.html:7
+#: templates/base.html:193 templates/sobremenu.html:8
 msgid "Organização"
 msgstr "Organization"
 
-#: templates/base.html:194 templates/sobremenu.html:8
+#: templates/base.html:194 templates/sobremenu.html:7
 msgid "Créditos e apoio"
 msgstr "Credits and support"
 
@@ -1101,11 +1101,11 @@ msgstr "News"
 msgid "Blog"
 msgstr "Blog"
 
-#: templates/base.html:228 templates/sobremenu.html:10
+#: templates/base.html:228 templates/sobremenu.html:19
 msgid "Desenvolvimento"
 msgstr "Development"
 
-#: templates/base.html:230 templates/sobremenu.html:9
+#: templates/base.html:230 templates/sobremenu.html:20
 msgid "Detalhes técnicos"
 msgstr "Technical details"
 
@@ -1113,11 +1113,11 @@ msgstr "Technical details"
 msgid "Atualizações"
 msgstr "Updates"
 
-#: templates/base.html:232 templates/sobremenu.html:11
+#: templates/base.html:232 templates/sobremenu.html:18
 msgid "Idéias planejadas"
 msgstr "Planned features"
 
-#: templates/base.html:233 templates/sobremenu.html:13
+#: templates/base.html:233 templates/sobremenu.html:26
 msgid "Feedback"
 msgstr "Feedback"
 
@@ -1622,12 +1622,28 @@ msgid "Buscar"
 msgstr "Search"
 
 #: templates/sobremenu.html:3
-msgid "Páginas"
-msgstr "Pages"
+#, fuzzy
+msgid "Cifonauta"
+msgstr "Cifonauta: photos"
 
-#: templates/sobremenu.html:12
+#: templates/sobremenu.html:11
+#, fuzzy
+msgid "Compartilhe"
+msgstr "Share"
+
+#: templates/sobremenu.html:13
 msgid "Termos de uso"
 msgstr "Terms of use"
+
+#: templates/sobremenu.html:16
+#, fuzzy
+msgid "Saiba mais"
+msgstr "See more"
+
+#: templates/sobremenu.html:24
+#, fuzzy
+msgid "Contato"
+msgstr "Content"
 
 #: templates/social.html:24
 msgid "Tweet"
@@ -1777,6 +1793,9 @@ msgstr ""
 "Visit the tour <a href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</"
 "a>."
 
+#~ msgid "Páginas"
+#~ msgstr "Pages"
+
 #~ msgid "Encontrar"
 #~ msgstr "Find"
 
@@ -1797,9 +1816,6 @@ msgstr ""
 
 #~ msgid "Kit imprensa"
 #~ msgstr "Press kit"
-
-#~ msgid "Compartilhar"
-#~ msgstr "Share"
 
 #~ msgid "compartilhar"
 #~ msgstr "share"

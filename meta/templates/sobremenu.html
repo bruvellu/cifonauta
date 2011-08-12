@@ -1,16 +1,28 @@
 {% load i18n %}
 <div class="block borders subpages">
-    <h2>{% trans 'Páginas' %}</h2>
+    <h2>{% trans 'Cifonauta' %}</h2>
     <ul>
         <li><a href="/about/">{% trans 'Sobre' %}</a></li>
-        <li><a href="/content/">{% trans 'Conteúdo' %}</a></li>
+        <li><a href="/about/#data">{% trans 'Conteúdo' %}</a></li>
+        <li><a href="/about/#credits">{% trans 'Créditos e apoio' %}</a></li>
         <li><a href="{% url meta.views.org_page %}">{% trans 'Organização' %}</a></li>
-        <li><a href="/credits/">{% trans 'Créditos e apoio' %}</a></li>
-        <li><a href="/details/">{% trans 'Detalhes técnicos' %}</a></li>
-        <li><a href="/development/">{% trans 'Desenvolvimento' %}</a></li>
-        <li><a href="/roadmap/">{% trans 'Idéias planejadas' %}</a></li>
+    </ul>
+
+    <h2>{% trans 'Compartilhe' %}</h2>
+    <ul>
         <li><a href="/terms/">{% trans 'Termos de uso' %}</a></li>
-        <li><a href="/feedback/">{% trans 'Feedback' %}</a></li>
+    </ul>
+
+    <h2>{% trans 'Saiba mais' %}</h2>
+    <ul>
+        <li><a href="/roadmap/">{% trans 'Idéias planejadas' %}</a></li>
+        <li><a href="/development/">{% trans 'Desenvolvimento' %}</a></li>
+        <li><a href="/details/">{% trans 'Detalhes técnicos' %}</a></li>
         <!--<li><a href="/stats/">Estatísticas</a></li>-->
+    </ul>
+
+    <h2>{% trans 'Contato' %}</h2>
+    <ul>
+        <li><a href="/feedback/">{% trans 'Feedback' %}</a></li>
     </ul>
 </div>

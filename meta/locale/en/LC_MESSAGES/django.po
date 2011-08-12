@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-11 22:30-0300\n"
-"PO-Revision-Date: 2011-06-20 20:23\n"
+"POT-Creation-Date: 2011-08-12 10:48-0300\n"
+"PO-Revision-Date: 2011-08-12 09:56\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Translated-Using: django-rosetta 0.6.1\n"
+"X-Translated-Using: django-rosetta 0.6.2\n"
 
 #: feeds.py:15 feeds.py:89 feeds.py:175
 msgid "biologia marinha"
@@ -593,7 +593,7 @@ msgstr "father"
 msgid "Categoria a que este marcador pertence."
 msgstr "Category to which this tag belongs."
 
-#: models.py:193 models.py:288
+#: models.py:193 models.py:223 models.py:288
 msgid "posição"
 msgstr "position"
 
@@ -628,6 +628,11 @@ msgstr "Tag category name slug."
 #: models.py:222
 msgid "Descrição da categoria de marcadores."
 msgstr "Tag category description."
+
+#: models.py:223
+#, fuzzy
+msgid "Define a ordem das categorias."
+msgstr "Define tag order in a queryset."
 
 #: models.py:224
 msgid "Categoria pai desta categoria de marcadores."
@@ -1153,7 +1158,7 @@ msgstr "Displaying <strong>photos</strong> and <strong>videos</strong>."
 msgid "Desmarque <strong>somente destaques</strong> para ver tudo."
 msgstr "Uncheck <strong>highlights only</strong> to see all."
 
-#: templates/buscar.html:41
+#: templates/buscar.html:40
 msgid "Limpar"
 msgstr "Clear"
 
@@ -1236,18 +1241,16 @@ msgid "leia os termos de uso das imagens"
 msgstr "read the terms of use"
 
 #: templates/main_page.html:41
-#, fuzzy
 msgid "Últimas fotos e vídeos"
-msgstr "latest photos and videos"
+msgstr "Latest photos and videos"
 
 #: templates/main_page.html:41
 msgid "Cifonauta: últimas notícias"
 msgstr "Cifonauta: latest news"
 
 #: templates/main_page.html:41
-#, fuzzy
 msgid "Notícias recentes"
-msgstr "latest news"
+msgstr "Latest news"
 
 #: templates/main_page.html:52
 msgid ""
@@ -1312,7 +1315,7 @@ msgstr "All authors"
 msgid "Todos os táxons"
 msgstr "All taxa"
 
-#: templates/mais.html:22 templates/tags_page.html:27
+#: templates/mais.html:22 templates/tags_page.html:25
 msgid "Tamanhos"
 msgstr "Sizes"
 
@@ -1376,13 +1379,12 @@ msgid "Referências bibliográficas"
 msgstr "References"
 
 #: templates/media_page.html:159
-#, fuzzy
 msgid "Comentários"
-msgstr "Show comments"
+msgstr "Comments"
 
 #: templates/media_page.html:160
 msgid "Clique para abrir."
-msgstr ""
+msgstr "Click to open"
 
 #: templates/media_page.html:164
 msgid "Esta imagem não está disponível."
@@ -1528,7 +1530,7 @@ msgstr ""
 
 #: templates/organizacao.html:54
 msgid "Técnica"
-msgstr "Fact sheet"
+msgstr "Technique"
 
 #: templates/organizacao.html:69
 msgid "microscopia"

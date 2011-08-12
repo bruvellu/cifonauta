@@ -793,10 +793,10 @@ def places_page(request):
 
 def tags_page(request):
     '''Página mostrando tags organizados por categoria.'''
-    tags = Tag.objects.select_related('parent').order_by('parent')
+    tagcats = TagCategory.objects.select_related('tags').exclude(name='Modo de vida')
     sizes = Size.objects.order_by('id')
     variables = RequestContext(request, {
-        'tags': tags,
+        'tagcats': tagcats,
         'sizes': sizes,
         })
     return render_to_response('tags_page.html', variables)

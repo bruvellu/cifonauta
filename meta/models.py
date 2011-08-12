@@ -220,8 +220,8 @@ class TagCategory(models.Model):
     name = models.CharField(_('nome'), max_length=64, unique=True, help_text=_('Nome da categoria de marcadores.'))
     slug = models.SlugField(_('slug'), max_length=64, blank=True, help_text=_('Slug do nome da categoria de marcadores.'))
     description = models.TextField(_('descrição'), blank=True, help_text=_('Descrição da categoria de marcadores.'))
-    parent = models.ForeignKey('self', blank=True, null=True, 
-            related_name='tagcat_children', verbose_name=_('pai'), help_text=_('Categoria pai desta categoria de marcadores.'))
+    position = models.PositiveIntegerField(_('posição'), default=0, help_text=_('Define a ordem das categorias.'))
+    parent = models.ForeignKey('self', blank=True, null=True, related_name='tagcat_children', verbose_name=_('pai'), help_text=_('Categoria pai desta categoria de marcadores.'))
     #TODO? Toda vez que uma tag é salva, atualizar a contagem das imagens e 
     # vídeos das categorias. Seria a soma dos marcadores, só?
 
@@ -231,7 +231,7 @@ class TagCategory(models.Model):
     class Meta:
         verbose_name = _('categoria de marcadores')
         verbose_name_plural = _('categorias de marcadores')
-        ordering = ['name']
+        ordering = ['position', 'name']
 
 
 class Taxon(MPTTModel):

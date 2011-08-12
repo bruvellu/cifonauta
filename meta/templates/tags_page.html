@@ -21,20 +21,18 @@ Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o re
 <section class="span-24 last">
 <header><h1>{% trans 'Marcadores' %}</h1></header>
 
-    {% regroup tags by parent as tag_groups %}
-
     <div class="span-5 metagroup">
         <h2>{% trans 'Tamanhos' %}</h2>
         {% print_metalist sizes 'size' %}
     </div>
 
-    {% for item in tag_groups %}
+    {% for tagcat in tagcats %}
     <div class="span-{% cycle '5' '5' '5 last' '5' %} metagroup">
-        <h2>{{ item.grouper }}</h2>
-        {% if item.grouper.description %}
-            <p class="quiet">{{ item.grouper.description }}</p>
+        <h2>{{ tagcat.name }}</h2>
+        {% if tagcat.description %}
+            <p class="quiet">{{ tagcat.description }}</p>
         {% endif %}
-        {% print_metalist item.list 'tag' %}
+        {% print_metalist tagcat.tags.all 'tag' %}
     </div>
     {% endfor %}
 

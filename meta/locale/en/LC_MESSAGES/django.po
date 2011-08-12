@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-11 21:50-0300\n"
+"POT-Creation-Date: 2011-08-11 22:30-0300\n"
 "PO-Revision-Date: 2011-06-20 20:23\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,7 +38,7 @@ msgstr "videos"
 msgid "biologia"
 msgstr "biology"
 
-#: feeds.py:18 feeds.py:92 feeds.py:178 templates/base.html:169
+#: feeds.py:18 feeds.py:92 feeds.py:178 templates/base.html:175
 msgid "Centro de Biologia Marinha da Universidade de São Paulo"
 msgstr "Marine Biology Center of University of São Paulo"
 
@@ -180,8 +180,8 @@ msgstr "(type one or more terms)"
 msgid "Navegando por"
 msgstr "Browsing by"
 
-#: forms.py:63 templates/buscar.html:27 templates/buscar.html.py:30
-#: templates/buscar.html:32
+#: forms.py:63 templates/buscar.html:29 templates/buscar.html.py:32
+#: templates/buscar.html:34
 msgid "Exibir"
 msgstr "Show"
 
@@ -930,7 +930,7 @@ msgid "Página não encontrada"
 msgstr "Page not found"
 
 #: templates/authors_page.html:3 templates/authors_page.html.py:9
-#: templates/authors_page.html:21 templates/base.html:209
+#: templates/authors_page.html:21 templates/base.html:215
 #: templates/mais.html:12
 msgid "Autores"
 msgstr "Authors"
@@ -990,15 +990,15 @@ msgstr "blog"
 msgid "banco de imagens de biologia marinha"
 msgstr "marine biology image database"
 
-#: templates/base.html:174
+#: templates/base.html:180
 msgid "Licença de uso"
 msgstr "Content license"
 
-#: templates/base.html:175
+#: templates/base.html:181
 msgid "Licença Creative Commons"
 msgstr "Creative Commons License"
 
-#: templates/base.html:175
+#: templates/base.html:181
 msgid ""
 "O conteúdo deste website está sob uma licença Creative Commons Atribuição-"
 "Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional"
@@ -1006,113 +1006,113 @@ msgstr ""
 "The content of this website is licensed under a Creative Commons Attribution-"
 "NonCommercial-ShareAlike 3.0 Unported License"
 
-#: templates/base.html:178
+#: templates/base.html:184
 msgid "Apoio"
 msgstr "Support"
 
-#: templates/base.html:178
+#: templates/base.html:184
 msgid "CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico"
 msgstr "CNPq - National Council for Scientific and Technological Development"
 
-#: templates/base.html:183
+#: templates/base.html:189
 msgid "Informações básicas"
 msgstr "Basic information"
 
-#: templates/base.html:185 templates/sobremenu.html:5
+#: templates/base.html:191 templates/sobremenu.html:5
 msgid "Sobre"
 msgstr "About"
 
-#: templates/base.html:186 templates/sobremenu.html:6
+#: templates/base.html:192 templates/sobremenu.html:6
 msgid "Conteúdo"
 msgstr "Content"
 
-#: templates/base.html:187 templates/sobremenu.html:7
+#: templates/base.html:193 templates/sobremenu.html:7
 msgid "Organização"
 msgstr "Organization"
 
-#: templates/base.html:188 templates/sobremenu.html:8
+#: templates/base.html:194 templates/sobremenu.html:8
 msgid "Créditos e apoio"
 msgstr "Credits and support"
 
-#: templates/base.html:189
+#: templates/base.html:195
 msgid "Termos de uso e direitos"
 msgstr "Terms of use and rights"
 
-#: templates/base.html:195
+#: templates/base.html:201
 msgid "Explorar"
 msgstr "Explore"
 
-#: templates/base.html:197 templates/buscar.html:3 templates/buscar.html.py:11
+#: templates/base.html:203 templates/buscar.html:3 templates/buscar.html.py:11
 msgid "Buscador"
 msgstr "Search"
 
-#: templates/base.html:198 templates/main_page.html:69
+#: templates/base.html:204 templates/main_page.html:69
 #: templates/tours_page.html:3 templates/tours_page.html.py:10
 #: templates/tours_page.html:19
 msgid "Tours"
 msgstr "Tours"
 
-#: templates/base.html:199 templates/main_page.html:45
+#: templates/base.html:205 templates/main_page.html:45
 msgid "Fotos"
 msgstr "Photos"
 
-#: templates/base.html:200 templates/main_page.html:57
+#: templates/base.html:206 templates/main_page.html:57
 msgid "Vídeos"
 msgstr "Videos"
 
-#: templates/base.html:204
+#: templates/base.html:210
 msgid "Metadados"
 msgstr "Metadata"
 
-#: templates/base.html:206 templates/mais.html:7 templates/tags_page.html:6
+#: templates/base.html:212 templates/mais.html:7 templates/tags_page.html:6
 #: templates/tags_page.html.py:14 templates/tags_page.html:22
 #: templates/feeds/media_post.html:5
 msgid "Marcadores"
 msgstr "Tags"
 
-#: templates/base.html:207 templates/mais.html:17
+#: templates/base.html:213 templates/mais.html:17
 #: templates/organizacao.html:25 templates/taxa_page.html:3
 #: templates/taxa_page.html.py:10 templates/taxa_page.html:19
 msgid "Táxons"
 msgstr "Taxa"
 
-#: templates/base.html:208 templates/places_page.html:6
+#: templates/base.html:214 templates/places_page.html:6
 #: templates/places_page.html.py:12 templates/places_page.html:20
 msgid "Localidades"
 msgstr "Places"
 
 #. Translators: list of references rendered on a page
-#: templates/base.html:210 templates/refs_page.html:3
+#: templates/base.html:216 templates/refs_page.html:3
 #: templates/refs_page.html.py:9 templates/refs_page.html:17
 #: templates/tour_page.html:142
 msgid "Referências"
 msgstr "References"
 
-#: templates/base.html:214
+#: templates/base.html:220
 msgid "Novidades"
 msgstr "News"
 
-#: templates/base.html:216
+#: templates/base.html:222
 msgid "Blog"
 msgstr "Blog"
 
-#: templates/base.html:222 templates/sobremenu.html:10
+#: templates/base.html:228 templates/sobremenu.html:10
 msgid "Desenvolvimento"
 msgstr "Development"
 
-#: templates/base.html:224 templates/sobremenu.html:9
+#: templates/base.html:230 templates/sobremenu.html:9
 msgid "Detalhes técnicos"
 msgstr "Technical details"
 
-#: templates/base.html:225
+#: templates/base.html:231
 msgid "Atualizações"
 msgstr "Updates"
 
-#: templates/base.html:226 templates/sobremenu.html:11
+#: templates/base.html:232 templates/sobremenu.html:11
 msgid "Idéias planejadas"
 msgstr "Planned features"
 
-#: templates/base.html:227 templates/sobremenu.html:13
+#: templates/base.html:233 templates/sobremenu.html:13
 msgid "Feedback"
 msgstr "Feedback"
 
@@ -1120,52 +1120,48 @@ msgstr "Feedback"
 msgid "Buscador do banco de imagens Cifonauta."
 msgstr "Cifonauta image database search engine."
 
-#: templates/buscar.html:21
-msgid "Encontrar"
-msgstr "Find"
-
-#: templates/buscar.html:21
-msgid "Limpar"
-msgstr "Clear"
-
-#: templates/buscar.html:27
+#: templates/buscar.html:29
 msgid "Mostrando apenas <strong>fotos</strong>."
 msgstr "Displaying only <strong>photos</strong>."
 
-#: templates/buscar.html:27 templates/buscar.html.py:30
+#: templates/buscar.html:29 templates/buscar.html.py:32
 msgid "fotos e vídeos"
 msgstr "photos and videos"
 
-#: templates/buscar.html:27 templates/buscar.html.py:30
-#: templates/buscar.html:32
+#: templates/buscar.html:29 templates/buscar.html.py:32
+#: templates/buscar.html:34
 msgid "ou"
 msgstr "or"
 
-#: templates/buscar.html:27 templates/buscar.html.py:32
+#: templates/buscar.html:29 templates/buscar.html.py:34
 msgid "apenas vídeos"
 msgstr "only videos"
 
-#: templates/buscar.html:30
+#: templates/buscar.html:32
 msgid "Mostrando apenas <strong>vídeos</strong>."
 msgstr "Displaying only <strong>videos</strong>."
 
-#: templates/buscar.html:30 templates/buscar.html.py:32
+#: templates/buscar.html:32 templates/buscar.html.py:34
 msgid "apenas fotos"
 msgstr "only photos"
 
-#: templates/buscar.html:32
+#: templates/buscar.html:34
 msgid "Mostrando <strong>fotos</strong> e <strong>vídeos</strong>."
 msgstr "Displaying <strong>photos</strong> and <strong>videos</strong>."
 
-#: templates/buscar.html:36
+#: templates/buscar.html:38
 msgid "Desmarque <strong>somente destaques</strong> para ver tudo."
 msgstr "Uncheck <strong>highlights only</strong> to see all."
 
-#: templates/buscar.html:53
+#: templates/buscar.html:41
+msgid "Limpar"
+msgstr "Clear"
+
+#: templates/buscar.html:56
 msgid "Atualizar"
 msgstr "Update"
 
-#: templates/buscar.html:60
+#: templates/buscar.html:63
 msgid "ou clique para mostrar tudo"
 msgstr "or click to show everything"
 
@@ -1778,6 +1774,9 @@ msgid ""
 msgstr ""
 "Visit the tour <a href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</"
 "a>."
+
+#~ msgid "Encontrar"
+#~ msgstr "Find"
 
 #~ msgid "buscar"
 #~ msgstr "search"

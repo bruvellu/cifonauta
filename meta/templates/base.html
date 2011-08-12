@@ -148,11 +148,15 @@
                     <div class="quiet" id="stats">
                         {% show_stats %}
                     </div>
+                    {% comment %}
                     {% if not request.path == '/search/' %}
+                    {% endcomment %}
                     <div id="home-search">
                         {% search_box %}
                     </div>
+                    {% comment %}
                     {% endif %}
+                    {% endcomment %}
                 </div>
             </header>
             <section class="main span-24 last" id="content">

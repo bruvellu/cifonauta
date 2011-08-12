@@ -223,6 +223,7 @@ def show_tree(current=None):
 @register.inclusion_tag('searchbox.html')
 def search_box():
     '''Gera buscador para ser usado no header do site.'''
+    #TODO Passar variáveis para integrar o searchform da barra com as buscas.
     form = SearchForm()
     return {'form': form}
 

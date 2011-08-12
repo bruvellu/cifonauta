@@ -16,9 +16,11 @@
 {% endblock %}
 {% block content %}
 <section class="span-16">
+{% comment %}
 <form id="search-form" method="get" action=".">
     {{ form.query.label_tag }}<strong>:</strong> {{ form.query }} <input type="submit" value="{% trans 'Encontrar' %}" class="fashion" /> <a id="limpar" href="{% url meta.views.search_page %}">{% trans 'Limpar' %}</a>
 </form>
+{% endcomment %}
 <div id="search-results">
     {% if show_results %}
         <div id="search-status" class="quiet">
@@ -34,6 +36,7 @@
         {% with highlight=request.session.highlight %}
         {% if highlight %}{% blocktrans %}Desmarque <strong>somente destaques</strong> para ver tudo.{% endblocktrans %}{% endif %}
         {% endwith %}
+        <a id="limpar" href="{% url meta.views.search_page %}">{% trans 'Limpar' %}</a>
         </div>
         <hr class="space">
         {% include 'gallery.html' %}

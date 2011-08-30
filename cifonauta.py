@@ -1005,6 +1005,32 @@ def dir_ready(*dirs):
             print 'Criando diretório inexistente...'
             os.mkdir(dir)
 
+def build_autocomplete():
+    '''Cria arquivo para popular o autocomplete do Véliger.'''
+    autocomplete = open('autocomplete.pkl', 'wb')
+    tags = Tag.objects.values_list('name', flat=True)
+    taxa = Taxon.objects.values_list('name', flat=True)
+    sources = Source.objects.values_list('name', flat=True)
+    authors = Author.objects.values_list('name', flat=True)
+    rights = Rights.objects.values_list('name', flat=True)
+    places = Sublocation.objects.values_list('name', flat=True)
+    cities = City.objects.values_list('name', flat=True)
+    states = State.objects.values_list('name', flat=True)
+    countries = Country.objects.values_list('name', flat=True)
+    autolists = {
+            'tags': list(tags),
+            'taxa': list(taxa),
+            'sources': list(sources),
+            'authors': list(authors),
+            'rights': list(rights),
+            'places': list(places),
+            'cities': list(cities),
+            'states': list(states),
+            'countries': list(countries),
+            }
+    pickle.dump(autolists, autocomplete)
+    autocomplete.close()
+
 def usage():
     '''Imprime manual de uso e argumentos disponíveis.'''
     print
@@ -1141,6 +1167,9 @@ def main(argv):
                 cbm.update_db(media, update=True)
                 n_up += 1
     n = len(filepaths)
+
+    # Create file for Veliger autocomplete.
+    build_autocomplete()
 
     # Força salvar todas as imagens para atualizar o TSV com traduções novas.
     if update_tsv:

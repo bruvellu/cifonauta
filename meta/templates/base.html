@@ -54,7 +54,7 @@
 
     </head>
     <body>
-        <section class="container prepend-1 append-1">
+        <div class="container prepend-1 append-1">
             <nav class="main span-24 last">
                 <div id="feedback"><a href="/feedback/">feedback</a></div>
                 {% if user.is_authenticated %}
@@ -140,8 +140,13 @@
             <header class="main span-24 last" id="mainheader">
                 <a href="/">
                 <hgroup class="main span-10">
-                    <h1>Cifonauta</h1>
-                    <h2>{% trans 'banco de imagens de biologia marinha' %}</h2>
+                    <!-- 
+                        Using span to workaround Firefox 3.6 horrendous bug 
+                        with anchors nesting h1, h2, within HTML5 <header>
+                        https://bugzilla.mozilla.org/show_bug.cgi?id=514122
+                    -->
+                    <span id="maintitle">Cifonauta</span>
+                    <span id="tagline">{% trans 'banco de imagens de biologia marinha' %}</span>
                 </hgroup>
                 </a>
                 <div class="span-14 last" id="stats-search">
@@ -230,7 +235,7 @@
                 </div>
             </div>
             </footer>
-        </section>
+        </div>
 
         <!-- JavaScript at the bottom for fast page loading -->
 

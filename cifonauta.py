@@ -829,22 +829,26 @@ class Photo:
     def create_thumbs(self):
         '''Cria thumbnails para as fotos novas.'''
         # Define nome do thumbnail.
-        thumbname = self.filename.split('.')[0] + '.png'
+        thumbname = self.filename
         # Define caminho para pasta local.
         local_filepath = os.path.join(self.local_thumb_dir, thumbname)
         try:
             # Convocando o ImageMagick
             subprocess.call(['convert', '-define', 'jpeg:size=200x150',
                 self.source_filepath, '-thumbnail', '120x90^', '-gravity', 'center',
-                '-extent', '120x90', 'PNG8:%s' % local_filepath])
+                '-extent', '120x90', local_filepath])
+            logger.debug('Thumb criado em %s', local_filepath)
         except IOError:
-            #TODO Criar entrada no log.
-            print 'Não consegui criar o thumbnail...'
-        # Copia thumb da pasta local para site_media.
-        copy(local_filepath, self.site_thumb_dir)
+            logger.warning('Erro ao criar thumb %s', local_filepath)
+        try:
+            # Copia thumb da pasta local para site_media.
+            copy(local_filepath, self.site_thumb_dir)
+            logger.debug('Thumb copiado para %s', self.site_thumb_dir)
+        except:
+            logger.warning('Erro ao copiar thumb para %s', self.site_thumb_dir)
         # Define caminho para o thumb do site.
         site_filepath = os.path.join(self.site_thumb_dir, thumbname)
-        optimize(site_filepath, 'png')
+        #optimize(site_filepath, 'png')
         return site_filepath
 
 
@@ -915,7 +919,7 @@ def optimize(filepath, extension, all=False):
     #TODO Checar se programas estão instalados.
     #TODO Checar se permissões estão certas e o que fazer se der erro.
     if extension == 'png':
-        call = ['optipng', '-o7', filepath]
+        call = ['optipng', '-o7', '-fix', filepath]
     elif extension == 'jpg':
         if all:
             call = ['jpegoptim', '--strip-all', filepath]

@@ -619,12 +619,12 @@ class Photo:
 
         Usa a biblioteca do arquivo iptcinfo.py para padrão IPTC e pyexiv2 para EXIF.
         '''
-        #TODO Criar teste.
         logger.info('Lendo os metadados de %s e criando variáveis.',
                 self.filename)
-        # Criar objeto com metadados
+
+        # Criar objeto com metadados.
         info = IPTCInfo(self.source_filepath, True, charset)
-        # Checando se o arquivo tem dados IPTC
+        # Checando se o arquivo tem dados IPTC.
         if len(info.data) < 4:
             logger.warning('%s não tem dados IPTC!', self.filename)
 
@@ -632,19 +632,19 @@ class Photo:
         self.meta = {}
         self.meta = {
                 'source_filepath': os.path.abspath(self.source_filepath),
-                'title': info.data['object name'], # 5
-                'tags': info.data['keywords'], # 25
-                'author': info.data['by-line'], # 80
-                'city': info.data['city'], # 90
-                'sublocation': info.data['sub-location'], # 92
-                'state': info.data['province/state'], # 95
-                'country': info.data['country/primary location name'], # 101
-                'taxon': info.data['headline'], # 105
-                'rights': info.data['copyright notice'], # 116
-                'caption': info.data['caption/abstract'], # 120
-                'size': info.data['special instructions'], # 40
-                'source': info.data['source'], # 115
-                'references': info.data['credit'], #110
+                'title': info.data['object name'],                      #5
+                'tags': info.data['keywords'],                          #25
+                'author': info.data['by-line'],                         #80
+                'city': info.data['city'],                              #90
+                'sublocation': info.data['sub-location'],               #92
+                'state': info.data['province/state'],                   #95
+                'country': info.data['country/primary location name'],  #101
+                'taxon': info.data['headline'],                         #105
+                'rights': info.data['copyright notice'],                #116
+                'caption': info.data['caption/abstract'],               #120
+                'size': info.data['special instructions'],              #40
+                'source': info.data['source'],                          #115
+                'references': info.data['credit'],                      #110
                 'timestamp': self.timestamp,
                 'notes': u'',
                 }
@@ -663,10 +663,10 @@ class Photo:
         else:
             self.meta['source_filepath'] = os.path.abspath(self.source_filepath)
 
-        # Prepara alguns campos para banco de dados
+        # Prepara alguns campos para banco de dados.
         self.meta = prepare_meta(self.meta)
 
-        # Extraindo metadados do EXIF
+        # Extraindo metadados do EXIF.
         exif = self.get_exif(self.source_filepath)
         date = self.get_date(exif)
         try:
@@ -688,7 +688,7 @@ class Photo:
             self.meta['longitude'] = ''
 
         # Processar imagem
-        web_filepath, thumb_filepath = self.process_image()
+        web_filepath, thumb_filepath = self.process_photo()
         if not web_filepath:
             return None
         self.meta['web_filepath'] = web_filepath.strip('site_media/')
@@ -702,11 +702,10 @@ class Photo:
         print u'\t' + 40 * '-'
         print u'\tTítulo:\t\t%s' % self.meta['title']
         print u'\tDescrição:\t%s' % self.meta['caption']
-        #printu '\tEspécie:\t%s' % self.meta['genus_sp']
         print u'\tTáxon:\t\t%s' % ', '.join(self.meta['taxon'])
         print u'\tTags:\t\t%s' % '\n\t\t\t'.join(self.meta['tags'])
         print u'\tTamanho:\t%s' % self.meta['size']
-        print u'\tEspecialista:\t%s' % self.meta['source']
+        print u'\tEspecialista:\t%s' % ', '.join(self.meta['source'])
         print u'\tAutor:\t\t%s' % ', '.join(self.meta['author'])
         print u'\tSublocal:\t%s' % self.meta['sublocation']
         print u'\tCidade:\t\t%s' % self.meta['city']
@@ -787,7 +786,7 @@ class Photo:
                     return False
         return date.value
 
-    def process_image(self):
+    def process_photo(self):
         '''Redimensiona a imagem e inclui marca d'água.'''
         logger.info('Processando %s...', self.source_filepath)
         photo_localpath = os.path.join(self.local_dir, self.filename)

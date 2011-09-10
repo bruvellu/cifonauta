@@ -592,44 +592,6 @@ class Movie:
 
             return web_paths, thumb_sitepath, still_sitepath
 
-    def create_thumbs(self):
-        '''Cria thumbnails para os novos vídeos.'''
-        thumbname = self.filename.split('.')[0] + '.jpg'
-        large_thumbname = self.filename.split('.')[0] + '_still.jpg'
-        # Define caminho para pasta local.
-        local_filepath = os.path.join(self.local_thumb_dir, thumbname)
-        local_filepath_large = os.path.join(self.local_thumb_dir, large_thumbname)
-        try:
-            # Cria thumb grande a partir de 1 frame no segundo 5
-            #XXX Lembrar de deixar do mesmo tamanho do vídeo...
-            if self.source_filepath.endswith('m2ts'):
-                subprocess.call(['ffmpeg', '-i', self.source_filepath, '-vframes', '1', '-vf', 'scale=512:288', '-aspect', '16:9', '-ss', '1', '-f', 'image2', local_filepath_large])
-            else:
-                subprocess.call(['ffmpeg', '-i', self.source_filepath, '-vframes', '1', '-vf', 'scale=512:384', '-ss', '1', '-f', 'image2', local_filepath_large])
-            logger.debug('Still criado em %s', local_filepath_large)
-            # Cria thumb normal (pequeno)
-            subprocess.call(['convert', '-define', 'jpeg:size=200x150', 
-                local_filepath_large, '-thumbnail', '120x90^', '-gravity', 
-                'center', '-extent', '120x90', local_filepath])
-            logger.debug('Thumb criado em %s', local_filepath)
-        except IOError:
-            logger.warning('Não conseguiu criar thumb ou still em %s', 
-                    local_filepath)
-        try:
-            # Copia thumbs da pasta local para site
-            copy(local_filepath, self.site_thumb_dir)
-            copy(local_filepath_large, self.site_thumb_dir)
-        except:
-            logger.warning('Não conseguiu copiar thumb ou still em %s', 
-                    self.site_thumb_dir)
-        # Define caminho para o thumb do site.
-        site_filepath = os.path.join(self.site_thumb_dir, thumbname)
-        site_filepath_large = os.path.join(self.site_thumb_dir, large_thumbname)
-        # Otimiza imagens.
-        #optimize(site_filepath, 'png')
-        #optimize(site_filepath_large, 'jpg', all=True)
-        return site_filepath, site_filepath_large
-
 
 class Photo:
     '''Define objeto para instâncias das fotos.'''
@@ -868,31 +830,6 @@ class Photo:
                     )
 
             return web_filepath, thumb_sitepath
-
-    def create_thumbs(self):
-        '''Cria thumbnails para as fotos novas.'''
-        # Define nome do thumbnail.
-        thumbname = self.filename.split('.')[0] + '.jpg'
-        # Define caminho para pasta local.
-        local_filepath = os.path.join(self.local_thumb_dir, thumbname)
-        try:
-            # Convocando o ImageMagick
-            subprocess.call(['convert', '-define', 'jpeg:size=200x150',
-                self.source_filepath, '-thumbnail', '120x90^', '-gravity', 'center',
-                '-extent', '120x90', local_filepath])
-            logger.debug('Thumb criado em %s', local_filepath)
-        except IOError:
-            logger.warning('Erro ao criar thumb %s', local_filepath)
-        try:
-            # Copia thumb da pasta local para site_media.
-            copy(local_filepath, self.site_thumb_dir)
-            logger.debug('Thumb copiado para %s', self.site_thumb_dir)
-        except:
-            logger.warning('Erro ao copiar thumb para %s', self.site_thumb_dir)
-        # Define caminho para o thumb do site.
-        site_filepath = os.path.join(self.site_thumb_dir, thumbname)
-        #optimize(site_filepath, 'png')
-        return site_filepath
 
 
 class Folder:

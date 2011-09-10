@@ -137,3 +137,29 @@ def create_still(filepath, destination):
         logger.warning('Erro ao criar still %s', stillpath)
         return None, None
 
+def convert_to_web(filepath, finalpath):
+    '''Redimensiona e otimiza fotos para a rede.'''
+    convert_call = ['convert', filepath, '-density', '72', '-format', 'jpg',
+            '-quality', '70', '-resize', '800x800>', finalpath]
+    try:
+        subprocess.call(convert_call)
+        logger.debug('%s processado com sucesso.', finalpath)
+        return finalpath
+    except:
+        logger.critical('Erro ao converter %s', filepath)
+        return None
+
+def watermarker(filepath):
+    '''Insere marca d'água em foto.'''
+    # Arquivo com marca d'água.
+    watermark = u'marca.png'
+    # Constrói chamada para canto esquerdo embaixo.
+    mark_call = ['composite', '-gravity', 'southwest', watermark, filepath, 
+            filepath]
+    try:
+        subprocess.call(mark_call)
+        logger.debug('Marca d\'água adicionada em %s', filepath)
+        return True
+    except:
+        logger.warning('Erro ao adicionar marca em %s', filepath)
+        return False

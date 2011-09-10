@@ -31,7 +31,7 @@ from shutil import copy
 
 import linking
 from itis import Itis
-from media_utils import create_thumb, create_still
+from media_utils import *
 
 # Django environment import
 from django.core.management import setup_environ
@@ -50,8 +50,6 @@ __status__ = 'Development'
 
 # Diretório com os arquivos
 source_dir = u'source_media'
-# Arquivo com marca d'água
-watermark = u'marca.png'
 
 
 class Database:
@@ -791,28 +789,24 @@ class Photo:
 
     def process_image(self):
         '''Redimensiona a imagem e inclui marca d'água.'''
-        local_filepath = os.path.join(self.local_dir, self.filename)
-        print '\nProcessando a imagem...'
+        logger.info('Processando %s...', self.source_filepath)
+        photo_localpath = os.path.join(self.local_dir, self.filename)
         try:
-            # Converte para 72dpi, JPG qualidade 50 e redimensiona as imagens
-            # maiores que 640 (em altura ou largura)
-            subprocess.call(['convert', self.source_filepath, '-density', '72', '-format', 'jpg',
-                '-quality', '70', '-resize', '800x800>', local_filepath])
-            # Insere marca d'água no canto direito embaixo
-            subprocess.call(['composite', '-gravity', 'southwest', watermark, local_filepath, local_filepath])
-            # Copia imagem para pasta web
-            web_filepath = os.path.join(self.site_dir, self.filename)
-            copy(local_filepath, web_filepath)
+            # Converte o arquivo para a web.
+            converted = convert_to_web(self.source_filepath, photo_localpath)
+            # Insere marca d'água.
+            watermark = watermarker(photo_localpath)
+            # Define caminho para arquivo web.
+            photo_sitepath = os.path.join(self.site_dir, self.filename)
+            # Copia foto para pasta site_media se .
+            copy(photo_localpath, photo_sitepath)
         except IOError:
-            print '\nOcorreu algum erro na conversão da imagem. Verifique se o ' \
-                    'ImageMagick está instalado.'
-            #TODO Criar entrada no log
-            copy(self.source_filepath,
-                    '/home/nelas/bugs/' + os.path.basename(os.readlink(self.source_filepath)))
+            logger.warning('Erro na conversão de %s, verifique o ImageMagick.', 
+                    self.source_filepath)
             # Evita que o loop seja interrompido.
             return None, None
         else:
-            print 'Imagem convertida com sucesso! Criando thumbnails...'
+            logger.info('%s convertida com sucesso!', self.source_filepath)
             thumb_localpath = create_thumb(self.source_filepath, 
                     self.local_thumb_dir)
 
@@ -829,7 +823,7 @@ class Photo:
                     os.path.basename(thumb_localpath)
                     )
 
-            return web_filepath, thumb_sitepath
+            return photo_sitepath, thumb_sitepath
 
 
 class Folder:

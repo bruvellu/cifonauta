@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 #
 # CIFONAUTA
-# Copyleft 2010 - Bruno C. Vellutini | organelas.com
+# Copyleft 2010-2011 - Bruno C. Vellutini | organelas.com
 #
 #TODO Definir licença.
 #
-# Atualizado: 16 Feb 2011 01:09AM
 '''Gerenciador do banco de imagens do CEBIMar-USP.
 
 Este programa gerencia os arquivos do banco de imagens do CEBIMar lendo seus
@@ -32,6 +31,7 @@ from shutil import copy
 
 import linking
 from itis import Itis
+from media_utils import create_thumb, create_still
 
 # Django environment import
 from django.core.management import setup_environ
@@ -40,12 +40,12 @@ setup_environ(settings)
 from meta.models import *
 
 __author__ = 'Bruno Vellutini'
-__copyright__ = 'Copyright 2010, CEBIMar-USP'
+__copyright__ = 'Copyright 2010-2011, CEBIMar-USP'
 __credits__ = 'Bruno C. Vellutini'
 __license__ = 'DEFINIR'
-__version__ = '0.8.5'
+__version__ = '0.8.6'
 __maintainer__ = 'Bruno Vellutini'
-__email__ = 'organelas at gmail dot com'
+__email__ = 'organelas@gmail.com'
 __status__ = 'Development'
 
 # Diretório com os arquivos
@@ -567,14 +567,35 @@ class Movie:
             return None, None, None
         else:
             print 'Vídeos convertidos com sucessos! Criando thumbnails...'
-            thumb_filepath, large_thumb_filepath = self.create_thumbs()
-            return web_paths, thumb_filepath, large_thumb_filepath
+            thumb_localpath, still_localpath = create_still(
+                    self.source_filepath, self.local_thumb_dir)
+
+            # Copia thumb e still da pasta local para site_media.
+            try:
+                copy(thumb_localpath, self.site_thumb_dir)
+                logger.debug('Thumb copiado para %s', self.site_thumb_dir)
+                copy(still_localpath, self.site_thumb_dir)
+                logger.debug('Still copiado para %s', self.site_thumb_dir)
+            except IOError:
+                logger.warning('Não conseguiu copiar thumb ou still em %s', 
+                        self.site_thumb_dir)
+
+            # Define caminho para o thumb e still do site.
+            thumb_sitepath = os.path.join(
+                    self.site_thumb_dir,
+                    os.path.basename(thumb_localpath)
+                    )
+            still_sitepath = os.path.join(
+                    self.site_thumb_dir,
+                    os.path.basename(still_localpath)
+                    )
+
+            return web_paths, thumb_sitepath, still_sitepath
 
     def create_thumbs(self):
         '''Cria thumbnails para os novos vídeos.'''
-        # Troca extensão para png.
-        thumbname = self.filename.split('.')[0] + '.png'
-        large_thumbname = self.filename.split('.')[0] + '.jpg'
+        thumbname = self.filename.split('.')[0] + '.jpg'
+        large_thumbname = self.filename.split('.')[0] + '_still.jpg'
         # Define caminho para pasta local.
         local_filepath = os.path.join(self.local_thumb_dir, thumbname)
         local_filepath_large = os.path.join(self.local_thumb_dir, large_thumbname)
@@ -585,20 +606,28 @@ class Movie:
                 subprocess.call(['ffmpeg', '-i', self.source_filepath, '-vframes', '1', '-vf', 'scale=512:288', '-aspect', '16:9', '-ss', '1', '-f', 'image2', local_filepath_large])
             else:
                 subprocess.call(['ffmpeg', '-i', self.source_filepath, '-vframes', '1', '-vf', 'scale=512:384', '-ss', '1', '-f', 'image2', local_filepath_large])
+            logger.debug('Still criado em %s', local_filepath_large)
             # Cria thumb normal (pequeno)
-            subprocess.call(['convert', '-define', 'jpeg:size=200x150', local_filepath_large, '-thumbnail', '120x90^', '-gravity', 'center', '-extent', '120x90', 'PNG8:%s' % local_filepath])
+            subprocess.call(['convert', '-define', 'jpeg:size=200x150', 
+                local_filepath_large, '-thumbnail', '120x90^', '-gravity', 
+                'center', '-extent', '120x90', local_filepath])
+            logger.debug('Thumb criado em %s', local_filepath)
         except IOError:
-            #TODO Criar entrada no log.
-            print 'Não consegui criar o thumbnail...'
-        # Copia thumbs da pasta local para site
-        copy(local_filepath, self.site_thumb_dir)
-        copy(local_filepath_large, self.site_thumb_dir)
+            logger.warning('Não conseguiu criar thumb ou still em %s', 
+                    local_filepath)
+        try:
+            # Copia thumbs da pasta local para site
+            copy(local_filepath, self.site_thumb_dir)
+            copy(local_filepath_large, self.site_thumb_dir)
+        except:
+            logger.warning('Não conseguiu copiar thumb ou still em %s', 
+                    self.site_thumb_dir)
         # Define caminho para o thumb do site.
         site_filepath = os.path.join(self.site_thumb_dir, thumbname)
         site_filepath_large = os.path.join(self.site_thumb_dir, large_thumbname)
         # Otimiza imagens.
-        optimize(site_filepath, 'png')
-        optimize(site_filepath_large, 'jpg', all=True)
+        #optimize(site_filepath, 'png')
+        #optimize(site_filepath_large, 'jpg', all=True)
         return site_filepath, site_filepath_large
 
 
@@ -653,7 +682,6 @@ class Photo:
                 'taxon': info.data['headline'], # 105
                 'rights': info.data['copyright notice'], # 116
                 'caption': info.data['caption/abstract'], # 120
-                #'genus_sp': info.data['original transmission reference'], # 103
                 'size': info.data['special instructions'], # 40
                 'source': info.data['source'], # 115
                 'references': info.data['credit'], #110
@@ -823,13 +851,28 @@ class Photo:
             return None, None
         else:
             print 'Imagem convertida com sucesso! Criando thumbnails...'
-            thumb_filepath = self.create_thumbs()
-            return web_filepath, thumb_filepath
+            thumb_localpath = create_thumb(self.source_filepath, 
+                    self.local_thumb_dir)
+
+            # Copia thumb da pasta local para site_media.
+            try:
+                copy(thumb_localpath, self.site_thumb_dir)
+                logger.debug('Thumb copiado para %s', self.site_thumb_dir)
+            except:
+                logger.warning('Erro ao copiar thumb para %s', self.site_thumb_dir)
+
+            # Define caminho para o thumb do site.
+            thumb_sitepath = os.path.join(
+                    self.site_thumb_dir,
+                    os.path.basename(thumb_localpath)
+                    )
+
+            return web_filepath, thumb_sitepath
 
     def create_thumbs(self):
         '''Cria thumbnails para as fotos novas.'''
         # Define nome do thumbnail.
-        thumbname = self.filename
+        thumbname = self.filename.split('.')[0] + '.jpg'
         # Define caminho para pasta local.
         local_filepath = os.path.join(self.local_thumb_dir, thumbname)
         try:

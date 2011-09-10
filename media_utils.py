@@ -36,7 +36,6 @@ __status__ = 'Development'
 # get_info
 # build_call
 # process_video
-# create_thumbs
 # create_meta?
 # get_exif
 # get_gps
@@ -57,6 +56,11 @@ __status__ = 'Development'
 
 def create_thumb(filepath, destination):
     '''Cria thumbnail para foto.'''
+    # Confere argumentos.
+    if not os.path.isfile(filepath):
+        logger.critical('%s não é um arquivo válido.', filepath)
+    if not os.path.isdir(destination):
+        logger.critical('%s não é um destino válido.', destination)
 
     # Define nome do thumbnail.
     filename = os.path.basename(filepath)
@@ -87,6 +91,11 @@ def create_thumb(filepath, destination):
 
 def create_still(filepath, destination):
     '''Cria still para o vídeo e thumbnail em seguida.'''
+    # Confere argumentos.
+    if not os.path.isfile(filepath):
+        logger.critical('%s não é um arquivo válido.', filepath)
+    if not os.path.isdir(destination):
+        logger.critical('%s não é um destino válido.', destination)
 
     # Define nome do thumbnail.
     filename = os.path.basename(filepath)

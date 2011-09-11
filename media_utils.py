@@ -18,6 +18,7 @@ Centro de Biologia Marinha da Universidade de São Paulo.
 import logging
 import os
 import pyexiv2
+import re
 import subprocess
 
 from shutil import copy2
@@ -246,3 +247,40 @@ def get_decimal(ref, deg, min, sec):
     if ref in negatives:
         decimal = -decimal
     return decimal
+
+
+def get_info(video):
+    '''Pega informações do vídeo na marra e retorna dicionário.
+
+    Os valores são extraídos do stderr do ffmpeg usando expressões 
+    regulares.
+    '''
+    try:
+        call = subprocess.Popen(['ffmpeg', '-i', video],
+                stderr=subprocess.PIPE)
+    except:
+        logger.warning('Não conseguiu abrir o arquivo %s', video)
+        return None
+    # Necessário converter pra string pra ser objeto permanente.
+    info = str(call.stderr.read())
+    # Encontra a duração do arquivo.
+    length_re = re.search('(?<=Duration: )\d+:\d+:\d+', info)
+    # Encontra o codec e dimensões.
+    precodec_re = re.search('(?<=Video: ).+, .+, \d+x\d+', info)
+    # Processando os outputs brutos.
+    #XXX Melhorar isso e definir o formato oficial dos valores.
+    # Exemplo (guardar em segundos e converter depois):
+    #   >>> import datetime
+    #   >>> str(datetime.timedelta(seconds=666))
+    #   '0:11:06'
+    duration = length_re.group(0)
+    codecs = precodec_re.group(0).split(', ')
+    codec = codecs[0].split(' ')[0]
+    dimensions = codecs[2]
+    # Salvando valores limpos em um dicionário.
+    details = {
+            'duration': duration,
+            'dimensions': dimensions,
+            'codec': codec,
+            }
+    return details

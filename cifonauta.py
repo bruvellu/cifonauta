@@ -19,7 +19,6 @@ import logging
 import os
 import pickle
 import random
-import re
 import sys
 import subprocess
 import time
@@ -284,45 +283,10 @@ class Movie:
         dir_ready(self.site_dir, self.site_thumb_dir,
                 self.local_dir, self.local_thumb_dir)
 
-    def get_info(self, video):
-        '''Pega informações do vídeo na marra e retorna dicionário.
-
-        Os valores são extraídos do stderr do ffmpeg usando expressões 
-        regulares.
-        '''
-        try:
-            call = subprocess.Popen(['ffmpeg', '-i', video],
-                    stderr=subprocess.PIPE)
-        except:
-            print u'Não conseguiu abrir o arquivo %s' % video
-            return None
-        # Necessário converter pra string pra ser objeto permanente.
-        info = str(call.stderr.read())
-        # Encontra a duração do arquivo.
-        length_re = re.search('(?<=Duration: )\d+:\d+:\d+', info)
-        # Encontra o codec e dimensões.
-        precodec_re = re.search('(?<=Video: ).+, .+, \d+x\d+', info)
-        # Processando os outputs brutos.
-        #XXX Melhorar isso e definir o formato oficial dos valores.
-        # Exemplo (guardar em segundos e converter depois):
-        #   >>> import datetime
-        #   >>> str(datetime.timedelta(seconds=666))
-        #   '0:11:06'
-        duration = length_re.group(0)
-        codecs = precodec_re.group(0).split(', ')
-        codec = codecs[0].split(' ')[0]
-        dimensions = codecs[2]
-        # Salvando valores limpos em um dicionário.
-        details = {
-                'duration': duration,
-                'dimensions': dimensions,
-                'codec': codec,
-                }
-        return details
-
     def create_meta(self, new=False):
         '''Define as variáveis dos metadados do vídeo.'''
-        print 'Lendo os metadados de %s e criando variáveis.' % self.filename
+        logger.info('Lendo os metadados de %s e criando variáveis.' % 
+                self.filename)
         # Limpa metadados pra não misturar com o anterior.
         self.meta = {}
         self.meta = {
@@ -350,17 +314,15 @@ class Movie:
                 'codec': u'',
                 }
 
-        #TODO Incluir duration, dimension e codec na lista dos metadados.
-        # Lembrar de criar os campos necessários nos modelos.
-
         # Verifica se arquivo acessório com meta dos vídeos existe.
         try:
             linked_to = os.readlink(self.source_filepath)
             txt_path = linked_to.split('.')[0] + '.txt'
             meta_text = open(txt_path, 'rb')
-            print 'Arquivo de info existe!'
+            logger.debug('Arquivo acessório %s existe!', txt_path)
         except:
-            print 'Arquivo de info não existe!'
+            logger.debug('Arquivo acessório de %s não existe!', 
+                    self.source_filepath)
             meta_text = ''
 
         if meta_text:
@@ -393,7 +355,7 @@ class Movie:
             self.meta['source_filepath'] = os.path.abspath(self.source_filepath)
 
         # Inclui duração, dimensões e codec do vídeo.
-        infos = self.get_info(self.meta['source_filepath'])
+        infos = get_info(self.meta['source_filepath'])
         self.meta.update(infos)
 
         # Processa o vídeo.
@@ -469,6 +431,7 @@ class Movie:
 
     def process_video(self):
         '''Redimensiona o vídeo, inclui marca d'água e comprime.'''
+        #TODO Fazer uma limpeza nessa função.
         # Exemplo DV (4:3):
         #   Pass 1:
         #       ffmpeg -y -i video_in.avi -vf "movie=marca.png:f=png, 

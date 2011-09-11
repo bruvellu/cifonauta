@@ -707,16 +707,6 @@ class Photo:
 
         return self.meta
 
-    def resolve(self, frac):
-        '''Resolve a fração das coordenadas para int.
-
-        Por padrão os valores do exif são guardados como frações. Por isso é
-        necessário converter.
-        '''
-        fraclist = str(frac).split('/')
-        result = int(fraclist[0]) / int(fraclist[1])
-        return result
-
     def process_photo(self):
         '''Redimensiona a imagem e inclui marca d'água.'''
         logger.info('Processando %s...', self.source_filepath)

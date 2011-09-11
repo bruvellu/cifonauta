@@ -1086,9 +1086,8 @@ def main(argv):
             # Se mídia for nova
             logger.info('ARQUIVO NOVO: %s. CRIANDO ENTRADA NO BANCO DE DADOS...', media.filename)
             # Caso o arquivo esteja corrompido, pular
-            #XXX Este é o melhor jeito de checar se o arquivo está
-            # corrompido? O que o create_meta retorna?
             if not media.create_meta(new=True):
+                logger.warning('Erro grave, pulando %s', media.source_filepath)
                 continue
             cbm.update_db(media)
             n_new += 1

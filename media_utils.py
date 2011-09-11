@@ -17,7 +17,9 @@ Centro de Biologia Marinha da Universidade de São Paulo.
 
 import logging
 import os
+import pyexiv2
 import subprocess
+
 from shutil import copy2
 
 # Instancia logger.
@@ -163,3 +165,84 @@ def watermarker(filepath):
     except:
         logger.warning('Erro ao adicionar marca em %s', filepath)
         return False
+
+def get_exif(filepath):
+    '''Extrai o exif da foto usando o pyexiv2 0.3.0.'''
+    logger.debug('Extraindo EXIF de %s', filepath)
+    exif = pyexiv2.ImageMetadata(filepath)
+    exif.read()
+    return exif
+
+def get_exif_date(exif):
+    '''Extrai a data em que foi criada a foto do EXIF.'''
+    try:
+        date = exif['Exif.Photo.DateTimeOriginal']
+    except:
+        try:
+            date = exif['Exif.Photo.DateTimeDigitized']
+        except:
+            try:
+                date = exif['Exif.Image.DateTime']
+            except:
+                return False
+    return date.value
+
+def get_date(exif):
+    '''Retorna a data da foto já pronta para metadados.'''
+    # Extrai data do exif.
+    date = get_exif_date(exif)
+    # Faz parsing do valor extraído.
+    try:
+        date_string = date.strftime('%Y-%m-%d %I:%M:%S')
+    except:
+        date_string = ''
+    if date_string and date_string != '0000:00:00 00:00:00':
+        return date
+    else:
+        return '1900-01-01 01:01:01'
+
+def get_gps(exif):
+    '''Extrai coordenadas guardadas no EXIF.'''
+    # Para guardar valores.
+    gps = {}
+    gps_data = {}
+
+    try:
+        # Latitude.
+        gps['latref'] = exif['Exif.GPSInfo.GPSLatitudeRef'].value
+        gps['latdeg'] = exif['Exif.GPSInfo.GPSLatitude'].value[0]
+        gps['latmin'] = exif['Exif.GPSInfo.GPSLatitude'].value[1]
+        gps['latsec'] = exif['Exif.GPSInfo.GPSLatitude'].value[2]
+        latitude = get_decimal(gps['latref'], gps['latdeg'], gps['latmin'], 
+                gps['latsec'])
+
+        # Longitude.
+        gps['longref'] = exif['Exif.GPSInfo.GPSLongitudeRef'].value
+        gps['longdeg'] = exif['Exif.GPSInfo.GPSLongitude'].value[0]
+        gps['longmin'] = exif['Exif.GPSInfo.GPSLongitude'].value[1]
+        gps['longsec'] = exif['Exif.GPSInfo.GPSLongitude'].value[2]
+        longitude = get_decimal(gps['longref'], gps['longdeg'], gps['longmin'], 
+                gps['longsec'])
+
+        # Gravando valores prontos.
+        gps_data['geolocation'] = '%s %d°%d\'%d" %s %d°%d\'%d"' % (
+                gps['latref'], gps['latdeg'], gps['latmin'], gps['latsec'],
+                gps['longref'], gps['longdeg'], gps['longmin'], gps['longsec'])
+        gps_data['latitude'] = '%f' % latitude
+        gps_data['longitude'] = '%f' % longitude
+    except:
+        logger.debug('Foto sem dados de GPS.')
+        # Gravando valores prontos.
+        gps_data['geolocation'] = ''
+        gps_data['latitude'] = ''
+        gps_data['longitude'] = ''
+    return gps_data
+
+def get_decimal(ref, deg, min, sec):
+    '''Descobre o valor decimal das coordenadas.'''
+    decimal_min = (min * 60.0 + sec) / 60.0
+    decimal = (deg * 60.0 + decimal_min) / 60.0
+    negatives = ['S', 'W']
+    if ref in negatives:
+        decimal = -decimal
+    return decimal

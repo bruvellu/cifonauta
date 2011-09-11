@@ -24,7 +24,6 @@ import sys
 import subprocess
 import time
 
-import pyexiv2
 from datetime import datetime
 from iptcinfo import IPTCInfo
 from shutil import copy
@@ -667,25 +666,12 @@ class Photo:
         self.meta = prepare_meta(self.meta)
 
         # Extraindo metadados do EXIF.
-        exif = self.get_exif(self.source_filepath)
-        date = self.get_date(exif)
-        try:
-            date_string = date.strftime('%Y-%m-%d %I:%M:%S')
-        except:
-            date_string = ''
-        if date_string and date_string != '0000:00:00 00:00:00':
-            self.meta['date'] = date
-        else:
-            self.meta['date'] = '1900-01-01 01:01:01'
-        # Arrumando geolocalização
-        try:
-            gps = self.get_gps(exif)
-            for k, v in gps.iteritems():
-                self.meta[k] = v
-        except:
-            self.meta['geolocation'] = ''
-            self.meta['latitude'] = ''
-            self.meta['longitude'] = ''
+        exif = get_exif(self.source_filepath)
+        # Extraindo data.
+        self.meta['date'] = get_date(exif)
+        # Extraindo a geolocalização.
+        gps = get_gps(exif)
+        self.meta.update(gps)
 
         # Processar imagem
         web_filepath, thumb_filepath = self.process_photo()
@@ -719,12 +705,6 @@ class Photo:
                 self.meta['longitude'])
 
         return self.meta
-
-    def get_exif(self, filepath):
-        '''Extrai o exif da imagem selecionada usando o pyexiv2 0.2.2.'''
-        exif_meta = pyexiv2.ImageMetadata(filepath)
-        exif_meta.read()
-        return exif_meta
 
     def get_gps(self, exif):
         '''Extrai coordenadas guardadas no EXIF.'''
@@ -771,20 +751,6 @@ class Photo:
         fraclist = str(frac).split('/')
         result = int(fraclist[0]) / int(fraclist[1])
         return result
-
-    def get_date(self, exif):
-        '''Extrai a data em que foi criada a foto do EXIF.'''
-        try:
-            date = exif['Exif.Photo.DateTimeOriginal']
-        except:
-            try:
-                date = exif['Exif.Photo.DateTimeDigitized']
-            except:
-                try:
-                    date = exif['Exif.Image.DateTime']
-                except:
-                    return False
-        return date.value
 
     def process_photo(self):
         '''Redimensiona a imagem e inclui marca d'água.'''

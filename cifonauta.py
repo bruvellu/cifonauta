@@ -177,6 +177,7 @@ class Database:
         entry.save()
 
         logger.info('Registro no banco de dados atualizado!')
+        print
 
     def get_instance(self, table, value):
         '''Retorna o id a partir do nome.'''
@@ -958,7 +959,6 @@ def main(argv):
     else:
         filepaths = folder.get_files()
     for path in filepaths:
-    #TODO Continuar o logging a partir daqui.
         # Reconhece se é foto ou vídeo
         if path[1] == 'photo':
             media = Photo(path[0])
@@ -978,17 +978,15 @@ def main(argv):
         else:
             if not force_update and query == 2:
                 # Se registro existir e timestamp for igual
-                print '\nREGISTRO EXISTE E ESTÁ ATUALIZADO NO SITE! ' \
-                        'PRÓXIMO ARQUIVO...'
+                logger.info('REGISTRO ATUALIZADO NO SITE! PRÓXIMO...')
+                print
                 pass
             else:
                 # Se arquivo do site não estiver atualizada
                 if force_update:
-                    print '\nREGISTRO EXISTE E ESTÁ ATUALIZADO, MAS '\
-                            'RODANDO SOB ARGUMENTO "-f".'
+                    logger.info('REGISTRO ATUALIZADO, MAS SOB FORCE_UPDATE.')
                 else:
-                    print '\nREGISTRO EXISTE, MAS NÃO ESTÁ ATUALIZADO. ' \
-                            'ATUALIZANDO O BANCO DE DADOS...'
+                    logger.info('REGISTRO NÃO ESTÁ ATUALIZADO. ATUALIZANDO...')
                 media.create_meta()
                 cbm.update_db(media, update=True)
                 n_up += 1
@@ -1010,7 +1008,7 @@ def main(argv):
             video.save()
         print u'Feito! TSV atualizado.'
 
-    #TODO Melhorar as estatísticas daqui...
+    # Estatísticas.
     print '\n%d ARQUIVOS ANALISADOS' % n
     print '%d novos' % n_new
     print '%d atualizados' % n_up
@@ -1020,6 +1018,8 @@ def main(argv):
     else:
         print '\nTempo de execução:', t, 's'
     print
+    logger.info('%d s: %d analisados, %d novos, %d atualizados',
+            t, n, n_new, n_up)
 
 # Início do programa
 if __name__ == '__main__':

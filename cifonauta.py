@@ -796,11 +796,6 @@ def optimize(filepath, extension, all=False):
     except:
         print 'ERRO', call[0], call[-1]
 
-def check_file(filepath):
-    '''Checa se arquivo existe.'''
-    media_file = os.path.isfile(filepath)
-    return media_file
-
 def rename_file(filename, authors):
     '''Renomeia arquivo com iniciais e identificador.'''
     print u'%s, hora de renomeá-lo!' % filename

@@ -285,3 +285,8 @@ def dir_ready(*dirs):
             logger.debug('Criando diretório %s', dir)
             os.mkdir(dir)
 
+def check_file(filepath):
+    '''Checa se arquivo existe.'''
+    media_file = os.path.isfile(filepath)
+    return media_file
+

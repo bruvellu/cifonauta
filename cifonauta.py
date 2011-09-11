@@ -673,8 +673,9 @@ class Photo:
         gps = get_gps(exif)
         self.meta.update(gps)
 
-        # Processar imagem
+        # Processar imagem.
         web_filepath, thumb_filepath = self.process_photo()
+        # Caso arquivo esteja corrompido, interromper.
         if not web_filepath:
             return None
         self.meta['web_filepath'] = web_filepath.strip('site_media/')
@@ -705,42 +706,6 @@ class Photo:
                 self.meta['longitude'])
 
         return self.meta
-
-    def get_gps(self, exif):
-        '''Extrai coordenadas guardadas no EXIF.'''
-        gps = {}
-        gps_data = {}
-        # Latitude
-        gps['latref'] = exif['Exif.GPSInfo.GPSLatitudeRef'].value
-        gps['latdeg'] = exif['Exif.GPSInfo.GPSLatitude'].value[0]
-        gps['latmin'] = exif['Exif.GPSInfo.GPSLatitude'].value[1]
-        gps['latsec'] = exif['Exif.GPSInfo.GPSLatitude'].value[2]
-        latitude = self.get_decimal(
-                gps['latref'], gps['latdeg'], gps['latmin'], gps['latsec'])
-        # Longitude
-        gps['longref'] = exif['Exif.GPSInfo.GPSLongitudeRef'].value
-        gps['longdeg'] = exif['Exif.GPSInfo.GPSLongitude'].value[0]
-        gps['longmin'] = exif['Exif.GPSInfo.GPSLongitude'].value[1]
-        gps['longsec'] = exif['Exif.GPSInfo.GPSLongitude'].value[2]
-        longitude = self.get_decimal(
-                gps['longref'], gps['longdeg'], gps['longmin'], gps['longsec'])
-
-        # Gravando valores prontos
-        gps_data['geolocation'] = '%s %d°%d\'%d" %s %d°%d\'%d"' % (
-                gps['latref'], gps['latdeg'], gps['latmin'], gps['latsec'],
-                gps['longref'], gps['longdeg'], gps['longmin'], gps['longsec'])
-        gps_data['latitude'] = '%f' % latitude
-        gps_data['longitude'] = '%f' % longitude
-        return gps_data
-
-    def get_decimal(self, ref, deg, min, sec):
-        '''Descobre o valor decimal das coordenadas.'''
-        decimal_min = (min * 60.0 + sec) / 60.0
-        decimal = (deg * 60.0 + decimal_min) / 60.0
-        negs = ['S', 'W']
-        if ref in negs:
-            decimal = -decimal
-        return decimal
 
     def resolve(self, frac):
         '''Resolve a fração das coordenadas para int.

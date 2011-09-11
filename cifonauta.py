@@ -360,6 +360,7 @@ class Movie:
 
         # Processa o vídeo.
         web_paths, thumb_filepath, large_thumb = self.process_video()
+        # Caso arquivo esteja corrompido.
         if not web_paths:
             return None
 
@@ -431,7 +432,6 @@ class Movie:
 
     def process_video(self):
         '''Redimensiona o vídeo, inclui marca d'água e comprime.'''
-        #TODO Fazer uma limpeza nessa função.
         # Exemplo DV (4:3):
         #   Pass 1:
         #       ffmpeg -y -i video_in.avi -vf "movie=marca.png:f=png, 
@@ -460,21 +460,22 @@ class Movie:
         #       veryslow -acodec libvorbis -ab 128k -ac 2 -ar 44100 -threads 2 
         #       video_out.webm
         #FIXME O que fazer quando vídeos forem menores que isso?
-        print '\nProcessando o vídeo...'
+        logger.info('Processando o vídeo %s', self.source_filepath)
         web_paths = {}
         try:
+            #TODO Repensar essa função no módulo media_utils.
             # WebM
             webm_name = self.filename.split('.')[0] + '.webm'
             webm_filepath = os.path.join(self.local_dir, webm_name)
             webm_firstcall = self.build_call(webm_filepath, 1)
             webm_secondcall = self.build_call(webm_filepath, 2)
             # MP4
-            mp4_name = self.filename.split('.')[0] + '.mp4' 
+            mp4_name = self.filename.split('.')[0] + '.mp4'
             mp4_filepath = os.path.join(self.local_dir, mp4_name)
             mp4_firstcall = self.build_call(mp4_filepath, 1)
             mp4_secondcall = self.build_call(mp4_filepath, 2)
             # OGG
-            ogg_name = self.filename.split('.')[0] + '.ogv' 
+            ogg_name = self.filename.split('.')[0] + '.ogv'
             ogg_filepath = os.path.join(self.local_dir, ogg_name)
             ogg_firstcall = self.build_call(ogg_filepath, 1)
             ogg_secondcall = self.build_call(ogg_filepath, 2)
@@ -487,10 +488,12 @@ class Movie:
                     webm_site_filepath = os.path.join(self.site_dir, webm_name)
                     copy(webm_filepath, webm_site_filepath)
                 except:
-                    print 'Não conseguiu copiar para o site.'
+                    logger.warning('Erro ao copiar %s para o site.', 
+                            webm_filepath)
                 web_paths['webm_filepath'] = webm_site_filepath
             except:
-                print 'Processamento do WebM não funcionou!'
+                logger.warning('Processamento do WebM (%s) não funcionou!', 
+                        webm_filepath)
             try:
                 # MP4
                 subprocess.call(mp4_firstcall)
@@ -503,12 +506,15 @@ class Movie:
                         subprocess.call(['qt-faststart', mp4_site_filepath,
                             mp4_site_filepath])
                     except:
-                        print 'qt-faststart não funcionou!'
+                        logger.debug('qt-faststart não funcionou para %s', 
+                                mp4_filepath)
                 except:
-                    print 'Não conseguiu copiar para o site.'
+                    logger.warning('Erro ao copiar %s para o site.', 
+                            mp4_filepath)
                 web_paths['mp4_filepath'] = mp4_site_filepath
             except:
-                print 'Processamento do x264 não funcionou!'
+                logger.warning('Processamento do x264 (%s) não funcionou!', 
+                        mp4_filepath)
             try:
                 # OGG
                 subprocess.call(ogg_firstcall)
@@ -518,15 +524,17 @@ class Movie:
                     ogg_site_filepath = os.path.join(self.site_dir, ogg_name)
                     copy(ogg_filepath, ogg_site_filepath)
                 except:
-                    print 'Não conseguiu copiar para o site.'
+                    logger.warning('Erro ao copiar %s para o site.', 
+                            ogg_filepath)
                 web_paths['ogg_filepath'] = ogg_site_filepath
             except:
-                print 'Processamento do OGG não funcionou!'
+                logger.warning('Processamento do OGG (%s) não funcionou!', 
+                        ogg_filepath)
         except IOError:
-            print '\nOcorreu algum erro na conversão da imagem.'
+            logger.warning('Erro na conversão de %s.')
             return None, None, None
         else:
-            print 'Vídeos convertidos com sucessos! Criando thumbnails...'
+            logger.info('%s convertido com sucesso!', self.source_filepath)
             thumb_localpath, still_localpath = create_still(
                     self.source_filepath, self.local_thumb_dir)
 

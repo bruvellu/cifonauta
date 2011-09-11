@@ -1018,7 +1018,7 @@ def main(argv):
     else:
         print '\nTempo de execução:', t, 's'
     print
-    logger.info('%d s: %d analisados, %d novos, %d atualizados',
+    logger.info('%ds: %d analisados, %d novos, %d atualizados',
             t, n, n_new, n_up)
 
 # Início do programa

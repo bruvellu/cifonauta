@@ -796,35 +796,6 @@ def optimize(filepath, extension, all=False):
     except:
         print 'ERRO', call[0], call[-1]
 
-def rename_file(filename, authors):
-    '''Renomeia arquivo com iniciais e identificador.'''
-    print u'%s, hora de renomeá-lo!' % filename
-    if authors:
-        initials = get_initials(authors)
-    else:
-        initials = 'cbm'
-    id = create_id()
-    new_filename = initials + '_' + id + '.' + filename.split('.')[1].lower()
-    return new_filename
-
-def get_initials(authors):
-    '''Extrai iniciais dos autores.
-
-    Faz split por vírgulas, caso tenha mais de 1 autor; para cada autor faz
-    split por espaços em branco e pega apenas a primeira letra; junta iniciais
-    em sequência; junta autores separados por hífen.
-
-    Não está muito legível, mas é isso aí.
-    '''
-    initials = '-'.join([''.join([sil[:1] for sil in word.strip().split(' ')]) for word in authors.split(',')]).lower()
-    return initials
-
-def create_id():
-    '''Cria identificador único para nome do arquivo.'''
-    chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    id = ''.join([random.choice(chars) for x in xrange(6)])
-    return id
-
 def prepare_meta(meta):
     '''Processa as strings dos metadados convertendo para bd.
 

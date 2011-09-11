@@ -62,6 +62,7 @@ class Database:
         Se as datas forem iguais pula para próximo arquivo, se forem diferentes
         atualiza o registro.
         '''
+        print
         logger.info('Verificando se %s (%s) está no banco de dados...',
                 media.filename, media.source_filepath)
         photopath = 'photos/'
@@ -177,7 +178,6 @@ class Database:
         entry.save()
 
         logger.info('Registro no banco de dados atualizado!')
-        print
 
     def get_instance(self, table, value):
         '''Retorna o id a partir do nome.'''

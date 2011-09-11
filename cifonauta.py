@@ -98,7 +98,7 @@ class Database:
 
     def update_db(self, media, update=False):
         '''Cria ou atualiza registro no banco de dados.'''
-        print '\nAtualizando o banco de dados...'
+        logger.info('Atualizando o banco de dados...')
         # Instancia metadados pra não dar conflito.
         media_meta = media.meta
         # Guarda objeto com infos taxonômicas.
@@ -123,7 +123,8 @@ class Database:
 
         # Não deixar entrada pública se faltar título ou autor
         if media_meta['title'] == '' or not media_meta['author']:
-            print 'Mídia sem título ou autor!'
+            logger.debug('Mídia %s sem título ou autor!', 
+                    media_meta['source_filepath'])
             media_meta['is_public'] = False
         else:
             media_meta['is_public'] = True
@@ -134,13 +135,11 @@ class Database:
         toget = ['size', 'rights', 'sublocation',
                 'city', 'state', 'country']
         for k in toget:
-            print '\nK'
-            print '\nMETA (%s): %s' % (k, media_meta[k])
+            logger.debug('META (%s): %s', k, media_meta[k])
             # Apenas criar se não estiver em branco.
             if media_meta[k]:
                 media_meta[k] = self.get_instance(k, media_meta[k])
-                print 'INSTANCES FOUND: %s' % media_meta[k] 
-                print 'INSTANCES ADDED.'
+                logger.debug('INSTANCES FOUND: %s', media_meta[k])
             else:
                 del media_meta[k]
 
@@ -177,7 +176,7 @@ class Database:
         # Salvando modificações
         entry.save()
 
-        print 'Registro no banco de dados atualizado!'
+        logger.info('Registro no banco de dados atualizado!')
 
     def get_instance(self, table, value):
         '''Retorna o id a partir do nome.'''
@@ -189,13 +188,13 @@ class Database:
             if not taxon:
                 taxon = self.get_itis(value)
                 if not taxon:
-                    print u'Nova tentativa em 5s...'
+                    logger.debug('Nova tentativa em 5s...')
                     time.sleep(5)
                     taxon = self.get_itis(value)
             try:
                 # Pega a lista de pais e cria táxons, na ordem reversa.
                 for parent in taxon.parents:
-                    print u'Criando %s...' % parent.taxonName
+                    logger.debug('Criando %s...', parent.taxonName)
                     newtaxon, new = Taxon.objects.get_or_create(name=parent.taxonName)
                     if new:
                         newtaxon.rank = parent.rankName
@@ -203,9 +202,9 @@ class Database:
                         if parent.parentName:
                             newtaxon.parent = Taxon.objects.get(name=parent.parentName)
                         newtaxon.save()
-                        print u'Salvo!'
+                        logger.debug('%s salvo!', newtaxon.taxonName)
                     else:
-                        print u'Já existe!'
+                        logger.debug('%s já existe!', newtaxon.taxonName)
 
                 if taxon.parent_name:
                     # Ordem reversa acima garante que ele já existe.
@@ -215,7 +214,7 @@ class Database:
                 if taxon.rank:
                     metadatum.rank = taxon.rank
             except:
-                print u'Não rolou pegar hierarquia...'
+                logger.warning('Não rolou pegar hierarquia...')
 
             metadatum.save()
         return metadatum
@@ -226,12 +225,11 @@ class Database:
         Verifica se o value não está em branco, para não adicionar entradas em
         branco no banco.
         '''
-        print '\nMETA (%s): %s' % (field, meta)
+        logger.debug('META (%s): %s', field, meta)
         meta_instances = [self.get_instance(field, value) for value in meta if value.strip()]
-        print 'INSTANCES FOUND: %s' % meta_instances
+        logger.debug('INSTANCES FOUND: %s', meta_instances)
         eval('entry.%s_set.clear()' % field)
         [eval('entry.%s_set.add(value)' % field) for value in meta_instances if meta_instances]
-        print 'INSTANCES ADDED.'
         return entry
 
     def get_itis(self, name):
@@ -675,6 +673,7 @@ class Photo:
         print u'\tGeolocalização:\t%s' % self.meta['geolocation']
         print u'\tDecimal:\t%s, %s' % (self.meta['latitude'],
                 self.meta['longitude'])
+        print
 
         return self.meta
 

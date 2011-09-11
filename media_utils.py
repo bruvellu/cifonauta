@@ -18,6 +18,7 @@ Centro de Biologia Marinha da Universidade de São Paulo.
 import logging
 import os
 import pyexiv2
+import random
 import re
 import subprocess
 

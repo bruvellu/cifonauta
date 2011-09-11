@@ -18,7 +18,6 @@ import getopt
 import logging
 import os
 import pickle
-import random
 import sys
 import subprocess
 import time

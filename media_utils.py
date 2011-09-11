@@ -35,16 +35,9 @@ __maintainer__ = 'Bruno Vellutini'
 __email__ = 'organelas@gmail.com'
 __status__ = 'Development'
 
-# dir_ready
-# get_info
 # build_call
 # process_video
 # create_meta?
-# get_exif
-# get_gps
-# get_decimal
-# resolve
-# get_date
 # process image
 # optimize
 # check_file
@@ -284,3 +277,11 @@ def get_info(video):
             'codec': codec,
             }
     return details
+
+def dir_ready(*dirs):
+    '''Verifica se diretório(s) existe(m), criando caso não exista.'''
+    for dir in dirs:
+        if os.path.isdir(dir) is False:
+            logger.debug('Criando diretório %s', dir)
+            os.mkdir(dir)
+

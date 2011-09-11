@@ -859,13 +859,6 @@ def prepare_meta(meta):
 
     return meta
 
-def dir_ready(*dirs):
-    '''Verifica se o diretório existe, criando caso não exista.'''
-    for dir in dirs:
-        if os.path.isdir(dir) is False:
-            print 'Criando diretório inexistente...'
-            os.mkdir(dir)
-
 def build_autocomplete():
     '''Cria arquivo para popular o autocomplete do Véliger.'''
     autocomplete = open('autocomplete.pkl', 'wb')

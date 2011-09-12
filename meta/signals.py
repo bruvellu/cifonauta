@@ -6,7 +6,8 @@ from django.template.defaultfilters import slugify
 from external.mendeley import mendeley
 
 # Não é signal, apenas função acessória.
-def citation_html(ref):
+#XXX Trocar de lugar, eventualmente.
+def citation_html(reference):
     '''Retorna citação formatada em HTML.
 
     Citação é gerada através do objeto que o Mendeley API retorna com os 
@@ -19,22 +20,22 @@ def citation_html(ref):
     for key in keys:
         # Verifica se doi existe e inclui na citação.
         if key == 'doi':
-            if 'identifiers' in ref:
-                if 'doi' in ref['identifiers']:
-                    citation += u', doi:<a href="http://dx.doi.org/%s">%s</a>' % (ref['identifiers']['doi'], ref['identifiers']['doi'])
+            if 'identifiers' in reference:
+                if 'doi' in reference['identifiers']:
+                    citation += u', doi:<a href="http://dx.doi.org/%s">%s</a>' % (reference['identifiers']['doi'], reference['identifiers']['doi'])
         # Verifica se pmid existe e inclui na citação.
         elif key == 'pmid':
-            if 'identifiers' in ref:
-                if 'pmid' in ref['identifiers']:
-                    citation += u', pmid:<a href="http://www.ncbi.nlm.nih.gov/pubmed/%s">%s</a>' % (ref['identifiers']['pmid'], ref['identifiers']['pmid'])
-        elif key in ref:
+            if 'identifiers' in reference:
+                if 'pmid' in reference['identifiers']:
+                    citation += u', pmid:<a href="http://www.ncbi.nlm.nih.gov/pubmed/%s">%s</a>' % (reference['identifiers']['pmid'], reference['identifiers']['pmid'])
+        elif key in reference:
             # Ano.
             if key == 'year':
-                citation += u'<strong>%s</strong> ' % ref['year']
+                citation += u'<strong>%s</strong> ' % reference['year']
             # Autores.
             elif key == 'authors':
                 authors = []
-                for author in ref['authors']:
+                for author in reference['authors']:
                     forenames = author['forename'].split()
                     initials = [name[:1] for name in forenames]
                     initials = ''.join(initials)
@@ -44,19 +45,19 @@ def citation_html(ref):
                 citation += u'%s.' % authors
             # Título.
             elif key == 'title':
-                citation += u' <strong>%s</strong>.' % ref['title']
+                citation += u' <strong>%s</strong>.' % reference['title']
             # Revista.
             elif key == 'publication_outlet':
-                citation += u' %s' % ref['publication_outlet']
+                citation += u' %s' % reference['publication_outlet']
             elif key == 'volume':
-                citation += u', %s' % ref['volume']
+                citation += u', %s' % reference['volume']
             elif key == 'issue':
-                citation += u'(%s)' % ref['issue']
+                citation += u'(%s)' % reference['issue']
             elif key == 'pages':
-                citation += u': %s' % ref['pages']
+                citation += u': %s' % reference['pages']
             elif key == 'url':
                 # Lidar com múltiplos urls por citação.
-                first_url = ref['url'].split('\n')[0]
+                first_url = reference['url'].split('\n')[0]
                 citation += u', url:<a href="%s">%s</a>' % (first_url, 
                         first_url)
     return citation
@@ -101,9 +102,9 @@ def citation_pre_save(signal, instance, sender, **kwargs):
             "subdiscipline":"Embryology"}
             }
     '''
-    ref_id = instance.name
-    ref = mendeley.document_details(ref_id)
-    citation = citation_html(ref)
+    reference_id = instance.name
+    reference = mendeley.document_details(reference_id)
+    citation = citation_html(reference)
     instance.citation = citation
 
 def slug_pre_save(signal, instance, sender, **kwargs):

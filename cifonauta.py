@@ -771,29 +771,6 @@ class Folder:
 
 # Funções principais
 
-def optimize(filepath, extension, all=False):
-    '''Otimiza as imagens para o site.
-
-    Utiliza o "jpegoptim" para otimizar JPGs e o "optipng" para PNGs.
-
-    Os JPGs aceitam a opção de retirar todos os metadados, ou apenas parte.
-    '''
-    print 'Otimizando...'
-    #TODO Checar se programas estão instalados.
-    #TODO Checar se permissões estão certas e o que fazer se der erro.
-    if extension == 'png':
-        call = ['optipng', '-o7', '-fix', filepath]
-    elif extension == 'jpg':
-        if all:
-            call = ['jpegoptim', '--strip-all', filepath]
-        else:
-            call = ['jpegoptim', '--strip-icc', filepath]
-    try:
-        subprocess.call(call)
-        return True
-    except:
-        print 'ERRO', call[0], call[-1]
-
 def prepare_meta(meta):
     '''Processa as strings dos metadados convertendo para bd.
 

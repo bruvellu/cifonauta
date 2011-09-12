@@ -40,13 +40,10 @@ __author__ = 'Bruno Vellutini'
 __copyright__ = 'Copyright 2010-2011, CEBIMar-USP'
 __credits__ = 'Bruno C. Vellutini'
 __license__ = 'DEFINIR'
-__version__ = '0.8.6'
+__version__ = '0.9.0'
 __maintainer__ = 'Bruno Vellutini'
 __email__ = 'organelas@gmail.com'
 __status__ = 'Development'
-
-# Diretório com os arquivos
-source_dir = u'source_media'
 
 
 class Database:
@@ -872,6 +869,8 @@ def main(argv):
 
     Lê os argumentos se houver e chama as outras funções.
     '''
+    # Diretório com os arquivos
+    source_dir = u'source_media'
     n = 0
     n_new = 0
     n_up = 0

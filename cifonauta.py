@@ -749,18 +749,17 @@ class Folder:
         # Buscador de arquivos em ação
         for root, dirs, files in os.walk(self.folder_path):
             for filename in files:
-                if filename.endswith(photo_extensions) and not type == 'video' and n < self.n_max:
-                    filepath = os.path.join(root, filename)
+                filepath = fix_filename(root, filename)
+                if filepath.endswith(photo_extensions) and not type == 'video' and n < self.n_max:
                     self.files.append((filepath, 'photo'))
                     n += 1
                     continue
-                if filename.endswith(video_extensions) and not type == 'photo' and n < self.n_max:
-                    filepath = os.path.join(root, filename)
+                if filepath.endswith(video_extensions) and not type == 'photo' and n < self.n_max:
                     self.files.append((filepath, 'video'))
                     n += 1
                     continue
-                elif filename.endswith(ignore_extensions):
-                    logger.debug('Ignorando %s', filename)
+                elif filepath.endswith(ignore_extensions):
+                    logger.debug('Ignorando %s', filepath)
                     continue
             else:
                 continue

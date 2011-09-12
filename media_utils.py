@@ -22,7 +22,7 @@ import random
 import re
 import subprocess
 
-from shutil import copy2
+from shutil import copy2, move
 
 # Instancia logger.
 logger = logging.getLogger('cifonauta.utils')
@@ -320,3 +320,27 @@ def create_id():
     id = ''.join([random.choice(chars) for x in xrange(6)])
     return id
 
+def fix_filename(root, filename):
+    '''Checa validade do nome do arquivo.'''
+    # Verifica a existência de pontos extras.
+    dotcount = filename.count('.')
+    if dotcount == 0:
+        filepath = os.path.join(root, filename)
+        logger.warning('%s sem extensão!', filepath)
+    elif dotcount > 1:
+        splitname = filename.split('.')
+        extension = splitname.pop()
+        basename = ''.join(splitname)
+        fixedname = basename + '.' + extension
+        filepath = os.path.join(root, fixedname)
+        oldpath = os.path.join(root, filename)
+        try:
+            import pdb; pdb.set_trace()
+            move(oldpath, filepath)
+            logger.debug('Corrigido: %s >> %s', filename, fixedname)
+        except:
+            logger.warning('%s não foi corrigido!', oldpath)
+            filepath = oldpath
+    else:
+        filepath = os.path.join(root, filename)
+    return filepath

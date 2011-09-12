@@ -41,7 +41,6 @@ __status__ = 'Development'
 # create_meta?
 # process image
 # optimize
-# check_file
 # rename_file
 # get_initials
 # create_id
@@ -335,7 +334,6 @@ def fix_filename(root, filename):
         filepath = os.path.join(root, fixedname)
         oldpath = os.path.join(root, filename)
         try:
-            import pdb; pdb.set_trace()
             move(oldpath, filepath)
             logger.debug('Corrigido: %s >> %s', filename, fixedname)
         except:

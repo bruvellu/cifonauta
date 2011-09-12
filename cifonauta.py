@@ -977,7 +977,6 @@ def main(argv):
             if not force_update and query == 2:
                 # Se registro existir e timestamp for igual
                 logger.info('REGISTRO ATUALIZADO NO SITE! PRÓXIMO...')
-                print
                 pass
             else:
                 # Se arquivo do site não estiver atualizada

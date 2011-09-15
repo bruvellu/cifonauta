@@ -3,6 +3,18 @@
 {% get_current_language as LANGUAGE_CODE %}
 
 {% cache 3600 social LANGUAGE_CODE linear %}
+<!-- Twitter -->
+{% comment %}<script defer src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>{% endcomment %}
+
+<a href="http://twitter.com/share" class="twitter-share-button" data-count="{% if linear == 'True' %}horizontal{% else %}vertical{% endif %}">{% trans 'Tweet' %}</a>
+<script id="deferedjs" type="text/javascript">
+    var b = document.createElement('script');
+    b.type = 'text/javascript';
+    b.src = ('http://platform.twitter.com/widgets.js');
+    var a=document.getElementById("deferedjs");
+    a.parentNode.insertBefore(b,a);
+</script>
+
 <!-- Google Plus -->
 <div class="g-plusone" data-size="{% if linear == 'True' %}medium{% else %}tall{% endif %}" data-count="true"></div>
 <script type="text/javascript">
@@ -17,18 +29,6 @@
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(po, s);
     })();
-</script>
-
-<!-- Twitter -->
-{% comment %}<script defer src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>{% endcomment %}
-
-<a href="http://twitter.com/share" class="twitter-share-button" data-count="{% if linear == 'True' %}horizontal{% else %}vertical{% endif %}">{% trans 'Tweet' %}</a>
-<script id="deferedjs" type="text/javascript">
-    var b = document.createElement('script');
-    b.type = 'text/javascript';
-    b.src = ('http://platform.twitter.com/widgets.js');
-    var a=document.getElementById("deferedjs");
-    a.parentNode.insertBefore(b,a);
 </script>
 
 <!-- Facebook -->

@@ -1,7 +1,10 @@
 {% load i18n %}
+{% load cache %}
+{% get_current_language as LANGUAGE_CODE %}
 
+{% cache 3600 social LANGUAGE_CODE linear %}
 <!-- Google Plus -->
-<div class="g-plusone" data-size="{% if linear %}medium{% else %}tall{% endif %}" data-count="true"></div>
+<div class="g-plusone" data-size="{% if linear == 'True' %}medium{% else %}tall{% endif %}" data-count="true"></div>
 <script type="text/javascript">
     window.___gcfg = {
         lang: '{{ LANGUAGE_CODE }}'
@@ -17,10 +20,9 @@
 </script>
 
 <!-- Twitter -->
-{% comment %}<script defer src="http://platform.twitter.com/widgets.js"
-    type="text/javascript"></script>{% endcomment %}
+{% comment %}<script defer src="http://platform.twitter.com/widgets.js" type="text/javascript"></script>{% endcomment %}
 
-<a href="http://twitter.com/share" class="twitter-share-button" data-count="{% if linear %}horizontal{% else %}vertical{% endif %}">{% trans 'Tweet' %}</a>
+<a href="http://twitter.com/share" class="twitter-share-button" data-count="{% if linear == 'True' %}horizontal{% else %}vertical{% endif %}">{% trans 'Tweet' %}</a>
 <script id="deferedjs" type="text/javascript">
     var b = document.createElement('script');
     b.type = 'text/javascript';
@@ -30,18 +32,17 @@
 </script>
 
 <!-- Facebook -->
-{% if linear %}
+{% if linear == 'True' %}
 <iframe src="http://www.facebook.com/plugins/like.php?href&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;locale={% if LANGUAGE_CODE == 'pt-br' %}pt_BR{% else %}en_US{% endif %}" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:21px;" allowTransparency="true"></iframe>
 {% else %}
-<iframe src="http://www.facebook.com/plugins/like.php?href&amp;send=false&amp;layout={% if linear %}button_count{% else %}box_count{% endif %}&amp;width=60&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=62&amp;locale={% if LANGUAGE_CODE == 'pt-br' %}pt_BR{% else %}en_US{% endif %}" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:60px; height:62px;" allowTransparency="true"></iframe>
+<iframe src="http://www.facebook.com/plugins/like.php?href&amp;send=false&amp;layout={% if linear == 'True' %}button_count{% else %}box_count{% endif %}&amp;width=60&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=62&amp;locale={% if LANGUAGE_CODE == 'pt-br' %}pt_BR{% else %}en_US{% endif %}" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:60px; height:62px;" allowTransparency="true"></iframe>
 {% endif %}
 
-{% if not linear %}<br>{% endif %}
+{% if not linear == 'True' %}<br>{% endif %}
 
 <!-- Add2Any -->
 <a class="share-this a2a_target" href="http://www.addtoany.com/share_save">
-    <img src="http://static.addtoany.com/buttons/share_save_171_16.png"
-    border="0" alt="{% trans 'Share' %}"/>
+    <img src="http://static.addtoany.com/buttons/share_save_171_16.png" border="0" alt="{% trans 'Share' %}"/>
 </a>
 
 <script type="text/javascript">
@@ -75,3 +76,5 @@ a2a_config.tracking_callback = {
 {% if media.datatype == 'video' %}
 <p><label class="quiet">embed:</label> <input id="embed-code" type="text" size="28" value='<iframe class="cifonauta-player" scrolling="no" type="text/html" width="512" height="{{ height }}" src="http://{{ request.get_host }}/embed/{{ media.id }}/" frameborder="0"></iframe>' onclick="this.focus(); this.select();"></p>
 {% endif %}
+
+{% endcache %}

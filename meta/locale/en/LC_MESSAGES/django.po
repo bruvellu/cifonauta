@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-12 11:05-0300\n"
+"POT-Creation-Date: 2011-09-15 19:33-0300\n"
 "PO-Revision-Date: 2011-08-12 09:56\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,13 +24,13 @@ msgstr "marine biology"
 
 #: feeds.py:15 feeds.py:89 feeds.py:175 models.py:86 models.py:121
 #: models.py:154 models.py:188 models.py:247 models.py:454 models.py:496
-#: templates/base.html:93 templates/stats.html:2
+#: templates/base.html:96 templates/stats.html:5
 msgid "fotos"
 msgstr "photos"
 
 #: feeds.py:15 feeds.py:89 feeds.py:175 models.py:114 models.py:123
 #: models.py:156 models.py:190 models.py:249 models.py:456 models.py:498
-#: templates/base.html:97 templates/stats.html:2
+#: templates/base.html:99 templates/stats.html:5
 msgid "vídeos"
 msgstr "videos"
 
@@ -38,19 +38,19 @@ msgstr "videos"
 msgid "biologia"
 msgstr "biology"
 
-#: feeds.py:18 feeds.py:92 feeds.py:178 templates/base.html:180
+#: feeds.py:18 feeds.py:92 feeds.py:178 templates/base.html:183
 msgid "Centro de Biologia Marinha da Universidade de São Paulo"
 msgstr "Marine Biology Center of University of São Paulo"
 
-#: feeds.py:25 templates/base.html:49 templates/main_page.html:41
+#: feeds.py:25 templates/base.html:50 templates/main_page.html:41
 msgid "Cifonauta: últimas fotos e vídeos"
 msgstr "Cifonauta: latest photos and videos"
 
-#: feeds.py:27 templates/base.html:50
+#: feeds.py:27 templates/base.html:51
 msgid "Cifonauta: últimas fotos"
 msgstr "Cifonauta: latest photos"
 
-#: feeds.py:29 templates/base.html:51
+#: feeds.py:29 templates/base.html:52
 msgid "Cifonauta: últimos vídeos"
 msgstr "Cifonauta: latest videos"
 
@@ -109,7 +109,7 @@ msgstr "Latest tours from Cifonauta image database."
 msgid "Autor"
 msgstr "Author"
 
-#: forms.py:11 templates/media_page.html:91 templates/tour_page.html:55
+#: forms.py:11 templates/media_page.html:96 templates/tour_page.html:55
 #: templates/feeds/media_post.html:30
 msgid "Táxon"
 msgstr "Taxon"
@@ -119,7 +119,7 @@ msgstr "Taxon"
 msgid "Tamanho"
 msgstr "Size"
 
-#: forms.py:13 templates/mais.html:27 templates/media_page.html:108
+#: forms.py:13 templates/mais.html:31 templates/media_page.html:113
 #: templates/tour_page.html:66 templates/feeds/media_post.html:46
 msgid "Local"
 msgstr "Place"
@@ -180,8 +180,8 @@ msgstr "(type one or more terms)"
 msgid "Navegando por"
 msgstr "Browsing by"
 
-#: forms.py:63 templates/buscar.html:29 templates/buscar.html.py:32
-#: templates/buscar.html:34
+#: forms.py:63 templates/buscar.html:24 templates/buscar.html.py:27
+#: templates/buscar.html:29
 msgid "Exibir"
 msgstr "Show"
 
@@ -525,7 +525,7 @@ msgstr "Number of videos linked to this author."
 msgid "autor"
 msgstr "author"
 
-#: models.py:146 templates/base.html:117
+#: models.py:146 templates/base.html:114
 msgid "autores"
 msgstr "authors"
 
@@ -613,7 +613,7 @@ msgstr "Number of videos linked to this tag."
 msgid "marcador"
 msgstr "tag"
 
-#: models.py:215 templates/base.html:109 templates/stats.html:2
+#: models.py:215 templates/base.html:108 templates/stats.html:5
 msgid "marcadores"
 msgstr "tags"
 
@@ -766,7 +766,7 @@ msgstr "Number of photos linked to this place."
 msgid "Número de vídeos associados à esta localidade."
 msgstr "Number of videos linked to this place."
 
-#: models.py:355 templates/stats.html:2
+#: models.py:355 templates/stats.html:5
 msgid "locais"
 msgstr "places"
 
@@ -866,7 +866,7 @@ msgstr "Number of videos linked to this reference."
 msgid "referência"
 msgstr "reference"
 
-#: models.py:481 models.py:500 templates/base.html:120
+#: models.py:481 models.py:500 templates/base.html:117
 msgid "referências"
 msgstr "references"
 
@@ -922,7 +922,7 @@ msgstr "Number of videos linked to this tour."
 msgid "tour"
 msgstr "tour"
 
-#: models.py:524 templates/base.html:101
+#: models.py:524 templates/base.html:102
 msgid "tours"
 msgstr "tours"
 
@@ -935,8 +935,8 @@ msgid "Página não encontrada"
 msgstr "Page not found"
 
 #: templates/authors_page.html:3 templates/authors_page.html.py:9
-#: templates/authors_page.html:21 templates/base.html:220
-#: templates/mais.html:12
+#: templates/authors_page.html:21 templates/base.html:223
+#: templates/mais.html:16
 msgid "Autores"
 msgstr "Authors"
 
@@ -948,9 +948,9 @@ msgstr "authors, biodiversity, marine biology"
 msgid "Autores incluídos no banco de imagens Cifonauta."
 msgstr "Authors included in the Cifonauta image database."
 
-#: templates/authors_page.html:12 templates/base.html:16
+#: templates/authors_page.html:12 templates/base.html:17
 #: templates/buscar.html:15 templates/embed.html:5 templates/main_page.html:10
-#: templates/main_page.html.py:15 templates/media_page.html:14
+#: templates/main_page.html.py:15 templates/media_page.html:17
 #: templates/meta_page.html:17 templates/organizacao.html:15
 #: templates/places_page.html:15 templates/refs_page.html:12
 #: templates/tags_page.html:17 templates/taxa_page.html:13
@@ -975,35 +975,35 @@ msgstr "Experts"
 msgid "Pessoa que coletou ou identificou o organismo."
 msgstr "Person who collected or identified the organism."
 
-#: templates/base.html:113
+#: templates/base.html:111
 msgid "localidades"
 msgstr "places"
 
-#: templates/base.html:125
+#: templates/base.html:122
 msgid "home"
 msgstr "home"
 
-#: templates/base.html:128
+#: templates/base.html:125
 msgid "sobre"
 msgstr "about"
 
-#: templates/base.html:137
+#: templates/base.html:134
 msgid "blog"
 msgstr "blog"
 
-#: templates/base.html:151
+#: templates/base.html:150
 msgid "banco de imagens de biologia marinha"
 msgstr "marine biology image database"
 
-#: templates/base.html:185
+#: templates/base.html:188
 msgid "Licença de uso"
 msgstr "Content license"
 
-#: templates/base.html:186
+#: templates/base.html:189
 msgid "Licença Creative Commons"
 msgstr "Creative Commons License"
 
-#: templates/base.html:186
+#: templates/base.html:189
 msgid ""
 "O conteúdo deste website está sob uma licença Creative Commons Atribuição-"
 "Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional"
@@ -1011,113 +1011,113 @@ msgstr ""
 "The content of this website is licensed under a Creative Commons Attribution-"
 "NonCommercial-ShareAlike 3.0 Unported License"
 
-#: templates/base.html:189
+#: templates/base.html:192
 msgid "Apoio"
 msgstr "Support"
 
-#: templates/base.html:189
+#: templates/base.html:192
 msgid "CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico"
 msgstr "CNPq - National Council for Scientific and Technological Development"
 
-#: templates/base.html:194
+#: templates/base.html:197
 msgid "Informações básicas"
 msgstr "Basic information"
 
-#: templates/base.html:196 templates/sobremenu.html:5
+#: templates/base.html:199 templates/sobremenu.html:5
 msgid "Sobre"
 msgstr "About"
 
-#: templates/base.html:197 templates/sobremenu.html:6
+#: templates/base.html:200 templates/sobremenu.html:6
 msgid "Conteúdo"
 msgstr "Content"
 
-#: templates/base.html:198 templates/sobremenu.html:8
+#: templates/base.html:201 templates/sobremenu.html:8
 msgid "Organização"
 msgstr "Organization"
 
-#: templates/base.html:199 templates/sobremenu.html:7
+#: templates/base.html:202 templates/sobremenu.html:7
 msgid "Créditos e apoio"
 msgstr "Credits and support"
 
-#: templates/base.html:200
+#: templates/base.html:203
 msgid "Termos de uso e direitos"
 msgstr "Terms of use and rights"
 
-#: templates/base.html:206
+#: templates/base.html:209
 msgid "Explorar"
 msgstr "Explore"
 
-#: templates/base.html:208 templates/buscar.html:3 templates/buscar.html.py:11
+#: templates/base.html:211 templates/buscar.html:3 templates/buscar.html.py:11
 msgid "Buscador"
 msgstr "Search"
 
-#: templates/base.html:209 templates/main_page.html:69
+#: templates/base.html:212 templates/main_page.html:69
 #: templates/tours_page.html:3 templates/tours_page.html.py:10
 #: templates/tours_page.html:19
 msgid "Tours"
 msgstr "Tours"
 
-#: templates/base.html:210 templates/main_page.html:45
+#: templates/base.html:213 templates/main_page.html:45
 msgid "Fotos"
 msgstr "Photos"
 
-#: templates/base.html:211 templates/main_page.html:57
+#: templates/base.html:214 templates/main_page.html:57
 msgid "Vídeos"
 msgstr "Videos"
 
-#: templates/base.html:215
+#: templates/base.html:218
 msgid "Metadados"
 msgstr "Metadata"
 
-#: templates/base.html:217 templates/mais.html:7 templates/tags_page.html:6
+#: templates/base.html:220 templates/mais.html:11 templates/tags_page.html:6
 #: templates/tags_page.html.py:14 templates/tags_page.html:22
 #: templates/feeds/media_post.html:5
 msgid "Marcadores"
 msgstr "Tags"
 
-#: templates/base.html:218 templates/mais.html:17
+#: templates/base.html:221 templates/mais.html:21
 #: templates/organizacao.html:25 templates/taxa_page.html:3
 #: templates/taxa_page.html.py:10 templates/taxa_page.html:19
 msgid "Táxons"
 msgstr "Taxa"
 
-#: templates/base.html:219 templates/places_page.html:6
+#: templates/base.html:222 templates/places_page.html:6
 #: templates/places_page.html.py:12 templates/places_page.html:20
 msgid "Localidades"
 msgstr "Places"
 
 #. Translators: list of references rendered on a page
-#: templates/base.html:221 templates/refs_page.html:3
+#: templates/base.html:224 templates/refs_page.html:3
 #: templates/refs_page.html.py:9 templates/refs_page.html:17
 #: templates/tour_page.html:140
 msgid "Referências"
 msgstr "References"
 
-#: templates/base.html:225
+#: templates/base.html:228
 msgid "Novidades"
 msgstr "News"
 
-#: templates/base.html:227
+#: templates/base.html:230
 msgid "Blog"
 msgstr "Blog"
 
-#: templates/base.html:233 templates/sobremenu.html:19
+#: templates/base.html:236 templates/sobremenu.html:19
 msgid "Desenvolvimento"
 msgstr "Development"
 
-#: templates/base.html:235 templates/sobremenu.html:20
+#: templates/base.html:238 templates/sobremenu.html:20
 msgid "Detalhes técnicos"
 msgstr "Technical details"
 
-#: templates/base.html:236
+#: templates/base.html:239
 msgid "Atualizações"
 msgstr "Updates"
 
-#: templates/base.html:237 templates/sobremenu.html:18
+#: templates/base.html:240 templates/sobremenu.html:18
 msgid "Idéias planejadas"
 msgstr "Planned features"
 
-#: templates/base.html:238 templates/sobremenu.html:26
+#: templates/base.html:241 templates/sobremenu.html:26
 msgid "Feedback"
 msgstr "Feedback"
 
@@ -1125,49 +1125,50 @@ msgstr "Feedback"
 msgid "Buscador do banco de imagens Cifonauta."
 msgstr "Cifonauta image database search engine."
 
-#: templates/buscar.html:29
+#: templates/buscar.html:24
 msgid "Mostrando apenas <strong>fotos</strong>."
 msgstr "Displaying only <strong>photos</strong>."
 
-#: templates/buscar.html:29 templates/buscar.html.py:32
+#: templates/buscar.html:24 templates/buscar.html.py:27
 msgid "fotos e vídeos"
 msgstr "photos and videos"
 
-#: templates/buscar.html:29 templates/buscar.html.py:32
-#: templates/buscar.html:34
+#: templates/buscar.html:24 templates/buscar.html.py:27
+#: templates/buscar.html:29
 msgid "ou"
 msgstr "or"
 
-#: templates/buscar.html:29 templates/buscar.html.py:34
+#: templates/buscar.html:24 templates/buscar.html.py:29
 msgid "apenas vídeos"
 msgstr "only videos"
 
-#: templates/buscar.html:32
+#: templates/buscar.html:27
 msgid "Mostrando apenas <strong>vídeos</strong>."
 msgstr "Displaying only <strong>videos</strong>."
 
-#: templates/buscar.html:32 templates/buscar.html.py:34
+#: templates/buscar.html:27 templates/buscar.html.py:29
 msgid "apenas fotos"
 msgstr "only photos"
 
-#: templates/buscar.html:34
+#: templates/buscar.html:29
 msgid "Mostrando <strong>fotos</strong> e <strong>vídeos</strong>."
 msgstr "Displaying <strong>photos</strong> and <strong>videos</strong>."
 
-#: templates/buscar.html:38
+#: templates/buscar.html:33
 msgid "Desmarque <strong>somente destaques</strong> para ver tudo."
 msgstr "Uncheck <strong>highlights only</strong> to see all."
 
-#: templates/buscar.html:40
+#: templates/buscar.html:35
 msgid "Limpar"
 msgstr "Clear"
 
-#: templates/buscar.html:56
+#: templates/buscar.html:51
 msgid "Atualizar"
 msgstr "Update"
 
-#: templates/buscar.html:63
-msgid "ou clique para mostrar tudo"
+#: templates/buscar.html:58
+#, fuzzy
+msgid "clique aqui para ver tudo"
 msgstr "or click to show everything"
 
 #: templates/disqus.html:16
@@ -1190,19 +1191,19 @@ msgstr "Video playback not available"
 msgid "Tem algo muito errado no seu navegador..."
 msgstr "Something is very wrong with your browser..."
 
-#: templates/gallery.html:10
+#: templates/gallery.html:17
 msgid "Foto"
 msgstr "Photo"
 
-#: templates/gallery.html:10
+#: templates/gallery.html:17
 msgid "Cifonauta: apenas fotos"
 msgstr "Cifonauta: only photos"
 
-#: templates/gallery.html:36
+#: templates/gallery.html:43
 msgid "Vídeo"
 msgstr "Video"
 
-#: templates/gallery.html:36
+#: templates/gallery.html:43
 msgid "Cifonauta: apenas vídeos"
 msgstr "Cifonauta: only videos"
 
@@ -1286,11 +1287,11 @@ msgstr "Highlights"
 msgid "Navegue por táxons"
 msgstr "Browse by taxa"
 
-#: templates/mais.html:3
+#: templates/mais.html:7
 msgid "Refine sua busca"
 msgstr "Refine your query"
 
-#: templates/mais.html:4
+#: templates/mais.html:8
 msgid ""
 "Use os sinais [<span class=\"sign plus\">+</span>] e [<span class=\"sign "
 "minus\">−</span>] para refinar sua busca ou clique no nome para abrir a "
@@ -1299,61 +1300,61 @@ msgstr ""
 "Use [<span class=\"sign plus\">+</span>] and [<span class=\"sign minus\">−</"
 "span>] to refine your query or click on the name to open metadata's page."
 
-#: templates/mais.html:7
+#: templates/mais.html:11
 msgid "Todos os marcadores"
 msgstr "All tags"
 
-#: templates/mais.html:7 templates/mais.html.py:12 templates/mais.html:17
+#: templates/mais.html:11 templates/mais.html.py:16 templates/mais.html:21
 msgid "ver todos"
 msgstr "see all"
 
-#: templates/mais.html:12
+#: templates/mais.html:16
 msgid "Todos os autores"
 msgstr "All authors"
 
-#: templates/mais.html:17
+#: templates/mais.html:21
 msgid "Todos os táxons"
 msgstr "All taxa"
 
-#: templates/mais.html:22 templates/tags_page.html:25
+#: templates/mais.html:26 templates/tags_page.html:25
 msgid "Tamanhos"
 msgstr "Sizes"
 
-#: templates/mais.html:32 templates/places_page.html:27
+#: templates/mais.html:36 templates/places_page.html:27
 msgid "Cidades"
 msgstr "Cities"
 
-#: templates/mais.html:37 templates/places_page.html:31
+#: templates/mais.html:41 templates/places_page.html:31
 msgid "Estados"
 msgstr "States"
 
-#: templates/mais.html:42 templates/places_page.html:36
+#: templates/mais.html:46 templates/places_page.html:36
 msgid "Países"
 msgstr "Countries"
 
-#: templates/media_page.html:5
+#: templates/media_page.html:8
 msgid "Por"
 msgstr "By"
 
-#: templates/media_page.html:62
+#: templates/media_page.html:65
 msgid "visita"
 msgstr "pageview"
 
-#: templates/media_page.html:96 templates/feeds/media_post.html:34
+#: templates/media_page.html:101 templates/feeds/media_post.html:34
 msgid "Especialista"
 msgid_plural "Especialistas"
 msgstr[0] "Expert"
 msgstr[1] "Experts"
 
-#: templates/media_page.html:102 templates/feeds/media_post.html:42
+#: templates/media_page.html:107 templates/feeds/media_post.html:42
 msgid "Data"
 msgstr "Date"
 
-#: templates/media_page.html:117 templates/feeds/media_post.html:54
+#: templates/media_page.html:122 templates/feeds/media_post.html:54
 msgid "Geolocalização"
 msgstr "Geolocation"
 
-#: templates/media_page.html:123 templates/feeds/media_post.html:59
+#: templates/media_page.html:128 templates/feeds/media_post.html:59
 #, python-format
 msgid ""
 "Banco de imagens <em>Cifonauta</em>. Disponível em: <a href=\"%(media_url)s"
@@ -1362,35 +1363,35 @@ msgstr ""
 "<em>Cifonauta</em> image database. Available at: <a href=\"%(media_url)s"
 "\">http://%(host)s%(media_url)s</a> Accessed:"
 
-#: templates/media_page.html:125
+#: templates/media_page.html:130
 msgid "Conheça os <a href=\"/termos/\">termos de uso</a>."
 msgstr "Read the <a href=\"/termos/\">terms of use</a>."
 
-#: templates/media_page.html:131
+#: templates/media_page.html:136
 msgid "Notas"
 msgstr "Notes"
 
-#: templates/media_page.html:141
+#: templates/media_page.html:146
 msgid "Classificação"
 msgstr "Classification"
 
-#: templates/media_page.html:149
+#: templates/media_page.html:154
 msgid "Referências bibliográficas"
 msgstr "References"
 
-#: templates/media_page.html:159
+#: templates/media_page.html:164
 msgid "Comentários"
 msgstr "Comments"
 
-#: templates/media_page.html:160
+#: templates/media_page.html:165
 msgid "Clique para abrir."
 msgstr "Click to open"
 
-#: templates/media_page.html:164
+#: templates/media_page.html:169
 msgid "Esta imagem não está disponível."
 msgstr "Image not available."
 
-#: templates/media_page.html:168
+#: templates/media_page.html:173
 msgid "Nenhuma imagem encontrada."
 msgstr "No image found."
 
@@ -1645,11 +1646,11 @@ msgstr "See more"
 msgid "Contato"
 msgstr "Content"
 
-#: templates/social.html:24
+#: templates/social.html:26
 msgid "Tweet"
 msgstr ""
 
-#: templates/social.html:45
+#: templates/social.html:46
 msgid "Share"
 msgstr ""
 
@@ -1661,7 +1662,7 @@ msgstr "Species"
 msgid "Nenhuma espécie no banco"
 msgstr "No species in the database"
 
-#: templates/stats.html:2
+#: templates/stats.html:5
 msgid "espécies"
 msgstr "species"
 
@@ -1771,7 +1772,7 @@ msgstr "Creation"
 msgid "Modificado"
 msgstr "Modified"
 
-#: templates/tree.html:4
+#: templates/tree.html:8
 msgid "Grupos"
 msgstr "Groups"
 

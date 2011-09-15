@@ -161,7 +161,14 @@
 
         <div id="comments" class="span-16 last">
             <h2>{% trans 'Comentários' %}</h2>
+            {% include 'disqus.html' %}
+            {% comment %}
+            Ajax usado para carregar comentários está sendo interceptado pelo 
+            cache... Assim o cache é carregado na div onde deveria ser 
+            carregado o Disqus. Deixei o Disqus carregando direto, espero que 
+            não fique muito bagunçado a àrea.
             <p>{% trans 'Clique para abrir.' %}</p>
+            {% endcomment %}
         </div>
 
         {% else %}

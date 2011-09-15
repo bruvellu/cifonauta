@@ -537,9 +537,11 @@ def photo_page(request, image_id):
     # Este era o comando antigo para atualizar, só pra lembrar.
     #Image.objects.filter(id=image_id).update(view_count=F('view_count') + 1)
     #TODO Checar sessão para evitar overdose de views
+    #stats = Stats.objects.get(image=image)
     stats = image.stats
     stats.pageviews = stats.pageviews + 1
     stats.save()
+    #Stats.objects.get(image=image).update(pageviews=F('pageviews') + 1)
     pageviews = stats.pageviews
     tags = image.tag_set.all()
     authors = image.author_set.all()

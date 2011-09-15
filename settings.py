@@ -25,17 +25,24 @@ DATABASES = {
 
 CACHES = {
         'default': {
+            #'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
             'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
             'LOCATION': '127.0.0.1:11211',
+            'TIMEOUT': 600,
+            'OPTIONS': {
+                'MAX_ENTRIES': 1000,
+                }
             },
         'johnny': {
             'BACKEND': 'johnny.backends.memcached.MemcachedCache',
             'LOCATION': '127.0.0.1:11211',
             'JOHNNY_CACHE': True,
+            #'JOHNNY_CACHE': False,
             }
         }
 
 JOHNNY_MIDDLEWARE_KEY_PREFIX = 'jc_cifo'
+#DISABLE_QUERYSET_CACHE = True
 
 CACHE_MIDDLEWARE_ALIAS = 'default'
 CACHE_MIDDLEWARE_SECONDS = 600

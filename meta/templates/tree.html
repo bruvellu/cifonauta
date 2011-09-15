@@ -1,11 +1,15 @@
 {% load mptt_tags %}
 {% load i18n %}
+{% load cache %}
 
+{% get_current_language as LANGUAGE_CODE %}
+
+{% cache 3600 tree LANGUAGE_CODE current %}
 <h2>{% trans 'Grupos' %}</h2>
 <ul class="root tree" id="colaptree">
     {% recursetree taxa %}
     {% if node.rank %}
-        {% comment %}Necessário para espécies sem hierarquia{% endcomment %}
+    <!-- Necessário para espécies sem hierarquia -->
         {% if node.parent or node.rank == 'Reino' or node.rank == 'Kingdom' %}
         <li class="{{ node.rank|slugify }} {{ node.slug }} {% if node in current %}open{% endif %}">
             <span class="quiet">{{ node.rank }}</span> <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{{ node|sp_em }}</a>
@@ -19,3 +23,4 @@
     {% endif %}
     {% endrecursetree %}
 </ul>
+{% endcache %}

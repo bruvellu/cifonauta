@@ -97,11 +97,4 @@ urlpatterns = patterns('',
         # Site media
         (r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
             {'document_root': site_media}),
-
-    # Example:
-    # (r'^weblarvae/', include('weblarvae.foo.urls')),
-
-    # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
-    # to INSTALLED_APPS to enable admin documentation:
-    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 )

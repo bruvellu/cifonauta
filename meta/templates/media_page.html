@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load cache %}
+{% get_current_language as LANGUAGE_CODE %}
+
 {% block title %}{{ media.title }} | {{ block.super }}{% endblock %}
 {% block meta-keywords %}{% show_set tags '' '' ', ' '' %}, {% show_set authors '' '' ', ' '' %}, {% show_set taxa '' '' ', ' '' %}, {% show_set sources '' '' ', ' '' %}, {{ media.sublocation.name }}, {{ media.city.name }}, {{ media.state.name }}, {{ media.country.slug }}{% endblock %}
 {% block meta-description %}{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %} {% trans 'Por' %} {% show_set authors '' '' ', ' '' %}.{% endblock %}
@@ -66,6 +69,7 @@
             {% endif %}
 
             {% if media.size.name %}
+            {% cache 3600 scale_bar LANGUAGE_CODE media.size.slug %}
             {% spaceless %}
             <div class="span-2 last border-top" id="size">
                 <div class="size-{{ media.size.slug }}" id="size-string" title="Tamanho do organismo: {{ media.size }}">
@@ -80,6 +84,7 @@
                 </div>
             </div>
             {% endspaceless %}
+            {% endcache %}
             {% endif %}
 
         </div>
@@ -170,7 +175,6 @@
 {% endblock %}
 {% block sidebar %}
 <aside class="main span-8 last">
-
 
 <div class="align-center borders block shadow" id="social">
     {% include 'social.html' with linear='False' %}

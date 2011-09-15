@@ -539,8 +539,8 @@ def photo_page(request, image_id):
     #TODO Checar sessão para evitar overdose de views
     #stats = Stats.objects.get(image=image)
     stats = image.stats
-    stats.pageviews = stats.pageviews + 1
-    stats.save()
+    #stats.pageviews = stats.pageviews + 1
+    #stats.save()
     #Stats.objects.get(image=image).update(pageviews=F('pageviews') + 1)
     pageviews = stats.pageviews
     tags = image.tag_set.all()
@@ -654,8 +654,8 @@ def video_page(request, video_id):
 
     #TODO Checar sessão para evitar overdose de views
     stats = video.stats
-    stats.pageviews = stats.pageviews + 1
-    stats.save()
+    #stats.pageviews = stats.pageviews + 1
+    #stats.save()
     pageviews = stats.pageviews
     tags = video.tag_set.all()
     authors = video.author_set.all()
@@ -689,8 +689,8 @@ def embed_page(request, video_id):
     '''Página para embed dos vídeos.'''
     video = get_object_or_404(Video, id=video_id)
     stats = video.stats
-    stats.pageviews = stats.pageviews + 1
-    stats.save()
+    #stats.pageviews = stats.pageviews + 1
+    #stats.save()
     variables = RequestContext(request, {
         'media': video,
         })
@@ -756,8 +756,8 @@ def tour_page(request, slug):
 
     # Atualiza contador de visualizações.
     stats = tour.stats
-    stats.pageviews = stats.pageviews + 1
-    stats.save()
+    #stats.pageviews = stats.pageviews + 1
+    #stats.save()
     pageviews = stats.pageviews
     variables = RequestContext(request, {
         'tour': tour,

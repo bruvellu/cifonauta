@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from django.conf.urls.defaults import *
+from django.views.decorators.cache import cache_page
 from meta.views import *
 from meta.feeds import *
 from meta.models import *

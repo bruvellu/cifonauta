@@ -22,6 +22,9 @@ $(document).ready(function(){
     $('#comments p').click(load_disqus);
 
     // Esconde avisos.
+    $("#colaptree").delay(700).fadeIn('slow');
+
+    // Esconde avisos.
     $(".success, .notice, .error").delay(10000).fadeOut('slow');
 
     // Trigger do seletor de línguas.

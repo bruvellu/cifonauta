@@ -1401,6 +1401,10 @@ aside.photo {
 ul.tree, ol.tree {
 }
 
+#colaptree {
+    display:none;
+}
+
 /* META PAGE */
 #metafield {
 }

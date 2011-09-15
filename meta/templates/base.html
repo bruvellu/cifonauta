@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load cache %}
 {% get_current_language as LANGUAGE_CODE %}
 <!doctype html>
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
@@ -56,7 +57,9 @@
     <body>
         <div class="container prepend-1 append-1">
             <nav class="main span-24 last">
+                {% cache 3600 feedback %}
                 <div id="feedback"><a href="/feedback/">feedback</a></div>
+                {% endcache %}
                 {% if user.is_authenticated %}
                 <span id="admin">
                     <ul>
@@ -86,6 +89,7 @@
                 </div>
 
                 {% with fullpath=request.get_full_path %}
+                {% cache 3600 menu LANGUAGE_CODE fullpath %}
                 <ul class="menu" id="media">
                     <li>
                     <a {% if fullpath == '/search/?type=photo' %}class="selected"{% endif %} href="/search/?type=photo">{% trans 'fotos' %}</a>
@@ -128,9 +132,11 @@
                     <a {% if fullpath == '/blog/' %}class="selected"{% endif %}href="/blog/">{% trans 'blog' %}</a>
                     </li>
                 </ul>
+                {% endcache %}
                 {% endwith %}
             </nav>
             <header class="main span-24 last" id="mainheader">
+                {% cache 3600 logo LANGUAGE_CODE %}
                 <a href="/">
                 <hgroup class="main span-10">
                     <!-- 
@@ -142,6 +148,7 @@
                     <span id="tagline">{% trans 'banco de imagens de biologia marinha' %}</span>
                 </hgroup>
                 </a>
+                {% endcache %}
                 <div class="span-14 last" id="stats-search">
                     <div class="quiet" id="stats">
                         {% show_stats %}
@@ -157,12 +164,15 @@
                     {% endcomment %}
                 </div>
             </header>
+
             <section class="main span-24 last" id="content">
                 {% block content %}{% endblock %}
                 {% block sidebar %}{% endblock %}
             </section>
+
             <footer class="main span-24 last quiet">
 
+            {% cache 3600 footer LANGUAGE_CODE %}
             <div class="span-24 last" id="footerbase">
                 <div class="span-13">
                     <div class="span-13 last">
@@ -227,6 +237,7 @@
                     </ul>
                 </div>
             </div>
+            {% endcache %}
             </footer>
         </div>
 

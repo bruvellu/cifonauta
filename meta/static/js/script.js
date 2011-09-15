@@ -1,7 +1,7 @@
 // Load Disqus on demand.
 function load_disqus() {
     var url = $(location).attr("href");
-    $("#comments").load(url);
+    $("#comments p").load(url);
     return false;
 }
 
@@ -19,7 +19,7 @@ $(document).ready(function(){
     );
 
     // Disqus
-    $('#comments').click(load_disqus);
+    $('#comments p').click(load_disqus);
 
     // Esconde avisos.
     $(".success, .notice, .error").delay(10000).fadeOut('slow');

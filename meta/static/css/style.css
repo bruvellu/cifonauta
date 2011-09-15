@@ -1440,6 +1440,8 @@ article.post {
 /* COMMENTS */
 div#comments {
     margin:0 0 1em 0;
+}
+div#comments p {
     cursor:pointer;
 }
 

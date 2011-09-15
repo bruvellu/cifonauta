@@ -17,11 +17,14 @@ site_media = os.path.join(
         os.path.dirname(__file__), 'site_media'
         )
 
+ONE_HOUR = 60 * 60
+#24h = 60 * 60 * 24
+
 def extra(model, field):
     return {'model_name': model, 'field': field}
 
 urlpatterns = patterns('',
-        (r'^$', main_page),
+        (r'^$', cache_page(main_page, ONE_HOUR)),
         (r'^i18n/', include('django.conf.urls.i18n')),
         #(r'^comments/', include('django.contrib.comments.urls')),
         # Feeds
@@ -44,15 +47,15 @@ urlpatterns = patterns('',
         (r'^fixtaxa/$', fixtaxa_page),
         (r'^fixmedia/$', fixmedia_page),
         # Menu
-        (r'^organization/$', org_page),
+        (r'^organization/$', cache_page(org_page, ONE_HOUR)),
         (r'^search/$', search_page),
         (r'^blog/', include('articles.urls')),
-        (r'^tags/$', tags_page),
-        (r'^taxa/$', taxa_page),
-        (r'^places/$', places_page),
-        (r'^authors/$', authors_page),
-        (r'^literature/$', refs_page),
-        (r'^tours/$', tours_page),
+        (r'^tags/$', cache_page(tags_page, ONE_HOUR)),
+        (r'^taxa/$', cache_page(taxa_page, ONE_HOUR)),
+        (r'^places/$', cache_page(places_page, ONE_HOUR)),
+        (r'^authors/$', cache_page(authors_page, ONE_HOUR)),
+        (r'^literature/$', cache_page(refs_page, ONE_HOUR)),
+        (r'^tours/$', cache_page(tours_page, ONE_HOUR)),
         # Tests
         (r'^test/empty/$', empty_page),
         (r'^test/static/$', static_page),
@@ -81,12 +84,9 @@ urlpatterns = patterns('',
             extra(Reference, 'reference'), name='reference_url'),
         url(r'^tour/(?P<slug>[^\d]+)/$', tour_page, name='tour_url'),
 
-        url(r'^photo/(\d+)/$', cache_page(60 * 60)(photo_page), 
-                name='image_url'),
-        url(r'^video/(\d+)/$', cache_page(60 * 60)(video_page), 
-                name='video_url'),
-        url(r'^embed/(\d+)/$', cache_page(60 * 60)(embed_page), 
-                name='embed_url'),
+        url(r'^photo/(\d+)/$', cache_page(photo_page, ONE_HOUR), name='image_url'),
+        url(r'^video/(\d+)/$', cache_page(video_page, ONE_HOUR), name='video_url'),
+        url(r'^embed/(\d+)/$', cache_page(embed_page, ONE_HOUR), name='embed_url'),
 
         # Admin
         (r'^admin/', include(admin.site.urls)),

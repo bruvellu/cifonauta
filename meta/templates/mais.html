@@ -4,17 +4,17 @@
     <p>{% blocktrans %}Use os sinais [<span class="sign plus">+</span>] e [<span class="sign minus">−</span>] para refinar sua busca ou clique no nome para abrir a página do metadado.{% endblocktrans %}</p>
 
 {% if tags or queries.tag %}
-<h3>{% trans 'Marcadores' %} | <a href="{% url meta.views.tags_page %}" title="{% trans 'Todos os marcadores' %}">{% trans 'ver todos' %}</a></h3>
+<h3>{% trans 'Marcadores' %} | <a href="{% url tags_url %}" title="{% trans 'Todos os marcadores' %}">{% trans 'ver todos' %}</a></h3>
     {% refiner queries.tag tags 'tag' queries %}
 {% endif %}
 
 {% if authors or queries.author %}
-<h3>{% trans 'Autores' %} | <a href="{% url meta.views.authors_page %}" title="{% trans 'Todos os autores' %}">{% trans 'ver todos' %}</a></h3>
+<h3>{% trans 'Autores' %} | <a href="{% url authors_url %}" title="{% trans 'Todos os autores' %}">{% trans 'ver todos' %}</a></h3>
     {% refiner queries.author authors 'author' queries %}
 {% endif %}
 
 {% if taxa or queries.taxon %}
-<h3>{% trans 'Táxons' %} | <a href="{% url meta.views.taxa_page %}" title="{% trans 'Todos os táxons' %}">{% trans 'ver todos' %}</a></h3>
+<h3>{% trans 'Táxons' %} | <a href="{% url taxa_url %}" title="{% trans 'Todos os táxons' %}">{% trans 'ver todos' %}</a></h3>
     {% refiner queries.taxon taxa 'taxon' queries %}
 {% endif %}
 

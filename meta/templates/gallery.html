@@ -1,10 +1,17 @@
 {% load i18n %}
+{% load cache %}
+{% get_current_language as LANGUAGE_CODE %}
+
 {% block extra-head %}
 {% endblock %}
 
 {% include 'messages.html' %}
 
+{% cache 3600 gallery_photos LANGUAGE_CODE request.META.QUERY_STRING request.session %}
+
 {% if images.paginator.count %}
+
+
 <section id="photo-gallery">
 <header class="span-16 last">
 <h2 class="span-10">{% trans 'Foto' %}{{ images.paginator.count|pluralize }} ({{ images.paginator.count }}){% if field %} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/photos/" title="{% trans 'Cifonauta: apenas fotos' %} ({{ field }}={{ meta.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span>{% endif %}</h2>
@@ -52,3 +59,5 @@
 
 </section>
 {% endif %}
+
+{% endcache %}

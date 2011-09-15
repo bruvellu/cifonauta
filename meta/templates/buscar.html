@@ -16,11 +16,6 @@
 {% endblock %}
 {% block content %}
 <section class="span-16">
-{% comment %}
-<form id="search-form" method="get" action=".">
-    {{ form.query.label_tag }}<strong>:</strong> {{ form.query }} <input type="submit" value="{% trans 'Encontrar' %}" class="fashion" /> <a id="limpar" href="{% url meta.views.search_page %}">{% trans 'Limpar' %}</a>
-</form>
-{% endcomment %}
 <div id="search-results">
     {% if show_results %}
         <div id="search-status" class="quiet">
@@ -59,7 +54,8 @@
     {% show_info image_list video_list queries %}
 {% else %}
 <div id="showall">
-    <a href="/search/?type=all">{% trans 'ou clique para mostrar tudo' %}</a>
+    Use o buscador acima ou <a href="/search/?type=all">{% trans 'clique aqui para ver tudo' %}</a>.
+    <br> <br>
 </div>
 {% endif %}
 </aside>

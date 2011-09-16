@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-15 20:24-0300\n"
-"PO-Revision-Date: 2011-08-12 09:56\n"
+"POT-Creation-Date: 2011-09-16 10:39-0300\n"
+"PO-Revision-Date: 2011-09-16 10:38\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -630,9 +630,8 @@ msgid "Descrição da categoria de marcadores."
 msgstr "Tag category description."
 
 #: models.py:223
-#, fuzzy
 msgid "Define a ordem das categorias."
-msgstr "Define tag order in a queryset."
+msgstr "Define category order."
 
 #: models.py:224
 msgid "Categoria pai desta categoria de marcadores."
@@ -1167,9 +1166,12 @@ msgid "Atualizar"
 msgstr "Update"
 
 #: templates/buscar.html:58
-#, fuzzy
+msgid "Use o buscador acima ou"
+msgstr "Use the search box above or"
+
+#: templates/buscar.html:58
 msgid "clique aqui para ver tudo"
-msgstr "or click to show everything"
+msgstr "click to show all content"
 
 #: templates/disqus.html:16
 msgid ""
@@ -1619,12 +1621,10 @@ msgid "Buscar"
 msgstr "Search"
 
 #: templates/sobremenu.html:3
-#, fuzzy
 msgid "Cifonauta"
-msgstr "Cifonauta: photos"
+msgstr "Cifonauta"
 
-#: templates/sobremenu.html:11
-#, fuzzy
+#: templates/sobremenu.html:11 templates/social.html:46
 msgid "Compartilhe"
 msgstr "Share"
 
@@ -1633,22 +1633,12 @@ msgid "Termos de uso"
 msgstr "Terms of use"
 
 #: templates/sobremenu.html:16
-#, fuzzy
 msgid "Saiba mais"
 msgstr "See more"
 
 #: templates/sobremenu.html:24
-#, fuzzy
 msgid "Contato"
-msgstr "Content"
-
-#: templates/social.html:10
-msgid "Tweet"
-msgstr ""
-
-#: templates/social.html:46
-msgid "Share"
-msgstr ""
+msgstr "Contact"
 
 #: templates/splist.html:3
 msgid "Espécies"

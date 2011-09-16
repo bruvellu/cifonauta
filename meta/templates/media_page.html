@@ -62,7 +62,7 @@
 
         <div class="span-2 last border-top border-right border-bottom sideinfo" id="media-sideinfo">
             <div class="border-bottom" id="views">
-                {{ pageviews }} {% trans 'visita' %}{{ pageviews|pluralize }}
+                <span id="pageviews">{{ pageviews }}</span> {% trans 'visita' %}{{ pageviews|pluralize }}
             </div>
             {% if taxa %}
                 {% include 'biodb.html' %}
@@ -209,6 +209,9 @@
     VideoJS.setupAllWhenReady({
         returnToStart: true,
     });
+</script>
+<script type="text/javascript" charset="utf-8">
+    Dajaxice.meta.update_counter(Dajax.process, {'id': '{{ media.id }}', 'type': '{{ media.datatype }}'});
 </script>
 
 {% endblock %}

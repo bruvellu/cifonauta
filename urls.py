@@ -6,12 +6,18 @@ from meta.views import *
 from meta.feeds import *
 from meta.models import *
 
+from django.conf import settings
+
 from django import template
 template.add_to_builtins('weblarvae.meta.templatetags.extra_tags')
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
+
+# Dajaxice requirement.
+from dajaxice.core import dajaxice_autodiscover
+dajaxice_autodiscover()
 
 site_media = os.path.join(
         os.path.dirname(__file__), 'site_media'
@@ -33,6 +39,7 @@ urlpatterns = patterns('',
         (r'^$', cache_page(main_page, ONE_WEEK)),
         (r'^i18n/', include('django.conf.urls.i18n')),
         #(r'^comments/', include('django.contrib.comments.urls')),
+        (r'^%s/' % settings.DAJAXICE_MEDIA_PREFIX, include('dajaxice.urls')),
         # Feeds
         (r'^feed/latest/$', LatestMedia()),
         (r'^feed/latest/(?P<type>[^\d]+)/$', LatestMedia()),

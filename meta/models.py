@@ -539,7 +539,7 @@ class Stats(models.Model):
             except:
                 related = self.tour
         return '%s visitas (%s, id=%d)' % (self.pageviews, related, related.id)
-    
+
     class Meta:
         verbose_name = _('estatísticas')
         verbose_name_plural = _('estatísticas')

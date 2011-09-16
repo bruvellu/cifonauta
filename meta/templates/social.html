@@ -70,6 +70,7 @@ a2a_config.tracking_callback = {
 })();
 </script>
 
+{% endcache %}
 
 <!-- Video embed code -->
 
@@ -77,4 +78,3 @@ a2a_config.tracking_callback = {
 <p><label class="quiet">embed:</label> <input id="embed-code" type="text" size="28" value='<iframe class="cifonauta-player" scrolling="no" type="text/html" width="512" height="{{ height }}" src="http://{{ request.get_host }}/embed/{{ media.id }}/" frameborder="0"></iframe>' onclick="this.focus(); this.select();"></p>
 {% endif %}
 
-{% endcache %}

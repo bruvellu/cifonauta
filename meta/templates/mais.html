@@ -2,7 +2,7 @@
 {% load cache %}
 {% get_current_language as LANGUAGE_CODE %}
 
-{% cache 3600 refinement LANGUAGE_CODE authors taxa sizes sublocations cities states countries tags queries %}
+{% cache 604800 refinement LANGUAGE_CODE authors taxa sizes sublocations cities states countries tags queries %}
 <div class="block shadow">
     <h2>{% trans 'Refine sua busca' %}</h2>
     <p>{% blocktrans %}Use os sinais [<span class="sign plus">+</span>] e [<span class="sign minus">−</span>] para refinar sua busca ou clique no nome para abrir a página do metadado.{% endblocktrans %}</p>

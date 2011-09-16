@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-15 19:33-0300\n"
+"POT-Creation-Date: 2011-09-15 20:24-0300\n"
 "PO-Revision-Date: 2011-08-12 09:56\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1383,15 +1383,11 @@ msgstr "References"
 msgid "Comentários"
 msgstr "Comments"
 
-#: templates/media_page.html:165
-msgid "Clique para abrir."
-msgstr "Click to open"
-
-#: templates/media_page.html:169
+#: templates/media_page.html:177
 msgid "Esta imagem não está disponível."
 msgstr "Image not available."
 
-#: templates/media_page.html:173
+#: templates/media_page.html:181
 msgid "Nenhuma imagem encontrada."
 msgstr "No image found."
 
@@ -1646,7 +1642,7 @@ msgstr "See more"
 msgid "Contato"
 msgstr "Content"
 
-#: templates/social.html:26
+#: templates/social.html:10
 msgid "Tweet"
 msgstr ""
 
@@ -1793,6 +1789,9 @@ msgid ""
 msgstr ""
 "Visit the tour <a href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</"
 "a>."
+
+#~ msgid "Clique para abrir."
+#~ msgstr "Click to open"
 
 #~ msgid "Páginas"
 #~ msgstr "Pages"

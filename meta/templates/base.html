@@ -57,7 +57,7 @@
     <body>
         <div class="container prepend-1 append-1">
             <nav class="main span-24 last">
-                {% cache 3600 feedback %}
+                {% cache 2592000 feedback %}
                 <div id="feedback"><a href="/feedback/">feedback</a></div>
                 {% endcache %}
                 {% if user.is_authenticated %}
@@ -89,7 +89,7 @@
                 </div>
 
                 {% with fullpath=request.get_full_path %}
-                {% cache 3600 menu LANGUAGE_CODE fullpath %}
+                {% cache 2592000 menu LANGUAGE_CODE fullpath %}
                 <ul class="menu" id="media">
                     <li>
                     <a {% if fullpath == '/search/?type=photo' %}class="selected"{% endif %} href="/search/?type=photo">{% trans 'fotos' %}</a>
@@ -136,7 +136,7 @@
                 {% endwith %}
             </nav>
             <header class="main span-24 last" id="mainheader">
-                {% cache 3600 logo LANGUAGE_CODE %}
+                {% cache 2592000 logo LANGUAGE_CODE %}
                 <a href="/">
                 <hgroup class="main span-10">
                     <!-- 
@@ -172,7 +172,7 @@
 
             <footer class="main span-24 last quiet">
 
-            {% cache 3600 footer LANGUAGE_CODE %}
+            {% cache 2592000 footer LANGUAGE_CODE %}
             <div class="span-24 last" id="footerbase">
                 <div class="span-13">
                     <div class="span-13 last">

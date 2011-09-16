@@ -7,7 +7,7 @@
 
 {% include 'messages.html' %}
 
-{% cache 3600 gallery_photos LANGUAGE_CODE request.META.QUERY_STRING request.session %}
+{% cache 604800 gallery_photos LANGUAGE_CODE request.META.QUERY_STRING request.session %}
 
 {% if images.paginator.count %}
 

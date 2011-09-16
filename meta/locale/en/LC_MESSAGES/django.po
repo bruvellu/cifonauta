@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-16 11:40-0300\n"
-"PO-Revision-Date: 2011-09-16 10:38\n"
+"POT-Creation-Date: 2011-09-16 12:18-0300\n"
+"PO-Revision-Date: 2011-09-16 12:14\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1171,7 +1171,7 @@ msgstr "Use the search box above or"
 
 #: templates/buscar.html:58
 msgid "clique aqui para ver tudo"
-msgstr "click to show all content"
+msgstr "click here to show content"
 
 #: templates/disqus.html:16
 msgid ""

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n markup %}
+{% load cache %}
 {% block title %}{{ tour.name }} | {% trans 'Tour' %} | {{ block.super }}{% endblock %}
 {% block meta-keywords %}{{ tour.name }}, {% show_set tags '' '' ', ' '' %}, {% show_set taxa '' '' ', ' '' %}{% endblock %}
 {% block meta-description %}{{ tour.description|markdown|striptags|truncatewords:30 }}{% endblock %}
@@ -127,7 +128,7 @@
                 <strong>{% trans 'Marcadores presentes' %}:</strong> {% show_set tags '' '' ', ' 'link' %}
                 </li>
                 <li>
-                <strong>{% trans 'Número de visitas' %}:</strong> {{ pageviews }}
+                <strong>{% trans 'Número de visitas' %}:</strong> {% cache 1 pageviews tour.id 'tour' %}<span id="pageviews">{{ pageviews }}</span>{% endcache %}
                 </li>
             </ul>
         </div>
@@ -147,6 +148,9 @@
 
 </section>
 
+<script type="text/javascript" charset="utf-8">
+    Dajaxice.meta.update_counter(Dajax.process, {'id': '{{ tour.id }}', 'type': 'tour'});
+</script>
 {% endblock %}
 
 {% block sidebar %}

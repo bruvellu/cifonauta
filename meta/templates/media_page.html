@@ -62,7 +62,7 @@
 
         <div class="span-2 last border-top border-right border-bottom sideinfo" id="media-sideinfo">
             <div class="border-bottom" id="views">
-                {% cache 1 pageviews %}<span id="pageviews">{{ pageviews }}</span>{% endcache %} {% trans 'visita' %}{{ pageviews|pluralize }}
+                {% cache 1 pageviews media.id media.datatype %}<span id="pageviews">{{ pageviews }}</span>{% endcache %} {% trans 'visita' %}{{ pageviews|pluralize }}
             </div>
             {% if taxa %}
                 {% include 'biodb.html' %}

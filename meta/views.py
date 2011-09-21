@@ -749,7 +749,10 @@ def tour_page(request, slug):
     references = tour.references.all()
     photos = tour.images.select_related('stats', 'size', 'sublocation', 'city', 'state', 'country')
     videos = tour.videos.select_related('stats', 'size', 'sublocation', 'city', 'state', 'country')
-    thumb = photos.values_list('thumb_filepath', flat=True)[0]
+    try:
+        thumb = photos.values_list('thumb_filepath', flat=True)[0]
+    except:
+        thumb = ''
 
     # Extrair metadados das imagens.
     authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(photos, videos)

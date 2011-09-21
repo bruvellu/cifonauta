@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-21 16:45-0300\n"
+"POT-Creation-Date: 2011-09-21 18:01-0300\n"
 "PO-Revision-Date: 2011-09-16 12:14\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -948,7 +948,7 @@ msgid "Autores incluídos no banco de imagens Cifonauta."
 msgstr "Authors included in the Cifonauta image database."
 
 #: templates/authors_page.html:12 templates/base.html:17
-#: templates/buscar.html:15 templates/embed.html:5 templates/main_page.html:10
+#: templates/buscar.html:15 templates/embed.html:7 templates/main_page.html:10
 #: templates/main_page.html.py:15 templates/media_page.html:17
 #: templates/meta_page.html:17 templates/organizacao.html:15
 #: templates/places_page.html:15 templates/refs_page.html:12
@@ -1181,15 +1181,15 @@ msgstr ""
 "Please activate Javascript to see <a href=\"http://disqus.com/?ref_noscript"
 "\">comments.   "
 
-#: templates/embed.html:25 templates/video.html:14
+#: templates/embed.html:32 templates/video.html:14
 msgid "Still do vídeo"
 msgstr "Still"
 
-#: templates/embed.html:25 templates/video.html:15
+#: templates/embed.html:32 templates/video.html:15
 msgid "Playback de vídeo indisponível"
 msgstr "Video playback not available"
 
-#: templates/embed.html:27 templates/video.html:17
+#: templates/embed.html:34 templates/video.html:17
 msgid "Tem algo muito errado no seu navegador..."
 msgstr "Something is very wrong with your browser..."
 

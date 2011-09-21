@@ -1,9 +1,16 @@
 {% load i18n %}
+{% load cache %}
+{% get_current_language as LANGUAGE_CODE %}
 <!doctype html>
 <html lang="{{ request.LANGUAGE_CODE }}">
     <head>
         <title>{{ media.title }} | {% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %} | CEBIMar USP
         </title>
+
+        <!-- Dajaxice and Dajax -->
+        <script src="{{ STATIC_URL }}js/mylibs/dajaxice.core.js" type="text/javascript" charset="utf-8"></script>
+        <script src="{{ STATIC_URL }}js/mylibs/jquery.dajax.core.js" type="text/javascript" charset="utf-8"></script>
+
         <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css" type="text/css">
         <link rel="stylesheet" href="{{ STATIC_URL }}js/videojs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
@@ -40,6 +47,9 @@
             (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
             g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
             s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+        <script type="text/javascript" charset="utf-8">
+            Dajaxice.meta.update_counter(Dajax.process, {'id': '{{ media.id }}', 'type': '{{ media.datatype }}'});
         </script>
     </body>
 </html>

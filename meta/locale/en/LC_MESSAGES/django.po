@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-21 19:07-0300\n"
+"POT-Creation-Date: 2011-09-23 15:20-0300\n"
 "PO-Revision-Date: 2011-09-16 12:14\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -934,7 +934,7 @@ msgid "Página não encontrada"
 msgstr "Page not found"
 
 #: templates/authors_page.html:3 templates/authors_page.html.py:9
-#: templates/authors_page.html:21 templates/base.html:227
+#: templates/authors_page.html:21 templates/base.html:226
 #: templates/mais.html:16
 msgid "Autores"
 msgstr "Authors"
@@ -951,10 +951,10 @@ msgstr "Authors included in the Cifonauta image database."
 #: templates/buscar.html:15 templates/embed.html:7 templates/main_page.html:10
 #: templates/main_page.html.py:15 templates/media_page.html:17
 #: templates/meta_page.html:17 templates/organizacao.html:15
-#: templates/places_page.html:15 templates/refs_page.html:12
-#: templates/tags_page.html:17 templates/taxa_page.html:13
-#: templates/tour_page.html:14 templates/tours_page.html:13
-#: templates/flatpages/default.html:15
+#: templates/places_page.html:15 templates/press_page.html:13
+#: templates/refs_page.html:12 templates/tags_page.html:17
+#: templates/taxa_page.html:13 templates/tour_page.html:14
+#: templates/tours_page.html:13 templates/flatpages/default.html:15
 msgid "Cifonauta: Banco de Imagens de Biologia Marinha"
 msgstr "Cifonauta: Marine Biology Image Database"
 
@@ -1042,81 +1042,88 @@ msgstr "Credits and support"
 msgid "Termos de uso e direitos"
 msgstr "Terms of use and rights"
 
-#: templates/base.html:213
+#: templates/base.html:208 templates/press_page.html:3
+#: templates/press_page.html.py:10 templates/press_page.html:19
+#: templates/sobremenu.html:9
+#, fuzzy
+msgid "Imprensa"
+msgstr "Press kit"
+
+#: templates/base.html:212
 msgid "Explorar"
 msgstr "Explore"
 
-#: templates/base.html:215 templates/buscar.html:3 templates/buscar.html.py:11
+#: templates/base.html:214 templates/buscar.html:3 templates/buscar.html.py:11
 msgid "Buscador"
 msgstr "Search"
 
-#: templates/base.html:216 templates/main_page.html:69
+#: templates/base.html:215 templates/main_page.html:69
 #: templates/tours_page.html:3 templates/tours_page.html.py:10
 #: templates/tours_page.html:19
 msgid "Tours"
 msgstr "Tours"
 
-#: templates/base.html:217 templates/main_page.html:45
+#: templates/base.html:216 templates/main_page.html:45
 msgid "Fotos"
 msgstr "Photos"
 
-#: templates/base.html:218 templates/main_page.html:57
+#: templates/base.html:217 templates/main_page.html:57
 msgid "Vídeos"
 msgstr "Videos"
 
-#: templates/base.html:222
+#: templates/base.html:221
 msgid "Metadados"
 msgstr "Metadata"
 
-#: templates/base.html:224 templates/mais.html:11 templates/tags_page.html:6
+#: templates/base.html:223 templates/mais.html:11 templates/tags_page.html:6
 #: templates/tags_page.html.py:14 templates/tags_page.html:22
 #: templates/feeds/media_post.html:5
 msgid "Marcadores"
 msgstr "Tags"
 
-#: templates/base.html:225 templates/mais.html:21
+#: templates/base.html:224 templates/mais.html:21
 #: templates/organizacao.html:25 templates/taxa_page.html:3
 #: templates/taxa_page.html.py:10 templates/taxa_page.html:19
 msgid "Táxons"
 msgstr "Taxa"
 
-#: templates/base.html:226 templates/places_page.html:6
+#: templates/base.html:225 templates/places_page.html:6
 #: templates/places_page.html.py:12 templates/places_page.html:20
 msgid "Localidades"
 msgstr "Places"
 
 #. Translators: list of references rendered on a page
-#: templates/base.html:228 templates/refs_page.html:3
+#: templates/base.html:227 templates/refs_page.html:3
 #: templates/refs_page.html.py:9 templates/refs_page.html:17
 #: templates/tour_page.html:141
 msgid "Referências"
 msgstr "References"
 
-#: templates/base.html:232
+#: templates/base.html:231
 msgid "Novidades"
 msgstr "News"
 
-#: templates/base.html:234
+#: templates/base.html:233
 msgid "Blog"
 msgstr "Blog"
 
-#: templates/base.html:240 templates/sobremenu.html:19
+#: templates/base.html:239 templates/sobremenu.html:20
 msgid "Desenvolvimento"
 msgstr "Development"
 
-#: templates/base.html:242 templates/sobremenu.html:20
+#: templates/base.html:241 templates/sobremenu.html:21
 msgid "Detalhes técnicos"
 msgstr "Technical details"
 
-#: templates/base.html:243
+#: templates/base.html:242
 msgid "Atualizações"
 msgstr "Updates"
 
-#: templates/base.html:244 templates/sobremenu.html:18
+#: templates/base.html:243 templates/sobremenu.html:19
 msgid "Idéias planejadas"
 msgstr "Planned features"
 
-#: templates/base.html:245 templates/sobremenu.html:26
+#: templates/base.html:244 templates/sobremenu.html:27
 msgid "Feedback"
 msgstr "Feedback"
 
@@ -1571,6 +1578,117 @@ msgstr "Places included in the Cifonauta image database."
 msgid "Locais"
 msgstr "Locations"
 
+#: templates/press_page.html:5
+msgid "imprensa, destaques, resumo"
+msgstr ""
+
+#: templates/press_page.html:6
+#, fuzzy
+msgid "imprensa do banco de imagens Cifonauta."
+msgstr "Cifonauta image database search engine."
+
+#: templates/press_page.html:12
+#, fuzzy
+msgid "Imprensa do banco de imagens Cifonauta."
+msgstr "Cifonauta image database search engine."
+
+#: templates/press_page.html:23
+msgid ""
+"\n"
+"  Para mais detalhes visite a página <a href=\"/about/\">Sobre</a> ou entre "
+"em <a href=\"/feedback/\">contato</a>.\n"
+"  "
+msgstr ""
+
+#: templates/press_page.html:30
+#, fuzzy
+msgid ""
+"\n"
+"  O Cifonauta é um banco de imagens para a biologia marinha.\n"
+"  "
+msgstr "Cifonauta: Marine Biology Image Database"
+
+#: templates/press_page.html:37
+msgid ""
+"\n"
+"  Compartilhar informações científicas e divulgar a biodiversidade marinha "
+"através de imagens.\n"
+"  "
+msgstr ""
+
+#: templates/press_page.html:44
+msgid ""
+"\n"
+"  Atualmente estão disponíveis mais de <a href=\"/search/?type=photo\">10 "
+"mil fotos</a> e <a href=\"/search/?type=video\">250 vídeos</a> de "
+"protozoários, animais e plantas. Este material é fruto de estudos "
+"científicos e atividades de ensino em biologia marinha e está sendo "
+"disponibilizado por pesquisadores e estudantes.\n"
+"  "
+msgstr ""
+
+#: templates/press_page.html:51
+msgid ""
+"\n"
+"  O conteúdo está organizado por informações como <a href=\"/taxa/"
+"\">classificação taxonômica</a>, estágio e modo de vida, geolocalização, <a "
+"href=\"/tags/\">entre outros</a>. O usuário pode utilizar estes marcadores "
+"para navegar e refinar suas buscas combinando-os. Também criamos <a href=\"/"
+"tours/\">tours temáticos</a>, seleções de imagens representativas sobre "
+"algum assunto específico (eg, diversidade de larvas marinhas), que funcionam "
+"como ponto de partida para explorar o conteúdo do banco.\n"
+"  "
+msgstr ""
+
+#: templates/press_page.html:58
+msgid ""
+"\n"
+"  Aproveitar a documentação fotográfica de pesquisas científicas, que acabam "
+"nunca vindo à público, para enriquecer a divulgação científica em biologia "
+"marinha.\n"
+"  "
+msgstr ""
+
+#: templates/press_page.html:65
+msgid ""
+"\n"
+"  O conteúdo do banco está disponibilizado sob uma licença de uso flexível "
+"que permite a reutilização do material para fins não-comerciais, desde que a "
+"fonte seja citada.\n"
+"  "
+msgstr ""
+
+#: templates/press_page.html:72
+msgid ""
+"\n"
+"  O Cifonauta é uma iniciativa do Centro de Biologia Marinha da Universidade "
+"de São Paulo e foi desenvolvido por Alvaro Migotto e Bruno Vellutini no "
+"âmbito do Edital MCT/CNPq nº 42/2007 - Difusão e Popularização da C&T "
+"(processo nº 551951/2008-7) do CNPq.\n"
+"  "
+msgstr ""
+
+#: templates/press_page.html:79
+msgid ""
+"\n"
+"  A infraestrutura foi desenvolvida com programas livres como <a href="
+"\"http://www.python.org/\">Python</a>, <a href=\"https://www.djangoproject."
+"com/\">Django</a> e <a href=\"http://www.postgresql.org/\">PostgreSQL</a> e "
+"o código fonte do Cifonauta é <a href=\"http://github.com/nelas/cifonauta/"
+"\">aberto</a>. Saiba <a href=\"/details\">mais detalhes</a>.\n"
+"  "
+msgstr ""
+
+#: templates/press_page.html:91
+#, fuzzy
+msgid "Fotos em destaque"
+msgstr "Highlights only"
+
+#: templates/press_page.html:100
+#, fuzzy
+msgid "Vídeos em destaque"
+msgstr "Highlights only"
+
 #: templates/refs_page.html:4
 msgid "referências, biologia marinha, biodiversidade"
 msgstr "references, marine biology, biodiversity"
@@ -1624,19 +1742,19 @@ msgstr "Search"
 msgid "Cifonauta"
 msgstr "Cifonauta"
 
-#: templates/sobremenu.html:11 templates/social.html:46
+#: templates/sobremenu.html:12 templates/social.html:46
 msgid "Compartilhe"
 msgstr "Share"
 
-#: templates/sobremenu.html:13
+#: templates/sobremenu.html:14
 msgid "Termos de uso"
 msgstr "Terms of use"
 
-#: templates/sobremenu.html:16
+#: templates/sobremenu.html:17
 msgid "Saiba mais"
 msgstr "See more"
 
-#: templates/sobremenu.html:24
+#: templates/sobremenu.html:25
 msgid "Contato"
 msgstr "Contact"
 
@@ -1803,9 +1921,6 @@ msgstr ""
 
 #~ msgid "Ir"
 #~ msgstr "Go"
-
-#~ msgid "Kit imprensa"
-#~ msgstr "Press kit"
 
 #~ msgid "compartilhar"
 #~ msgstr "share"

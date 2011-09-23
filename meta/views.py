@@ -664,9 +664,9 @@ def video_page(request, video_id):
     references = video.reference_set.all()
     # Para lidar com tamanhos de vídeos.
     if video.old_filepath.endswith('m2ts'):
-    	height = 288
+        height = 288
     else:
-    	height = 384
+        height = 384
     variables = RequestContext(request, {
         'media': video,
         'form': form,
@@ -848,6 +848,21 @@ def tours_page(request):
         'tours': tours,
         })
     return render_to_response('tours_page.html', variables)
+
+def press_page(request):
+    '''Página com kit imprensa, texto melhores imagens.'''
+    # Fotos
+    photos = Image.objects.filter(cover=True).order_by('?')
+    cover_photo = photos[0]
+    photos = photos.exclude(id=cover_photo.id)[:8]
+    # Videos
+    videos = Video.objects.filter(cover=True).order_by('?')[:8]
+    variables = RequestContext(request, {
+        'photos': photos,
+        'videos': videos,
+        'cover_photo': cover_photo,
+        })
+    return render_to_response('press_page.html', variables)
 
 # Internal functions
 def get_paginated(request, obj_list, n_page=16):

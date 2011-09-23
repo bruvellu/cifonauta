@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load i18n thumbnail %}
+{% block title %}{% trans 'Imprensa' %} | {{ block.super }}{% endblock %}
+
+{% block meta-keywords %}{% trans 'imprensa, destaques, resumo' %}{% endblock %}
+{% block meta-description %}{% trans 'imprensa do banco de imagens Cifonauta.' %}{% endblock %}
+{% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
+
+{% block extra-head %}
+<meta property="og:title" content="{% trans 'Imprensa' %}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:description" content="{% trans 'Imprensa do banco de imagens Cifonauta.' %}" />
+<meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+<meta property="og:type" content="article" />
+{% endblock %}
+
+{% block content %}
+<section class="span-24 last">
+<header><h1>{% trans 'Imprensa' %}</h1></header>
+
+<div class="span-9">
+  <p>
+  {% blocktrans %}
+  Para mais detalhes visite a página <a href="/about/">Sobre</a> ou entre em <a href="/feedback/">contato</a>.
+  {% endblocktrans %}
+  </p>
+
+  <h2>O que é?</h2>
+  <p>
+  {% blocktrans %}
+  O Cifonauta é um banco de imagens para a biologia marinha.
+  {% endblocktrans %}
+  </p>
+
+  <h2>Objetivo</h2>
+  <p>
+  {% blocktrans %}
+  Compartilhar informações científicas e divulgar a biodiversidade marinha através de imagens.
+  {% endblocktrans %}
+  </p>
+
+  <h2>Conteúdo</h2>
+  <p>
+  {% blocktrans %}
+  Atualmente estão disponíveis mais de <a href="/search/?type=photo">10 mil fotos</a> e <a href="/search/?type=video">250 vídeos</a> de protozoários, animais e plantas. Este material é fruto de estudos científicos e atividades de ensino em biologia marinha e está sendo disponibilizado por pesquisadores e estudantes.
+  {% endblocktrans %}
+  </p>
+
+  <h2>Organização</h2>
+  <p>
+  {% blocktrans %}
+  O conteúdo está organizado por informações como <a href="/taxa/">classificação taxonômica</a>, estágio e modo de vida, geolocalização, <a href="/tags/">entre outros</a>. O usuário pode utilizar estes marcadores para navegar e refinar suas buscas combinando-os. Também criamos <a href="/tours/">tours temáticos</a>, seleções de imagens representativas sobre algum assunto específico (eg, diversidade de larvas marinhas), que funcionam como ponto de partida para explorar o conteúdo do banco.
+  {% endblocktrans %}
+  </p>
+
+  <h2>Motivação</h2>
+  <p>
+  {% blocktrans %}
+  Aproveitar a documentação fotográfica de pesquisas científicas, que acabam nunca vindo à público, para enriquecer a divulgação científica em biologia marinha.
+  {% endblocktrans %}
+  </p>
+
+  <h2>Reuso</h2>
+  <p>
+  {% blocktrans %}
+  O conteúdo do banco está disponibilizado sob uma licença de uso flexível que permite a reutilização do material para fins não-comerciais, desde que a fonte seja citada.
+  {% endblocktrans %}
+  </p>
+
+  <h2>Créditos</h2>
+  <p>
+  {% blocktrans %}
+  O Cifonauta é uma iniciativa do Centro de Biologia Marinha da Universidade de São Paulo e foi desenvolvido por Alvaro Migotto e Bruno Vellutini no âmbito do Edital MCT/CNPq nº 42/2007 - Difusão e Popularização da C&T (processo nº 551951/2008-7) do CNPq.
+  {% endblocktrans %}
+  </p>
+
+  <h2>Tecnologia</h2>
+  <p>
+  {% blocktrans %}
+  A infraestrutura foi desenvolvida com programas livres como <a href="http://www.python.org/">Python</a>, <a href="https://www.djangoproject.com/">Django</a> e <a href="http://www.postgresql.org/">PostgreSQL</a> e o código fonte do Cifonauta é <a href="http://github.com/nelas/cifonauta/">aberto</a>. Saiba <a href="/details">mais detalhes</a>.
+  {% endblocktrans %}
+  </p>
+
+</div>
+
+<div id="press-photos" class="span-15 last">
+  {% thumbnail cover_photo.web_filepath "550x412" crop="center" as im %}
+  <a href="{{ cover_photo.get_absolute_url }}"><img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ cover_photo.title }}"></a>
+  {% endthumbnail %}
+
+  <h2>{% trans 'Fotos em destaque' %}</h2>
+  <ul class="thumbs">
+    {% for media in photos %}
+    <li class="shadow size-{{ media.size.slug }}">
+    {% include 'thumb.html' %}
+    </li>
+    {% endfor %}
+  </ul>
+
+  <h2>{% trans 'Vídeos em destaque' %}</h2>
+  <ul class="thumbs">
+    {% for media in videos %}
+    <li class="shadow size-{{ media.size.slug }}">
+    {% include 'thumb.html' %}
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+</section>
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}

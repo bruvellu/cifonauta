@@ -40,6 +40,7 @@ urlpatterns = patterns('',
         (r'^i18n/', include('django.conf.urls.i18n')),
         #(r'^comments/', include('django.contrib.comments.urls')),
         (r'^%s/' % settings.DAJAXICE_MEDIA_PREFIX, include('dajaxice.urls')),
+
         # Feeds
         (r'^feed/latest/$', LatestMedia()),
         (r'^feed/latest/(?P<type>[^\d]+)/$', LatestMedia()),
@@ -50,15 +51,18 @@ urlpatterns = patterns('',
         # Auth
         (r'^login/$', 'django.contrib.auth.views.login'),
         (r'^logout/$', 'django.contrib.auth.views.logout'),
+
         # Translate
         (r'^translate/$', translate_page),
         (r'^translate/apps/', include('rosetta.urls')),
         (r'^translate/models/', include('datatrans.urls')),
+
         # Manage
         (r'^private/$', hidden_page),
         #(r'^feedback/$', feedback_page),
         (r'^fixtaxa/$', fixtaxa_page),
         (r'^fixmedia/$', fixmedia_page),
+
         # Menu
         (r'^blog/', include('articles.urls')),
         url(r'^search/$', search_page, name='search_url'),
@@ -73,6 +77,8 @@ urlpatterns = patterns('',
         url(r'^literature/$', cache_page(refs_page, ONE_WEEK), 
             name='refs_url'),
         url(r'^tours/$', cache_page(tours_page, ONE_WEEK), name='tours_url'),
+        url(r'^press/$', press_page, name='press_url'),
+
         # Tests
         (r'^test/empty/$', empty_page),
         (r'^test/static/$', static_page),

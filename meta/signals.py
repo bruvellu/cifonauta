@@ -45,7 +45,7 @@ def citation_html(reference):
                 citation += u'%s.' % authors
             # Título.
             elif key == 'title':
-                citation += u' <strong>%s</strong>.' % reference['title']
+                citation += u' <em>%s</em>.' % reference['title']
             # Revista.
             elif key == 'publication_outlet':
                 citation += u' %s' % reference['publication_outlet']

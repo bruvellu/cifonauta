@@ -473,8 +473,7 @@ def photo_page(request, image_id):
                 # Pega a lista de tours ligadas à imagem.
                 image_tours = image.tour_set.values_list('id', flat=True)
                 # Define lista de tours submetidos no formulário.
-                form_tours = [int(id) for id in 
-                        admin_form.cleaned_data['tours']]
+                form_tours = [int(id) for id in admin_form.cleaned_data['tours']]
                 # Usa sets para descobrir imagens que foram removidas,
                 remove_image = set(image_tours) - set(form_tours)
                 # e imagens que devem ser adicionadas.
@@ -745,7 +744,7 @@ def tour_page(request, slug):
     '''Página única de cada tour.'''
     tour = get_object_or_404(Tour, slug=slug)
     references = tour.references.all()
-    photos = tour.images.select_related('stats', 'size', 'sublocation', 'city', 'state', 'country')
+    photos = tour.images.filter(tourposition__tour=tour).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country').order_by('tourposition')
     videos = tour.videos.select_related('stats', 'size', 'sublocation', 'city', 'state', 'country')
     try:
         thumb = photos.values_list('thumb_filepath', flat=True)[0]

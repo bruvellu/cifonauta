@@ -84,6 +84,7 @@ class Image(File):
     class Meta:
         verbose_name = _('foto')
         verbose_name_plural = _('fotos')
+        ordering = ['id']
 
 
 class Video(File):
@@ -112,6 +113,7 @@ class Video(File):
     class Meta:
         verbose_name = _('vídeo')
         verbose_name_plural = _('vídeos')
+        ordering = ['id']
 
 
 class Author(models.Model):
@@ -525,6 +527,22 @@ class Tour(models.Model):
         ordering = ['name']
 
 
+class TourPosition(models.Model):
+    '''Define a posição da imagem no tour.'''
+    photo = models.ForeignKey(Image)
+    tour = models.ForeignKey(Tour)
+    position = models.PositiveIntegerField(_('posição'), default=0, help_text=_('Define a ordem das imagens em um tour.'))
+
+    def __unicode__(self):
+        return '%d, %s (id=%s) @ %s' % (self.position, self.photo.title, 
+                self.photo.id, self.tour.name)
+
+    class Meta:
+        verbose_name = _('posição no tour')
+        verbose_name_plural = _('posições no tour')
+        ordering = ['position', 'tour__id']
+
+
 class Stats(models.Model):
     '''Modelo para abrigar estatísticas sobre modelos.'''
     pageviews = models.PositiveIntegerField(_('visitas'), default=0, 
@@ -603,6 +621,9 @@ signals.post_save.connect(update_count, sender=Image)
 signals.post_delete.connect(update_count, sender=Image)
 signals.post_save.connect(update_count, sender=Video)
 signals.post_delete.connect(update_count, sender=Video)
+# Add position to tour images.
+signals.post_save.connect(set_position, sender=Tour)
+#signals.post_delete.connect(set_position, sender=Tour)
 # Create stats object before object creation
 signals.pre_save.connect(makestats, sender=Image)
 signals.pre_save.connect(makestats, sender=Video)

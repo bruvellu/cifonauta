@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-23 15:20-0300\n"
+"POT-Creation-Date: 2011-09-23 22:03-0300\n"
 "PO-Revision-Date: 2011-09-16 12:14\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,14 +22,14 @@ msgstr ""
 msgid "biologia marinha"
 msgstr "marine biology"
 
-#: feeds.py:15 feeds.py:89 feeds.py:175 models.py:86 models.py:121
-#: models.py:154 models.py:188 models.py:247 models.py:454 models.py:496
+#: feeds.py:15 feeds.py:89 feeds.py:175 models.py:86 models.py:123
+#: models.py:156 models.py:190 models.py:249 models.py:456 models.py:498
 #: templates/base.html:100 templates/stats.html:5
 msgid "fotos"
 msgstr "photos"
 
-#: feeds.py:15 feeds.py:89 feeds.py:175 models.py:114 models.py:123
-#: models.py:156 models.py:190 models.py:249 models.py:456 models.py:498
+#: feeds.py:15 feeds.py:89 feeds.py:175 models.py:115 models.py:125
+#: models.py:158 models.py:192 models.py:251 models.py:458 models.py:500
 #: templates/base.html:103 templates/stats.html:5
 msgid "vídeos"
 msgstr "videos"
@@ -148,7 +148,7 @@ msgstr "descending"
 msgid "id"
 msgstr "id"
 
-#: forms.py:36 models.py:530 templates/tours_page.html:35
+#: forms.py:36 models.py:548 templates/tours_page.html:35
 msgid "visitas"
 msgstr "pageviews"
 
@@ -156,11 +156,11 @@ msgstr "pageviews"
 msgid "data da imagem"
 msgstr "image date"
 
-#: forms.py:38 models.py:37 models.py:490
+#: forms.py:38 models.py:37 models.py:492
 msgid "data de publicação"
 msgstr "publication date"
 
-#: forms.py:39 models.py:25 models.py:491
+#: forms.py:39 models.py:25 models.py:493
 msgid "data de modificação"
 msgstr "timestamp"
 
@@ -257,7 +257,7 @@ msgstr "cover image"
 msgid "Imagem esteticamente bela, para usar na página principal."
 msgstr "Image aesthetically beautiful to be used on the home page. "
 
-#: models.py:32 models.py:493 models.py:544 models.py:545
+#: models.py:32 models.py:495 models.py:562 models.py:563
 msgid "estatísticas"
 msgstr "statistics"
 
@@ -265,7 +265,7 @@ msgstr "statistics"
 msgid "Reúne estatísticas sobre a imagem."
 msgstr "Store stats about an image."
 
-#: models.py:34 models.py:489
+#: models.py:34 models.py:491
 msgid "público"
 msgstr "public"
 
@@ -309,7 +309,7 @@ msgstr "caption"
 msgid "Legenda da imagem."
 msgstr "Image caption."
 
-#: models.py:46 models.py:311
+#: models.py:46 models.py:313
 msgid "tamanho"
 msgstr "size"
 
@@ -325,7 +325,7 @@ msgstr "rights"
 msgid "Detentor dos direitos autorais da imagem."
 msgstr "Copyrights owner of the image."
 
-#: models.py:50 models.py:354
+#: models.py:50 models.py:356
 msgid "local"
 msgstr "place"
 
@@ -337,7 +337,7 @@ msgstr "Place shown in the image (or collection site)."
 msgid "Cidade mostrada na imagem (ou cidade de coleta)."
 msgstr "City shown in the image (or city where it was collected)."
 
-#: models.py:54 models.py:414
+#: models.py:54 models.py:416
 msgid "estado"
 msgstr "state"
 
@@ -345,7 +345,7 @@ msgstr "state"
 msgid "Estado mostrado na imagem (ou estado de coleta)."
 msgstr "State shown in the image (or state where it was collected)."
 
-#: models.py:56 models.py:444 models.py:445
+#: models.py:56 models.py:446 models.py:447
 msgid "país"
 msgstr "country"
 
@@ -401,11 +401,11 @@ msgstr "web file"
 msgid "Caminho para o arquivo web."
 msgstr "Path to web file."
 
-#: models.py:74 models.py:96
+#: models.py:74 models.py:97
 msgid "tipo de mídia"
 msgstr "media type"
 
-#: models.py:75 models.py:97
+#: models.py:75 models.py:98
 msgid "Tipo de mídia."
 msgstr "Media type."
 
@@ -413,519 +413,534 @@ msgstr "Media type."
 msgid "foto"
 msgstr "photo"
 
-#: models.py:90
+#: models.py:91
 msgid "arquivo webm"
 msgstr "webm file"
 
-#: models.py:91
+#: models.py:92
 msgid "Caminho para o arquivo WEBM."
 msgstr "Path to .webm file."
 
-#: models.py:92
+#: models.py:93
 msgid "arquivo ogg"
 msgstr "ogg file"
 
-#: models.py:93
+#: models.py:94
 msgid "Caminho para o arquivo OGG."
 msgstr "Path to .ogg file."
 
-#: models.py:94
+#: models.py:95
 msgid "arquivo mp4"
 msgstr "mp4 file"
 
-#: models.py:95
+#: models.py:96
 msgid "Caminho para o arquivo MP4."
 msgstr "Path to .mp4 file."
 
-#: models.py:98
+#: models.py:99
 msgid "thumbnail grande"
 msgstr "large thumbnail"
 
-#: models.py:99
+#: models.py:100
 msgid "Caminho para o thumbnail grande do vídeo."
 msgstr "Path to large thumbnail of the video."
 
-#: models.py:100
+#: models.py:101
 msgid "duração"
 msgstr "duration"
 
-#: models.py:101
+#: models.py:102
 msgid "Duração do vídeo no formato HH:MM:SS."
 msgstr "Video duration formatted as HH:MM:SS."
 
-#: models.py:102
+#: models.py:103
 msgid "dimensões"
 msgstr "dimensions"
 
-#: models.py:102
+#: models.py:103
 msgid "Dimensões do vídeo original."
 msgstr "Video original dimensions."
 
-#: models.py:103
+#: models.py:104
 msgid "codec"
 msgstr "codec"
 
-#: models.py:103
+#: models.py:104
 msgid "Codec do vídeo original."
 msgstr "Video original codec."
 
-#: models.py:113 templates/messages.html:7 templates/related.html:68
+#: models.py:114 templates/messages.html:7 templates/related.html:68
 msgid "vídeo"
 msgstr "video"
 
-#: models.py:118 models.py:151 models.py:184 models.py:220 models.py:238
-#: models.py:284 models.py:317 models.py:330 models.py:360 models.py:390
-#: models.py:420 models.py:450 models.py:486
+#: models.py:120 models.py:153 models.py:186 models.py:222 models.py:240
+#: models.py:286 models.py:319 models.py:332 models.py:362 models.py:392
+#: models.py:422 models.py:452 models.py:488
 msgid "nome"
 msgstr "name"
 
-#: models.py:118
+#: models.py:120
 msgid "Nome do autor."
 msgstr "Author name."
 
-#: models.py:119 models.py:152 models.py:185 models.py:221 models.py:239
-#: models.py:286 models.py:318 models.py:331 models.py:361 models.py:391
-#: models.py:421 models.py:451 models.py:487
+#: models.py:121 models.py:154 models.py:187 models.py:223 models.py:241
+#: models.py:288 models.py:320 models.py:333 models.py:363 models.py:393
+#: models.py:423 models.py:453 models.py:489
 msgid "slug"
 msgstr "slug"
 
-#: models.py:119
+#: models.py:121
 msgid "Slug do nome do autor."
 msgstr "Author name slug."
 
-#: models.py:121
+#: models.py:123
 msgid "Fotos associadas a este autor."
 msgstr "Photos linked to this author."
 
-#: models.py:123
+#: models.py:125
 msgid "Vídeos associados a este autor."
 msgstr "Videos linked to this author."
 
-#: models.py:124 models.py:157 models.py:194 models.py:250 models.py:290
-#: models.py:333 models.py:363 models.py:393 models.py:423 models.py:458
-#: models.py:502
+#: models.py:126 models.py:159 models.py:196 models.py:252 models.py:292
+#: models.py:335 models.py:365 models.py:395 models.py:425 models.py:460
+#: models.py:504
 msgid "número de fotos"
 msgstr "number of photos"
 
-#: models.py:125
+#: models.py:127
 msgid "Número de fotos associadas a este autor."
 msgstr "Number of photos linked to this author."
 
-#: models.py:126 models.py:159 models.py:195 models.py:252 models.py:292
-#: models.py:335 models.py:365 models.py:395 models.py:425 models.py:460
-#: models.py:504
+#: models.py:128 models.py:161 models.py:197 models.py:254 models.py:294
+#: models.py:337 models.py:367 models.py:397 models.py:427 models.py:462
+#: models.py:506
 msgid "número de vídeos"
 msgstr "number of videos"
 
-#: models.py:126
+#: models.py:128
 msgid "Número de vídeos associados a este autor."
 msgstr "Number of videos linked to this author."
 
-#: models.py:145
+#: models.py:147
 msgid "autor"
 msgstr "author"
 
-#: models.py:146 templates/base.html:118
+#: models.py:148 templates/base.html:118
 msgid "autores"
 msgstr "authors"
 
-#: models.py:151
+#: models.py:153
 msgid "Nome do especialista."
 msgstr "Expert name."
 
-#: models.py:152
+#: models.py:154
 msgid "Slug do nome do especialista."
 msgstr "Expert name slug."
 
-#: models.py:154
+#: models.py:156
 msgid "Fotos associadas a este especialista."
 msgstr "Photos linked to this expert."
 
-#: models.py:156
+#: models.py:158
 msgid "Vídeos associados a este especialista."
 msgstr "Videos linked to this expert."
 
-#: models.py:158
+#: models.py:160
 msgid "Número de fotos associadas a este especialista."
 msgstr "Number of photos linked to this expert."
 
-#: models.py:159
+#: models.py:161
 msgid "Número de vídeos associados a este especialista."
 msgstr "Number of videos linked to this expert."
 
-#: models.py:178
+#: models.py:180
 msgid "especialista"
 msgstr "expert"
 
-#: models.py:179
+#: models.py:181
 msgid "especialistas"
 msgstr "experts"
 
-#: models.py:184
+#: models.py:186
 msgid "Nome do marcador."
 msgstr "Tag name."
 
-#: models.py:185
+#: models.py:187
 msgid "Slug do nome do marcador."
 msgstr "Tag name slug."
 
-#: models.py:186 models.py:222 models.py:287 models.py:488
+#: models.py:188 models.py:224 models.py:289 models.py:490
 msgid "descrição"
 msgstr "description"
 
-#: models.py:186
+#: models.py:188
 msgid "Descrição do marcador."
 msgstr "Tag description."
 
-#: models.py:188
+#: models.py:190
 msgid "Fotos associadas a este marcador."
 msgstr "Photos linked to this tag."
 
-#: models.py:190
+#: models.py:192
 msgid "Vídeos associados a este marcador."
 msgstr "Videos linked to this tag."
 
-#: models.py:192 models.py:224 models.py:245
+#: models.py:194 models.py:226 models.py:247
 msgid "pai"
 msgstr "father"
 
-#: models.py:192
+#: models.py:194
 msgid "Categoria a que este marcador pertence."
 msgstr "Category to which this tag belongs."
 
-#: models.py:193 models.py:223 models.py:288
+#: models.py:195 models.py:225 models.py:290 models.py:534
 msgid "posição"
 msgstr "position"
 
-#: models.py:193
+#: models.py:195
 msgid "Definem a ordem dos marcadores em um queryset."
 msgstr "Define tag order in a queryset."
 
-#: models.py:194
+#: models.py:196
 msgid "Número de fotos associadas a este marcador."
 msgstr "Number of photos linked to this tag."
 
-#: models.py:195
+#: models.py:197
 msgid "Número de vídeos associadas a este marcador."
 msgstr "Number of videos linked to this tag."
 
-#: models.py:214
+#: models.py:216
 msgid "marcador"
 msgstr "tag"
 
-#: models.py:215 templates/base.html:112 templates/stats.html:5
+#: models.py:217 templates/base.html:112 templates/stats.html:5
 msgid "marcadores"
 msgstr "tags"
 
-#: models.py:220
+#: models.py:222
 msgid "Nome da categoria de marcadores."
 msgstr "Tag category name."
 
-#: models.py:221
+#: models.py:223
 msgid "Slug do nome da categoria de marcadores."
 msgstr "Tag category name slug."
 
-#: models.py:222
+#: models.py:224
 msgid "Descrição da categoria de marcadores."
 msgstr "Tag category description."
 
-#: models.py:223
+#: models.py:225
 msgid "Define a ordem das categorias."
 msgstr "Define category order."
 
-#: models.py:224
+#: models.py:226
 msgid "Categoria pai desta categoria de marcadores."
 msgstr "Tag category parent."
 
-#: models.py:232
+#: models.py:234
 msgid "categoria de marcadores"
 msgstr "tag categories"
 
-#: models.py:233
+#: models.py:235
 msgid "categorias de marcadores"
 msgstr "tag categories"
 
-#: models.py:238
+#: models.py:240
 msgid "Nome do táxon."
 msgstr "Taxon name."
 
-#: models.py:239
+#: models.py:241
 msgid "Slug do nome do táxon."
 msgstr "Taxon name slug."
 
-#: models.py:240
+#: models.py:242
 msgid "nome popular"
 msgstr "common name"
 
-#: models.py:240
+#: models.py:242
 msgid "Nome popular do táxon."
 msgstr "Taxon common name."
 
-#: models.py:241
+#: models.py:243
 msgid "rank"
 msgstr "rank"
 
-#: models.py:241
+#: models.py:243
 msgid "Ranking taxonômico do táxon."
 msgstr "Taxonomic rank of a taxon."
 
-#: models.py:242
+#: models.py:244
 msgid "TSN, o identificador do táxon no ITIS."
 msgstr "TSN, taxon identifier at ITIS."
 
-#: models.py:243
+#: models.py:245
 msgid "APHIA, o identificador do táxon no WoRMS."
 msgstr "APHIA, taxon identifier at WoRMS."
 
-#: models.py:245
+#: models.py:247
 msgid "Táxon pai deste táxon."
 msgstr "Taxon parent."
 
-#: models.py:247
+#: models.py:249
 msgid "Fotos associadas a este táxon."
 msgstr "Photos linked to this taxon."
 
-#: models.py:249
+#: models.py:251
 msgid "Vídeos associados a este táxon."
 msgstr "Videos linked to this taxon."
 
-#: models.py:251
+#: models.py:253
 msgid "Número de fotos associadas a este táxon."
 msgstr "Number of photos linked to this taxon."
 
-#: models.py:252
+#: models.py:254
 msgid "Número de vídeos associados a este táxon."
 msgstr "Number of videos linked to this taxon."
 
-#: models.py:271
+#: models.py:273
 msgid "táxon"
 msgstr "taxon"
 
-#: models.py:272 templates/base.html:109
+#: models.py:274 templates/base.html:109
 msgid "táxons"
 msgstr "taxa"
 
-#: models.py:285
+#: models.py:287
 msgid "Nome da classe de tamanho."
 msgstr "Size class name."
 
-#: models.py:286
+#: models.py:288
 msgid "Slug do nome da classe de tamanho."
 msgstr "Size class name slug."
 
-#: models.py:287
+#: models.py:289
 msgid "Descrição da classe de tamanho."
 msgstr "Size name description."
 
-#: models.py:288
+#: models.py:290
 msgid "Define ordem das classes de tamanho em um queryset."
 msgstr "Define size class order in a queryset."
 
-#: models.py:290
+#: models.py:292
 msgid "Número de fotos associadas à esta classe de tamanho."
 msgstr "Number of photos linked to this size class."
 
-#: models.py:292
+#: models.py:294
 msgid "Número de vídeos associados à esta classe de tamanho."
 msgstr "Number of videos linked to this size class."
 
-#: models.py:312
+#: models.py:314
 msgid "tamanhos"
 msgstr "sizes"
 
-#: models.py:317
+#: models.py:319
 msgid "Nome do detentor dos direitos autorais."
 msgstr "Name of the copyrights owner."
 
-#: models.py:318
+#: models.py:320
 msgid "Slug do nome do detentor dos direitos autorais."
 msgstr "Copyright owner name slug."
 
-#: models.py:324
+#: models.py:326
 msgid "detentor dos direitos"
 msgstr "copyrights owner"
 
-#: models.py:325
+#: models.py:327
 msgid "detentores dos direitos"
 msgstr "copyrights owners"
 
-#: models.py:330
+#: models.py:332
 msgid "Nome da localidade."
 msgstr "Place name."
 
-#: models.py:331
+#: models.py:333
 msgid "Slug do nome da localidade."
 msgstr "Place name slug."
 
-#: models.py:333
+#: models.py:335
 msgid "Número de fotos associadas à esta localidade."
 msgstr "Number of photos linked to this place."
 
-#: models.py:335
+#: models.py:337
 msgid "Número de vídeos associados à esta localidade."
 msgstr "Number of videos linked to this place."
 
-#: models.py:355 templates/stats.html:5
+#: models.py:357 templates/stats.html:5
 msgid "locais"
 msgstr "places"
 
-#: models.py:360
+#: models.py:362
 msgid "Nome da cidade."
 msgstr "City name."
 
-#: models.py:361
+#: models.py:363
 msgid "Slug do nome da cidade."
 msgstr "City name slug."
 
-#: models.py:363
+#: models.py:365
 msgid "Número de fotos associados à esta cidade."
 msgstr "Number of photos linked to this city."
 
-#: models.py:365
+#: models.py:367
 msgid "Número de vídeos associados à esta cidade."
 msgstr "Number of videos linked to this city."
 
-#: models.py:384
+#: models.py:386
 msgid "cidade"
 msgstr "city"
 
-#: models.py:385
+#: models.py:387
 msgid "cidades"
 msgstr "cities"
 
-#: models.py:390
+#: models.py:392
 msgid "Nome do estado."
 msgstr "State name."
 
-#: models.py:391
+#: models.py:393
 msgid "Slug do nome do estado."
 msgstr "State name slug."
 
-#: models.py:393
+#: models.py:395
 msgid "Número de fotos associadas a este estado."
 msgstr "Number of photos linked to this state."
 
-#: models.py:395
+#: models.py:397
 msgid "Número de vídeos associados a este estado."
 msgstr "Number of videos linked to this state."
 
-#: models.py:415
+#: models.py:417
 msgid "estados"
 msgstr "states"
 
-#: models.py:420
+#: models.py:422
 msgid "Nome do país."
 msgstr "Country name."
 
-#: models.py:421
+#: models.py:423
 msgid "Slug do nome do país."
 msgstr "Country name slug."
 
-#: models.py:423
+#: models.py:425
 msgid "Número de fotos associadas a este país."
 msgstr "Number of photos linked to this country."
 
-#: models.py:425
+#: models.py:427
 msgid "Número de vídeos associados a este país."
 msgstr "Number of videos linked to this country."
 
-#: models.py:450
+#: models.py:452
 msgid "Identificador da referência (Mendeley ID)."
 msgstr "Reference identifier (Mendeley ID)."
 
-#: models.py:451
+#: models.py:453
 msgid "Slug do identificar da referência."
 msgstr "Reference identifier slug."
 
-#: models.py:452
+#: models.py:454
 msgid "citação"
 msgstr "citation"
 
-#: models.py:452
+#: models.py:454
 msgid "Citação formatada da referência."
 msgstr "Reference formatted reference."
 
-#: models.py:454
+#: models.py:456
 msgid "Fotos associadas à esta referência."
 msgstr "Photos linked to this reference."
 
-#: models.py:456
+#: models.py:458
 msgid "Vídeos associados à esta referência."
 msgstr "Videos linked to this reference."
 
-#: models.py:458
+#: models.py:460
 msgid "Número de fotos associadas à esta referência."
 msgstr "Number of photos linked to this reference."
 
-#: models.py:460
+#: models.py:462
 msgid "Número de vídeos associados à esta referência."
 msgstr "Number of videos linked to this reference."
 
-#: models.py:480
+#: models.py:482
 msgid "referência"
 msgstr "reference"
 
-#: models.py:481 models.py:500 templates/base.html:121
+#: models.py:483 models.py:502 templates/base.html:121
 msgid "referências"
 msgstr "references"
 
-#: models.py:486
+#: models.py:488
 msgid "Nome do tour."
 msgstr "Tour name."
 
-#: models.py:487
+#: models.py:489
 msgid "Slug do nome do tour."
 msgstr "Tour name slug."
 
-#: models.py:488
+#: models.py:490
 msgid "Descrição do tour."
 msgstr "Tour description."
 
-#: models.py:489
+#: models.py:491
 msgid "Informa se o tour está visível para visitantes anônimos."
 msgstr "Tells if tour is visible to anonymous users."
 
-#: models.py:490
+#: models.py:492
 msgid "Data de publicação do tour no Cifonauta."
 msgstr "Tour publication date at Cifonauta."
 
-#: models.py:491
+#: models.py:493
 msgid "Data da última modificação do tour."
 msgstr "Tour modification date."
 
-#: models.py:494
+#: models.py:496
 msgid "Guarda estatísticas de acesso ao tour."
 msgstr "Stores tour stats."
 
-#: models.py:496
+#: models.py:498
 msgid "Fotos associadas a este tour."
 msgstr "Photos linked to this tour."
 
-#: models.py:498
+#: models.py:500
 msgid "Vídeos associados a este tour."
 msgstr "Videos linked to this tour."
 
-#: models.py:500
+#: models.py:502
 msgid "Referências associadas a este tour."
 msgstr "References linked to this tour."
 
-#: models.py:502
+#: models.py:504
 msgid "Número de fotos associadas a este tour."
 msgstr "Number of photos linked to this tour."
 
-#: models.py:504
+#: models.py:506
 msgid "Número de vídeos associados a este tour."
 msgstr "Number of videos linked to this tour."
 
-#: models.py:523
+#: models.py:525
 msgid "tour"
 msgstr "tour"
 
-#: models.py:524 templates/base.html:106
+#: models.py:526 templates/base.html:106
 msgid "tours"
 msgstr "tours"
 
-#: models.py:531
+#: models.py:534
+#, fuzzy
+msgid "Define a ordem das imagens em um tour."
+msgstr "Define tag order in a queryset."
+
+#: models.py:541
+#, fuzzy
+msgid "posição no tour"
+msgstr "Tour description."
+
+#: models.py:542
+#, fuzzy
+msgid "posições no tour"
+msgstr "Tour description."
+
+#: models.py:549
 msgid "Número de impressões de página de uma imagem."
 msgstr "Number of pageviews of an image."
 
@@ -1239,16 +1254,24 @@ msgid "Explore a biodiversidade marinha"
 msgstr "Explore the marine biodiversity"
 
 #: templates/main_page.html:33
-msgid "saiba mais sobre o banco"
-msgstr "learn more about the database"
+#, fuzzy
+msgid "saiba mais"
+msgstr "See more"
 
 #: templates/main_page.html:33
-msgid "entenda a organização do conteúdo"
+#, fuzzy
+msgid "organização do conteúdo"
 msgstr "understand content organization"
 
 #: templates/main_page.html:33
-msgid "leia os termos de uso das imagens"
+#, fuzzy
+msgid "termos de uso das imagens"
 msgstr "read the terms of use"
+
+#: templates/main_page.html:33
+#, fuzzy
+msgid "imprensa"
+msgstr "Press kit"
 
 #: templates/main_page.html:41
 msgid "Últimas fotos e vídeos"
@@ -1623,7 +1646,8 @@ msgid ""
 "mil fotos</a> e <a href=\"/search/?type=video\">250 vídeos</a> de "
 "protozoários, animais e plantas. Este material é fruto de estudos "
 "científicos e atividades de ensino em biologia marinha e está sendo "
-"disponibilizado por pesquisadores e estudantes.\n"
+"disponibilizado por pesquisadores e estudantes. Novas imagens são "
+"adicionadas ao banco regularmente.\n"
 "  "
 msgstr ""
 
@@ -1897,6 +1921,9 @@ msgid ""
 msgstr ""
 "Visit the tour <a href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</"
 "a>."
+
+#~ msgid "saiba mais sobre o banco"
+#~ msgstr "learn more about the database"
 
 #~ msgid "Clique para abrir."
 #~ msgstr "Click to open"

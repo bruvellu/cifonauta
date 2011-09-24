@@ -171,3 +171,15 @@ def makestats(signal, instance, sender, **kwargs):
         newstats = Stats()
         newstats.save()
         instance.stats = newstats
+
+def set_position(signal, instance, sender, **kwargs):
+    '''Cria objeto com posição no tour, se não existir.'''
+    #TODO Create unset_position signal.
+    from meta.models import TourPosition
+    images = instance.images.all()
+    for image in images:
+        try:
+            query = TourPosition.objects.get(photo=image, tour=instance)
+        except:
+            tp = TourPosition(photo=image, tour=instance)
+            tp.save()

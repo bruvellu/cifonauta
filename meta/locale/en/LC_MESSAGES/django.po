@@ -2,14 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-23 22:03-0300\n"
-"PO-Revision-Date: 2011-09-16 12:14\n"
+"POT-Creation-Date: 2011-09-24 15:37-0300\n"
+"PO-Revision-Date: 2011-09-24 15:50\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -85,7 +85,8 @@ msgstr "Cifonauta: only videos (%(field)s=%(name)s)"
 #, python-format
 msgid "Fotos e vídeos do banco de imagens Cifonauta com %(field)s=%(name)s."
 msgstr ""
-"Photos and videos of Cifonauta image database where %(field)s=%(name)s."
+"Photos and videos of Cifonauta image database where "
+"%(field)s=%(name)s."
 
 #: feeds.py:132
 #, python-format
@@ -926,19 +927,16 @@ msgid "tours"
 msgstr "tours"
 
 #: models.py:534
-#, fuzzy
 msgid "Define a ordem das imagens em um tour."
-msgstr "Define tag order in a queryset."
+msgstr "Define image order in a tour."
 
 #: models.py:541
-#, fuzzy
 msgid "posição no tour"
-msgstr "Tour description."
+msgstr "position in the tour"
 
 #: models.py:542
-#, fuzzy
 msgid "posições no tour"
-msgstr "Tour description."
+msgstr "positions in the tour"
 
 #: models.py:549
 msgid "Número de impressões de página de uma imagem."
@@ -1019,11 +1017,12 @@ msgstr "Creative Commons License"
 
 #: templates/base.html:193
 msgid ""
-"O conteúdo deste website está sob uma licença Creative Commons Atribuição-"
-"Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional"
+"O conteúdo deste website está sob uma licença Creative Commons "
+"Atribuição-Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 "
+"internacional"
 msgstr ""
-"The content of this website is licensed under a Creative Commons Attribution-"
-"NonCommercial-ShareAlike 3.0 Unported License"
+"The content of this website is licensed under a Creative Commons "
+"Attribution-NonCommercial-ShareAlike 3.0 Unported License"
 
 #: templates/base.html:196
 msgid "Apoio"
@@ -1041,11 +1040,13 @@ msgstr "Basic information"
 msgid "Sobre"
 msgstr "About"
 
-#: templates/base.html:204 templates/sobremenu.html:6
+#: templates/base.html:204 templates/press_page.html:42
+#: templates/sobremenu.html:6
 msgid "Conteúdo"
 msgstr "Content"
 
-#: templates/base.html:205 templates/sobremenu.html:8
+#: templates/base.html:205 templates/press_page.html:49
+#: templates/sobremenu.html:8
 msgid "Organização"
 msgstr "Organization"
 
@@ -1060,9 +1061,8 @@ msgstr "Terms of use and rights"
 #: templates/base.html:208 templates/press_page.html:3
 #: templates/press_page.html.py:10 templates/press_page.html:19
 #: templates/sobremenu.html:9
-#, fuzzy
 msgid "Imprensa"
-msgstr "Press kit"
+msgstr "Press"
 
 #: templates/base.html:212
 msgid "Explorar"
@@ -1197,11 +1197,11 @@ msgstr "click here to show content"
 
 #: templates/disqus.html:16
 msgid ""
-"Por favor ative o Javascript para ver os <a href=\"http://disqus.com/?"
-"ref_noscript\">comentários."
+"Por favor ative o Javascript para ver os <a "
+"href=\"http://disqus.com/?ref_noscript\">comentários."
 msgstr ""
-"Please activate Javascript to see <a href=\"http://disqus.com/?ref_noscript"
-"\">comments.   "
+"Please activate Javascript to see <a "
+"href=\"http://disqus.com/?ref_noscript\">comments.   "
 
 #: templates/embed.html:32 templates/video.html:14
 msgid "Still do vídeo"
@@ -1238,40 +1238,36 @@ msgstr "marine biology, biodiversity, image database, ocean"
 #: templates/main_page.html:5 templates/main_page.html.py:14
 #: templates/main_page.html:30
 msgid ""
-"O banco de imagens <em>Cifonauta</em> contém uma grande variedade de fotos e "
-"vídeos provenientes de atividades científicas em biologia marinha. As "
-"imagens carregam marcadores com classificação taxonômica, estágio de vida, "
-"habitat e outras informações que permitem navegar de maneira intuitiva e "
-"didática."
+"O banco de imagens <em>Cifonauta</em> contém uma grande variedade de "
+"fotos e vídeos provenientes de atividades científicas em biologia "
+"marinha. As imagens carregam marcadores com classificação taxonômica, "
+"estágio de vida, habitat e outras informações que permitem navegar de "
+"maneira intuitiva e didática."
 msgstr ""
-"<em>Cifonauta</em> is an image database containing a wide variety of photos "
-"and videos from scientific activities in marine biology. The images hold "
-"tags with taxonomic classification, life stage, habitat, and other "
-"information that let you browse intuitively."
+"<em>Cifonauta</em> is an image database containing a wide variety of "
+"photos and videos from scientific activities in marine biology. The "
+"images hold tags with taxonomic classification, life stage, habitat, "
+"and other information that let you browse intuitively."
 
 #: templates/main_page.html:28
 msgid "Explore a biodiversidade marinha"
 msgstr "Explore the marine biodiversity"
 
 #: templates/main_page.html:33
-#, fuzzy
 msgid "saiba mais"
-msgstr "See more"
+msgstr "read more"
 
 #: templates/main_page.html:33
-#, fuzzy
 msgid "organização do conteúdo"
-msgstr "understand content organization"
+msgstr "content organization"
 
 #: templates/main_page.html:33
-#, fuzzy
 msgid "termos de uso das imagens"
-msgstr "read the terms of use"
+msgstr "image terms of use"
 
 #: templates/main_page.html:33
-#, fuzzy
 msgid "imprensa"
-msgstr "Press kit"
+msgstr "press"
 
 #: templates/main_page.html:41
 msgid "Últimas fotos e vídeos"
@@ -1287,29 +1283,31 @@ msgstr "Latest news"
 
 #: templates/main_page.html:52
 msgid ""
-"Além de fotos representativas de cada grupo disponibilizamos séries de um "
-"mesmo organismo possibilitando uma visualização mais completa de sua "
-"morfologia e tridimensionalidade."
+"Além de fotos representativas de cada grupo disponibilizamos séries de "
+"um mesmo organismo possibilitando uma visualização mais completa de sua"
+" morfologia e tridimensionalidade."
 msgstr ""
 "In addition to representative photos of each taxon we made available "
-"sequential images of the same organism to allow a more complete view of "
-"their morphology and dimensionality."
+"sequential images of the same organism to allow a more complete view "
+"of their morphology and dimensionality."
 
 #: templates/main_page.html:64
 msgid ""
-"Mostram aspectos da biologia dos organismos como desenvolvimento, locomoção, "
-"comportamento e reprodução em vídeos de curta duração."
+"Mostram aspectos da biologia dos organismos como desenvolvimento, "
+"locomoção, comportamento e reprodução em vídeos de curta duração."
 msgstr ""
-"Short footage material showing aspects of the biology of organisms such as "
-"development, locomotion, behavior, and reproduction."
+"Short footage material showing aspects of the biology of organisms "
+"such as development, locomotion, behavior, and reproduction."
 
 #: templates/main_page.html:76
 msgid ""
-"Seleção de imagens do banco sobre um tema específico com texto descritivo e "
-"slideshow. Conheça os <a href=\"/tours/\">tours disponíveis</a>."
+"Seleção de imagens do banco sobre um tema específico com texto "
+"descritivo e slideshow. Conheça os <a href=\"/tours/\">tours "
+"disponíveis</a>."
 msgstr ""
-"Selection of images from the database on a specific topic with descriptive "
-"text and slideshow. See our <a href=\"/tours/\">available tours</a>."
+"Selection of images from the database on a specific topic with "
+"descriptive text and slideshow. See our <a href=\"/tours/\">available "
+"tours</a>."
 
 #: templates/main_page.html:83
 msgid "Destaques"
@@ -1329,8 +1327,9 @@ msgid ""
 "minus\">−</span>] para refinar sua busca ou clique no nome para abrir a "
 "página do metadado."
 msgstr ""
-"Use [<span class=\"sign plus\">+</span>] and [<span class=\"sign minus\">−</"
-"span>] to refine your query or click on the name to open metadata's page."
+"Use [<span class=\"sign plus\">+</span>] and [<span class=\"sign "
+"minus\">−</span>] to refine your query or click on the name to open "
+"metadata's page."
 
 #: templates/mais.html:11
 msgid "Todos os marcadores"
@@ -1389,11 +1388,11 @@ msgstr "Geolocation"
 #: templates/media_page.html:128 templates/feeds/media_post.html:59
 #, python-format
 msgid ""
-"Banco de imagens <em>Cifonauta</em>. Disponível em: <a href=\"%(media_url)s"
-"\">http://%(host)s%(media_url)s</a> Acesso em:"
+"Banco de imagens <em>Cifonauta</em>. Disponível em: <a "
+"href=\"%(media_url)s\">http://%(host)s%(media_url)s</a> Acesso em:"
 msgstr ""
-"<em>Cifonauta</em> image database. Available at: <a href=\"%(media_url)s"
-"\">http://%(host)s%(media_url)s</a> Accessed:"
+"<em>Cifonauta</em> image database. Available at: <a "
+"href=\"%(media_url)s\">http://%(host)s%(media_url)s</a> Accessed:"
 
 #: templates/media_page.html:130
 msgid "Conheça os <a href=\"/termos/\">termos de uso</a>."
@@ -1459,71 +1458,73 @@ msgstr "Database organization"
 
 #: templates/organizacao.html:6 templates/organizacao.html.py:14
 msgid ""
-"As fotos e vídeos podem ser pesquisadas por meio de informações básicas "
-"(metadados), como espécie, localidade, autor, tamanho, etc. Estes marcadores "
-"organizados em categorias como técnica fotográfica, estágio de vida, "
-"habitat, etc, deixam a navegação mais informativa e interessante."
+"As fotos e vídeos podem ser pesquisadas por meio de informações básicas"
+" (metadados), como espécie, localidade, autor, tamanho, etc. Estes "
+"marcadores organizados em categorias como técnica fotográfica, estágio "
+"de vida, habitat, etc, deixam a navegação mais informativa e "
+"interessante."
 msgstr ""
-"Photos and videos can be searched by basic information (metadata), such as "
-"species, place, author, size, etc. These tags, organized by categories like "
-"photography technique, life stage, habitat, etc, make browsing more "
-"informative and interesting."
+"Photos and videos can be searched by basic information (metadata), "
+"such as species, place, author, size, etc. These tags, organized by "
+"categories like photography technique, life stage, habitat, etc, make "
+"browsing more informative and interesting."
 
 #: templates/organizacao.html:23
 msgid ""
-"As fotos e vídeos do <strong>Cifonauta</strong> podem ser pesquisadas por "
-"meio de informações básicas (metadados), como espécie, localidade, autor, "
-"tamanho, etc. Estes marcadores organizados em categorias como técnica "
-"fotográfica, estágio de vida, habitat, etc, deixam a navegação mais "
-"informativa e interessante. Por exemplo, você pode querer procurar <a href="
-"\"/search/?tag=campo-escuro,larva&taxon=crustacea\">fotos de larvas de "
-"crustáceos tiradas em campo escuro</a>, ou apenas navegar pelos <a href=\"/"
-"search/?tag=adulto,planctonico\">estágios adultos de organismos "
-"planctônicos</a>. A categorização das imagens e a descrição de cada marcador "
-"(com um exemplo aleatório) encontra-se abaixo."
+"As fotos e vídeos do <strong>Cifonauta</strong> podem ser pesquisadas "
+"por meio de informações básicas (metadados), como espécie, localidade, "
+"autor, tamanho, etc. Estes marcadores organizados em categorias como "
+"técnica fotográfica, estágio de vida, habitat, etc, deixam a navegação "
+"mais informativa e interessante. Por exemplo, você pode querer procurar"
+" <a href=\"/search/?tag=campo-escuro,larva&taxon=crustacea\">fotos de "
+"larvas de crustáceos tiradas em campo escuro</a>, ou apenas navegar "
+"pelos <a href=\"/search/?tag=adulto,planctonico\">estágios adultos de "
+"organismos planctônicos</a>. A categorização das imagens e a descrição "
+"de cada marcador (com um exemplo aleatório) encontra-se abaixo."
 msgstr ""
 "<strong>Cifonauta</strong> photos and videos can be searched by basic "
-"information (metadata), such as species, place, author, size, etc. These "
-"tags organized by categories like photographic technique, life stage, "
-"habitat, etc, provides a more informative and interesting navigation. For "
-"example, you might want to look for <a href=\"/search/?tag=campo-escuro,"
-"larva&taxon=crustacea\">dark-field crustacean larvae photos</a>, or just "
-"browse through the <a href=\"/search/?tag=adulto,planctonico\">adult forms "
-"of planktonik organisms</a>. Image categorization and a description for each "
-"tag (with a random example) is below."
+"information (metadata), such as species, place, author, size, etc. "
+"These tags organized by categories like photographic technique, life "
+"stage, habitat, etc, provides a more informative and interesting "
+"navigation. For example, you might want to look for <a "
+"href=\"/search/?tag=campo-escuro,larva&taxon=crustacea\">dark-field "
+"crustacean larvae photos</a>, or just browse through the <a "
+"href=\"/search/?tag=adulto,planctonico\">adult forms of planktonik "
+"organisms</a>. Image categorization and a description for each tag "
+"(with a random example) is below."
 
 #: templates/organizacao.html:27
 msgid ""
 "A classificação biológica utilizada não adota nenhuma proposta em "
-"particular, mas segue quase estritamente a hierarquia taxonômica publicada "
-"pelo <a href=\"http://www.itis.gov/\">ITIS</a>. Portanto, nem sempre a "
-"classificação estará de acordo com os últimos avanços de cada área. Em "
-"alguns casos, empregamos a proposta de classificação seguida pelo "
-"especialista que identificou a espécie ilustrada."
+"particular, mas segue quase estritamente a hierarquia taxonômica "
+"publicada pelo <a href=\"http://www.itis.gov/\">ITIS</a>. Portanto, nem "
+"sempre a classificação estará de acordo com os últimos avanços de cada "
+"área. Em alguns casos, empregamos a proposta de classificação seguida "
+"pelo especialista que identificou a espécie ilustrada."
 msgstr ""
 "The taxonomic information in this site does not adopt any particular "
 "classification scheme, but reflects, almost strictly, the hierarchy "
 "published by <a href=\"http://www.itis.gov/\">ITIS</a>. Therefore, the "
-"classification might not be in accordance with latest findings of each area. "
-"In some cases we employ the phylogeny proposed by the expert that identified "
-"or provided the image, if applicable."
+"classification might not be in accordance with latest findings of each"
+" area. In some cases we employ the phylogeny proposed by the expert "
+"that identified or provided the image, if applicable."
 
 #: templates/organizacao.html:31
 msgid ""
 "Para dar uma ideia das dimensões dos organismos, criamos 5 classes de "
 "tamanho arbitrariamente. A fauna bentônica recebeu uma classificação "
-"adicional de tamanho: macrofauna, meiofauna e microfauna (ver item Modo de "
-"Vida, abaixo). Fotos dos ambientes não contêm informações de tamanho, mas "
-"caso estejam ilustrando algum organismo (por exemplo, cracas no costão), "
-"podem vir acompanhadas da escala relativa a esse organismo. As classes de "
-"tamanho são:"
+"adicional de tamanho: macrofauna, meiofauna e microfauna (ver item Modo"
+" de Vida, abaixo). Fotos dos ambientes não contêm informações de "
+"tamanho, mas caso estejam ilustrando algum organismo (por exemplo, "
+"cracas no costão), podem vir acompanhadas da escala relativa a esse "
+"organismo. As classes de tamanho são:"
 msgstr ""
-"We arbitrarily created 5 classes of sizes to provide an idea of organisms' "
-"dimensions. Benthic fauna received additional size information: macrofauna, "
-"meiofauna e microfauna (see item Life mode, below). Landscape/habitat photos "
-"do not hold size information, but if they are showing an specific organism "
-"(barnacles on rocky shore, for example) a size class is provided. Size "
-"classes are:"
+"We arbitrarily created 5 classes of sizes to provide an idea of "
+"organisms' dimensions. Benthic fauna received additional size "
+"information: macrofauna, meiofauna e microfauna (see item Life mode, "
+"below). Landscape/habitat photos do not hold size information, but if "
+"they are showing an specific organism (barnacles on rocky shore, for "
+"example) a size class is provided. Size classes are:"
 
 #: templates/organizacao.html:36 templates/organizacao.html.py:55
 #: templates/organizacao.html:88 templates/organizacao.html.py:139
@@ -1544,18 +1545,19 @@ msgstr "Photographic techniques"
 
 #: templates/organizacao.html:50
 msgid ""
-"As diferentes técnicas utilizadas para capturar as imagens do banco foram "
-"divididas em 4 categorias: <strong>submersa</strong>, "
+"As diferentes técnicas utilizadas para capturar as imagens do banco "
+"foram divididas em 4 categorias: <strong>submersa</strong>, "
 "<strong>macrofotografia</strong>, <strong>paisagem</strong> e "
 "<strong>microscopia</strong>. Para abarcar a variedade de técnicas de "
-"microscopia este último foi subdividido. Segue então a lista dos marcadores "
-"referentes às técnicas fotográficas:"
+"microscopia este último foi subdividido. Segue então a lista dos "
+"marcadores referentes às técnicas fotográficas:"
 msgstr ""
-"Different techniques used to capture the dataase images were divided in 4 "
-"categories.: <strong>submarine</strong>, <strong>macrophotography</strong>, "
-"<strong>landscape/seascape</strong> e <strong>microscopy</strong>. To "
-"embrace the variety of microscopy techiniques the latter was subdivided. "
-"This is the list of tags related to photographic techniques:"
+"Different techniques used to capture the dataase images were divided "
+"in 4 categories.: <strong>submarine</strong>, "
+"<strong>macrophotography</strong>, <strong>landscape/seascape</strong>"
+" e <strong>microscopy</strong>. To embrace the variety of microscopy "
+"techiniques the latter was subdivided. This is the list of tags "
+"related to photographic techniques:"
 
 #: templates/organizacao.html:54
 msgid "Técnica"
@@ -1603,115 +1605,137 @@ msgstr "Locations"
 
 #: templates/press_page.html:5
 msgid "imprensa, destaques, resumo"
-msgstr ""
+msgstr "press, highlights, summary"
 
-#: templates/press_page.html:6
-#, fuzzy
-msgid "imprensa do banco de imagens Cifonauta."
-msgstr "Cifonauta image database search engine."
-
-#: templates/press_page.html:12
-#, fuzzy
-msgid "Imprensa do banco de imagens Cifonauta."
-msgstr "Cifonauta image database search engine."
+#: templates/press_page.html:6 templates/press_page.html.py:12
+msgid "Kit imprensa do banco de imagens Cifonauta."
+msgstr "Press kit for Cifonauta image database."
 
 #: templates/press_page.html:23
 msgid ""
 "\n"
-"  Para mais detalhes visite a página <a href=\"/about/\">Sobre</a> ou entre "
-"em <a href=\"/feedback/\">contato</a>.\n"
+"  Para mais detalhes visite a página <a href=\"/about/\">Sobre</a> ou entre em <a href=\"/feedback/\">contato</a>.\n"
 "  "
 msgstr ""
+"\n"
+"For additional details visit our <a href=\"/about/\">About</a> page or <a href=\"/feedback/\">contact us</a>."
+
+#: templates/press_page.html:28
+msgid "O que é?"
+msgstr "What is it?"
 
 #: templates/press_page.html:30
-#, fuzzy
 msgid ""
 "\n"
 "  O Cifonauta é um banco de imagens para a biologia marinha.\n"
 "  "
-msgstr "Cifonauta: Marine Biology Image Database"
+msgstr ""
+"\n"
+"Cifonauta is an image database for marine biology."
+
+#: templates/press_page.html:35
+msgid "Objetivo"
+msgstr "Goal"
 
 #: templates/press_page.html:37
 msgid ""
 "\n"
-"  Compartilhar informações científicas e divulgar a biodiversidade marinha "
-"através de imagens.\n"
+"  Compartilhar informações científicas e divulgar a biodiversidade marinha através de imagens.\n"
 "  "
 msgstr ""
+"\n"
+"Share and disseminate scientific information and marine biodiversity through images."
 
 #: templates/press_page.html:44
 msgid ""
 "\n"
-"  Atualmente estão disponíveis mais de <a href=\"/search/?type=photo\">10 "
-"mil fotos</a> e <a href=\"/search/?type=video\">250 vídeos</a> de "
-"protozoários, animais e plantas. Este material é fruto de estudos "
-"científicos e atividades de ensino em biologia marinha e está sendo "
-"disponibilizado por pesquisadores e estudantes. Novas imagens são "
-"adicionadas ao banco regularmente.\n"
+"  Atualmente estão disponíveis mais de <a href=\"/search/?type=photo\">10 mil fotos</a> e <a href=\"/search/?type=video\">250 vídeos</a> de protozoários, animais e plantas. Este material é fruto de estudos científicos e atividades de ensino em biologia marinha e está sendo disponibilizado por pesquisadores e estudantes. Novas imagens são adicionadas ao banco regularmente.\n"
 "  "
 msgstr ""
+"\n"
+"We have today more than <a href=\"/search/?type=photo\">10 thousand photos</a> and <a href=\"/search/?type=video\">250 videos</a> of protozoans, animals, and plants. This material is the result of scientific research and teaching activities in marine biology made available by researchers and students. New images are added regularly to the database."
 
 #: templates/press_page.html:51
 msgid ""
 "\n"
-"  O conteúdo está organizado por informações como <a href=\"/taxa/"
-"\">classificação taxonômica</a>, estágio e modo de vida, geolocalização, <a "
-"href=\"/tags/\">entre outros</a>. O usuário pode utilizar estes marcadores "
-"para navegar e refinar suas buscas combinando-os. Também criamos <a href=\"/"
-"tours/\">tours temáticos</a>, seleções de imagens representativas sobre "
-"algum assunto específico (eg, diversidade de larvas marinhas), que funcionam "
-"como ponto de partida para explorar o conteúdo do banco.\n"
+"  O conteúdo está organizado por informações como <a href=\"/taxa/\">classificação taxonômica</a>, estágio e modo de vida, geolocalização, <a href=\"/tags/\">entre outros</a>. O usuário pode utilizar estes marcadores para navegar e refinar suas buscas combinando-os. Também criamos <a href=\"/tours/\">tours temáticos</a>, seleções de imagens representativas sobre algum assunto específico (eg, diversidade de larvas marinhas), que funcionam como ponto de partida para explorar o conteúdo do banco.\n"
 "  "
 msgstr ""
+"\n"
+"Content is organized by information such as <a href=\"/taxa/\">taxonomic classification</a>, stage and mode of life, geolocation, <a href=\"/tags/\">and others</a>. The user can use these tags to browse and refine queries by combining them. Also, we created <a href=\"/tours/\">thematic tours</a>, selections of representative images about a specific topic (eg, diversity of marine larvae), that serve as a starting point to explore the contents of the database."
+
+#: templates/press_page.html:56
+msgid "Motivação"
+msgstr "Motivation"
 
 #: templates/press_page.html:58
 msgid ""
 "\n"
-"  Aproveitar a documentação fotográfica de pesquisas científicas, que acabam "
-"nunca vindo à público, para enriquecer a divulgação científica em biologia "
-"marinha.\n"
+"  Aproveitar a documentação fotográfica de pesquisas científicas, que acabam nunca vindo à público, para enriquecer a divulgação científica em biologia marinha.\n"
 "  "
 msgstr ""
+"\n"
+"Make use of the vast photographic documentation of scientific research, that are rarely published in full, to enrich the science outreach in marine biology."
+
+#: templates/press_page.html:63
+msgid "Re-uso"
+msgstr "Reuse"
 
 #: templates/press_page.html:65
 msgid ""
 "\n"
-"  O conteúdo do banco está disponibilizado sob uma licença de uso flexível "
-"que permite a reutilização do material para fins não-comerciais, desde que a "
-"fonte seja citada.\n"
+"  O conteúdo do banco está disponibilizado sob uma licença de uso flexível que permite a reutilização do material para fins não-comerciais, desde que a fonte seja citada.\n"
 "  "
 msgstr ""
+"\n"
+"Database content is made available under a flexible license that allows reuse of material for non-commercial purposes, provided the source is cited."
+
+#: templates/press_page.html:70
+msgid "Créditos"
+msgstr "Credits"
 
 #: templates/press_page.html:72
 msgid ""
 "\n"
-"  O Cifonauta é uma iniciativa do Centro de Biologia Marinha da Universidade "
-"de São Paulo e foi desenvolvido por Alvaro Migotto e Bruno Vellutini no "
-"âmbito do Edital MCT/CNPq nº 42/2007 - Difusão e Popularização da C&T "
-"(processo nº 551951/2008-7) do CNPq.\n"
+"  O Cifonauta é uma iniciativa do Centro de Biologia Marinha da Universidade de São Paulo e foi desenvolvido por Alvaro Migotto e Bruno Vellutini no âmbito do Edital MCT/CNPq nº 42/2007 - Difusão e Popularização da C&T (processo nº 551951/2008-7) do CNPq.\n"
 "  "
 msgstr ""
+"\n"
+"Cifonauta is an initiative of the Marine Biology Center of University of São Paulo and was developed by Alvaro Migotto and Bruno Vellutini under the Call MCT/CNPq nº 42/2007 - Dissemination and Popularization of Science & Technology (process nº 551951/2008-7) from CNPq."
+
+#: templates/press_page.html:77
+msgid "Tecnologia"
+msgstr "Technology"
 
 #: templates/press_page.html:79
 msgid ""
 "\n"
-"  A infraestrutura foi desenvolvida com programas livres como <a href="
-"\"http://www.python.org/\">Python</a>, <a href=\"https://www.djangoproject."
-"com/\">Django</a> e <a href=\"http://www.postgresql.org/\">PostgreSQL</a> e "
-"o código fonte do Cifonauta é <a href=\"http://github.com/nelas/cifonauta/"
-"\">aberto</a>. Saiba <a href=\"/details\">mais detalhes</a>.\n"
+"  A infraestrutura foi desenvolvida com programas livres como <a href=\"http://www.python.org/\">Python</a>, <a href=\"https://www.djangoproject.com/\">Django</a> e <a href=\"http://www.postgresql.org/\">PostgreSQL</a> e o código fonte do Cifonauta é <a href=\"http://github.com/nelas/cifonauta/\">aberto</a>. Saiba <a href=\"/details\">mais detalhes</a>.\n"
 "  "
 msgstr ""
+"\n"
+"Infraestructure was developed with open source software like <a href=\"http://www.python.org/\">Python</a>, <a href=\"https://www.djangoproject.com/\">Django</a>, and <a href=\"http://www.postgresql.org/\">PostgreSQL</a> and Cifonauta's source code is <a href=\"http://github.com/nelas/cifonauta/\">open</a>. Read <a href=\"/details\">more details</a>."
 
-#: templates/press_page.html:91
-#, fuzzy
+#: templates/press_page.html:84
+msgid "Cifonauta?"
+msgstr "Cifonauta?"
+
+#: templates/press_page.html:86
+msgid ""
+"\n"
+"  O nome e logo deste banco é baseado em um tipo de larva dos <a href=\"/taxon/ectoprocta/\">briozoários</a>, invertebrados marinhos coloniais e sésseis. A <a href=\"/photo/6362/\">larva cifonauta</a> passa semanas na coluna d'água até se fixar em algum substrato, como rochas ou algas. Ela sofre metamorfose para a forma adulta originando assim uma nova colônia.\n"
+"  "
+msgstr ""
+"\n"
+"Database name and logo is based on a type larva from <a href=\"/taxon/ectoprocta/\">bryozoans</a>, colonial and sessile marine invertebrates. <a href=\"/photo/6362/\">Cyphonautes larvae</a> live in the water column for weeks until settling on some substrate, such as rocks or algae. It then goes under metamorphosis to the adult form originating a new colony."
+
+#: templates/press_page.html:97
 msgid "Fotos em destaque"
-msgstr "Highlights only"
+msgstr "Featured photos"
 
-#: templates/press_page.html:100
-#, fuzzy
+#: templates/press_page.html:106
 msgid "Vídeos em destaque"
-msgstr "Highlights only"
+msgstr "Featured videos"
 
 #: templates/refs_page.html:4
 msgid "referências, biologia marinha, biodiversidade"
@@ -1916,11 +1940,14 @@ msgstr "Read the <a href=\"http://%(host)s/termos/\">terms of use</a>."
 #: templates/feeds/tours.html:18
 #, python-format
 msgid ""
-"Conheça o tour <a href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</"
-"a>."
+"Conheça o tour <a "
+"href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</a>."
 msgstr ""
-"Visit the tour <a href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</"
-"a>."
+"Visit the tour <a "
+"href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</a>."
+
+#~ msgid "Imprensa do banco de imagens Cifonauta."
+#~ msgstr "Cifonauta image database search engine."
 
 #~ msgid "saiba mais sobre o banco"
 #~ msgstr "learn more about the database"

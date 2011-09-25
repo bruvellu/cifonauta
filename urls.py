@@ -77,7 +77,7 @@ urlpatterns = patterns('',
         url(r'^literature/$', cache_page(refs_page, ONE_WEEK), 
             name='refs_url'),
         url(r'^tours/$', cache_page(tours_page, ONE_WEEK), name='tours_url'),
-        url(r'^press/$', press_page, name='press_url'),
+        url(r'^press/$', cache_page(press_page, ONE_WEEK), name='press_url'),
 
         # Tests
         (r'^test/empty/$', empty_page),

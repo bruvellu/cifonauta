@@ -976,9 +976,11 @@ def main(argv):
         print u'das imagens...'
         for image in images:
             image.save()
+            print image.id, image.title
         print u'dos vídeos...'
         for video in videos:
             video.save()
+            print video.id, video.title
         print u'Feito! TSV atualizado.'
 
     # Estatísticas.

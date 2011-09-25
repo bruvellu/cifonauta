@@ -208,47 +208,8 @@ def search_page(request):
                 image_list = image_list.filter(country__slug=country)
                 video_list = video_list.filter(country__slug=country)
 
-        # Usando POST para definir:
-        #   1. Número de resultados por página.
-        #   2. Ordenação por qual metadado (id, visitas, datas, etc).
-        #   3. Tipo de ordenação, ascendente ou descendente.
-        #   4. Mostrar apenas imagens de destaque.
-        if request.method == 'POST':
-            n_form = DisplayForm(request.POST)
-            if n_form.is_valid():
-                n_page = n_form.data['n']
-                request.session['n'] = n_form.data['n']
-                orderby = n_form.data['orderby']
-                request.session['orderby'] = n_form.data['orderby']
-                order = n_form.data['order']
-                request.session['order'] = n_form.data['order']
-                #XXX Meio bizarro, formulário não está mandando False, quando 
-                # destaque é falso. Está enviando vazio e quando é True está 
-                # mandando a string 'on'.
-                try:
-                    highlight = n_form.data['highlight']
-                    request.session['highlight'] = n_form.data['highlight']
-                except:
-                    highlight = False
-                    request.session['highlight'] = False
-        else:
-            try:
-                n_form = DisplayForm(initial={'n': request.session['n'], 
-                    'orderby': request.session['orderby'], 'order': 
-                    request.session['order'], 'highlight': 
-                    request.session['highlight']})
-                n_page = request.session['n']
-                orderby = request.session['orderby']
-                order = request.session['order']
-                highlight = request.session['highlight']
-            except:
-                n_form = DisplayForm(
-                        initial={'n': 16, 'orderby': 'random',
-                            'order': 'desc', 'highlight': True})
-                n_page = 16
-                orderby = 'random'
-                order = 'desc'
-                highlight = True
+        # Define formulário de controle e variáveis.
+        n_form, n_page, orderby, order, highlight = control_form(request)
 
         # Forçar int.
         n_page = int(n_page)
@@ -261,6 +222,7 @@ def search_page(request):
         # Substitui 'random' por '?'
         if orderby == 'random':
             orderby = '?'
+
         # Ordena por request.POST['orderby'].
         image_list = image_list.order_by(orderby)
         video_list = video_list.order_by(orderby)
@@ -699,6 +661,17 @@ def meta_page(request, model_name, field, slug):
 
     Mostra galeria com todas as imagens que o possuem.
     '''
+    # Formulário para controle de ordenação.
+    n_form = DisplayForm(initial={
+        'n': 16,
+        'order': 'random',
+        'highlight': True
+        })
+
+    # Define highlight quando não estiver na sessão do usuário.
+    if not 'highlight' in request.session:
+        request.session['highlight'] = True
+
     #TODO Documentar melhor como funciona.
     queries = {
             u'query': '',
@@ -728,8 +701,34 @@ def meta_page(request, model_name, field, slug):
     except:
         image_list = Image.objects.filter(**filter_args).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').exclude(is_public=False).distinct().order_by('-id')
         video_list = Video.objects.filter(**filter_args).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).exclude(is_public=False).distinct().order_by('-id')
-    images = get_paginated(request, image_list)
-    videos = get_paginated(request, video_list)
+
+    # Define formulário de controle e variáveis.
+    n_form, n_page, orderby, order, highlight = control_form(request)
+
+    # Forçar int.
+    n_page = int(n_page)
+
+    # Restringe à destaques.
+    if highlight:
+        image_list = image_list.filter(highlight=True)
+        video_list = video_list.filter(highlight=True)
+
+    # Substitui 'random' por '?'
+    if orderby == 'random':
+        orderby = '?'
+
+    # Ordena por request.POST['orderby'].
+    image_list = image_list.order_by(orderby)
+    video_list = video_list.order_by(orderby)
+
+    # Reverte a ordem se necessário.
+    if order == 'desc':
+        image_list = image_list.reverse()
+        video_list = video_list.reverse()
+
+    images = get_paginated(request, image_list, n_page)
+    videos = get_paginated(request, video_list, n_page)
+
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
@@ -738,6 +737,7 @@ def meta_page(request, model_name, field, slug):
         'meta': model,
         'field': field,
         'queries': queries,
+        'n_form': n_form,
         })
     return render_to_response('meta_page.html', variables)
 
@@ -891,7 +891,7 @@ def recurse(taxon, q=None):
 
 def insert_parents(taxon):
     '''Gerencia atualização de um táxon no banco de dados.
-    
+
     Pega ou cria cada parent, incluindo ranking, tsn e parent; pega o táxon em 
     questão e atualiza seu ranking, tsn e parent.
     '''
@@ -998,6 +998,45 @@ def get_orphans(entries):
     for k, v in dups.iteritems():
         if len(v) > 1:
             duplicates.append({'path': k, 'replicas': v})
-    print orphaned, duplicates
-    print
     return orphaned, duplicates
+
+def control_form(request):
+    '''Build the control form and return options.'''
+    # Usando POST para definir:
+    #   1. Número de resultados por página.
+    #   2. Ordenação por qual metadado (id, visitas, datas, etc).
+    #   3. Tipo de ordenação, ascendente ou descendente.
+    #   4. Mostrar apenas imagens de destaque.
+    if request.method == 'POST':
+        n_form = DisplayForm(request.POST)
+        if n_form.is_valid():
+            n_page = n_form.data['n']
+            request.session['n'] = n_form.data['n']
+            orderby = n_form.data['orderby']
+            request.session['orderby'] = n_form.data['orderby']
+            order = n_form.data['order']
+            request.session['order'] = n_form.data['order']
+            #XXX Meio bizarro, formulário não está mandando False, quando 
+            # destaque é falso. Está enviando vazio e quando é True está 
+            # mandando a string 'on'.
+            try:
+                highlight = n_form.data['highlight']
+                request.session['highlight'] = n_form.data['highlight']
+            except:
+                highlight = False
+                request.session['highlight'] = False
+    else:
+        try:
+            n_form = DisplayForm(initial={'n': request.session['n'], 'orderby': request.session['orderby'], 'order': request.session['order'], 'highlight': request.session['highlight']})
+            n_page = request.session['n']
+            orderby = request.session['orderby']
+            order = request.session['order']
+            highlight = request.session['highlight']
+        except:
+            n_form = DisplayForm(initial={'n': 16, 'orderby': 'random', 'order': 'desc', 'highlight': True})
+            n_page = 16
+            orderby = 'random'
+            order = 'desc'
+            highlight = True
+
+    return n_form, n_page, orderby, order, highlight

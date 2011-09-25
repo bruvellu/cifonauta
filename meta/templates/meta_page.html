@@ -36,6 +36,13 @@
 {% endblock %}
 {% block sidebar %}
 <aside class="span-8 last">
+<div class="block shadow">
+    <form action="{{ request.path }}" method="post">
+        {{ n_form.as_p}}
+        <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display" />
+        {% csrf_token %}
+    </form>
+</div>
 {% show_info image_list video_list queries %}
 </aside>
 {% endblock %}

@@ -148,7 +148,7 @@ def search_page(request):
                 image_list = image_list.filter(author__slug=author)
                 video_list = video_list.filter(author__slug=author)
 
-        # Tag 
+        # Tag
         if 'tag' in request.GET:
             tags = request.GET['tag'].split(',')
             queries['tag'] = Tag.objects.filter(slug__in=tags)
@@ -285,6 +285,7 @@ def search_page(request):
                 images = []
                 image_list = []
             elif request.GET['type'] == 'all':
+                queries['type'] = ''
                 # Não precisa entrar no queries, para não poluir o url.
                 pass
 

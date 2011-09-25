@@ -357,12 +357,6 @@ def refiner(actives, inactives, field, queries):
     return {'actives': actives, 'inactives': inactives,
             'field': field, 'queries': queries}
 
-@register.inclusion_tag('fino.html')
-def refiner(actives, inactives, field, queries):
-    '''Gera lista de metadados ativos e inativos.'''
-    return {'actives': actives, 'inactives': inactives,
-            'field': field, 'queries': queries}
-
 @register.simple_tag
 def paged_url(query_string, page_number):
     '''Constrói o url para lidar navegação paginada.'''
@@ -375,7 +369,7 @@ def paged_url(query_string, page_number):
     if queries:
         url = url + '&'.join(queries) + '&page=%d' % page_number
     else:
-    	url = url + 'page=%d' % page_number
+        url = url + 'page=%d' % page_number
     return url
 
 @register.simple_tag
@@ -419,6 +413,12 @@ def build_url(meta, field, queries, remove=False, append=None):
     # Usado para diferenciar o primeiro query que não precisa do '&'.
     first = True
     prefix = '/search/?'
+    #XXX Ao passar manualmente o tipo de busca para os urls do search-status, 
+    # ele acaba recolocando, no final desta função, o campo type:photo. Isso 
+    # gera um problema, pois o queries original não continha o type (que foi 
+    # passado só para gerar estes urls). Assim, criei esta variável para não 
+    # colocar o type no queries quando este não estiverem no queries original.
+    do_not_readd = False
 
     # Se for para remover o metadado, remover.
     if remove:
@@ -431,6 +431,8 @@ def build_url(meta, field, queries, remove=False, append=None):
             if field == 'size':
                 queries[field].remove(str(meta.id))
             elif field == 'type':
+                if not queries[field]:
+                    do_not_readd = True
                 queries[field] = ''
             else:
                 queries[field].remove(meta.slug)
@@ -483,12 +485,15 @@ def build_url(meta, field, queries, remove=False, append=None):
                 prefix = prefix + '&' + append
     elif not append:
         if prefix[-1] == '?':
-            prefix = prefix[:-1]
+            prefix = prefix + 'type=all'
+            # Opção para retirar tudo, volta para o search vazio...
+            #prefix = prefix[:-1]
     url = prefix
     # É preciso recolocar o meta removido para não afetar os urls seguintes.
     if remove:
-        # Adiciona o metadado na lista de queries.
-        queries[field] = add_meta(meta, field, queries[field])
+        if not do_not_readd:
+            # Adiciona o metadado na lista de queries.
+            queries[field] = add_meta(meta, field, queries[field])
     else:
         # Como modificações no queries passa para próximos ítens, é necessário
         # retirar o valor da variável (do queries) após criação do url.

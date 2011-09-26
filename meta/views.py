@@ -106,6 +106,7 @@ def search_page(request):
     if 'query' in request.GET or 'type' in request.GET or 'author' in request.GET or 'size' in request.GET or 'tag' in request.GET or 'taxon' in request.GET or 'sublocation' in request.GET or 'city' in request.GET or 'state' in request.GET or 'country' in request.GET:
         # Iniciando querysets para serem filtrados para cada metadado presente na query.
         #XXX Não sei se é muito eficiente, mas por enquanto será assim.
+        #TODO incluir 'stats' aqui:
         image_list = Image.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').exclude(is_public=False)
         video_list = Video.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).exclude(is_public=False)
 
@@ -665,14 +666,13 @@ def meta_page(request, model_name, field, slug):
     n_form = DisplayForm(initial={
         'n': 16,
         'order': 'random',
-        'highlight': True
+        'highlight': True,
         })
 
-    # Define highlight quando não estiver na sessão do usuário.
-    if not 'highlight' in request.session:
-        request.session['highlight'] = True
+    # Define formulário de controle e variáveis.
+    n_form, n_page, orderby, order, highlight = control_form(request)
 
-    #TODO Documentar melhor como funciona.
+    # Queries guardam variáveis do request para o refinador.
     queries = {
             u'query': '',
             u'author': [],
@@ -684,48 +684,42 @@ def meta_page(request, model_name, field, slug):
             u'state': [],
             u'country': [],
             }
+
     #XXX Serve para identificar o field na meta_page. Mas precisa ser 
     # um queryset para rolar o values_list do show_info no extra_tags.
     # Se possível otimizar isso.
     qmodels = model_name.objects.filter(slug__in=[slug])
     queries[field] = qmodels
+
     # Pega objeto.
     model = get_object_or_404(model_name, slug=slug)
-    filter_args = {field: model}
-    try:
+
+    # Constrói argumentos.
+    filter_args = {
+            field: model,
+            'highlight': highlight,
+            'is_public': True,
+            }
+
+    if field == 'taxon':
         q = [Q(**filter_args),]
-        if field == 'taxon':
-            q = recurse(model, q)
-        image_list = Image.objects.filter(reduce(operator.or_, q)).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').exclude(is_public=False).distinct().order_by('-id')
-        video_list = Video.objects.filter(reduce(operator.or_, q)).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).exclude(is_public=False).distinct().order_by('-id')
-    except:
-        image_list = Image.objects.filter(**filter_args).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').exclude(is_public=False).distinct().order_by('-id')
-        video_list = Video.objects.filter(**filter_args).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).exclude(is_public=False).distinct().order_by('-id')
-
-    # Define formulário de controle e variáveis.
-    n_form, n_page, orderby, order, highlight = control_form(request)
-
-    # Forçar int.
-    n_page = int(n_page)
-
-    # Restringe à destaques.
-    if highlight:
-        image_list = image_list.filter(highlight=True)
-        video_list = video_list.filter(highlight=True)
-
-    # Substitui 'random' por '?'
-    if orderby == 'random':
-        orderby = '?'
-
-    # Ordena por request.POST['orderby'].
-    image_list = image_list.order_by(orderby)
-    video_list = video_list.order_by(orderby)
+        q = recurse(model, q)
+        image_list = Image.objects.filter(reduce(operator.or_, q)).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by(orderby)
+        video_list = Video.objects.filter(reduce(operator.or_, q)).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).order_by(orderby)
+        #XXX Retirei o .distinct() destes queries. Conferir...
+    else:
+        image_list = Image.objects.filter(**filter_args).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by(orderby)
+        video_list = Video.objects.filter(**filter_args).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).order_by(orderby)
 
     # Reverte a ordem se necessário.
     if order == 'desc':
         image_list = image_list.reverse()
         video_list = video_list.reverse()
 
+    # Forçar int para paginator.
+    n_page = int(n_page)
+
+    # Cria paginação.
     images = get_paginated(request, image_list, n_page)
     videos = get_paginated(request, video_list, n_page)
 
@@ -1038,5 +1032,13 @@ def control_form(request):
             orderby = 'random'
             order = 'desc'
             highlight = True
+
+    # Substitui 'random' por '?'
+    if orderby == 'random':
+        orderby = '?'
+
+    # Define highlight quando não estiver na sessão do usuário.
+    if not 'highlight' in request.session:
+        request.session['highlight'] = True
 
     return n_form, n_page, orderby, order, highlight

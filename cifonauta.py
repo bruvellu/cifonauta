@@ -321,12 +321,15 @@ class Movie:
             meta_text = ''
 
         if meta_text:
-            meta_dic = pickle.load(meta_text)
-            meta_text.close()
-            # Atualiza meta com valores do arquivo acessório.
-            self.meta.update(meta_dic)
+            try:
+                meta_dic = pickle.load(meta_text)
+                meta_text.close()
+                # Atualiza meta com valores do arquivo acessório.
+                meta.update(meta_dic)
+            except:
+                logger.warning('Pickle is corrupted: %s', meta_text)
 
-        # Inicia processo de renomear arquivo. 
+        # Inicia processo de renomear arquivo.
         if new:
             # Adiciona o antigo caminho aos metadados.
             self.meta['old_filepath'] = os.path.abspath(self.source_filepath)

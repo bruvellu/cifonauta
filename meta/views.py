@@ -67,21 +67,15 @@ def main_page(request):
 def search_page(request):
     '''Página de busca.
 
-    Procura termo no campo tsv do banco de dados, que possibilita o full-text 
-    search.
+    Procura termo no campo tsv do banco de dados usando o extra(). Refina este 
+    queryset de acordo com as variáveis presentes no request.GET.
     '''
-    #TODO Documentar como funciona essa função.
-    #TODO Implementar jQuery e AJAX para melhorar usabilidade.
     form = SearchForm()
     n_form = DisplayForm(initial={
         'n': 16,
         'order': 'random',
         'highlight': True
         })
-
-    # Define highlight quando não estiver na sessão do usuário.
-    if not 'highlight' in request.session:
-        request.session['highlight'] = True
 
     # Refinamentos.
     queries = {
@@ -104,14 +98,17 @@ def search_page(request):
     show_results = False
 
     if 'query' in request.GET or 'type' in request.GET or 'author' in request.GET or 'size' in request.GET or 'tag' in request.GET or 'taxon' in request.GET or 'sublocation' in request.GET or 'city' in request.GET or 'state' in request.GET or 'country' in request.GET:
+
+        # Define formulário de controle e variáveis.
+        n_form, n_page, orderby, order, highlight = control_form(request)
+
         # Iniciando querysets para serem filtrados para cada metadado presente na query.
         #XXX Não sei se é muito eficiente, mas por enquanto será assim.
         #TODO incluir 'stats' aqui:
-        image_list = Image.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').exclude(is_public=False)
-        video_list = Video.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).exclude(is_public=False)
+        image_list = Image.objects.select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').exclude(is_public=False)
+        video_list = Video.objects.select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).exclude(is_public=False)
 
         show_results = True
-        qobj = Q()
 
         # Query
         if 'query' in request.GET:
@@ -209,13 +206,7 @@ def search_page(request):
                 image_list = image_list.filter(country__slug=country)
                 video_list = video_list.filter(country__slug=country)
 
-        # Define formulário de controle e variáveis.
-        n_form, n_page, orderby, order, highlight = control_form(request)
-
-        # Forçar int.
-        n_page = int(n_page)
-
-        # Restringe à destaques.
+        # Restringe aos destaques.
         if highlight:
             image_list = image_list.filter(highlight=True)
             video_list = video_list.filter(highlight=True)
@@ -232,6 +223,9 @@ def search_page(request):
         if order == 'desc':
             image_list = image_list.reverse()
             video_list = video_list.reverse()
+
+        # Forçar int para paginator.
+        n_page = int(n_page)
 
         # Retorna lista paginada.
         images = get_paginated(request, image_list, n_page)
@@ -695,11 +689,7 @@ def meta_page(request, model_name, field, slug):
     model = get_object_or_404(model_name, slug=slug)
 
     # Constrói argumentos.
-    filter_args = {
-            field: model,
-            'highlight': highlight,
-            'is_public': True,
-            }
+    filter_args = {field: model, 'is_public': True}
 
     if field == 'taxon':
         q = [Q(**filter_args),]
@@ -710,6 +700,11 @@ def meta_page(request, model_name, field, slug):
     else:
         image_list = Image.objects.filter(**filter_args).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by(orderby)
         video_list = Video.objects.filter(**filter_args).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).order_by(orderby)
+
+    # Restringe aos destaques.
+    if highlight:
+        image_list = image_list.filter(highlight=True)
+        video_list = video_list.filter(highlight=True)
 
     # Reverte a ordem se necessário.
     if order == 'desc':

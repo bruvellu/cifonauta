@@ -591,8 +591,8 @@ def video_page(request, video_id):
             form = RelatedForm(initial={'type': request.session['rel_type']})
             related = request.session['rel_type']
         except:
-            form = RelatedForm(initial={'type': 'author'})
-            related = u'author'
+            form = RelatedForm(initial={'type': 'taxon'})
+            related = u'taxon'
     if not admin_form:
         try:
             tour_list = video.tour_set.values_list('id', flat=True)

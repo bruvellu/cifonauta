@@ -13,6 +13,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
 #from django.core.cache import cache
+from django.views.decorators.csrf import csrf_protect
 from itis import Itis
 from remove import compile_paths
 
@@ -20,6 +21,7 @@ from remove import compile_paths
 logger = logging.getLogger('central.views')
 
 # Main
+@csrf_protect
 def main_page(request):
     '''Página principal mostrando destaques e pontos de partida para navegar.'''
     # Fotos

@@ -840,6 +840,7 @@ def tours_page(request):
         })
     return render_to_response('tours_page.html', variables)
 
+@csrf_protect
 def press_page(request):
     '''Página com kit imprensa, texto melhores imagens.'''
     # Fotos

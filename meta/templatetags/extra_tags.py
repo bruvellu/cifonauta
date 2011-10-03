@@ -123,7 +123,7 @@ def show_related(context, media, form, related):
                 # Se objeto não estiver vazio, descobrir seu tipo (foto ou vídeo) e gerar o queryset.
                 query = mediaque(media, qobj)
                 # Processar queryset para se adaptar ao navegador linear.
-                rel_media, relative = slicer(query, media.id) 
+                rel_media, relative = slicer(query, media.id)
             else:
                 rel_media = ''
         else:

@@ -14,12 +14,6 @@ register = template.Library()
 
 main_ranks = [u'Reino', u'Filo', u'Classe', u'Ordem', u'Família', u'Gênero', u'Espécie', u'Kingdom', u'Phylum', u'Class', u'Order', u'Family', u'Genus', u'Species']
 
-@register.inclusion_tag('splist.html')
-def show_spp():
-    '''Mostra lista simples de espécies presentes no banco.'''
-    spp = Taxon.objects.filter(rank=u'Espécie').order_by('name')
-    return {'spp': spp}
-
 @register.inclusion_tag('metalist.html')
 def print_metalist(metalist, field):
     '''Mostra lista de metadados com contador de imagens.'''

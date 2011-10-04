@@ -1,13 +1,24 @@
 {% load i18n %}
-{% if spp %}
-<h2>{% trans 'Espécies' %} ({{ spp.count }})</h2>
-<ul class="root tree">
-    {% for sp in spp %}
-    <li class="children tree">
-    <a href="{{ sp.get_absolute_url }}"><em>{{ sp.name }}</em></a>
-    </li>
+
+{% if genera %}
+  <h2>{% trans 'Gêneros e espécies' %}</h2>
+  <ul class="root tree">
+    {% for genus in genera %}
+      {% with spp=genus.children.all %}
+      {% if spp %}
+        {% for sp in spp %}
+          <li class="children tree">
+          <a href="{{ sp.get_absolute_url }}"><em>{{ sp.name }}</em></a>
+          </li>
+        {% endfor %}
+      {% else %}
+        <li class="children tree">
+        <a href="{{ genus.get_absolute_url }}"><em>{{ genus.name }}</em> sp.</a>
+        </li>
+      {% endif %}
+      {% endwith %}
     {% endfor %}
-</ul>
+  </ul>
 {% else %}
-<h2>{% trans 'Nenhuma espécie no banco' %}</h2>
+  <h2>{% trans 'Nenhuma espécie ou gênero no banco' %}</h2>
 {% endif %}

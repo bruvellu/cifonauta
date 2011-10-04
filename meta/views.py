@@ -766,8 +766,13 @@ def tour_page(request, slug):
 
 # Menu
 def taxa_page(request):
-    '''Página mostrando grupos taxonômicos de maneira organizada.'''
+    '''Página mostrando grupos taxonômicos de maneira organizada.
+
+    Lista de espécies é, na verdade, lista de gêneros para que apareçam os 
+    diversos táxons cuja espécie não está definida (ie, Gênero sp.).'''
+    genera = Taxon.objects.filter(rank=u'Gênero').order_by('name')
     variables = RequestContext(request, {
+        'genera': genera,
         })
     return render_to_response('taxa_page.html', variables)
 

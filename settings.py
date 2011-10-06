@@ -47,7 +47,6 @@ JOHNNY_MIDDLEWARE_KEY_PREFIX = 'jc_cifo'
 CACHE_MIDDLEWARE_ALIAS = 'default'
 CACHE_MIDDLEWARE_SECONDS = 600
 CACHE_MIDDLEWARE_KEY_PREFIX = 'cifo'
-#XXX Melhor maneira?
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 # Local time zone for this installation. Choices can be found here:
@@ -122,9 +121,7 @@ SECRET_KEY = ''
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    #'django.template.loaders.filesystem.load_template_source',
     'django.template.loaders.filesystem.Loader',
-    #'django.template.loaders.app_directories.load_template_source',
     'django.template.loaders.app_directories.Loader',
     'django.template.loaders.eggs.load_template_source',
 )
@@ -163,7 +160,7 @@ DEBUG_TOOLBAR_CONFIG = {
     }
 
 # Dajaxice requirement.
-DAJAXICE_MEDIA_PREFIX="dajaxice"
+DAJAXICE_MEDIA_PREFIX = 'dajaxice'
 
 ROOT_URLCONF = 'weblarvae.urls'
 

@@ -196,6 +196,7 @@ def show_related(context, media, form, related):
 @register.inclusion_tag('stats.html')
 def show_stats():
     '''Gera linha com estatísticas do banco.'''
+    #TODO Otimizar isso é necessário? Guardar no banco de dados?
     photos = Image.objects.filter(is_public=True).count()
     videos = Video.objects.filter(is_public=True).count()
     tags = Tag.objects.count()

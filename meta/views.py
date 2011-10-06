@@ -24,40 +24,38 @@ logger = logging.getLogger('central.views')
 @csrf_protect
 def main_page(request):
     '''Página principal mostrando destaques e pontos de partida para navegar.'''
+
     # Fotos
     try:
         # Tenta encontrar destaques capa.
-        images = Image.objects.filter(cover=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'stats', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')
-
-        # Processa queryset, definindo imagens de capa.
-        image = images[0]
-        photo = images[1]
+        main_image = Image.objects.filter(cover=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'stats', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')[0]
+        photo = Image.objects.filter(cover=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'stats', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').exclude(id=main_image.id).order_by('?')[0]
 
         # Faz lista de destaques.
         thumbs = Image.objects.filter(highlight=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'stats', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')[:10]
     except:
-        image, photo, thumbs = '', '', []
+        main_image, photo, thumbs = '', '', []
+
     # Vídeos
     try:
         # Tenta encontrar destaques de capa.
-        videos = Video.objects.filter(cover=True, is_public=True).defer('source_filepath', 'old_filepath', 'timestamp', 'stats', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude', 'webm_filepath', 'ogg_filepath', 'mp4_filepath').order_by('?')[:10]
-        video = videos[0]
+        video = Video.objects.filter(cover=True, is_public=True).defer('source_filepath', 'old_filepath', 'timestamp', 'stats', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude', 'webm_filepath', 'ogg_filepath', 'mp4_filepath').order_by('?')[0]
     except:
         video = ''
-    # Tour
+
+    # Tours
     try:
-        tours = Tour.objects.order_by('?')
-        tour = tours[0]
-        tour_images = tour.images.defer('source_filepath', 'old_filepath', 
+        tour = Tour.objects.order_by('?')[0]
+        tour_image = tour.images.defer('source_filepath', 'old_filepath', 
                 'timestamp', 'stats', 'notes', 'review', 'pub_date', 
                 'rights', 'sublocation', 'city', 'state', 'country', 'date', 
                 'geolocation', 'latitude', 
-                'longitude').exclude(id=image.id).exclude(id=photo.id).order_by('?')[:10]
-        tour_image = tour_images[0]
+                'longitude').exclude(id=main_image.id).exclude(id=photo.id).order_by('?')[0]
     except:
         tour, tour_image = '', ''
+
     variables = RequestContext(request, {
-        'main_image': image,
+        'main_image': main_image,
         'photo': photo,
         'video': video,
         'tour': tour,

@@ -750,13 +750,15 @@ class Folder:
         for root, dirs, files in os.walk(self.folder_path):
             for filename in files:
                 filepath = fix_filename(root, filename)
-                if filepath.endswith(photo_extensions) and not type == 'video' and n < self.n_max:
-                    self.files.append((filepath, 'photo'))
-                    n += 1
+                if filepath.endswith(photo_extensions) and n < self.n_max:
+                    if type is None or type == 'photo':
+                        self.files.append((filepath, 'photo'))
+                        n += 1
                     continue
-                if filepath.endswith(video_extensions) and not type == 'photo' and n < self.n_max:
-                    self.files.append((filepath, 'video'))
-                    n += 1
+                if filepath.endswith(video_extensions) and n < self.n_max:
+                    if type is None or type == 'video':
+                        self.files.append((filepath, 'video'))
+                        n += 1
                     continue
                 elif filepath.endswith(ignore_extensions):
                     logger.debug('Ignorando %s', filepath)

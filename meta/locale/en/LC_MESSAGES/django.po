@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-03 23:03-0300\n"
+"POT-Creation-Date: 2011-10-10 20:34-0300\n"
 "PO-Revision-Date: 2011-10-03 23:01\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "X-Translated-Using: django-rosetta 0.6.2\n"
 
 #: feeds.py:15 feeds.py:89 feeds.py:175
@@ -1989,7 +1989,7 @@ msgstr "Modified"
 msgid "Grupos"
 msgstr "Groups"
 
-#: templates/tree.html:28
+#: templates/tree.html:27
 msgid ""
 "\n"
 "  *Hierarquia taxonômica construída automaticamente a partir do <a href="

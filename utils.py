@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
-from django.utils import translation 
+from django.utils import translation
 
 
 class AdminLocaleURLMiddleware:

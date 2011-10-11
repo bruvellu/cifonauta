@@ -5,6 +5,7 @@ syntax: glob
 *.swp
 *.log
 *.mbtree
+django_bash_completion
 settings_local.py
 fabfile.py
 backups/*
@@ -18,3 +19,5 @@ site_media/videos/*
 site_media/cache/*
 meta/migrations/*
 static/*
+sync/*
+external/*

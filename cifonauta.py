@@ -323,11 +323,11 @@ class Movie:
         if meta_text:
             try:
                 meta_dic = pickle.load(meta_text)
-                meta_text.close()
                 # Atualiza meta com valores do arquivo acessório.
-                meta.update(meta_dic)
+                self.meta.update(meta_dic)
+                meta_text.close()
             except:
-                logger.warning('Pickle is corrupted: %s', meta_text)
+                logger.warning('Pickle está corrompido: %s', meta_text)
 
         # Inicia processo de renomear arquivo.
         if new:

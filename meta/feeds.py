@@ -53,15 +53,15 @@ class LatestMedia(Feed):
     def items(self, obj):
         if obj == 'all':
             results = chain(
-                    Image.objects.order_by('-pub_date')[:10],
-                    Video.objects.order_by('-pub_date')[:10],
+                    Image.objects.filter(is_public=True).order_by('-pub_date')[:10],
+                    Video.objects.filter(is_public=True).order_by('-pub_date')[:10],
                     )
             return sorted(results, key=lambda x: x.pub_date,
                     reverse=True)
         elif obj == 'photos':
-            return Image.objects.order_by('-pub_date')[:20]
+            return Image.objects.filter(is_public=True).order_by('-pub_date')[:20]
         elif obj == 'videos':
-            return Video.objects.order_by('-pub_date')[:20]
+            return Video.objects.filter(is_public=True).order_by('-pub_date')[:20]
         else:
             return None
 
@@ -139,15 +139,15 @@ class MetaMedia(Feed):
         keywords = {obj['field']: obj['instance']}
         if obj['type'] == 'all':
             results = chain(
-                    Image.objects.filter(**keywords).order_by('-pub_date')[:10],
-                    Video.objects.filter(**keywords).order_by('-pub_date')[:10],
+                    Image.objects.filter(**keywords).exclude(is_public=False).order_by('-pub_date')[:10],
+                    Video.objects.filter(**keywords).exclude(is_public=False).order_by('-pub_date')[:10],
                     )
             return sorted(results, key=lambda x: x.pub_date,
                     reverse=True)
         elif obj['type'] == 'photos':
-            return Image.objects.filter(**keywords).order_by('-pub_date')[:20]
+            return Image.objects.filter(**keywords).exclude(is_public=False).order_by('-pub_date')[:20]
         elif obj['type'] == 'videos':
-            return Video.objects.filter(**keywords).order_by('-pub_date')[:20]
+            return Video.objects.filter(**keywords).exclude(is_public=False).order_by('-pub_date')[:20]
         else:
             return None
 
@@ -181,7 +181,7 @@ class LatestTours(Feed):
     description = _('Tours recentes do banco de imagens Cifonauta.')
 
     def items(self):
-        return Tour.objects.order_by('-pub_date')[:10]
+        return Tour.objects.filter(is_public=True).order_by('-pub_date')[:10]
 
     def item_title(self, item):
         return item.name

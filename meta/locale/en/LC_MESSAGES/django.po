@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-10 20:34-0300\n"
+"POT-Creation-Date: 2011-10-17 16:53-0200\n"
 "PO-Revision-Date: 2011-10-03 23:01\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -941,7 +941,7 @@ msgstr "positions in the tour"
 msgid "Número de impressões de página de uma imagem."
 msgstr "Number of pageviews of an image."
 
-#: templates/404.html:3 templates/404.html.py:6
+#: templates/404.html:3 templates/404.html.py:8
 msgid "Página não encontrada"
 msgstr "Page not found"
 

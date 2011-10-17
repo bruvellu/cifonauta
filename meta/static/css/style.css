@@ -814,6 +814,11 @@ nav.main {
     clear: both;
 }
 
+#not-found {
+  font-size:3em;
+  margin:1em 0;
+}
+
 /* FOOTER */
 footer.main {
     font-size:0.9em;

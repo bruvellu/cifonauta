@@ -3,5 +3,9 @@
 {% block title %}{% trans 'Página não encontrada' %} | {{ block.super }}{% endblock %}
 
 {% block content %}
-{% trans 'Página não encontrada' %}
+
+<div id="not-found">
+  {% trans 'Página não encontrada' %} :(
+</div>
+
 {% endblock %}

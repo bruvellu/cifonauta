@@ -18,6 +18,13 @@ hs.outlineType = 'rounded-white';
 hs.align = 'center';
 hs.showCredits = false;
 
+
+// Add VideoJS to all video tags on the page when the DOM is ready
+VideoJS.setupAllWhenReady({
+  returnToStart: true,
+});
+
+
 // Document ready functions.
 $(document).ready(function(){
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-18 00:09-0200\n"
+"POT-Creation-Date: 2011-10-18 01:12-0200\n"
 "PO-Revision-Date: 2011-10-03 23:01\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,13 +24,13 @@ msgstr "marine biology"
 
 #: feeds.py:15 feeds.py:89 feeds.py:175 models.py:86 models.py:123
 #: models.py:156 models.py:190 models.py:249 models.py:456 models.py:498
-#: templates/base.html:100 templates/stats.html:5
+#: templates/nav.html:41 templates/stats.html:5
 msgid "fotos"
 msgstr "photos"
 
 #: feeds.py:15 feeds.py:89 feeds.py:175 models.py:115 models.py:125
 #: models.py:158 models.py:192 models.py:251 models.py:458 models.py:500
-#: templates/base.html:103 templates/stats.html:5
+#: templates/nav.html:44 templates/stats.html:5
 msgid "vídeos"
 msgstr "videos"
 
@@ -38,7 +38,7 @@ msgstr "videos"
 msgid "biologia"
 msgstr "biology"
 
-#: feeds.py:18 feeds.py:92 feeds.py:178 templates/base.html:187
+#: feeds.py:18 feeds.py:92 feeds.py:178 templates/footer.html:8
 msgid "Centro de Biologia Marinha da Universidade de São Paulo"
 msgstr "Marine Biology Center of University of São Paulo"
 
@@ -525,7 +525,7 @@ msgstr "Number of videos linked to this author."
 msgid "autor"
 msgstr "author"
 
-#: models.py:148 templates/base.html:118
+#: models.py:148 templates/nav.html:59
 msgid "autores"
 msgstr "authors"
 
@@ -613,7 +613,7 @@ msgstr "Number of videos linked to this tag."
 msgid "marcador"
 msgstr "tag"
 
-#: models.py:217 templates/base.html:112 templates/stats.html:5
+#: models.py:217 templates/nav.html:53 templates/stats.html:5
 msgid "marcadores"
 msgstr "tags"
 
@@ -701,7 +701,7 @@ msgstr "Number of videos linked to this taxon."
 msgid "táxon"
 msgstr "taxon"
 
-#: models.py:274 templates/base.html:109
+#: models.py:274 templates/nav.html:50
 msgid "táxons"
 msgstr "taxa"
 
@@ -865,7 +865,7 @@ msgstr "Number of videos linked to this reference."
 msgid "referência"
 msgstr "reference"
 
-#: models.py:483 models.py:502 templates/base.html:121
+#: models.py:483 models.py:502 templates/nav.html:62
 msgid "referências"
 msgstr "references"
 
@@ -921,7 +921,7 @@ msgstr "Number of videos linked to this tour."
 msgid "tour"
 msgstr "tour"
 
-#: models.py:526 templates/base.html:106
+#: models.py:526 templates/nav.html:47
 msgid "tours"
 msgstr "tours"
 
@@ -946,7 +946,7 @@ msgid "Página não encontrada"
 msgstr "Page not found"
 
 #: templates/authors_page.html:3 templates/authors_page.html.py:9
-#: templates/authors_page.html:21 templates/base.html:226
+#: templates/authors_page.html:21 templates/footer.html:47
 #: templates/mais.html:16
 msgid "Autores"
 msgstr "Authors"
@@ -986,159 +986,10 @@ msgstr "Experts"
 msgid "Pessoa que coletou ou identificou o organismo."
 msgstr "Person who collected or identified the organism."
 
-#: templates/base.html:115
-msgid "localidades"
-msgstr "places"
-
-#: templates/base.html:126
-msgid "home"
-msgstr "home"
-
-#: templates/base.html:129
-msgid "sobre"
-msgstr "about"
-
-#: templates/base.html:138
-msgid "blog"
-msgstr "blog"
-
-#: templates/base.html:154
-msgid "banco de imagens de biologia marinha"
-msgstr "marine biology image database"
-
-#: templates/base.html:192
-msgid "Licença de uso"
-msgstr "Content license"
-
-#: templates/base.html:193
-msgid "Licença Creative Commons"
-msgstr "Creative Commons License"
-
-#: templates/base.html:193
-msgid ""
-"O conteúdo deste website está sob uma licença Creative Commons Atribuição-"
-"Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional"
-msgstr ""
-"The content of this website is licensed under a Creative Commons Attribution-"
-"NonCommercial-ShareAlike 3.0 Unported License"
-
-#: templates/base.html:196
-msgid "Apoio"
-msgstr "Support"
-
-#: templates/base.html:196
-msgid "CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico"
-msgstr "CNPq - National Council for Scientific and Technological Development"
-
-#: templates/base.html:201
-msgid "Informações básicas"
-msgstr "Basic information"
-
-#: templates/base.html:203 templates/sobremenu.html:5
-msgid "Sobre"
-msgstr "About"
-
-#: templates/base.html:204 templates/press_page.html:42
-#: templates/sobremenu.html:6
-msgid "Conteúdo"
-msgstr "Content"
-
-#: templates/base.html:205 templates/press_page.html:49
-#: templates/sobremenu.html:8
-msgid "Organização"
-msgstr "Organization"
-
-#: templates/base.html:206 templates/sobremenu.html:7
-msgid "Créditos e apoio"
-msgstr "Credits and support"
-
-#: templates/base.html:207
-msgid "Termos de uso e direitos"
-msgstr "Terms of use and rights"
-
-#: templates/base.html:208 templates/press_page.html:3
-#: templates/press_page.html.py:10 templates/press_page.html:19
-#: templates/sobremenu.html:9
-msgid "Imprensa"
-msgstr "Press"
-
-#: templates/base.html:212
-msgid "Explorar"
-msgstr "Explore"
-
-#: templates/base.html:214 templates/buscar.html:3 templates/buscar.html.py:11
+#: templates/buscar.html:3 templates/buscar.html.py:11
+#: templates/footer.html:35
 msgid "Buscador"
 msgstr "Search"
-
-#: templates/base.html:215 templates/main_page.html:74
-#: templates/tours_page.html:3 templates/tours_page.html.py:10
-#: templates/tours_page.html:19
-msgid "Tours"
-msgstr "Tours"
-
-#: templates/base.html:216 templates/main_page.html:50
-msgid "Fotos"
-msgstr "Photos"
-
-#: templates/base.html:217 templates/main_page.html:62
-msgid "Vídeos"
-msgstr "Videos"
-
-#: templates/base.html:221
-msgid "Metadados"
-msgstr "Metadata"
-
-#: templates/base.html:223 templates/mais.html:11 templates/tags_page.html:6
-#: templates/tags_page.html.py:14 templates/tags_page.html:22
-#: templates/feeds/media_post.html:5
-msgid "Marcadores"
-msgstr "Tags"
-
-#: templates/base.html:224 templates/mais.html:21
-#: templates/organizacao.html:25 templates/taxa_page.html:3
-#: templates/taxa_page.html.py:10 templates/taxa_page.html:19
-msgid "Táxons"
-msgstr "Taxa"
-
-#: templates/base.html:225 templates/places_page.html:6
-#: templates/places_page.html.py:12 templates/places_page.html:20
-msgid "Localidades"
-msgstr "Places"
-
-#. Translators: list of references rendered on a page
-#: templates/base.html:227 templates/refs_page.html:3
-#: templates/refs_page.html.py:9 templates/refs_page.html:17
-#: templates/tour_page.html:141
-msgid "Referências"
-msgstr "References"
-
-#: templates/base.html:231
-msgid "Novidades"
-msgstr "News"
-
-#: templates/base.html:233
-msgid "Blog"
-msgstr "Blog"
-
-#: templates/base.html:239 templates/sobremenu.html:20
-msgid "Desenvolvimento"
-msgstr "Development"
-
-#: templates/base.html:241 templates/sobremenu.html:21
-msgid "Detalhes técnicos"
-msgstr "Technical details"
-
-#: templates/base.html:242
-msgid "Atualizações"
-msgstr "Updates"
-
-#: templates/base.html:243 templates/sobremenu.html:19
-msgid "Idéias planejadas"
-msgstr "Planned features"
-
-#: templates/base.html:244 templates/sobremenu.html:27
-msgid "Feedback"
-msgstr "Feedback"
 
 #: templates/buscar.html:6 templates/buscar.html.py:14
 msgid "Buscador do banco de imagens Cifonauta."
@@ -1213,6 +1064,136 @@ msgstr "Video playback not available"
 msgid "Tem algo muito errado no seu navegador..."
 msgstr "Something is very wrong with your browser..."
 
+#: templates/footer.html:13
+msgid "Licença de uso"
+msgstr "Content license"
+
+#: templates/footer.html:14
+msgid "Licença Creative Commons"
+msgstr "Creative Commons License"
+
+#: templates/footer.html:14
+msgid ""
+"O conteúdo deste website está sob uma licença Creative Commons Atribuição-"
+"Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional"
+msgstr ""
+"The content of this website is licensed under a Creative Commons Attribution-"
+"NonCommercial-ShareAlike 3.0 Unported License"
+
+#: templates/footer.html:16
+msgid "Apoio"
+msgstr "Support"
+
+#: templates/footer.html:16
+msgid "CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico"
+msgstr "CNPq - National Council for Scientific and Technological Development"
+
+#: templates/footer.html:22
+msgid "Informações básicas"
+msgstr "Basic information"
+
+#: templates/footer.html:24 templates/sobremenu.html:5
+msgid "Sobre"
+msgstr "About"
+
+#: templates/footer.html:25 templates/press_page.html:42
+#: templates/sobremenu.html:6
+msgid "Conteúdo"
+msgstr "Content"
+
+#: templates/footer.html:26 templates/press_page.html:49
+#: templates/sobremenu.html:8
+msgid "Organização"
+msgstr "Organization"
+
+#: templates/footer.html:27 templates/sobremenu.html:7
+msgid "Créditos e apoio"
+msgstr "Credits and support"
+
+#: templates/footer.html:28
+msgid "Termos de uso e direitos"
+msgstr "Terms of use and rights"
+
+#: templates/footer.html:29 templates/press_page.html:3
+#: templates/press_page.html.py:10 templates/press_page.html:19
+#: templates/sobremenu.html:9
+msgid "Imprensa"
+msgstr "Press"
+
+#: templates/footer.html:33
+msgid "Explorar"
+msgstr "Explore"
+
+#: templates/footer.html:36 templates/main_page.html:74
+#: templates/tours_page.html:3 templates/tours_page.html.py:10
+#: templates/tours_page.html:19
+msgid "Tours"
+msgstr "Tours"
+
+#: templates/footer.html:37 templates/main_page.html:50
+msgid "Fotos"
+msgstr "Photos"
+
+#: templates/footer.html:38 templates/main_page.html:62
+msgid "Vídeos"
+msgstr "Videos"
+
+#: templates/footer.html:42
+msgid "Metadados"
+msgstr "Metadata"
+
+#: templates/footer.html:44 templates/mais.html:11 templates/tags_page.html:6
+#: templates/tags_page.html.py:14 templates/tags_page.html:22
+#: templates/feeds/media_post.html:5
+msgid "Marcadores"
+msgstr "Tags"
+
+#: templates/footer.html:45 templates/mais.html:21
+#: templates/organizacao.html:25 templates/taxa_page.html:3
+#: templates/taxa_page.html.py:10 templates/taxa_page.html:19
+msgid "Táxons"
+msgstr "Taxa"
+
+#: templates/footer.html:46 templates/places_page.html:6
+#: templates/places_page.html.py:12 templates/places_page.html:20
+msgid "Localidades"
+msgstr "Places"
+
+#. Translators: list of references rendered on a page
+#: templates/footer.html:48 templates/refs_page.html:3
+#: templates/refs_page.html.py:9 templates/refs_page.html:17
+#: templates/tour_page.html:141
+msgid "Referências"
+msgstr "References"
+
+#: templates/footer.html:52
+msgid "Novidades"
+msgstr "News"
+
+#: templates/footer.html:54
+msgid "Blog"
+msgstr "Blog"
+
+#: templates/footer.html:60 templates/sobremenu.html:20
+msgid "Desenvolvimento"
+msgstr "Development"
+
+#: templates/footer.html:62 templates/sobremenu.html:21
+msgid "Detalhes técnicos"
+msgstr "Technical details"
+
+#: templates/footer.html:63
+msgid "Atualizações"
+msgstr "Updates"
+
+#: templates/footer.html:64 templates/sobremenu.html:19
+msgid "Idéias planejadas"
+msgstr "Planned features"
+
+#: templates/footer.html:65 templates/sobremenu.html:27
+msgid "Feedback"
+msgstr "Feedback"
+
 #: templates/gallery.html:17
 msgid "Foto"
 msgstr "Photo"
@@ -1228,6 +1209,10 @@ msgstr "Video"
 #: templates/gallery.html:43
 msgid "Cifonauta: apenas vídeos"
 msgstr "Cifonauta: only videos"
+
+#: templates/header.html:12
+msgid "banco de imagens de biologia marinha"
+msgstr "marine biology image database"
 
 #: templates/main_page.html:4
 msgid "biologia marinha, biodiversidade, banco de imagens, oceano"
@@ -1455,6 +1440,22 @@ msgstr "Cifonauta: photos"
 #: templates/meta_page.html:22
 msgid "Cifonauta: vídeos"
 msgstr "Cifonauta: videos"
+
+#: templates/nav.html:56
+msgid "localidades"
+msgstr "places"
+
+#: templates/nav.html:67
+msgid "home"
+msgstr "home"
+
+#: templates/nav.html:70
+msgid "sobre"
+msgstr "about"
+
+#: templates/nav.html:73
+msgid "blog"
+msgstr "blog"
 
 #: templates/organizacao.html:3 templates/organizacao.html.py:5
 #: templates/organizacao.html:11 templates/organizacao.html.py:21

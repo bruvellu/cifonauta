@@ -16,33 +16,3 @@
 {% endcache %}
 {% endif %}
 
-<!-- Add2Any -->
-<a class="share-this a2a_target" href="http://www.addtoany.com/share_save">
-    <img src="http://static.addtoany.com/buttons/share_save_171_16.png" border="0" alt="{% trans 'Compartilhe' %}"/>
-</a>
-
-<script type="text/javascript">
-// A custom "onReady" function for AddToAny
-function my_addtoany_onready() {
-    a2a_config.target = '.share-this';
-    a2a.init('page');
-}
-
-// Setup AddToAny "onReady" callback
-var a2a_config = a2a_config || {};
-a2a_config.tracking_callback = {
-    ready: my_addtoany_onready
-};
-// Additional a2a_config properties may go here
-
-// Load AddToAny script asynchronously
-(function(){
-    var a = document.createElement('script');
-    a.type = 'text/javascript';
-    a.async = true;
-    a.src = 'http://static.addtoany.com/menu/page.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(a, s);
-})();
-</script>
-

@@ -1,23 +1,22 @@
 // Load Disqus on demand.
-function load_disqus() {
-    var url = $(location).attr("href");
-    $("#comments p").load(url);
-    return false;
+function loadDisqus() {
+  var url = $(location).attr("href");
+  $("#comments p").load(url);
+  return false;
 }
 
 // jQuery Treeview.
 $("#colaptree").treeview({
-      collapsed: true,
-      animated: "fast",
-      persist: "location",
-  });
+  collapsed: true,
+  animated: "fast",
+  persist: "location",
+});
 
 // Highslide
 hs.graphicsDir = '/static/js/highslide/graphics/';
 hs.outlineType = 'rounded-white';
 hs.align = 'center';
 hs.showCredits = false;
-
 
 // Add VideoJS to all video tags on the page when the DOM is ready
 VideoJS.setupAllWhenReady({
@@ -44,64 +43,49 @@ function loadSocial(script) {
 }
 
 // Twitter button.
-loadSocial("http://platform.twitter.com/widgets.js");
-
-//var b = document.createElement('script');
-//b.type = 'text/javascript';
-//b.src = ('http://platform.twitter.com/widgets.js');
-//var a=document.getElementById("deferedjs");
-//a.parentNode.insertBefore(b,a);
+loadSocial("//platform.twitter.com/widgets.js");
 
 // Google Plus button
-loadSocial("https://apis.google.com/js/plusone.js");
-
-//var po = document.createElement('script');
-//po.type = 'text/javascript';
-//po.async = true;
-//po.src = 'https://apis.google.com/js/plusone.js';
-//var s = document.getElementById('deferedjs');
-//s.parentNode.insertBefore(po, s);
+loadSocial("//apis.google.com/js/plusone.js");
 
 // Facebook Like button
 loadSocial("//connect.facebook.net/en_US/all.js#xfbml=1");
-//<div id="fb-root"></div>
-//
-//<script>(function(d, s, id) {
-//  var js, fjs = d.getElementsByTagName(s)[0];
-//  if (d.getElementById(id)) {return;}
-//  js = d.createElement(s); js.id = id;
-//  js.src = "//connect.facebook.net/pt_BR/all.js#xfbml=1";
-//  fjs.parentNode.insertBefore(js, fjs);
-//}(document, 'script', 'facebook-jssdk'));</script>
+
+// Add2Any button
+function my_addtoany_onready() {
+  a2a_config.target = '.share-this';
+  a2a.init('page');
+}
+// Setup AddToAny "onReady" callback
+var a2a_config = a2a_config || {};
+a2a_config.tracking_callback = {
+  ready: my_addtoany_onready
+};
+// Load AddToAny script asynchronously
+loadSocial("//static.addtoany.com/menu/page.js");
 
 // Document ready functions.
 $(document).ready(function(){
 
-    // External DB hovers
-    $(".biodb li").hover(
-        function () {
-            $(this).find(".external").fadeIn(200);
-        },
-        function () {
-            $(this).find(".external").fadeOut(200);
-        }
+  // External DB hovers
+  $(".biodb li").hover(
+    function () { $(this).find(".external").fadeIn(200); },
+    function () { $(this).find(".external").fadeOut(200); }
     );
 
-    // Disqus
-    $('#comments p').click(load_disqus);
+  // Disqus
+  $('#comments p').click(loadDisqus);
 
-    // Esconde avisos.
-    $("#colaptree").delay(400).fadeIn('slow');
+  // Esconde avisos.
+  $("#colaptree").delay(400).fadeIn('slow');
 
-    // Esconde avisos.
-    $(".success, .notice, .error").delay(10000).fadeOut('slow');
+  // Esconde avisos.
+  $(".success, .notice, .error").delay(10000).fadeOut('slow');
 
-    // Trigger do seletor de línguas.
-    $('#languages select').change(function () {
-        var myform = $(this).parent();
-        myform.submit();
-    });
+  // Trigger do seletor de línguas.
+  $('#languages select').change(function () {
+    var myform = $(this).parent();
+    myform.submit();
+  });
 
 });
-
-

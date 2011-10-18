@@ -183,14 +183,20 @@
 {% block sidebar %}
 <aside class="main span-8 last">
 
-<div class="align-center borders block shadow" id="social">
+<div class="borders block shadow" id="social">
+  <h2>{% trans 'Compartilhar' %}</h2>
 
-  {% include 'social.html' with linear='False' %}
+  <div class="align-center">
+    <!-- Video embed code -->
+    {% if media.datatype == 'video' %}
+    <p><label class="quiet">embed:</label> <input id="embed-code" type="text" size="28" value='<iframe class="cifonauta-player" scrolling="no" type="text/html" width="512" height="{{ height }}" src="http://{{ request.get_host }}/embed/{{ media.id }}/" frameborder="0"></iframe>' onclick="this.focus(); this.select();"></p>
+    {% endif %}
 
-  <!-- Video embed code -->
-  {% if media.datatype == 'video' %}
-  <p><label class="quiet">embed:</label> <input id="embed-code" type="text" size="28" value='<iframe class="cifonauta-player" scrolling="no" type="text/html" width="512" height="{{ height }}" src="http://{{ request.get_host }}/embed/{{ media.id }}/" frameborder="0"></iframe>' onclick="this.focus(); this.select();"></p>
-  {% endif %}
+    <!-- Add2Any -->
+    <a class="share-this a2a_target" href="http://www.addtoany.com/share_save">
+      <img src="http://static.addtoany.com/buttons/share_save_171_16.png" border="0" alt="{% trans 'Compartilhe' %}"/>
+    </a>
+  </div>
 
 </div>
 

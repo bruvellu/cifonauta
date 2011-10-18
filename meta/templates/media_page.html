@@ -184,7 +184,14 @@
 <aside class="main span-8 last">
 
 <div class="align-center borders block shadow" id="social">
+
   {% include 'social.html' with linear='False' %}
+
+  <!-- Video embed code -->
+  {% if media.datatype == 'video' %}
+  <p><label class="quiet">embed:</label> <input id="embed-code" type="text" size="28" value='<iframe class="cifonauta-player" scrolling="no" type="text/html" width="512" height="{{ height }}" src="http://{{ request.get_host }}/embed/{{ media.id }}/" frameborder="0"></iframe>' onclick="this.focus(); this.select();"></p>
+  {% endif %}
+
 </div>
 
 <div class="borders block shadow">

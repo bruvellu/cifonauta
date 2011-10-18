@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-18 03:53-0200\n"
+"POT-Creation-Date: 2011-10-18 04:17-0200\n"
 "PO-Revision-Date: 2011-10-03 23:01\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,15 +42,15 @@ msgstr "biology"
 msgid "Centro de Biologia Marinha da Universidade de São Paulo"
 msgstr "Marine Biology Center of University of São Paulo"
 
-#: feeds.py:25 templates/base.html:54 templates/main_page.html:46
+#: feeds.py:25 templates/base.html:50 templates/main_page.html:46
 msgid "Cifonauta: últimas fotos e vídeos"
 msgstr "Cifonauta: latest photos and videos"
 
-#: feeds.py:27 templates/base.html:55
+#: feeds.py:27 templates/base.html:51
 msgid "Cifonauta: últimas fotos"
 msgstr "Cifonauta: latest photos"
 
-#: feeds.py:29 templates/base.html:56
+#: feeds.py:29 templates/base.html:52
 msgid "Cifonauta: últimos vídeos"
 msgstr "Cifonauta: latest videos"
 

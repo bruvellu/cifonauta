@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-18 14:23-0200\n"
+"POT-Creation-Date: 2011-10-18 18:33-0200\n"
 "PO-Revision-Date: 2011-10-18 14:22\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1397,6 +1397,15 @@ msgstr "Image not available."
 msgid "Nenhuma imagem encontrada."
 msgstr "No image found."
 
+#: templates/media_page.html:189
+#, fuzzy
+msgid "Compartilhar"
+msgstr "share"
+
+#: templates/media_page.html:199 templates/sobremenu.html:12
+msgid "Compartilhe"
+msgstr "Share"
+
 #: templates/messages.html:7
 msgid "e"
 msgstr "and"
@@ -1846,10 +1855,6 @@ msgstr "Search"
 msgid "Cifonauta"
 msgstr "Cifonauta"
 
-#: templates/sobremenu.html:12 templates/social.html:41
-msgid "Compartilhe"
-msgstr "Share"
-
 #: templates/sobremenu.html:14
 msgid "Termos de uso"
 msgstr "Terms of use"
@@ -2066,9 +2071,6 @@ msgstr ""
 
 #~ msgid "Ir"
 #~ msgstr "Go"
-
-#~ msgid "compartilhar"
-#~ msgstr "share"
 
 #~ msgid "Esconder comentários"
 #~ msgstr "Hide comments"

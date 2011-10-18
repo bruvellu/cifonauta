@@ -6,287 +6,284 @@
 <!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="{{ LANGUAGE_CODE }}"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8">
 
-        <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
-            Remove this if you use the .htaccess -->
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame Remove this if you use the .htaccess -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-        <title>
-            {% block title %}{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %} | CEBIMar USP{% endblock %}
-        </title>
+    <title>
+      {% block title %}{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %} | CEBIMar USP{% endblock %}
+    </title>
 
-        <meta name="keywords" content="{% block meta-keywords %}{% endblock %}" />
-        <meta name="description" content="{% block meta-description %}{% endblock %}" />
-        <meta name="author" content="{% block meta-author %}{% endblock %}" />
+    <meta name="keywords" content="{% block meta-keywords %}{% endblock %}" />
+    <meta name="description" content="{% block meta-description %}{% endblock %}" />
+    <meta name="author" content="{% block meta-author %}{% endblock %}" />
 
-        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- Google Webmaster -->
-        <meta name="google-site-verification" content="BR51AOyAS3lEWe5WRABMGck-apEdwxa4TkTQZtx4akM" />
+    <!-- Google Webmaster -->
+    <meta name="google-site-verification" content="BR51AOyAS3lEWe5WRABMGck-apEdwxa4TkTQZtx4akM" />
 
-        <!-- Dajaxice and Dajax -->
-        <script src="{{ STATIC_URL }}js/mylibs/dajaxice.core.js" type="text/javascript" charset="utf-8"></script>
-        <script src="{{ STATIC_URL }}js/mylibs/jquery.dajax.core.js" type="text/javascript" charset="utf-8"></script>
+    <!-- Dajaxice and Dajax -->
+    <script src="{{ STATIC_URL }}js/mylibs/dajaxice.core.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ STATIC_URL }}js/mylibs/jquery.dajax.core.js" type="text/javascript" charset="utf-8"></script>
 
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
-        <link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+    <link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico">
 
-        <!-- Humans -->
-        <link rel="author" href="{{ STATIC_URL }}humans.txt" />
+    <!-- Humans -->
+    <link rel="author" href="{{ STATIC_URL }}humans.txt" />
 
-        <!-- Estilos -->
-        <!-- CSS: implied media="all" -->
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
-        <link href="{{ STATIC_URL }}js/highslide/highslide.css" type="text/css" rel="stylesheet">
-        <link rel="stylesheet" href="{{ STATIC_URL }}js/jquery-treeview/jquery.treeview.css" />
+    <!-- Estilos -->
+    <!-- CSS: implied media="all" -->
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style-min.css">
 
-        <!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+    <!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
 
-        <!-- Google Web Fonts -->
-        <link href="http://fonts.googleapis.com/css?family=Ubuntu:light,regular,italic,bold" rel="stylesheet" type="text/css">
+    <!-- Google Web Fonts -->
+    <link href="http://fonts.googleapis.com/css?family=Ubuntu:light,regular,italic,bold" rel="stylesheet" type="text/css">
 
-        <!-- All JavaScript at the bottom, except for Modernizr and Respond.
-            Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries -->
-        <script src="{{ STATIC_URL }}js/libs/modernizr-1.7.min.js"></script>
-        <script src="{{ STATIC_URL }}js/libs/respond.min.js"></script>
+    <!-- All JavaScript at the bottom, except for Modernizr and Respond.
+    Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries -->
+    <script src="{{ STATIC_URL }}js/libs/modernizr-1.7.min.js"></script>
+    <script src="{{ STATIC_URL }}js/libs/respond.min.js"></script>
 
-        <!-- Feeds -->
-        <link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: últimas fotos e vídeos' %}" href="/feed/latest/all/" />
-        <link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: últimas fotos' %}" href="/feed/latest/photos/" />
-        <link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: últimos vídeos' %}" href="/feed/latest/videos/" />
+    <!-- Feeds -->
+    <link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: últimas fotos e vídeos' %}" href="/feed/latest/all/" />
+    <link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: últimas fotos' %}" href="/feed/latest/photos/" />
+    <link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: últimos vídeos' %}" href="/feed/latest/videos/" />
 
-        {% block extra-head %}{% endblock %}
+    {% block extra-head %}{% endblock %}
 
-    </head>
-    <body>
-        <div class="container prepend-1 append-1">
-            <nav class="main span-24 last">
-                {% cache 2592000 feedback %}
-                <div id="feedback"><a href="/feedback/">feedback</a></div>
-                {% endcache %}
-                {% if user.is_authenticated %}
-                <span id="admin">
-                    <ul>
-                        <li><a href="/admin/">admin</a></li>
-                        <li><a href="/private/">privadas</a></li>
-                        <li><a href="/fixtaxa/">fixtaxa</a></li>
-                        <li><a href="/fixmedia/">fixmedia</a></li>
-                        <li><a href="/translate/">traduzir</a></li>
-                        <li><a href="{% url django.contrib.auth.views.logout %}">logout</a></li>
-                    </ul>
-                </span>
-                {% else %}
-                <span id="admin">
-                    <a href="{% url django.contrib.auth.views.login %}">login</a>
-                </span>
-                {% endif %}
-                <div id="languages">
-                <form action="/i18n/setlang/" method="post">
-                    {% csrf_token %}
-                    <select name="language">
-                        {% for lang in LANGUAGES %}
-                        <option value="{{ lang.0 }}"{% if lang.0 == request.LANGUAGE_CODE %} selected="selected"{% endif %}>{{ lang.1 }}</option>
-                        {% endfor %}
-                    </select>
-                    {% comment %}<input type="submit" value="{% trans 'Ir' %}" />{% endcomment %}
-                </form>
-                </div>
+  </head>
+  <body>
+    <div class="container prepend-1 append-1">
+      <nav class="main span-24 last">
+      {% cache 2592000 feedback %}
+      <div id="feedback"><a href="/feedback/">feedback</a></div>
+      {% endcache %}
+      {% if user.is_authenticated %}
+      <span id="admin">
+        <ul>
+          <li><a href="/admin/">admin</a></li>
+          <li><a href="/private/">privadas</a></li>
+          <li><a href="/fixtaxa/">fixtaxa</a></li>
+          <li><a href="/fixmedia/">fixmedia</a></li>
+          <li><a href="/translate/">traduzir</a></li>
+          <li><a href="{% url django.contrib.auth.views.logout %}">logout</a></li>
+        </ul>
+      </span>
+      {% else %}
+      <span id="admin">
+        <a href="{% url django.contrib.auth.views.login %}">login</a>
+      </span>
+      {% endif %}
+      <div id="languages">
+        <form action="/i18n/setlang/" method="post">
+          {% csrf_token %}
+          <select name="language">
+            {% for lang in LANGUAGES %}
+            <option value="{{ lang.0 }}"{% if lang.0 == request.LANGUAGE_CODE %} selected="selected"{% endif %}>{{ lang.1 }}</option>
+            {% endfor %}
+          </select>
+          {% comment %}<input type="submit" value="{% trans 'Ir' %}" />{% endcomment %}
+        </form>
+      </div>
 
-                {% with fullpath=request.get_full_path %}
-                {% cache 2592000 menu LANGUAGE_CODE fullpath %}
-                <ul class="menu" id="media">
-                    <li>
-                    <a {% if fullpath == '/search/?type=photo' %}class="selected"{% endif %} href="/search/?type=photo">{% trans 'fotos' %}</a>
-                    </li>
-                    <li>
-                    <a {% if fullpath == '/search/?type=video' %}class="selected"{% endif %} href="/search/?type=video">{% trans 'vídeos' %}</a>
-                    </li>
-                    <li>
-                    <a {% if fullpath == '/tours/' %}class="selected"{% endif %} href="{% url tours_url %}">{% trans 'tours' %}</a>
-                    </li>
-                    <li>
-                    <a {% if fullpath == '/taxa/' %}class="selected"{% endif %} href="{% url taxa_url %}">{% trans 'táxons' %}</a>
-                    </li>
-                    <li>
-                    <a {% if fullpath == '/tags/' %}class="selected"{% endif %} href="{% url tags_url %}">{% trans 'marcadores' %}</a>
-                    </li>
-                    <li>
-                    <a {% if fullpath == '/places/' %}class="selected"{% endif %} href="{% url places_url %}">{% trans 'localidades' %}</a>
-                    </li>
-                    <li>
-                    <a {% if fullpath == '/authors/' %}class="selected"{% endif %} href="{% url authors_url %}">{% trans 'autores' %}</a>
-                    </li>
-                    <li>
-                    <a {% if fullpath == '/literature/' %}class="selected"{% endif %} href="{% url refs_url %}">{% trans 'referências' %}</a>
-                    </li>
-                </ul>
-                <ul class="menu" id="about">
-                    <li><a 
-                        {% if fullpath == '/' %}class="selected"{% endif %}href="/">{% trans 'home' %}</a>
-                    </li>
-                    <li><a 
-                        {% if fullpath == '/about/' or fullpath == '/content/' or fullpath == '/organization/' or fullpath == '/credits/' or fullpath == '/details/' or fullpath == '/development/' or fullpath == '/roadmap/' or fullpath == '/terms/' %}class="selected"{% endif %}href="/about/">{% trans 'sobre' %}</a>
-                    </li>
-                    {% comment %}
-                    <li>
-                    <a {% if request.path == '/search/' %}class="selected"{% endif %}href="{% url search_url %}">{% trans 'buscar' %}</a>
-                    </li>
-                    {% endcomment %}
-                    <li>
-                    <a {% if fullpath == '/blog/' %}class="selected"{% endif %}href="/blog/">{% trans 'blog' %}</a>
-                    </li>
-                </ul>
-                {% endcache %}
-                {% endwith %}
-            </nav>
-            <header class="main span-24 last" id="mainheader">
-                {% cache 2592000 logo LANGUAGE_CODE %}
-                <a href="/">
-                <hgroup class="main span-10">
-                    <!-- 
-                        Using span to workaround Firefox 3.6 horrendous bug 
-                        with anchors nesting h1, h2, within HTML5 <header>
-                        https://bugzilla.mozilla.org/show_bug.cgi?id=514122
-                    -->
-                    <span id="maintitle">Cifonauta</span>
-                    <span id="tagline">{% trans 'banco de imagens de biologia marinha' %}</span>
-                </hgroup>
-                </a>
-                {% endcache %}
-                <div class="span-14 last" id="stats-search">
-                    <div class="quiet" id="stats">
-                        {% show_stats %}
-                    </div>
-                    {% comment %}
-                    {% if not request.path == '/search/' %}
-                    {% endcomment %}
-                    <div id="home-search">
-                        {% search_box %}
-                    </div>
-                    {% comment %}
-                    {% endif %}
-                    {% endcomment %}
-                </div>
-            </header>
+      {% with fullpath=request.get_full_path %}
+      {% cache 2592000 menu LANGUAGE_CODE fullpath %}
+      <ul class="menu" id="media">
+        <li>
+        <a {% if fullpath == '/search/?type=photo' %}class="selected"{% endif %} href="/search/?type=photo">{% trans 'fotos' %}</a>
+        </li>
+        <li>
+        <a {% if fullpath == '/search/?type=video' %}class="selected"{% endif %} href="/search/?type=video">{% trans 'vídeos' %}</a>
+        </li>
+        <li>
+        <a {% if fullpath == '/tours/' %}class="selected"{% endif %} href="{% url tours_url %}">{% trans 'tours' %}</a>
+        </li>
+        <li>
+        <a {% if fullpath == '/taxa/' %}class="selected"{% endif %} href="{% url taxa_url %}">{% trans 'táxons' %}</a>
+        </li>
+        <li>
+        <a {% if fullpath == '/tags/' %}class="selected"{% endif %} href="{% url tags_url %}">{% trans 'marcadores' %}</a>
+        </li>
+        <li>
+        <a {% if fullpath == '/places/' %}class="selected"{% endif %} href="{% url places_url %}">{% trans 'localidades' %}</a>
+        </li>
+        <li>
+        <a {% if fullpath == '/authors/' %}class="selected"{% endif %} href="{% url authors_url %}">{% trans 'autores' %}</a>
+        </li>
+        <li>
+        <a {% if fullpath == '/literature/' %}class="selected"{% endif %} href="{% url refs_url %}">{% trans 'referências' %}</a>
+        </li>
+      </ul>
+      <ul class="menu" id="about">
+        <li><a 
+          {% if fullpath == '/' %}class="selected"{% endif %}href="/">{% trans 'home' %}</a>
+        </li>
+        <li><a 
+          {% if fullpath == '/about/' or fullpath == '/content/' or fullpath == '/organization/' or fullpath == '/credits/' or fullpath == '/details/' or fullpath == '/development/' or fullpath == '/roadmap/' or fullpath == '/terms/' %}class="selected"{% endif %}href="/about/">{% trans 'sobre' %}</a>
+        </li>
+        {% comment %}
+        <li>
+        <a {% if request.path == '/search/' %}class="selected"{% endif %}href="{% url search_url %}">{% trans 'buscar' %}</a>
+        </li>
+        {% endcomment %}
+        <li>
+        <a {% if fullpath == '/blog/' %}class="selected"{% endif %}href="/blog/">{% trans 'blog' %}</a>
+        </li>
+      </ul>
+      {% endcache %}
+      {% endwith %}
+      </nav>
+      <header class="main span-24 last" id="mainheader">
+      {% cache 2592000 logo LANGUAGE_CODE %}
+      <a href="/">
+        <hgroup class="main span-10">
+        <!-- 
+        Using span to workaround Firefox 3.6 horrendous bug 
+        with anchors nesting h1, h2, within HTML5 <header>
+        https://bugzilla.mozilla.org/show_bug.cgi?id=514122
+        -->
+        <span id="maintitle">Cifonauta</span>
+        <span id="tagline">{% trans 'banco de imagens de biologia marinha' %}</span>
+        </hgroup>
+      </a>
+      {% endcache %}
+      <div class="span-14 last" id="stats-search">
+        <div class="quiet" id="stats">
+          {% show_stats %}
+        </div>
+        {% comment %}
+        {% if not request.path == '/search/' %}
+        {% endcomment %}
+        <div id="home-search">
+          {% search_box %}
+        </div>
+        {% comment %}
+        {% endif %}
+        {% endcomment %}
+      </div>
+      </header>
 
-            <section class="main span-24 last" id="content">
-                {% block content %}{% endblock %}
-                {% block sidebar %}{% endblock %}
-            </section>
+      <section class="main span-24 last" id="content">
+      {% block content %}{% endblock %}
+      {% block sidebar %}{% endblock %}
+      </section>
 
-            <footer class="main span-24 last quiet">
+      <footer class="main span-24 last quiet">
 
-            {% cache 2592000 footer LANGUAGE_CODE %}
-            <div class="span-24 last" id="footerbase">
-                <div class="span-13">
-                    <div class="span-13 last">
-                        &nbsp; &copy;{% now "Y" %} {% trans 'Centro de Biologia Marinha da Universidade de São Paulo' %}
-                    </div>
-                    <div class="span-13 last">&nbsp; <a href="http://www.usp.br/cbm/">www.usp.br/cbm</a></div>
-                </div>
-
-                <div class="span-6 cnpq">{% trans 'Licença de uso' %}:
-                    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="{% trans 'Licença Creative Commons' %}" style="border-width:0" title="{% trans 'O conteúdo deste website está sob uma licença Creative Commons Atribuição-Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional' %}" src="{{ STATIC_URL }}cc.png" /></a></a>.
-                </div>
-
-                <div class="span-5 last cnpq">{% trans 'Apoio' %}: <a href="http://www.cnpq.br/" title="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}"><img width="90" alt="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}" src="{{ STATIC_URL }}cnpq.png" /></a></div>
-            </div>
-
-            <div class="span-24 last" id="sitelinks">
-                <div class="span-6">
-                    <h4>{% trans 'Informações básicas' %}</h4>
-                    <ul class="padlist">
-                        <li><a href="/about/">{% trans 'Sobre' %}</a></li>
-                        <li><a href="/content/">{% trans 'Conteúdo' %}</a></li>
-                        <li><a href="/organization/">{% trans 'Organização' %}</a></li>
-                        <li><a href="/credits/">{% trans 'Créditos e apoio' %}</a></li>
-                        <li><a href="/terms/">{% trans 'Termos de uso e direitos' %}</a></li>
-                        <li><a href="/press/">{% trans 'Imprensa' %}</a></li>
-                    </ul>
-                </div>
-                <div class="span-4">
-                    <h4>{% trans 'Explorar' %}</h4>
-                    <ul class="padlist">
-                        <li><a href="/search/">{% trans 'Buscador' %}</a></li>
-                        <li><a href="/tours/">{% trans 'Tours' %}</a></li>
-                        <li><a href="/search/?type=photo">{% trans 'Fotos' %}</a></li>
-                        <li><a href="/search/?type=video">{% trans 'Vídeos' %}</a></li>
-                    </ul>
-                </div>
-                <div class="span-4">
-                    <h4>{% trans 'Metadados' %}</h4>
-                    <ul class="padlist">
-                        <li><a href="/tags/">{% trans 'Marcadores' %}</a></li>
-                        <li><a href="/taxa/">{% trans 'Táxons' %}</a></li>
-                        <li><a href="/places/">{% trans 'Localidades' %}</a></li>
-                        <li><a href="/authors/">{% trans 'Autores' %}</a></li>
-                        <li><a href="/literature/">{% trans 'Referências' %}</a></li>
-                    </ul>
-                </div>
-                <div class="span-4">
-                    <h4>{% trans 'Novidades' %}</h4>
-                    <ul class="padlist">
-                        <li><a href="/blog/">{% trans 'Blog' %}</a></li>
-                        <li><a href="http://twitter.com/cifonauta">Twitter</a></li>
-                        <li><a href="https://www.facebook.com/pages/Cifonauta/163979623658905">Facebook</a></li>
-                    </ul>
-                </div>
-                <div class="span-4 last">
-                    <h4>{% trans 'Desenvolvimento' %}</h4>
-                    <ul class="padlist">
-                        <li><a href="/details/">{% trans 'Detalhes técnicos' %}</a></li>
-                        <li><a href="/development/">{% trans 'Atualizações' %}</a></li>
-                        <li><a href="/roadmap/">{% trans 'Idéias planejadas' %}</a></li>
-                        <li><a href="/feedback/">{% trans 'Feedback' %}</a></li>
-                    </ul>
-                </div>
-            </div>
-            {% endcache %}
-            </footer>
+      {% cache 2592000 footer LANGUAGE_CODE %}
+      <div class="span-24 last" id="footerbase">
+        <div class="span-13">
+          <div class="span-13 last">
+            &nbsp; &copy;{% now "Y" %} {% trans 'Centro de Biologia Marinha da Universidade de São Paulo' %}
+          </div>
+          <div class="span-13 last">&nbsp; <a href="http://www.usp.br/cbm/">www.usp.br/cbm</a></div>
         </div>
 
-        <!-- JavaScript at the bottom for fast page loading -->
+        <div class="span-6 cnpq">{% trans 'Licença de uso' %}:
+          <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="{% trans 'Licença Creative Commons' %}" style="border-width:0" title="{% trans 'O conteúdo deste website está sob uma licença Creative Commons Atribuição-Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional' %}" src="{{ STATIC_URL }}cc.png" /></a></a>.
+      </div>
 
-        <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/libs/jquery-1.6.1.min.js">\x3C/script>')</script>
+      <div class="span-5 last cnpq">{% trans 'Apoio' %}: <a href="http://www.cnpq.br/" title="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}"><img width="90" alt="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}" src="{{ STATIC_URL }}cnpq.png" /></a></div>
+    </div>
 
-        <!-- scripts concatenated and minified via ant build script-->
-        <script src="{{ STATIC_URL }}js/plugins.js"></script>
-        <script src="{{ STATIC_URL }}js/script.js"></script>
-        <!-- end scripts-->
+    <div class="span-24 last" id="sitelinks">
+      <div class="span-6">
+        <h4>{% trans 'Informações básicas' %}</h4>
+        <ul class="padlist">
+          <li><a href="/about/">{% trans 'Sobre' %}</a></li>
+          <li><a href="/content/">{% trans 'Conteúdo' %}</a></li>
+          <li><a href="/organization/">{% trans 'Organização' %}</a></li>
+          <li><a href="/credits/">{% trans 'Créditos e apoio' %}</a></li>
+          <li><a href="/terms/">{% trans 'Termos de uso e direitos' %}</a></li>
+          <li><a href="/press/">{% trans 'Imprensa' %}</a></li>
+        </ul>
+      </div>
+      <div class="span-4">
+        <h4>{% trans 'Explorar' %}</h4>
+        <ul class="padlist">
+          <li><a href="/search/">{% trans 'Buscador' %}</a></li>
+          <li><a href="/tours/">{% trans 'Tours' %}</a></li>
+          <li><a href="/search/?type=photo">{% trans 'Fotos' %}</a></li>
+          <li><a href="/search/?type=video">{% trans 'Vídeos' %}</a></li>
+        </ul>
+      </div>
+      <div class="span-4">
+        <h4>{% trans 'Metadados' %}</h4>
+        <ul class="padlist">
+          <li><a href="/tags/">{% trans 'Marcadores' %}</a></li>
+          <li><a href="/taxa/">{% trans 'Táxons' %}</a></li>
+          <li><a href="/places/">{% trans 'Localidades' %}</a></li>
+          <li><a href="/authors/">{% trans 'Autores' %}</a></li>
+          <li><a href="/literature/">{% trans 'Referências' %}</a></li>
+        </ul>
+      </div>
+      <div class="span-4">
+        <h4>{% trans 'Novidades' %}</h4>
+        <ul class="padlist">
+          <li><a href="/blog/">{% trans 'Blog' %}</a></li>
+          <li><a href="http://twitter.com/cifonauta">Twitter</a></li>
+          <li><a href="https://www.facebook.com/pages/Cifonauta/163979623658905">Facebook</a></li>
+        </ul>
+      </div>
+      <div class="span-4 last">
+        <h4>{% trans 'Desenvolvimento' %}</h4>
+        <ul class="padlist">
+          <li><a href="/details/">{% trans 'Detalhes técnicos' %}</a></li>
+          <li><a href="/development/">{% trans 'Atualizações' %}</a></li>
+          <li><a href="/roadmap/">{% trans 'Idéias planejadas' %}</a></li>
+          <li><a href="/feedback/">{% trans 'Feedback' %}</a></li>
+        </ul>
+      </div>
+    </div>
+    {% endcache %}
+    </footer>
+  </div>
 
-        <!-- Colocar todos os scripts nos arquivos acima! -->
-        <!-- jQuery Treeview -->
-        <script defer src="{{ STATIC_URL }}js/jquery-treeview/lib/jquery.cookie.js" type="text/javascript"></script>
-        <script defer type="text/javascript">
-            $("#colaptree").treeview({
-                collapsed: true,
-                animated: "fast",
-                persist: "location",
-            });
-        </script>
+  <!-- JavaScript at the bottom for fast page loading -->
 
-        <!-- Highslide -->
-        <script defer type="text/javascript">
-            hs.graphicsDir = '{{ STATIC_URL }}js/highslide/graphics/';
-            hs.outlineType = 'rounded-white';
-            hs.align = 'center';
-            hs.showCredits = false;
-        </script>
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/libs/jquery-1.6.1.min.js">\x3C/script>')</script>
 
-        {% block extra-foot %}{% endblock %}
+    <!-- scripts concatenated and minified via ant build script-->
+    <script src="{{ STATIC_URL }}js/plugins.js"></script>
+    <script src="{{ STATIC_URL }}js/script.js"></script>
+    <!-- end scripts-->
 
-        <!-- ANALYTICS -->
-        <script defer>
-            var _gaq=[['_setAccount','UA-20878697-1'],['_trackPageview'],['_trackPageLoadTime']];
-            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
-            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-            s.parentNode.insertBefore(g,s)}(document,'script'));
-        </script>
+    <!-- Colocar todos os scripts nos arquivos acima! -->
+    <!-- jQuery Treeview -->
+    <script defer src="{{ STATIC_URL }}js/jquery-treeview/lib/jquery.cookie.js" type="text/javascript"></script>
+    <script defer type="text/javascript">
+      $("#colaptree").treeview({
+collapsed: true,
+animated: "fast",
+persist: "location",
+});
+</script>
 
-    </body>
+<!-- Highslide -->
+<script defer type="text/javascript">
+  hs.graphicsDir = '{{ STATIC_URL }}js/highslide/graphics/';
+  hs.outlineType = 'rounded-white';
+  hs.align = 'center';
+  hs.showCredits = false;
+  </script>
+
+  {% block extra-foot %}{% endblock %}
+
+  <!-- ANALYTICS -->
+  <script defer>
+    var _gaq=[['_setAccount','UA-20878697-1'],['_trackPageview'],['_trackPageLoadTime']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
+      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+      s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+
+</body>
 </html>

@@ -12,6 +12,12 @@ $("#colaptree").treeview({
       persist: "location",
   });
 
+// Highslide
+hs.graphicsDir = '/static/js/highslide/graphics/';
+hs.outlineType = 'rounded-white';
+hs.align = 'center';
+hs.showCredits = false;
+
 // Document ready functions.
 $(document).ready(function(){
 

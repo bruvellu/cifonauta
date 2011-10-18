@@ -585,7 +585,7 @@ class TaxonTranslation(object):
 register(Taxon, TaxonTranslation)
 
 class SizeTranslation(object):
-    fields = ('description',)
+    fields = ('name', 'description',)
 register(Size, SizeTranslation)
 
 class CountryTranslation(object):

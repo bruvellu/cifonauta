@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-18 13:51-0200\n"
-"PO-Revision-Date: 2011-10-18 13:49\n"
+"POT-Creation-Date: 2011-10-18 14:23-0200\n"
+"PO-Revision-Date: 2011-10-18 14:22\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1334,6 +1334,10 @@ msgstr "By"
 #: templates/media_page.html:65
 msgid "visita"
 msgstr "pageview"
+
+#: templates/media_page.html:75
+msgid "Tamanho do organismo"
+msgstr "Organism size"
 
 #: templates/media_page.html:96 templates/tour_page.html:56
 #: templates/feeds/media_post.html:30

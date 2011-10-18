@@ -1161,8 +1161,8 @@ div.main {
   margin-bottom:1em;
 }
 
-#main-feeds iframe {
-  vertical-align:middle;
+#main-feeds div, #main-feeds iframe {
+  vertical-align:middle !important;
 }
 
 .main #photos p, #videos p, #tours p {

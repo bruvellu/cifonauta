@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-18 18:55-0200\n"
+"POT-Creation-Date: 2011-10-18 19:54-0200\n"
 "PO-Revision-Date: 2011-10-18 14:22\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1093,17 +1093,17 @@ msgstr "Press"
 msgid "Explorar"
 msgstr "Explore"
 
-#: templates/footer.html:36 templates/main_page.html:74
+#: templates/footer.html:36 templates/main_page.html:76
 #: templates/tours_page.html:3 templates/tours_page.html.py:10
 #: templates/tours_page.html:19
 msgid "Tours"
 msgstr "Tours"
 
-#: templates/footer.html:37 templates/main_page.html:50
+#: templates/footer.html:37 templates/main_page.html:52
 msgid "Fotos"
 msgstr "Photos"
 
-#: templates/footer.html:38 templates/main_page.html:62
+#: templates/footer.html:38 templates/main_page.html:64
 msgid "Vídeos"
 msgstr "Videos"
 
@@ -1232,18 +1232,19 @@ msgstr ""
 "\">suggestions</a>."
 
 #: templates/main_page.html:46
-msgid "Últimas fotos e vídeos"
-msgstr "Latest photos and videos"
+#, fuzzy
+msgid "Últimas imagens"
+msgstr "images"
 
-#: templates/main_page.html:46
+#: templates/main_page.html:47
 msgid "Cifonauta: últimas notícias"
 msgstr "Cifonauta: latest news"
 
-#: templates/main_page.html:46
+#: templates/main_page.html:47
 msgid "Notícias recentes"
 msgstr "Latest news"
 
-#: templates/main_page.html:57
+#: templates/main_page.html:59
 msgid ""
 "Além de fotos representativas de cada grupo disponibilizamos séries de um "
 "mesmo organismo possibilitando uma visualização mais completa de sua "
@@ -1253,7 +1254,7 @@ msgstr ""
 "sequential images of the same organism to allow a more complete view of "
 "their morphology and dimensionality."
 
-#: templates/main_page.html:69
+#: templates/main_page.html:71
 msgid ""
 "Mostram aspectos da biologia dos organismos como desenvolvimento, locomoção, "
 "comportamento e reprodução em vídeos de curta duração."
@@ -1261,7 +1262,7 @@ msgstr ""
 "Short footage material showing aspects of the biology of organisms such as "
 "development, locomotion, behavior, and reproduction."
 
-#: templates/main_page.html:81
+#: templates/main_page.html:83
 msgid ""
 "Seleção de imagens do banco sobre um tema específico com texto descritivo e "
 "slideshow. Conheça os <a href=\"/tours/\">tours disponíveis</a>."
@@ -1269,11 +1270,11 @@ msgstr ""
 "Selection of images from the database on a specific topic with descriptive "
 "text and slideshow. See our <a href=\"/tours/\">available tours</a>."
 
-#: templates/main_page.html:88
+#: templates/main_page.html:90
 msgid "Destaques"
 msgstr "Highlights"
 
-#: templates/main_page.html:104
+#: templates/main_page.html:106
 msgid "Navegue por táxons"
 msgstr "Browse by taxa"
 
@@ -2023,6 +2024,9 @@ msgid ""
 msgstr ""
 "Visit the tour <a href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</"
 "a>."
+
+#~ msgid "Últimas fotos e vídeos"
+#~ msgstr "Latest photos and videos"
 
 #~ msgid "Cidade"
 #~ msgstr "City"

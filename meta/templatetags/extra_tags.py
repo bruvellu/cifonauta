@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import operator
+
 from meta.models import *
 from meta.forms import *
 from django import template
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.template.defaultfilters import slugify
 from django.db.models import Q
+from django.template.defaultfilters import slugify
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext as _
 
 register = template.Library()
 
@@ -80,7 +82,7 @@ def slicer(query, media_id):
 
 def mediaque(media, qobj):
     '''Retorna queryset de vídeo ou foto, baseado no datatype.
-    
+
     Usado no navegador linear.
     '''
     if media.datatype == 'photo':
@@ -246,30 +248,66 @@ def sp_em(meta, autoescape=None):
 sp_em.needs_autoescape = True
 
 @register.filter
-def fielter(field):
+def fielter(field, locale):
     '''Converte nome do campo em nome apresentável (taxon>Táxon).'''
+    #FIXME Arrumar essa lambança! Tradução convencional não está funcionando...
+    # Já tentei normal e lazy e definir o language code. Nada faz o valor 
+    # seguir o locale do usuário...
     if field == 'tag':
-    	return u'Marcador'
+        if locale == 'en':
+            return field.title()
+        else:
+            return _('Marcador')
     elif field == 'author':
-        return u'Autor'
+        if locale == 'en':
+            return field.title()
+        else:
+            return _('Autor')
     elif field == 'source':
-        return u'Especialista'
+        if locale == 'en':
+            return field.title()
+        else:
+            return _('Especialista')
     elif field == 'taxon':
-        return u'Táxon'
+        if locale == 'en':
+            return field.title()
+        else:
+            return _('Táxon')
     elif field == 'size':
-        return u'Tamanho'
+        if locale == 'en':
+            return field.title()
+        else:
+            return _('Tamanho')
     elif field == 'sublocation':
-        return u'Local'
+        if locale == 'en':
+            return field.title()
+        else:
+            return _('Local')
     elif field == 'city':
-        return u'Cidade'
+        if locale == 'en':
+            return field.title()
+        else:
+            return _('Cidade')
     elif field == 'state':
-        return u'Estado'
+        if locale == 'en':
+            return field.title()
+        else:
+            return _('Estado')
     elif field == 'country':
-        return u'País'
+        if locale == 'en':
+            return field.title()
+        else:
+            return _('País')
     elif field == 'reference':
-        return u'Referência'
+        if locale == 'en':
+            return field.title()
+        else:
+            return _('Referência')
     else:
-    	return u'ERRO'
+        if locale == 'en':
+            return field.title()
+        else:
+            return _('ERRO')
 
 @register.filter
 def islist(obj):

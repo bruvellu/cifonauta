@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-18 04:17-0200\n"
-"PO-Revision-Date: 2011-10-03 23:01\n"
+"POT-Creation-Date: 2011-10-18 11:45-0200\n"
+"PO-Revision-Date: 2011-10-18 11:19\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -106,33 +106,35 @@ msgid "Tours recentes do banco de imagens Cifonauta."
 msgstr "Latest tours from Cifonauta image database."
 
 #: forms.py:10 templates/tour_page.html:49 templates/feeds/media_post.html:26
+#: templatetags/extra_tags.py:258
 msgid "Autor"
 msgstr "Author"
 
 #: forms.py:11 templates/media_page.html:96 templates/tour_page.html:56
-#: templates/feeds/media_post.html:30
+#: templates/feeds/media_post.html:30 templatetags/extra_tags.py:262
 msgid "Táxon"
 msgstr "Taxon"
 
 #: forms.py:12 templates/organizacao.html:29 templates/organizacao.html.py:35
-#: templates/tour_page.html:62
+#: templates/tour_page.html:62 templatetags/extra_tags.py:264
 msgid "Tamanho"
 msgstr "Size"
 
 #: forms.py:13 templates/mais.html:31 templates/media_page.html:113
 #: templates/tour_page.html:67 templates/feeds/media_post.html:46
+#: templatetags/extra_tags.py:266
 msgid "Local"
 msgstr "Place"
 
-#: forms.py:14
+#: forms.py:14 templatetags/extra_tags.py:268
 msgid "Cidade"
 msgstr "City"
 
-#: forms.py:15
+#: forms.py:15 templatetags/extra_tags.py:270
 msgid "Estado"
 msgstr "State"
 
-#: forms.py:16
+#: forms.py:16 templatetags/extra_tags.py:272
 msgid "País"
 msgstr "Country"
 
@@ -1032,7 +1034,7 @@ msgstr "Uncheck <strong>highlights only</strong> to see all."
 msgid "Limpar"
 msgstr "Clear"
 
-#: templates/buscar.html:51 templates/meta_page.html:42
+#: templates/buscar.html:51 templates/meta_page.html:43
 msgid "Atualizar"
 msgstr "Update"
 
@@ -1362,6 +1364,7 @@ msgid "visita"
 msgstr "pageview"
 
 #: templates/media_page.html:101 templates/feeds/media_post.html:34
+#: templatetags/extra_tags.py:260
 msgid "Especialista"
 msgid_plural "Especialistas"
 msgstr[0] "Expert"
@@ -1428,7 +1431,11 @@ msgstr "No photo"
 msgid "Nenhum vídeo"
 msgstr "No video"
 
-#: templates/meta_page.html:20 templates/meta_page.html.py:32
+#: templates/meta_page.html:4 templates/meta_page.html.py:31
+msgid "sem ranking"
+msgstr "no ranking"
+
+#: templates/meta_page.html:20 templates/meta_page.html.py:33
 #: templates/tour_page.html:24
 msgid "Cifonauta: fotos e vídeos"
 msgstr "Cifonauta: photos and videos"
@@ -1852,7 +1859,7 @@ msgstr "Search"
 msgid "Cifonauta"
 msgstr "Cifonauta"
 
-#: templates/sobremenu.html:12 templates/social.html:46
+#: templates/sobremenu.html:12 templates/social.html:41
 msgid "Compartilhe"
 msgstr "Share"
 
@@ -1920,7 +1927,7 @@ msgstr "Previous"
 msgid "SEM LEGENDA"
 msgstr "NO CAPTION"
 
-#: templates/tour_page.html:77
+#: templates/tour_page.html:77 templatetags/extra_tags.py:256
 msgid "Marcador"
 msgid_plural "Marcadores"
 msgstr[0] "Tag"
@@ -2018,6 +2025,14 @@ msgid ""
 msgstr ""
 "Visit the tour <a href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</"
 "a>."
+
+#: templatetags/extra_tags.py:274
+msgid "Referência"
+msgstr "Reference"
+
+#: templatetags/extra_tags.py:276
+msgid "ERRO"
+msgstr "ERROR"
 
 #~ msgid "Espécies"
 #~ msgstr "Species"

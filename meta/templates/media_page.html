@@ -93,12 +93,12 @@
   <div class="span-7 taxonomy">
 
     {% if taxa %}
-    <strong>{% blocktrans count taxa.count as counter %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set taxa '' '' ', ' '' %}</span>
+    <strong>{% blocktrans count counter=taxa.count %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set taxa '' '' ', ' '' %}</span>
     <br>
     {% endif %}
 
     {% if sources %}
-    <strong>{% blocktrans count sources.count as counter %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set sources '' '' ', ' '' %}</span>
+    <strong>{% blocktrans count counter=sources.count %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set sources '' '' ', ' '' %}</span>
     {% endif %}
   </div>
 

@@ -248,68 +248,6 @@ def sp_em(meta, autoescape=None):
 sp_em.needs_autoescape = True
 
 @register.filter
-def fielter(field, locale):
-    '''Converte nome do campo em nome apresentável (taxon>Táxon).'''
-    #FIXME Arrumar essa lambança! Tradução convencional não está funcionando...
-    # Já tentei normal e lazy e definir o language code. Nada faz o valor 
-    # seguir o locale do usuário...
-    if field == 'tag':
-        if locale == 'en':
-            return field.title()
-        else:
-            return _('Marcador')
-    elif field == 'author':
-        if locale == 'en':
-            return field.title()
-        else:
-            return _('Autor')
-    elif field == 'source':
-        if locale == 'en':
-            return field.title()
-        else:
-            return _('Especialista')
-    elif field == 'taxon':
-        if locale == 'en':
-            return field.title()
-        else:
-            return _('Táxon')
-    elif field == 'size':
-        if locale == 'en':
-            return field.title()
-        else:
-            return _('Tamanho')
-    elif field == 'sublocation':
-        if locale == 'en':
-            return field.title()
-        else:
-            return _('Local')
-    elif field == 'city':
-        if locale == 'en':
-            return field.title()
-        else:
-            return _('Cidade')
-    elif field == 'state':
-        if locale == 'en':
-            return field.title()
-        else:
-            return _('Estado')
-    elif field == 'country':
-        if locale == 'en':
-            return field.title()
-        else:
-            return _('País')
-    elif field == 'reference':
-        if locale == 'en':
-            return field.title()
-        else:
-            return _('Referência')
-    else:
-        if locale == 'en':
-            return field.title()
-        else:
-            return _('ERRO')
-
-@register.filter
 def islist(obj):
     '''Determina se objeto é uma lista.'''
     return isinstance(obj, list)

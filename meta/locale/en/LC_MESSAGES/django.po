@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-18 11:45-0200\n"
-"PO-Revision-Date: 2011-10-18 11:19\n"
+"POT-Creation-Date: 2011-10-18 13:51-0200\n"
+"PO-Revision-Date: 2011-10-18 13:49\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -105,38 +105,33 @@ msgstr "Cifonauta: latest tours"
 msgid "Tours recentes do banco de imagens Cifonauta."
 msgstr "Latest tours from Cifonauta image database."
 
-#: forms.py:10 templates/tour_page.html:49 templates/feeds/media_post.html:26
-#: templatetags/extra_tags.py:258
-msgid "Autor"
-msgstr "Author"
+#: forms.py:10 models.py:147
+msgid "autor"
+msgstr "author"
 
-#: forms.py:11 templates/media_page.html:96 templates/tour_page.html:56
-#: templates/feeds/media_post.html:30 templatetags/extra_tags.py:262
-msgid "Táxon"
-msgstr "Taxon"
+#: forms.py:11 models.py:273
+msgid "táxon"
+msgstr "taxon"
 
-#: forms.py:12 templates/organizacao.html:29 templates/organizacao.html.py:35
-#: templates/tour_page.html:62 templatetags/extra_tags.py:264
-msgid "Tamanho"
-msgstr "Size"
+#: forms.py:12 models.py:46 models.py:313
+msgid "tamanho"
+msgstr "size"
 
-#: forms.py:13 templates/mais.html:31 templates/media_page.html:113
-#: templates/tour_page.html:67 templates/feeds/media_post.html:46
-#: templatetags/extra_tags.py:266
-msgid "Local"
-msgstr "Place"
+#: forms.py:13 models.py:50 models.py:356
+msgid "local"
+msgstr "place"
 
-#: forms.py:14 templatetags/extra_tags.py:268
-msgid "Cidade"
-msgstr "City"
+#: forms.py:14 models.py:386
+msgid "cidade"
+msgstr "city"
 
-#: forms.py:15 templatetags/extra_tags.py:270
-msgid "Estado"
-msgstr "State"
+#: forms.py:15 models.py:54 models.py:416
+msgid "estado"
+msgstr "state"
 
-#: forms.py:16 templatetags/extra_tags.py:272
-msgid "País"
-msgstr "Country"
+#: forms.py:16 models.py:56 models.py:446 models.py:447
+msgid "país"
+msgstr "country"
 
 #: forms.py:30
 msgid "ascendente"
@@ -311,10 +306,6 @@ msgstr "caption"
 msgid "Legenda da imagem."
 msgstr "Image caption."
 
-#: models.py:46 models.py:313
-msgid "tamanho"
-msgstr "size"
-
 #: models.py:46
 msgid "Classe de tamanho do organismo na imagem."
 msgstr "Size class of the organism in the image."
@@ -327,10 +318,6 @@ msgstr "rights"
 msgid "Detentor dos direitos autorais da imagem."
 msgstr "Copyrights owner of the image."
 
-#: models.py:50 models.py:356
-msgid "local"
-msgstr "place"
-
 #: models.py:50
 msgid "Localidade mostrada na imagem (ou local de coleta)."
 msgstr "Place shown in the image (or collection site)."
@@ -339,17 +326,9 @@ msgstr "Place shown in the image (or collection site)."
 msgid "Cidade mostrada na imagem (ou cidade de coleta)."
 msgstr "City shown in the image (or city where it was collected)."
 
-#: models.py:54 models.py:416
-msgid "estado"
-msgstr "state"
-
 #: models.py:54
 msgid "Estado mostrado na imagem (ou estado de coleta)."
 msgstr "State shown in the image (or state where it was collected)."
-
-#: models.py:56 models.py:446 models.py:447
-msgid "país"
-msgstr "country"
 
 #: models.py:56
 msgid "País mostrado na imagem (ou país de coleta)."
@@ -523,10 +502,6 @@ msgstr "number of videos"
 msgid "Número de vídeos associados a este autor."
 msgstr "Number of videos linked to this author."
 
-#: models.py:147
-msgid "autor"
-msgstr "author"
-
 #: models.py:148 templates/nav.html:59
 msgid "autores"
 msgstr "authors"
@@ -699,10 +674,6 @@ msgstr "Number of photos linked to this taxon."
 msgid "Número de vídeos associados a este táxon."
 msgstr "Number of videos linked to this taxon."
 
-#: models.py:273
-msgid "táxon"
-msgstr "taxon"
-
 #: models.py:274 templates/nav.html:50
 msgid "táxons"
 msgstr "taxa"
@@ -786,10 +757,6 @@ msgstr "Number of photos linked to this city."
 #: models.py:367
 msgid "Número de vídeos associados à esta cidade."
 msgstr "Number of videos linked to this city."
-
-#: models.py:386
-msgid "cidade"
-msgstr "city"
 
 #: models.py:387
 msgid "cidades"
@@ -1034,7 +1001,7 @@ msgstr "Uncheck <strong>highlights only</strong> to see all."
 msgid "Limpar"
 msgstr "Clear"
 
-#: templates/buscar.html:51 templates/meta_page.html:43
+#: templates/buscar.html:51 templates/meta_page.html:42
 msgid "Atualizar"
 msgstr "Update"
 
@@ -1343,6 +1310,11 @@ msgstr "All taxa"
 msgid "Tamanhos"
 msgstr "Sizes"
 
+#: templates/mais.html:31 templates/media_page.html:113
+#: templates/tour_page.html:67 templates/feeds/media_post.html:46
+msgid "Local"
+msgstr "Place"
+
 #: templates/mais.html:36 templates/places_page.html:27
 msgid "Cidades"
 msgstr "Cities"
@@ -1363,12 +1335,18 @@ msgstr "By"
 msgid "visita"
 msgstr "pageview"
 
+#: templates/media_page.html:96 templates/tour_page.html:56
+#: templates/feeds/media_post.html:30
+msgid "Táxon"
+msgid_plural "Táxons"
+msgstr[0] "Taxa"
+msgstr[1] "Taxon"
+
 #: templates/media_page.html:101 templates/feeds/media_post.html:34
-#: templatetags/extra_tags.py:260
 msgid "Especialista"
 msgid_plural "Especialistas"
-msgstr[0] "Expert"
-msgstr[1] "Experts"
+msgstr[0] "Experts"
+msgstr[1] "Expert"
 
 #: templates/media_page.html:107 templates/feeds/media_post.html:42
 msgid "Data"
@@ -1431,11 +1409,11 @@ msgstr "No photo"
 msgid "Nenhum vídeo"
 msgstr "No video"
 
-#: templates/meta_page.html:4 templates/meta_page.html.py:31
+#: templates/meta_page.html:4 templates/meta_page.html.py:30
 msgid "sem ranking"
 msgstr "no ranking"
 
-#: templates/meta_page.html:20 templates/meta_page.html.py:33
+#: templates/meta_page.html:20 templates/meta_page.html.py:32
 #: templates/tour_page.html:24
 msgid "Cifonauta: fotos e vídeos"
 msgstr "Cifonauta: photos and videos"
@@ -1524,6 +1502,11 @@ msgstr ""
 "latest findings of each area; it reflects, almost strictly, the data from "
 "ITIS. Only in some cases we employ the phylogeny proposed by the author (or "
 "expert) that identified the species."
+
+#: templates/organizacao.html:29 templates/organizacao.html.py:35
+#: templates/tour_page.html:62
+msgid "Tamanho"
+msgstr "Size"
 
 #: templates/organizacao.html:31
 msgid ""
@@ -1927,7 +1910,13 @@ msgstr "Previous"
 msgid "SEM LEGENDA"
 msgstr "NO CAPTION"
 
-#: templates/tour_page.html:77 templatetags/extra_tags.py:256
+#: templates/tour_page.html:49 templates/feeds/media_post.html:26
+msgid "Autor"
+msgid_plural "Autores"
+msgstr[0] "Author"
+msgstr[1] "Authors"
+
+#: templates/tour_page.html:77
 msgid "Marcador"
 msgid_plural "Marcadores"
 msgstr[0] "Tag"
@@ -2026,13 +2015,20 @@ msgstr ""
 "Visit the tour <a href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</"
 "a>."
 
-#: templatetags/extra_tags.py:274
-msgid "Referência"
-msgstr "Reference"
+#~ msgid "Cidade"
+#~ msgstr "City"
 
-#: templatetags/extra_tags.py:276
-msgid "ERRO"
-msgstr "ERROR"
+#~ msgid "Estado"
+#~ msgstr "State"
+
+#~ msgid "País"
+#~ msgstr "Country"
+
+#~ msgid "Referência"
+#~ msgstr "Reference"
+
+#~ msgid "ERRO"
+#~ msgstr "ERROR"
 
 #~ msgid "Espécies"
 #~ msgstr "Species"

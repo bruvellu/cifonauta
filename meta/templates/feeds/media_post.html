@@ -23,15 +23,15 @@
 
     <div style="margin-bottom:10px; padding:10px; background:#fafafa;">
         {% if obj.author_set.all %}
-        <strong>{% blocktrans count obj.author_set.count as counter %}Autor{% plural %}Autores{% endblocktrans %}:</strong> <span id="author">{% show_set obj.author_set.all '' '' ', ' '' %}</span><br>
+        <strong>{% blocktrans count counter=obj.author_set.count %}Autor{% plural %}Autores{% endblocktrans %}:</strong> <span id="author">{% show_set obj.author_set.all '' '' ', ' '' %}</span><br>
         {% endif %}
 
         {% if obj.taxon_set.all %}
-        <strong>{% blocktrans count obj.taxon_set.count as counter %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set obj.taxon_set.all '' '' ', ' '' %}</span><br>
+        <strong>{% blocktrans count counter=obj.taxon_set.count %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set obj.taxon_set.all '' '' ', ' '' %}</span><br>
         {% endif %}
 
         {% if obj.source_set.all %}
-        <strong>{% blocktrans count obj.source_set.count as counter %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set obj.source_set.all '' '' ', ' '' %}</span><br>
+        <strong>{% blocktrans count counter=obj.source_set.count %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set obj.source_set.all '' '' ', ' '' %}</span><br>
         {% endif %}
 
         {% if obj.duration %}

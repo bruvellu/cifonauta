@@ -45,14 +45,14 @@
         <div>
           {% with author_all=media.author_set.all %}
           {% if author_all %}
-          <strong>{% blocktrans count author_all.count as counter %}Autor{% plural %}Autores{% endblocktrans %}:</strong> <span>{% show_set author_all '' '' ', ' '' %}</span>
+          <strong>{% blocktrans count counter=author_all.count %}Autor{% plural %}Autores{% endblocktrans %}:</strong> <span>{% show_set author_all '' '' ', ' '' %}</span>
           <br>
           {% endif %}
           {% endwith %}
 
           {% with taxa_all=media.taxon_set.all %}
           {% if taxa_all %}
-          <strong>{% blocktrans count taxa_all.count as counter %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set taxa_all '' '' ', ' '' %}</span>
+          <strong>{% blocktrans count counter=taxa_all.count %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set taxa_all '' '' ', ' '' %}</span>
           <br>
           {% endif %}
           {% endwith %}
@@ -63,7 +63,7 @@
           {% endif %}
 
           {% if media.sublocation.name or media.city.name or media.state.name or media.country.name %}
-          <strong>{% trans 'Local' %}:</strong> 
+          <strong>{% trans 'Local' %}:</strong>
           {% if media.sublocation.name %}<span id="sublocation">{{ media.sublocation }},</span>{% endif %}
           {% if media.city.name %}<span id="city">{{ media.city }},</span>{% endif %}
           {% if media.state.name %}<span id="state">{{ media.state }},</span>{% endif %}
@@ -73,7 +73,7 @@
 
           {% with tag_all=media.tag_set.all %}
           {% if tag_all %}
-          <strong>{% blocktrans count tag_all.count as counter %}Marcador{% plural %}Marcadores{% endblocktrans %}:</strong> <span>{% show_set tag_all '' '' ', ' '' %}</span>
+          <strong>{% blocktrans count counter=tag_all.count %}Marcador{% plural %}Marcadores{% endblocktrans %}:</strong> <span>{% show_set tag_all '' '' ', ' '' %}</span>
           <br>
           {% endif %}
           {% endwith %}

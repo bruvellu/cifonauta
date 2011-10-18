@@ -7,13 +7,13 @@ from django.utils.translation import ugettext_lazy as _
 
 
 METAS = (
-        (u'author', _('Autor')),
-        (u'taxon', _('Táxon')),
-        (u'size', _('Tamanho')),
-        (u'sublocation', _('Local')),
-        (u'city', _('Cidade')),
-        (u'state', _('Estado')),
-        (u'country', _('País')),
+        (u'author', _(u'autor')),
+        (u'taxon', _(u'táxon')),
+        (u'size', _(u'tamanho')),
+        (u'sublocation', _(u'local')),
+        (u'city', _(u'cidade')),
+        (u'state', _(u'estado')),
+        (u'country', _(u'país')),
         )
 
 ITEMS = (
@@ -27,17 +27,17 @@ ITEMS = (
         )
 
 ORDER = (
-        ('asc', _('ascendente')),
-        ('desc', _('descendente')),
+        ('asc', _(u'ascendente')),
+        ('desc', _(u'descendente')),
         )
 
 ORDER_BY = (
-        ('id', _('id')),
-        ('stats__pageviews', _('visitas')),
-        ('date', _('data da imagem')),
-        ('pub_date', _('data de publicação')),
-        ('timestamp', _('data de modificação')),
-        ('random', _('aleatório')),
+        ('id', _(u'id')),
+        ('stats__pageviews', _(u'visitas')),
+        ('date', _(u'data da imagem')),
+        ('pub_date', _(u'data de publicação')),
+        ('timestamp', _(u'data de modificação')),
+        ('random', _(u'aleatório')),
         )
 
 

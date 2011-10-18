@@ -1,0 +1,27 @@
+{% load cache i18n %}
+
+{% cache 2592000 logo LANGUAGE_CODE %}
+<a href="/">
+  <hgroup class="main span-10">
+  <!-- 
+  Using span to workaround Firefox 3.6 horrendous bug 
+  with anchors nesting h1, h2, within HTML5 <header>
+  https://bugzilla.mozilla.org/show_bug.cgi?id=514122
+  -->
+  <span id="maintitle">Cifonauta</span>
+  <span id="tagline">{% trans 'banco de imagens de biologia marinha' %}</span>
+  </hgroup>
+</a>
+{% endcache %}
+
+<div class="span-14 last" id="stats-search">
+
+  <div class="quiet" id="stats">
+    {% show_stats %}
+  </div>
+
+  <div id="home-search">
+    {% search_box %}
+  </div>
+
+</div>

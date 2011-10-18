@@ -60,37 +60,13 @@
   </head>
   <body>
     <div class="container prepend-1 append-1">
+
       <nav class="main span-24 last">
       {% include 'nav.html' %}
       </nav>
+
       <header class="main span-24 last" id="mainheader">
-      {% cache 2592000 logo LANGUAGE_CODE %}
-      <a href="/">
-        <hgroup class="main span-10">
-        <!-- 
-        Using span to workaround Firefox 3.6 horrendous bug 
-        with anchors nesting h1, h2, within HTML5 <header>
-        https://bugzilla.mozilla.org/show_bug.cgi?id=514122
-        -->
-        <span id="maintitle">Cifonauta</span>
-        <span id="tagline">{% trans 'banco de imagens de biologia marinha' %}</span>
-        </hgroup>
-      </a>
-      {% endcache %}
-      <div class="span-14 last" id="stats-search">
-        <div class="quiet" id="stats">
-          {% show_stats %}
-        </div>
-        {% comment %}
-        {% if not request.path == '/search/' %}
-        {% endcomment %}
-        <div id="home-search">
-          {% search_box %}
-        </div>
-        {% comment %}
-        {% endif %}
-        {% endcomment %}
-      </div>
+      {% include 'header.html' %}
       </header>
 
       <section class="main span-24 last" id="content">

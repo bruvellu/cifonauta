@@ -43,8 +43,7 @@ $(document).ready(function(){
     // Trigger do seletor de línguas.
     $('#languages select').change(function () {
         var myform = $(this).parent();
-        if ($(this).val() != "{{ request.LANGUAGE_CODE }}") {
-            myform.submit();};
+        myform.submit();
     });
 
 });

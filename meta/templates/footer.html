@@ -1,0 +1,69 @@
+{% load cache i18n %}
+{% cache 2592000 footer LANGUAGE_CODE %}
+
+<div class="span-24 last" id="footerbase">
+
+  <div class="span-13">
+    <div class="span-13 last">
+      &nbsp; &copy;{% now "Y" %} {% trans 'Centro de Biologia Marinha da Universidade de São Paulo' %}
+    </div>
+    <div class="span-13 last">&nbsp; <a href="http://www.usp.br/cbm/">www.usp.br/cbm</a></div>
+  </div>
+
+  <div class="span-6 cnpq">{% trans 'Licença de uso' %}:
+    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="{% trans 'Licença Creative Commons' %}" style="border-width:0" title="{% trans 'O conteúdo deste website está sob uma licença Creative Commons Atribuição-Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional' %}" src="{{ STATIC_URL }}cc.png" /></a></a>.</div>
+
+<div class="span-5 last cnpq">{% trans 'Apoio' %}: <a href="http://www.cnpq.br/" title="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}"><img width="90" alt="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}" src="{{ STATIC_URL }}cnpq.png" /></a></div>
+
+</div>
+
+<div class="span-24 last" id="sitelinks">
+  <div class="span-6">
+    <h4>{% trans 'Informações básicas' %}</h4>
+    <ul class="padlist">
+      <li><a href="/about/">{% trans 'Sobre' %}</a></li>
+      <li><a href="/content/">{% trans 'Conteúdo' %}</a></li>
+      <li><a href="/organization/">{% trans 'Organização' %}</a></li>
+      <li><a href="/credits/">{% trans 'Créditos e apoio' %}</a></li>
+      <li><a href="/terms/">{% trans 'Termos de uso e direitos' %}</a></li>
+      <li><a href="/press/">{% trans 'Imprensa' %}</a></li>
+    </ul>
+  </div>
+  <div class="span-4">
+    <h4>{% trans 'Explorar' %}</h4>
+    <ul class="padlist">
+      <li><a href="/search/">{% trans 'Buscador' %}</a></li>
+      <li><a href="/tours/">{% trans 'Tours' %}</a></li>
+      <li><a href="/search/?type=photo">{% trans 'Fotos' %}</a></li>
+      <li><a href="/search/?type=video">{% trans 'Vídeos' %}</a></li>
+    </ul>
+  </div>
+  <div class="span-4">
+    <h4>{% trans 'Metadados' %}</h4>
+    <ul class="padlist">
+      <li><a href="/tags/">{% trans 'Marcadores' %}</a></li>
+      <li><a href="/taxa/">{% trans 'Táxons' %}</a></li>
+      <li><a href="/places/">{% trans 'Localidades' %}</a></li>
+      <li><a href="/authors/">{% trans 'Autores' %}</a></li>
+      <li><a href="/literature/">{% trans 'Referências' %}</a></li>
+    </ul>
+  </div>
+  <div class="span-4">
+    <h4>{% trans 'Novidades' %}</h4>
+    <ul class="padlist">
+      <li><a href="/blog/">{% trans 'Blog' %}</a></li>
+      <li><a href="http://twitter.com/cifonauta">Twitter</a></li>
+      <li><a href="https://www.facebook.com/pages/Cifonauta/163979623658905">Facebook</a></li>
+    </ul>
+  </div>
+  <div class="span-4 last">
+    <h4>{% trans 'Desenvolvimento' %}</h4>
+    <ul class="padlist">
+      <li><a href="/details/">{% trans 'Detalhes técnicos' %}</a></li>
+      <li><a href="/development/">{% trans 'Atualizações' %}</a></li>
+      <li><a href="/roadmap/">{% trans 'Idéias planejadas' %}</a></li>
+      <li><a href="/feedback/">{% trans 'Feedback' %}</a></li>
+    </ul>
+  </div>
+</div>
+{% endcache %}

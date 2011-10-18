@@ -5,6 +5,7 @@ function load_disqus() {
     return false;
 }
 
+
 // Document ready functions.
 $(document).ready(function(){
 

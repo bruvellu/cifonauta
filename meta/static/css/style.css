@@ -775,6 +775,11 @@ nav.main {
   padding-top:1em;
 }
 
+.feed-icon a {
+  color: #ffffff;
+  padding: 4px 0 4px 18px;
+}
+
 #feedback {
   position:fixed;
   right:0;
@@ -1156,6 +1161,10 @@ div.main {
   margin-bottom:1em;
 }
 
+#main-feeds iframe {
+  vertical-align:middle;
+}
+
 .main #photos p, #videos p, #tours p {
   font-size:1.1em;
   width:300px;
@@ -1172,7 +1181,7 @@ div#search-status {
   font-size:2em;
 }
 
-input.fashion {
+.fashion {
   background:#94B1CA;
   background: -moz-linear-gradient(center top , #94B1CA 0%, #6B92B2 100%) repeat scroll 0 0 transparent; /* firefox */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#94B1CA), color-stop(100%,#6B92B2)); /* webkit */
@@ -1189,7 +1198,7 @@ input.fashion {
   box-shadow: 2px 2px 5px #ddd; 
 }
 
-input.fashion#display {
+.fashion#display {
   float:right;
   margin:-2em 0 0 0;
 }
@@ -1203,7 +1212,7 @@ input.fashion#display {
   color:#E5926F;
 }
 
-input.fashion:hover {
+.fashion:hover {
   background:#C6D880;
   cursor: pointer;
 }

@@ -3,36 +3,16 @@
 
 {% if linear == 'True' %}
 {% cache 2592000 social LANGUAGE_CODE linear %}
+
 <!-- Twitter -->
 <a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a>
-
-<script id="deferedjs" type="text/javascript">
-    var b = document.createElement('script');
-    b.type = 'text/javascript';
-    b.src = ('http://platform.twitter.com/widgets.js');
-    var a=document.getElementById("deferedjs");
-    a.parentNode.insertBefore(b,a);
-</script>
 
 <!-- Google Plus -->
 <div class="g-plusone" data-size="medium" data-count="true"></div>
 
-<script type="text/javascript">
-    window.___gcfg = {
-        lang: '{{ LANGUAGE_CODE }}'
-    };
-    (function() {
-        var po = document.createElement('script');
-        po.type = 'text/javascript';
-        po.async = true;
-        po.src = 'https://apis.google.com/js/plusone.js';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(po, s);
-    })();
-</script>
-
 <!-- Facebook -->
-<iframe src="http://www.facebook.com/plugins/like.php?href&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;locale={% if LANGUAGE_CODE == 'pt-br' %}pt_BR{% else %}en_US{% endif %}" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:21px;" allowTransparency="true"></iframe>
+<div class="fb-like" data-send="false" data-layout="button_count" data-width="100" data-show-faces="false"></div>
+
 {% endcache %}
 {% endif %}
 

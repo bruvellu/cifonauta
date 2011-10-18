@@ -35,6 +35,45 @@ $('#slides').slides({
   generatePagination: false
 });
 
+function loadSocial(script) {
+  var defered = document.createElement("script");
+  defered.type = "text/javascript";
+  defered.src = script;
+  var holder = document.getElementById("deferedjs");
+  holder.parentNode.insertBefore(defered, holder);
+}
+
+// Twitter button.
+loadSocial("http://platform.twitter.com/widgets.js");
+
+//var b = document.createElement('script');
+//b.type = 'text/javascript';
+//b.src = ('http://platform.twitter.com/widgets.js');
+//var a=document.getElementById("deferedjs");
+//a.parentNode.insertBefore(b,a);
+
+// Google Plus button
+loadSocial("https://apis.google.com/js/plusone.js");
+
+//var po = document.createElement('script');
+//po.type = 'text/javascript';
+//po.async = true;
+//po.src = 'https://apis.google.com/js/plusone.js';
+//var s = document.getElementById('deferedjs');
+//s.parentNode.insertBefore(po, s);
+
+// Facebook Like button
+loadSocial("//connect.facebook.net/en_US/all.js#xfbml=1");
+//<div id="fb-root"></div>
+//
+//<script>(function(d, s, id) {
+//  var js, fjs = d.getElementsByTagName(s)[0];
+//  if (d.getElementById(id)) {return;}
+//  js = d.createElement(s); js.id = id;
+//  js.src = "//connect.facebook.net/pt_BR/all.js#xfbml=1";
+//  fjs.parentNode.insertBefore(js, fjs);
+//}(document, 'script', 'facebook-jssdk'));</script>
+
 // Document ready functions.
 $(document).ready(function(){
 

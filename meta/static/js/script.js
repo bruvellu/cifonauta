@@ -24,6 +24,16 @@ VideoJS.setupAllWhenReady({
   returnToStart: true,
 });
 
+// Slides for tour
+$('#slides').slides({
+  preload: true,
+  preloadImage: '/static/js/slides/loading.gif',
+  autoHeight: true,
+  play: 4000,
+  hoverPause: true,
+  slideSpeed: 300,
+  generatePagination: false
+});
 
 // Document ready functions.
 $(document).ready(function(){

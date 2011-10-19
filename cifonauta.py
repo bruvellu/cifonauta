@@ -203,9 +203,9 @@ class Database:
                     else:
                         logger.debug('%s já existe!', newtaxon.taxonName)
 
-                if taxon.parent_name:
+                if taxon.parent['name']:
                     # Ordem reversa acima garante que ele já existe.
-                    metadatum.parent = Taxon.objects.get(name=taxon.parent_name)
+                    metadatum.parent = Taxon.objects.get(name=taxon.parent['name'])
                 if taxon.tsn:
                     metadatum.tsn = taxon.tsn
                 if taxon.rank:
@@ -237,9 +237,9 @@ class Database:
         taxon.name
         taxon.rank
         taxon.tsn
-        taxon.parent
-        taxon.parent_rank
-        taxon.parent_tsn
+        taxon.parents
+        taxon.parent['name']
+        taxon.parent['tsn']
         '''
         try:
             taxon = Itis(name)

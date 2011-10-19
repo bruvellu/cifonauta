@@ -61,14 +61,10 @@ class Itis:
         self.rank = None
         self.parent = {}
         self.parents = None
-        self.hierarchy = None
-
-        self.ranks = ['Kingdom', 'Phylum', 'Class', 'Order',
-                'Family', 'Genus', 'Species']
 
         self.search_by_scientific_name(self.query)
         if self.tsn:
-            self.hierarchy = self.get_full_hierarchy(self.tsn)
+            self.get_full_hierarchy(self.tsn)
 
     def translate(self, rank):
         '''Traduz nome do ranking pra português.'''
@@ -181,22 +177,48 @@ class Itis:
                 theone = []
                 # Tentando encontrar o táxon certo.
                 for entry in results.scientificNames:
-                    if entry.combinedName == query:
+                    if self.fix(entry.combinedName) == query:
                         theone.append(entry)
                 if len(theone) == 1:
                     taxon = theone[0]
-                    self.name = taxon.combinedName
+                    self.name = self.fix(taxon.combinedName)
                     self.tsn = taxon.tsn
+                elif len(theone) > 1:
+                    # Checa qual destes táxons é válido.
+                    taxon = self.get_accepted_names_from_tsn(theone)
+                    if taxon:
+                        self.name = self.fix(taxon.combinedName)
+                        self.tsn = taxon.tsn
+                    else:
+                        logger.warning('Nenhum táxon com nome %s é válido.', query)
                 else:
-                    #XXX Pensar em algo.
-                    logger.critical('Mais de uma entrada com o nome de %s. O que fazer?',
-                            query)
+                    logger.info('Nenhum táxon com o nome exato %s foi encontrado.', query)
             else:
                 taxon = results.scientificNames[0]
-                self.name = taxon.combinedName
+                self.name = self.fix(taxon.combinedName)
                 self.tsn = taxon.tsn
         else:
             logger.info('Nenhum táxon com o nome de %s foi encontrado.', query)
+
+    def fix(self, combinedName):
+        '''Fix combinedName from ITIS.'''
+        fixed = ' '.join(combinedName.split())
+        return fixed
+
+    def get_accepted_names_from_tsn(self, taxa):
+        '''Entre táxons com mesmo nome confere qual TSNs é válido.'''
+        for taxon in taxa:
+            try:
+                response = self.client.service.getAcceptedNamesFromTSN(taxon.tsn)
+            except:
+                logger.warning('Problema na conexão para checar a validade de %d', taxon.tsn)
+            # Assume que só existe 1 táxon oficialmente aceito.
+            #TODO Verificar isso...
+            if not response.acceptedNames:
+                # Quando não há nomes alternativos, o táxon é válido.
+                return taxon
+        else:
+            return None
 
     def get_full_hierarchy(self, tsn):
         '''Encontra hierarquia e converte valores.
@@ -240,79 +262,6 @@ class Itis:
                     taxon.parentTsn = int(taxon.parentTsn)
         except:
             logger.debug('Táxon não retornou classificação completa...')
-
-    def get_parent(self, tsn):
-        '''Encontra o táxon pai.
-
-        Exemplo do XML de input:
-
-        <ns:getHierarchyUpFromTSNResponse>
-            <ns:return type="org.usgs.itis.itis_service.data.SvcHierarchyRecord">
-                <ax23:parentName>Arthropoda</ax23:parentName>
-                <ax23:parentTsn>82696</ax23:parentTsn>
-                <ax23:rankName>Subphylum</ax23:rankName>
-                <ax23:taxonName>Crustacea</ax23:taxonName>
-                <ax23:tsn>83677</ax23:tsn>
-            </ns:return>
-        </ns:getHierarchyUpFromTSNResponse>
-
-        http://www.itis.gov/ITISWebService/services/ITISService/getHierarchyUpFromTSN?tsn=83677 
-        '''
-        if tsn:
-            print u'Pegando o táxon pai...'
-            try:
-                up = self.client.service.getHierarchyUpFromTSN(tsn)
-            except:
-                #TODO O que fazer quando isso acontecer?
-                print u'Não conseguiu conectar...'
-                up = None
-            if up.parentName and up.parentTsn:
-                self.rank = self.translate(up.rankName)
-                self.parent_rank = self.translate(
-                        self.get_rank(up.parentTsn)
-                        )
-                self.parent = up.parentName
-                self.parent_tsn = up.parentTsn
-            else:
-                print u'Táxon inválido? Ou sem pai mesmo?'
-                #FIXME None evita táxon pai em branco?
-                #FIXME E táxon inválido?
-                self.parent, self.parent_tsn, self.parent_rank = None, None, None
-                self.rank = self.translate(up.rankName)
-        else:
-            print u'Salvando do loop infinito...'
-            pass
-
-    def get_rank(self, tsn):
-        '''Retorna o nome do rank do táxon.'''
-        try:
-            rank = self.client.service.getTaxonomicRankNameFromTSN(tsn)
-            return rank.rankName
-        except:
-            #TODO O que fazer quando isso acontecer?
-            print u'Não conseguiu conectar...'
-            return None
-
-    def open_service(self, function, value):
-        '''Abre o url e retorna a resposta.'''
-        try:
-            print 'Conectando ao itis.gov...'
-            query = eval('self.client.service.%s(%s)' % (function, value))
-        except:
-            print 'Acabou o tempo e não houve retorno do ITIS. Nova tentativa:'
-            try:
-                print 'Conectando ao itis.gov... (2)'
-                query = eval('self.client.service.%s(%s)' % (function, value))
-            except:
-                print 'Acabou o tempo e não houve retorno do ITIS. Nova tentativa:'
-                try:
-                    print 'Conectando ao itis.gov... (3)'
-                    query = eval('self.client.service.%s(%s)' % (function, value))
-                except:
-                    print 'Não houve retorno do ITIS. Desisto.'
-                    return None
-        print 'Sucesso!'
-        return query
 
 def main():
     pass

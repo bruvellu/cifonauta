@@ -73,7 +73,7 @@ class Itis:
 
     def translate(self, rank):
         '''Traduz nome do ranking pra português.'''
-        
+
         en2pt = {
                 'Subform': u'Subforma',
                 'Superorder': u'Superordem',
@@ -121,7 +121,7 @@ class Itis:
 
     def get_tsn(self, query):
         '''Encontra o identificador do táxon.
-        
+
         Exemplo do XML de input:
 
         <ns:searchByScientificNameResponse>
@@ -187,7 +187,7 @@ class Itis:
 
     def get_hierarchy(self, tsn):
         '''Encontra hierarquia e converte valores.
-        
+
         O formato vindo do SOAP não serve para criar as instâncias no Django.
         Por isso é necessário converter em unicode e int, além de traduzir os
         rankings.
@@ -220,7 +220,7 @@ class Itis:
 
     def get_parent(self, tsn):
         '''Encontra o táxon pai.
-        
+
         Exemplo do XML de input:
 
         <ns:getHierarchyUpFromTSNResponse>

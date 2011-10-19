@@ -20,6 +20,12 @@ Algoritmo:
 from suds.client import Client
 import logging
 
+# Django environment import
+from django.core.management import setup_environ
+import settings
+setup_environ(settings)
+from meta.models import Taxon
+
 # Criando o logger.
 logger = logging.getLogger('itis')
 logger.setLevel(logging.DEBUG)
@@ -240,7 +246,10 @@ class Itis:
         except:
             logger.warning('Erro ao puxar a hierarquia de %s, problema na conexão', tsn)
 
-        try:
+        if not hierarchy.hierarchyList:
+            self.rank = self.translate(u'Kingdom')
+            self.parents = hierarchy.hierarchyList
+        else:
             # Último ítem é o táxon em questão.
             taxon = hierarchy.hierarchyList[-1]
             # Salva propriedades.
@@ -260,8 +269,31 @@ class Itis:
                 if taxon.parentName and taxon.parentTsn:
                     taxon.parentName = unicode(taxon.parentName)
                     taxon.parentTsn = int(taxon.parentTsn)
-        except:
-            logger.debug('Táxon não retornou classificação completa...')
+
+    def update_model(self):
+        '''Update database table with newly fetched records.'''
+        if not self.name:
+            logger.critical('No taxon is defined! Aborting...')
+
+        # Update parents.
+        if self.parents:
+            for parent in self.parents:
+                logger.debug('Atualizando %s...', parent.taxonName)
+                taxon, new = Taxon.objects.get_or_create(name=parent.taxonName)
+                taxon.rank = parent.rankName
+                taxon.tsn = parent.tsn
+                if parent.parentName:
+                    taxon.parent = Taxon.objects.get(name=parent.parentName)
+                taxon.save()
+                logger.debug('%s salvo!', taxon.name)
+
+        # Atualiza o táxon em questão.
+        this, new = Taxon.objects.get_or_create(name=self.name)
+        this.rank = self.rank
+        this.tsn = self.tsn
+        if self.parent:
+            this.parent = Taxon.objects.get(name=self.parent['name'])
+        this.save()
 
 def main():
     pass

@@ -19,33 +19,30 @@ Algoritmo:
 
 from suds.client import Client
 import logging
-logging.basicConfig(level=logging.INFO)
-#logging.getLogger('suds.client').setLevel(logging.DEBUG)
 
-# FIXME testar busca de Watersipora subtorquata.
+# Criando o logger.
+logger = logging.getLogger('itis')
+logger.setLevel(logging.DEBUG)
+logger.propagate = False
+# Define formato das mensagens.
+formatter = logging.Formatter('[%(levelname)s] %(asctime)s @ %(module)s %(funcName)s (l%(lineno)d): %(message)s')
 
-#TODO Implementar o WoRMS
-#worms = 'http://www.marinespecies.org/aphia.php?p=soap&wsdl=1'
-#taxon = client.service.getAphiaRecordByID(id)
+# Cria o manipulador do console.
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.DEBUG)
+# Define a formatação para o console.
+console_handler.setFormatter(formatter)
+# Adiciona o console para o logger.
+logger.addHandler(console_handler)
 
-#def show(classi):
-#    print classi.scientificname, classi.rank
-#    if classi.child:
-#        show(classi.child)
-#
-#id = client.service.getAphiaID("Clypeaster")
-#taxon = client.service.getAphiaRecordByID(id)
-#print id, taxon
-#print
-#print taxon.scientificname, taxon.authority
-#print taxon.valid_name, taxon.valid_authority
-#print
-#print taxon.url
-#print
-#classi = client.service.getAphiaClassificationByID(id)
-#show(classi)
-#
-#print 'FIM'
+# Cria o manipulador do arquivo.log.
+file_handler = logging.FileHandler('logs/itis.log')
+file_handler.setLevel(logging.DEBUG)
+# Define a formatação para o arquivo.log.
+file_handler.setFormatter(formatter)
+# Adiciona o arquivo.log para o logger.
+logger.addHandler(file_handler)
+
 
 class Itis:
     '''Interação com o ITIS'''
@@ -58,18 +55,20 @@ class Itis:
         except:
             print u'Não conseguiu conectar o cliente!'
 
-        self.name = query
+        self.query = query
+        self.name = None #TODO Definir nome.
         self.tsn = None
         self.rank = None
-        self.parent_name = None
-        self.parent_tsn = None
+        self.parent = {}
         self.parents = None
         self.hierarchy = None
 
         self.ranks = ['Kingdom', 'Phylum', 'Class', 'Order',
                 'Family', 'Genus', 'Species']
 
-        self.get_tsn(self.name)
+        self.search_by_scientific_name(self.query)
+        if self.tsn:
+            self.hierarchy = self.get_full_hierarchy(self.tsn)
 
     def translate(self, rank):
         '''Traduz nome do ranking pra português.'''
@@ -119,10 +118,15 @@ class Itis:
         else:
             return rank
 
-    def get_tsn(self, query):
-        '''Encontra o identificador do táxon.
+    def search_by_scientific_name(self, query, attempt=0):
+        '''Busca nome científico no ITIS.
 
-        Exemplo do XML de input:
+        Função é um wrapper para searchByScientificName method:
+        http://www.itis.gov/ws_searchApiDescription.html#SrchBySciName
+
+        Exemplo do XML para a busca "Crustacea":
+
+        http://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey=Crustacea
 
         <ns:searchByScientificNameResponse>
             <ns:return type="org.usgs.itis.itis_service.data.SvcScientificNameList">
@@ -154,58 +158,79 @@ class Itis:
             </ns:return>
         </ns:searchByScientificNameResponse>
 
-        http://www.itis.gov/ITISWebService/services/ITISService/searchByScientificName?srchKey=Crustacea
         '''
-        print u'Procurando o TSN de %s...' % query
+        logger.info('Procurando TSN de %s...', query)
+
+        # Tenta executar a busca usando o query. Caso a conexão falhe, tenta 
+        # novamente.
         try:
             results = self.client.service.searchByScientificName(query)
         except:
-            #TODO O que fazer quando isso acontecer?
-            print u'Não conseguiu conectar...'
+            while attempt < 3:
+                logger.warning('Não conseguiu conectar... tentativa=%d' % attempt)
+                attempt += 1
+                self.search_by_scientific_name(query, attempt)
+            logger.critical('Terminando conexão. Não está rolando.')
             results = None
 
+        # Le os resultados para encontrar o táxon.
         if results.scientificNames:
+            # Se houver mais de 1 resultado, comparar valores.
             if len(results.scientificNames) > 1:
-                print u'Mais de um táxon encontrado!'
+                logger.debug('Mais de um táxon encontrado!')
                 theone = []
                 # Tentando encontrar o táxon certo.
-                for r in results.scientificNames:
-                    if r.combinedName == query:
-                        theone.append(r)
+                for entry in results.scientificNames:
+                    if entry.combinedName == query:
+                        theone.append(entry)
                 if len(theone) == 1:
                     taxon = theone[0]
+                    self.name = taxon.combinedName
                     self.tsn = taxon.tsn
-                    self.hierarchy = self.get_hierarchy(self.tsn)
                 else:
-                    #FIXME Descobrir o que fazer quando tiver mais de um.
-                    print 'Fodeu...'
+                    #XXX Pensar em algo.
+                    logger.critical('Mais de uma entrada com o nome de %s. O que fazer?',
+                            query)
             else:
-                self.tsn = results.scientificNames[0].tsn
-                self.hierarchy = self.get_hierarchy(self.tsn)
+                taxon = results.scientificNames[0]
+                self.name = taxon.combinedName
+                self.tsn = taxon.tsn
         else:
-            print u'Nenhum táxon com o nome de %s foi encontrado' % query
+            logger.info('Nenhum táxon com o nome de %s foi encontrado.', query)
 
-    def get_hierarchy(self, tsn):
+    def get_full_hierarchy(self, tsn):
         '''Encontra hierarquia e converte valores.
+
+        Usa: http://www.itis.gov/ws_hierApiDescription.html#getFullHierarchy
 
         O formato vindo do SOAP não serve para criar as instâncias no Django.
         Por isso é necessário converter em unicode e int, além de traduzir os
         rankings.
+
+        Exemplo:
+        http://www.itis.gov/ITISWebService/services/ITISService/getFullHierarchyFromTSN?tsn=1378
         '''
-        print u'Pegando hierarquia...'
+        logger.info('Pegando hierarquia...')
+
+        # Tenta se conectar.
         try:
             hierarchy = self.client.service.getFullHierarchyFromTSN(tsn)
+        except:
+            logger.warning('Erro ao puxar a hierarquia de %s, problema na conexão', tsn)
+
+        try:
+            # Último ítem é o táxon em questão.
             taxon = hierarchy.hierarchyList[-1]
-            # Salva propriedades da classe.
-            self.tsn = int(hierarchy.tsn)
+            # Salva propriedades.
             self.rank = self.translate(taxon.rankName)
-            self.parent_name = unicode(taxon.parentName)
-            self.parent_tsn = int(taxon.parentTsn)
+            self.parent['name'] = unicode(taxon.parentName)
+            self.parent['tsn'] = int(taxon.parentTsn)
             self.parents = hierarchy.hierarchyList
             # Remove o último item, referente ao próprio táxon.
             # Deixa somente os parents mesmo.
             self.parents.pop()
-            print u'Traduzindo...'
+
+            # Traduz para português.
             for taxon in self.parents:
                 taxon.rankName = self.translate(taxon.rankName)
                 taxon.taxonName = unicode(taxon.taxonName)
@@ -214,9 +239,7 @@ class Itis:
                     taxon.parentName = unicode(taxon.parentName)
                     taxon.parentTsn = int(taxon.parentTsn)
         except:
-            print u'Táxon não retornou classificação completa...'
-            hierarchy = None
-        return hierarchy
+            logger.debug('Táxon não retornou classificação completa...')
 
     def get_parent(self, tsn):
         '''Encontra o táxon pai.
@@ -296,4 +319,5 @@ def main():
 
 # Início do programa
 if __name__ == '__main__':
+    # Inicia.
     main()

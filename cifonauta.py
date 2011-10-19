@@ -189,31 +189,10 @@ class Database:
                     time.sleep(5)
                     taxon = self.get_itis(value)
             try:
-                # Pega a lista de pais e cria táxons, na ordem reversa.
-                for parent in taxon.parents:
-                    logger.debug('Criando %s...', parent.taxonName)
-                    newtaxon, new = Taxon.objects.get_or_create(name=parent.taxonName)
-                    if new:
-                        newtaxon.rank = parent.rankName
-                        newtaxon.tsn = parent.tsn
-                        if parent.parentName:
-                            newtaxon.parent = Taxon.objects.get(name=parent.parentName)
-                        newtaxon.save()
-                        logger.debug('%s salvo!', newtaxon.taxonName)
-                    else:
-                        logger.debug('%s já existe!', newtaxon.taxonName)
-
-                if taxon.parent['name']:
-                    # Ordem reversa acima garante que ele já existe.
-                    metadatum.parent = Taxon.objects.get(name=taxon.parent['name'])
-                if taxon.tsn:
-                    metadatum.tsn = taxon.tsn
-                if taxon.rank:
-                    metadatum.rank = taxon.rank
+                taxon.update_model()
+                return Taxon.objects.get(name=taxon.name)
             except:
                 logger.warning('Não rolou pegar hierarquia...')
-
-            metadatum.save()
         return metadatum
 
     def update_sets(self, entry, field, meta):

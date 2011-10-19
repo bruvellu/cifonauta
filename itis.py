@@ -42,12 +42,12 @@ console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 
 # Cria o manipulador do arquivo.log.
-file_handler = logging.FileHandler('logs/itis.log')
-file_handler.setLevel(logging.DEBUG)
-# Define a formatação para o arquivo.log.
-file_handler.setFormatter(formatter)
-# Adiciona o arquivo.log para o logger.
-logger.addHandler(file_handler)
+#file_handler = logging.FileHandler('logs/itis.log')
+#file_handler.setLevel(logging.DEBUG)
+## Define a formatação para o arquivo.log.
+#file_handler.setFormatter(formatter)
+## Adiciona o arquivo.log para o logger.
+#logger.addHandler(file_handler)
 
 
 class Itis:
@@ -62,15 +62,24 @@ class Itis:
             print u'Não conseguiu conectar o cliente!'
 
         self.query = query
-        self.name = None #TODO Definir nome.
+        self.name = u''
         self.tsn = None
-        self.rank = None
+        self.rank = u''
+        self.valid = False
         self.parent = {}
-        self.parents = None
+        self.parents = []
 
+        # Busca e identifica táxon pelo nome e tsn.
         self.search_by_scientific_name(self.query)
+
+        # Se tiver encontrado algum TSN.
         if self.tsn:
-            self.get_full_hierarchy(self.tsn)
+            # Checa se táxon é válido.
+            if not self.valid:
+                self.valid = self.is_valid(self.tsn)
+            if self.valid:
+                # Se for válido, pegar hierarquia.
+                self.get_full_hierarchy(self.tsn)
 
     def translate(self, rank):
         '''Traduz nome do ranking pra português.'''
@@ -183,6 +192,7 @@ class Itis:
                 theone = []
                 # Tentando encontrar o táxon certo.
                 for entry in results.scientificNames:
+                    print entry.combinedName
                     if self.fix(entry.combinedName) == query:
                         theone.append(entry)
                 if len(theone) == 1:
@@ -191,10 +201,16 @@ class Itis:
                     self.tsn = taxon.tsn
                 elif len(theone) > 1:
                     # Checa qual destes táxons é válido.
-                    taxon = self.get_accepted_names_from_tsn(theone)
-                    if taxon:
-                        self.name = self.fix(taxon.combinedName)
-                        self.tsn = taxon.tsn
+                    for entry in theone:
+                        valid = self.is_valid(entry.tsn)
+                        # Quando não há nomes alternativos, o táxon é válido.
+                        if valid:
+                            self.name = self.fix(entry.combinedName)
+                            self.tsn = entry.tsn
+                            self.valid = True
+                            # Assume que só existe 1 táxon oficialmente aceito.
+                            #TODO Verificar isso...
+                            break
                     else:
                         logger.warning('Nenhum táxon com nome %s é válido.', query)
                 else:
@@ -207,24 +223,27 @@ class Itis:
             logger.info('Nenhum táxon com o nome de %s foi encontrado.', query)
 
     def fix(self, combinedName):
-        '''Fix combinedName from ITIS.'''
+        '''Arruma combinedName do ITIS.'''
         fixed = ' '.join(combinedName.split())
         return fixed
 
-    def get_accepted_names_from_tsn(self, taxa):
-        '''Entre táxons com mesmo nome confere qual TSNs é válido.'''
-        for taxon in taxa:
-            try:
-                response = self.client.service.getAcceptedNamesFromTSN(taxon.tsn)
-            except:
-                logger.warning('Problema na conexão para checar a validade de %d', taxon.tsn)
-            # Assume que só existe 1 táxon oficialmente aceito.
-            #TODO Verificar isso...
-            if not response.acceptedNames:
-                # Quando não há nomes alternativos, o táxon é válido.
-                return taxon
+    def is_valid(self, tsn):
+        '''Checa se táxon é válido e retorna BOOL.'''
+        response = self.get_accepted_names_from_tsn(tsn)
+        # Quando não há nomes alternativos, o táxon é válido.
+        if response.acceptedNames == []:
+            return True
         else:
-            return None
+            return False
+
+    def get_accepted_names_from_tsn(self, tsn):
+        '''Entre táxons com mesmo nome confere qual TSNs é válido.'''
+        try:
+            response = self.client.service.getAcceptedNamesFromTSN(tsn)
+        except:
+            logger.warning('Problema na conexão para checar a validade de %d', tsn)
+            response = None
+        return response
 
     def get_full_hierarchy(self, tsn):
         '''Encontra hierarquia e converte valores.
@@ -288,12 +307,14 @@ class Itis:
                 logger.debug('%s salvo!', taxon.name)
 
         # Atualiza o táxon em questão.
+        logger.debug('Atualizando %s...', self.name)
         this, new = Taxon.objects.get_or_create(name=self.name)
         this.rank = self.rank
         this.tsn = self.tsn
         if self.parent:
             this.parent = Taxon.objects.get(name=self.parent['name'])
         this.save()
+        logger.debug('%s salvo!', self.name)
 
 def main():
     pass

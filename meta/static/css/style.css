@@ -1830,7 +1830,7 @@ nicolasgallagher.com/micro-clearfix-hack/ */
   background: black;
 }
 a.highslide-full-expand {
-  background: url(graphics/fullexpand.gif) no-repeat;
+  background: url(../js/highslide/graphics/fullexpand.gif) no-repeat;
   display: block;
   margin: 0 10px 10px 0;
   width: 34px;

@@ -53,8 +53,8 @@ class LatestMedia(Feed):
     def items(self, obj):
         if obj == 'all':
             results = chain(
-                    Image.objects.filter(is_public=True).order_by('-pub_date')[:10],
-                    Video.objects.filter(is_public=True).order_by('-pub_date')[:10],
+                    Image.objects.filter(is_public=True).order_by('-pub_date')[:20],
+                    Video.objects.filter(is_public=True).order_by('-pub_date')[:20],
                     )
             return sorted(results, key=lambda x: x.pub_date,
                     reverse=True)
@@ -139,8 +139,8 @@ class MetaMedia(Feed):
         keywords = {obj['field']: obj['instance']}
         if obj['type'] == 'all':
             results = chain(
-                    Image.objects.filter(**keywords).exclude(is_public=False).order_by('-pub_date')[:10],
-                    Video.objects.filter(**keywords).exclude(is_public=False).order_by('-pub_date')[:10],
+                    Image.objects.filter(**keywords).exclude(is_public=False).order_by('-pub_date')[:20],
+                    Video.objects.filter(**keywords).exclude(is_public=False).order_by('-pub_date')[:20],
                     )
             return sorted(results, key=lambda x: x.pub_date,
                     reverse=True)

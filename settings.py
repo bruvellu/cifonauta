@@ -121,9 +121,11 @@ SECRET_KEY = ''
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-    #'django.template.loaders.eggs.Loader',
+        ('django.template.loaders.cached.Loader', (
+            #'django.template.loaders.filesystem.Loader',
+            'django.template.loaders.app_directories.Loader',
+            )),
+        #'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -165,7 +167,7 @@ DAJAXICE_MEDIA_PREFIX = 'dajaxice'
 ROOT_URLCONF = 'weblarvae.urls'
 
 TEMPLATE_DIRS = (
-        os.path.join(PROJECT_DIR, 'templates'),
+        #os.path.join(PROJECT_DIR, 'templates'),
 )
 
 INSTALLED_APPS = (

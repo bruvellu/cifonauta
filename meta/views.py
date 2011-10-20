@@ -387,8 +387,6 @@ def fixmedia_page(request):
     orphaned.extend(orphaned_videos)
     duplicates.extend(duplicated_videos)
 
-    print orphaned, duplicates
-
     variables = RequestContext(request, {
         'orphaned': orphaned,
         'duplicates': duplicates,

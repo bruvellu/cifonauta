@@ -331,7 +331,6 @@ def refiner(actives, inactives, field, queries):
 @register.simple_tag
 def paged_url(query_string, page_number):
     '''Constrói o url para lidar navegação paginada.'''
-    print query_string.split('&'), page_number
     url = '?'
     queries = query_string.split('&')
     for query in queries:

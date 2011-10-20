@@ -31,7 +31,7 @@
 {% endblock %}
 
 {% block content %}
-<section class="span-16">
+<section id="media-page" class="span-16">
 {% if media %}
 <article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} size-{{ media.size.slug }} {% show_set sources 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ pageviews }}">
 <header class="span-16 last">

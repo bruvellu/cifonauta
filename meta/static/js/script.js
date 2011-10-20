@@ -42,27 +42,35 @@ function loadSocial(script) {
   holder.parentNode.insertBefore(defered, holder);
 }
 
-// Twitter button.
-loadSocial("//platform.twitter.com/widgets.js");
+//Social
+var social = $("#intro");
+if (social.length > 0) {
+    // Twitter button.
+    loadSocial("//platform.twitter.com/widgets.js");
 
-// Google Plus button
-loadSocial("//apis.google.com/js/plusone.js");
+    // Google Plus button
+    loadSocial("//apis.google.com/js/plusone.js");
 
-// Facebook Like button
-loadSocial("//connect.facebook.net/en_US/all.js#xfbml=1");
+    // Facebook Like button
+    loadSocial("//connect.facebook.net/en_US/all.js#xfbml=1");
+}
+
 
 // Add2Any button
-function my_addtoany_onready() {
-  a2a_config.target = '.share-this';
-  a2a.init('page');
+var media = $("#media-page");
+if (media.length > 0) {
+    function my_addtoany_onready() {
+    a2a_config.target = '.share-this';
+    a2a.init('page');
+    }
+    // Setup AddToAny "onReady" callback
+    var a2a_config = a2a_config || {};
+    a2a_config.tracking_callback = {
+    ready: my_addtoany_onready
+    };
+    // Load AddToAny script asynchronously
+    loadSocial("//static.addtoany.com/menu/page.js");
 }
-// Setup AddToAny "onReady" callback
-var a2a_config = a2a_config || {};
-a2a_config.tracking_callback = {
-  ready: my_addtoany_onready
-};
-// Load AddToAny script asynchronously
-loadSocial("//static.addtoany.com/menu/page.js");
 
 // Document ready functions.
 $(document).ready(function(){

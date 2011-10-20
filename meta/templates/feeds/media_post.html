@@ -1,62 +1,62 @@
 {% load i18n %}
 <div style="width:510px;">
-    {% if obj.tag_set.all %}
-    <div>
-        <strong>{% trans 'Marcadores' %}: </strong>
-        {% show_set obj.tag_set.all '' '' ', ' '' %}
-    </div>
-    {% endif %}
+  {% if obj.tag_set.all %}
+  <div>
+    <strong>{% trans 'Marcadores' %}: </strong>
+    {% show_set obj.tag_set.all '' '' ', ' '' %}
+  </div>
+  {% endif %}
 
-    <div style="margin-bottom:10px;">
-        {% if obj.datatype == 'photo' %}
-        <img width="510" src="http://{{ site.domain }}{{ MEDIA_URL }}{{ obj.web_filepath }}" alt="{{ obj.title }}" title="{{ obj.title }}" />
-        {% else %}
-        {% if obj.datatype == 'video' %}
-        <iframe class="cifonauta-player" type="text/html" width="512" height="384" src="http://{{ site.domain }}/embed/{{ obj.id }}/" frameborder="0"></iframe>
-        {% endif %}
+  <div style="margin-bottom:10px;">
+    {% if obj.datatype == 'photo' %}
+    <img width="510" src="http://{{ site.domain }}{{ MEDIA_URL }}{{ obj.web_filepath }}" alt="{{ obj.title }}" title="{{ obj.title }}" />
+    {% else %}
+    {% if obj.datatype == 'video' %}
+    <iframe class="cifonauta-player" type="text/html" width="512" height="384" src="http://{{ site.domain }}/embed/{{ obj.id }}/" frameborder="0"></iframe>
+    {% endif %}
     {% endif %}
 
     {% if obj.caption %}
-        <div>{{ obj.caption }}</div>
+    <div>{{ obj.caption }}</div>
     {% endif %}
-    </div>
+  </div>
 
-    <div style="margin-bottom:10px; padding:10px; background:#fafafa;">
-        {% if obj.author_set.all %}
-        <strong>{% blocktrans count counter=obj.author_set.count %}Autor{% plural %}Autores{% endblocktrans %}:</strong> <span id="author">{% show_set obj.author_set.all '' '' ', ' '' %}</span><br>
-        {% endif %}
+  <div style="margin-bottom:10px; padding:10px; background:#fafafa;">
+    {% if obj.author_set.all %}
+    <strong>{% blocktrans count counter=obj.author_set.count %}Autor{% plural %}Autores{% endblocktrans %}:</strong> <span id="author">{% show_set obj.author_set.all '' '' ', ' '' %}</span><br>
+    {% endif %}
 
-        {% if obj.taxon_set.all %}
-        <strong>{% blocktrans count counter=obj.taxon_set.count %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set obj.taxon_set.all '' '' ', ' '' %}</span><br>
-        {% endif %}
+    {% if obj.taxon_set.all %}
+    <strong>{% blocktrans count counter=obj.taxon_set.count %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set obj.taxon_set.all '' '' ', ' '' %}</span><br>
+    {% endif %}
 
-        {% if obj.source_set.all %}
-        <strong>{% blocktrans count counter=obj.source_set.count %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set obj.source_set.all '' '' ', ' '' %}</span><br>
-        {% endif %}
+    {% if obj.source_set.all %}
+    <strong>{% blocktrans count counter=obj.source_set.count %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set obj.source_set.all '' '' ', ' '' %}</span><br>
+    {% endif %}
 
-        {% if obj.duration %}
-        <strong>{% trans 'Duração' %}: </strong> <span id="duration">{{ obj.duration|slice:'3:' }}</span><br>
-        {% endif %}
+    {% if obj.duration %}
+    <strong>{% trans 'Duração' %}: </strong> <span id="duration">{{ obj.duration|slice:'3:' }}</span><br>
+    {% endif %}
 
-        {% if obj.date and obj.date|date:"Y" > "1910" %}
-        <strong>{% trans 'Data' %}: </strong> <span id="date"><datetime>{{ obj.date|date:"DATETIME_FORMAT" }}</datetime></span><br>
-        {% endif %}
+    {% if obj.date and obj.date|date:"Y" > "1910" %}
+    <strong>{% trans 'Data' %}: </strong> <span id="date"><datetime>{{ obj.date|date:"DATETIME_FORMAT" }}</datetime></span><br>
+    {% endif %}
 
-        {% if obj.sublocation or obj.city or obj.state or obj.country %}
-        <strong>{% trans 'Local' %}:</strong>
-        {% if obj.sublocation %}<span id="sublocation">{{ obj.sublocation }},</span>{% endif %}
-        {% if obj.city %}<span id="city">{{ obj.city }},</span>{% endif %}
-        {% if obj.state %}<span id="state">{{ obj.state }},</span>{% endif %}
-        {% if obj.country %}<span id="country">{{ obj.country }}</span>{% endif %}<br>
-        {% endif %}
+    {% if obj.sublocation or obj.city or obj.state or obj.country %}
+    <strong>{% trans 'Local' %}:</strong>
+    {% if obj.sublocation %}<span id="sublocation">{{ obj.sublocation }},</span>{% endif %}
+    {% if obj.city %}<span id="city">{{ obj.city }},</span>{% endif %}
+    {% if obj.state %}<span id="state">{{ obj.state }},</span>{% endif %}
+    {% if obj.country %}<span id="country">{{ obj.country }}</span>{% endif %}<br>
+    {% endif %}
 
-        {% if obj.geolocation %}
-        <strong>{% trans 'Geolocalização' %}:</strong> <a href="http://maps.google.com/maps?q={{ obj.latitude }},{{ obj.longitude }}" title="{{ obj.geolocation }} @ Google Maps">{{ obj.geolocation }}</a>
-        {% endif %}
-    </div>
+    {% if obj.geolocation %}
+    <strong>{% trans 'Geolocalização' %}:</strong> <a href="http://maps.google.com/maps?q={{ obj.latitude }},{{ obj.longitude }}" title="{{ obj.geolocation }} @ Google Maps">{{ obj.geolocation }}</a>
+    {% endif %}
+  </div>
 
-    <div>
-        {% show_set obj.author_set.all '' '.' ', ' '' %} <strong>{{ obj.title }}</strong>. {% blocktrans with host=site.domain media_url=obj.get_absolute_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a href="{{ media_url }}">http://{{ host }}{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
-    </div>
-    <div style="text-align:right;">{% blocktrans with host=site.domain %}Conheça os <a href="http://{{ host }}/terms/">termos de uso</a>.{% endblocktrans %}</div>
+  <div>
+    {% show_set obj.author_set.all '' '.' ', ' '' %} <strong>{{ obj.title }}</strong>. {% blocktrans with host=site.domain media_url=obj.get_absolute_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a href="{{ media_url }}">http://{{ host }}{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
+  </div>
+  <div style="text-align:right;">{% blocktrans with host=site.domain %}Conheça os <a href="http://{{ host }}/terms/">termos de uso</a>.{% endblocktrans %}</div>
 </div>

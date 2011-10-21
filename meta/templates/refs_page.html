@@ -20,17 +20,17 @@
 <div class="span-5 last"><h2>{% trans 'Veja mais' %}</h2></div>
 {% for ref in references %}
 <div class="span-24 last citation">
-<div class="span-4">
+  <div class="span-4">
     {% print_thumb 'reference' ref %}
-</div>
-<div class="span-15">
+  </div>
+  <div class="span-15">
     {% autoescape off %}
     {{ ref.citation }}
     {% endautoescape %}
-</div>
-<div class="span-5 last">
+  </div>
+  <div class="span-5 last">
     <a href="{{ ref.get_absolute_url }}">{% blocktrans count ref.image_count|add:ref.video_count as counter %}{{ counter }} imagem ligada à este trabalho.{% plural %}{{ counter }} imagens ligadas à este trabalho.{% endblocktrans %}</a>
-</div>
+  </div>
 </div>
 {% endfor %}
 </section>

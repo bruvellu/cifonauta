@@ -1,7 +1,7 @@
 {% load i18n %}
 <a href="{{ media.get_absolute_url }}">
-    <img src="{{ MEDIA_URL }}{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" />
-    {% if media.datatype == 'video' %}<span class="thumb-duration">{{ media.duration|slice:'3:' }}</span>{% endif %}
+  <img src="{{ MEDIA_URL }}{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" />
+  {% if media.datatype == 'video' %}<span class="thumb-duration">{{ media.duration|slice:'3:' }}</span>{% endif %}
 </a>
 
 <a class="lupa highslide size-{{ media.size.slug }}" onclick="return hs.expand(this)" href="{{ MEDIA_URL }}{% if media.datatype == "video" %}{{ media.large_thumb }}{% else %}{{ media.web_filepath }}{% endif %}">+</a>
@@ -10,10 +10,10 @@
 <div class="highslide-heading">{{ media.title }}</div>
 {% endif %}
 <div class="highslide-caption">
-    {% if media.caption %}
-    <div class="float-left">{{ media.caption }}</div>
-    {% endif %}
-    <div class="float-right">
-        <a href="{{ media.get_absolute_url }}">{% trans 'ver mais detalhes' %}</a>
-    </div>
+  {% if media.caption %}
+  <div class="float-left">{{ media.caption }}</div>
+  {% endif %}
+  <div class="float-right">
+    <a href="{{ media.get_absolute_url }}">{% trans 'ver mais detalhes' %}</a>
+  </div>
 </div>

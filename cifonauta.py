@@ -177,7 +177,7 @@ class Database:
 
     def get_instance(self, table, value):
         '''Retorna o id a partir do nome.'''
-        metadatum, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), value))
+        model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), value))
         if table == 'taxon' and new:
             # Consulta ITIS para extrair táxons.
             taxon = self.get_itis(value)
@@ -189,11 +189,11 @@ class Database:
                     time.sleep(5)
                     taxon = self.get_itis(value)
             try:
-                taxon.update_model()
-                return Taxon.objects.get(name=taxon.name)
+                # Por fim, atualizar o modelo.
+                model = taxon.update_model(model)
             except:
                 logger.warning('Não rolou pegar hierarquia...')
-        return metadatum
+        return model
 
     def update_sets(self, entry, field, meta):
         '''Atualiza campos many to many do banco de dados.

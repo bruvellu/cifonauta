@@ -53,7 +53,7 @@ logger.addHandler(console_handler)
 class Itis:
     '''Interação com o ITIS'''
     def __init__(self, query):
-        print 'Iniciando contato com ITIS.'
+        logger.info('Iniciando contato com ITIS.')
 
         self.url = 'http://www.itis.gov/ITISWebService.xml'
         try:
@@ -70,16 +70,43 @@ class Itis:
         self.parents = []
 
         # Busca e identifica táxon pelo nome e tsn.
-        self.search_by_scientific_name(self.query)
+        taxon_data = self.parse_results(self.query)
+        #XXX Melhorar isso...
+        # Popula dados.
+        if taxon_data:
+            self.name = taxon_data['name']
+            self.tsn = taxon_data['tsn']
+            self.valid = taxon_data['valid']
 
-        # Se tiver encontrado algum TSN.
-        if self.tsn:
-            # Checa se táxon é válido.
+        # Tenta ao menos encontrar o gênero.
+        if not self.tsn:
+            self.search_genus()
+        else:
+            # Se tiver encontrado algum TSN.
+            # Checa se táxon é válido (XXX necessário?).
             if not self.valid:
                 self.valid = self.is_valid(self.tsn)
             if self.valid:
                 # Se for válido, pegar hierarquia.
-                self.get_full_hierarchy(self.tsn)
+                tree_data = self.parse_hierarchy(self.tsn)
+                if tree_data:
+                    self.rank = tree_data['rank']
+                    self.parent['name'] = tree_data['parent_name']
+                    self.parent['tsn'] = tree_data['parent_tsn']
+                    self.parents = tree_data['parents']
+                    # Remove o último item, referente ao próprio táxon.
+                    # Deixa somente os parents mesmo.
+                    self.parents.pop()
+
+                    # Traduz para português.
+                    for taxon in self.parents:
+                        taxon.rankName = self.translate(taxon.rankName)
+                        taxon.taxonName = unicode(taxon.taxonName)
+                        taxon.tsn = int(taxon.tsn)
+                        if taxon.parentName and taxon.parentTsn:
+                            taxon.parentName = unicode(taxon.parentName)
+                            taxon.parentTsn = int(taxon.parentTsn)
+
 
     def translate(self, rank):
         '''Traduz nome do ranking pra português.'''
@@ -183,7 +210,18 @@ class Itis:
                 self.search_by_scientific_name(query, attempt)
             logger.critical('Terminando conexão. Não está rolando.')
             results = None
+        return results
 
+    def parse_results(self, query):
+        '''Manuseia resultados da busca.'''
+        # Objeto que guarda dados e é retornado.
+        data = {}
+
+        # Busca no Itis.
+        results = self.search_by_scientific_name(query)
+
+        #FIXME Se ele não consegue se conectar no Itis os results vem vazios e 
+        #dá erro!
         # Le os resultados para encontrar o táxon.
         if results.scientificNames:
             # Se houver mais de 1 resultado, comparar valores.
@@ -197,17 +235,22 @@ class Itis:
                         theone.append(entry)
                 if len(theone) == 1:
                     taxon = theone[0]
-                    self.name = self.fix(taxon.combinedName)
-                    self.tsn = taxon.tsn
+                    data['name'] = self.fix(taxon.combinedName)
+                    data['tsn'] = taxon.tsn
+                    data['valid'] = self.is_valid(taxon.tsn)
+                    logger.info('Táxon com nome exato encontrado: %s', 
+                            data['name'])
                 elif len(theone) > 1:
                     # Checa qual destes táxons é válido.
                     for entry in theone:
                         valid = self.is_valid(entry.tsn)
                         # Quando não há nomes alternativos, o táxon é válido.
                         if valid:
-                            self.name = self.fix(entry.combinedName)
-                            self.tsn = entry.tsn
-                            self.valid = True
+                            data['name'] = self.fix(entry.combinedName)
+                            data['tsn'] = entry.tsn
+                            data['valid'] = True
+                            logger.info('Táxon válido encontrado: %s', 
+                                    data['name'])
                             # Assume que só existe 1 táxon oficialmente aceito.
                             #TODO Verificar isso...
                             break
@@ -215,12 +258,16 @@ class Itis:
                         logger.warning('Nenhum táxon com nome %s é válido.', query)
                 else:
                     logger.info('Nenhum táxon com o nome exato %s foi encontrado.', query)
+                    #TODO busca pelo gênero.
             else:
                 taxon = results.scientificNames[0]
-                self.name = self.fix(taxon.combinedName)
-                self.tsn = taxon.tsn
+                data['name'] = self.fix(taxon.combinedName)
+                data['tsn'] = taxon.tsn
+                data['valid'] = self.is_valid(taxon.tsn)
         else:
             logger.info('Nenhum táxon com o nome de %s foi encontrado.', query)
+            #TODO busca pelo gênero.
+        return data
 
     def fix(self, combinedName):
         '''Arruma combinedName do ITIS.'''
@@ -229,6 +276,7 @@ class Itis:
 
     def is_valid(self, tsn):
         '''Checa se táxon é válido e retorna BOOL.'''
+        #TODO Retorna o tsn da sinonímia???
         response = self.get_accepted_names_from_tsn(tsn)
         # Quando não há nomes alternativos, o táxon é válido.
         if response.acceptedNames == []:
@@ -257,6 +305,7 @@ class Itis:
         Exemplo:
         http://www.itis.gov/ITISWebService/services/ITISService/getFullHierarchyFromTSN?tsn=1378
         '''
+        #XXX Garantir que o táxon é válido antes de puxar a hierarquia.
         logger.info('Pegando hierarquia...')
 
         # Tenta se conectar.
@@ -264,57 +313,75 @@ class Itis:
             hierarchy = self.client.service.getFullHierarchyFromTSN(tsn)
         except:
             logger.warning('Erro ao puxar a hierarquia de %s, problema na conexão', tsn)
+            hierarchy = None
+        return hierarchy
 
+    def parse_hierarchy(self, tsn):
+        '''Le e retorna hierarquia.'''
+        # Data.
+        data = {}
+
+        # Pega hierarquia.
+        hierarchy = self.get_full_hierarchy(tsn)
+
+        # Processa.
         if not hierarchy.hierarchyList:
-            self.rank = self.translate(u'Kingdom')
-            self.parents = hierarchy.hierarchyList
+            # Hierarquia vazia só é Reino para táxons válidos.
+            # Apenas busca hierarquia de táxons válidos.
+            data['rank'] = self.translate(u'Kingdom')
+            data['parents'] = hierarchy.hierarchyList
         else:
             # Último ítem é o táxon em questão.
             taxon = hierarchy.hierarchyList[-1]
             # Salva propriedades.
-            self.rank = self.translate(taxon.rankName)
-            self.parent['name'] = unicode(taxon.parentName)
-            self.parent['tsn'] = int(taxon.parentTsn)
-            self.parents = hierarchy.hierarchyList
-            # Remove o último item, referente ao próprio táxon.
-            # Deixa somente os parents mesmo.
-            self.parents.pop()
+            data['rank'] = self.translate(taxon.rankName)
+            data['parent_name'] = unicode(taxon.parentName)
+            data['parent_tsn'] = int(taxon.parentTsn)
+            data['parents'] = hierarchy.hierarchyList
+        return data
 
-            # Traduz para português.
-            for taxon in self.parents:
-                taxon.rankName = self.translate(taxon.rankName)
-                taxon.taxonName = unicode(taxon.taxonName)
-                taxon.tsn = int(taxon.tsn)
-                if taxon.parentName and taxon.parentTsn:
-                    taxon.parentName = unicode(taxon.parentName)
-                    taxon.parentTsn = int(taxon.parentTsn)
+    def search_genus(self):
+        '''Search ITIS for the genus, if possible.'''
+        split_query = self.query.split()
+        if len(split_query) > 1:
+            pseudo_genus = split_query[0]
+            genus_data = self.parse_results(pseudo_genus)
+            if genus_data['valid']:
+                self.name = self.query
+                self.rank = u'Espécie'
+                self.parent['name'] = genus_data['name']
+                self.parent['tsn'] = genus_data['tsn']
+                tree_data = self.parse_hierarchy(genus_data['tsn'])
+                self.parents = tree_data['parents']
 
-    def update_model(self):
+    def update_model(self, taxon):
         '''Update database table with newly fetched records.'''
         if not self.name:
             logger.critical('No taxon is defined! Aborting...')
+
+        #XXX Melhor se perguntar se o táxon é válido, ou não?
 
         # Update parents.
         if self.parents:
             for parent in self.parents:
                 logger.debug('Atualizando %s...', parent.taxonName)
-                taxon, new = Taxon.objects.get_or_create(name=parent.taxonName)
-                taxon.rank = parent.rankName
-                taxon.tsn = parent.tsn
+                above, new = Taxon.objects.get_or_create(name=parent.taxonName)
+                above.rank = parent.rankName
+                above.tsn = parent.tsn
                 if parent.parentName:
-                    taxon.parent = Taxon.objects.get(name=parent.parentName)
-                taxon.save()
-                logger.debug('%s salvo!', taxon.name)
+                    above.parent = Taxon.objects.get(name=parent.parentName)
+                above.save()
+                logger.debug('%s salvo!', above.name)
 
         # Atualiza o táxon em questão.
         logger.debug('Atualizando %s...', self.name)
-        this, new = Taxon.objects.get_or_create(name=self.name)
-        this.rank = self.rank
-        this.tsn = self.tsn
+        taxon.rank = self.rank
+        taxon.tsn = self.tsn
         if self.parent:
-            this.parent = Taxon.objects.get(name=self.parent['name'])
-        this.save()
+            taxon.parent = Taxon.objects.get(name=self.parent['name'])
+        taxon.save()
         logger.debug('%s salvo!', self.name)
+        return taxon
 
 def main():
     pass

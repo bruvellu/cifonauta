@@ -43,7 +43,7 @@
 
     <!-- All JavaScript at the bottom, except for Modernizr and Respond.
     Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries -->
-    <script src="{{ STATIC_URL }}js/libs/modernizr-2.0.6.min.js"></script>
+    <script defer src="{{ STATIC_URL }}js/libs/modernizr-2.0.6.min.js"></script>
 
     <!-- Feeds -->
     <link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: últimas fotos e vídeos' %}" href="/feed/latest/all/" />
@@ -85,8 +85,8 @@
     <div id="deferedjs"> </div>
 
     <!-- scripts concatenated and minified via ant build script-->
-    <script src="{{ STATIC_URL }}js/plugins.min.js"></script>
-    <script src="{{ STATIC_URL }}js/script.min.js"></script>
+    <script defer src="{{ STATIC_URL }}js/plugins.min.js"></script>
+    <script defer src="{{ STATIC_URL }}js/script.min.js"></script>
     <!-- end scripts-->
 
     {% block extra-foot %}{% endblock %}

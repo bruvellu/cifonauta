@@ -38,6 +38,7 @@ function loadSocial(script) {
   var defered = document.createElement("script");
   defered.type = "text/javascript";
   defered.src = script;
+  defered.async = true;
   var holder = document.getElementById("deferedjs");
   holder.parentNode.insertBefore(defered, holder);
 }

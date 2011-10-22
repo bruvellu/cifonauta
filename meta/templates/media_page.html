@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
-{% load cache %}
+{% load i18n cache thumbnail %}
 {% get_current_language as LANGUAGE_CODE %}
 
 {% block title %}{{ media.title }} | {{ block.super }}{% endblock %}
@@ -194,8 +193,11 @@
 
     <!-- Add2Any -->
     <a class="share-this a2a_target" href="http://www.addtoany.com/share_save">
-      <img src="http://static.addtoany.com/buttons/share_save_171_16.png" border="0" alt="{% trans 'Compartilhe' %}"/>
+      {% thumbnail "http://static.addtoany.com/buttons/share_save_171_16.png" "171x16" as im %}
+      <img src="{{ im.url }}" border="0" alt="{% trans 'Compartilhe' %}"/>
+      {% endthumbnail %}
     </a>
+
   </div>
 
 </div>

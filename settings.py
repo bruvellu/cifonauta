@@ -215,7 +215,7 @@ LOGGING = {
 }
 
 
-# Logicamente cacrrega configurações.
+# Logicamente carrega configurações.
 if socket.gethostname() == 'cifonauta':
     # Importa dados para servidor.
     from settings_server import *

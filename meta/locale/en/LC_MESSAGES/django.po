@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-21 21:55-0200\n"
+"POT-Creation-Date: 2011-10-24 22:54-0200\n"
 "PO-Revision-Date: 2011-10-18 20:02\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -930,7 +930,7 @@ msgstr "Authors included in the Cifonauta image database."
 
 #: templates/authors_page.html:12 templates/base.html:16
 #: templates/buscar.html:15 templates/embed.html:7 templates/main_page.html:10
-#: templates/main_page.html.py:15 templates/media_page.html:17
+#: templates/main_page.html.py:15 templates/media_page.html:16
 #: templates/meta_page.html:17 templates/organizacao.html:15
 #: templates/places_page.html:15 templates/press_page.html:13
 #: templates/refs_page.html:12 templates/tags_page.html:17
@@ -1311,7 +1311,7 @@ msgstr "All taxa"
 msgid "Tamanhos"
 msgstr "Sizes"
 
-#: templates/mais.html:31 templates/media_page.html:113
+#: templates/mais.html:31 templates/media_page.html:112
 #: templates/tour_page.html:67 templates/feeds/media_post.html:46
 msgid "Local"
 msgstr "Place"
@@ -1328,40 +1328,40 @@ msgstr "States"
 msgid "Países"
 msgstr "Countries"
 
-#: templates/media_page.html:8
+#: templates/media_page.html:7
 msgid "Por"
 msgstr "By"
 
-#: templates/media_page.html:65
+#: templates/media_page.html:64
 msgid "visita"
 msgstr "pageview"
 
-#: templates/media_page.html:75
+#: templates/media_page.html:74
 msgid "Tamanho do organismo"
 msgstr "Organism size"
 
-#: templates/media_page.html:96 templates/tour_page.html:56
+#: templates/media_page.html:95 templates/tour_page.html:56
 #: templates/feeds/media_post.html:30
 msgid "Táxon"
 msgid_plural "Táxons"
 msgstr[0] "Taxa"
 msgstr[1] "Taxon"
 
-#: templates/media_page.html:101 templates/feeds/media_post.html:34
+#: templates/media_page.html:100 templates/feeds/media_post.html:34
 msgid "Especialista"
 msgid_plural "Especialistas"
 msgstr[0] "Experts"
 msgstr[1] "Expert"
 
-#: templates/media_page.html:107 templates/feeds/media_post.html:42
+#: templates/media_page.html:106 templates/feeds/media_post.html:42
 msgid "Data"
 msgstr "Date"
 
-#: templates/media_page.html:122 templates/feeds/media_post.html:54
+#: templates/media_page.html:121 templates/feeds/media_post.html:54
 msgid "Geolocalização"
 msgstr "Geolocation"
 
-#: templates/media_page.html:128 templates/feeds/media_post.html:59
+#: templates/media_page.html:127 templates/feeds/media_post.html:59
 #, python-format
 msgid ""
 "Banco de imagens <em>Cifonauta</em>. Disponível em: <a href=\"%(media_url)s"
@@ -1370,35 +1370,35 @@ msgstr ""
 "<em>Cifonauta</em> image database. Available at: <a href=\"%(media_url)s"
 "\">http://%(host)s%(media_url)s</a> Accessed:"
 
-#: templates/media_page.html:130
+#: templates/media_page.html:129
 msgid "Conheça os <a href=\"/termos/\">termos de uso</a>."
 msgstr "Read the <a href=\"/termos/\">terms of use</a>."
 
-#: templates/media_page.html:136
+#: templates/media_page.html:135
 msgid "Notas"
 msgstr "Notes"
 
-#: templates/media_page.html:146
+#: templates/media_page.html:145
 msgid "Classificação"
 msgstr "Classification"
 
-#: templates/media_page.html:154
+#: templates/media_page.html:153
 msgid "Referências bibliográficas"
 msgstr "References"
 
-#: templates/media_page.html:164 templates/flatpages/default.html:25
+#: templates/media_page.html:163 templates/flatpages/default.html:25
 msgid "Comentários"
 msgstr "Comments"
 
-#: templates/media_page.html:177
+#: templates/media_page.html:176
 msgid "Esta imagem não está disponível."
 msgstr "Image not available."
 
-#: templates/media_page.html:181
+#: templates/media_page.html:180
 msgid "Nenhuma imagem encontrada."
 msgstr "No image found."
 
-#: templates/media_page.html:189
+#: templates/media_page.html:188
 msgid "Compartilhar"
 msgstr "Share"
 

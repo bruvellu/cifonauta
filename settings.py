@@ -3,6 +3,7 @@
 # Django settings for weblarvae project.
 
 import os
+import socket
 
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -22,32 +23,6 @@ DATABASES = {
             'USER': '',
             }
         }
-
-CACHES = {
-        'default': {
-            #'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-            'LOCATION': '127.0.0.1:11211',
-            'TIMEOUT': 3600,
-            'OPTIONS': {
-                'MAX_ENTRIES': 100000,
-                }
-            },
-        'johnny': {
-            'BACKEND': 'johnny.backends.memcached.MemcachedCache',
-            'LOCATION': '127.0.0.1:11211',
-            'JOHNNY_CACHE': True,
-            #'JOHNNY_CACHE': False,
-            }
-        }
-
-JOHNNY_MIDDLEWARE_KEY_PREFIX = 'jc_cifo'
-#DISABLE_QUERYSET_CACHE = True
-
-CACHE_MIDDLEWARE_ALIAS = 'default'
-CACHE_MIDDLEWARE_SECONDS = 3600
-CACHE_MIDDLEWARE_KEY_PREFIX = 'cifo'
-CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -239,5 +214,11 @@ LOGGING = {
     }
 }
 
-# Importa dados locais.
-from settings_local import *
+
+# Logicamente cacrrega configurações.
+if socket.gethostname() == 'cifonauta':
+    # Importa dados para servidor.
+    from settings_server import *
+else:
+    # Importa dados para desenvolvimento.
+    from settings_local import *

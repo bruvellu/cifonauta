@@ -308,44 +308,6 @@ def hidden_page(request):
     return render_to_response('hidden.html', variables)
 
 @login_required
-def fixtaxa_page(request):
-    '''Página mostrando táxons órfãos e sem ranking.
-
-    Se o formulário foi enviado ele revisa os táxons selecionados.
-    '''
-    invalids = []
-    valids = []
-    if request.method == 'POST':
-        form = FixTaxaForm(request.POST)
-        if form.is_valid():
-            for name in form.cleaned_data['review']:
-                taxon = review_taxon(name)
-                if taxon:
-                    valids.append(name)
-                else:
-                    invalids.append(name)
-            # Retira táxons concertados da lista.
-            fixed_indexes = []
-            for i, v in enumerate(form.fields['review'].choices):
-                if v[0] in valids:
-                    fixed_indexes.append(i)
-            # Ordena lista de índices
-            fixed_indexes.sort()
-            fixed_indexes.reverse()
-            # Remove choices na ordem reversa para não alterar o índice e 
-            # excluir o táxon errado...
-            for i in fixed_indexes:
-                form.fields['review'].choices.pop(i)
-    else:
-        form = FixTaxaForm()
-    variables = RequestContext(request, {
-        'form': form,
-        'invalids': invalids,
-        'valids': valids,
-        })
-    return render_to_response('fixtaxa.html', variables)
-
-@login_required
 def fixmedia_page(request):
     '''Página para gerenciar imagens órfãs e duplicadas.'''
     deleted, not_deleted, paths = [], [], []

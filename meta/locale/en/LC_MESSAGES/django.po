@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-24 22:54-0200\n"
+"POT-Creation-Date: 2011-10-25 11:21-0200\n"
 "PO-Revision-Date: 2011-10-18 20:02\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,13 +24,13 @@ msgstr "marine biology"
 
 #: feeds.py:15 feeds.py:89 feeds.py:175 models.py:86 models.py:123
 #: models.py:156 models.py:190 models.py:249 models.py:456 models.py:498
-#: templates/nav.html:41 templates/stats.html:5
+#: templates/nav.html:40 templates/stats.html:5
 msgid "fotos"
 msgstr "photos"
 
 #: feeds.py:15 feeds.py:89 feeds.py:175 models.py:115 models.py:125
 #: models.py:158 models.py:192 models.py:251 models.py:458 models.py:500
-#: templates/nav.html:44 templates/stats.html:5
+#: templates/nav.html:43 templates/stats.html:5
 msgid "vídeos"
 msgstr "videos"
 
@@ -194,19 +194,15 @@ msgstr "Order"
 msgid "Somente destaques"
 msgstr "Highlights only"
 
-#: forms.py:86
-msgid "Revisar táxons"
-msgstr "Review taxa"
-
-#: forms.py:97
+#: forms.py:77
 msgid "Destaque"
 msgstr "Highlight"
 
-#: forms.py:98
+#: forms.py:78
 msgid "Imagem de capa"
 msgstr "Cover image"
 
-#: forms.py:99
+#: forms.py:79
 msgid "Escolher tour(s)"
 msgstr "Pick tour(s)"
 
@@ -502,7 +498,7 @@ msgstr "number of videos"
 msgid "Número de vídeos associados a este autor."
 msgstr "Number of videos linked to this author."
 
-#: models.py:148 templates/nav.html:59
+#: models.py:148 templates/nav.html:58
 msgid "autores"
 msgstr "authors"
 
@@ -590,7 +586,7 @@ msgstr "Number of videos linked to this tag."
 msgid "marcador"
 msgstr "tag"
 
-#: models.py:217 templates/nav.html:53 templates/stats.html:5
+#: models.py:217 templates/nav.html:52 templates/stats.html:5
 msgid "marcadores"
 msgstr "tags"
 
@@ -674,7 +670,7 @@ msgstr "Number of photos linked to this taxon."
 msgid "Número de vídeos associados a este táxon."
 msgstr "Number of videos linked to this taxon."
 
-#: models.py:274 templates/nav.html:50
+#: models.py:274 templates/nav.html:49
 msgid "táxons"
 msgstr "taxa"
 
@@ -834,7 +830,7 @@ msgstr "Number of videos linked to this reference."
 msgid "referência"
 msgstr "reference"
 
-#: models.py:483 models.py:502 templates/nav.html:62
+#: models.py:483 models.py:502 templates/nav.html:61
 msgid "referências"
 msgstr "references"
 
@@ -890,7 +886,7 @@ msgstr "Number of videos linked to this tour."
 msgid "tour"
 msgstr "tour"
 
-#: models.py:526 templates/nav.html:47
+#: models.py:526 templates/nav.html:46
 msgid "tours"
 msgstr "tours"
 
@@ -1439,19 +1435,19 @@ msgstr "Cifonauta: photos"
 msgid "Cifonauta: vídeos"
 msgstr "Cifonauta: videos"
 
-#: templates/nav.html:56
+#: templates/nav.html:55
 msgid "localidades"
 msgstr "places"
 
-#: templates/nav.html:67
+#: templates/nav.html:66
 msgid "home"
 msgstr "home"
 
-#: templates/nav.html:70
+#: templates/nav.html:69
 msgid "sobre"
 msgstr "about"
 
-#: templates/nav.html:73
+#: templates/nav.html:72
 msgid "blog"
 msgstr "blog"
 
@@ -2023,6 +2019,9 @@ msgid ""
 msgstr ""
 "Visit the tour <a href=\"http://%(host)s/tour/%(tour_slug)s\">%(tour_name)s</"
 "a>."
+
+#~ msgid "Revisar táxons"
+#~ msgstr "Review taxa"
 
 #~ msgid "Últimas fotos e vídeos"
 #~ msgstr "Latest photos and videos"

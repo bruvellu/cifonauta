@@ -368,9 +368,7 @@ def translate_page(request):
 def photo_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''
     # Pega o objeto.
-    image = get_object_or_404(Image.objects.select_related('stats', 'size', 
-        'sublocation', 'city', 'state', 'country', 
-        'rights').defer('source_filepath', 'old_filepath'), id=image_id)
+    image = get_object_or_404(Image.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath'), id=image_id)
 
     # Tentando contornar o uso de dois forms em uma view...
     form, admin_form = None, None
@@ -485,9 +483,7 @@ def photo_page(request, image_id):
 def video_page(request, video_id):
     '''Página única de cada vídeo com todas as informações.'''
     # Pega o objeto.
-    video = get_object_or_404(Video.objects.select_related('stats', 'size', 
-        'sublocation', 'city', 'state', 'country', 
-        'rights').defer('source_filepath',), id=video_id)
+    video = get_object_or_404(Video.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',), id=video_id)
 
     # Tentando contornar o uso de dois forms em uma view...
     form, admin_form = None, None
@@ -654,12 +650,12 @@ def meta_page(request, model_name, field, slug):
     if field == 'taxon':
         q = [Q(**filter_args),]
         q = recurse(model, q)
-        image_list = Image.objects.filter(reduce(operator.or_, q)).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by(orderby)
-        video_list = Video.objects.filter(reduce(operator.or_, q)).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).order_by(orderby)
+        image_list = Image.objects.filter(reduce(operator.or_, q)).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by(orderby)
+        video_list = Video.objects.filter(reduce(operator.or_, q)).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).order_by(orderby)
         #XXX Retirei o .distinct() destes queries. Conferir...
     else:
-        image_list = Image.objects.filter(**filter_args).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by(orderby)
-        video_list = Video.objects.filter(**filter_args).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).order_by(orderby)
+        image_list = Image.objects.filter(**filter_args).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by(orderby)
+        video_list = Video.objects.filter(**filter_args).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).order_by(orderby)
 
     # Restringe aos destaques.
     if highlight:
@@ -694,8 +690,8 @@ def tour_page(request, slug):
     '''Página única de cada tour.'''
     tour = get_object_or_404(Tour, slug=slug)
     references = tour.references.all()
-    photos = tour.images.filter(tourposition__tour=tour).select_related('stats', 'size', 'sublocation', 'city', 'state', 'country').order_by('tourposition')
-    videos = tour.videos.select_related('stats', 'size', 'sublocation', 'city', 'state', 'country')
+    photos = tour.images.filter(tourposition__tour=tour).select_related('size', 'sublocation', 'city', 'state', 'country').order_by('tourposition')
+    videos = tour.videos.select_related('size', 'sublocation', 'city', 'state', 'country')
     try:
         thumb = photos.values_list('thumb_filepath', flat=True)[0]
     except:

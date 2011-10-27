@@ -106,8 +106,8 @@ def search_page(request):
         # Iniciando querysets para serem filtrados para cada metadado presente na query.
         #XXX Não sei se é muito eficiente, mas por enquanto será assim.
         #TODO incluir 'stats' aqui:
-        image_list = Image.objects.select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').exclude(is_public=False)
-        video_list = Video.objects.select_related('stats', 'size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).exclude(is_public=False)
+        image_list = Image.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').exclude(is_public=False)
+        video_list = Video.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').exclude(is_public=False)
 
         show_results = True
 

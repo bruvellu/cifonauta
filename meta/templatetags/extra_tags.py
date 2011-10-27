@@ -491,14 +491,14 @@ def extract_set(image_list, video_list):
     '''Extrai outros metadados das imagens buscadas.'''
     # Salva IDs dos arquivos em uma lista.
     # Imagens.
-    if image_list:
+    try:
         image_ids = image_list.values_list('id', flat=True)
-    else:
+    except:
         image_ids = []
     # Vídeos.
-    if video_list:
+    try:
         video_ids = video_list.values_list('id', flat=True)
-    else:
+    except:
         video_ids = []
 
     # ManyToMany relationships

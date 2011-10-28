@@ -19,6 +19,7 @@
 <div id="search-results">
   {% if show_results %}
   <div id="search-status" class="quiet">
+    {% comment %}
     {% if queries.type == 'photo' %}
     {% blocktrans %}Mostrando apenas <strong>fotos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{% build_url 'photo' 'type' queries 'True' 'type=all' %}">{% trans 'fotos e vídeos' %}</a> {% trans 'ou' %} <a href="{% build_url 'photo' 'type' queries 'True' 'type=video' %}">{% trans 'apenas vídeos' %}</a>.
     {% else %}
@@ -32,6 +33,7 @@
     {% if highlight %}{% blocktrans %}Desmarque <strong>somente destaques</strong> para ver tudo.{% endblocktrans %}{% endif %}
     {% endwith %}
     <a id="limpar" href="{% url search_url %}">{% trans 'Limpar' %}</a>
+    {% endcomment %}
   </div>
   <hr class="space">
   {% include 'gallery.html' %}

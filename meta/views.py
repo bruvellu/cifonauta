@@ -73,6 +73,7 @@ def search_page(request):
     Procura termo no campo tsv do banco de dados usando o extra(). Refina este 
     queryset de acordo com as variáveis presentes no request.GET.
     '''
+    # Define formulários.
     form = SearchForm()
     n_form = DisplayForm(initial={
         'n': 16,
@@ -94,13 +95,15 @@ def search_page(request):
             u'type': [],
             }
 
+    # Define variáveis principais.
     image_list = []
     video_list = []
     images = []
     videos = []
     show_results = False
 
-    if 'query' in request.GET or 'type' in request.GET or 'author' in request.GET or 'size' in request.GET or 'tag' in request.GET or 'taxon' in request.GET or 'sublocation' in request.GET or 'city' in request.GET or 'state' in request.GET or 'country' in request.GET:
+    # Verify if any of the queries were passed in the request.
+    if catch_get(queries.keys(), request.GET):
 
         # Define formulário de controle e variáveis.
         n_form, n_page, orderby, order, highlight = control_form(request)
@@ -834,6 +837,17 @@ def press_page(request):
     return render_to_response('press_page.html', variables)
 
 # Internal functions
+
+def catch_get(keys, get):
+    '''Checa se alguma das chaves está no request.GET.'''
+    for key in keys:
+        if key in get:
+            return True
+        else:
+            continue
+    else:
+        False
+
 def get_paginated(request, obj_list, n_page=16):
     '''Retorna o Paginator de um queryset.'''
     paginator = Paginator(obj_list, n_page)

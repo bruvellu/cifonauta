@@ -238,12 +238,12 @@ def sp_em(meta, autoescape=None):
     else:
         esc = lambda x: x
     try:
-        if meta.rank in italics:
-            output = u'<em>%s</em>' % esc(meta.name)
+        if meta['rank'] in italics:
+            output = u'<em>%s</em>' % esc(meta['name'])
         else:
-            output = esc(meta.name)
+            output = esc(meta['name'])
     except:
-        output = esc(meta.name)
+        output = esc(meta['name'])
     return mark_safe(output)
 sp_em.needs_autoescape = True
 
@@ -315,10 +315,20 @@ def show_info(image_list, video_list, queries):
                 states = states.exclude(pk__in=queries['state'])
             elif k == 'country':
                 countries = countries.exclude(pk__in=queries['country'])
+            # Convert to values.
+            try:
+                queries[k] = v.values()
+            except:
+                pass
     return {
-            'authors': authors, 'taxa': taxa, 'sizes': sizes,
-            'sublocations': sublocations, 'cities': cities,
-            'states': states, 'countries': countries, 'tags': tags,
+            'authors': authors.values(),
+            'taxa': taxa.values(),
+            'sizes': sizes.values(),
+            'sublocations': sublocations.values(),
+            'cities': cities.values(),
+            'states': states.values(),
+            'countries': countries.values(),
+            'tags': tags.values(),
             'queries': queries,
             }
 
@@ -399,13 +409,13 @@ def build_url(meta, field, queries, remove=False, append=None):
         except:
             # Só por segurança diferenciar o tamanho.
             if field == 'size':
-                queries[field].remove(str(meta.id))
+                queries[field].remove(str(meta['id']))
             elif field == 'type':
                 if not queries[field]:
                     do_not_readd = True
                 queries[field] = ''
             else:
-                queries[field].remove(meta.slug)
+                queries[field] = [q for q in queries[field] if not q['slug'] == meta['slug']]
     else:
         # Adiciona o valor meta do seu respectivo field na lista de queries.
         queries[field] = add_meta(meta, field, queries[field])
@@ -419,24 +429,26 @@ def build_url(meta, field, queries, remove=False, append=None):
                 first = False
             else:
                 prefix = prefix + '&' + k + '='
+
             # Faz checagem antes de adicionar últimos valores.
             # Search field e type field são strings, tratados diferente.
             search_field = False
             type_field = False
-            if isinstance(v, list):
-                final_list = v
+
+            # Tratamento diferenciado para alguns metadados.
+            if k == 'size':
+                final_list = v.values_list('id', flat=True)
+                final_list = [str(n) for n in final_list]
+            elif k == 'query':
+                search = v
+                search_field = True
+            elif k == 'type':
+                type = v
+                type_field = True
             else:
-                if k == 'size':
-                    final_list = v.values_list('id', flat=True)
-                    final_list = [str(n) for n in final_list]
-                elif k == 'query':
-                    search = v
-                    search_field = True
-                elif k == 'type':
-                    type = v
-                    type_field = True
-                else:
-                    final_list = v.values_list('slug', flat=True)
+                final_list = v
+
+            # Search/Type fields.
             if search_field or type_field:
                 if search_field:
                     prefix = prefix + search
@@ -469,13 +481,14 @@ def build_url(meta, field, queries, remove=False, append=None):
         # retirar o valor da variável (do queries) após criação do url.
         if field == 'size':
             try:
-                queries[field].remove(str(meta.id))
+                queries[field].remove(str(meta['id']))
             except:
                 queries[field] = queries[field].exclude(id=meta.id)
         else:
             try:
-                queries[field].remove(meta.slug)
+                queries[field].remove(meta['slug'])
             except:
+                #XXX Error handler?
                 queries[field] = queries[field].exclude(slug=meta.slug)
     return url
 
@@ -529,11 +542,11 @@ def add_meta(meta, field, query):
     # Se o campo estiver vazio, já preencher com o valor do meta.
     if not query:
         if field == 'size':
-            query = [str(meta.id)]
+            query = [str(meta['id'])]
         elif field == 'type':
             query = meta
         else:
-            query = [meta.slug]
+            query = [meta['slug']]
     # Se o campo não estiver vazio, adicionar o valor do meta ao final.
     else:
         if isinstance(query, list):
@@ -548,6 +561,6 @@ def add_meta(meta, field, query):
             else:
                 values_list = query.values_list('slug', flat=True)
         #XXX Usa uma query... necessário?
-        query = [meta.slug]
+        query = [meta['slug']]
         query.extend(values_list)
     return query

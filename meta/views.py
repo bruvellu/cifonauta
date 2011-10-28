@@ -249,13 +249,10 @@ def search_page(request):
 
     # Gera keywords.
     keylist = []
-    for k, v in queries.iteritems():
-        try:
-            for meta in v:
-                keylist.append(meta.name)
-        except:
-            keylist.append(v)
-    keywords = ', '.join(keylist)
+    for k, v in request.GET.iteritems():
+        keylist.append(v)
+    keylist = [item for item in keylist if item]
+    keywords = ','.join(keylist)
 
     variables = RequestContext(request, {
         'form': form,

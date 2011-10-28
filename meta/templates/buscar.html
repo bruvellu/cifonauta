@@ -51,6 +51,8 @@
         {% csrf_token %}
     </form>
 </div>
+  tag: {% url tag_url 'adulto' %}
+  {{ request }}
     {% show_info image_list video_list queries %}
 {% else %}
 <div id="showall">

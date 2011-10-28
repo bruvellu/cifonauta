@@ -15,6 +15,8 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.contrib.auth.decorators import login_required
 #from django.core.cache import cache
 from django.views.decorators.csrf import csrf_protect
+from django.utils.translation import get_language
+
 from itis import Itis
 from remove import compile_paths
 
@@ -114,23 +116,30 @@ def search_page(request):
         # Query
         if 'query' in request.GET:
             query = request.GET['query'].strip()
+            pg_lang = 'portuguese' # Padrão pra garantir.
+            # Troca locale para buscar.
+            language = get_language()
+            if language == 'en':
+                pg_lang = 'english'
+            elif language == 'pt-br':
+                pg_lang = 'portuguese'
             # Faz full-text search no banco de dados, usando o campo tsv.
             image_list = image_list.extra(
                     select={
-                        'rank': "ts_rank_cd(tsv, plainto_tsquery('portuguese', %s), 32)",
+                        'rank': "ts_rank_cd(tsv, plainto_tsquery(%s, %s), 32)",
                         },
-                    where=["tsv @@ plainto_tsquery('portuguese', %s)"],
-                    params=[query],
-                    select_params=[query, query],
+                    where=["tsv @@ plainto_tsquery(%s, %s)"],
+                    params=[pg_lang, query],
+                    select_params=[pg_lang, query],
                     order_by=('-rank',)
                     )
             video_list = video_list.extra(
                     select={
-                        'rank': "ts_rank_cd(tsv, plainto_tsquery('portuguese', %s), 32)",
+                        'rank': "ts_rank_cd(tsv, plainto_tsquery(%s, %s), 32)",
                         },
-                    where=["tsv @@ plainto_tsquery('portuguese', %s)"],
-                    params=[query],
-                    select_params=[query, query],
+                    where=["tsv @@ plainto_tsquery(%s, %s)"],
+                    params=[pg_lang, query],
+                    select_params=[pg_lang, query],
                     order_by=('-rank',)
                     )
             form = SearchForm({'query': query})

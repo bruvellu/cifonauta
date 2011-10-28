@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block title %}{% trans 'Buscador' %} | {{ block.super }}{% endblock %}
-{% block meta-keywords %}{% for k, v in queries.items %}{% if v %}{% comment %} Checa se o marcador é objeto ou string. {% endcomment %}{% if v|islist or v.0.name %}{% for query in v %}{{ query }}, {% endfor %}{% else %}{{ v }}{% if not forloop.last %}, {% endif %}{% endif %}{% endif %}{% endfor %}{% endblock %}
+{% block meta-keywords %}{{ keywords }}{% endblock %}
 {% block meta-description %}{% trans 'Buscador do banco de imagens Cifonauta.' %}{% endblock %}
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 

@@ -247,6 +247,16 @@ def search_page(request):
                 # Não precisa entrar no queries, para não poluir o url.
                 pass
 
+    # Gera keywords.
+    keylist = []
+    for k, v in queries.iteritems():
+        try:
+            for meta in v:
+                keylist.append(meta.name)
+        except:
+            keylist.append(v)
+    keywords = ', '.join(keylist)
+
     variables = RequestContext(request, {
         'form': form,
         'images': images,
@@ -256,6 +266,7 @@ def search_page(request):
         'show_results': show_results,
         'queries': queries,
         'n_form': n_form,
+        'keywords': keywords,
         })
     return render_to_response('buscar.html', variables)
 

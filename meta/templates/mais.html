@@ -2,6 +2,8 @@
 {% load cache %}
 {% get_current_language as LANGUAGE_CODE %}
 
+{% with authors=authors taxa=taxa sizes=sizes sublocations=sublocations cities=cities states=states countries=countries tags=tags queries=queries %}
+
 {% cache 604800 refinement LANGUAGE_CODE authors taxa sizes sublocations cities states countries tags queries %}
 <div class="block shadow">
     <h2>{% trans 'Refine sua busca' %}</h2>
@@ -48,3 +50,4 @@
 {% endif %}
 </div>
 {% endcache %}
+{% endwith %}

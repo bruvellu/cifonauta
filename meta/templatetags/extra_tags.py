@@ -489,46 +489,34 @@ def show_set(set, prefix, suffix, sep, method='name', before='', after=''):
 
 def extract_set(image_list, video_list):
     '''Extrai outros metadados das imagens buscadas.'''
-    # Salva IDs dos arquivos em uma lista.
-    # Imagens.
-    try:
-        image_ids = image_list.values_list('id', flat=True)
-    except:
-        image_ids = []
-    # Vídeos.
-    try:
-        video_ids = video_list.values_list('id', flat=True)
-    except:
-        video_ids = []
-
     # ManyToMany relationships
     #TODO fazer um select_related('parent') para as tags?
     # Talvez seja útil para mostrar a categoria delas no refinador.
     refined_tags = Tag.objects.filter(
-            Q(images__pk__in=image_ids) | Q(videos__pk__in=video_ids)
+            Q(images__pk__in=image_list) | Q(videos__pk__in=video_list)
             ).distinct()
     refined_authors = Author.objects.filter(
-            Q(images__pk__in=image_ids) | Q(videos__pk__in=video_ids)
+            Q(images__pk__in=image_list) | Q(videos__pk__in=video_list)
             ).distinct()
     refined_taxa = Taxon.objects.filter(
-            Q(images__pk__in=image_ids) | Q(videos__pk__in=video_ids)
+            Q(images__pk__in=image_list) | Q(videos__pk__in=video_list)
             ).distinct()
 
     # ForeignKey relationships
     refined_sizes = Size.objects.filter(
-            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
+            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
             ).distinct()
     refined_sublocations = Sublocation.objects.filter(
-            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
+            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
             ).distinct()
     refined_cities = City.objects.filter(
-            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
+            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
             ).distinct()
     refined_states = State.objects.filter(
-            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
+            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
             ).distinct()
     refined_countries = Country.objects.filter(
-            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
+            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
             ).distinct()
 
     return refined_authors, refined_taxa, refined_sizes, refined_sublocations, refined_cities, refined_states, refined_countries, refined_tags

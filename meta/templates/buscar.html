@@ -17,27 +17,27 @@
 {% block content %}
 <section class="span-16">
 <div id="search-results">
-    {% if show_results %}
-        <div id="search-status" class="quiet">
-        {% if queries.type == 'photo' %}
-        {% blocktrans %}Mostrando apenas <strong>fotos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{% build_url 'photo' 'type' queries 'True' 'type=all' %}">{% trans 'fotos e vídeos' %}</a> {% trans 'ou' %} <a href="{% build_url 'photo' 'type' queries 'True' 'type=video' %}">{% trans 'apenas vídeos' %}</a>.
-        {% else %}
-        {% if queries.type == 'video' %}
-        {% blocktrans %}Mostrando apenas <strong>vídeos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{% build_url 'video' 'type' queries 'True' 'type=all' %}">{% trans 'fotos e vídeos' %}</a> {% trans 'ou' %} <a href="{% build_url 'video' 'type' queries 'True' 'type=photo' %}">{% trans 'apenas fotos' %}</a>.
-        {% else %}
-        {% blocktrans %}Mostrando <strong>fotos</strong> e <strong>vídeos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{% build_url 'video' 'type' queries 'True' 'type=photo' %}">{% trans 'apenas fotos' %}</a> {% trans 'ou' %} <a href="{% build_url 'photo' 'type' queries 'True' 'type=video' %}">{% trans 'apenas vídeos' %}</a>.
-        {% endif %}
-        {% endif %}
-        {% with highlight=request.session.highlight %}
-        {% if highlight %}{% blocktrans %}Desmarque <strong>somente destaques</strong> para ver tudo.{% endblocktrans %}{% endif %}
-        {% endwith %}
-        <a id="limpar" href="{% url search_url %}">{% trans 'Limpar' %}</a>
-        </div>
-        <hr class="space">
-        {% include 'gallery.html' %}
+  {% if show_results %}
+  <div id="search-status" class="quiet">
+    {% if queries.type == 'photo' %}
+    {% blocktrans %}Mostrando apenas <strong>fotos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{% build_url 'photo' 'type' queries 'True' 'type=all' %}">{% trans 'fotos e vídeos' %}</a> {% trans 'ou' %} <a href="{% build_url 'photo' 'type' queries 'True' 'type=video' %}">{% trans 'apenas vídeos' %}</a>.
     {% else %}
-        <hr class="space">
+    {% if queries.type == 'video' %}
+    {% blocktrans %}Mostrando apenas <strong>vídeos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{% build_url 'video' 'type' queries 'True' 'type=all' %}">{% trans 'fotos e vídeos' %}</a> {% trans 'ou' %} <a href="{% build_url 'video' 'type' queries 'True' 'type=photo' %}">{% trans 'apenas fotos' %}</a>.
+    {% else %}
+    {% blocktrans %}Mostrando <strong>fotos</strong> e <strong>vídeos</strong>.{% endblocktrans %} {% trans 'Exibir' %} <a href="{% build_url 'video' 'type' queries 'True' 'type=photo' %}">{% trans 'apenas fotos' %}</a> {% trans 'ou' %} <a href="{% build_url 'photo' 'type' queries 'True' 'type=video' %}">{% trans 'apenas vídeos' %}</a>.
     {% endif %}
+    {% endif %}
+    {% with highlight=request.session.highlight %}
+    {% if highlight %}{% blocktrans %}Desmarque <strong>somente destaques</strong> para ver tudo.{% endblocktrans %}{% endif %}
+    {% endwith %}
+    <a id="limpar" href="{% url search_url %}">{% trans 'Limpar' %}</a>
+  </div>
+  <hr class="space">
+  {% include 'gallery.html' %}
+  {% else %}
+  <hr class="space">
+  {% endif %}
 </div>
 </section>
 {% endblock %}
@@ -45,19 +45,17 @@
 <aside class="span-8 last">
 {% if show_results %}
 <div class="block shadow">
-    <form action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="post">
-        {{ n_form.as_p}}
-        <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display" />
-        {% csrf_token %}
-    </form>
+  <form action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="post">
+    {{ n_form.as_p}}
+    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display" />
+    {% csrf_token %}
+  </form>
 </div>
-  tag: {% url tag_url 'adulto' %}
-  {{ request }}
-    {% show_info image_list video_list queries %}
+{% show_info image_list video_list queries %}
 {% else %}
 <div id="showall">
-    {% trans 'Use o buscador acima ou' %} <a href="/search/?type=all">{% trans 'clique aqui para ver tudo' %}</a>.
-    <br> <br>
+  {% trans 'Use o buscador acima ou' %} <a href="/search/?type=all">{% trans 'clique aqui para ver tudo' %}</a>.
+  <br> <br>
 </div>
 {% endif %}
 </aside>

@@ -1,8 +1,5 @@
 {% load i18n %}
-{% load cache %}
 {% get_current_language as LANGUAGE_CODE %}
-
-{% with authors=authors taxa=taxa sizes=sizes sublocations=sublocations cities=cities states=states countries=countries tags=tags queries=queries %}
 
 <div class="block shadow">
     <h2>{% trans 'Refine sua busca' %}</h2>
@@ -48,4 +45,3 @@
     {% refiner queries.country countries 'country' queries %}
 {% endif %}
 </div>
-{% endwith %}

@@ -300,21 +300,21 @@ def show_info(image_list, video_list, queries):
     for k, v in queries.iteritems():
         if v:
             if k == 'author':
-                authors = authors.exclude(pk__in=queries['author'].values_list('id'))
+                authors = authors.exclude(pk__in=queries['author'])
             elif k == 'tag':
-                tags = tags.exclude(pk__in=queries['tag'].values_list('id'))
+                tags = tags.exclude(pk__in=queries['tag'])
             elif k == 'size':
-                sizes = sizes.exclude(pk__in=queries['size'].values_list('id'))
+                sizes = sizes.exclude(pk__in=queries['size'])
             elif k == 'taxon':
-                taxa = taxa.exclude(pk__in=queries['taxon'].values_list('id'))
+                taxa = taxa.exclude(pk__in=queries['taxon'])
             elif k == 'sublocation':
-                sublocations = sublocations.exclude(pk__in=queries['sublocation'].values_list('id'))
+                sublocations = sublocations.exclude(pk__in=queries['sublocation'])
             elif k == 'city':
-                cities = cities.exclude(pk__in=queries['city'].values_list('id'))
+                cities = cities.exclude(pk__in=queries['city'])
             elif k == 'state':
-                states = states.exclude(pk__in=queries['state'].values_list('id'))
+                states = states.exclude(pk__in=queries['state'])
             elif k == 'country':
-                countries = countries.exclude(pk__in=queries['country'].values_list('id'))
+                countries = countries.exclude(pk__in=queries['country'])
     return {
             'authors': authors, 'taxa': taxa, 'sizes': sizes,
             'sublocations': sublocations, 'cities': cities,

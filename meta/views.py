@@ -102,30 +102,33 @@ def search_page(request):
     videos = []
     show_results = False
 
-    # Verify if any of the queries were passed in the request.
+    # Verifica se qualquer um dos campos foi passado no request.
     if catch_get(queries.keys(), request.GET):
+
+        # Sinal para mostrar resultados no template.
+        show_results = True
 
         # Define formulário de controle e variáveis.
         n_form, n_page, orderby, order, highlight = control_form(request)
 
-        # Iniciando querysets para serem filtrados para cada metadado presente na query.
-        #XXX Não sei se é muito eficiente, mas por enquanto será assim.
-        #TODO incluir 'stats' aqui:
+        # Cria querysets somente com imagens públicas para serem filtrados por
+        # cada metadado presente no request.
         image_list = Image.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').exclude(is_public=False)
         video_list = Video.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').exclude(is_public=False)
 
-        show_results = True
-
         # Query
         if 'query' in request.GET:
+            # Limpa espaços extras.
             query = request.GET['query'].strip()
-            pg_lang = 'portuguese' # Padrão pra garantir.
-            # Troca locale para buscar.
+
+            # Ajusta busca textual para locale do usuário, 'portuguese' padrão.
             language = get_language()
+            pg_lang = 'portuguese'
             if language == 'en':
                 pg_lang = 'english'
             elif language == 'pt-br':
                 pg_lang = 'portuguese'
+
             # Faz full-text search no banco de dados, usando o campo tsv.
             image_list = image_list.extra(
                     select={
@@ -145,7 +148,9 @@ def search_page(request):
                     select_params=[pg_lang, query],
                     order_by=('-rank',)
                     )
+            # Popula formulário de busca com o query.
             form = SearchForm({'query': query})
+            # Passa valor para as queries.
             queries['query'] = query
         else:
             # Só para passar a informação adiante.
@@ -260,6 +265,7 @@ def search_page(request):
                 pass
 
     # Gera keywords.
+    #XXX Usar essa lista para processar os querysets acima?
     keylist = []
     for k, v in request.GET.iteritems():
         keylist.append(v)

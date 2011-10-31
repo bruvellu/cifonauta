@@ -1151,7 +1151,7 @@ def build_url(meta, field, queries, remove=False, append=None):
         elif field == 'type':
             if not queries[field]:
                 do_not_readd = True
-            queries[field] = ''
+            queries[field] = []
         else:
             queries[field] = [q for q in queries[field] if not q['slug'] == meta['slug']]
     else:

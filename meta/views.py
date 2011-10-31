@@ -981,7 +981,7 @@ def show_info(image_list, video_list, queries):
     urls = {}
     urls['videos'] = build_url('video', 'type', queries)
     urls['photos'] = build_url('photo', 'type', queries)
-    urls['all'] = build_url('all', 'type', queries)
+    urls['all'] = build_url('photo', 'type', queries, remove=True, append='type=all')
 
     # Restaura o 'type' original.
     queries['type'] = request_type
@@ -1211,6 +1211,7 @@ def build_url(meta, field, queries, remove=False, append=None):
     else:
         # Como modificações no queries passa para próximos ítens, é necessário
         # retirar o valor da variável (do queries) após criação do url.
+        #TODO Criar função remove_meta.
         if field == 'size':
             queries[field] = [q for q in queries[field] if not q['id'] == meta['id']]
         elif field == 'type':

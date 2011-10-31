@@ -218,10 +218,12 @@ def show_tree(current=None):
     return {'taxa': taxa, 'current': current}
 
 @register.inclusion_tag('searchbox.html')
-def search_box():
+def search_box(query=None):
     '''Gera buscador para ser usado no header do site.'''
-    #TODO Passar variáveis para integrar o searchform da barra com as buscas.
-    form = SearchForm()
+    if query:
+        form = SearchForm({'query': query})
+    else:
+        form = SearchForm()
     return {'form': form}
 
 @register.filter
@@ -340,6 +342,17 @@ def show_info(image_list, video_list, queries):
             for meta in v:
                 meta['filter_url'] = build_url(meta, k, queries)
 
+    #TODO Inserir url processado para cada um!
+    for k, v in queries.iteritems():
+        if k == 'query':
+            pass
+        elif k == 'type':
+            pass
+        else:
+            if v:
+                for meta in v:
+                    meta['filter_url'] = build_url(meta, k, queries, remove=True)
+
     #import pdb; pdb.set_trace()
 
     return {'data': data, 'queries': queries}
@@ -347,12 +360,6 @@ def show_info(image_list, video_list, queries):
 @register.inclusion_tag('fino.html')
 def refiner(actives, inactives, field, queries):
     '''Gera lista de metadados ativos e inativos.'''
-    print
-    print
-    print actives
-    print inactives
-    print field
-    print queries
     return {'actives': actives, 'inactives': inactives,
             'field': field, 'queries': queries}
 
@@ -474,13 +481,13 @@ def build_url(meta, field, queries, remove=False, append=None):
     # colocar o type no queries quando este não estiverem no queries original.
     do_not_readd = False
 
-    print
-    print 'META: ' + str(meta)
-    print 'FIELD: ' + str(field)
-    print 'QUERIES: ' + str(queries)
-    print 'REMOVE: ' + str(remove),
-    print 'APPEND: ' + str(append)
-    print
+    #print
+    #print 'META: ' + str(meta)
+    #print 'FIELD: ' + str(field)
+    #print 'QUERIES: ' + str(queries)
+    #print 'REMOVE: ' + str(remove),
+    #print 'APPEND: ' + str(append)
+    #print
 
     #import pdb; pdb.set_trace()
 

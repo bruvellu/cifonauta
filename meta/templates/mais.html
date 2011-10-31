@@ -5,43 +5,43 @@
     <h2>{% trans 'Refine sua busca' %}</h2>
     <p>{% blocktrans %}Use os sinais [<span class="sign plus">+</span>] e [<span class="sign minus">−</span>] para refinar sua busca ou clique no nome para abrir a página do metadado.{% endblocktrans %}</p>
 
-{% if tags or queries.tag %}
+{% if data.tag or queries.tag %}
 <h3>{% trans 'Marcadores' %} | <a href="{% url tags_url %}" title="{% trans 'Todos os marcadores' %}">{% trans 'ver todos' %}</a></h3>
-    {% refiner queries.tag tags 'tag' queries %}
+    {% include 'fino.html' with actives=queries.tag inactives=data.tag field='tag' %}
 {% endif %}
 
-{% if authors or queries.author %}
+{% if data.author or queries.author %}
 <h3>{% trans 'Autores' %} | <a href="{% url authors_url %}" title="{% trans 'Todos os autores' %}">{% trans 'ver todos' %}</a></h3>
-    {% refiner queries.author authors 'author' queries %}
+    {% include 'fino.html' with actives=queries.author inactives=data.author field='author' %}
 {% endif %}
 
-{% if taxa or queries.taxon %}
+{% if data.taxon or queries.taxon %}
 <h3>{% trans 'Táxons' %} | <a href="{% url taxa_url %}" title="{% trans 'Todos os táxons' %}">{% trans 'ver todos' %}</a></h3>
-    {% refiner queries.taxon taxa 'taxon' queries %}
+    {% include 'fino.html' with actives=queries.taxon inactives=data.taxon field='taxon' %}
 {% endif %}
 
-{% if sizes or queries.size %}
+{% if data.size or queries.size %}
 <h3>{% trans 'Tamanhos' %}</h3>
-    {% refiner queries.size sizes 'size' queries %}
+    {% include 'fino.html' with actives=queries.size inactives=data.size field='size' %}
 {% endif %}
 
-{% if sublocations or queries.sublocation %}
+{% if data.sublocation or queries.sublocation %}
 <h3>{% trans 'Local' %}</h3>
-    {% refiner queries.sublocation sublocations 'sublocation' queries %}
+    {% include 'fino.html' with actives=queries.sublocation inactives=data.sublocation field='sublocation' %}
 {% endif %}
 
-{% if cities or queries.city %}
+{% if data.city or queries.city %}
 <h3>{% trans 'Cidades' %}</h3>
-    {% refiner queries.city cities 'city' queries %}
+    {% include 'fino.html' with actives=queries.city inactives=data.city field='city' %}
 {% endif %}
 
-{% if states or queries.state %}
+{% if data.state or queries.state %}
 <h3>{% trans 'Estados' %}</h3>
-    {% refiner queries.state states 'state' queries %}
+    {% include 'fino.html' with actives=queries.state inactives=data.state field='state' %}
 {% endif %}
 
-{% if countries or queries.country %}
+{% if data.country or queries.country %}
 <h3>{% trans 'Países' %}</h3>
-    {% refiner queries.country countries 'country' queries %}
+    {% include 'fino.html' with actives=queries.country inactives=data.country field='country' %}
 {% endif %}
 </div>

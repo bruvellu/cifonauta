@@ -5,7 +5,6 @@ import operator
 import os
 from meta.forms import *
 from meta.models import *
-from meta.templatetags.extra_tags import extract_set
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
@@ -252,15 +251,15 @@ def search_page(request):
         # Exclui tipo.
         if 'type' in request.GET:
             if request.GET['type'] == 'photo':
-                queries['type'] = 'photo'
+                queries['type'] = ['photo']
                 videos = []
                 video_list = []
             elif request.GET['type'] == 'video':
-                queries['type'] = 'video'
+                queries['type'] = ['video']
                 images = []
                 image_list = []
             elif request.GET['type'] == 'all':
-                queries['type'] = ''
+                queries['type'] = ['']
                 # Não precisa entrar no queries, para não poluir o url.
                 pass
 
@@ -272,6 +271,9 @@ def search_page(request):
     keylist = [item for item in keylist if item]
     keywords = ','.join(keylist)
 
+    # Extrai metadados das imagens.
+    data, queries, urls = show_info(image_list, video_list, queries)
+
     variables = RequestContext(request, {
         'form': form,
         'images': images,
@@ -280,6 +282,8 @@ def search_page(request):
         'video_list': video_list,
         'show_results': show_results,
         'queries': queries,
+        'data': data,
+        'urls': urls,
         'n_form': n_form,
         'keywords': keywords,
         })
@@ -905,6 +909,85 @@ def get_orphans(entries):
             duplicates.append({'path': k, 'replicas': v})
     return orphaned, duplicates
 
+def show_info(image_list, video_list, queries):
+    '''Extrai metadados das imagens e exclui o que estiver nas queries.
+
+    Manda a lista de imagens e de vídeos para a função extract_set que vai extrair todos os metadados associados a estes arquivos.
+
+    Para identificar os valores que estão sendo procurados (queries), estes são excluídos de cada lista correspondente de metadados (authors, taxa, etc.)
+
+    Retorna 3 objetos: data, queries e urls.
+    '''
+    authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(image_list, video_list)
+    for k, v in queries.iteritems():
+        if v:
+            if k == 'author':
+                authors = authors.exclude(pk__in=queries['author'])
+            elif k == 'tag':
+                tags = tags.exclude(pk__in=queries['tag'])
+            elif k == 'size':
+                sizes = sizes.exclude(pk__in=queries['size'])
+            elif k == 'taxon':
+                taxa = taxa.exclude(pk__in=queries['taxon'])
+            elif k == 'sublocation':
+                sublocations = sublocations.exclude(pk__in=queries['sublocation'])
+            elif k == 'city':
+                cities = cities.exclude(pk__in=queries['city'])
+            elif k == 'state':
+                states = states.exclude(pk__in=queries['state'])
+            elif k == 'country':
+                countries = countries.exclude(pk__in=queries['country'])
+
+            # Convert to values.
+            try:
+                queries[k] = v.values()
+            except:
+                pass
+
+    # A partir daqui somente "values", sem objetos.
+    data = {
+            'author': authors.values(),
+            'taxon': taxa.values(),
+            'size': sizes.values(),
+            'sublocation': sublocations.values(),
+            'city': cities.values(),
+            'state': states.values(),
+            'country': countries.values(),
+            'tag': tags.values(),
+            }
+
+    # Gera url do refinamento para cada metadado.
+    for k, v in data.iteritems():
+        if v:
+            for meta in v:
+                meta['filter_url'] = build_url(meta, k, queries)
+
+    # Gera url do refinamento para cada query no request.GET.
+    for k, v in queries.iteritems():
+        # Ignora 'query' e 'type'.
+        if k == 'query':
+            pass
+        elif k == 'type':
+            pass
+        else:
+            if v:
+                for meta in v:
+                    meta['filter_url'] = build_url(meta, k, queries, remove=True)
+
+    # Salva temporariamente o 'type', para restaurar depois da parte abaixo.
+    request_type = queries['type']
+
+    # Gera urls estáticos para vídeos, fotos ou os dois.
+    urls = {}
+    urls['videos'] = build_url('video', 'type', queries)
+    urls['photos'] = build_url('photo', 'type', queries)
+    urls['all'] = build_url('all', 'type', queries)
+
+    # Restaura o 'type' original.
+    queries['type'] = request_type
+
+    return data, queries, urls
+
 def control_form(request):
     '''Build the control form and return options.'''
     # Usando POST para definir:
@@ -953,3 +1036,185 @@ def control_form(request):
         request.session['highlight'] = True
 
     return n_form, n_page, orderby, order, highlight
+
+def extract_set(image_list, video_list):
+    '''Extrai outros metadados das imagens buscadas.
+
+    Retorna querysets de cada modelo.
+    '''
+    # ManyToMany relationships
+    #TODO fazer um select_related('parent') para as tags?
+    # Talvez seja útil para mostrar a categoria delas no refinador.
+    refined_tags = Tag.objects.filter(
+            Q(images__pk__in=image_list) | Q(videos__pk__in=video_list)
+            ).distinct()
+    refined_authors = Author.objects.filter(
+            Q(images__pk__in=image_list) | Q(videos__pk__in=video_list)
+            ).distinct()
+    refined_taxa = Taxon.objects.filter(
+            Q(images__pk__in=image_list) | Q(videos__pk__in=video_list)
+            ).distinct()
+
+    # ForeignKey relationships
+    refined_sizes = Size.objects.filter(
+            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
+            ).distinct()
+    refined_sublocations = Sublocation.objects.filter(
+            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
+            ).distinct()
+    refined_cities = City.objects.filter(
+            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
+            ).distinct()
+    refined_states = State.objects.filter(
+            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
+            ).distinct()
+    refined_countries = Country.objects.filter(
+            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
+            ).distinct()
+
+    return refined_authors, refined_taxa, refined_sizes, refined_sublocations, refined_cities, refined_states, refined_countries, refined_tags
+
+def add_meta(meta, field, query):
+    '''Adiciona metadado à lista de query.
+
+    Se a lista estiver vazia simplesmente cria uma nova com o metadado. Caso a lista já exista e tenha elementos, adiciona o metadado à ela.
+
+    Quando o campo for 'type' só substitui o valor (sem estender a lista).
+    '''
+    # Se o campo estiver vazio, já preencher com o valor do meta.
+    if not query:
+        final_query = [meta]
+    # Se o campo não estiver vazio, adicionar o valor do meta ao final.
+    else:
+        final_query = [meta]
+        final_query.extend(query)
+    if field == 'type':
+        final_query = [meta]
+    return final_query
+
+def build_url(meta, field, queries, remove=False, append=None):
+    '''Constrói o url para lidar com o refinamento.
+
+    Descrição dos campos:
+        - meta: valor do campo do request.GET, pode ser 'photo' ou o slug de 
+          algum metadado.
+        - field: nome do campo do request.GET, 'type', 'author', 'tag', etc.
+        - queries: dicionário com field:meta passados pelo request.GET, será 
+          usado para construir o url.
+        - remove: se verdadeiro, a função irá limpar dos queries o meta do 
+          field passado como argumento, excluindo o valor do url final. Usado 
+          para criar os urls do 'menos' no refinamento (metadados ativos).
+        - XXX provavelmente será deprecada >> append: string extra que pode 
+          ser passada como argumento para ter maior flexibilidade na hora de 
+          criar os urls no template.
+
+    A função começa com o prefixo base '/search/?' e acrescenta ou remove os 
+    valores de acordo com os parâmetros acima.
+
+    Se remove=True o valor meta é retirado das queries, caso contrário é 
+    adicionado. Para cada ítem não-vazio é criado uma string concatenada e 
+    adicionada ao prefixo original. Os valores podem ser strings (type e query) 
+    ou listas (tags, authors, etc). Por isso é preciso usar condicionais para 
+    diferenciar os dois tipos na hora de criar a string a ser adicionada.
+
+    Após adicionar todos os valores das queries ele checa a existência do 
+    append e acrescenta ao final do prefixo. O único caso peculiar é não 
+    incluir o type=all no url quando houver os parâmetros. O type=all só é 
+    usado quando o url estiver vazio (ie, '/search/?type=all') para mostrar 
+    todos os arquivos sem nenhum refinamento.
+
+    Por fim, é extremamente importante que as queries saiam da função 
+    exatamente como entraram (com os mesmos valores). Nos loops do refinador 
+    para gerar os urls dos metadados, uma modificação nas queries afeta a 
+    construção do próximo url. Assim, se o valor de meta foi removido ele deve 
+    ser recolocado e se o valor foi adicionado ele deve ser removido.
+
+    XXX Não encontrei um jeito de contornar a situação acima. Instanciar o 
+    'queries' em um novo objeto não resolve.
+
+    A função retorna uma string com o url.
+    '''
+    # Usado para diferenciar o primeiro query que não precisa do '&'.
+    first = True
+    prefix = '/search/?'
+    #XXX Ao passar manualmente o tipo de busca para os urls do search-status, 
+    # ele acaba recolocando, no final desta função, o campo type:photo. Isso 
+    # gera um problema, pois o queries original não continha o type (que foi 
+    # passado só para gerar estes urls). Assim, criei esta variável para não 
+    # colocar o type no queries quando este não estiverem no queries original.
+    do_not_readd = False
+
+    # Se for para remover o metadado, remover.
+    if remove:
+        if field == 'size':
+            queries[field] = [q for q in queries[field] if not q['id'] == meta['id']]
+        elif field == 'type':
+            if not queries[field]:
+                do_not_readd = True
+            queries[field] = ''
+        else:
+            queries[field] = [q for q in queries[field] if not q['slug'] == meta['slug']]
+    else:
+        # Adiciona o valor meta do seu respectivo field na lista de queries.
+        queries[field] = add_meta(meta, field, queries[field])
+
+    # Constrói o url de fato.
+    for k, v in queries.iteritems():
+        if v:
+            if first:
+                prefix = prefix + k + '='
+                first = False
+            else:
+                prefix = prefix + '&' + k + '='
+
+            # Faz checagem antes de adicionar últimos valores.
+            # Search field e type field são strings, tratados diferente.
+            search_field = False
+
+            # Tratamento diferenciado para alguns metadados.
+            if k == 'size':
+                final_list = [str(size['id']) for size in v]
+            elif k == 'type':
+                final_list = [type for type in v]
+            elif k == 'query':
+                search = v
+                search_field = True
+            else:
+                final_list = [obj['slug'] for obj in v]
+
+            # Search/Type fields.
+            if search_field:
+                prefix = prefix + search
+            else:
+                prefix = prefix + ','.join(final_list)
+
+    if append:
+        if prefix[-1] == '?':
+            prefix = prefix + append
+        else:
+            # Não acrescentar o type=all quando o url não estiver vazio (outros 
+            # metadados presentes).
+            if not append == 'type=all':
+                prefix = prefix + '&' + append
+    elif not append:
+        if prefix[-1] == '?':
+            prefix = prefix + 'type=all'
+            # Opção para retirar tudo, volta para o search vazio...
+            #prefix = prefix[:-1]
+    url = prefix
+
+    # É preciso recolocar o meta removido para não afetar os urls seguintes.
+    if remove:
+        if not do_not_readd:
+            # Adiciona o metadado na lista de queries.
+            queries[field] = add_meta(meta, field, queries[field])
+    else:
+        # Como modificações no queries passa para próximos ítens, é necessário
+        # retirar o valor da variável (do queries) após criação do url.
+        if field == 'size':
+            queries[field] = [q for q in queries[field] if not q['id'] == meta['id']]
+        elif field == 'type':
+            queries[field] = [q for q in queries[field] if not q == meta]
+        else:
+            queries[field] = [q for q in queries[field] if not q['slug'] == meta['slug']]
+    return url

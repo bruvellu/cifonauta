@@ -25,24 +25,26 @@
 
 {% block content %}
 <section class="span-16">
-    <header>
-        <div class="quiet" id="metafield">
-          {% trans field %}{% if field == 'tag' %} ({{ meta.parent|lower }}){% else %}{% if field == 'taxon' %} ({% if meta.rank %}{{ meta.rank|lower }}{% else %}{% trans 'sem ranking' %}{% endif %}){% endif %}{% endif %}:
-        </div>
-        <h1>{{ meta|sp_em }} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/all/" title="{% trans 'Cifonauta: fotos e vídeos' %} ({{ field }}={{ meta.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span></h1>
-    </header>
-    {% include 'gallery.html' %}
+<header>
+<div class="quiet" id="metafield">
+  {% trans field %}{% if field == 'tag' %} ({{ meta.parent|lower }}){% else %}{% if field == 'taxon' %} ({% if meta.rank %}{{ meta.rank|lower }}{% else %}{% trans 'sem ranking' %}{% endif %}){% endif %}{% endif %}:
+</div>
+<h1>{{ meta|sp_em }} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/all/" title="{% trans 'Cifonauta: fotos e vídeos' %} ({{ field }}={{ meta.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span></h1>
+</header>
+{% include 'gallery.html' %}
 </section>
 {% endblock %}
 {% block sidebar %}
 <aside class="span-8 last">
 <div class="block shadow">
-    <form action="{{ request.path }}" method="post">
-        {{ n_form.as_p}}
-        <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display" />
-        {% csrf_token %}
-    </form>
+  <form action="{{ request.path }}" method="post">
+    {{ n_form.as_p}}
+    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display" />
+    {% csrf_token %}
+  </form>
 </div>
-{% show_info image_list video_list queries %}
+
+{% include 'mais.html' %}
+
 </aside>
 {% endblock %}

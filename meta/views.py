@@ -666,6 +666,7 @@ def meta_page(request, model_name, field, slug):
             u'city': [],
             u'state': [],
             u'country': [],
+            u'type': [],
             }
 
     #XXX Serve para identificar o field na meta_page. Mas precisa ser 
@@ -707,12 +708,18 @@ def meta_page(request, model_name, field, slug):
     images = get_paginated(request, image_list, n_page)
     videos = get_paginated(request, video_list, n_page)
 
+    # Extrai metadados das imagens.
+    data, queries, urls = show_info(image_list, video_list, queries)
+
     variables = RequestContext(request, {
         'images': images,
         'videos': videos,
         'image_list': image_list,
         'video_list': video_list,
         'meta': model,
+        'queries': queries,
+        'data': data,
+        'urls': urls,
         'field': field,
         'queries': queries,
         'n_form': n_form,

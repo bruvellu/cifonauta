@@ -21,7 +21,11 @@
   </div>
 
   <div id="home-search">
+    {% if queries %}
     {% search_box queries.query %}
+    {% else %}
+    {% search_box %}
+    {% endif %}
   </div>
 
 </div>

@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.db.transaction import commit_on_success
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 #from django.core.cache import cache
 from django.views.decorators.csrf import csrf_protect
@@ -968,6 +969,8 @@ def show_info(image_list, video_list, queries):
         if v:
             for meta in v:
                 meta['filter_url'] = build_url(meta, k, queries)
+                meta['url'] = reverse('%s_url' % k, args=[meta['slug']])
+                print meta['url']
 
     # Gera url do refinamento para cada query no request.GET.
     for k, v in queries.iteritems():

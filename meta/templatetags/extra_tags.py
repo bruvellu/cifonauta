@@ -229,26 +229,33 @@ def search_box(query=None):
 def sp_em(meta, autoescape=None):
     '''Filtro que aplica itálico à espécies e gêneros.
 
-    Meta vem como objeto ou values?
+    Meta pode vir como objeto ou values.
     '''
-    print meta
     # Tem que levar em conta tradução...
     italics = [
             u'Gênero', u'Genus',
             u'Subgênero', u'Subgenus',
             u'Espécie', u'Species'
             ]
+
+    # Autoescape.
     if autoescape:
         esc = conditional_escape
     else:
         esc = lambda x: x
+
+    # Gerar output em itálico.
     try:
         if meta.rank in italics:
             output = u'<em>%s</em>' % esc(meta.name)
         else:
             output = esc(meta.name)
     except:
-        output = esc(meta.name)
+        try:
+            output = esc(meta.name)
+        except:
+            output = esc(meta['name'])
+
     return mark_safe(output)
 sp_em.needs_autoescape = True
 

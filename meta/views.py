@@ -259,7 +259,7 @@ def search_page(request):
                 images = []
                 image_list = []
             elif request.GET['type'] == 'all':
-                queries['type'] = ['']
+                queries['type'] = []
                 # Não precisa entrar no queries, para não poluir o url.
                 pass
 

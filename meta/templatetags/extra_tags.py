@@ -252,9 +252,15 @@ def sp_em(meta, autoescape=None):
             output = esc(meta.name)
     except:
         try:
-            output = esc(meta.name)
+            if meta['rank'] in italics:
+                output = u'<em>%s</em>' % esc(meta['name'])
+            else:
+                output = esc(meta['name'])
         except:
-            output = esc(meta['name'])
+            try:
+                output = esc(meta.name)
+            except:
+                output = esc(meta['name'])
 
     return mark_safe(output)
 sp_em.needs_autoescape = True

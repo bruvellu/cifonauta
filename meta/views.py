@@ -309,7 +309,7 @@ def org_page(request):
     benthic = TagCategory.objects.get(name=u'Bentônicos')
     # Habitat
     habitat = TagCategory.objects.get(name=u'Habitat')
-    # Diversos 
+    # Diversos
     assorted = TagCategory.objects.get(name=u'Diversos')
     variables = RequestContext(request, {
         'sizes': sizes,
@@ -970,7 +970,6 @@ def show_info(image_list, video_list, queries):
             for meta in v:
                 meta['filter_url'] = build_url(meta, k, queries)
                 meta['url'] = reverse('%s_url' % k, args=[meta['slug']])
-                print meta['url']
 
     # Gera url do refinamento para cada query no request.GET.
     for k, v in queries.iteritems():
@@ -983,6 +982,7 @@ def show_info(image_list, video_list, queries):
             if v:
                 for meta in v:
                     meta['filter_url'] = build_url(meta, k, queries, remove=True)
+                    meta['url'] = reverse('%s_url' % k, args=[meta['slug']])
 
     # Salva temporariamente o 'type', para restaurar depois da parte abaixo.
     request_type = queries['type']

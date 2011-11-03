@@ -30,6 +30,17 @@
   {% trans field %}{% if field == 'tag' %} ({{ meta.parent|lower }}){% else %}{% if field == 'taxon' %} ({% if meta.rank %}{{ meta.rank|lower }}{% else %}{% trans 'sem ranking' %}{% endif %}){% endif %}{% endif %}:
 </div>
 <h1>{{ meta|sp_em }} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/all/" title="{% trans 'Cifonauta: fotos e vídeos' %} ({{ field }}={{ meta.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span></h1>
+
+{% if meta.citation %}
+<div id="citation">
+  <p>
+  {% autoescape off %}
+  {{ meta.citation }}
+  {% endautoescape %}
+  </p>
+</div>
+{% endif %}
+
 </header>
 {% include 'gallery.html' %}
 </section>

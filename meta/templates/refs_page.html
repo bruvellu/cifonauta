@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+
 {% block title %}{% trans 'Referências' %} | {{ block.super }}{% endblock %}
 {% block meta-keywords %}{% trans 'referências, biologia marinha, biodiversidade' %}{% endblock %}
 {% block meta-description %}{% trans 'Referências bibliográficas citadas no banco de imagens Cifonauta.' %}{% endblock %}
@@ -12,13 +13,19 @@
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 <meta property="og:type" content="article" />
 {% endblock %}
+
 {% block content %}
+
 <section class="span-24 last">
+
 <header><h1>{% trans 'Referências' %}</h1></header>
+
 <div class="span-4"><h2>{% trans 'Exemplo' %}</h2></div>
 <div class="span-15"><h2>{% trans 'Citação' %}</h2></div>
 <div class="span-5 last"><h2>{% trans 'Veja mais' %}</h2></div>
+
 {% for ref in references %}
+{% if ref.images.all %}
 <div class="span-24 last citation">
   <div class="span-4">
     {% print_thumb 'reference' ref %}
@@ -32,9 +39,8 @@
     <a href="{{ ref.get_absolute_url }}">{% blocktrans count ref.image_count|add:ref.video_count as counter %}{{ counter }} imagem ligada à este trabalho.{% plural %}{{ counter }} imagens ligadas à este trabalho.{% endblocktrans %}</a>
   </div>
 </div>
+{% endif %}
 {% endfor %}
-</section>
-{% endblock %}
 
-{% block sidebar %}
+</section>
 {% endblock %}

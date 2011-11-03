@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-25 18:08-0200\n"
+"POT-Creation-Date: 2011-11-03 19:39-0200\n"
 "PO-Revision-Date: 2011-10-18 20:02\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -177,8 +177,8 @@ msgstr "(type one or more terms)"
 msgid "Navegando por"
 msgstr "Browsing by"
 
-#: forms.py:63 templates/buscar.html:24 templates/buscar.html.py:27
-#: templates/buscar.html:29
+#: forms.py:63 templates/buscar.html:25 templates/buscar.html.py:31
+#: templates/buscar.html:35
 msgid "Exibir"
 msgstr "Show"
 
@@ -906,13 +906,365 @@ msgstr "positions in the tour"
 msgid "Número de impressões de página de uma imagem."
 msgstr "Number of pageviews of an image."
 
+#: static/admin/404.html:4 static/admin/404.html.py:8
+msgid "Page not found"
+msgstr ""
+
+#: static/admin/404.html:10
+msgid "We're sorry, but the requested page could not be found."
+msgstr ""
+
+#: static/admin/500.html:4 static/admin/app_index.html:8
+#: static/admin/base.html:55 static/admin/change_form.html:19
+#: static/admin/change_list.html:42 static/admin/delete_confirmation.html:6
+#: static/admin/delete_selected_confirmation.html:6
+#: static/admin/invalid_setup.html:4 static/admin/object_history.html:6
+#: static/admin/auth/user/change_password.html:12
+msgid "Home"
+msgstr ""
+
+#: static/admin/500.html:4
+msgid "Server error"
+msgstr ""
+
+#: static/admin/500.html:6
+msgid "Server error (500)"
+msgstr ""
+
+#: static/admin/500.html:9
+msgid "Server Error <em>(500)</em>"
+msgstr ""
+
+#: static/admin/500.html:10
+msgid ""
+"There's been an error. It's been reported to the site administrators via e-"
+"mail and should be fixed shortly. Thanks for your patience."
+msgstr ""
+
+#: static/admin/actions.html:4
+msgid "Run the selected action"
+msgstr ""
+
+#: static/admin/actions.html:4
+msgid "Go"
+msgstr ""
+
+#: static/admin/actions.html:11
+msgid "Click here to select the objects across all pages"
+msgstr ""
+
+#: static/admin/actions.html:11
+#, python-format
+msgid "Select all %(total_count)s %(module_name)s"
+msgstr ""
+
+#: static/admin/actions.html:13
+msgid "Clear selection"
+msgstr ""
+
+#: static/admin/app_index.html:10 static/admin/index.html:19
+#, python-format
+msgid "%(name)s"
+msgstr ""
+
+#: static/admin/base.html:28
+msgid "Welcome,"
+msgstr ""
+
+#: static/admin/base.html:33
+#, fuzzy
+msgid "Documentation"
+msgstr "Contact"
+
+#: static/admin/base.html:41 static/admin/auth/user/change_password.html:16
+#: static/admin/auth/user/change_password.html:49
+msgid "Change password"
+msgstr ""
+
+#: static/admin/base.html:48
+msgid "Log out"
+msgstr ""
+
+#: static/admin/base_site.html:4
+msgid "Django site admin"
+msgstr ""
+
+#: static/admin/base_site.html:7
+msgid "Django administration"
+msgstr ""
+
+#: static/admin/change_form.html:22 static/admin/index.html:29
+msgid "Add"
+msgstr ""
+
+#: static/admin/change_form.html:31 static/admin/object_history.html:10
+msgid "History"
+msgstr ""
+
+#: static/admin/change_form.html:32 static/admin/edit_inline/stacked.html:9
+#: static/admin/edit_inline/tabular.html:28
+msgid "View on site"
+msgstr ""
+
+#: static/admin/change_form.html:43 static/admin/change_list.html:73
+#: static/admin/login.html:17 static/admin/auth/user/change_password.html:25
+msgid "Please correct the error below."
+msgid_plural "Please correct the errors below."
+msgstr[0] ""
+msgstr[1] ""
+
+#: static/admin/change_list.html:64
+#, python-format
+msgid "Add %(name)s"
+msgstr ""
+
+#: static/admin/change_list.html:84
+msgid "Filter"
+msgstr ""
+
+#: static/admin/change_list_results.html:41
+msgid "Sorting by:"
+msgstr ""
+
+#: static/admin/change_list_results.html:49
+#, fuzzy
+msgid "ascending"
+msgstr "ascending"
+
+#: static/admin/change_list_results.html:49
+#, fuzzy
+msgid "descending"
+msgstr "descending"
+
+#: static/admin/change_list_results.html:50
+msgid "toggle"
+msgstr ""
+
+#: static/admin/change_list_results.html:51
+msgid "remove"
+msgstr ""
+
+#: static/admin/change_list_results.html:57
+msgid "Reset sorting"
+msgstr ""
+
+#: static/admin/change_list_results.html:58
+msgid "Cancel"
+msgstr ""
+
+#: static/admin/delete_confirmation.html:10 static/admin/submit_line.html:4
+msgid "Delete"
+msgstr ""
+
+#: static/admin/delete_confirmation.html:17
+#, python-format
+msgid ""
+"Deleting the %(object_name)s '%(escaped_object)s' would result in deleting "
+"related objects, but your account doesn't have permission to delete the "
+"following types of objects:"
+msgstr ""
+
+#: static/admin/delete_confirmation.html:25
+#, python-format
+msgid ""
+"Deleting the %(object_name)s '%(escaped_object)s' would require deleting the "
+"following protected related objects:"
+msgstr ""
+
+#: static/admin/delete_confirmation.html:33
+#, python-format
+msgid ""
+"Are you sure you want to delete the %(object_name)s \"%(escaped_object)s\"? "
+"All of the following related items will be deleted:"
+msgstr ""
+
+#: static/admin/delete_confirmation.html:38
+#: static/admin/delete_selected_confirmation.html:43
+msgid "Yes, I'm sure"
+msgstr ""
+
+#: static/admin/delete_selected_confirmation.html:9
+msgid "Delete multiple objects"
+msgstr ""
+
+#: static/admin/delete_selected_confirmation.html:16
+#, python-format
+msgid ""
+"Deleting the selected %(objects_name)s would result in deleting related "
+"objects, but your account doesn't have permission to delete the following "
+"types of objects:"
+msgstr ""
+
+#: static/admin/delete_selected_confirmation.html:24
+#, python-format
+msgid ""
+"Deleting the selected %(objects_name)s would require deleting the following "
+"protected related objects:"
+msgstr ""
+
+#: static/admin/delete_selected_confirmation.html:32
+#, python-format
+msgid ""
+"Are you sure you want to delete the selected %(objects_name)s? All of the "
+"following objects and their related items will be deleted:"
+msgstr ""
+
+#: static/admin/filter.html:2
+#, python-format
+msgid " By %(filter_title)s "
+msgstr ""
+
+#: static/admin/index.html:18
+#, python-format
+msgid "Models available in the %(name)s application."
+msgstr ""
+
+#: static/admin/index.html:35
+msgid "Change"
+msgstr ""
+
+#: static/admin/index.html:45
+msgid "You don't have permission to edit anything."
+msgstr ""
+
+#: static/admin/index.html:53
+msgid "Recent Actions"
+msgstr ""
+
+#: static/admin/index.html:54
+msgid "My Actions"
+msgstr ""
+
+#: static/admin/index.html:58
+msgid "None available"
+msgstr ""
+
+#: static/admin/index.html:72
+msgid "Unknown content"
+msgstr ""
+
+#: static/admin/invalid_setup.html:7
+msgid ""
+"Something's wrong with your database installation. Make sure the appropriate "
+"database tables have been created, and make sure the database is readable by "
+"the appropriate user."
+msgstr ""
+
+#: static/admin/login.html:33
+msgid "Username:"
+msgstr ""
+
+#: static/admin/login.html:37
+msgid "Password:"
+msgstr ""
+
+#: static/admin/login.html:42
+msgid "Log in"
+msgstr ""
+
+#: static/admin/object_history.html:22
+msgid "Date/time"
+msgstr ""
+
+#: static/admin/object_history.html:23
+msgid "User"
+msgstr ""
+
+#: static/admin/object_history.html:24
+msgid "Action"
+msgstr ""
+
+#: static/admin/object_history.html:38
+msgid ""
+"This object doesn't have a change history. It probably wasn't added via this "
+"admin site."
+msgstr ""
+
+#: static/admin/pagination.html:10
+msgid "Show all"
+msgstr ""
+
+#: static/admin/pagination.html:11 static/admin/submit_line.html:3
+msgid "Save"
+msgstr ""
+
+#: static/admin/search_form.html:7
+msgid "Search"
+msgstr ""
+
+#: static/admin/search_form.html:9
+#, python-format
+msgid "%(counter)s result"
+msgid_plural "%(counter)s results"
+msgstr[0] ""
+msgstr[1] ""
+
+#: static/admin/search_form.html:9
+#, python-format
+msgid "%(full_result_count)s total"
+msgstr ""
+
+#: static/admin/submit_line.html:5
+msgid "Save as new"
+msgstr ""
+
+#: static/admin/submit_line.html:6
+msgid "Save and add another"
+msgstr ""
+
+#: static/admin/submit_line.html:7
+msgid "Save and continue editing"
+msgstr ""
+
+#: static/admin/auth/user/add_form.html:6
+msgid ""
+"First, enter a username and password. Then, you'll be able to edit more user "
+"options."
+msgstr ""
+
+#: static/admin/auth/user/add_form.html:8
+msgid "Enter a username and password."
+msgstr ""
+
+#: static/admin/auth/user/change_password.html:29
+#, python-format
+msgid "Enter a new password for the user <strong>%(username)s</strong>."
+msgstr ""
+
+#: static/admin/auth/user/change_password.html:36
+msgid "Password"
+msgstr ""
+
+#: static/admin/auth/user/change_password.html:42
+msgid "Password (again)"
+msgstr ""
+
+#: static/admin/auth/user/change_password.html:43
+msgid "Enter the same password as above, for verification."
+msgstr ""
+
+#: static/admin/edit_inline/stacked.html:67
+#: static/admin/edit_inline/tabular.html:113
+#, python-format
+msgid "Add another %(verbose_name)s"
+msgstr ""
+
+#: static/admin/edit_inline/stacked.html:70
+#: static/admin/edit_inline/tabular.html:116
+msgid "Remove"
+msgstr ""
+
+#: static/admin/edit_inline/tabular.html:15
+msgid "Delete?"
+msgstr ""
+
 #: templates/404.html:3 templates/404.html.py:8
 msgid "Página não encontrada"
 msgstr "Page not found"
 
 #: templates/authors_page.html:3 templates/authors_page.html.py:9
 #: templates/authors_page.html:21 templates/footer.html:47
-#: templates/mais.html:16
+#: templates/mais.html:14
 msgid "Autores"
 msgstr "Authors"
 
@@ -925,11 +1277,11 @@ msgid "Autores incluídos no banco de imagens Cifonauta."
 msgstr "Authors included in the Cifonauta image database."
 
 #: templates/authors_page.html:12 templates/base.html:16
-#: templates/buscar.html:15 templates/embed.html:7 templates/main_page.html:10
+#: templates/buscar.html:14 templates/embed.html:7 templates/main_page.html:10
 #: templates/main_page.html.py:15 templates/media_page.html:16
 #: templates/meta_page.html:17 templates/organizacao.html:15
 #: templates/places_page.html:15 templates/press_page.html:13
-#: templates/refs_page.html:12 templates/tags_page.html:17
+#: templates/refs_page.html:13 templates/tags_page.html:17
 #: templates/taxa_page.html:13 templates/tour_page.html:14
 #: templates/tours_page.html:13 templates/flatpages/default.html:14
 msgid "Cifonauta: Banco de Imagens de Biologia Marinha"
@@ -951,61 +1303,61 @@ msgstr "Experts"
 msgid "Pessoa que coletou ou identificou o organismo."
 msgstr "Person who collected or identified the organism."
 
-#: templates/buscar.html:3 templates/buscar.html.py:11
+#: templates/buscar.html:3 templates/buscar.html.py:10
 #: templates/footer.html:35
 msgid "Buscador"
 msgstr "Search"
 
-#: templates/buscar.html:6 templates/buscar.html.py:14
+#: templates/buscar.html:5 templates/buscar.html.py:13
 msgid "Buscador do banco de imagens Cifonauta."
 msgstr "Cifonauta image database search engine."
 
-#: templates/buscar.html:24
+#: templates/buscar.html:25
 msgid "Mostrando apenas <strong>fotos</strong>."
 msgstr "Displaying only <strong>photos</strong>."
 
-#: templates/buscar.html:24 templates/buscar.html.py:27
+#: templates/buscar.html:25 templates/buscar.html.py:31
 msgid "fotos e vídeos"
 msgstr "photos and videos"
 
-#: templates/buscar.html:24 templates/buscar.html.py:27
-#: templates/buscar.html:29
+#: templates/buscar.html:25 templates/buscar.html.py:31
+#: templates/buscar.html:35
 msgid "ou"
 msgstr "or"
 
-#: templates/buscar.html:24 templates/buscar.html.py:29
+#: templates/buscar.html:25 templates/buscar.html.py:35
 msgid "apenas vídeos"
 msgstr "only videos"
 
-#: templates/buscar.html:27
+#: templates/buscar.html:31
 msgid "Mostrando apenas <strong>vídeos</strong>."
 msgstr "Displaying only <strong>videos</strong>."
 
-#: templates/buscar.html:27 templates/buscar.html.py:29
+#: templates/buscar.html:31 templates/buscar.html.py:35
 msgid "apenas fotos"
 msgstr "only photos"
 
-#: templates/buscar.html:29
+#: templates/buscar.html:35
 msgid "Mostrando <strong>fotos</strong> e <strong>vídeos</strong>."
 msgstr "Displaying <strong>photos</strong> and <strong>videos</strong>."
 
-#: templates/buscar.html:33
+#: templates/buscar.html:43
 msgid "Desmarque <strong>somente destaques</strong> para ver tudo."
 msgstr "Uncheck <strong>highlights only</strong> to see all."
 
-#: templates/buscar.html:35
+#: templates/buscar.html:47
 msgid "Limpar"
 msgstr "Clear"
 
-#: templates/buscar.html:51 templates/meta_page.html:42
+#: templates/buscar.html:68 templates/meta_page.html:53
 msgid "Atualizar"
 msgstr "Update"
 
-#: templates/buscar.html:58
+#: templates/buscar.html:78
 msgid "Use o buscador acima ou"
 msgstr "Use the search box above or"
 
-#: templates/buscar.html:58
+#: templates/buscar.html:78
 msgid "clique aqui para ver tudo"
 msgstr "click here to show content"
 
@@ -1107,13 +1459,13 @@ msgstr "Videos"
 msgid "Metadados"
 msgstr "Metadata"
 
-#: templates/footer.html:44 templates/mais.html:11 templates/tags_page.html:6
+#: templates/footer.html:44 templates/mais.html:9 templates/tags_page.html:6
 #: templates/tags_page.html.py:14 templates/tags_page.html:22
 #: templates/feeds/media_post.html:5
 msgid "Marcadores"
 msgstr "Tags"
 
-#: templates/footer.html:45 templates/mais.html:21
+#: templates/footer.html:45 templates/mais.html:19
 #: templates/organizacao.html:25 templates/taxa_page.html:3
 #: templates/taxa_page.html.py:10 templates/taxa_page.html:19
 msgid "Táxons"
@@ -1125,8 +1477,8 @@ msgid "Localidades"
 msgstr "Places"
 
 #. Translators: list of references rendered on a page
-#: templates/footer.html:48 templates/refs_page.html:3
-#: templates/refs_page.html.py:9 templates/refs_page.html:17
+#: templates/footer.html:48 templates/refs_page.html:4
+#: templates/refs_page.html.py:10 templates/refs_page.html:21
 #: templates/tour_page.html:141
 msgid "Referências"
 msgstr "References"
@@ -1274,11 +1626,11 @@ msgstr "Highlights"
 msgid "Navegue por táxons"
 msgstr "Browse by taxa"
 
-#: templates/mais.html:7
+#: templates/mais.html:5
 msgid "Refine sua busca"
 msgstr "Refine your query"
 
-#: templates/mais.html:8
+#: templates/mais.html:6
 msgid ""
 "Use os sinais [<span class=\"sign plus\">+</span>] e [<span class=\"sign "
 "minus\">−</span>] para refinar sua busca ou clique no nome para abrir a "
@@ -1287,40 +1639,40 @@ msgstr ""
 "Use [<span class=\"sign plus\">+</span>] and [<span class=\"sign minus\">−</"
 "span>] to refine your query or click on the name to open metadata's page."
 
-#: templates/mais.html:11
+#: templates/mais.html:9
 msgid "Todos os marcadores"
 msgstr "All tags"
 
-#: templates/mais.html:11 templates/mais.html.py:16 templates/mais.html:21
+#: templates/mais.html:9 templates/mais.html.py:14 templates/mais.html:19
 msgid "ver todos"
 msgstr "see all"
 
-#: templates/mais.html:16
+#: templates/mais.html:14
 msgid "Todos os autores"
 msgstr "All authors"
 
-#: templates/mais.html:21
+#: templates/mais.html:19
 msgid "Todos os táxons"
 msgstr "All taxa"
 
-#: templates/mais.html:26 templates/tags_page.html:25
+#: templates/mais.html:24 templates/tags_page.html:25
 msgid "Tamanhos"
 msgstr "Sizes"
 
-#: templates/mais.html:31 templates/media_page.html:112
+#: templates/mais.html:29 templates/media_page.html:112
 #: templates/tour_page.html:67 templates/feeds/media_post.html:46
 msgid "Local"
 msgstr "Place"
 
-#: templates/mais.html:36 templates/places_page.html:27
+#: templates/mais.html:34 templates/places_page.html:27
 msgid "Cidades"
 msgstr "Cities"
 
-#: templates/mais.html:41 templates/places_page.html:31
+#: templates/mais.html:39 templates/places_page.html:31
 msgid "Estados"
 msgstr "States"
 
-#: templates/mais.html:46 templates/places_page.html:36
+#: templates/mais.html:44 templates/places_page.html:36
 msgid "Países"
 msgstr "Countries"
 
@@ -1543,7 +1895,7 @@ msgstr "Description"
 #: templates/organizacao.html:37 templates/organizacao.html.py:56
 #: templates/organizacao.html:89 templates/organizacao.html.py:107
 #: templates/organizacao.html:122 templates/organizacao.html.py:140
-#: templates/organizacao.html:158 templates/refs_page.html:18
+#: templates/organizacao.html:158 templates/refs_page.html:23
 msgid "Exemplo"
 msgstr "Example"
 
@@ -1798,23 +2150,23 @@ msgstr "Featured photos"
 msgid "Vídeos em destaque"
 msgstr "Featured videos"
 
-#: templates/refs_page.html:4
+#: templates/refs_page.html:5
 msgid "referências, biologia marinha, biodiversidade"
 msgstr "references, marine biology, biodiversity"
 
-#: templates/refs_page.html:5 templates/refs_page.html.py:11
+#: templates/refs_page.html:6 templates/refs_page.html.py:12
 msgid "Referências bibliográficas citadas no banco de imagens Cifonauta."
 msgstr "References cited in the Cifonauta image database."
 
-#: templates/refs_page.html:19
+#: templates/refs_page.html:24
 msgid "Citação"
 msgstr "Citation"
 
-#: templates/refs_page.html:20
+#: templates/refs_page.html:25
 msgid "Veja mais"
 msgstr "See more"
 
-#: templates/refs_page.html:32
+#: templates/refs_page.html:39
 #, python-format
 msgid "%(counter)s imagem ligada à este trabalho."
 msgid_plural "%(counter)s imagens ligadas à este trabalho."

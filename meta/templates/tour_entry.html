@@ -1,0 +1,25 @@
+{% load i18n markup %}
+<div class="span-24 last tour metagroup">
+  <div class="span-4">
+    {% print_thumb 'tour' tour %}
+  </div>
+  <div class="span-13">
+    <h2><a href="{{ tour.get_absolute_url }}" title="{% trans 'Clique aqui para continuar lendo e iniciar o tour' %}"><strong>{{ tour.name }}</strong></a>{% if not tour.is_public %} [PRIVADO]{% endif %}</h2>
+    <p>
+    {{ tour.description|markdown|striptags|truncatewords:30 }}
+    <a href="{{ tour.get_absolute_url }}"><strong>{% trans 'Clique aqui para continuar lendo e iniciar o tour' %}</strong></a>.
+    </p>
+  </div>
+  <div class="span-6 last">
+    <h3>{% trans 'Ficha Técnica' %}</h3>
+    <p class="upper">{{ tour.images.count }} {% trans 'imagens' %}, {{ tour.stats.pageviews }} {% trans 'visitas' %}</p>
+    <ul class="padlist">
+      <li>
+      <strong>{% trans 'Criação' %}:</strong> {{ tour.pub_date }}
+      </li>
+      <li>
+      <strong>{% trans 'Modificado' %}:</strong> {{ tour.timestamp }}
+      </li>
+    </ul>
+  </div>
+</div>

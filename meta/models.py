@@ -13,8 +13,6 @@ from datatrans.utils import register
 
 class File(models.Model):
     '''Define campos comuns para arquivos de mídia.'''
-    #XXX Ideal seria ele não ser abstrato para poder chamar todos os tipos
-    # de mídia chamando o File, mas acho que trocar agora vai dar trabalho.
     # File
     source_filepath = models.CharField(_('arquivo fonte local'), 
             max_length=200, blank=True, help_text=_('Arquivo fonte na pasta local.'))

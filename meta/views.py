@@ -833,7 +833,7 @@ def dynamic_page(request):
 
 def tours_page(request):
     '''Página mostrando lista de tours disponíveis.'''
-    tours = Tour.objects.filter(is_public=True)
+    tours = Tour.objects.all()
     variables = RequestContext(request, {
         'tours': tours,
         })

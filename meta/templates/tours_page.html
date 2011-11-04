@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n markup %}
+{% load i18n %}
 {% block title %}{% trans 'Tours' %} | {{ block.super }}{% endblock %}
 
 {% block meta-keywords %}{% trans 'tour, galeria, slideshow, apresentação' %}{% endblock %}
@@ -17,32 +17,15 @@
 {% block content %}
 <section class="span-24 last">
 <header><h1>{% trans 'Tours' %} <span class="feed-icon"><a href="/tours/feed/" title="{% trans 'Cifonauta: últimos tours' %}"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span></h1></header>
+
 {% for tour in tours %}
-<div class="span-24 last tour metagroup">
-    <div class="span-4">
-        {% print_thumb 'tour' tour %}
-    </div>
-    <div class="span-13">
-        <h2><a href="{{ tour.get_absolute_url }}" title="{% trans 'Clique aqui para continuar lendo e iniciar o tour' %}"><strong>{{ tour.name }}</strong></a></h2>
-        <p>
-        {{ tour.description|markdown|striptags|truncatewords:30 }}
-        <a href="{{ tour.get_absolute_url }}"><strong>{% trans 'Clique aqui para continuar lendo e iniciar o tour' %}</strong></a>.
-        </p>
-    </div>
-    <div class="span-6 last">
-        <h3>{% trans 'Ficha Técnica' %}</h3>
-        <p class="upper">{{ tour.images.count }} {% trans 'imagens' %}, {{ tour.stats.pageviews }} {% trans 'visitas' %}</p>
-        <ul class="padlist">
-            <li>
-            <strong>{% trans 'Criação' %}:</strong> {{ tour.pub_date }}
-            </li>
-            <li>
-            <strong>{% trans 'Modificado' %}:</strong> {{ tour.timestamp }}
-            </li>
-        </ul>
-    </div>
-</div>
+
+{% if tour.is_public or user.is_authenticated %}
+  {% include 'tour_entry.html' %}
+{% endif %}
+
 {% endfor %}
+
 </section>
 {% endblock %}
 

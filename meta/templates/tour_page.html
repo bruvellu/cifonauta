@@ -19,7 +19,7 @@
 {% block content %}
 <section class="span-24 last">
 
-{% if tour.is_public %}
+{% if tour.is_public or user.is_authenticated %}
 
 <article id="tour" class="{{ tour.slug }} views-{{ pageviews }}">
 

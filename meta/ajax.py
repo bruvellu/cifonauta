@@ -14,6 +14,7 @@ def update_counter(request, type, id):
         related = Video.objects.get(id=id)
     elif type == 'tour':
         related = Tour.objects.get(id=id)
+    #XXX Usar o F para atualizar o campo?
     stats = related.stats
     stats.pageviews += 1
     stats.save()

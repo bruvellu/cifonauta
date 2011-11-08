@@ -729,7 +729,6 @@ def meta_page(request, model_name, field, slug):
 
 def tour_page(request, slug):
     '''Página única de cada tour.'''
-    #TODO mostra mensagem em template de tour não público.
     tour = get_object_or_404(Tour, slug=slug)
     references = tour.references.all()
     photos = tour.images.filter(tourposition__tour=tour).select_related('size', 'sublocation', 'city', 'state', 'country').order_by('tourposition')
@@ -833,7 +832,7 @@ def dynamic_page(request):
 
 def tours_page(request):
     '''Página mostrando lista de tours disponíveis.'''
-    tours = Tour.objects.all()
+    tours = Tour.objects.order_by('-pub_date')
     variables = RequestContext(request, {
         'tours': tours,
         })

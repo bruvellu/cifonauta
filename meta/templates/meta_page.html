@@ -43,7 +43,7 @@
 
 </header>
 
-{% if meta.images.all %}
+{% if meta.images.all or meta.videos.all or meta.image_set.all or meta.video_set.all %}
   {% include 'gallery.html' %}
 {% else %}
   <h2>{% trans 'Nenhuma imagem encontrada.' %}</h2>

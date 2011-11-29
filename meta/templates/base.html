@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load cache %}
+{% load dajaxice_templatetags %}
 {% get_current_language as LANGUAGE_CODE %}
 <!doctype html>
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
@@ -52,6 +53,8 @@
 
     {% block extra-head %}{% endblock %}
 
+    <script src="{{ STATIC_URL }}js/mylibs/jquery.dajax.core.js" type="text/javascript" charset="utf-8"></script>
+    {% dajaxice_js_import 'js/mylibs/dajaxice.core.js' %}
   </head>
   <body>
     <div class="container prepend-1 append-1">

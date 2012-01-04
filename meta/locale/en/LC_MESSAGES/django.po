@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-29 00:53+0100\n"
+"POT-Creation-Date: 2011-11-29 01:30+0100\n"
 "PO-Revision-Date: 2011-11-04 12:41\n"
 "Last-Translator:   <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,15 +42,15 @@ msgstr "biology"
 msgid "Centro de Biologia Marinha da Universidade de São Paulo"
 msgstr "Marine Biology Center of University of São Paulo"
 
-#: feeds.py:25 templates/base.html:49 templates/main_page.html:47
+#: feeds.py:25 templates/base.html:50 templates/main_page.html:47
 msgid "Cifonauta: últimas fotos e vídeos"
 msgstr "Cifonauta: latest photos and videos"
 
-#: feeds.py:27 templates/base.html:50
+#: feeds.py:27 templates/base.html:51
 msgid "Cifonauta: últimas fotos"
 msgstr "Cifonauta: latest photos"
 
-#: feeds.py:29 templates/base.html:51
+#: feeds.py:29 templates/base.html:52
 msgid "Cifonauta: últimos vídeos"
 msgstr "Cifonauta: latest videos"
 
@@ -924,7 +924,7 @@ msgstr "authors, biodiversity, marine biology"
 msgid "Autores incluídos no banco de imagens Cifonauta."
 msgstr "Authors included in the Cifonauta image database."
 
-#: templates/authors_page.html:12 templates/base.html:16
+#: templates/authors_page.html:12 templates/base.html:17
 #: templates/buscar.html:14 templates/embed.html:7 templates/main_page.html:10
 #: templates/main_page.html.py:15 templates/media_page.html:16
 #: templates/meta_page.html:17 templates/organizacao.html:15

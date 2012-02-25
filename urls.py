@@ -9,7 +9,7 @@ from meta.models import *
 from django.conf import settings
 
 from django import template
-template.add_to_builtins('weblarvae.meta.templatetags.extra_tags')
+template.add_to_builtins('meta.templatetags.extra_tags')
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin

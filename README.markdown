@@ -14,3 +14,16 @@ The code is commented inline (in **Portuguese**), but I am still writing the pro
 Hope to upload install instructions soon.
 
 I am really considering porting everything to English in the near future... hang on.
+
+
+# Installing
+
+To install all dependencies with pip tool, type:
+
+pip install --upgrade django
+pip install South django-mptt django-rosetta django-debug-toolbar sorl-thumbnail django-dajaxice django-dajax suds johnny-cache
+
+And inside the project folder:
+
+git clone https://github.com/citylive/django-datatrans.git && mv django-datatrans/datatrans . && rm -Rf django-datatrans
+

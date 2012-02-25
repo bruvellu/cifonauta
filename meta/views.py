@@ -31,29 +31,25 @@ def main_page(request):
     # Fotos
     try:
         # Tenta encontrar destaques capa.
-        main_image = Image.objects.filter(cover=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'stats', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')[0]
-        photo = Image.objects.filter(cover=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'stats', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').exclude(id=main_image.id).order_by('?')[0]
+        main_image = Image.objects.filter(cover=True, is_public=True).select_related('size').order_by('?')[0]
+        photo = Image.objects.filter(cover=True, is_public=True).select_related('size').exclude(id=main_image.id).order_by('?')[0]
 
         # Faz lista de destaques.
-        thumbs = Image.objects.filter(highlight=True, is_public=True).select_related('size').defer('source_filepath', 'old_filepath', 'timestamp', 'stats', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude').order_by('?')[:8]
+        thumbs = Image.objects.filter(highlight=True, is_public=True).select_related('size').order_by('?')[:8]
     except:
         main_image, photo, thumbs = '', '', []
 
     # Vídeos
     try:
         # Tenta encontrar destaques de capa.
-        video = Video.objects.filter(cover=True, is_public=True).defer('source_filepath', 'old_filepath', 'timestamp', 'stats', 'notes', 'review', 'pub_date', 'rights', 'sublocation', 'city', 'state', 'country', 'date', 'geolocation', 'latitude', 'longitude', 'webm_filepath', 'ogg_filepath', 'mp4_filepath').order_by('?')[0]
+        video = Video.objects.filter(cover=True, is_public=True).order_by('?')[0]
     except:
         video = ''
 
     # Tours
     try:
         tour = Tour.objects.order_by('?')[0]
-        tour_image = tour.images.defer('source_filepath', 'old_filepath', 
-                'timestamp', 'stats', 'notes', 'review', 'pub_date', 
-                'rights', 'sublocation', 'city', 'state', 'country', 'date', 
-                'geolocation', 'latitude', 
-                'longitude').exclude(id=main_image.id).exclude(id=photo.id).order_by('?')[0]
+        tour_image = tour.images.exclude(id=main_image.id).exclude(id=photo.id).order_by('?')[0]
     except:
         tour, tour_image = '', ''
 
@@ -401,8 +397,8 @@ def translate_page(request):
 def photo_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''
     # Pega o objeto.
-    image = get_object_or_404(Image.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath'), id=image_id)
-
+    image = get_object_or_404(Image.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights'), id=image_id)
+    print image.title
     # Tentando contornar o uso de dois forms em uma view...
     form, admin_form = None, None
 
@@ -517,7 +513,7 @@ def photo_page(request, image_id):
 def video_page(request, video_id):
     '''Página única de cada vídeo com todas as informações.'''
     # Pega o objeto.
-    video = get_object_or_404(Video.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',), id=video_id)
+    video = get_object_or_404(Video.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights'), id=video_id)
 
     # Tentando contornar o uso de dois forms em uma view...
     form, admin_form = None, None
@@ -685,12 +681,12 @@ def meta_page(request, model_name, field, slug):
     if field == 'taxon':
         q = [Q(**filter_args),]
         q = recurse(model, q)
-        image_list = Image.objects.filter(reduce(operator.or_, q)).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by(orderby)
-        video_list = Video.objects.filter(reduce(operator.or_, q)).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).order_by(orderby)
+        image_list = Image.objects.filter(reduce(operator.or_, q)).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').order_by(orderby)
+        video_list = Video.objects.filter(reduce(operator.or_, q)).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').order_by(orderby)
         #XXX Retirei o .distinct() destes queries. Conferir...
     else:
-        image_list = Image.objects.filter(**filter_args).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by(orderby)
-        video_list = Video.objects.filter(**filter_args).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath',).order_by(orderby)
+        image_list = Image.objects.filter(**filter_args).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').order_by(orderby)
+        video_list = Video.objects.filter(**filter_args).select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').order_by(orderby)
 
     # Restringe aos destaques.
     if highlight:

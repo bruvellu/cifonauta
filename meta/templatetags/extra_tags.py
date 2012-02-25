@@ -85,9 +85,9 @@ def mediaque(media, qobj):
     Usado no navegador linear.
     '''
     if media.datatype == 'photo':
-        query = Image.objects.filter(qobj, is_public=True).distinct().select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by('id')
+        query = Image.objects.filter(qobj, is_public=True)#.distinct().select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by('id')
     elif media.datatype == 'video':
-        query = Video.objects.filter(qobj, is_public=True).distinct().select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by('id')
+        query = Video.objects.filter(qobj, is_public=True)#.distinct().select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by('id')
     else:
         print '%s é um datatype desconhecido.' % media.datatype
     return query

@@ -1,0 +1,3 @@
+{{object.title_en}}
+{{object.caption_en}}
+{{object.notes_en}}

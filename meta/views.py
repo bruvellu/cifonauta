@@ -19,6 +19,7 @@ from django.utils.translation import get_language
 
 from itis import Itis
 from remove import compile_paths
+from meta.search_indexes import MlSearchQuerySet
 
 # Instancia logger do cifonauta.
 logger = logging.getLogger('central.views')
@@ -63,12 +64,9 @@ def main_page(request):
         })
     return render_to_response('main_page.html', variables)
 
-def search_page(request):
-    '''Página de busca.
 
-    Procura termo no campo tsv do banco de dados usando o extra(). Refina este 
-    queryset de acordo com as variáveis presentes no request.GET.
-    '''
+
+def search_page(request):
     # Define formulários.
     form = SearchForm()
     n_form = DisplayForm(initial={
@@ -90,14 +88,12 @@ def search_page(request):
             u'country': [],
             u'type': [],
             }
-
     # Define variáveis principais.
-    image_list = []
-    video_list = []
-    images = []
-    videos = []
-    show_results = False
+    image_list = MlSearchQuerySet().filter(is_image=True)#Image.objects.filter(is_public=True)
+    video_list = MlSearchQuerySet().filter(is_video=True)#Video.objects.filter(is_public=True)
 
+    show_results = False
+    full_results = True
     # Verifica se qualquer um dos campos foi passado no request.
     if catch_get(queries.keys(), request.GET):
 
@@ -109,84 +105,82 @@ def search_page(request):
 
         # Cria querysets somente com imagens públicas para serem filtrados por
         # cada metadado presente no request.
-        image_list = Image.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').exclude(is_public=False)
-        video_list = Video.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').exclude(is_public=False)
+
+        if 'type' in request.GET:
+            type = request.GET['type']
+            if type == 'photo':
+                video_list = video_list.none()
+            elif type == 'video':
+                image_list = image_list.none()
 
         # Query
         if 'query' in request.GET:
             # Limpa espaços extras.
             query = request.GET['query'].strip()
-
-            # Ajusta busca textual para locale do usuário, 'portuguese' padrão.
-            language = get_language()
-            pg_lang = 'portuguese'
-            if language == 'en':
-                pg_lang = 'english'
-            elif language == 'pt-br':
-                pg_lang = 'portuguese'
-
-            # Faz full-text search no banco de dados, usando o campo tsv.
-            image_list = image_list.extra(
-                    select={
-                        'rank': "ts_rank_cd(tsv, plainto_tsquery(%s, %s), 32)",
-                        },
-                    where=["tsv @@ plainto_tsquery(%s, %s)"],
-                    params=[pg_lang, query],
-                    select_params=[pg_lang, query],
-                    order_by=('-rank',)
-                    )
-            video_list = video_list.extra(
-                    select={
-                        'rank': "ts_rank_cd(tsv, plainto_tsquery(%s, %s), 32)",
-                        },
-                    where=["tsv @@ plainto_tsquery(%s, %s)"],
-                    params=[pg_lang, query],
-                    select_params=[pg_lang, query],
-                    order_by=('-rank',)
-                    )
-            # Popula formulário de busca com o query.
-            form = SearchForm({'query': query})
-            # Passa valor para as queries.
-            queries['query'] = query
-        else:
-            # Só para passar a informação adiante.
-            query = []
-
+            if query:
+                    
+                # Ajusta busca textual para locale do usuário, 'portuguese' padrão.
+                image_list = image_list.auto_query(query)
+                video_list = video_list.auto_query(query)
+                # Popula formulário de busca com o query.
+                form = SearchForm({'query': query})
+                # Passa valor para as queries.
+                queries['query'] = query
+                full_results = False
+                
         # Author
         if 'author' in request.GET:
             authors = request.GET['author'].split(',')
             queries['author'] = Author.objects.filter(slug__in=authors)
             for author in authors:
-                image_list = image_list.filter(author__slug=author)
-                video_list = video_list.filter(author__slug=author)
+                image_list = image_list.filter(authors__contains=author)
+                video_list = video_list.filter(authors__contains=author)
+            full_results = False
 
         # Tag
         if 'tag' in request.GET:
             tags = request.GET['tag'].split(',')
             queries['tag'] = Tag.objects.filter(slug__in=tags)
             for tag in tags:
-                image_list = image_list.filter(tag__slug=tag)
-                video_list = video_list.filter(tag__slug=tag)
-
+                image_list = image_list.filter(tags__contains=tag)
+                video_list = video_list.filter(tags__contains=tag)
+            full_results = False
         # Size
         if 'size' in request.GET:
             size_id = request.GET['size']
             queries['size'] = Size.objects.filter(id=size_id)
-            image_list = image_list.filter(size__id=size_id)
-            video_list = video_list.filter(size__id=size_id)
+            image_list = image_list.filter(size=size_id)
+            video_list = video_list.filter(size=size_id)
+            full_results = False
 
         # Taxon
         if 'taxon' in request.GET:
             taxa = request.GET['taxon'].split(',')
             queries['taxon'] = Taxon.objects.filter(slug__in=taxa)
             # Precisa listar descendentes também, logo use o recurse:
-            q =[]
+            qim = []
+            qvid = []
             for taxon_slug in taxa:
                 taxon = Taxon.objects.get(slug=taxon_slug)
-                q.append(Q(**{'taxon':taxon}))
-                q = recurse(taxon, q)
-            image_list = image_list.filter(reduce(operator.or_, q))
-            video_list = video_list.filter(reduce(operator.or_, q))
+                for im in taxon.images.all():
+                    qim.append(Q(**{'id':im.id}))
+                for vid in taxon.videos.all():
+                    qvid.append(Q(**{'id':vid.id}))
+                children = taxon.get_descendants()
+                for child in children:
+                    for im in child.images.all():
+                        qim.append(Q(**{'id': im.id}))
+                    for vid in child.videos.all():
+                        qvid.append(Q(**{'id': vid.id}))
+            if qim:
+                image_list = image_list.filter(reduce(operator.or_, qim))
+            else:
+                image_list = image_list.none()
+            if qvid:
+                video_list = video_list.filter(reduce(operator.or_, qvid))
+            else:
+                video_list = video_list.none()
+            full_results = False
 
         # Sublocation
         if 'sublocation' in request.GET:
@@ -195,71 +189,69 @@ def search_page(request):
             for sublocation in sublocations:
                 image_list = image_list.filter(sublocation__slug=sublocation)
                 video_list = video_list.filter(sublocation__slug=sublocation)
+            full_results = False
 
         # City
         if 'city' in request.GET:
             cities = request.GET['city'].split(',')
             queries['city'] = City.objects.filter(slug__in=cities)
             for city in cities:
-                image_list = image_list.filter(city__slug=city)
-                video_list = video_list.filter(city__slug=city)
+                image_list = image_list.filter(city=city)
+                video_list = video_list.filter(city=city)
+            full_results = False
 
         # State
         if 'state' in request.GET:
             states = request.GET['state'].split(',')
             queries['state'] = State.objects.filter(slug__in=states)
             for state in states:
-                image_list = image_list.filter(state__slug=state)
-                video_list = video_list.filter(state__slug=state)
+                image_list = image_list.filter(state=state)
+                video_list = video_list.filter(state=state)
+            full_results = False
 
         # Country
         if 'country' in request.GET:
             countries = request.GET['country'].split(',')
             queries['country'] = Country.objects.filter(slug__in=countries)
             for country in countries:
-                image_list = image_list.filter(country__slug=country)
-                video_list = video_list.filter(country__slug=country)
+                image_list = image_list.filter(country=country)
+                video_list = video_list.filter(country=country)
+            full_results = False
 
         # Restringe aos destaques.
         if highlight:
             image_list = image_list.filter(highlight=True)
             video_list = video_list.filter(highlight=True)
+#            full_results = False
 
-        # Substitui 'random' por '?'
-        if orderby == 'random':
-            orderby = '?'
+        
 
-        # Ordena por request.POST['orderby'].
+#        # Substitui 'random' por '?'
+        if orderby in ('?', 'random', 'id'):
+            orderby = 'id'
+            
+        if order == 'desc':
+            orderby = '-' + orderby
+#
+#        # Ordena por request.POST['orderby'].
         image_list = image_list.order_by(orderby)
         video_list = video_list.order_by(orderby)
-
-        # Reverte a ordem se necessário.
-        if order == 'desc':
-            image_list = image_list.reverse()
-            video_list = video_list.reverse()
 
         # Forçar int para paginator.
         n_page = int(n_page)
 
-        # Retorna lista paginada.
-        images = get_paginated(request, image_list, n_page)
-        videos = get_paginated(request, video_list, n_page)
-
-        # Exclui tipo.
-        if 'type' in request.GET:
-            if request.GET['type'] == 'photo':
-                queries['type'] = ['photo']
-                videos = []
-                video_list = []
-            elif request.GET['type'] == 'video':
-                queries['type'] = ['video']
-                images = []
-                image_list = []
-            elif request.GET['type'] == 'all':
-                queries['type'] = []
-                # Não precisa entrar no queries, para não poluir o url.
-                pass
-
+    else:
+        # Popula formulário de busca com o query.
+        form = SearchForm()
+        # Passa valor para as queries.
+        queries['query'] = ''   
+        n_page = 20
+        show_results = True
+    # Retorna lista paginada.
+    images = get_paginated(request, image_list, n_page)
+    videos = get_paginated(request, video_list, n_page)
+        
+        
     # Gera keywords.
     #XXX Usar essa lista para processar os querysets acima?
     keylist = []
@@ -269,8 +261,7 @@ def search_page(request):
     keywords = ','.join(keylist)
 
     # Extrai metadados das imagens.
-    data, queries, urls = show_info(image_list, video_list, queries)
-
+    data, queries, urls = show_info(image_list, video_list, queries, full_results)
     variables = RequestContext(request, {
         'form': form,
         'images': images,
@@ -285,6 +276,7 @@ def search_page(request):
         'keywords': keywords,
         })
     return render_to_response('buscar.html', variables)
+        
 
 def org_page(request):
     '''Página mostrando a organização dos metadados.
@@ -913,7 +905,7 @@ def get_orphans(entries):
             duplicates.append({'path': k, 'replicas': v})
     return orphaned, duplicates
 
-def show_info(image_list, video_list, queries):
+def show_info(image_list, video_list, queries, full_results=False):
     '''Extrai metadados das imagens e exclui o que estiver nas queries.
 
     Manda a lista de imagens e de vídeos para a função extract_set que vai extrair todos os metadados associados a estes arquivos.
@@ -922,7 +914,17 @@ def show_info(image_list, video_list, queries):
 
     Retorna 3 objetos: data, queries e urls.
     '''
-    authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(image_list, video_list)
+    if full_results:
+        authors = Author.objects.exclude(images__isnull=True, videos__isnull=True) 
+        taxa = Taxon.objects.exclude(images__isnull=True, videos__isnull=True)  
+        sizes = Size.objects.all()
+        sublocations = Sublocation.objects.all() 
+        cities = City.objects.all() 
+        states = State.objects.all() 
+        countries = Country.objects.all() 
+        tags = Tag.objects.exclude(images__isnull=True, videos__isnull=True) 
+    else:
+        authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(image_list, video_list)
     for k, v in queries.iteritems():
         if v:
             if k == 'author':
@@ -947,7 +949,7 @@ def show_info(image_list, video_list, queries):
                 queries[k] = v.values()
             except:
                 pass
-
+    
     # A partir daqui somente "values", sem objetos.
     data = {
             'author': authors.values(),
@@ -1048,37 +1050,49 @@ def extract_set(image_list, video_list):
 
     Retorna querysets de cada modelo.
     '''
+    
+    if image_list:
+        image_ids = image_list.values_list('pk', flat=True)
+    else:
+        image_ids = [0]
+    if video_list:
+        video_ids = video_list.values_list('pk', flat=True)
+    else:
+        video_ids = [0]
+    
     # ManyToMany relationships
     #TODO fazer um select_related('parent') para as tags?
     # Talvez seja útil para mostrar a categoria delas no refinador.
     refined_tags = Tag.objects.filter(
-            Q(images__pk__in=image_list) | Q(videos__pk__in=video_list)
+            Q(images__pk__in=image_ids) | Q(videos__pk__in=video_ids)
             ).distinct()
     refined_authors = Author.objects.filter(
-            Q(images__pk__in=image_list) | Q(videos__pk__in=video_list)
+            Q(images__pk__in=image_ids) | Q(videos__pk__in=video_ids)
             ).distinct()
-    refined_taxa = Taxon.objects.filter(
-            Q(images__pk__in=image_list) | Q(videos__pk__in=video_list)
+    refined_taxons = Taxon.objects.filter(
+            Q(images__pk__in=image_ids) | Q(videos__pk__in=video_ids)
             ).distinct()
+
 
     # ForeignKey relationships
+    
     refined_sizes = Size.objects.filter(
-            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
+            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
             ).distinct()
     refined_sublocations = Sublocation.objects.filter(
-            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
+            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
             ).distinct()
     refined_cities = City.objects.filter(
-            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
+            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
             ).distinct()
     refined_states = State.objects.filter(
-            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
+            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
             ).distinct()
     refined_countries = Country.objects.filter(
-            Q(image__pk__in=image_list) | Q(video__pk__in=video_list)
+            Q(image__pk__in=image_ids) | Q(video__pk__in=video_ids)
             ).distinct()
 
-    return refined_authors, refined_taxa, refined_sizes, refined_sublocations, refined_cities, refined_states, refined_countries, refined_tags
+    return refined_authors, refined_taxons, refined_sizes, refined_sublocations, refined_cities, refined_states, refined_countries, refined_tags
 
 def add_meta(meta, field, query):
     '''Adiciona metadado à lista de query.

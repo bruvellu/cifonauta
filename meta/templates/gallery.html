@@ -20,12 +20,26 @@
 {% include 'pagination.html' with media=images %}
 
     <ul class="thumbs">
-        {% for media in images.object_list %}
-            {% if media.is_public %}
-            <li class="shadow size-{{ media.size.slug }}">
-            {% include 'thumb.html' %}
-            </li>
-            {% endif %}
+        {% for result in images.object_list %}
+        {% if result.object %}
+        	{% with result.object as media %}
+	            {% if media.is_public %}
+	            <li class="shadow size-{{ media.size.slug }}">
+	            {% include 'thumb.html' %}
+	            </li>
+	            {% endif %}
+        	{% endwith %}
+        {% else %}
+        	{% with result as media %}
+	            {% if media.is_public %}
+	            <li class="shadow size-{{ media.size.slug }}">
+	            {% include 'thumb.html' %}
+	            </li>
+	            {% endif %}
+        	{% endwith %}
+        {% endif %}
+
+
         {% endfor %}
     </ul>
 
@@ -46,12 +60,24 @@
 {% include 'pagination.html' with media=videos %}
 
     <ul class="thumbs">
-        {% for media in videos.object_list %}
-            {% if media.is_public %}
-            <li class="shadow size-{{ media.size.slug }}">
-            {% include 'thumb.html' %}
-            </li>
-            {% endif %}
+        {% for result in videos.object_list %}
+        {% if result.object %}
+	        {% with result.object as media %}
+	            {% if media.is_public %}
+	            <li class="shadow size-{{ media.size.slug }}">
+	            {% include 'thumb.html' %}
+	            </li>
+	            {% endif %}
+	        {% endwith %}
+	    {% else %}
+	        {% with result as media %}
+	            {% if media.is_public %}
+	            <li class="shadow size-{{ media.size.slug }}">
+	            {% include 'thumb.html' %}
+	            </li>
+	            {% endif %}
+	        {% endwith %}	    
+	    {% endif %}
         {% endfor %}
     </ul>
 

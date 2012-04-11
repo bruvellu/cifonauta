@@ -27,7 +27,8 @@ def get_languages():
 
 def get_real_fieldname(field, lang=None):
     if lang is None:
-       lang = get_language().split('-')[0] # both 'en-US' and 'en' -> 'en'
+        lang = get_language()
+    lang = lang.split('-')[0] # both 'en-US' and 'en' -> 'en'
     return str('%s_%s' % (field, lang))
 
 
@@ -167,8 +168,8 @@ class TransMeta(models.base.ModelBase):
 #            register(new_class, fields )
         if hasattr(new_class, '_meta'):
             new_class._meta.translatable_fields = fields
-        if hasattr(new_class, 'title'):
-            new_class.title = attrs['title_en']
+#        if hasattr(new_class, 'title'):
+#            new_class.title = attrs['title_en']
         return new_class
 
 def prepare_value(self, str='true'):
@@ -243,8 +244,8 @@ def _post_init(sender, instance, **kwargs):
         fname = get_real_fieldname(field.name, lang_code)
         if getattr(instance, fname):
             setattr(instance, field.name, getattr(instance, fname))
-            if str(sender) == "<class 'meta.models.Image'>":
-                print get_language(), field.name, getattr(instance, field.name), lang_code
+#            if str(sender) == "<class 'meta.models.Image'>":
+#                print get_language(), field.name, getattr(instance, field.name), lang_code
 
 def register(model, fields):
     '''

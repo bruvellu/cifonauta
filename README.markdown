@@ -21,7 +21,7 @@ I am really considering porting everything to English in the near future... hang
 To install all dependencies with pip tool, type:
 
 pip install --upgrade django
-pip install South django-mptt django-rosetta django-debug-toolbar sorl-thumbnail django-dajaxice django-dajax suds johnny-cache
+pip install South django-mptt django-rosetta django-debug-toolbar sorl-thumbnail django-dajaxice django-dajax suds johnny-cache django-haystack
 
 And inside the project folder:
 

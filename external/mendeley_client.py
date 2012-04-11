@@ -1,3 +1,4 @@
+ # -*- coding: utf-8 -*- 
 """
 Mendeley Open API Example Client
 

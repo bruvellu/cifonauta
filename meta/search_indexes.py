@@ -2,7 +2,13 @@ from haystack import indexes
 from django.utils.translation import get_language
 from models import Image, Author, Tag, Taxon, Video
 
+import unicodedata
+
+def strip_accents(s):
+    return ''.join((c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn'))
+
 class MediaIndex(indexes.SearchIndex):
+
     is_public = indexes.BooleanField(default=True)
     datatype = indexes.CharField(model_attr='datatype')   
     
@@ -37,6 +43,17 @@ class MediaIndex(indexes.SearchIndex):
         """Used when the entire index for model is updated."""
         return self.get_model().objects.filter(is_public=True) #select_related('author', 'tag', 'taxon', 'size', 'sublocation', 'city', 'state', 'country', 'rights')
      
+    def prepare(self, obj):
+        """
+        Fetches and adds/alters data before indexing.
+        """
+        self.prepared_data = super(MediaIndex, self).prepare(obj)
+        u = type(unicode())
+        for key, data in self.prepared_data.items():
+            if type(data) == u: 
+                self.prepared_data[key] = strip_accents(data)
+        return self.prepared_data
+        
 
 class ImageIndex(MediaIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True, template_name='search/image_text.txt')
@@ -82,7 +99,7 @@ class MlSearchQuerySet(SearchQuerySet):
         if 'content' in kwargs:
             kwd = kwargs.pop('content')
             kwdkey = "text%s" % self.get_language_suffix()
-            kwargs[kwdkey] = kwd
+            kwargs[kwdkey] = strip_accents(unicode(kwd))
         return super(MlSearchQuerySet, self).filter(*args, **kwargs)
 
     def autocomplete(self, **kwargs):
@@ -90,6 +107,6 @@ class MlSearchQuerySet(SearchQuerySet):
         if 'content_auto' in kwargs:
             kwd = kwargs.pop('content_auto')
             kwdkey = "content_auto%s" % self.get_language_suffix()
-            kwargs[kwdkey] = kwd
+            kwargs[kwdkey] = strip_accents(kwd)
         return super(MlSearchQuerySet, self).autocomplete(**kwargs)
         

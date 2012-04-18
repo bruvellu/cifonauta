@@ -12,14 +12,17 @@ class MediaIndex(indexes.SearchIndex):
     is_public = indexes.BooleanField(default=True)
     datatype = indexes.CharField(model_attr='datatype')   
     
-    authors = indexes.MultiValueField() 
-    tags = indexes.MultiValueField()
-    taxons = indexes.MultiValueField()
-    size = indexes.IntegerField(model_attr='size__id', default=0)
-    sublocation = indexes.CharField(model_attr='sublocation__slug', default='')
-    city = indexes.CharField(model_attr='city__slug', default='')
-    state = indexes.CharField(model_attr='state__slug', default='')
-    country = indexes.CharField(model_attr='country__slug', default='')
+    author = indexes.MultiValueField(faceted=True) 
+    tag = indexes.MultiValueField(faceted=True)
+    taxon = indexes.MultiValueField(faceted=True)
+    tour = indexes.MultiValueField()
+    
+    size = indexes.IntegerField(model_attr='size__id', default=0, faceted=True)
+    sublocation = indexes.CharField(model_attr='sublocation__id', default=0, faceted=True)
+    city = indexes.CharField(model_attr='city__id', default=0, faceted=True)
+    state = indexes.CharField(model_attr='state__id', default=0, faceted=True)
+    country = indexes.CharField(model_attr='country__id', default=0, faceted=True)
+    
     
     
     stats__pageviews = indexes.IntegerField(model_attr='stats__pageviews', default=0)
@@ -29,15 +32,18 @@ class MediaIndex(indexes.SearchIndex):
     id = indexes.IntegerField(model_attr='id')
     
     highlight = indexes.BooleanField(model_attr='highlight', default=False)
+#    
+    def prepare_author(self, media):
+        return [author.id for author in media.author_set.all() ]# "%s##%s" % ( author.slug, author.name,) for author in media.author_set.all() ]#Author.objects.filter(images__pk = object.pk)]
+#    
+    def prepare_tag(self, media):
+        return [tag.id for tag in media.tag_set.all() ] #Tag.objects.filter(images__pk = object.pk)]
     
-    def prepare_authors(self, object):
-        return [author.slug for author in Author.objects.filter(images__pk = object.pk)]
-    
-    def prepare_tags(self, object):
-        return [tag.slug for tag in Tag.objects.filter(images__pk = object.pk)]
-    
-    def prepare_taxons(self, object):
-        return [taxon.slug for taxon in Taxon.objects.filter(images__pk = object.pk)]
+    def prepare_taxon(self, media):
+        return [taxon.id for taxon in media.taxon_set.all() ]#Taxon.objects.filter(images__pk = object.pk)]
+
+    def prepare_tour(self, media):
+        return [tour.id for tour in media.tour_set.all() ]#Taxon.objects.filter(images__pk = object.pk)]
 
     def index_queryset(self):
         """Used when the entire index for model is updated."""
@@ -63,6 +69,7 @@ class ImageIndex(MediaIndex, indexes.Indexable):
     content_auto_en = indexes.EdgeNgramField(use_template=True, template_name='search/image_text_en.txt')
  
     is_image = indexes.BooleanField(default=True)
+    is_video = indexes.BooleanField(default=False)
 
     def get_model(self):
         return Image
@@ -75,6 +82,7 @@ class VideoIndex(MediaIndex, indexes.Indexable):
     text_en = indexes.CharField(use_template=True, template_name='search/video_text_en.txt')
     content_auto_en = indexes.EdgeNgramField(use_template=True, template_name='search/video_text_en.txt')
     
+    is_image = indexes.BooleanField(default=False)
     is_video = indexes.BooleanField(default=True)
 
     def get_model(self):

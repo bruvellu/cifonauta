@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel, MPTTModelBase
 from meta.signals import *
 from transmeta import TransMeta, register
-
+from django.db.models import Q
 
 
 class File(models.Model):
@@ -65,6 +65,36 @@ class File(models.Model):
         verbose_name = _(u'arquivo')
         verbose_name_plural = _(u'arquivos')
         translate = ('title', 'caption', 'notes', )
+
+    def _get_list(self, obj_set, field_name="name", lang=False, separator=','):
+        if lang:
+            name = "%s_%s" % (field_name, lang)
+        else:
+            name = field_name
+        results = []
+        return separator.join( obj_set.values_list(name, flat=True) )
+
+    def get_authors_list(self, separator=','):
+        return self._get_list(self.author_set, separator=separator)
+    def get_tag_list_pt(self):
+        return self._get_list(self.tag_set, lang='pt')
+    def get_tag_list_en(self):
+        return self._get_list(self.tag_set, lang='en')
+ 
+    def get_taxon_name_list(self):
+        return self._get_list(Taxon.get_taxon_and_parents(self.taxon_set))
+    def get_taxon_common_list_pt(self):
+        return self._get_list(Taxon.get_taxon_and_parents(self.taxon_set), field_name='common', lang='pt')
+    def get_taxon_common_list_en(self):
+        return self._get_list(Taxon.get_taxon_and_parents(self.taxon_set), field_name='common', lang='en')
+    def get_taxon_rank_list_pt(self):
+        return self._get_list(self.taxon_set, field_name='rank', lang='pt')
+    def get_taxon_rank_list_en(self):
+        return self._get_list(self.taxon_set, field_name='rank', lang='en')
+        
+    def get_sources_list(self, separator=','):
+        return separator.join(
+            self.source_set.values_list("name", flat=True))
 
 
 class Image(File):
@@ -276,6 +306,27 @@ class Taxon(MPTTModel):
         self.image_count = self.images.count()
         self.video_count = self.videos.count()
         self.save()
+
+    @staticmethod
+    def get_taxon_and_parents(qs):
+        """
+        Returns all parents and current taxon from a QuerySet of taxons
+        """
+        tree_list = {}
+        query = Q()
+        
+        for node in qs.all():
+            if node.tree_id not in tree_list:
+                tree_list[node.tree_id] = []
+    
+            parent = node.parent.pk if node.parent is not None else None,
+    
+            if parent not in tree_list[node.tree_id]:
+                tree_list[node.tree_id].append(parent)
+    
+                query |= Q(lft__lt=node.lft, rght__gt=node.rght, tree_id=node.tree_id)
+            query |= Q(id=node.id)
+        return Taxon.objects.filter(query)
 
     __metaclass__ = SpecialMeta
     class Meta:

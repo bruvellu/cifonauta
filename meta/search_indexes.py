@@ -23,14 +23,12 @@ class MediaIndex(indexes.SearchIndex):
     state = indexes.CharField(model_attr='state__id', default=0, faceted=True)
     country = indexes.CharField(model_attr='country__id', default=0, faceted=True)
     
-    
-    
     stats__pageviews = indexes.IntegerField(model_attr='stats__pageviews', default=0)
     timestamp = indexes.DateField(model_attr='timestamp', null=True)
     date = indexes.DateField(model_attr='date', null=True)
     pub_date = indexes.DateField(model_attr='pub_date', null=True)
     id = indexes.IntegerField(model_attr='id')
-    
+ 
     highlight = indexes.BooleanField(model_attr='highlight', default=False)
 #    
     def prepare_author(self, media):
@@ -44,10 +42,10 @@ class MediaIndex(indexes.SearchIndex):
 
     def prepare_tour(self, media):
         return [tour.id for tour in media.tour_set.all() ]#Taxon.objects.filter(images__pk = object.pk)]
-
+        
     def index_queryset(self):
         """Used when the entire index for model is updated."""
-        return self.get_model().objects.filter(is_public=True) #select_related('author', 'tag', 'taxon', 'size', 'sublocation', 'city', 'state', 'country', 'rights')
+        return self.get_model().objects.filter(is_public=True, id__lte=100) #select_related('author', 'tag', 'taxon', 'size', 'sublocation', 'city', 'state', 'country', 'rights')
      
     def prepare(self, obj):
         """

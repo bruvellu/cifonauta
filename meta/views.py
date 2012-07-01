@@ -14,12 +14,14 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 #from django.core.cache import cache
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.utils.translation import get_language
 
 from itis import Itis
 from remove import compile_paths
 from meta.search_indexes import MlSearchQuerySet
+from django.http import HttpResponse
+import json
 
 # Instancia logger do cifonauta.
 logger = logging.getLogger('central.views')
@@ -1253,3 +1255,8 @@ def build_url(meta, field, queries, remove=False, append=None):
         else:
             queries[field] = [q for q in queries[field] if not q['slug'] == meta['slug']]
     return url
+
+@csrf_exempt
+def ajax_autocomplete(request):
+    results = MlSearchQuerySet().autocomplete(request.GET.get('q', ''))
+    return HttpResponse(json.dumps(results[:5]), content_type='application/json')

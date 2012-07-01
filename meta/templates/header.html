@@ -21,11 +21,22 @@
   </div>
 
   <div id="home-search">
+  	<script>
+  	$(function(){
+		options = { serviceUrl:'/ajax_search' };
+		a = $('#query').autocomplete(options);
+	});	
+  	</script>
     {% if queries %}
     {% search_box queries.query %}
     {% else %}
     {% search_box %}
     {% endif %}
+    
+    <div id="search-preview">
+		
+    	
+    </div>
   </div>
 
 </div>

@@ -50,14 +50,14 @@
     <div class="linear" id="prev">
         {% if relative.previous %}
         +{{ relative.behind }} 
-        <a href="{{ relative.previous.get_absolute_url }}" title="{{ relative.previous.title }}">
+        <a class="navigation" href="{{ relative.previous.get_absolute_url }}" title="{{ relative.previous.title }}">
             {% autoescape on %}&lt;&lt; {% endautoescape %}{% trans 'anterior' %}
         </a>
         {% endif %}
     </div>
     <div class="linear" id="next">
         {% if relative.next %}
-        <a href="{{ relative.next.get_absolute_url }}" title="{{ relative.next.title }}">
+        <a class="navigation" href="{{ relative.next.get_absolute_url }}" title="{{ relative.next.title }}">
             {% trans 'próxima' %}{% autoescape on %} &gt;&gt;{% endautoescape %}</a> +{{ relative.ahead }}
         {% endif %}
     </div>

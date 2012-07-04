@@ -30,6 +30,10 @@ class MediaIndex(indexes.SearchIndex):
     id = indexes.IntegerField(model_attr='id')
  
     highlight = indexes.BooleanField(model_attr='highlight', default=False)
+    
+    title_en = indexes.CharField(model_attr='title_en')
+    title = indexes.CharField(model_attr='title_pt')
+    
 #    
     def prepare_author(self, media):
         return [author.id for author in media.author_set.all() ]# "%s##%s" % ( author.slug, author.name,) for author in media.author_set.all() ]#Author.objects.filter(images__pk = object.pk)]
@@ -115,4 +119,12 @@ class MlSearchQuerySet(SearchQuerySet):
             kwdkey = "content_auto%s" % self.get_language_suffix()
             kwargs[kwdkey] = strip_accents(kwd)
         return super(MlSearchQuerySet, self).autocomplete(**kwargs)
-        
+    
+    def values_list(self, *args, **kwargs):
+        """ narrows to current language """
+        if 'title' in args:
+            args = list(args)
+            args.remove('title')
+            kwd = "title%s" % self.get_language_suffix()
+            args.append(unicode(kwd))
+        return super(MlSearchQuerySet, self).values_list(*args, **kwargs)        

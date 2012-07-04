@@ -66,7 +66,7 @@ class File(models.Model):
         verbose_name_plural = _(u'arquivos')
         translate = ('title', 'caption', 'notes', )
 
-    def _get_list(self, obj_set, field_name="name", lang=False, separator=','):
+    def _get_list(self, obj_set, field_name="name", lang=False, separator=' , '):
         if lang:
             name = "%s_%s" % (field_name, lang)
         else:

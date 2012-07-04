@@ -111,6 +111,9 @@ urlpatterns = patterns('',
         url(r'^video/(\d+)/$', cache_page(video_page, ONE_WEEK), name='video_url'),
         url(r'^embed/(\d+)/$', cache_page(embed_page, ONE_WEEK), name='embed_url'),
 
+        # AJAX Search suggestions
+        (r'^ajax_search/', ajax_autocomplete),
+        
         # Admin
         (r'^admin/', include(admin.site.urls)),
         # Site media

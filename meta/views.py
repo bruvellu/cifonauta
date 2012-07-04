@@ -509,7 +509,8 @@ def photo_page(request, image_id):
         'pageviews': pageviews,
         })
     if request.is_ajax():
-        return render_to_response('disqus.html', variables)
+        #return render_to_response('disqus.html', variables)
+        return render_to_response('media_page_ajax.html', variables)
     else:
         return render_to_response('media_page.html', variables)
 
@@ -1258,5 +1259,12 @@ def build_url(meta, field, queries, remove=False, append=None):
 
 @csrf_exempt
 def ajax_autocomplete(request):
-    results = MlSearchQuerySet().autocomplete(request.GET.get('q', ''))
-    return HttpResponse(json.dumps(results[:5]), content_type='application/json')
+    results = list(MlSearchQuerySet().autocomplete(content_auto=request.GET.get('q', '')).values_list('title', flat=True)[:50])
+    limit = 5
+    final_results = []
+    while limit > 0 and results:
+        i = results.pop()
+        if i not in final_results:
+            limit -= 1
+            final_results.append(i)
+    return HttpResponse(json.dumps(final_results), content_type='application/json')

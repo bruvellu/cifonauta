@@ -22,9 +22,43 @@
 
   <div id="home-search">
   	<script>
+  	var temp;
   	$(function(){
-		options = { serviceUrl:'/ajax_search' };
-		a = $('#query').autocomplete(options);
+		options = { 			
+			source: function( request, response ) {
+				$.ajax({
+					url: "/ajax_search",
+					dataType: "json",
+					data: {
+						featureClass: "P",
+						style: "full",
+						q: request.term
+					},
+					success: function( data ) {
+						temp = data;
+						response( $.map( data, function( item ) {
+							return {
+								label: item,
+								value: item
+							}
+						}));
+					}
+				});
+			},
+			minLength: 2,
+			select: function( event, ui ) {
+				log( ui.item ?
+					"Selected: " + ui.item.label :
+					"Nothing selected, input was " + this.value);
+			},
+			open: function() {
+				$( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+			},
+			close: function() {
+				$( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+			}
+		};
+		a = $('#id_query').autocomplete(options);
 	});	
   	</script>
     {% if queries %}

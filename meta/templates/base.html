@@ -115,10 +115,11 @@
       
       // then let's make sure changes will change caches and current photo
       $('a.navigation').live('click', function(event){
+      	event.preventDefault();
       	$('section#media-page').html(cache_page($(this).attr('href')) );
       	$.each( $('section#media-page a.navigation'), 
       		function(index, value){ cache_page($(value).attr('href')) });
-      	event.preventDefault();
+      	
       });
       var temp;
       $(document).ready(function(){

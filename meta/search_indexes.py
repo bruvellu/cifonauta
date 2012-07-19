@@ -34,6 +34,8 @@ class MediaIndex(indexes.SearchIndex):
     title_en = indexes.CharField(model_attr='title_en')
     title = indexes.CharField(model_attr='title_pt')
     
+    thumb = indexes.CharField(model_attr='thumb_filepath')
+    
 #    
     def prepare_author(self, media):
         return [author.id for author in media.author_set.all() ]# "%s##%s" % ( author.slug, author.name,) for author in media.author_set.all() ]#Author.objects.filter(images__pk = object.pk)]
@@ -49,7 +51,7 @@ class MediaIndex(indexes.SearchIndex):
         
     def index_queryset(self):
         """Used when the entire index for model is updated."""
-        return self.get_model().objects.filter(is_public=True, id__lte=100) #select_related('author', 'tag', 'taxon', 'size', 'sublocation', 'city', 'state', 'country', 'rights')
+        return self.get_model().objects.filter(is_public=True) #select_related('author', 'tag', 'taxon', 'size', 'sublocation', 'city', 'state', 'country', 'rights')
      
     def prepare(self, obj):
         """
@@ -65,9 +67,11 @@ class MediaIndex(indexes.SearchIndex):
 
 class ImageIndex(MediaIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True, template_name='search/image_text.txt')
+    rendered = indexes.CharField(use_template=True, template_name='search/image_rendered.txt')
     content_auto = indexes.EdgeNgramField(use_template=True, template_name='search/image_text.txt')
     
     text_en = indexes.CharField(use_template=True, template_name='search/image_text_en.txt')
+    rendered_en = indexes.CharField(use_template=True, template_name='search/image_rendered_en.txt')
     content_auto_en = indexes.EdgeNgramField(use_template=True, template_name='search/image_text_en.txt')
  
     is_image = indexes.BooleanField(default=True)
@@ -79,9 +83,11 @@ class ImageIndex(MediaIndex, indexes.Indexable):
 
 class VideoIndex(MediaIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True, template_name='search/video_text.txt')
+    rendered = indexes.CharField(use_template=True, template_name='search/video_rendered.txt')
     content_auto = indexes.EdgeNgramField(use_template=True, template_name='search/video_text.txt')
     
     text_en = indexes.CharField(use_template=True, template_name='search/video_text_en.txt')
+    rendered_en = indexes.CharField(use_template=True, template_name='search/video_rendered_en.txt')
     content_auto_en = indexes.EdgeNgramField(use_template=True, template_name='search/video_text_en.txt')
     
     is_image = indexes.BooleanField(default=False)
@@ -120,11 +126,21 @@ class MlSearchQuerySet(SearchQuerySet):
             kwargs[kwdkey] = strip_accents(kwd)
         return super(MlSearchQuerySet, self).autocomplete(**kwargs)
     
-    def values_list(self, *args, **kwargs):
+    def values(self, *args, **kwargs):
         """ narrows to current language """
         if 'title' in args:
             args = list(args)
             args.remove('title')
             kwd = "title%s" % self.get_language_suffix()
             args.append(unicode(kwd))
-        return super(MlSearchQuerySet, self).values_list(*args, **kwargs)        
+        if 'text' in args:
+            args = list(args)
+            args.remove('text')
+            kwd = "text%s" % self.get_language_suffix()
+            args.append(unicode(kwd))
+        if 'rendered' in args:
+            args = list(args)
+            args.remove('rendered')
+            kwd = "rendered%s" % self.get_language_suffix()
+            args.append(unicode(kwd))
+        return super(MlSearchQuerySet, self).values(*args, **kwargs)        

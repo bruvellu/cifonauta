@@ -104,29 +104,23 @@
       // Starting jquery ajax loading
       // let's create a cache 'array' (ok, this is an object)
       var cacheDB = {};
-      
+
       // defining a cache function
       function cache_page(url){
-      	if (! cacheDB[url]){
+      	return $('<div />').load(url);
+      	/*if (! cacheDB[url]){ // cache can't work in a single process -- it simply sucks
       		cacheDB[url] = $('<div />').load(url);
       	}
-      	return cacheDB[url];
+      	return cacheDB[url][0];*/
       }
       
       // then let's make sure changes will change caches and current photo
-      $('a.navigation').live('click', function(event){
+      $('a.navigation, .rel-thumbs a').live('click', function(event){
       	event.preventDefault();
-      	$('section#media-page').html(cache_page($(this).attr('href')) );
-      	$.each( $('section#media-page a.navigation'), 
-      		function(index, value){ cache_page($(value).attr('href')) });
+      	var page = cache_page($(this).attr('href'));
+      	$('section#media-page').html( page );
       	
       });
-      var temp;
-      $(document).ready(function(){
-      	$.each( $('section#media-page a.navigation'), 
-      		function(index, value){ cache_page($(value).attr('href')) });
-      });
-        
     </script>
 
   </body>

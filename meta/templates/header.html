@@ -38,8 +38,8 @@
 						temp = data;
 						response( $.map( data, function( item ) {
 							return {
-								label: item,
-								value: item
+								value: item.title,
+								label: '<table border=0><tr><td><img class="shadow" width="32" src="' + item.thumb + '" /></td><td>' + item.title + '<br />'+ item.label +'<em><strong>' + item.desc + '</strong></em></td></tr></table>',
 							}
 						}));
 					}
@@ -58,7 +58,12 @@
 				$( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
 			}
 		};
-		a = $('#id_query').autocomplete(options);
+		a = $('#id_query').autocomplete(options).data("autocomplete")._renderItem = function(ul, item){
+     		return $("<li></li>") 
+	          .data("item.autocomplete", item) 
+	          .append($("<a></a>").html(item.label)) 
+	          .appendTo(ul); 			
+		};
 	});	
   	</script>
     {% if queries %}

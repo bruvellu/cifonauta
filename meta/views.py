@@ -19,7 +19,7 @@ from django.utils.translation import get_language
 
 from itis import Itis
 from remove import compile_paths
-from meta.search_indexes import MlSearchQuerySet
+from meta.search_indexes import MlSearchQuerySet, strip_accents
 from django.http import HttpResponse
 import json
 
@@ -402,7 +402,6 @@ def photo_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''
     # Pega o objeto.
     image = get_object_or_404(Image.objects.select_related('size', 'sublocation', 'city', 'state', 'country', 'rights'), id=image_id)
-    print image.title
     # Tentando contornar o uso de dois forms em uma view...
     form, admin_form = None, None
 
@@ -697,7 +696,6 @@ def meta_page(request, model_name, field, slug):
     if highlight:
         image_list = image_list.filter(highlight=1)
         video_list = video_list.filter(highlight=1)
-    print image_list
     # Reverte a ordem se necessário.
 #    if order == 'desc':
 #        image_list = image_list.reverse()
@@ -1259,12 +1257,34 @@ def build_url(meta, field, queries, remove=False, append=None):
 
 @csrf_exempt
 def ajax_autocomplete(request):
-    results = list(MlSearchQuerySet().autocomplete(content_auto=request.GET.get('q', '')).values_list('title', flat=True)[:50])
     limit = 5
+    max_str = 50 # in chars
+    search_query = strip_accents(request.GET.get('q', ''))
+    results = MlSearchQuerySet().autocomplete(content_auto=search_query).values('title', 'rendered', 'thumb')[:limit*3]
+    
     final_results = []
-    while limit > 0 and results:
-        i = results.pop()
-        if i not in final_results:
+    titles = []
+    for d in results:
+        text = d['rendered']
+        title = d['title']
+        thumb = d['thumb']
+        if title not in final_results:
             limit -= 1
-            final_results.append(i)
+            titles.append(title)
+            label = ''
+            desc = title
+            if text:
+                #content_start = max(0, text.lower().find(search_query.lower()))
+                for t in text.split("\n"):
+                    if search_query.lower() in t.lower():
+                        ts = t.split(":")
+                        label = ts[0]
+                        desc = ":".join(ts[1:])
+                        if len(t) > max_str: # cut str if it's too long
+                            i = desc.lower().find(search_query.lower())
+                            start = max(0, i - max_str/2)
+                            end = min(len(desc), i + max_str/2)
+                            desc = '...' + desc[start:end] + '...'
+                        break
+            final_results.append({'title': title, 'desc': desc, 'label': label, 'thumb': thumb})
     return HttpResponse(json.dumps(final_results), content_type='application/json')

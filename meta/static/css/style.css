@@ -2723,3 +2723,5 @@ html>/**/body .highslide-gallery ul img {
 .filetree span.folder { background: url(../js/jquery-treeview/images/folder.gif) 0 0 no-repeat; }
 .filetree li.expandable span.folder { background: url(../js/jquery-treeview/images/folder-closed.gif) 0 0 no-repeat; }
 .filetree span.file { background: url(../js/jquery-treeview/images/file.gif) 0 0 no-repeat; }
+/* Search autocomplete custom style */
+.ui-autocomplete-loading{background:url(../img/indicator.gif) no-repeat right center;}

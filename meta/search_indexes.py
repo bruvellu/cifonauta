@@ -35,6 +35,7 @@ class MediaIndex(indexes.SearchIndex):
     title = indexes.CharField(model_attr='title_pt')
     
     thumb = indexes.CharField(model_attr='thumb_filepath')
+    url = indexes.CharField(model_attr='get_absolute_url')
     
 #    
     def prepare_author(self, media):

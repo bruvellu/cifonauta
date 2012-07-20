@@ -1258,9 +1258,9 @@ def build_url(meta, field, queries, remove=False, append=None):
 @csrf_exempt
 def ajax_autocomplete(request):
     limit = 5
-    max_str = 50 # in chars
+    max_str = 30 # in chars
     search_query = strip_accents(request.GET.get('q', ''))
-    results = MlSearchQuerySet().autocomplete(content_auto=search_query).values('title', 'rendered', 'thumb')[:limit*3]
+    results = MlSearchQuerySet().autocomplete(content_auto=search_query).values('title', 'rendered', 'thumb', 'url')[:limit*3]
     
     final_results = []
     titles = []
@@ -1268,6 +1268,9 @@ def ajax_autocomplete(request):
         text = d['rendered']
         title = d['title']
         thumb = d['thumb']
+        url = d['url']
+        if limit <= 0:
+            break
         if title not in final_results:
             limit -= 1
             titles.append(title)
@@ -1286,5 +1289,5 @@ def ajax_autocomplete(request):
                             end = min(len(desc), i + max_str/2)
                             desc = '...' + desc[start:end] + '...'
                         break
-            final_results.append({'title': title, 'desc': desc, 'label': label, 'thumb': thumb})
+            final_results.append({'title': title, 'desc': desc, 'label': label, 'thumb': thumb, 'url': url})
     return HttpResponse(json.dumps(final_results), content_type='application/json')

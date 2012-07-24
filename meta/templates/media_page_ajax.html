@@ -1,7 +1,7 @@
 {% load i18n cache thumbnail %}
 {% get_current_language as LANGUAGE_CODE %}
 
-
+<div id="ajaxcontent">
 {% if media %}
 <article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} size-{{ media.size.slug }} {% show_set sources 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ pageviews }}">
 <header class="span-16 last">
@@ -151,5 +151,7 @@
 
 <script type="text/javascript" charset="utf-8">
   Dajaxice.meta.update_counter(Dajax.process, {'id': '{{ media.id }}', 'type': '{{ media.datatype }}'});
+  var current_title = '{{media.title}} | {% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %} | CEBIMar USP';
 </script>
 
+</div>

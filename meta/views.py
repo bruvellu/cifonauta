@@ -1260,13 +1260,14 @@ def ajax_autocomplete(request):
     limit = 5
     max_str = 30 # in chars
     search_query = strip_accents(request.GET.get('q', ''))
-    results = MlSearchQuerySet().autocomplete(content_auto=search_query).values('title', 'rendered', 'thumb', 'url')[:limit*3]
-    
+    query = MlSearchQuerySet().autocomplete(content_auto=search_query)
+    results = query.values('title', 'rendered', 'thumb', 'url')[:limit*3]
+    suffix = query.get_language_suffix()
     final_results = []
     titles = []
     for d in results:
-        text = d['rendered']
-        title = d['title']
+        text = d['rendered%s'%suffix]
+        title = d['title%s'%suffix]
         thumb = d['thumb']
         url = d['url']
         if limit <= 0:

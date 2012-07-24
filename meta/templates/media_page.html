@@ -31,8 +31,39 @@
 
 {% block content %}
 <section id="media-page" class="span-16">
+	<div id="ajaxcontent">
 {% include "media_page_ajax.html" %}
+	</div>
 </section>
+
+<script>
+     /*
+      * Ajax loading
+      */
+      // then let's make sure changes will change caches and current photo
+      var HistoryCounter = 1;
+      $('a.navigation, .rel-thumbs a').live('click', function(event){
+      	event.preventDefault();
+      	//$('div#ajaxcontent').load($(this).attr('href'));
+      	if (History.enabled){
+      		HistoryCounter++;
+			History.pushState({state:HistoryCounter}, current_title, $(this).attr('href'));
+		};      	
+      });
+      var History = window.History;
+      if (History.enabled){
+      	History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
+	        var State = History.getState(); // Note: We are using History.getState() instead of event.state
+	        //History.log(State.data, State.title, State.url);
+	        if (State.data.state > 1){
+	        	$('div#ajaxcontent').load(State.url);
+	        } else {
+	        	document.location = State.url;
+	        }
+      	});
+      };
+</script>
+
 {% endblock %}
 {% block sidebar %}
 <aside class="main span-8 last">

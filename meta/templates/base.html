@@ -56,6 +56,7 @@
     <script src="{{ STATIC_URL }}js/mylibs/jquery.dajax.core.js" type="text/javascript" charset="utf-8"></script>
     <script src="{{ STATIC_URL }}js/libs/jquery-1.7.2.min.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/libs/jquery-ui-1.8.21.custom.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}js/libs/jquery.history.js" type="text/javascript"></script>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/ui-lightness/jquery-ui-1.8.21.custom.css">
     {% dajaxice_js_import 'js/mylibs/dajaxice.core.js' %}
   </head>
@@ -99,28 +100,6 @@
       (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
         g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
         s.parentNode.insertBefore(g,s)}(document,'script'));
-        
-      
-      // Starting jquery ajax loading
-      // let's create a cache 'array' (ok, this is an object)
-      var cacheDB = {};
-
-      // defining a cache function
-      function cache_page(url){
-      	return $('<div />').load(url);
-      	/*if (! cacheDB[url]){ // cache can't work in a single process -- it simply sucks
-      		cacheDB[url] = $('<div />').load(url);
-      	}
-      	return cacheDB[url][0];*/
-      }
-      
-      // then let's make sure changes will change caches and current photo
-      $('a.navigation, .rel-thumbs a').live('click', function(event){
-      	event.preventDefault();
-      	var page = cache_page($(this).attr('href'));
-      	$('section#media-page').html( page );
-      	
-      });
     </script>
 
   </body>

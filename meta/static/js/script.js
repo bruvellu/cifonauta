@@ -6,11 +6,19 @@ function loadDisqus() {
 }
 
 // jQuery Treeview.
-$("#colaptree").treeview({
+var treeview = $("#colaptree").treeview({
   collapsed: true,
   animated: "fast",
   persist: "location",
 });
+function open_tree(taxas){
+	// Close all tree
+	$('ul.treeview li.kingdom div.collapsable-hitarea').click();
+	$.each((taxas.split(',')), function(index){
+		$('#taxa' + this).parents('li').children('div.expandable-hitarea').click()
+	});
+};
+
 
 // Highslide
 hs.graphicsDir = '/static/js/highslide/graphics/';

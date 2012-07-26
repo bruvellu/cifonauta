@@ -37,22 +37,30 @@
 </section>
 
 <script>
-     /*
-      * Ajax loading
-      */
-      // then let's make sure changes will change caches and current photo
-      var HistoryCounter = 1;
-      $('a.navigation, .rel-thumbs a').live('click', function(event){
-      	event.preventDefault();
-      	//$('div#ajaxcontent').load($(this).attr('href'));
-      	if (History.enabled){
-      		HistoryCounter++;
+
+$(document).ready( function(){
+	 /*
+	  * Ajax loading
+	  */
+	  // then let's make sure changes will change caches and current photo
+	  var HistoryCounter = 1;
+	  $('a.navigation, .rel-thumbs a').live('click', function(event){
+		event.preventDefault();
+		//$('div#ajaxcontent').load($(this).attr('href'));
+		if (History.enabled){
+			HistoryCounter++;
 			History.pushState({state:HistoryCounter}, current_title, $(this).attr('href'));
-		};      	
+		}
+		else{
+			$('body').css('cursor', 'wait');
+			$('div#ajaxcontent').load($(this).attr('href'));
+			$('body').css('cursor', 'default');
+		};
       });
       var History = window.History;
       if (History.enabled){
       	History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
+      		$('body').css('cursor', 'wait');
 	        var State = History.getState(); // Note: We are using History.getState() instead of event.state
 	        //History.log(State.data, State.title, State.url);
 	        if (State.data.state > 1){
@@ -60,8 +68,13 @@
 	        } else {
 	        	document.location = State.url;
 	        }
+	        $('body').css('cursor', 'default');
       	});
       };
+      
+      
+      
+});
 </script>
 
 {% endblock %}

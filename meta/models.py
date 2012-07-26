@@ -80,7 +80,10 @@ class File(models.Model):
         return self._get_list(self.tag_set, lang='pt')
     def get_tag_list_en(self):
         return self._get_list(self.tag_set, lang='en')
- 
+
+    def get_taxon_name_list_no_parents(self):
+        return str(self.taxon_set.values_list('pk', flat=True))[1:-1] 
+    
     def get_taxon_name_list(self):
         return self._get_list(Taxon.get_taxon_and_parents(self.taxon_set))
     def get_taxon_common_list_pt(self):

@@ -13,7 +13,7 @@ var treeview = $("#colaptree").treeview({
 });
 function open_tree(taxas){
 	// Close all tree
-	$('ul.treeview li.kingdom div.collapsable-hitarea').click();
+	$('ul.treeview li div.collapsable-hitarea').click();
 	$.each((taxas.split(',')), function(index){
 		$('#taxa' + this).parents('li').children('div.expandable-hitarea').click()
 	});

@@ -628,7 +628,8 @@ def video_page(request, video_id):
         'pageviews': pageviews,
         })
     if request.is_ajax():
-        return render_to_response('disqus.html', variables)
+#        return render_to_response('disqus.html', variables)
+        return render_to_response('media_page_ajax.html', variables)
     else:
         return render_to_response('media_page.html', variables)
 
@@ -1257,13 +1258,13 @@ def build_url(meta, field, queries, remove=False, append=None):
 
 @csrf_exempt
 def ajax_autocomplete(request):
-    limit = 5
-    max_str = 30 # in chars
-    search_query = strip_accents(request.GET.get('q', ''))
+    limit = 5 # max results in number
+    max_str = 30 # max result text size, in chars
+    search_query = strip_accents(request.GET.get('q', '')) # get without accents query
     query = MlSearchQuerySet().autocomplete(content_auto=search_query)
-    results = query.values('title', 'rendered', 'thumb', 'url')[:limit*3]
-    suffix = query.get_language_suffix()
-    final_results = []
+    results = query.values('title', 'rendered', 'thumb', 'url')
+    suffix = query.get_language_suffix() # get language suffix to 'languaged' fields
+    final_results = [] # array of results
     titles = []
     for d in results:
         text = d['rendered%s'%suffix]
@@ -1272,16 +1273,16 @@ def ajax_autocomplete(request):
         url = d['url']
         if limit <= 0:
             break
-        if title not in final_results:
+        # check if there is already some result with same title
+        if title not in titles:
             limit -= 1
             titles.append(title)
             label = ''
             desc = title
-            if text:
-                #content_start = max(0, text.lower().find(search_query.lower()))
+            if text: # if there is a text field, otherwise search is not cached
                 for t in text.split("\n"):
                     if search_query.lower() in t.lower():
-                        ts = t.split(":")
+                        ts = t.split(":") # : separates label from real text, in the rendered field
                         label = ts[0]
                         desc = ":".join(ts[1:])
                         if len(t) > max_str: # cut str if it's too long

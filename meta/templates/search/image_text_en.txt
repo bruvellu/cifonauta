@@ -1,0 +1,12 @@
+{{object.title_en}}
+{{object.caption_en}}
+{{object.notes_en}}
+{{object.get_authors_list}}
+{{object.get_tag_list_en}}
+{{object.get_taxon_name_list}}
+{{object.get_taxon_common_list_en}}
+{{object.get_taxon_rank_list_en}}
+{{object.sublocation.name}}
+{{object.city.name}}
+{{object.state.name}}
+{{object.country.name_en}}

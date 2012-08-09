@@ -45,20 +45,51 @@
     </ul>
 </div>
 
-{% if relative.previous or relative.next %}
+{% if relative.first1 or relative.last1 %}
 <div id="linear-nav" class="span-13 last">
-    <div class="linear" id="prev">
-        {% if relative.previous %}
-        +{{ relative.behind }} 
-        <a href="{{ relative.previous.get_absolute_url }}" title="{{ relative.previous.title }}">
-            {% autoescape on %}&lt;&lt; {% endautoescape %}{% trans 'anterior' %}
-        </a>
+    <div class="linear" id="center">
+        {% if relative.first1 %}
+        	<a class="navigation" href="{{ relative.first1.obj.get_absolute_url }}" title="{{ relative.first1.obj.title }}"> {{ relative.first1.index}} </a>
+        	{% if relative.first2 %}
+        		<a class="navigation" href="{{ relative.first2.obj.get_absolute_url }}" title="{{ relative.first2.obj.title }}"> {{ relative.first2.index}} </a>
+        	{% endif %}
+        	{% if relative.previous1 %}  ... 
+				{% if relative.previous5 %}
+	        		<a class="navigation" href="{{ relative.previous5.obj.get_absolute_url }}" title="{{ relative.previous5.obj.title }}">
+	            	{% autoescape on %} &lt;&lt; {% endautoescape %} </a>
+	            {% endif %}
+	        	{% if relative.previous2 %}
+	        		<a class="navigation" href="{{ relative.previous2.obj.get_absolute_url }}" title="{{ relative.previous2.obj.title }}"> {{ relative.previous2.index}} </a>
+	        	{% endif %}
+	        	
+	        		<a class="navigation" href="{{ relative.previous1.obj.get_absolute_url }}" title="{{ relative.previous1.obj.title }}"> {{ relative.previous1.index}} </a>
+        	{% endif %}
+       
         {% endif %}
-    </div>
-    <div class="linear" id="next">
-        {% if relative.next %}
-        <a href="{{ relative.next.get_absolute_url }}" title="{{ relative.next.title }}">
-            {% trans 'próxima' %}{% autoescape on %} &gt;&gt;{% endautoescape %}</a> +{{ relative.ahead }}
+        
+        <span class="current">{{ relative.current_index }}</span>
+        
+        {% if relative.last1 %}
+        	
+        	{% if relative.last2 %}
+        		
+        	
+	        	{% if relative.next1 %} 
+					<a class="navigation" href="{{ relative.next1.obj.get_absolute_url }}" title="{{ relative.next1.obj.title }}"> {{ relative.next1.index}} </a>
+		        	{% if relative.next2 %}
+		        		<a class="navigation" href="{{ relative.next2.obj.get_absolute_url }}" title="{{ relative.next2.obj.title }}"> {{ relative.next2.index}} </a>
+		        	{% endif %}
+		        	
+					{% if relative.next5 %}
+		        		<a class="navigation" href="{{ relative.next5.obj.get_absolute_url }}" title="{{ relative.next5.obj.title }}">
+		            	{% autoescape on %} &gt;&gt; {% endautoescape %}</a>
+		            {% endif %}
+		        	 ... 
+	        	{% endif %}
+	        	
+	        	<a class="navigation" href="{{ relative.last2.obj.get_absolute_url }}" title="{{ relative.last2.obj.title }}"> {{ relative.last2.index}} </a>
+        	{% endif %}
+        <a class="navigation" href="{{ relative.last1.obj.get_absolute_url }}" title="{{ relative.last1.obj.title }}"> {{ relative.last1.index}} </a>
         {% endif %}
     </div>
 </div>

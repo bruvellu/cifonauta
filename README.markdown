@@ -14,3 +14,10 @@ The code is commented inline (in **Portuguese**), but I am still writing the pro
 Hope to upload install instructions soon.
 
 I am really considering porting everything to English in the near future... hang on.
+
+
+# Installing
+
+To install all dependencies with pip tool, type:
+
+pip install -r requirements.txt

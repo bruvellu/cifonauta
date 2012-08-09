@@ -13,4 +13,3 @@ requests==0.13.2
 sorl-thumbnail==11.12
 suds==0.4
 -e git+http://github.com/citylive/django-datatrans.git@master#egg=django_datatrans
-django-endless-pagination==1.1

@@ -912,7 +912,7 @@ def main(argv):
     folder = Folder(source_dir, n_max)
     if only_photos:
         filepaths = folder.get_files(type='photo')
-    if only_videos:
+    elif only_videos:
         filepaths = folder.get_files(type='video')
     else:
         filepaths = folder.get_files()

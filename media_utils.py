@@ -283,7 +283,7 @@ def dir_ready(*dirs):
     for dir in dirs:
         if os.path.isdir(dir) is False:
             logger.debug('Criando diretório %s', dir)
-            os.mkdir(dir)
+            os.makedirs(dir)
 
 def check_file(filepath):
     '''Checa se arquivo existe.'''

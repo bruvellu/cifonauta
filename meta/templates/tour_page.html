@@ -34,7 +34,7 @@
   </div>
   {% comment %}TODO adapt to HTML5{% endcomment %}
   <div class="slides_container shadow span-21">
-    {% for media in photos %}
+    {% for result in photos %}{% with result.object as media %}
     <div class="span-21 eachslide last">
       <div class="span-13">{% include 'photo.html' %}</div>
       <div class="span-8 last">
@@ -90,6 +90,7 @@
         </div>
       </div>
     </div>
+    {% endwith %}
     {% endfor %}
   </div>
 
@@ -99,11 +100,11 @@
 
   <div class="span-24 last" id="paginator-container">
     <ul class="pagination">
-      {% for media in photos %}
+      {% for result in photos %}{% with result.object as media %}
       <li>
       <a href="#"><img class="shadow" src="{{ MEDIA_URL }}{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" /></a>
       </li>
-      {% endfor %}
+      {% endwith %}{% endfor %}
     </ul>
   </div>
 </div>

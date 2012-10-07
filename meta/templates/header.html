@@ -21,11 +21,72 @@
   </div>
 
   <div id="home-search">
+  	<script>
+  	var temp;
+  	var media_url = '{{ MEDIA_URL }}';
+  	$(function(){
+		var options = { 			
+			source: function( request, response ) {
+				$.ajax({
+					url: "/ajax_search",
+					dataType: "json",
+					data: {
+						featureClass: "P",
+						style: "full",
+						q: request.term
+					},
+					success: function( data ) {
+						temp = data;
+						response( $.map( data, function( item ) {
+							return {
+								value: item.url,
+								label: '<table border=0><tr><td><img class="shadow" width="32" src="' + media_url + item.thumb + '" /></td><td>' + item.title + '<br />'+ item.label +'<em><strong>' + item.desc + '</strong></em></td></tr></table>',
+							}
+						}));
+					}
+				});
+			},
+			minLength: 2,
+			select: function( event, ui ) {
+				event.preventDefault();
+				document.location.href = ui.item.value;
+				return false;
+			},
+			open: function() {
+				$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+			},
+			close: function() {
+				$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+			}
+		};
+		$('#id_query').autocomplete(options).data("autocomplete")._renderItem = function(ul, item){
+     		return $("<li></li>") 
+	          .data("item.autocomplete", item) 
+	          .append($("<a></a>").html(item.label)) 
+	          .appendTo(ul); 			
+		};
+		$('#id_query').data("autocomplete")._renderMenu = function( ul, items ) {
+		    var self = this;
+		    $.each( items, function( index, item ) {
+		        self._renderItem( ul, item );
+		    });
+		    $('<li style="text-align: right;"><a onClick="search_submit()">Show more results</a></li>').appendTo(ul);
+		};
+	});	
+	function search_submit(){
+		$('#header-search').submit();
+	}
+  </script>
     {% if queries %}
     {% search_box queries.query %}
     {% else %}
     {% search_box %}
     {% endif %}
+    
+    <div id="search-preview">
+		
+    	
+    </div>
   </div>
 
 </div>

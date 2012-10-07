@@ -1095,6 +1095,16 @@ div#notes {
   float:right;
 }
 
+.linear#center {
+  text-align: center;
+}
+
+.linear .current{
+	font-size: 140%;
+	padding-left: 8px;
+	padding-right: 8px;
+}
+
 #total {
   text-align:center;
   font-size:1.1em;

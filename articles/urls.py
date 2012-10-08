@@ -1,6 +1,4 @@
 from django.conf.urls.defaults import *
-from django.contrib.syndication.views import feed
-from django.views.generic import date_based, list_detail
 from articles import views
 from articles.feeds import LatestEntries
 

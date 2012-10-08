@@ -649,7 +649,7 @@ class Photo:
         print u'\tDireitos:\t%s' % self.meta['rights']
         print u'\tData:\t\t%s' % self.meta['date']
         print
-        print u'\tGeolocalização:\t%s' % self.meta['geolocation']
+        print u'\tGeolocalização:\t%s' % self.meta['geolocation'].decode("utf8")
         print u'\tDecimal:\t%s, %s' % (self.meta['latitude'],
                 self.meta['longitude'])
         print

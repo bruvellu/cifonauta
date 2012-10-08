@@ -11,7 +11,7 @@
   {% if node.rank %}
   {% comment %} Necessário para espécies sem hierarquia {% endcomment %}
     {% if node.parent or node.rank == 'Reino' or node.rank == 'Kingdom' %}
-    <li class="{{ node.rank|slugify }} {{ node.slug }} {% if node in current %}open{% endif %}">
+    <li class="{{ node.rank|slugify }} {{ node.slug }} {% if node in current %}open{% endif %}" id="taxa{{ node.pk }}">
       <span class="quiet">{{ node.rank }}</span> <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{{ node|sp_em }}</a>
       {% if not node.is_leaf_node %}
       <ul class="children tree"> {{ children }} </ul>

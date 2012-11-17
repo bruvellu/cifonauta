@@ -1,3 +1,4 @@
+ # -*- coding: utf-8 -*- 
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -9,7 +10,7 @@ from django.template.defaultfilters import slugify, striptags
 from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 from base64 import encodestring
-from datatrans.utils import register
+from transmeta import TransMeta
 import mimetypes
 import re
 import urllib
@@ -371,8 +372,13 @@ class Article(models.Model):
 
         return self._previous
 
+    __metaclass__ = TransMeta
     class Meta:
-        ordering = ('-publish_date', 'title')
+        #ordering = ('-publish_date', 'title')
+        translate = ('title', 'rendered_content',)
+
+import transmeta
+transmeta.register(Article, ('title', 'rendered_content',))
 
 class Attachment(models.Model):
     upload_to = lambda inst, fn: 'attach/%s/%s/%s' % (datetime.now().year, inst.article.slug, fn)
@@ -401,9 +407,3 @@ class Attachment(models.Model):
             content_type = 'text_plain'
 
         return content_type
-
-
-
-class ArticleTranslation(object):
-    fields = ('title', 'rendered_content',)
-register(Article, ArticleTranslation)

@@ -106,8 +106,8 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-        'johnny.middleware.LocalStoreClearMiddleware',
-        'johnny.middleware.QueryCacheMiddleware',
+        #'johnny.middleware.LocalStoreClearMiddleware',
+        #'johnny.middleware.QueryCacheMiddleware',
         'django.middleware.cache.UpdateCacheMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
@@ -142,7 +142,7 @@ DEBUG_TOOLBAR_CONFIG = {
 # Dajaxice requirement.
 DAJAXICE_MEDIA_PREFIX = 'dajaxice'
 
-ROOT_URLCONF = 'weblarvae.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
 )
@@ -165,11 +165,21 @@ INSTALLED_APPS = (
     'mptt',
     'rosetta',
     'datatrans',
+    'transmeta',
     'debug_toolbar',
     'sorl.thumbnail',
     'dajaxice',
     'dajax',
+    'haystack',
 )
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'haystack',
+        },
+}
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

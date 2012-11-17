@@ -36,7 +36,7 @@ def print_thumb(context, field, obj):
     media_url = context['MEDIA_URL']
     params = {field: obj, 'is_public': True}
     try:
-        media = Image.objects.select_related('size').filter(**params).defer('source_filepath', 'old_filepath').order_by('?')[0]
+        media = Image.objects.filter(**params).order_by('?')[0]
     except:
         media = ''
     return {'media': media, 'MEDIA_URL': media_url}
@@ -46,20 +46,51 @@ def slicer(query, media_id):
 
     Busca o metadado, encontra o índice da imagem e reduz amostra. Usado para navegador linear.
     '''
-    relative = {
-            'ahead': '',
-            'behind': '',
-            'next': '',
-            'previous': '',
-            }
+#    relative = {
+#            'first1': None,
+#            'first2': None,
+#            'last1': None,
+#            'last2': None,
+#            'next1': None,
+#            'next2': None,
+#            'next5': None,
+#            'previous1': None,
+#            'previous2': None,
+#            'previous5': None,
+#            }
     for index, item in enumerate(query):
         if item.id == media_id:
             media_index = index
+            break
         else:
             pass
     ahead = len(query[media_index:]) - 1
     behind = len(query[:media_index])
-    relative = {'ahead': ahead, 'behind': behind}
+    relative = {'ahead': ahead, 'behind': behind, 'current_index': media_index+1}
+    size = len(query)
+    
+    conditionals = (
+     ( media_index > 0, 'first1', 0),
+     ( media_index > 1, 'first2', 1),
+     ( media_index > 2, 'previous1', media_index-1),
+     ( media_index > 3, 'previous2', media_index-2),
+     ( media_index > 4, 'previous5', media_index-5),
+     
+     ( media_index < size - 2, 'next1', media_index+1),
+     ( media_index < size - 3, 'next2', media_index+2),
+     ( media_index < size - 4, 'next5', media_index+5),
+     ( media_index < size - 1, 'last1', size-1),
+     ( media_index < size - 2, 'last2', size-2),
+    )
+    print conditionals
+    for cond, field, index in conditionals:
+        if cond:
+            relative[field] = {'index': index+1, 'obj': query[index]}
+        else:
+            relative[field] = None
+    
+    
+    # preparing data for minithumbs navigation
     if media_index < 2:
         media_index = 2
     if len(query) <= 5:
@@ -67,16 +98,18 @@ def slicer(query, media_id):
     else:
         rel_query = query[media_index-2:media_index+3]
 
-    for index, item in enumerate(rel_query):
-        if item.id == media_id:
-            if index == 0:
-                relative['previous'] = ''
-            else:
-                relative['previous'] = rel_query[index-1]
-            if index == len(rel_query)-1:
-                relative['next'] = ''
-            else:
-                relative['next'] = rel_query[index+1]
+#    for index, item in enumerate(rel_query):
+#        if item.id == media_id:
+#            if index == 0:
+#                relative['previous'] = ''
+#            else:
+#                relative['previous'] = rel_query[index-1]
+#            if index == len(rel_query)-1:
+#                relative['next'] = ''
+#            else:
+#                relative['next'] = rel_query[index+1]
+
+
     return rel_query, relative
 
 def mediaque(media, qobj):
@@ -85,9 +118,9 @@ def mediaque(media, qobj):
     Usado no navegador linear.
     '''
     if media.datatype == 'photo':
-        query = Image.objects.filter(qobj, is_public=True).distinct().select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by('id')
+        query = Image.objects.filter(qobj, is_public=True).order_by('id')
     elif media.datatype == 'video':
-        query = Video.objects.filter(qobj, is_public=True).distinct().select_related('size', 'sublocation', 'city', 'state', 'country', 'rights').defer('source_filepath', 'old_filepath').order_by('id')
+        query = Video.objects.filter(qobj, is_public=True).order_by('id')
     else:
         print '%s é um datatype desconhecido.' % media.datatype
     return query

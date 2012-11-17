@@ -1,0 +1,162 @@
+{% load i18n cache thumbnail %}
+{% get_current_language as LANGUAGE_CODE %}
+
+<div id="ajaxcontent">
+{% if media %}
+<article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} size-{{ media.size.slug }} {% show_set sources 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ pageviews }}">
+<header class="span-16 last">
+<h1>{{ media.title }}</h1>
+</header>
+{% if media.is_public %}
+{% if tags %}
+<footer class="span-16 last media-tags">
+{% show_set tags '' '' ', ' 'link' %}
+</footer>
+{% endif %}
+
+<figure class="span-13 {{ media.datatype }} borders">
+{% if media.datatype == 'photo' %}
+{% include 'photo.html' %}
+{% else %}
+{% if media.datatype == 'video' %}
+{% include 'video.html' %}
+{% endif %}
+{% endif %}
+{% if media.caption %}
+<figcation class="span-13 last">{% if media.datatype == 'video' %}<span class="quiet" id="media-duration">{{ media.duration|slice:'3:' }}</span>{% endif %}{{ media.caption }}</figcaption>
+<div class="span-13 last align-right" id="author">{% show_set authors '' '' ', ' '' %}</div>
+{% else %}
+<div class="span-13 last" id="author">{% show_set authors '' '' ', ' '' %}{% if media.datatype == 'video' %}<span class="quiet" id="media-duration">{{ media.duration|slice:'3:' }}</span>{% endif %}</div>
+{% endif %}
+</figure>
+
+<div class="span-2 last border-top border-right border-bottom sideinfo" id="media-sideinfo">
+  <div class="border-bottom" id="views">
+    {% cache 1 pageviews media.id media.datatype %}<span id="pageviews">{{ pageviews }}</span>{% endcache %} {% trans 'visita' %}{{ pageviews|pluralize }}
+  </div>
+  {% if taxa %}
+  {% include 'biodb.html' %}
+  {% endif %}
+
+  {% if media.size.name %}
+  {% cache 2592000 scale_bar LANGUAGE_CODE media.size.slug %}
+  {% spaceless %}
+  <div class="span-2 last border-top" id="size">
+    <div class="size-{{ media.size.slug }}" id="size-string" title="{% trans 'Tamanho do organismo' %}: {{ media.size }}">
+      {{ media.size }}
+    </div>
+    <div class="size-legend">
+      <div class="size-01-mm" title="<0,1 mm"></div>
+      <div class="size-01-10-mm" title="0,1 - 1,0 mm"></div>
+      <div class="size-10-10-mm" title="1,0 - 10 mm"></div>
+      <div class="size-10-100-mm" title="10 - 100 mm"></div>
+      <div class="size-100-mm" title=">100 mm"></div>
+    </div>
+  </div>
+  {% endspaceless %}
+  {% endcache %}
+  {% endif %}
+
+</div>
+
+<div class="span-13 last borders" id="meta">
+  <div class="span-7 taxonomy">
+
+    {% if taxa %}
+    <strong>{% blocktrans count counter=taxa.count %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set taxa '' '' ', ' '' %}</span>
+    <br>
+    {% endif %}
+
+    {% if sources %}
+    <strong>{% blocktrans count counter=sources.count %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set sources '' '' ', ' '' %}</span>
+    {% endif %}
+  </div>
+
+  <div class="span-6 last location">
+    {% if media.date and media.date|date:"Y" > "1910" %} 
+    <strong>{% trans 'Data' %}: </strong> <span id="date"><datetime>{{ media.date|date:"DATETIME_FORMAT" }}</datetime></span>
+    <br>
+    {% endif %}
+    {% comment %} Retirar o "name" desnecessário... {% endcomment %}
+    {% if media.sublocation.name or media.city.name or media.state.name or media.country.name %}
+    <strong>{% trans 'Local' %}:</strong> 
+    {% if media.sublocation.name %}<span id="sublocation">{{ media.sublocation }},</span>{% endif %}
+    {% if media.city.name %}<span id="city">{{ media.city }},</span>{% endif %}
+    {% if media.state.name %}<span id="state">{{ media.state }},</span>{% endif %}
+    {% if media.country.name %}<span id="country">{{ media.country }}</span>{% endif %}
+    <br>
+    {% endif %}
+
+    {% if media.geolocation %}
+    <strong>{% trans 'Geolocalização' %}:</strong> <a href="http://maps.google.com/maps?q={{ media.latitude }},{{ media.longitude }}" title="{{ media.geolocation }} no Google Maps">{{ media.geolocation }}</a>
+    {% endif %}
+  </div>
+
+  <div id="citethis" class="span-13">
+    <div>
+      {% show_set authors '' '' ', ' '' '' '.' %} <strong>{{ media.title }}</strong>. {% blocktrans with host=request.META.HTTP_HOST media_url=media.get_absolute_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a href="{{ media_url }}">http://{{ host }}{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
+    </div>
+    <div class="align-right quiet">{% blocktrans %}Conheça os <a href="/termos/">termos de uso</a>.{% endblocktrans %}</div>
+  </div>
+</div>
+
+{% if media.notes %}
+<div id="notes" class="span-16 last">
+  <h2>{% trans 'Notas' %}</h2>
+  {{ media.notes }}
+</div>
+{% endif %}
+
+{% show_related media form related %}
+
+{% if taxa %}
+{% for taxon in taxa %}
+<div class="span-16 last quiet" id="breadcrumbs">
+  <h2>{% trans 'Classificação' %}</h2>
+  {% taxon_paths taxon %}
+</div>
+{% endfor %}
+{% endif %}
+
+{% if references %}
+<div class="span-16 last" id="references">
+  <h2>{% trans 'Referências bibliográficas' %}</h2>
+  {% for ref in references %}
+  <div class="citation">
+    {% autoescape off %}{{ ref.citation }}{% endautoescape %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div id="comments" class="span-16 last">
+  <h2>{% trans 'Comentários' %}</h2>
+  {% include 'disqus.html' %}
+  {% comment %}
+  Ajax usado para carregar comentários está sendo interceptado pelo 
+  cache... Assim o cache é carregado na div onde deveria ser 
+  carregado o Disqus. Deixei o Disqus carregando direto, espero que 
+  não fique muito bagunçado a àrea.
+  <p>{% trans 'Clique para abrir.' %}</p>
+  {% endcomment %}
+</div>
+
+{% else %}
+<div class="private span-16 last">{% trans 'Esta imagem não está disponível.' %}</div>
+{% endif %}
+</article>
+{% else %}
+<div class="nomatch span-16 last">{% trans 'Nenhuma imagem encontrada.' %}</div>
+{% endif %}
+
+<script type="text/javascript" charset="utf-8">
+  Dajaxice.meta.update_counter(Dajax.process, {'id': '{{ media.id }}', 'type': '{{ media.datatype }}'});
+  var current_title = '{{media.title}} | {% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %} | CEBIMar USP';
+$(document).ready( function(){
+  try{
+     open_tree('{{media.get_taxon_name_list_no_parents}}');
+  } catch(err){} ;
+});
+</script>
+
+</div>

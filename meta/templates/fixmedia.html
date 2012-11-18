@@ -39,6 +39,10 @@
         </li>
         {% endfor %}
     </ul>
+    <h3>Para remover:</h3>
+    {% for media in orphaned %}
+    {{media.id}},
+    {% endfor %}
     {% else %}
     Nenhuma imagem órfã.
     {% endif %}

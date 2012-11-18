@@ -1,0 +1,12 @@
+*.pyc
+*.swp
+fabfile.py
+static/*
+virtual/*
+site_media/*
+source_media/*
+local_media/*
+weblarvae.sublime*
+logs/*
+meta/migrations/*
+wiki/*

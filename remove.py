@@ -71,10 +71,15 @@ def compile_paths(media):
 
     return to_be_removed
 
-def delete(media):
+
+def delete(media, force=False):
     '''Executa a deleção.'''
     to_be_removed = compile_paths(media)
-    proceed = raw_input('Deseja continuar? (s ou n): ')
+    #TODO create arg to force input yes.
+    if force:
+        proceed = 's'
+    else:
+        proceed = raw_input('Deseja continuar? (s ou n): ')
     if proceed == 's':
         print '\nDeletando objeto...'
         media.delete()

@@ -11,6 +11,7 @@ import settings
 setup_environ(settings)
 from meta.models import *
 
+
 def check(photos, videos):
     '''Checa para ver se os IDs passados são válidos.'''
     # Fotos.
@@ -26,6 +27,7 @@ def check(photos, videos):
             sys.exit(2)
     print 'id estão beleza, continuando...'
     return True
+
 
 def compile_paths(media):
     '''Agrega arquivos que serão excluídos.'''
@@ -75,7 +77,6 @@ def compile_paths(media):
 def delete(media, force=False):
     '''Executa a deleção.'''
     to_be_removed = compile_paths(media)
-    #TODO create arg to force input yes.
     if force:
         proceed = 's'
     else:
@@ -101,6 +102,7 @@ def delete(media, force=False):
     except:
         print 'Arquivo original já não existe...'
 
+
 def prepare(photos, videos):
     '''Prepara a deleção.'''
     for id in photos:
@@ -109,6 +111,7 @@ def prepare(photos, videos):
     for id in videos:
         video = Video.objects.get(id=id)
         delete(video)
+
 
 def main(argv):
     '''Remove imagem do banco de dados e seus arquivos permanentemente.'''

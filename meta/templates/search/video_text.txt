@@ -4,7 +4,6 @@
 {{object.get_authors_list}}
 {{object.get_tag_list_pt}}
 {{object.get_taxon_name_list}}
-{{object.get_taxon_common_list_pt}}
 {{object.get_taxon_rank_list_pt}}
 {{object.sublocation.name}}
 {{object.city.name}}

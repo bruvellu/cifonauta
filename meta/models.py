@@ -38,7 +38,7 @@ class File(models.Model):
     #NOTA null e blank devem ser True
     # null está se referindo ao NULL do banco de dados e
     # blank está se referindo à interface de admin.
-    size = models.ForeignKey('Size', null=True, blank=True, 
+    size = models.ForeignKey('Size', null=True, blank=True, default='',
             verbose_name=_(u'tamanho'), help_text=_(u'Classe de tamanho do organismo na imagem.'))
     rights = models.ForeignKey('Rights', null=True, blank=True, 
             verbose_name=_(u'direitos'), help_text=_(u'Detentor dos direitos autorais da imagem.'))

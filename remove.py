@@ -113,15 +113,48 @@ def prepare(photos, videos):
         delete(video)
 
 
+def get_orphans(entries):
+    '''Get orphans and duplicates from a queryset.
+
+    Works for photos and videos, returns 2 lists.'''
+    #TODO! Use only one get_orphans function, remove from meta.views.
+    # Cria lista de órfãs e dic de duplicadas.
+    orphaned = []
+    duplicates = []
+    dups = {}
+    # Le o link com o caminho para o arquivo original.
+    # Se o original não existir, é orfã.
+    for entry in entries:
+        try:
+            original = os.readlink(entry.source_filepath)
+            if dups.has_key(original):
+                dups[original].append(entry)
+            else:
+                dups[original] = [entry]
+        except OSError:
+            orphaned.append(entry)
+        else:
+            pass
+    # Coloca na lista tudo é duplicado.
+    for k, v in dups.iteritems():
+        if len(v) > 1:
+            duplicates.append({'path': k, 'replicas': v})
+    return orphaned, duplicates
+
+
 def main(argv):
     '''Remove imagem do banco de dados e seus arquivos permanentemente.'''
     videos, photos = [], []
+    batch_remove = False
+    force_remove = False
 
     try:
-        opts, args = getopt.getopt(argv, 'hp:v:', [
+        opts, args = getopt.getopt(argv, 'hp:v:af', [
             'help',
             'photo',
             'video',
+            'all',
+            'force',
             ])
     except getopt.GetoptError:
         print 'Algo de errado nos argumentos...'
@@ -137,10 +170,31 @@ def main(argv):
         elif opt in ('-v', '--video'):
             for id in arg.split(','):
                 videos.append(id)
+        elif opt in ('-a', '--all'):
+            batch_remove = True
+        elif opt in ('-f', '--force'):
+            force_remove = True
 
-    ready = check(photos, videos)
-    if ready:
-        prepare(photos, videos)
+    if batch_remove:
+        photos = Image.objects.all()
+        orphaned_photos, duplicated_photos = get_orphans(photos)
+        videos = Video.objects.all()
+        orphaned_videos, duplicated_videos = get_orphans(videos)
+        orphaned = orphaned_photos
+        duplicates = duplicated_photos
+        orphaned.extend(orphaned_videos)
+        duplicates.extend(duplicated_videos)
+
+        # Delete orphaned and duplicates.
+        for orphan in orphaned:
+            delete(orphan, force=force_remove)
+        for duplicate in duplicates:
+            delete(duplicate, force=force_remove)
+
+    else:
+        ready = check(photos, videos)
+        if ready:
+            prepare(photos, videos)
 
 # Início do programa
 if __name__ == '__main__':

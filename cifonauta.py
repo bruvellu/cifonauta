@@ -842,9 +842,6 @@ def usage():
     print '  -p, --only-photos'
     print '\tAtualiza apenas arquivos de fotos.'
     print
-    print '  -t, --no-tsv'
-    print '\tNão força atualização do TSV.'
-    print
     print 'Exemplo:'
     print '  python cifonauta.py -fp -n 15'
     print '\tFaz a atualização forçada dos primeiros 15 fotos que o programa'
@@ -868,16 +865,14 @@ def main(argv):
     single_img = False
     only_videos = False
     only_photos = False
-    update_tsv = True
 
     # Verifica se argumentos foram passados com a execução do programa
     try:
-        opts, args = getopt.getopt(argv, 'hfvptn:', [
+        opts, args = getopt.getopt(argv, 'hfvpn:', [
             'help',
             'force-update',
             'only-videos',
             'only-photos',
-            'no-tsv',
             'n='])
     except getopt.GetoptError:
         usage()
@@ -898,12 +893,10 @@ def main(argv):
             only_videos = True
         elif opt in ('-p', '--only-photos'):
             only_photos = True
-        elif opt in ('-t', '--no-tsv'):
-            update_tsv = False
 
     # Imprime resumo do que o programa vai fazer
-    logger.debug('Argumentos: n=%d, force_update=%s, only_photos=%s, only_videos=%s, update_tsv=%s.',
-            n_max, force_update, only_photos, only_videos, update_tsv)
+    logger.debug('Argumentos: n=%d, force_update=%s, only_photos=%s, only_videos=%s.',
+            n_max, force_update, only_photos, only_videos)
 
     # Verifica e atualiza links entre pasta "oficial" e "source_media".
     linking.main()
@@ -957,21 +950,6 @@ def main(argv):
 
     # Create file for Veliger autocomplete.
     build_autocomplete()
-
-    # Força salvar todas as imagens para atualizar o TSV com traduções novas.
-    if update_tsv:
-        print u'\nATUALIZANDO TSV (pode demorar)'
-        images = Image.objects.all()
-        videos = Video.objects.all()
-        print u'das imagens...'
-        for image in images:
-            image.save()
-            print image.id, image.title
-        print u'dos vídeos...'
-        for video in videos:
-            video.save()
-            print video.id, video.title
-        print u'Feito! TSV atualizado.'
 
     # Estatísticas.
     print '\n%d ARQUIVOS ANALISADOS' % n

@@ -547,9 +547,12 @@ class Photo:
         if check_file(self.source_filepath):
             self.timestamp = datetime.fromtimestamp(
                     os.path.getmtime(self.source_filepath))
+            self.type = 'photo'
         else:
             logger.critical('Arquivo não existe: %s', self.source_filepath)
-        self.type = 'photo'
+            logger.debug('Removendo link quebrado: %s', self.source_filepath)
+            os.remove(self.source_filepath)
+            self.type = 'broken'
 
         # Diretórios
         self.site_dir = u'site_media/photos'
@@ -922,6 +925,9 @@ def main(argv):
             media = Photo(path[0])
         elif path[1] == 'video':
             media = Movie(path[0])
+        # Skip path if it is a broken link.
+        if media.type == 'broken':
+            continue
         # Busca nome do arquivo no banco de dados
         query = cbm.search_db(media)
         if not query:

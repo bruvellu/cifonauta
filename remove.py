@@ -117,28 +117,25 @@ def get_orphans(entries):
     '''Get orphans and duplicates from a queryset.
 
     Works for photos and videos, returns 2 lists.'''
-    #TODO! Use only one get_orphans function, remove from meta.views.
     # Cria lista de órfãs e dic de duplicadas.
     orphaned = []
     duplicates = []
-    dups = {}
-    # Le o link com o caminho para o arquivo original.
-    # Se o original não existir, é orfã.
+    registry = {}
     for entry in entries:
         try:
+            # Read link to original file path.
             original = os.readlink(entry.source_filepath)
-            if dups.has_key(original):
-                dups[original].append(entry)
+            # Store file path in registry, if it is already there the entry is
+            # a duplicate.
+            if original in registry:
+                duplicates.append(entry)
             else:
-                dups[original] = [entry]
+                registry[original] = [entry]
         except OSError:
+            # If original file does not exist, it is an orphan.
             orphaned.append(entry)
         else:
             pass
-    # Coloca na lista tudo é duplicado.
-    for k, v in dups.iteritems():
-        if len(v) > 1:
-            duplicates.append({'path': k, 'replicas': v})
     return orphaned, duplicates
 
 

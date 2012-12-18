@@ -94,9 +94,6 @@ class Itis:
                     self.parent['name'] = tree_data['parent_name']
                     self.parent['tsn'] = tree_data['parent_tsn']
                     self.parents = tree_data['parents']
-                    # Remove o último item, referente ao próprio táxon.
-                    # Deixa somente os parents mesmo.
-                    self.parents.pop()
 
                     # Traduz para português.
                     for taxon in self.parents:
@@ -106,7 +103,6 @@ class Itis:
                         if taxon.parentName and taxon.parentTsn:
                             taxon.parentName = unicode(taxon.parentName)
                             taxon.parentTsn = int(taxon.parentTsn)
-
 
     def translate(self, rank):
         '''Traduz nome do ranking pra português.'''
@@ -199,7 +195,7 @@ class Itis:
         '''
         logger.info('Procurando TSN de %s...', query)
 
-        # Tenta executar a busca usando o query. Caso a conexão falhe, tenta 
+        # Tenta executar a busca usando o query. Caso a conexão falhe, tenta
         # novamente.
         try:
             results = self.client.service.searchByScientificName(query)
@@ -220,7 +216,7 @@ class Itis:
         # Busca no Itis.
         results = self.search_by_scientific_name(query)
 
-        #FIXME Se ele não consegue se conectar no Itis os results vem vazios e 
+        #FIXME Se ele não consegue se conectar no Itis os results vem vazios e
         #dá erro!
         # Le os resultados para encontrar o táxon.
         if results.scientificNames:
@@ -238,7 +234,7 @@ class Itis:
                     data['name'] = self.fix(taxon.combinedName)
                     data['tsn'] = taxon.tsn
                     data['valid'] = self.is_valid(taxon.tsn)
-                    logger.info('Táxon com nome exato encontrado: %s', 
+                    logger.info('Táxon com nome exato encontrado: %s',
                             data['name'])
                 elif len(theone) > 1:
                     # Checa qual destes táxons é válido.
@@ -249,7 +245,7 @@ class Itis:
                             data['name'] = self.fix(entry.combinedName)
                             data['tsn'] = entry.tsn
                             data['valid'] = True
-                            logger.info('Táxon válido encontrado: %s', 
+                            logger.info('Táxon válido encontrado: %s',
                                     data['name'])
                             # Assume que só existe 1 táxon oficialmente aceito.
                             #TODO Verificar isso...
@@ -331,13 +327,20 @@ class Itis:
             data['rank'] = self.translate(u'Kingdom')
             data['parents'] = hierarchy.hierarchyList
         else:
+            # Define new sliced tree without children.
+            tree_up = []
+            # Remove children from tree.
+            for node in hierarchy.hierarchyList:
+                tree_up.append(node)
+                if node.tsn == tsn:
+                    break
             # Último ítem é o táxon em questão.
-            taxon = hierarchy.hierarchyList[-1]
+            taxon = tree_up.pop()
             # Salva propriedades.
             data['rank'] = self.translate(taxon.rankName)
             data['parent_name'] = unicode(taxon.parentName)
             data['parent_tsn'] = int(taxon.parentTsn)
-            data['parents'] = hierarchy.hierarchyList
+            data['parents'] = tree_up
         return data
 
     def search_genus(self):
@@ -382,6 +385,7 @@ class Itis:
         taxon.save()
         logger.debug('%s salvo!', self.name)
         return taxon
+
 
 def main():
     pass

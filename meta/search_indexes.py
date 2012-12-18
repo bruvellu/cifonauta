@@ -1,6 +1,6 @@
 from haystack import indexes
 from django.utils.translation import get_language
-from models import Image, Author, Tag, Taxon, Video
+from models import Image, Video
 
 import unicodedata
 

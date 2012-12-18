@@ -13,11 +13,8 @@ from django.db.transaction import commit_on_success
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-#from django.core.cache import cache
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
-from django.utils.translation import get_language
 
-from itis import Itis
 from remove import compile_paths
 from meta.search_indexes import MlSearchQuerySet, strip_accents
 from django.http import HttpResponse
@@ -25,6 +22,7 @@ import json
 
 # Instancia logger do cifonauta.
 logger = logging.getLogger('central.views')
+
 
 # Main
 @csrf_protect
@@ -67,7 +65,6 @@ def main_page(request):
     return render_to_response('main_page.html', variables)
 
 
-
 def search_page(request):
     # Define formulários.
     form = SearchForm()
@@ -91,8 +88,8 @@ def search_page(request):
             u'type': [],
             }
     # Define variáveis principais.
-    image_list = MlSearchQuerySet().filter(is_image=True)#Image.objects.filter(is_public=True)
-    video_list = MlSearchQuerySet().filter(is_video=True)#Video.objects.filter(is_public=True)
+    image_list = MlSearchQuerySet().filter(is_image=True)  # Image.objects.filter(is_public=True)
+    video_list = MlSearchQuerySet().filter(is_video=True)  # Video.objects.filter(is_public=True)
 
     show_results = False
     full_results = True
@@ -120,7 +117,6 @@ def search_page(request):
             # Limpa espaços extras.
             query = request.GET['query'].strip()
             if query:
-                    
                 # Ajusta busca textual para locale do usuário, 'portuguese' padrão.
                 image_list = image_list.auto_query(query)
                 video_list = video_list.auto_query(query)
@@ -129,7 +125,7 @@ def search_page(request):
                 # Passa valor para as queries.
                 queries['query'] = query
                 full_results = False
-                
+
         # Author
         if 'author' in request.GET:
             authors = request.GET['author'].split(',')
@@ -170,12 +166,12 @@ def search_page(request):
 #                    qim.append(Q(**{'id':im.id}))
 #                for vid in taxon.videos.all():
 #                    qvid.append(Q(**{'id':vid.id}))
-                qim.append(Q(**{'taxon':taxon.id}))
-                qvid.append(Q(**{'taxon':taxon.id}))
+                qim.append(Q(**{'taxon': taxon.id}))
+                qvid.append(Q(**{'taxon': taxon.id}))
                 children = taxon.get_descendants()
                 for child in children:
-                    qim.append(Q(**{'taxon':child.id}))
-                    qvid.append(Q(**{'taxon':child.id}))
+                    qim.append(Q(**{'taxon': child.id}))
+                    qvid.append(Q(**{'taxon': child.id}))
 #                    for im in child.images.all():
 #                        qim.append(Q(**{'id': im.id}))
 #                    for vid in child.videos.all():
@@ -235,12 +231,10 @@ def search_page(request):
             video_list = video_list.filter(highlight=1)
 #            full_results = False
 
-        
-
 #        # Substitui 'random' por '?'
         if orderby in ('?', 'random', 'id'):
             orderby = 'id'
-            
+
         if order == 'desc':
             orderby = '-' + orderby
 #
@@ -256,14 +250,13 @@ def search_page(request):
         # Popula formulário de busca com o query.
         form = SearchForm()
         # Passa valor para as queries.
-        queries['query'] = ''   
+        queries['query'] = ''
         n_page = 20
         show_results = True
     # Retorna lista paginada.
     images = get_paginated(request, image_list, n_page)
     videos = get_paginated(request, video_list, n_page)
-        
-        
+
     # Gera keywords.
     #XXX Usar essa lista para processar os querysets acima?
     keylist = []
@@ -288,7 +281,7 @@ def search_page(request):
         'keywords': keywords,
         })
     return render_to_response('buscar.html', variables)
-        
+
 
 def org_page(request):
     '''Página mostrando a organização dos metadados.
@@ -324,6 +317,7 @@ def org_page(request):
         })
     return render_to_response('organizacao.html', variables)
 
+
 # Manage
 @login_required
 def hidden_page(request):
@@ -338,6 +332,7 @@ def hidden_page(request):
         'videos': videos,
         })
     return render_to_response('hidden.html', variables)
+
 
 @login_required
 def fixmedia_page(request):
@@ -390,14 +385,16 @@ def fixmedia_page(request):
         })
     return render_to_response('fixmedia.html', variables)
 
+
 @login_required
 def translate_page(request):
     '''Página inicial para traduções.'''
     variables = RequestContext(request, {})
     return render_to_response('translate.html', variables)
 
+
 # Single
-@commit_on_success #TODO Colocar save em função separada?
+@commit_on_success  # TODO Colocar save em função separada?
 def photo_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''
     # Pega o objeto.
@@ -513,7 +510,8 @@ def photo_page(request, image_id):
     else:
         return render_to_response('media_page.html', variables)
 
-@commit_on_success #TODO Colocar save em função separada?
+
+@commit_on_success  # TODO Colocar save em função separada?
 def video_page(request, video_id):
     '''Página única de cada vídeo com todas as informações.'''
     # Pega o objeto.
@@ -538,7 +536,7 @@ def video_page(request, video_id):
                 # Pega a lista de tours ligadas ao vídeo.
                 video_tours = video.tour_set.values_list('id', flat=True)
                 # Define lista de tours submetidos no formulário.
-                form_tours = [int(id) for id in 
+                form_tours = [int(id) for id in
                         admin_form.cleaned_data['tours']]
                 # Usa sets para descobrir vídeos que foram removidas,
                 remove_video = set(video_tours) - set(form_tours)
@@ -633,14 +631,15 @@ def video_page(request, video_id):
     else:
         return render_to_response('media_page.html', variables)
 
+
 def embed_page(request, video_id):
     '''Página para embed dos vídeos.'''
     video = get_object_or_404(Video, id=video_id)
-    stats = video.stats
     variables = RequestContext(request, {
         'media': video,
         })
     return render_to_response('embed.html', variables)
+
 
 def meta_page(request, model_name, field, slug):
     '''Página de um metadado.
@@ -671,7 +670,7 @@ def meta_page(request, model_name, field, slug):
             u'type': [],
             }
 
-    #XXX Serve para identificar o field na meta_page. Mas precisa ser 
+    #XXX Serve para identificar o field na meta_page. Mas precisa ser
     # um queryset para rolar o values_list do show_info no extra_tags.
     # Se possível otimizar isso.
     qmodels = model_name.objects.filter(slug__in=[slug])
@@ -682,17 +681,17 @@ def meta_page(request, model_name, field, slug):
 
     # Constrói argumentos.
     filter_args = {field: model.id, 'is_public': True}
-    
+
     if field == 'taxon':
-        q = [Q(**filter_args),]
+        q = [Q(**filter_args), ]
         q = recurse(model, q)
-        image_list = MlSearchQuerySet().filter(is_image=True).filter(reduce(operator.or_, q))#.order_by(orderby)
-        video_list = MlSearchQuerySet().filter(is_video=True).filter(reduce(operator.or_, q))#.order_by(orderby)
+        image_list = MlSearchQuerySet().filter(is_image=True).filter(reduce(operator.or_, q))  # .order_by(orderby)
+        video_list = MlSearchQuerySet().filter(is_video=True).filter(reduce(operator.or_, q))  # .order_by(orderby)
         #XXX Retirei o .distinct() destes queries. Conferir...
     else:
-        image_list = MlSearchQuerySet().filter(is_image=True).filter(**filter_args)#.order_by(orderby)
-        video_list = MlSearchQuerySet().filter(is_video=True).filter(**filter_args)#.order_by(orderby)
-    
+        image_list = MlSearchQuerySet().filter(is_image=True).filter(**filter_args)  # .order_by(orderby)
+        video_list = MlSearchQuerySet().filter(is_video=True).filter(**filter_args)  # .order_by(orderby)
+
     # Restringe aos destaques.
     if highlight:
         image_list = image_list.filter(highlight=1)
@@ -727,6 +726,7 @@ def meta_page(request, model_name, field, slug):
         })
     return render_to_response('meta_page.html', variables)
 
+
 def tour_page(request, slug):
     '''Página única de cada tour.'''
     tour = get_object_or_404(Tour, slug=slug)
@@ -760,17 +760,19 @@ def tour_page(request, slug):
         })
     return render_to_response('tour_page.html', variables)
 
+
 # Menu
 def taxa_page(request):
     '''Página mostrando grupos taxonômicos de maneira organizada.
 
-    Lista de espécies é, na verdade, lista de gêneros para que apareçam os 
+    Lista de espécies é, na verdade, lista de gêneros para que apareçam os
     diversos táxons cuja espécie não está definida (ie, Gênero sp.).'''
     genera = Taxon.objects.filter(rank=u'Gênero').order_by('name')
     variables = RequestContext(request, {
         'genera': genera,
         })
     return render_to_response('taxa_page.html', variables)
+
 
 def places_page(request):
     '''Página mostrando locais de maneira organizada.'''
@@ -786,6 +788,7 @@ def places_page(request):
         })
     return render_to_response('places_page.html', variables)
 
+
 def tags_page(request):
     '''Página mostrando tags organizados por categoria.'''
     tagcats = TagCategory.objects.select_related('tags').exclude(name='Modo de vida')
@@ -795,6 +798,7 @@ def tags_page(request):
         'sizes': sizes,
         })
     return render_to_response('tags_page.html', variables)
+
 
 def authors_page(request):
     '''Página mostrando autores e especialistas.'''
@@ -806,6 +810,7 @@ def authors_page(request):
         })
     return render_to_response('authors_page.html', variables)
 
+
 def refs_page(request):
     '''Página mostrando referências.'''
     references = Reference.objects.order_by('-citation')
@@ -814,16 +819,19 @@ def refs_page(request):
         })
     return render_to_response('refs_page.html', variables)
 
+
 # Tests
 def empty_page(request):
     '''Página com template vazio somente para testes de performance.'''
     variables = RequestContext(request, {})
     return render_to_response('empty_page.html', variables)
 
+
 def static_page(request):
     '''Página estática somente para testes de performance.'''
     variables = RequestContext(request, {})
     return render_to_response('static_page.html', variables)
+
 
 def dynamic_page(request):
     '''Página dinâmica somente para testes de performance.'''
@@ -833,6 +841,7 @@ def dynamic_page(request):
         })
     return render_to_response('dynamic_page.html', variables)
 
+
 def tours_page(request):
     '''Página mostrando lista de tours disponíveis.'''
     tours = Tour.objects.order_by('-pub_date')
@@ -840,6 +849,7 @@ def tours_page(request):
         'tours': tours,
         })
     return render_to_response('tours_page.html', variables)
+
 
 @csrf_protect
 def press_page(request):
@@ -857,8 +867,8 @@ def press_page(request):
         })
     return render_to_response('press_page.html', variables)
 
-# Internal functions
 
+# Internal functions
 def catch_get(keys, get):
     '''Checa se alguma das chaves está no request.GET.'''
     for key in keys:
@@ -868,6 +878,7 @@ def catch_get(keys, get):
             continue
     else:
         False
+
 
 def get_paginated(request, obj_list, n_page=16):
     '''Retorna o Paginator de um queryset.'''
@@ -884,6 +895,7 @@ def get_paginated(request, obj_list, n_page=16):
         obj = paginator.page(paginator.num_pages)
     return obj
 
+
 def recurse(taxon, q=None):
     '''Recursivamente retorna todos os táxons-filho em um Q object.'''
     if not q:
@@ -892,6 +904,7 @@ def recurse(taxon, q=None):
     for child in children:
         q.append(Q(**{'taxon': child.id}))
     return q
+
 
 def get_orphans(entries):
     '''Get orphans and duplicates from a queryset.
@@ -920,6 +933,7 @@ def get_orphans(entries):
             duplicates.append({'path': k, 'replicas': v})
     return orphaned, duplicates
 
+
 def show_info(image_list, video_list, queries, full_results=False):
     '''Extrai metadados das imagens e exclui o que estiver nas queries.
 
@@ -930,14 +944,14 @@ def show_info(image_list, video_list, queries, full_results=False):
     Retorna 3 objetos: data, queries e urls.
     '''
     if full_results:
-        authors = Author.objects.exclude(images__isnull=True, videos__isnull=True) 
-        taxa = Taxon.objects.exclude(images__isnull=True, videos__isnull=True)  
+        authors = Author.objects.exclude(images__isnull=True, videos__isnull=True)
+        taxa = Taxon.objects.exclude(images__isnull=True, videos__isnull=True)
         sizes = Size.objects.all()
-        sublocations = Sublocation.objects.all() 
-        cities = City.objects.all() 
-        states = State.objects.all() 
-        countries = Country.objects.all() 
-        tags = Tag.objects.exclude(images__isnull=True, videos__isnull=True) 
+        sublocations = Sublocation.objects.all()
+        cities = City.objects.all()
+        states = State.objects.all()
+        countries = Country.objects.all()
+        tags = Tag.objects.exclude(images__isnull=True, videos__isnull=True)
     else:
         authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(image_list, video_list)
     for k, v in queries.iteritems():
@@ -964,7 +978,7 @@ def show_info(image_list, video_list, queries, full_results=False):
                 queries[k] = v.values()
             except:
                 pass
-    
+
     # A partir daqui somente "values", sem objetos.
     data = {
             'author': authors.values(),
@@ -1011,6 +1025,7 @@ def show_info(image_list, video_list, queries, full_results=False):
 
     return data, queries, urls
 
+
 def control_form(request):
     '''Build the control form and return options.'''
     # Usando POST para definir:
@@ -1027,8 +1042,8 @@ def control_form(request):
             request.session['orderby'] = n_form.data['orderby']
             order = n_form.data['order']
             request.session['order'] = n_form.data['order']
-            #XXX Meio bizarro, formulário não está mandando False, quando 
-            # destaque é falso. Está enviando vazio e quando é True está 
+            #XXX Meio bizarro, formulário não está mandando False, quando
+            # destaque é falso. Está enviando vazio e quando é True está
             # mandando a string 'on'.
             try:
                 highlight = n_form.data['highlight']
@@ -1060,12 +1075,13 @@ def control_form(request):
 
     return n_form, n_page, orderby, order, highlight
 
+
 def extract_set(image_list, video_list):
     '''Extrai outros metadados das imagens buscadas.
 
     Retorna querysets de cada modelo.
     '''
-    
+
     if image_list:
         image_ids = image_list.values_list('pk', flat=True)
     else:
@@ -1080,35 +1096,43 @@ def extract_set(image_list, video_list):
         .facet('author').facet('tag').facet('taxon').facet_counts()['fields']
     video_facets = video_list.facet('size').facet('sublocation')\
         .facet('city').facet('state').facet('country')\
-        .facet('author').facet('tag').facet('taxon').facet_counts()['fields']   
+        .facet('author').facet('tag').facet('taxon').facet_counts()['fields']
 
     refined_authors = Author.objects.filter(
-            Q(id__in = [i[0] for i in image_facets['author']]) | 
-            Q(id__in = [i[0] for i in video_facets['author']]) )
+            Q(id__in=[i[0] for i in image_facets['author']]) |
+            Q(id__in=[i[0] for i in video_facets['author']])
+            )
     refined_tags = Tag.objects.filter(
-            Q(id__in = [i[0] for i in image_facets['tag']]) | 
-            Q(id__in = [i[0] for i in video_facets['tag']]) )
+            Q(id__in=[i[0] for i in image_facets['tag']]) |
+            Q(id__in=[i[0] for i in video_facets['tag']])
+            )
     refined_taxons = Taxon.objects.filter(
-            Q(id__in = [i[0] for i in image_facets['taxon']]) | 
-            Q(id__in = [i[0] for i in video_facets['taxon']]) )
-
+            Q(id__in=[i[0] for i in image_facets['taxon']]) |
+            Q(id__in=[i[0] for i in video_facets['taxon']])
+            )
     refined_sizes = Size.objects.filter(
-            Q(id__in = [i[0] for i in image_facets['size']]) | 
-            Q(id__in = [i[0] for i in video_facets['size']]) )
+            Q(id__in=[i[0] for i in image_facets['size']]) |
+            Q(id__in=[i[0] for i in video_facets['size']])
+            )
     refined_sublocations = Sublocation.objects.filter(
-            Q(id__in = [i[0] for i in image_facets['sublocation']]) | 
-            Q(id__in = [i[0] for i in video_facets['sublocation']]) )
+            Q(id__in=[i[0] for i in image_facets['sublocation']]) |
+            Q(id__in=[i[0] for i in video_facets['sublocation']])
+            )
     refined_cities = City.objects.filter(
-            Q(id__in = [i[0] for i in image_facets['city']]) | 
-            Q(id__in = [i[0] for i in video_facets['city']]) )
+            Q(id__in=[i[0] for i in image_facets['city']]) |
+            Q(id__in=[i[0] for i in video_facets['city']])
+            )
     refined_states = State.objects.filter(
-            Q(id__in = [i[0] for i in image_facets['state']]) | 
-            Q(id__in = [i[0] for i in video_facets['state']]) )
+            Q(id__in=[i[0] for i in image_facets['state']]) |
+            Q(id__in=[i[0] for i in video_facets['state']])
+            )
     refined_countries = Country.objects.filter(
-            Q(id__in = [i[0] for i in image_facets['country']]) | 
-            Q(id__in = [i[0] for i in video_facets['country']]) )
+            Q(id__in=[i[0] for i in image_facets['country']]) |
+            Q(id__in=[i[0] for i in video_facets['country']])
+            )
 
     return refined_authors, refined_taxons, refined_sizes, refined_sublocations, refined_cities, refined_states, refined_countries, refined_tags
+
 
 def add_meta(meta, field, query):
     '''Adiciona metadado à lista de query.
@@ -1128,44 +1152,45 @@ def add_meta(meta, field, query):
         final_query = [meta]
     return final_query
 
+
 def build_url(meta, field, queries, remove=False, append=None):
     '''Constrói o url para lidar com o refinamento.
 
     Descrição dos campos:
-        - meta: valor do campo do request.GET, pode ser 'photo' ou o slug de 
+        - meta: valor do campo do request.GET, pode ser 'photo' ou o slug de
           algum metadado.
         - field: nome do campo do request.GET, 'type', 'author', 'tag', etc.
-        - queries: dicionário com field:meta passados pelo request.GET, será 
+        - queries: dicionário com field:meta passados pelo request.GET, será
           usado para construir o url.
-        - remove: se verdadeiro, a função irá limpar dos queries o meta do 
-          field passado como argumento, excluindo o valor do url final. Usado 
+        - remove: se verdadeiro, a função irá limpar dos queries o meta do
+          field passado como argumento, excluindo o valor do url final. Usado
           para criar os urls do 'menos' no refinamento (metadados ativos).
-        - XXX provavelmente será deprecada >> append: string extra que pode 
-          ser passada como argumento para ter maior flexibilidade na hora de 
+        - XXX provavelmente será deprecada >> append: string extra que pode
+          ser passada como argumento para ter maior flexibilidade na hora de
           criar os urls no template.
 
-    A função começa com o prefixo base '/search/?' e acrescenta ou remove os 
+    A função começa com o prefixo base '/search/?' e acrescenta ou remove os
     valores de acordo com os parâmetros acima.
 
-    Se remove=True o valor meta é retirado das queries, caso contrário é 
-    adicionado. Para cada ítem não-vazio é criado uma string concatenada e 
-    adicionada ao prefixo original. Os valores podem ser strings (type e query) 
-    ou listas (tags, authors, etc). Por isso é preciso usar condicionais para 
+    Se remove=True o valor meta é retirado das queries, caso contrário é
+    adicionado. Para cada ítem não-vazio é criado uma string concatenada e
+    adicionada ao prefixo original. Os valores podem ser strings (type e query)
+    ou listas (tags, authors, etc). Por isso é preciso usar condicionais para
     diferenciar os dois tipos na hora de criar a string a ser adicionada.
 
-    Após adicionar todos os valores das queries ele checa a existência do 
-    append e acrescenta ao final do prefixo. O único caso peculiar é não 
-    incluir o type=all no url quando houver os parâmetros. O type=all só é 
-    usado quando o url estiver vazio (ie, '/search/?type=all') para mostrar 
+    Após adicionar todos os valores das queries ele checa a existência do
+    append e acrescenta ao final do prefixo. O único caso peculiar é não
+    incluir o type=all no url quando houver os parâmetros. O type=all só é
+    usado quando o url estiver vazio (ie, '/search/?type=all') para mostrar
     todos os arquivos sem nenhum refinamento.
 
-    Por fim, é extremamente importante que as queries saiam da função 
-    exatamente como entraram (com os mesmos valores). Nos loops do refinador 
-    para gerar os urls dos metadados, uma modificação nas queries afeta a 
-    construção do próximo url. Assim, se o valor de meta foi removido ele deve 
+    Por fim, é extremamente importante que as queries saiam da função
+    exatamente como entraram (com os mesmos valores). Nos loops do refinador
+    para gerar os urls dos metadados, uma modificação nas queries afeta a
+    construção do próximo url. Assim, se o valor de meta foi removido ele deve
     ser recolocado e se o valor foi adicionado ele deve ser removido.
 
-    XXX Não encontrei um jeito de contornar a situação acima. Instanciar o 
+    XXX Não encontrei um jeito de contornar a situação acima. Instanciar o
     'queries' em um novo objeto não resolve.
 
     A função retorna uma string com o url.
@@ -1173,10 +1198,10 @@ def build_url(meta, field, queries, remove=False, append=None):
     # Usado para diferenciar o primeiro query que não precisa do '&'.
     first = True
     prefix = '/search/?'
-    #XXX Ao passar manualmente o tipo de busca para os urls do search-status, 
-    # ele acaba recolocando, no final desta função, o campo type:photo. Isso 
-    # gera um problema, pois o queries original não continha o type (que foi 
-    # passado só para gerar estes urls). Assim, criei esta variável para não 
+    #XXX Ao passar manualmente o tipo de busca para os urls do search-status,
+    # ele acaba recolocando, no final desta função, o campo type:photo. Isso
+    # gera um problema, pois o queries original não continha o type (que foi
+    # passado só para gerar estes urls). Assim, criei esta variável para não
     # colocar o type no queries quando este não estiverem no queries original.
     do_not_readd = False
 
@@ -1228,7 +1253,7 @@ def build_url(meta, field, queries, remove=False, append=None):
         if prefix[-1] == '?':
             prefix = prefix + append
         else:
-            # Não acrescentar o type=all quando o url não estiver vazio (outros 
+            # Não acrescentar o type=all quando o url não estiver vazio (outros
             # metadados presentes).
             if not append == 'type=all':
                 prefix = prefix + '&' + append
@@ -1256,19 +1281,20 @@ def build_url(meta, field, queries, remove=False, append=None):
             queries[field] = [q for q in queries[field] if not q['slug'] == meta['slug']]
     return url
 
+
 @csrf_exempt
 def ajax_autocomplete(request):
-    limit = 5 # max results in number
-    max_str = 30 # max result text size, in chars
-    search_query = strip_accents(request.GET.get('q', '')) # get without accents query
+    limit = 5  # max results in number
+    max_str = 30  # max result text size, in chars
+    search_query = strip_accents(request.GET.get('q', ''))  # get without accents query
     query = MlSearchQuerySet().autocomplete(content_auto=search_query)
     results = query.values('title', 'rendered', 'thumb', 'url')
-    suffix = query.get_language_suffix() # get language suffix to 'languaged' fields
-    final_results = [] # array of results
+    suffix = query.get_language_suffix()  # get language suffix to 'languaged' fields
+    final_results = []  # array of results
     titles = []
     for d in results:
-        text = d['rendered%s'%suffix]
-        title = d['title%s'%suffix]
+        text = d['rendered%s' % suffix]
+        title = d['title%s' % suffix]
         thumb = d['thumb']
         url = d['url']
         if limit <= 0:
@@ -1279,16 +1305,16 @@ def ajax_autocomplete(request):
             titles.append(title)
             label = ''
             desc = title
-            if text: # if there is a text field, otherwise search is not cached
+            if text:  # if there is a text field, otherwise search is not cached
                 for t in text.split("\n"):
                     if search_query.lower() in t.lower():
-                        ts = t.split(":") # : separates label from real text, in the rendered field
+                        ts = t.split(":")  # : separates label from real text, in the rendered field
                         label = ts[0]
                         desc = ":".join(ts[1:])
-                        if len(t) > max_str: # cut str if it's too long
+                        if len(t) > max_str:  # cut str if it's too long
                             i = desc.lower().find(search_query.lower())
-                            start = max(0, i - max_str/2)
-                            end = min(len(desc), i + max_str/2)
+                            start = max(0, i - max_str / 2)
+                            end = min(len(desc), i + max_str / 2)
                             desc = '...' + desc[start:end] + '...'
                         break
             final_results.append({'title': title, 'desc': desc, 'label': label, 'thumb': thumb, 'url': url})

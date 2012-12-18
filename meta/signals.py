@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from django.db.models import signals
 from django.template.defaultfilters import slugify
 
 from external.mendeley import mendeley
+
 
 # Não é signal, apenas função acessória.
 #XXX Trocar de lugar, eventualmente.
 def citation_html(reference):
     '''Retorna citação formatada em HTML.
 
-    Citação é gerada através do objeto que o Mendeley API retorna com os 
+    Citação é gerada através do objeto que o Mendeley API retorna com os
     campos.
+
     '''
     citation = u''
     keys = ['year', 'authors', 'title', 'publication_outlet', 'volume',
@@ -58,14 +59,15 @@ def citation_html(reference):
             elif key == 'url':
                 # Lidar com múltiplos urls por citação.
                 first_url = reference['url'].split('\n')[0]
-                citation += u', url:<a href="%s">%s</a>' % (first_url, 
+                citation += u', url:<a href="%s">%s</a>' % (first_url,
                         first_url)
     return citation
+
 
 def citation_pre_save(signal, instance, sender, **kwargs):
     '''Cria citação em HTML a partir da bibkey.
 
-    Usa o ID da entrada (= Mendeley ID) para pegar os dados da referência via 
+    Usa o ID da entrada (= Mendeley ID) para pegar os dados da referência via
     Mendeley API.
     Manda o objeto para função que gera o html com a citação da referência.
     Salva a citação no banco.
@@ -107,11 +109,13 @@ def citation_pre_save(signal, instance, sender, **kwargs):
     citation = citation_html(reference)
     instance.citation = citation
 
+
 def slug_pre_save(signal, instance, sender, **kwargs):
     '''Cria slug antes de salvar.'''
     if not instance.slug:
         slug = slugify(instance.name)
         instance.slug = slug
+
 
 def update_count(signal, instance, sender, **kwargs):
     '''Atualiza o contador de fotos e vídeos.'''
@@ -164,6 +168,7 @@ def update_count(signal, instance, sender, **kwargs):
     if instance.country:
         instance.country.counter()
 
+
 def makestats(signal, instance, sender, **kwargs):
     '''Cria objeto stats se não existir.'''
     if not instance.stats:
@@ -171,6 +176,7 @@ def makestats(signal, instance, sender, **kwargs):
         newstats = Stats()
         newstats.save()
         instance.stats = newstats
+
 
 def set_position(signal, instance, sender, **kwargs):
     '''Cria objeto com posição no tour, se não existir.'''

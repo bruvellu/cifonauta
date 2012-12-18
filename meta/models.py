@@ -12,11 +12,11 @@ from django.db.models import Q
 class File(models.Model):
     '''Define campos comuns para arquivos de mídia.'''
     # File
-    source_filepath = models.CharField(_(u'arquivo fonte local'), 
+    source_filepath = models.CharField(_(u'arquivo fonte local'),
             max_length=200, blank=True, help_text=_(u'Arquivo fonte na pasta local.'))
-    thumb_filepath = models.ImageField(_(u'thumbnail web'), 
+    thumb_filepath = models.ImageField(_(u'thumbnail web'),
             upload_to='site_media/images/thumbs', help_text=_(u'Pasta que guarda thumbnails.'))
-    old_filepath = models.CharField(_(u'arquivo fonte original'), 
+    old_filepath = models.CharField(_(u'arquivo fonte original'),
             max_length=200, blank=True, help_text=_(u'Caminho para o arquivo original.'))
     timestamp = models.DateTimeField(_(u'data de modificação'),
             help_text=_(u'Data da última modificação do arquivo.'))
@@ -24,7 +24,7 @@ class File(models.Model):
     # Website
     highlight = models.BooleanField(_(u'destaque'), default=False, help_text=_(u'Imagem que merece destaque.'))
     cover = models.BooleanField(_(u'imagem de capa'), default=False, help_text=_(u'Imagem esteticamente bela, para usar na página principal.'))
-    stats = models.OneToOneField('Stats', null=True, editable=False, 
+    stats = models.OneToOneField('Stats', null=True, editable=False,
             verbose_name=_(u'estatísticas'),
             help_text=_(u'Reúne estatísticas sobre a imagem.'))
     is_public = models.BooleanField(_(u'público'), default=False, help_text=_(u'Informa se imagem está visível para visitantes anônimos do site.'))
@@ -40,26 +40,26 @@ class File(models.Model):
     # blank está se referindo à interface de admin.
     size = models.ForeignKey('Size', null=True, blank=True, default='',
             verbose_name=_(u'tamanho'), help_text=_(u'Classe de tamanho do organismo na imagem.'))
-    rights = models.ForeignKey('Rights', null=True, blank=True, 
+    rights = models.ForeignKey('Rights', null=True, blank=True,
             verbose_name=_(u'direitos'), help_text=_(u'Detentor dos direitos autorais da imagem.'))
-    sublocation = models.ForeignKey('Sublocation', null=True, blank=True, 
+    sublocation = models.ForeignKey('Sublocation', null=True, blank=True,
             verbose_name=_(u'local'), help_text=_(u'Localidade mostrada na imagem (ou local de coleta).'))
-    city = models.ForeignKey('City', null=True, blank=True, 
+    city = models.ForeignKey('City', null=True, blank=True,
             verbose_name=('cidade'), help_text=_(u'Cidade mostrada na imagem (ou cidade de coleta).'))
-    state = models.ForeignKey('State', null=True, blank=True, 
+    state = models.ForeignKey('State', null=True, blank=True,
             verbose_name=_(u'estado'), help_text=_(u'Estado mostrado na imagem (ou estado de coleta).'))
-    country = models.ForeignKey('Country', null=True, blank=True, 
+    country = models.ForeignKey('Country', null=True, blank=True,
             verbose_name=_(u'país'), help_text=_(u'País mostrado na imagem (ou país de coleta).'))
 
     # EXIF
     date = models.DateTimeField(_(u'data'), blank=True, help_text=_(u'Data em que a imagem foi criada.'))
-    geolocation = models.CharField(_(u'geolocalização'), max_length=25, 
+    geolocation = models.CharField(_(u'geolocalização'), max_length=25,
             blank=True, help_text=_(u'Geolocalização da imagem no formato decimal.'))
     latitude = models.CharField(_(u'latitude'), max_length=12, blank=True, help_text=_(u'Latitude onde foi criada a imagem.'))
     longitude = models.CharField(_(u'longitude'), max_length=12, blank=True, help_text=_(u'Longitude onde foi criada a imagem.'))
 
-
     __metaclass__ = TransMeta
+
     class Meta:
         abstract = True
         verbose_name = _(u'arquivo')
@@ -72,38 +72,44 @@ class File(models.Model):
         else:
             name = field_name
         results = []
-        return separator.join( obj_set.values_list(name, flat=True) )
+        return separator.join(obj_set.values_list(name, flat=True))
 
     def get_authors_list(self, separator=','):
         return self._get_list(self.author_set, separator=separator)
+
     def get_tag_list_pt(self):
         return self._get_list(self.tag_set, lang='pt')
+
     def get_tag_list_en(self):
         return self._get_list(self.tag_set, lang='en')
 
     def get_taxon_name_list_no_parents(self):
-        return str(self.taxon_set.values_list('pk', flat=True))[1:-1] 
-    
+        return str(self.taxon_set.values_list('pk', flat=True))[1:-1]
+
     def get_taxon_name_list(self):
         return self._get_list(Taxon.get_taxon_and_parents(self.taxon_set))
+
     def get_taxon_common_list_pt(self):
         return self._get_list(Taxon.get_taxon_and_parents(self.taxon_set), field_name='common', lang='pt')
+
     def get_taxon_common_list_en(self):
         return self._get_list(Taxon.get_taxon_and_parents(self.taxon_set), field_name='common', lang='en')
+
     def get_taxon_rank_list_pt(self):
         return self._get_list(self.taxon_set, field_name='rank', lang='pt')
+
     def get_taxon_rank_list_en(self):
         return self._get_list(self.taxon_set, field_name='rank', lang='en')
-        
+
     def get_sources_list(self, separator=','):
         return separator.join(
             self.source_set.values_list("name", flat=True))
 
 
 class Image(File):
-    web_filepath = models.ImageField(_(u'arquivo web'), 
+    web_filepath = models.ImageField(_(u'arquivo web'),
             upload_to='site_media/images/', help_text=_(u'Caminho para o arquivo web.'))
-    datatype = models.CharField(_(u'tipo de mídia'), max_length=10, 
+    datatype = models.CharField(_(u'tipo de mídia'), max_length=10,
             default='photo', help_text=_(u'Tipo de mídia.'))
 
     def __unicode__(self):
@@ -117,21 +123,20 @@ class Image(File):
         verbose_name = _(u'foto')
         verbose_name_plural = _(u'fotos')
         ordering = ['id']
-        
 
 
 class Video(File):
-    webm_filepath = models.FileField(_(u'arquivo webm'), 
+    webm_filepath = models.FileField(_(u'arquivo webm'),
             upload_to='site_media/videos/', blank=True, help_text=_(u'Caminho para o arquivo WEBM.'))
-    ogg_filepath = models.FileField(_(u'arquivo ogg'), 
+    ogg_filepath = models.FileField(_(u'arquivo ogg'),
             upload_to='site_media/videos/', blank=True, help_text=_(u'Caminho para o arquivo OGG.'))
-    mp4_filepath = models.FileField(_(u'arquivo mp4'), 
+    mp4_filepath = models.FileField(_(u'arquivo mp4'),
             upload_to='site_media/videos/', blank=True, help_text=_(u'Caminho para o arquivo MP4.'))
-    datatype = models.CharField(_(u'tipo de mídia'), max_length=10, 
+    datatype = models.CharField(_(u'tipo de mídia'), max_length=10,
             default='video', help_text=_(u'Tipo de mídia.'))
-    large_thumb = models.ImageField(_(u'thumbnail grande'), 
+    large_thumb = models.ImageField(_(u'thumbnail grande'),
             upload_to='site_media/images/thumbs', help_text=_(u'Caminho para o thumbnail grande do vídeo.'))
-    duration = models.CharField(_(u'duração'), max_length=20, 
+    duration = models.CharField(_(u'duração'), max_length=20,
             default='00:00:00', help_text=_(u'Duração do vídeo no formato HH:MM:SS.'))
     dimensions = models.CharField(_(u'dimensões'), max_length=20, default='0x0', help_text=_(u'Dimensões do vídeo original.'))
     codec = models.CharField(_(u'codec'), max_length=20, default='', help_text=_(u'Codec do vídeo original.'))
@@ -152,11 +157,11 @@ class Video(File):
 class Author(models.Model):
     name = models.CharField(_(u'nome'), max_length=200, unique=True, help_text=_(u'Nome do autor.'))
     slug = models.SlugField(_(u'slug'), max_length=200, blank=True, help_text=_(u'Slug do nome do autor.'))
-    images = models.ManyToManyField(Image, null=True, blank=True, 
+    images = models.ManyToManyField(Image, null=True, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este autor.'))
-    videos = models.ManyToManyField(Video, null=True, blank=True, 
+    videos = models.ManyToManyField(Video, null=True, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este autor.'))
-    image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0, 
+    image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0,
             editable=False, help_text=_(u'Número de fotos associadas a este autor.'))
     video_count = models.PositiveIntegerField(_(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associados a este autor.'))
 
@@ -185,11 +190,11 @@ class Author(models.Model):
 class Source(models.Model):
     name = models.CharField(_(u'nome'), max_length=200, unique=True, help_text=_(u'Nome do especialista.'))
     slug = models.SlugField(_(u'slug'), max_length=200, blank=True, help_text=_(u'Slug do nome do especialista.'))
-    images = models.ManyToManyField(Image, null=True, blank=True, 
+    images = models.ManyToManyField(Image, null=True, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este especialista.'))
-    videos = models.ManyToManyField(Video, null=True, blank=True, 
+    videos = models.ManyToManyField(Video, null=True, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este especialista.'))
-    image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0, 
+    image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0,
             editable=False, help_text=_(u'Número de fotos associadas a este especialista.'))
     video_count = models.PositiveIntegerField(_(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associados a este especialista.'))
 
@@ -219,9 +224,9 @@ class Tag(models.Model):
     name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome do marcador.'))
     slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome do marcador.'))
     description = models.TextField(_(u'descrição'), blank=True, help_text=_(u'Descrição do marcador.'))
-    images = models.ManyToManyField(Image, null=True, blank=True, 
+    images = models.ManyToManyField(Image, null=True, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este marcador.'))
-    videos = models.ManyToManyField(Video, null=True, blank=True, 
+    videos = models.ManyToManyField(Video, null=True, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este marcador.'))
     parent = models.ForeignKey('TagCategory', blank=True, null=True,
             related_name='tags', verbose_name=_(u'pai'), help_text=_(u'Categoria a que este marcador pertence.'))
@@ -245,8 +250,8 @@ class Tag(models.Model):
         self.video_count = self.videos.count()
         self.save()
 
-
     __metaclass__ = TransMeta
+
     class Meta:
         verbose_name = _(u'marcador')
         verbose_name_plural = _(u'marcadores')
@@ -260,22 +265,25 @@ class TagCategory(models.Model):
     description = models.TextField(_(u'descrição'), blank=True, help_text=_(u'Descrição da categoria de marcadores.'))
     position = models.PositiveIntegerField(_(u'posição'), default=0, help_text=_(u'Define a ordem das categorias.'))
     parent = models.ForeignKey('self', blank=True, null=True, related_name='tagcat_children', verbose_name=_(u'pai'), help_text=_(u'Categoria pai desta categoria de marcadores.'))
-    #TODO? Toda vez que uma tag é salva, atualizar a contagem das imagens e 
+    #TODO? Toda vez que uma tag é salva, atualizar a contagem das imagens e
     # vídeos das categorias. Seria a soma dos marcadores, só?
 
     def __unicode__(self):
         return self.name
 
     __metaclass__ = TransMeta
+
     class Meta:
         verbose_name = _(u'categoria de marcadores')
         verbose_name_plural = _(u'categorias de marcadores')
         #ordering = ['position', 'name']
         translate = ('name', 'description', )
 
+
 # joining two meta classes to be used in Taxon
-class SpecialMeta(TransMeta, MPTTModelBase ):
+class SpecialMeta(TransMeta, MPTTModelBase):
     pass
+
 
 class Taxon(MPTTModel):
     name = models.CharField(_(u'nome'), max_length=256, unique=True, help_text=_(u'Nome do táxon.'))
@@ -284,13 +292,13 @@ class Taxon(MPTTModel):
     rank = models.CharField(_(u'rank'), max_length=256, blank=True, help_text=_(u'Ranking taxonômico do táxon.'))
     tsn = models.PositiveIntegerField(null=True, blank=True, help_text=_(u'TSN, o identificador do táxon no ITIS.'))
     aphia = models.PositiveIntegerField(null=True, blank=True, help_text=_(u'APHIA, o identificador do táxon no WoRMS.'))
-    parent = models.ForeignKey('self', blank=True, null=True, 
+    parent = models.ForeignKey('self', blank=True, null=True,
             related_name='children', verbose_name=_(u'pai'), help_text=_(u'Táxon pai deste táxon.'))
-    images = models.ManyToManyField(Image, null=True, blank=True, 
+    images = models.ManyToManyField(Image, null=True, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este táxon.'))
-    videos = models.ManyToManyField(Video, null=True, blank=True, 
+    videos = models.ManyToManyField(Video, null=True, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este táxon.'))
-    image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0, 
+    image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0,
             editable=False, help_text=_(u'Número de fotos associadas a este táxon.'))
     video_count = models.PositiveIntegerField(_(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associados a este táxon.'))
 
@@ -317,21 +325,22 @@ class Taxon(MPTTModel):
         """
         tree_list = {}
         query = Q()
-        
+
         for node in qs.all():
             if node.tree_id not in tree_list:
                 tree_list[node.tree_id] = []
-    
+
             parent = node.parent.pk if node.parent is not None else None,
-    
+
             if parent not in tree_list[node.tree_id]:
                 tree_list[node.tree_id].append(parent)
-    
+
                 query |= Q(lft__lt=node.lft, rght__gt=node.rght, tree_id=node.tree_id)
             query |= Q(id=node.id)
         return Taxon.objects.filter(query)
 
     __metaclass__ = SpecialMeta
+
     class Meta:
         verbose_name = _(u'táxon')
         verbose_name_plural = _(u'táxons')
@@ -347,7 +356,7 @@ class Size(models.Model):
             ('10 - 100 mm', '10 - 100 mm'),
             ('>100 mm', '>100 mm')
             )
-    name = models.CharField(_(u'nome'), max_length=32, unique=True, 
+    name = models.CharField(_(u'nome'), max_length=32, unique=True,
             choices=SIZES, help_text=_(u'Nome da classe de tamanho.'))
     slug = models.SlugField(_(u'slug'), max_length=32, blank=True, help_text=_(u'Slug do nome da classe de tamanho.'))
     description = models.TextField(_(u'descrição'), blank=True, help_text=_(u'Descrição da classe de tamanho.'))
@@ -374,6 +383,7 @@ class Size(models.Model):
         self.save()
 
     __metaclass__ = TransMeta
+
     class Meta:
         verbose_name = _(u'tamanho')
         verbose_name_plural = _(u'tamanhos')
@@ -509,6 +519,7 @@ class Country(models.Model):
         self.save()
 
     __metaclass__ = TransMeta
+
     class Meta:
         verbose_name = _(u'país')
         verbose_name_plural = _(u'país')
@@ -520,9 +531,9 @@ class Reference(models.Model):
     name = models.CharField(_(u'nome'), max_length=100, unique=True, help_text=_(u'Identificador da referência (Mendeley ID).'))
     slug = models.SlugField(_(u'slug'), max_length=100, blank=True, help_text=_(u'Slug do identificar da referência.'))
     citation = models.TextField(_(u'citação'), blank=True, help_text=_(u'Citação formatada da referência.'))
-    images = models.ManyToManyField(Image, null=True, blank=True, 
+    images = models.ManyToManyField(Image, null=True, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas à esta referência.'))
-    videos = models.ManyToManyField(Video, null=True, blank=True, 
+    videos = models.ManyToManyField(Video, null=True, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados à esta referência.'))
     image_count = models.PositiveIntegerField(
             _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas à esta referência.'))
@@ -541,7 +552,7 @@ class Reference(models.Model):
 
         Atualiza os respectivos campos image_count e video_count.
         '''
-        #XXX Fiz desse jeito para não chamar o save(), já que ele se conecta ao 
+        #XXX Fiz desse jeito para não chamar o save(), já que ele se conecta ao
         # Mendeley no signal pre_save (deixando o save() lento...).
         Reference.objects.filter(id=self.id).update(image_count=self.images.count())
         Reference.objects.filter(id=self.id).update(video_count=self.videos.count())
@@ -562,11 +573,11 @@ class Tour(models.Model):
     stats = models.OneToOneField('Stats', null=True, editable=False,
             verbose_name=_(u'estatísticas'),
             help_text=_(u'Guarda estatísticas de acesso ao tour.'))
-    images = models.ManyToManyField(Image, null=True, blank=True, 
+    images = models.ManyToManyField(Image, null=True, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este tour.'))
-    videos = models.ManyToManyField(Video, null=True, blank=True, 
+    videos = models.ManyToManyField(Video, null=True, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este tour.'))
-    references = models.ManyToManyField(Reference, null=True, blank=True, 
+    references = models.ManyToManyField(Reference, null=True, blank=True,
             verbose_name=_(u'referências'), help_text=_(u'Referências associadas a este tour.'))
     image_count = models.PositiveIntegerField(
             _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas a este tour.'))
@@ -590,6 +601,7 @@ class Tour(models.Model):
         self.save()
 
     __metaclass__ = TransMeta
+
     class Meta:
         verbose_name = _(u'tour')
         verbose_name_plural = _(u'tours')
@@ -604,10 +616,11 @@ class TourPosition(models.Model):
     position = models.PositiveIntegerField(_(u'posição'), default=0, help_text=_(u'Define a ordem das imagens em um tour.'))
 
     def __unicode__(self):
-        return '%d, %s (id=%s) @ %s' % (self.position, self.photo.title, 
+        return '%d, %s (id=%s) @ %s' % (self.position, self.photo.title,
                 self.photo.id, self.tour.name)
 
     __metaclass__ = TransMeta
+
     class Meta:
         verbose_name = _(u'posição no tour')
         verbose_name_plural = _(u'posições no tour')
@@ -616,7 +629,7 @@ class TourPosition(models.Model):
 
 class Stats(models.Model):
     '''Modelo para abrigar estatísticas sobre modelos.'''
-    pageviews = models.PositiveIntegerField(_(u'visitas'), default=0, 
+    pageviews = models.PositiveIntegerField(_(u'visitas'), default=0,
             editable=False, help_text=_(u'Número de impressões de página de uma imagem.'))
 
     def __unicode__(self):
@@ -634,7 +647,6 @@ class Stats(models.Model):
         verbose_name_plural = _(u'estatísticas')
 
 
-
 # modifying Django's FlatPage model to allow translation
 class FlatPage(models.Model):
     url = models.CharField(_('URL'), max_length=100, db_index=True)
@@ -646,9 +658,8 @@ class FlatPage(models.Model):
     registration_required = models.BooleanField(_('registration required'), help_text=_("If this is checked, only logged-in users will be able to view the page."))
     sites = models.ManyToManyField(Site, related_name='flatpages_set')
 
-    
-
     __metaclass__ = TransMeta
+
     class Meta:
         db_table = 'django_flatpage'
         verbose_name = _('flat page')
@@ -671,7 +682,7 @@ register(TagCategory,  ('name', 'description',))
 register(Taxon, ('common', 'rank',))
 register(Size, ('name', 'description',))
 register(Country, ('name',))
-register(Tour, ('name','description',))
+register(Tour, ('name', 'description',))
 register(FlatPage, ('title', 'content',))
 
 

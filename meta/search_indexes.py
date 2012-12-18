@@ -15,6 +15,7 @@ class MediaIndex(indexes.SearchIndex):
     datatype = indexes.CharField(model_attr='datatype')
 
     author = indexes.MultiValueField(faceted=True)
+    source = indexes.MultiValueField(faceted=True)
     tag = indexes.MultiValueField(faceted=True)
     taxon = indexes.MultiValueField(faceted=True)
     tour = indexes.MultiValueField()
@@ -43,6 +44,11 @@ class MediaIndex(indexes.SearchIndex):
         return [author.id for author in media.author_set.all()]
         # "%s##%s" % (author.slug, author.name,) for author in media.author_set.all()]
         # Author.objects.filter(images__pk = object.pk)]
+
+    def prepare_source(self, media):
+        return [source.id for source in media.source_set.all()]
+        # "%s##%s" % (source.slug, source.name,) for source in media.source_set.all()]
+        # Source.objects.filter(images__pk = object.pk)]
 
     def prepare_tag(self, media):
         return [tag.id for tag in media.tag_set.all()]

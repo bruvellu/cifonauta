@@ -2,6 +2,7 @@ Título: {{object.title_pt}}
 Legenda: {{object.caption_pt}}
 Notas: {{object.notes_pt}}
 Autores: {{object.get_authors_list}}
+Especialistas: {{object.get_sources_list}}
 Marcadores: {{object.get_tag_list_pt}}
 Táxons (nomes): {{object.get_taxon_name_list}}
 Táxons (ranking):{{object.get_taxon_rank_list_pt}}

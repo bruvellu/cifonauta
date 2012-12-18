@@ -2,6 +2,7 @@ Title: {{object.title_en}}
 Caption: {{object.caption_en}}
 Notes: {{object.notes_en}}
 Authors: {{object.get_authors_list}}
+Experts: {{object.get_sources_list}}
 Tags: {{object.get_tag_list_en}}
 Taxa (names): {{object.get_taxon_name_list}}
 Taxa (ranking): {{object.get_taxon_rank_list_en}}

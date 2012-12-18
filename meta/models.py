@@ -78,6 +78,9 @@ class File(models.Model):
     def get_authors_list(self, separator=','):
         return self._get_list(self.author_set, separator=separator)
 
+    def get_sources_list(self, separator=','):
+        return self._get_list(self.source_set, separator=separator)
+
     def get_tag_list_pt(self):
         return self._get_list(self.tag_set, lang='pt')
 
@@ -101,10 +104,6 @@ class File(models.Model):
 
     def get_taxon_rank_list_en(self):
         return self._get_list(self.taxon_set, field_name='rank', lang='en')
-
-    def get_sources_list(self, separator=','):
-        return separator.join(
-            self.source_set.values_list("name", flat=True))
 
 
 class Image(File):

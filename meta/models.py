@@ -7,6 +7,7 @@ from mptt.models import MPTTModel, MPTTModelBase
 from meta.signals import *
 from transmeta import TransMeta, register
 from django.db.models import Q
+from django.db.models import signals
 
 
 class File(models.Model):

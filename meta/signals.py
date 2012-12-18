@@ -151,22 +151,33 @@ def update_count(signal, instance, sender, **kwargs):
     if tours:
         for tour in tours:
             tour.counter()
+
     ## Foreign Key
     # Size
-    if instance.size:
+    try:
         instance.size.counter()
+    except:
+        print 'Size == NULL (id=%d)' % instance.id
     # Sublocation
-    if instance.sublocation:
+    try:
         instance.sublocation.counter()
+    except:
+        print 'Sublocation == NULL (id=%d)' % instance.id
     # City
-    if instance.city:
+    try:
         instance.city.counter()
+    except:
+        print 'City == NULL (id=%d)' % instance.id
     # State
-    if instance.state:
+    try:
         instance.state.counter()
+    except:
+        print 'State == NULL (id=%d)' % instance.id
     # Country
-    if instance.country:
+    try:
         instance.country.counter()
+    except:
+        print 'Country == NULL (id=%d)' % instance.id
 
 
 def makestats(signal, instance, sender, **kwargs):

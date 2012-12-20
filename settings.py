@@ -159,6 +159,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.markup',
     'django.contrib.syndication',
+    'django.contrib.sitemaps',
     'meta',
     'articles',
     'south',

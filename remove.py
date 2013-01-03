@@ -159,7 +159,8 @@ def main(argv):
 
     for opt, arg in opts:
         if opt in ('-h', '--help'):
-            print '''Usage: ./remove.py -p 2352,87 -v 314\n*Delete photos with id 2352 and 87 and video with id 314.'''
+            print '\tUsage: ./remove.py -p 2352,87 -v 314\n\t\t**Delete photos with id 2352 and 87 and video with id 314.'
+            print '\tUsage: ./remove.py -af\n\t\t**Force deletion of orphaned and duplicated images.'
             sys.exit()
         elif opt in ('-p', '--photo'):
             for id in arg.split(','):

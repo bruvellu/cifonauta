@@ -74,11 +74,11 @@ def slicer(query, media_id):
      ( media_index > 1, 'first2', 1),
      ( media_index > 2, 'previous1', media_index-1),
      ( media_index > 3, 'previous2', media_index-2),
-     ( media_index > 4, 'previous5', media_index-5),
+     ( media_index > 6, 'previous5', media_index-5),
      
      ( media_index < size - 2, 'next1', media_index+1),
      ( media_index < size - 3, 'next2', media_index+2),
-     ( media_index < size - 4, 'next5', media_index+5),
+     ( media_index < size - 6, 'next5', media_index+5),
      ( media_index < size - 1, 'last1', size-1),
      ( media_index < size - 2, 'last2', size-2),
     )

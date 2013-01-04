@@ -61,6 +61,7 @@ def compile_paths(media):
         to_be_removed.append(media.webm_filepath.path + 'm')
         to_be_removed.append(media.webm_filepath.path.replace(
             'site_media', 'local_media') + 'm')
+        #FIXME
         to_be_removed.append(media.source_filepath.split('.')[0] + '.txt')
     else:
         to_be_removed.append(media.web_filepath.path)

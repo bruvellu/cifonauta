@@ -41,76 +41,74 @@ def print_thumb(context, field, obj):
         media = ''
     return {'media': media, 'MEDIA_URL': media_url}
 
-def slicer(query, media_id):
-    '''Processa resultado do queryset.
 
-    Busca o metadado, encontra o índice da imagem e reduz amostra. Usado para navegador linear.
+def slicer(query, media_id):
+    '''Process queryset results.
+
+    Discover the image index within the queryset, calculate and identify
+    next/previous related images, and chop queryset to fit the 5 thumbnails of the
+    linear browser.
+
     '''
-#    relative = {
-#            'first1': None,
-#            'first2': None,
-#            'last1': None,
-#            'last2': None,
-#            'next1': None,
-#            'next2': None,
-#            'next5': None,
-#            'previous1': None,
-#            'previous2': None,
-#            'previous5': None,
-#            }
+
+    # Get image index within queryset.
     for index, item in enumerate(query):
         if item.id == media_id:
             media_index = index
             break
         else:
-            pass
+            continue
+
+    # Calculate how many ahead and behind.
     ahead = len(query[media_index:]) - 1
     behind = len(query[:media_index])
-    relative = {'ahead': ahead, 'behind': behind, 'current_index': media_index+1}
+
+    # Main object with relative positions.
+    relative = {
+        'ahead': ahead,
+        'behind': behind,
+        'current_index': media_index + 1,  # Relative indexes are non-pythonic.
+        }
+
+    # Total length of the queryset.
     size = len(query)
-    
+
+    # Matrix with conditionals for getting relative objects. First and last 2
+    # are covered, others should not overlap, that is why media_index - value
+    # should always be > 1.
     conditionals = (
-     ( media_index > 0, 'first1', 0),
-     ( media_index > 1, 'first2', 1),
-     ( media_index > 2, 'previous1', media_index-1),
-     ( media_index > 3, 'previous2', media_index-2),
-     ( media_index > 6, 'previous5', media_index-5),
-     
-     ( media_index < size - 2, 'next1', media_index+1),
-     ( media_index < size - 3, 'next2', media_index+2),
-     ( media_index < size - 6, 'next5', media_index+5),
-     ( media_index < size - 1, 'last1', size-1),
-     ( media_index < size - 2, 'last2', size-2),
-    )
-    print conditionals
+        # conditional               field           index
+        (media_index > 0,           'first1',       0),
+        (media_index > 1,           'first2',       1),
+        (media_index > 2,           'previous1',    media_index - 1),
+        (media_index > 3,           'previous2',    media_index - 2),
+        (media_index > 6,           'previous5',    media_index - 5),
+        (media_index < size - 2,    'next1',        media_index + 1),
+        (media_index < size - 3,    'next2',        media_index + 2),
+        (media_index < size - 6,    'next5',        media_index + 5),
+        (media_index < size - 1,    'last1',        size - 1),
+        (media_index < size - 2,    'last2',        size - 2),
+        )
+
+    # Populate relative object only with available relative images.
     for cond, field, index in conditionals:
         if cond:
-            relative[field] = {'index': index+1, 'obj': query[index]}
+            relative[field] = {'index': index + 1, 'obj': query[index]}
         else:
             relative[field] = None
-    
-    
-    # preparing data for minithumbs navigation
+
+    # Standardize image to center of the index.
     if media_index < 2:
         media_index = 2
+
+    # Slice full query to 5 images when necessary.
     if len(query) <= 5:
         rel_query = query
     else:
-        rel_query = query[media_index-2:media_index+3]
-
-#    for index, item in enumerate(rel_query):
-#        if item.id == media_id:
-#            if index == 0:
-#                relative['previous'] = ''
-#            else:
-#                relative['previous'] = rel_query[index-1]
-#            if index == len(rel_query)-1:
-#                relative['next'] = ''
-#            else:
-#                relative['next'] = rel_query[index+1]
-
+        rel_query = query[media_index - 2:media_index + 3]
 
     return rel_query, relative
+
 
 def mediaque(media, qobj):
     '''Retorna queryset de vídeo ou foto, baseado no datatype.

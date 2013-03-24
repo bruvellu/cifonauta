@@ -19,6 +19,7 @@ class MediaIndex(indexes.SearchIndex):
     tag = indexes.MultiValueField(faceted=True)
     taxon = indexes.MultiValueField(faceted=True)
     tour = indexes.MultiValueField()
+    reference = indexes.MultiValueField()
 
     size = indexes.IntegerField(model_attr='size__id', default=0, faceted=True)
     sublocation = indexes.CharField(model_attr='sublocation__id', default=0, faceted=True)
@@ -60,6 +61,10 @@ class MediaIndex(indexes.SearchIndex):
 
     def prepare_tour(self, media):
         return [tour.id for tour in media.tour_set.all()]
+        #Taxon.objects.filter(images__pk = object.pk)]
+
+    def prepare_reference(self, media):
+        return [reference.id for reference in media.reference_set.all()]
         #Taxon.objects.filter(images__pk = object.pk)]
 
     def index_queryset(self):

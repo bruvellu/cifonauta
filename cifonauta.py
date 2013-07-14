@@ -59,7 +59,7 @@ class Database:
         atualiza o registro.
         '''
         print
-        logger.info('Verificando se %s (%s) está no banco de dados...',
+        logger.info('Procurando %s (%s) no banco de dados...',
                 media.filename, media.source_filepath)
         photopath = 'photos/'
         videopath = 'videos/'
@@ -259,7 +259,7 @@ class Movie:
 
     def create_meta(self, new=False):
         '''Define as variáveis dos metadados do vídeo.'''
-        logger.info('Lendo os metadados de %s e criando variáveis.' % 
+        logger.info('Lendo os metadados de %s e criando objetos.' % 
                 self.filename)
         # Limpa metadados pra não misturar com o anterior.
         self.meta = {}
@@ -352,15 +352,44 @@ class Movie:
 
         return self.meta
 
-    def build_call(self, filepath, ipass):
-        '''Constrói o subprocesso para converter o vídeo com o FFmpeg.'''
+    def build_call(self, filepath):
+        '''Constrói o subprocesso para converter o vídeo com o FFmpeg.
+        #webm HD
+        ffmpeg -y -i hd.m2ts -i marca.png -metadata title="A WEBM HD" -metadata author="AN AUTHOR"
+        -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libvpx
+        -filter_complex "scale=512x288,overlay=0:main_h-overlay_h-0" hd.webm
+
+        #webm DV
+        ffmpeg -y -i dv.avi -i marca.png -metadata title="A WEBM DV" -metadata author="AN AUTHOR"
+        -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libvpx
+        -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" dv.webm
+
+        #ogg HD
+        ffmpeg -y -i hd.m2ts -i marca.png -metadata title="AN OGG HD" -metadata author="AN AUTHOR"
+        -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libtheora
+        -filter_complex "scale=512x288,overlay=0:main_h-overlay_h-0" hd.ogv
+
+        #ogg DV
+        ffmpeg -y -i dv.avi -i marca.png -metadata title="AN OGG DV" -metadata author="AN AUTHOR"
+        -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libtheora
+        -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" dv.ogv
+
+        #mp4 HD
+        ffmpeg -y -i hd.m2ts -i marca.png -metadata title="A MP4 HD" -metadata author="AN AUTHOR"
+        -b:v 600k -threads 0 -acodec libfaac -b:a 128k -ac 2 -ar 44100 -vcodec libx264
+        -filter_complex "scale=512x288,overlay=0:main_h-overlay_h-0" hd.mp4
+
+        #mp4 DV
+        ffmpeg -y -i dv.avi -i marca.png -metadata title="A MP4 DV" -metadata author="AN AUTHOR"
+        -b:v 600k -threads 0 -acodec libfaac -b:a 128k -ac 2 -ar 44100 -vcodec libx264
+        -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" dv.mp4
+        '''
         # Base
         call = [
-                'ffmpeg', '-y', '-i', self.source_filepath,
+                'ffmpeg', '-y', '-i', self.source_filepath, '-i', 'marca.png',
                 '-metadata', 'title="%s"' % self.meta['title'],
                 '-metadata', 'author="%s"' % self.meta['author'],
-                '-b', '600k', '-g', '15', '-bf', '2',
-                '-threads', '0', '-pass', str(ipass),
+                '-b:v', '600k', '-threads', '0',
                 ]
         #TODO Achar um jeito mais confiável de saber se é HD...
         # Comando cria objeto da marca d'água e redimensiona para 100px de 
@@ -368,24 +397,22 @@ class Movie:
         # tipo e insere a marca no canto esquerdo embaixo.
         if self.source_filepath.endswith('m2ts'):
             call.extend([
-                '-vf', 'movie=marca.png:f=png, scale=100:-1 [wm];[in] '
-                'scale=512:288, [wm] overlay=5:H-h-5:1',
-                '-aspect', '16:9'
+                '-filter_complex', 'scale=512x288,overlay=0:main_h-overlay_h-0',
+                '-aspect', '16:9',
                 ])
         else:
             call.extend([
-                '-vf', 'movie=marca.png:f=png, scale=100:-1 [wm];[in] '
-                'scale=512:384, [wm] overlay=5:H-h-5:1',
-                '-aspect', '4:3'
+                '-filter_complex', 'scale=512x384,overlay=0:main_h-overlay_h-0',
+                '-aspect', '4:3',
                 ])
         # Audio codecs
         # Exemplo para habilitar som no vídeo: filepath_comsom_.avi
-        if 'comsom' in self.source_filepath.split('_') and ipass == 2:
+        if 'comsom' in self.source_filepath.split('_'):
             if filepath.endswith('mp4'):
-                call.extend(['-acodec', 'libfaac', '-ab', '128k',
+                call.extend(['-acodec', 'libfaac', '-b:a', '128k',
                     '-ac', '2', '-ar', '44100'])
             else:
-                call.extend(['-acodec', 'libvorbis', '-ab', '128k',
+                call.extend(['-acodec', 'libvorbis', '-b:a', '128k',
                     '-ac', '2', '-ar', '44100'])
         else:
             call.append('-an')
@@ -397,45 +424,13 @@ class Movie:
             call.extend(['-vcodec', 'libx264'])
         if filepath.endswith('ogv'):
             call.extend(['-vcodec', 'libtheora'])
-        # Presets
-        # Precisa ser colocado depois do vcodec.
-        if ipass == 1:
-            call.extend(['-vpre', 'veryslow_firstpass'])
-        elif ipass == 2:
-            call.extend(['-vpre', 'veryslow'])
+
         # Finaliza com nome do arquivo
         call.append(filepath)
         return call
 
     def process_video(self):
         '''Redimensiona o vídeo, inclui marca d'água e comprime.'''
-        # Exemplo DV (4:3):
-        #   Pass 1:
-        #       ffmpeg -y -i video_in.avi -vf "movie=marca.png:f=png, 
-        #       scale=100:-1 [wm];[in] scale=512:384, [wm] overlay=5:H-h-5:1" 
-        #       -aspect 4:3 -pass 1 -vcodec libvpx -b 300k -g 15 -bf 2 -vpre 
-        #       veryslow_firstpass -acodec libvorbis -ab 128k -ac 2 -ar 44100 
-        #       -threads 2 video_out.webm
-        #   Pass 2:
-        #       ffmpeg -y -i video_in.avi -vf "movie=marca.png:f=png, 
-        #       scale=100:-1 [wm];[in] scale=512:384, [wm] overlay=5:H-h-5:1" 
-        #       -aspect 16:9 -pass 2 -vcodec libvpx -b 300k -g 15 -bf 2 -vpre 
-        #       veryslow -acodec libvorbis -ab 128k -ac 2 -ar 44100 -threads 2 
-        #       video_out.webm
-        #
-        # Exemplo HD (16:9):
-        #   Pass 1:
-        #       ffmpeg -y -i video_in.m2ts -vf "movie=marca.png:f=png, 
-        #       scale=100:-1 [wm];[in] scale=512:288, [wm] overlay=5:H-h-5:1" 
-        #       -aspect 16:9 -pass 1 -vcodec libvpx -b 300k -g 15 -bf 2 -vpre 
-        #       veryslow_firstpass -acodec libvorbis -ab 128k -ac 2 -ar 44100 
-        #       -threads 2 video_out.webm
-        #   Pass 2:
-        #       ffmpeg -y -i video_in.m2ts -vf "movie=marca.png:f=png, 
-        #       scale=100:-1 [wm];[in] scale=512:288, [wm] overlay=5:H-h-5:1" 
-        #       -aspect 16:9 -pass 2 -vcodec libvpx -b 300k -g 15 -bf 2 -vpre 
-        #       veryslow -acodec libvorbis -ab 128k -ac 2 -ar 44100 -threads 2 
-        #       video_out.webm
         #FIXME O que fazer quando vídeos forem menores que isso?
         logger.info('Processando o vídeo %s', self.source_filepath)
         web_paths = {}
@@ -444,22 +439,18 @@ class Movie:
             # WebM
             webm_name = self.filename.split('.')[0] + '.webm'
             webm_filepath = os.path.join(self.local_dir, webm_name)
-            webm_firstcall = self.build_call(webm_filepath, 1)
-            webm_secondcall = self.build_call(webm_filepath, 2)
+            webm_call = self.build_call(webm_filepath)
             # MP4
             mp4_name = self.filename.split('.')[0] + '.mp4'
             mp4_filepath = os.path.join(self.local_dir, mp4_name)
-            mp4_firstcall = self.build_call(mp4_filepath, 1)
-            mp4_secondcall = self.build_call(mp4_filepath, 2)
+            mp4_call = self.build_call(mp4_filepath)
             # OGG
             ogg_name = self.filename.split('.')[0] + '.ogv'
             ogg_filepath = os.path.join(self.local_dir, ogg_name)
-            ogg_firstcall = self.build_call(ogg_filepath, 1)
-            ogg_secondcall = self.build_call(ogg_filepath, 2)
+            ogg_call = self.build_call(ogg_filepath)
             try:
                 # WebM
-                subprocess.call(webm_firstcall)
-                subprocess.call(webm_secondcall)
+                subprocess.call(webm_call)
                 try:
                     # Copia vídeo para pasta web
                     webm_site_filepath = os.path.join(self.site_dir, webm_name)
@@ -473,8 +464,7 @@ class Movie:
                         webm_filepath)
             try:
                 # MP4
-                subprocess.call(mp4_firstcall)
-                subprocess.call(mp4_secondcall)
+                subprocess.call(mp4_call)
                 try:
                     # Copia vídeo para pasta web
                     mp4_site_filepath = os.path.join(self.site_dir, mp4_name)
@@ -494,8 +484,7 @@ class Movie:
                         mp4_filepath)
             try:
                 # OGG
-                subprocess.call(ogg_firstcall)
-                subprocess.call(ogg_secondcall)
+                subprocess.call(ogg_call)
                 try:
                     # Copia vídeo para pasta web
                     ogg_site_filepath = os.path.join(self.site_dir, ogg_name)
@@ -569,7 +558,7 @@ class Photo:
 
         Usa a biblioteca do arquivo iptcinfo.py para padrão IPTC e pyexiv2 para EXIF.
         '''
-        logger.info('Lendo os metadados de %s e criando variáveis.',
+        logger.info('Lendo metadados de %s e criando objetos.',
                 self.filename)
 
         # Criar objeto com metadados.

@@ -110,13 +110,13 @@ def create_still(filepath, destination):
     # Define comando a ser executado.
     if filepath.endswith('m2ts'):
         ffmpeg_call = [
-                'ffmpeg', '-i', filepath, '-vframes', '1', '-vf', 
+                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-vf', 
                 'scale=512:288', '-aspect', '16:9', '-ss', '1', '-f', 'image2',
                 stillpath
                 ]
     else:
         ffmpeg_call = [
-                'ffmpeg', '-i', filepath, '-vframes', '1', '-vf', 
+                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-vf', 
                 'scale=512:384', '-ss', '1', '-f', 'image2', stillpath
                 ]
 
@@ -154,7 +154,7 @@ def watermarker(filepath):
             filepath]
     try:
         subprocess.call(mark_call)
-        logger.debug('Marca d\'água adicionada em %s', filepath)
+        logger.debug('Marca adicionada em %s', filepath)
         return True
     except:
         logger.warning('Erro ao adicionar marca em %s', filepath)

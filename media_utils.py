@@ -110,13 +110,13 @@ def create_still(filepath, destination):
     # Define comando a ser executado.
     if filepath.endswith('m2ts'):
         ffmpeg_call = [
-                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-vf', 
+                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-filter_complex', 
                 'scale=512:288', '-aspect', '16:9', '-ss', '1', '-f', 'image2',
                 stillpath
                 ]
     else:
         ffmpeg_call = [
-                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-vf', 
+                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-filter_complex', 
                 'scale=512:384', '-ss', '1', '-f', 'image2', stillpath
                 ]
 

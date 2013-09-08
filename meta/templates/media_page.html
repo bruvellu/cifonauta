@@ -78,38 +78,28 @@ $(document).ready( function(){
 </script>
 
 {% endblock %}
+
 {% block sidebar %}
 <aside class="main span-8 last">
 
-<div class="borders block shadow" id="social">
-  <h2>{% trans 'Compartilhar' %}</h2>
+	{% if media.datatype == 'video' %}
+	<div class="borders block shadow" id="social">
+	  <h2>{% trans 'Compartilhar' %}</h2>
+	  <div class="align-center"> <!-- Video embed code -->
+	    <input id="embed-code" type="text" size="28" value='<iframe class="cifonauta-player" scrolling="no" type="text/html" width="512" height="{{ height }}" src="http://{{ request.get_host }}/embed/{{ media.id }}/" frameborder="0"></iframe>' onclick="this.focus(); this.select();">
+	  </div>
+	</div>
+	{% endif %}
 
-  <div class="align-center">
-    <!-- Video embed code -->
-    {% if media.datatype == 'video' %}
-    <p><label class="quiet">embed:</label> <input id="embed-code" type="text" size="28" value='<iframe class="cifonauta-player" scrolling="no" type="text/html" width="512" height="{{ height }}" src="http://{{ request.get_host }}/embed/{{ media.id }}/" frameborder="0"></iframe>' onclick="this.focus(); this.select();"></p>
-    {% endif %}
+	<div class="borders block shadow">
+	  {% show_tree taxa %}
+	</div>
 
-    <!-- Add2Any -->
-    <a class="share-this a2a_target" href="http://www.addtoany.com/share_save">
-      {% thumbnail "http://static.addtoany.com/buttons/share_save_171_16.png" "171x16" as im %}
-      <img src="{{ im.url }}" border="0" alt="{% trans 'Compartilhe' %}"/>
-      {% endthumbnail %}
-    </a>
-
-  </div>
-
-</div>
-
-<div class="borders block shadow">
-  {% show_tree taxa %}
-</div>
-
-{% if user.is_authenticated %}
-<div class="borders block shadow" id="admin-controls">
-  {% include 'admin_tools.html' %}
-</div>
-{% endif %}
+	{% if user.is_authenticated %}
+	<div class="borders block shadow" id="admin-controls">
+	  {% include 'admin_tools.html' %}
+	</div>
+	{% endif %}
 
 </aside>
 {% endblock %}

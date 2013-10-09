@@ -228,7 +228,8 @@ LOGGING = {
 
 
 # Logicamente carrega configurações.
-if socket.gethostname() == 'cifonauta':
+hostname = socket.gethostname()
+if hostname == 'cifonauta' or hostname == 'cebimar02':
     # Importa dados para servidor.
     from settings_server import *
 else:

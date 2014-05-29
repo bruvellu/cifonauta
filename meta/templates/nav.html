@@ -11,12 +11,12 @@
     <li><a href="/private/">privadas</a></li>
     <li><a href="/fixmedia/">fixmedia</a></li>
     <li><a href="/translate/">traduzir</a></li>
-    <li><a href="{% url django.contrib.auth.views.logout %}">logout</a></li>
+    <li><a href="{% url 'django.contrib.auth.views.logout' %}">logout</a></li>
   </ul>
 </span>
 {% else %}
 <span id="admin">
-  <a href="{% url django.contrib.auth.views.login %}">login</a>
+  <a href="{% url 'django.contrib.auth.views.login' %}">login</a>
 </span>
 {% endif %}
 
@@ -42,22 +42,22 @@
   <a {% if fullpath == '/search/?type=video' %}class="selected"{% endif %} href="/search/?type=video">{% trans 'vídeos' %}</a>
   </li>
   <li>
-  <a {% if fullpath == '/tours/' %}class="selected"{% endif %} href="{% url tours_url %}">{% trans 'tours' %}</a>
+  <a {% if fullpath == '/tours/' %}class="selected"{% endif %} href="{% url 'tours_url' %}">{% trans 'tours' %}</a>
   </li>
   <li>
-  <a {% if fullpath == '/taxa/' %}class="selected"{% endif %} href="{% url taxa_url %}">{% trans 'táxons' %}</a>
+  <a {% if fullpath == '/taxa/' %}class="selected"{% endif %} href="{% url 'taxa_url' %}">{% trans 'táxons' %}</a>
   </li>
   <li>
-  <a {% if fullpath == '/tags/' %}class="selected"{% endif %} href="{% url tags_url %}">{% trans 'marcadores' %}</a>
+  <a {% if fullpath == '/tags/' %}class="selected"{% endif %} href="{% url 'tags_url' %}">{% trans 'marcadores' %}</a>
   </li>
   <li>
-  <a {% if fullpath == '/places/' %}class="selected"{% endif %} href="{% url places_url %}">{% trans 'localidades' %}</a>
+  <a {% if fullpath == '/places/' %}class="selected"{% endif %} href="{% url 'places_url' %}">{% trans 'localidades' %}</a>
   </li>
   <li>
-  <a {% if fullpath == '/authors/' %}class="selected"{% endif %} href="{% url authors_url %}">{% trans 'autores' %}</a>
+  <a {% if fullpath == '/authors/' %}class="selected"{% endif %} href="{% url 'authors_url' %}">{% trans 'autores' %}</a>
   </li>
   <li>
-  <a {% if fullpath == '/literature/' %}class="selected"{% endif %} href="{% url refs_url %}">{% trans 'referências' %}</a>
+  <a {% if fullpath == '/literature/' %}class="selected"{% endif %} href="{% url 'refs_url' %}">{% trans 'referências' %}</a>
   </li>
 </ul>
 <ul class="menu" id="about">

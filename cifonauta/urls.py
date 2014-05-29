@@ -12,11 +12,11 @@ admin.autodiscover()
 #)
 # -*- coding: utf-8 -*-
 import os
-#from django.conf.urls.defaults import *
 from django.views.decorators.cache import cache_page
 from meta.views import *
 from meta.feeds import *
 from meta.models import *
+from cifonauta.settings import MEDIA_ROOT
 #from articles.models import Article
 
 from django.contrib.sitemaps import FlatPageSitemap, GenericSitemap
@@ -29,10 +29,6 @@ template.add_to_builtins('meta.templatetags.extra_tags')
 # Dajaxice requirement.
 from dajaxice.core import dajaxice_autodiscover
 dajaxice_autodiscover()
-
-site_media = os.path.join(
-        os.path.dirname(__file__), 'site_media'
-        )
 
 ONE_HOUR = 60 * 60                  # 3600
 HALF_DAY = 60 * 60 * 12             # 43200
@@ -166,5 +162,5 @@ urlpatterns = patterns('',
         (r'^admin/', include(admin.site.urls)),
         # Site media
         (r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
-            {'document_root': site_media}),
+            {'document_root': MEDIA_ROOT}),
 )

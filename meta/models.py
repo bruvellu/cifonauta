@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
-from django.contrib.sites.models import Site
+#from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel, MPTTModelBase
 from meta.signals import *
@@ -648,42 +648,42 @@ class Stats(models.Model):
 
 
 # modifying Django's FlatPage model to allow translation
-class FlatPage(models.Model):
-    url = models.CharField(_('URL'), max_length=100, db_index=True)
-    title = models.CharField(_('title'), max_length=200)
-    content = models.TextField(_('content'), blank=True)
-    enable_comments = models.BooleanField(_('enable comments'))
-    template_name = models.CharField(_('template name'), max_length=70, blank=True,
-        help_text=_("Example: 'flatpages/contact_page.html'. If this isn't provided, the system will use 'flatpages/default.html'."))
-    registration_required = models.BooleanField(_('registration required'), help_text=_("If this is checked, only logged-in users will be able to view the page."))
-    sites = models.ManyToManyField(Site, related_name='flatpages_set')
+#class FlatPage(models.Model):
+    #url = models.CharField(_('URL'), max_length=100, db_index=True)
+    #title = models.CharField(_('title'), max_length=200)
+    #content = models.TextField(_('content'), blank=True)
+    #enable_comments = models.BooleanField(_('enable comments'))
+    #template_name = models.CharField(_('template name'), max_length=70, blank=True,
+        #help_text=_("Example: 'flatpages/contact_page.html'. If this isn't provided, the system will use 'flatpages/default.html'."))
+    #registration_required = models.BooleanField(_('registration required'), help_text=_("If this is checked, only logged-in users will be able to view the page."))
+    #sites = models.ManyToManyField(Site, related_name='flatpages_set')
 
-    __metaclass__ = TransMeta
+    #__metaclass__ = TransMeta
 
-    class Meta:
-        db_table = 'django_flatpage'
-        verbose_name = _('flat page')
-        verbose_name_plural = _('flat pages')
-        ordering = ('url',)
-        translate = ('title', 'content',)
+    #class Meta:
+        #db_table = 'django_flatpage'
+        #verbose_name = _('flat page')
+        #verbose_name_plural = _('flat pages')
+        #ordering = ('url',)
+        #translate = ('title', 'content',)
 
-    def __unicode__(self):
-        return u"%s -- %s" % (self.url, self.title)
+    #def __unicode__(self):
+        #return u"%s -- %s" % (self.url, self.title)
 
-    def get_absolute_url(self):
-        return self.url
+    #def get_absolute_url(self):
+        #return self.url
 
 
 # Registrando modelos para tradução.
-register(Image, ('title', 'caption', 'notes',))
-register(Video, ('title', 'caption', 'notes',))
-register(Tag, ('name', 'description',))
-register(TagCategory,  ('name', 'description',))
-register(Taxon, ('common', 'rank',))
-register(Size, ('name', 'description',))
-register(Country, ('name',))
-register(Tour, ('name', 'description',))
-register(FlatPage, ('title', 'content',))
+#register(Image, ('title', 'caption', 'notes',))
+#register(Video, ('title', 'caption', 'notes',))
+#register(Tag, ('name', 'description',))
+#register(TagCategory,  ('name', 'description',))
+#register(Taxon, ('common', 'rank',))
+#register(Size, ('name', 'description',))
+#register(Country, ('name',))
+#register(Tour, ('name', 'description',))
+#register(FlatPage, ('title', 'content',))
 
 
 # Slugify before saving.

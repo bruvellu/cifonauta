@@ -7,6 +7,7 @@ from meta.forms import *
 from meta.models import *
 from django.template import RequestContext
 from django.shortcuts import render_to_response
+#from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.db.transaction import commit_on_success

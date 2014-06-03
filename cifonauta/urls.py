@@ -84,7 +84,7 @@ urlpatterns = patterns('',
         (r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
 
         # Dajax
-        (r'^%s/' % settings.DAJAXICE_MEDIA_PREFIX, include('dajaxice.urls')),
+        #(r'^%s/' % settings.DAJAXICE_MEDIA_PREFIX, include('dajaxice.urls')),
 
         # Feeds
         (r'^feed/latest/$', LatestMedia()),

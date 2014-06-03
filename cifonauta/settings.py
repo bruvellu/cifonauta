@@ -14,20 +14,6 @@ import os
 import socket
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'o3d^5p6yf($kcg=j*&%+-a3+j4(unk4uutgqnzsk^yy)=ggqv%'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-TEMPLATE_DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
 # Application definition
 
 INSTALLED_APPS = (
@@ -69,14 +55,11 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.transaction.TransactionMiddleware',
 
     'django.middleware.cache.FetchFromCacheMiddleware',
-
-
 )
 
 ROOT_URLCONF = 'cifonauta.urls'
 
 WSGI_APPLICATION = 'cifonauta.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
@@ -193,44 +176,44 @@ HAYSTACK_CONNECTIONS = {
 # the site admins on every HTTP 500 error.
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'default': {
-            'format': '[%(levelname)s] %(asctime)s @ %(module)s %(funcName)s (l%(lineno)d): %(message)s'
-            }
-        },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler'
-        },
-        'console':{
-            'level':'DEBUG',
-            'class':'logging.StreamHandler',
-            'formatter': 'default'
-        },
-        'log_files': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs/central.log'),
-            'formatter': 'default'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-        'central': {
-            'handlers': ['log_files', 'console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-    }
-}
+#LOGGING = {
+#    'version': 1,
+#    'disable_existing_loggers': False,
+#    'formatters': {
+#        'default': {
+#            'format': '[%(levelname)s] %(asctime)s @ %(module)s %(funcName)s (l%(lineno)d): %(message)s'
+#            }
+#        },
+#    'handlers': {
+#        'mail_admins': {
+#            'level': 'ERROR',
+#            'class': 'django.utils.log.AdminEmailHandler'
+#        },
+#        'console':{
+#            'level':'DEBUG',
+#            'class':'logging.StreamHandler',
+#            'formatter': 'default'
+#        },
+#        'log_files': {
+#            'level': 'DEBUG',
+#            'class': 'logging.FileHandler',
+#            'filename': os.path.join(BASE_DIR, 'logs/central.log'),
+#            'formatter': 'default'
+#        }
+#    },
+#    'loggers': {
+#        'django.request': {
+#            'handlers': ['mail_admins'],
+#            'level': 'ERROR',
+#            'propagate': True,
+#        },
+#        'central': {
+#            'handlers': ['log_files', 'console'],
+#            'level': 'DEBUG',
+#            'propagate': False,
+#        },
+#    }
+#}
 
 CACHES = {
         'default': {

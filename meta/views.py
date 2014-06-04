@@ -17,7 +17,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
 from remove import compile_paths
-#from meta.search_indexes import MlSearchQuerySet, strip_accents
+from meta.search_indexes import MlSearchQuerySet, strip_accents
 from django.http import HttpResponse
 import json
 

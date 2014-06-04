@@ -67,7 +67,7 @@ class MediaIndex(indexes.SearchIndex):
         return [reference.id for reference in media.reference_set.all()]
         #Taxon.objects.filter(images__pk = object.pk)]
 
-    def index_queryset(self):
+    def index_queryset(self, using=None):
         '''Used when the entire index for model is updated.'''
         return self.get_model().objects.filter(is_public=True)
         #select_related('author', 'tag', 'taxon', 'size', 'sublocation', 'city', 'state', 'country', 'rights')

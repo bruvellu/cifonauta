@@ -18,7 +18,6 @@ from meta.views import *
 from meta.feeds import *
 from meta.models import *
 from cifonauta.settings import MEDIA_ROOT
-#from articles.models import Article
 
 from django.contrib.sitemaps import FlatPageSitemap, GenericSitemap
 
@@ -41,7 +40,6 @@ HALF_YEAR = 60 * 60 * 24 * 30 * 6   # 15552000
 ONE_YEAR = 60 * 60 * 24 * 30 * 12   # 31104000
 
 # Sitemaps
-#blog_dict = {'queryset': Article.objects.all(), 'date_field': 'publish_date'}
 photo_dict = {'queryset': Image.objects.filter(is_public=True), 'date_field': 'timestamp'}
 video_dict = {'queryset': Video.objects.filter(is_public=True), 'date_field': 'timestamp'}
 tour_dict = {'queryset': Tour.objects.filter(is_public=True), 'date_field': 'timestamp'}

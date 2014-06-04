@@ -48,7 +48,6 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.syndication',
     'django.contrib.sitemaps',
-    'articles',
 )
 
 MIDDLEWARE_CLASSES = (

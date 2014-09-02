@@ -106,8 +106,8 @@ LANGUAGES = (
    ('en', ugettext('English')),
 )
 
-# ?
-#SITE_ID = 1
+# Needed for Django sites framework. Keep it active.
+SITE_ID = 1
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"

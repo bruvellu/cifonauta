@@ -3,14 +3,14 @@
 {% load cache %}
 {% block title %}{{ tour.name }} | {% trans 'Tour' %} | {{ block.super }}{% endblock %}
 {% block meta-keywords %}{{ tour.name }}, {% show_set tags '' '' ', ' '' %}, {% show_set taxa '' '' ', ' '' %}{% endblock %}
-{% block meta-description %}{{ tour.description|markdown|striptags|truncatewords:30 }}{% endblock %}
+{% block meta-description %}{{ tour.description|striptags|truncatewords:30 }}{% endblock %}
 {% block meta-author %}{% show_set authors '' '' ', ' '' %}{% endblock %}
 
 {% block extra-head %}
 <meta property="og:title" content="{{ tour.name }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ thumb }}" />
-<meta property="og:description" content="{{ tour.description|markdown|striptags|truncatewords:30 }}" />
+<meta property="og:description" content="{{ tour.description|striptags|truncatewords:30 }}" />
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 <meta property="og:type" content="cifonauta:tour" />
 
@@ -111,7 +111,7 @@
 
 <div class="span-15" id="tour-description">
   <h2>{{ tour.name }}</h2>
-  {{ tour.description|markdown }}
+  {{ tour.description }}
 </div>
 
 <div class="span-8 last metagroup">

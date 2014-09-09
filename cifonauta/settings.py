@@ -89,6 +89,11 @@ DATABASES = {
 LANGUAGE_CODE = 'pt-br'
 ADMIN_LANGUAGE_CODE = 'pt-br'
 
+# Rosetta settings.
+ROSETTA_MESSAGES_SOURCE_LANGUAGE_CODE = 'pt-br'
+ROSETTA_MESSAGES_SOURCE_LANGUAGE_NAME = 'Português'
+ROSETTA_STORAGE_CLASS = 'rosetta.storage.CacheRosettaStorage'
+
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_L10N = True

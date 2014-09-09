@@ -1,8 +1,6 @@
-{% load cache i18n %}
+{% load i18n %}
 
-{% cache 2592000 feedback %}
 <div id="feedback"><a href="/feedback/">feedback</a></div>
-{% endcache %}
 
 {% if user.is_authenticated %}
 <span id="admin">
@@ -33,7 +31,6 @@
 </div>
 
 {% with fullpath=request.get_full_path %}
-{% cache 2592000 menu LANGUAGE_CODE fullpath %}
 <ul class="menu" id="media">
   <li>
   <a {% if fullpath == '/search/?type=photo' %}class="selected"{% endif %} href="/search/?type=photo">{% trans 'fotos' %}</a>
@@ -71,5 +68,4 @@
   <a {% if fullpath == '/blog/' %}class="selected"{% endif %}href="/blog/">{% trans 'blog' %}</a>
   </li>
 </ul>
-{% endcache %}
 {% endwith %}

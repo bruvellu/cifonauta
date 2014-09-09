@@ -1,13 +1,10 @@
 {% load i18n %}
-{% load cache %}
 {% get_current_language as LANGUAGE_CODE %}
 
 {% block extra-head %}
 {% endblock %}
 
 {% include 'messages.html' %}
-
-{% cache 604800 gallery_photos LANGUAGE_CODE request.META.QUERY_STRING request.session %}
 
 {% if images.paginator.count %}
 
@@ -85,5 +82,3 @@
 
 </section>
 {% endif %}
-
-{% endcache %}

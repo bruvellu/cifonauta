@@ -1,7 +1,5 @@
-{% load i18n cache %}
+{% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
-
-{% cache 2592000 social LANGUAGE_CODE %}
 
 <!-- Twitter -->
 <a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a>
@@ -11,5 +9,3 @@
 
 <!-- Facebook -->
 <div class="fb-like" data-href="https://www.facebook.com/cifonauta" data-send="false" data-layout="button_count" data-width="100" data-show-faces="false"></div>
-
-{% endcache %}

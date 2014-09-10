@@ -35,8 +35,6 @@ INSTALLED_APPS = (
     'meta',
     'mptt',
     'rosetta',
-    #'datatrans',
-    #'transmeta',
     #'debug_toolbar',
     'sorl.thumbnail',
 

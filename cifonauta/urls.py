@@ -91,7 +91,6 @@ urlpatterns = patterns('',
         # Translate
         (r'^translate/$', translate_page),
         (r'^translate/apps/', include('rosetta.urls')),
-        (r'^translate/models/', include('cifonauta.datatrans_urls')),
 
         # Manage
         (r'^private/$', hidden_page),

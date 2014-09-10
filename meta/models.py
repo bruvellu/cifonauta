@@ -3,9 +3,8 @@
 from django.db import models
 #from django.contrib.sites.models import Site
 from django.utils.translation import ugettext_lazy as _
-from mptt.models import MPTTModel, MPTTModelBase
+from mptt.models import MPTTModel
 from meta.signals import *
-from transmeta import TransMeta, register
 from django.db.models import Q
 from django.db.models import signals
 
@@ -59,13 +58,10 @@ class File(models.Model):
     latitude = models.CharField(_(u'latitude'), max_length=12, blank=True, help_text=_(u'Latitude onde foi criada a imagem.'))
     longitude = models.CharField(_(u'longitude'), max_length=12, blank=True, help_text=_(u'Longitude onde foi criada a imagem.'))
 
-    __metaclass__ = TransMeta
-
     class Meta:
         abstract = True
         verbose_name = _(u'arquivo')
         verbose_name_plural = _(u'arquivos')
-        translate = ('title', 'caption', 'notes', )
 
     def _get_list(self, obj_set, field_name="name", lang=False, separator=' , '):
         if lang:
@@ -250,13 +246,10 @@ class Tag(models.Model):
         self.video_count = self.videos.count()
         self.save()
 
-    __metaclass__ = TransMeta
-
     class Meta:
         verbose_name = _(u'marcador')
         verbose_name_plural = _(u'marcadores')
         #ordering = ['position', 'name']
-        translate = ('name', 'description', )
 
 
 class TagCategory(models.Model):
@@ -271,18 +264,10 @@ class TagCategory(models.Model):
     def __unicode__(self):
         return self.name
 
-    __metaclass__ = TransMeta
-
     class Meta:
         verbose_name = _(u'categoria de marcadores')
         verbose_name_plural = _(u'categorias de marcadores')
         #ordering = ['position', 'name']
-        translate = ('name', 'description', )
-
-
-# joining two meta classes to be used in Taxon
-class SpecialMeta(TransMeta, MPTTModelBase):
-    pass
 
 
 class Taxon(MPTTModel):
@@ -339,13 +324,10 @@ class Taxon(MPTTModel):
             query |= Q(id=node.id)
         return Taxon.objects.filter(query)
 
-    __metaclass__ = SpecialMeta
-
     class Meta:
         verbose_name = _(u'táxon')
         verbose_name_plural = _(u'táxons')
         ordering = ['name']
-        translate = ('common', 'rank',)
 
 
 class Size(models.Model):
@@ -382,13 +364,10 @@ class Size(models.Model):
         self.video_count = self.video_set.count()
         self.save()
 
-    __metaclass__ = TransMeta
-
     class Meta:
         verbose_name = _(u'tamanho')
         verbose_name_plural = _(u'tamanhos')
         ordering = ['position']
-        translate = ('name', 'description',)
 
 
 class Rights(models.Model):
@@ -518,13 +497,10 @@ class Country(models.Model):
         self.video_count = self.video_set.count()
         self.save()
 
-    __metaclass__ = TransMeta
-
     class Meta:
         verbose_name = _(u'país')
         verbose_name_plural = _(u'país')
         #ordering = ['name']
-        translate = ('name', )
 
 
 class Reference(models.Model):
@@ -600,13 +576,10 @@ class Tour(models.Model):
         self.video_count = self.videos.count()
         self.save()
 
-    __metaclass__ = TransMeta
-
     class Meta:
         verbose_name = _(u'tour')
         verbose_name_plural = _(u'tours')
         #ordering = ['name']
-        translate = ('name', 'description',)
 
 
 class TourPosition(models.Model):
@@ -618,8 +591,6 @@ class TourPosition(models.Model):
     def __unicode__(self):
         return '%d, %s (id=%s) @ %s' % (self.position, self.photo.title,
                 self.photo.id, self.tour.name)
-
-    __metaclass__ = TransMeta
 
     class Meta:
         verbose_name = _(u'posição no tour')
@@ -646,44 +617,6 @@ class Stats(models.Model):
         verbose_name = _(u'estatísticas')
         verbose_name_plural = _(u'estatísticas')
 
-
-# modifying Django's FlatPage model to allow translation
-#class FlatPage(models.Model):
-    #url = models.CharField(_('URL'), max_length=100, db_index=True)
-    #title = models.CharField(_('title'), max_length=200)
-    #content = models.TextField(_('content'), blank=True)
-    #enable_comments = models.BooleanField(_('enable comments'))
-    #template_name = models.CharField(_('template name'), max_length=70, blank=True,
-        #help_text=_("Example: 'flatpages/contact_page.html'. If this isn't provided, the system will use 'flatpages/default.html'."))
-    #registration_required = models.BooleanField(_('registration required'), help_text=_("If this is checked, only logged-in users will be able to view the page."))
-    #sites = models.ManyToManyField(Site, related_name='flatpages_set')
-
-    #__metaclass__ = TransMeta
-
-    #class Meta:
-        #db_table = 'django_flatpage'
-        #verbose_name = _('flat page')
-        #verbose_name_plural = _('flat pages')
-        #ordering = ('url',)
-        #translate = ('title', 'content',)
-
-    #def __unicode__(self):
-        #return u"%s -- %s" % (self.url, self.title)
-
-    #def get_absolute_url(self):
-        #return self.url
-
-
-# Registrando modelos para tradução.
-#register(Image, ('title', 'caption', 'notes',))
-#register(Video, ('title', 'caption', 'notes',))
-#register(Tag, ('name', 'description',))
-#register(TagCategory,  ('name', 'description',))
-#register(Taxon, ('common', 'rank',))
-#register(Size, ('name', 'description',))
-#register(Country, ('name',))
-#register(Tour, ('name', 'description',))
-#register(FlatPage, ('title', 'content',))
 
 
 # Slugify before saving.

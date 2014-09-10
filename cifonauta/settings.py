@@ -38,9 +38,9 @@ INSTALLED_APPS = (
     #'datatrans',
     #'transmeta',
     #'debug_toolbar',
-    #'sorl.thumbnail',
-    'dajaxice',
-    'dajax',
+    'sorl.thumbnail',
+    #'dajaxice',
+    #'dajax',
 
     'django.contrib.sites',
     'django.contrib.flatpages',

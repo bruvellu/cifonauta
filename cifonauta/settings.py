@@ -39,8 +39,6 @@ INSTALLED_APPS = (
     #'transmeta',
     #'debug_toolbar',
     'sorl.thumbnail',
-    #'dajaxice',
-    #'dajax',
 
     'django.contrib.sites',
     'django.contrib.flatpages',
@@ -156,9 +154,6 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 # Required for Debug Toolbar and sorl-thumbnail.
 INTERNAL_IPS = ('127.0.0.1', '::1')
 #DEBUG_TOOLBAR_PATCH_SETTINGS = False
-
-# Dajaxice requirement.
-#DAJAXICE_MEDIA_PREFIX = 'dajaxice'
 
 #INSTALLED_APPS = (
 #)

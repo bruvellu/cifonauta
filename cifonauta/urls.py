@@ -26,10 +26,6 @@ from django.conf import settings
 from django import template
 template.add_to_builtins('meta.templatetags.extra_tags')
 
-# Dajaxice requirement.
-from dajaxice.core import dajaxice_autodiscover
-dajaxice_autodiscover()
-
 #ONE_HOUR = 60 * 60                  # 3600
 #HALF_DAY = 60 * 60 * 12             # 43200
 #ONE_DAY = 60 * 60 * 24              # 86400
@@ -80,9 +76,6 @@ urlpatterns = patterns('',
 
         # Sitemaps
         (r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
-
-        # Dajax
-        #(r'^%s/' % settings.DAJAXICE_MEDIA_PREFIX, include('dajaxice.urls')),
 
         # Feeds
         (r'^feed/latest/$', LatestMedia()),

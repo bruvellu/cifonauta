@@ -7,10 +7,8 @@ from meta.forms import *
 from meta.models import *
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-#from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from django.db.transaction import commit_on_success
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -395,7 +393,6 @@ def translate_page(request):
 
 
 # Single
-@commit_on_success  # TODO Colocar save em função separada?
 def photo_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''
     # Pega o objeto.
@@ -512,7 +509,6 @@ def photo_page(request, image_id):
         return render_to_response('media_page.html', variables)
 
 
-@commit_on_success  # TODO Colocar save em função separada?
 def video_page(request, video_id):
     '''Página única de cada vídeo com todas as informações.'''
     # Pega o objeto.

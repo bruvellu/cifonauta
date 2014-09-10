@@ -60,7 +60,6 @@ MIDDLEWARE_CLASSES = (
 
     'django.middleware.locale.LocaleMiddleware',
     'utils.AdminLocaleURLMiddleware',
-    'django.middleware.transaction.TransactionMiddleware',
 
     #'django.middleware.cache.FetchFromCacheMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',

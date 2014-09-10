@@ -33,13 +33,12 @@ INSTALLED_APPS = (
     'haystack',
 
     'meta',
-    'south',
     'mptt',
     'rosetta',
-    'datatrans',
-    'transmeta',
+    #'datatrans',
+    #'transmeta',
     #'debug_toolbar',
-    'sorl.thumbnail',
+    #'sorl.thumbnail',
     'dajaxice',
     'dajax',
 

@@ -30,10 +30,9 @@ import linking
 from itis import Itis
 from media_utils import *
 
-# Django environment import
-from django.core.management import setup_environ
-import settings
-setup_environ(settings)
+# Django environment setup.
+import django
+django.setup()
 from meta.models import *
 
 __author__ = 'Bruno Vellutini'
@@ -108,7 +107,7 @@ class Database:
             pass
         # Guarda objeto com autores
         authors = media_meta['author']
-        # Guarda objeto com especialistas 
+        # Guarda objeto com especialistas
         sources = media_meta['source']
         del media_meta['source']
         # Guarda objeto com tags
@@ -120,7 +119,7 @@ class Database:
 
         # Não deixar entrada pública se faltar título ou autor
         if media_meta['title'] == '' or not media_meta['author']:
-            logger.debug('Mídia %s sem título ou autor!', 
+            logger.debug('Mídia %s sem título ou autor!',
                     media_meta['source_filepath'])
             media_meta['is_public'] = False
         else:
@@ -259,7 +258,7 @@ class Movie:
 
     def create_meta(self, new=False):
         '''Define as variáveis dos metadados do vídeo.'''
-        logger.info('Lendo os metadados de %s e criando objetos.' % 
+        logger.info('Lendo os metadados de %s e criando objetos.' %
                 self.filename)
         # Limpa metadados pra não misturar com o anterior.
         self.meta = {}
@@ -295,7 +294,7 @@ class Movie:
             meta_text = open(txt_path, 'rb')
             logger.debug('Arquivo acessório %s existe!', txt_path)
         except:
-            logger.debug('Arquivo acessório de %s não existe!', 
+            logger.debug('Arquivo acessório de %s não existe!',
                     self.source_filepath)
             meta_text = ''
 
@@ -392,8 +391,8 @@ class Movie:
                 '-b:v', '600k', '-threads', '0',
                 ]
         #TODO Achar um jeito mais confiável de saber se é HD...
-        # Comando cria objeto da marca d'água e redimensiona para 100px de 
-        # largura, redimensiona o vídeo para o tamanho certo de acordo com seu 
+        # Comando cria objeto da marca d'água e redimensiona para 100px de
+        # largura, redimensiona o vídeo para o tamanho certo de acordo com seu
         # tipo e insere a marca no canto esquerdo embaixo.
         if self.source_filepath.endswith('m2ts'):
             call.extend([
@@ -456,11 +455,11 @@ class Movie:
                     webm_site_filepath = os.path.join(self.site_dir, webm_name)
                     copy(webm_filepath, webm_site_filepath)
                 except:
-                    logger.warning('Erro ao copiar %s para o site.', 
+                    logger.warning('Erro ao copiar %s para o site.',
                             webm_filepath)
                 web_paths['webm_filepath'] = webm_site_filepath
             except:
-                logger.warning('Processamento do WebM (%s) não funcionou!', 
+                logger.warning('Processamento do WebM (%s) não funcionou!',
                         webm_filepath)
             try:
                 # MP4
@@ -473,14 +472,14 @@ class Movie:
                         subprocess.call(['qt-faststart', mp4_site_filepath,
                             mp4_site_filepath])
                     except:
-                        logger.debug('qt-faststart não funcionou para %s', 
+                        logger.debug('qt-faststart não funcionou para %s',
                                 mp4_filepath)
                 except:
-                    logger.warning('Erro ao copiar %s para o site.', 
+                    logger.warning('Erro ao copiar %s para o site.',
                             mp4_filepath)
                 web_paths['mp4_filepath'] = mp4_site_filepath
             except:
-                logger.warning('Processamento do x264 (%s) não funcionou!', 
+                logger.warning('Processamento do x264 (%s) não funcionou!',
                         mp4_filepath)
             try:
                 # OGG
@@ -490,11 +489,11 @@ class Movie:
                     ogg_site_filepath = os.path.join(self.site_dir, ogg_name)
                     copy(ogg_filepath, ogg_site_filepath)
                 except:
-                    logger.warning('Erro ao copiar %s para o site.', 
+                    logger.warning('Erro ao copiar %s para o site.',
                             ogg_filepath)
                 web_paths['ogg_filepath'] = ogg_site_filepath
             except:
-                logger.warning('Processamento do OGG (%s) não funcionou!', 
+                logger.warning('Processamento do OGG (%s) não funcionou!',
                         ogg_filepath)
         except IOError:
             logger.warning('Erro na conversão de %s.')
@@ -511,7 +510,7 @@ class Movie:
                 copy(still_localpath, self.site_thumb_dir)
                 logger.debug('Still copiado para %s', self.site_thumb_dir)
             except IOError:
-                logger.warning('Não conseguiu copiar thumb ou still em %s', 
+                logger.warning('Não conseguiu copiar thumb ou still em %s',
                         self.site_thumb_dir)
 
             # Define caminho para o thumb e still do site.
@@ -662,13 +661,13 @@ class Photo:
             # Copia foto para pasta site_media se .
             copy(photo_localpath, photo_sitepath)
         except IOError:
-            logger.warning('Erro na conversão de %s, verifique o ImageMagick.', 
+            logger.warning('Erro na conversão de %s, verifique o ImageMagick.',
                     self.source_filepath)
             # Evita que o loop seja interrompido.
             return None, None
         else:
             logger.info('%s convertida com sucesso!', self.source_filepath)
-            thumb_localpath = create_thumb(self.source_filepath, 
+            thumb_localpath = create_thumb(self.source_filepath,
                     self.local_thumb_dir)
 
             # Copia thumb da pasta local para site_media.
@@ -759,16 +758,16 @@ def prepare_meta(meta):
     #if not isinstance(meta['tags'], list):
 
     # Preparando autor(es) para o banco de dados
-    meta['author'] = [a.strip() for a in meta['author'].split(',')] 
+    meta['author'] = [a.strip() for a in meta['author'].split(',')]
     # Preparando especialista(s) para o banco de dados
-    meta['source'] = [a.strip() for a in meta['source'].split(',')] 
+    meta['source'] = [a.strip() for a in meta['source'].split(',')]
     # Preparando referências para o banco de dados
-    meta['references'] = [a.strip() for a in meta['references'].split(',')] 
+    meta['references'] = [a.strip() for a in meta['references'].split(',')]
     # Preparando taxon(s) para o banco de dados
     #XXX Lidar com fortuitos sp.?
     #XXX Lidar com fortuitos aff. e espécies com 3 nomes?
-    #meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')] 
-    temp_taxa = [a.strip() for a in meta['taxon'].split(',')] 
+    #meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')]
+    temp_taxa = [a.strip() for a in meta['taxon'].split(',')]
     clean_taxa = []
     for taxon in temp_taxa:
         tsplit = taxon.split()

@@ -150,7 +150,7 @@ class Video(File):
 
 
 class Author(models.Model):
-    name = models.CharField(_(u'nome'), default='', max_length=200, unique=True, help_text=_(u'Nome do autor.'))
+    name = models.CharField(_(u'nome'), max_length=200, unique=True, help_text=_(u'Nome do autor.'))
     slug = models.SlugField(_(u'slug'), max_length=200, blank=True, help_text=_(u'Slug do nome do autor.'))
     images = models.ManyToManyField(Image, null=True, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este autor.'))
@@ -183,7 +183,7 @@ class Author(models.Model):
 
 
 class Source(models.Model):
-    name = models.CharField(_(u'nome'), default='', max_length=200, unique=True, help_text=_(u'Nome do especialista.'))
+    name = models.CharField(_(u'nome'), max_length=200, unique=True, help_text=_(u'Nome do especialista.'))
     slug = models.SlugField(_(u'slug'), max_length=200, blank=True, help_text=_(u'Slug do nome do especialista.'))
     images = models.ManyToManyField(Image, null=True, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este especialista.'))
@@ -216,9 +216,9 @@ class Source(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(_(u'nome'), default='', max_length=64, unique=True, help_text=_(u'Nome do marcador.'))
+    name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome do marcador.'))
     slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome do marcador.'))
-    description = models.TextField(_(u'descrição'), default='', blank=True, help_text=_(u'Descrição do marcador.'))
+    description = models.TextField(_(u'descrição'), blank=True, help_text=_(u'Descrição do marcador.'))
     images = models.ManyToManyField(Image, null=True, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este marcador.'))
     videos = models.ManyToManyField(Video, null=True, blank=True,
@@ -252,9 +252,9 @@ class Tag(models.Model):
 
 
 class TagCategory(models.Model):
-    name = models.CharField(_(u'nome'), default='', max_length=64, unique=True, help_text=_(u'Nome da categoria de marcadores.'))
+    name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome da categoria de marcadores.'))
     slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome da categoria de marcadores.'))
-    description = models.TextField(_(u'descrição'), default='', blank=True, help_text=_(u'Descrição da categoria de marcadores.'))
+    description = models.TextField(_(u'descrição'), blank=True, help_text=_(u'Descrição da categoria de marcadores.'))
     position = models.PositiveIntegerField(_(u'posição'), default=0, help_text=_(u'Define a ordem das categorias.'))
     parent = models.ForeignKey('self', blank=True, null=True, related_name='tagcat_children', verbose_name=_(u'pai'), help_text=_(u'Categoria pai desta categoria de marcadores.'))
     #TODO? Toda vez que uma tag é salva, atualizar a contagem das imagens e
@@ -270,7 +270,7 @@ class TagCategory(models.Model):
 
 
 class Taxon(MPTTModel):
-    name = models.CharField(_(u'nome'), default='', max_length=256, unique=True, help_text=_(u'Nome do táxon.'))
+    name = models.CharField(_(u'nome'), max_length=256, unique=True, help_text=_(u'Nome do táxon.'))
     slug = models.SlugField(_(u'slug'), max_length=256, blank=True, help_text=_(u'Slug do nome do táxon.'))
     common = models.CharField(_(u'nome popular'), max_length=256, blank=True, help_text=_(u'Nome popular do táxon.'))
     rank = models.CharField(_(u'rank'), max_length=256, blank=True, help_text=_(u'Ranking taxonômico do táxon.'))
@@ -337,10 +337,10 @@ class Size(models.Model):
             ('10 - 100 mm', '10 - 100 mm'),
             ('>100 mm', '>100 mm')
             )
-    name = models.CharField(_(u'nome'), default='', max_length=32, unique=True,
+    name = models.CharField(_(u'nome'), max_length=32, unique=True,
             choices=SIZES, help_text=_(u'Nome da classe de tamanho.'))
     slug = models.SlugField(_(u'slug'), max_length=32, blank=True, help_text=_(u'Slug do nome da classe de tamanho.'))
-    description = models.TextField(_(u'descrição'), default='', blank=True, help_text=_(u'Descrição da classe de tamanho.'))
+    description = models.TextField(_(u'descrição'), blank=True, help_text=_(u'Descrição da classe de tamanho.'))
     position = models.PositiveIntegerField(_(u'posição'), default=0, help_text=_(u'Define ordem das classes de tamanho em um queryset.'))
     image_count = models.PositiveIntegerField(
             _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas à esta classe de tamanho.'))
@@ -370,7 +370,7 @@ class Size(models.Model):
 
 
 class Rights(models.Model):
-    name = models.CharField(_(u'nome'), default='', max_length=64, unique=True, help_text=_(u'Nome do detentor dos direitos autorais.'))
+    name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome do detentor dos direitos autorais.'))
     slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome do detentor dos direitos autorais.'))
 
     def __unicode__(self):
@@ -383,7 +383,7 @@ class Rights(models.Model):
 
 
 class Sublocation(models.Model):
-    name = models.CharField(_(u'nome'), default='', max_length=64, unique=True, help_text=_(u'Nome da localidade.'))
+    name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome da localidade.'))
     slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome da localidade.'))
     image_count = models.PositiveIntegerField(
             _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas à esta localidade.'))
@@ -413,7 +413,7 @@ class Sublocation(models.Model):
 
 
 class City(models.Model):
-    name = models.CharField(_(u'nome'), default='', max_length=64, unique=True, help_text=_(u'Nome da cidade.'))
+    name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome da cidade.'))
     slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome da cidade.'))
     image_count = models.PositiveIntegerField(
             _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associados à esta cidade.'))
@@ -443,7 +443,7 @@ class City(models.Model):
 
 
 class State(models.Model):
-    name = models.CharField(_(u'nome'), default='', max_length=64, unique=True, help_text=_(u'Nome do estado.'))
+    name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome do estado.'))
     slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome do estado.'))
     image_count = models.PositiveIntegerField(
             _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas a este estado.'))
@@ -473,7 +473,7 @@ class State(models.Model):
 
 
 class Country(models.Model):
-    name = models.CharField(_(u'nome'), default='', max_length=64, unique=True, help_text=_(u'Nome do país.'))
+    name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome do país.'))
     slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome do país.'))
     image_count = models.PositiveIntegerField(
             _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas a este país.'))
@@ -503,7 +503,7 @@ class Country(models.Model):
 
 
 class Reference(models.Model):
-    name = models.CharField(_(u'nome'), default='', max_length=100, unique=True, help_text=_(u'Identificador da referência (Mendeley ID).'))
+    name = models.CharField(_(u'nome'), max_length=100, unique=True, help_text=_(u'Identificador da referência (Mendeley ID).'))
     slug = models.SlugField(_(u'slug'), max_length=100, blank=True, help_text=_(u'Slug do identificar da referência.'))
     citation = models.TextField(_(u'citação'), blank=True, help_text=_(u'Citação formatada da referência.'))
     images = models.ManyToManyField(Image, null=True, blank=True,
@@ -539,9 +539,9 @@ class Reference(models.Model):
 
 
 class Tour(models.Model):
-    name = models.CharField(_(u'nome'), default='', max_length=100, unique=True, help_text=_(u'Nome do tour.'))
+    name = models.CharField(_(u'nome'), max_length=100, unique=True, help_text=_(u'Nome do tour.'))
     slug = models.SlugField(_(u'slug'), max_length=100, blank=True, help_text=_(u'Slug do nome do tour.'))
-    description = models.TextField(_(u'descrição'), default='', blank=True, help_text=_(u'Descrição do tour.'))
+    description = models.TextField(_(u'descrição'), blank=True, help_text=_(u'Descrição do tour.'))
     is_public = models.BooleanField(_(u'público'), default=False, help_text=_(u'Informa se o tour está visível para visitantes anônimos.'))
     pub_date = models.DateTimeField(_(u'data de publicação'), auto_now_add=True, help_text=_(u'Data de publicação do tour no Cifonauta.'))
     timestamp = models.DateTimeField(_(u'data de modificação'), auto_now=True, help_text=_(u'Data da última modificação do tour.'))

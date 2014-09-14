@@ -23,6 +23,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'modeltranslation', # Before admin.
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -98,7 +99,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# Needed for transmeta.
+# Needed for modeltranslation.
 ugettext = lambda s: s
 LANGUAGES = (
    ('pt-br', ugettext('Português')),

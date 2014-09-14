@@ -24,6 +24,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
     'modeltranslation', # Before admin.
+    'django.contrib.flatpages',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,7 +41,6 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
 
     'django.contrib.sites',
-    'django.contrib.flatpages',
     'django.contrib.humanize',
     'django.contrib.syndication',
     'django.contrib.sitemaps',

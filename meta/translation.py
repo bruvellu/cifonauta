@@ -1,5 +1,9 @@
 from modeltranslation.translator import translator, TranslationOptions
 from meta.models import Image, Video, Tag, TagCategory, Taxon, City, State, Country, Tour
+from django.contrib.flatpages.models import FlatPage
+
+class FlatPageTranslation(TranslationOptions):
+    fields = ('title', 'content',)
 
 class ImageTranslation(TranslationOptions):
     fields = ('title', 'caption',)
@@ -28,6 +32,7 @@ class CountryTranslation(TranslationOptions):
 class TourTranslation(TranslationOptions):
     fields = ('name', 'description')
 
+translator.register(FlatPage, FlatPageTranslation)
 translator.register(Image, ImageTranslation)
 translator.register(Video, VideoTranslation)
 translator.register(Tag, TagTranslation)

@@ -1,6 +1,7 @@
 from meta import models
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin
+from django.contrib.flatpages.models import FlatPage
 
 # Disable translatable models.
 #admin.site.register(models.Image)
@@ -22,6 +23,8 @@ admin.site.register(models.Reference)
 admin.site.register(models.TourPosition)
 
 # Translation admin.
+class FlatPageTransAdmin(TranslationAdmin):
+    pass
 class ImageAdmin(TranslationAdmin):
     pass
 class VideoAdmin(TranslationAdmin):
@@ -42,6 +45,10 @@ class TourAdmin(TranslationAdmin):
     pass
 class SizeAdmin(TranslationAdmin):
     pass
+
+admin.site.unregister(FlatPage)
+admin.site.register(FlatPage, FlatPageTransAdmin)
+
 admin.site.register(models.Image, ImageAdmin)
 admin.site.register(models.Video, VideoAdmin)
 admin.site.register(models.Tag, TagAdmin)

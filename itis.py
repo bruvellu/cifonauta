@@ -54,7 +54,7 @@ class Itis:
     def __init__(self, query):
         logger.info('Iniciando contato com ITIS.')
 
-        self.url = 'http://www.itis.gov/ITISWebService.xml'
+        self.url = 'http://www.itis.gov/ITISWebService/services/ITISService?wsdl'
         try:
             self.client = Client(self.url)
         except:
@@ -115,6 +115,7 @@ class Itis:
                 'Subclass': u'Subclasse',
                 'Subsection': u'Subseção',
                 'Kingdom': u'Reino',
+                'Infrakingdom': u'Infrareino',
                 'Division': u'Divisão',
                 'Subtribe': u'Subtribo',
                 'Aberration': u'Aberração',

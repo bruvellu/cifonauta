@@ -64,8 +64,5 @@
   <li><a 
     {% if fullpath == '/about/' or fullpath == '/content/' or fullpath == '/organization/' or fullpath == '/credits/' or fullpath == '/details/' or fullpath == '/development/' or fullpath == '/roadmap/' or fullpath == '/terms/' %}class="selected"{% endif %}href="/about/">{% trans 'sobre' %}</a>
   </li>
-  <li>
-  <a {% if fullpath == '/blog/' %}class="selected"{% endif %}href="/blog/">{% trans 'blog' %}</a>
-  </li>
 </ul>
 {% endwith %}

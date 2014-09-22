@@ -70,7 +70,7 @@ def search_page(request):
     n_form = DisplayForm(initial={
         'n': 16,
         'order': 'random',
-        'highlight': True
+        'highlight': False
         })
 
     # Refinamentos.
@@ -647,7 +647,7 @@ def meta_page(request, model_name, field, slug):
     n_form = DisplayForm(initial={
         'n': 16,
         'order': 'random',
-        'highlight': True,
+        'highlight': False,
         })
 
     # Define formulário de controle e variáveis.
@@ -1056,11 +1056,11 @@ def control_form(request):
             order = request.session['order']
             highlight = request.session['highlight']
         except:
-            n_form = DisplayForm(initial={'n': 16, 'orderby': 'random', 'order': 'desc', 'highlight': True})
+            n_form = DisplayForm(initial={'n': 16, 'orderby': 'random', 'order': 'desc', 'highlight': False})
             n_page = 16
             orderby = 'random'
             order = 'desc'
-            highlight = True
+            highlight = False
 
     # Substitui 'random' por '?'
     if orderby == 'random':

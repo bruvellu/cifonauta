@@ -1068,7 +1068,7 @@ def control_form(request):
 
     # Define highlight quando não estiver na sessão do usuário.
     if not 'highlight' in request.session:
-        request.session['highlight'] = True
+        request.session['highlight'] = False
 
     return n_form, n_page, orderby, order, highlight
 

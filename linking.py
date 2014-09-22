@@ -2,15 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import os
-#import pickle
-#from iptcinfo import IPTCInfo
-from remove import compile_paths
-
 
 EXTENSIONS = (
     'jpg', 'jpeg', 'avi', 'mov', 'mp4', 'ogg', 'ogv', 'dv', 'mpg',
     'mpeg', 'flv', 'm2ts', 'wmv', 'txt',
 )
+
 
 class LinkManager:
     '''Handles links and original files.'''
@@ -67,7 +64,6 @@ class LinkManager:
             linkpath = os.readlink(path)
             if self.check_link(linkpath):
                 self.healthy_links.append(linkpath)
-                #print('Healthy link: %s' % linkpath)
             else:
                 self.broken_links[path] = linkpath
 
@@ -91,8 +87,8 @@ class LinkManager:
                     print('\t%s\n' % v)
                     for idx, val in enumerate(matches):
                         print('\t[%d] ' % idx + val)
-                    index = raw_input('\nType the number of the correct image ' \
-                            '("i" to ignore; "l" to lost): ')
+                    index = raw_input('\nType the number of the correct image '
+                                      '("i" to ignore; "l" to lost): ')
                     if index == 'i':
                         print('\n\tIgnoring broken link: %s.' % v)
                     elif index == 'l':

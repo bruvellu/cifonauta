@@ -180,9 +180,43 @@ class Database:
         '''Retorna o id a partir do nome.'''
         # TODO Create hook to avoid badly formatted characters to be saved.
         # Any new tag should be manually confirmed and corrected.
-        model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), value))
+        #model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), value))
+
+        print('\nGET table: %s, value: %s' % (table, value))
+
+        # Needs a default in case objects exists.
+        new = False
+
+        # Try to get object. If it doesn't exist, confirm to avoid bad metadata.
+        try:
+            model = eval('%s.objects.get(name="%s")' % (table.capitalize(), value))
+        except:
+            # Load bad data dictionary.
+            bad_data_file = open('bad_data.pkl', 'rb')
+            bad_data = pickle.load(bad_data_file)
+            bad_data_file.close()
+            try:
+                fixed_value = bad_data[value]
+                print('"%s" automatically fixed to "%s"' % (value, bad_data[value]))
+            except:
+                fixed_value = raw_input('\nNovo metadado. Digite para confirmar: ')
+            try:
+                model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), fixed_value))
+                if new:
+                    print('Novo metadado %s criado!' % fixed_value)
+                else:
+                    print('Metadado %s já existia!' % fixed_value)
+                    # Add to bad data dictionary.
+                    bad_data[value] = fixed_value
+                    bad_data_file = open('bad_data.pkl', 'wb')
+                    pickle.dump(bad_data, bad_data_file)
+                    bad_data_file.close()
+                # TODO Fix metadata field on original image!!!
+            except:
+                print('Objeto %s não foi encontrado! Abortando...' % fixed_value)
+
+        # Consulta ITIS para extrair táxons.
         if table == 'taxon' and new:
-            # Consulta ITIS para extrair táxons.
             taxon = self.get_itis(value)
             # Reforça, caso a conexão falhe.
             if not taxon:

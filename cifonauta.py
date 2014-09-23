@@ -82,6 +82,8 @@ class Database:
                             return False
             logger.debug('Bingo! Registro de %s encontrado.', media.filename)
             logger.info('Comparando timestamp do arquivo com o registro...')
+            # XXX Dirty hack to make naive timestamp.
+            record.timestamp = record.timestamp.replace(tzinfo=None)
             if record.timestamp != media.timestamp:
                 logger.debug('Arquivo mudou! Retorna 1')
                 return 1
@@ -176,6 +178,8 @@ class Database:
 
     def get_instance(self, table, value):
         '''Retorna o id a partir do nome.'''
+        # TODO Create hook to avoid badly formatted characters to be saved.
+        # Any new tag should be manually confirmed and corrected.
         model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), value))
         if table == 'taxon' and new:
             # Consulta ITIS para extrair táxons.

@@ -34,6 +34,7 @@ from media_utils import *
 import django
 django.setup()
 from meta.models import *
+from django.conf import settings
 
 __author__ = 'Bruno Vellutini'
 __copyright__ = 'Copyright 2010-2011, CEBIMar-USP'
@@ -925,7 +926,7 @@ def main(argv):
             n_max, force_update, only_photos, only_videos)
 
     # Verifica e atualiza links entre pasta "oficial" e "source_media".
-    linking.main()
+    linking.main(settings.STORAGE_FOLDER)
 
     # Cria instância do bd
     cbm = Database()

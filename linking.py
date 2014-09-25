@@ -13,11 +13,11 @@ logger = logging.getLogger('cifonauta.linking')
 
 
 class LinkManager:
-    def __init__(self):
+    def __init__(self, storage):
         # Diretório com links para pasta oficial.
         self.source_media = 'source_media/oficial'
         # Diretório oficial com arquivos originais.
-        self.storage = '/home/nelas/storage/oficial'
+        self.storage = storage
 
         # Listas para processamento.
         self.links = []
@@ -218,7 +218,7 @@ class LinkManager:
                                 logger.debug('Entrada de %s foi apagada!', media)
                             except:
                                 logger.warning(
-                                        'Não rolou apagar %s do banco de dados', 
+                                        'Não rolou apagar %s do banco de dados',
                                         media)
                             for path in paths:
                                 try:
@@ -260,11 +260,11 @@ class LinkManager:
         else:
             logger.info('Nenhum arquivo novo.')
 
-def main():
+def main(storage):
     logger.info('Verificando links da pasta oficial...')
 
     # Instancia o manager.
-    manager = LinkManager()
+    manager = LinkManager(storage)
 
     # Tenta dar um jeito nos links quebrados
     manager.handle_broken()

@@ -232,6 +232,9 @@ HAYSTACK_CONNECTIONS = {
 #CACHE_MIDDLEWARE_KEY_PREFIX = 'cifo'
 #CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
+# Storage folder.
+STORAGE_FOLDER = '/home/nelas/storage/oficial'
+
 # Import server settings.
 hostname = socket.gethostname()
 if hostname == 'cifonauta' or hostname == 'cebimar-002':

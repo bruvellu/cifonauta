@@ -84,6 +84,9 @@ class LinkManager:
                     logger.debug('Nenhum candidato para %s foi encontrado!', v)
                     # Adiciona para a lista de perdidos.
                     self.lost[k] = v
+                elif len(matches) == 1:
+                    logger.debug('AUTOFIX: Link %s será arrumado.', matches[0])
+                    self.tofix[matches[0]] = k
                 else:
                     logger.debug('%s mudou de lugar.', v)
                     # Imprime opções na tela.

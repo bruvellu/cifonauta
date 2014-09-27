@@ -82,26 +82,40 @@ class LinkManager:
                     print('\nNo candidate for %s was found!' % k)
                     # Adds to the list of lost links.
                     self.lost[k] = v
+                elif len(matches) == 1:
+                    print('AUTOFIX: Link %s will be fixed.' % matches[0])
+                    self.tofix[matches[0]] = k
                 else:
-                    print('\nSelect the correct path:\n')
-                    print('\t%s\n' % v)
-                    for idx, val in enumerate(matches):
-                        print('\t[%d] ' % idx + val)
-                    index = raw_input('\nType the number of the correct image '
-                                      '("i" to ignore; "l" to lost): ')
-                    if index == 'i':
-                        print('\n\tIgnoring broken link: %s.' % v)
-                    elif index == 'l':
-                        print('\n\tLost image: %s' % v)
-                        self.lost[k] = v
-                    elif not index.strip():
-                        print('\n\tEmpty value, try again.')
-                    elif int(index) > len(matches) - 1:
-                        print('\n\tInvalid number, try again.')
-                    else:
-                        print('\n\tLink %s will be fixed.' % matches[int(index)])
-                        self.tofix[matches[int(index)]] = k
-                    print
+                    # If it is just a root change, fix it.
+                    std_v = v.split('oficial')[1]
+                    link_found = False
+                    for match in matches:
+                        std_match = match.split('oficial')[1]
+                        if std_match == std_v:
+                            print('AUTOFIX: Link %s will be fixed.' % match)
+                            self.tofix[match] = k
+                            link_found = True
+                            break
+                    if not link_found:
+                        print('\nSelect the correct path:\n')
+                        print('\t%s\n' % v)
+                        for idx, val in enumerate(matches):
+                            print('\t[%d] ' % idx + val)
+                        index = raw_input('\nType the number of the correct image '
+                                        '("i" to ignore; "l" to lost): ')
+                        if index == 'i':
+                            print('\n\tIgnoring broken link: %s.' % v)
+                        elif index == 'l':
+                            print('\n\tLost image: %s' % v)
+                            self.lost[k] = v
+                        elif not index.strip():
+                            print('\n\tEmpty value, try again.')
+                        elif int(index) > len(matches) - 1:
+                            print('\n\tInvalid number, try again.')
+                        else:
+                            print('\n\tLink %s will be fixed.' % matches[int(index)])
+                            self.tofix[matches[int(index)]] = k
+                        print
         else:
             print('\nNo broken links.')
 

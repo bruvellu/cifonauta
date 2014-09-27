@@ -89,28 +89,40 @@ class LinkManager:
                     self.tofix[matches[0]] = k
                 else:
                     logger.debug('%s mudou de lugar.', v)
-                    # Imprime opções na tela.
-                    print 'Indique a imagem correspondente no diretório oficial:\n'
-                    print '\t%s\n' % v
-                    for idx, val in enumerate(matches):
-                        print '\t[%d] ' % idx + val
-                    index = raw_input('\nDigite o número da imagem certa ' \
-                            '("i" para ignorar; "l" para perdidas): ')
-                    # Lida com input do usuário.
-                    if index == 'i':
-                        logger.debug('Ignorando o link quebrado: %s.', v)
-                    elif index == 'l':
-                        logger.debug('Imagem perdida: %s', v)
-                        self.lost[k] = v
-                    elif not index.strip():
-                        logger.debug('Valor vazio, tente novamente.')
-                        print 'Valor vazio, tente novamente.'
-                    elif int(index) > len(matches) - 1:
-                        logger.debug('Número inválido, tente novamente.')
-                        print 'Número inválido, tente novamente.'
-                    else:
-                        logger.debug('Link %s será arrumado.', matches[int(index)])
-                        self.tofix[matches[int(index)]] = k
+
+                    # If it is just a root change, fix it.
+                    std_v = v.split('oficial')[1]
+                    link_found = False
+                    for match in matches:
+                        std_match = match.split('oficial')[1]
+                        if std_match == std_v:
+                            logger.debug('AUTOFIX: Link %s será arrumado.', match)
+                            self.tofix[match] = k
+                            link_found = True
+                            break
+                    if not link_found:
+                        # Imprime opções na tela.
+                        print 'Indique a imagem correspondente no diretório oficial:\n'
+                        print '\t%s\n' % v
+                        for idx, val in enumerate(matches):
+                            print '\t[%d] ' % idx + val
+                        index = raw_input('\nDigite o número da imagem certa ' \
+                                '("i" para ignorar; "l" para perdidas): ')
+                        # Lida com input do usuário.
+                        if index == 'i':
+                            logger.debug('Ignorando o link quebrado: %s.', v)
+                        elif index == 'l':
+                            logger.debug('Imagem perdida: %s', v)
+                            self.lost[k] = v
+                        elif not index.strip():
+                            logger.debug('Valor vazio, tente novamente.')
+                            print 'Valor vazio, tente novamente.'
+                        elif int(index) > len(matches) - 1:
+                            logger.debug('Número inválido, tente novamente.')
+                            print 'Número inválido, tente novamente.'
+                        else:
+                            logger.debug('Link %s será arrumado.', matches[int(index)])
+                            self.tofix[matches[int(index)]] = k
         else:
             logger.info('Nenhum link quebrado.')
 

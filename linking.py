@@ -82,9 +82,6 @@ class LinkManager:
                     print('\nNo candidate for %s was found!' % k)
                     # Adds to the list of lost links.
                     self.lost[k] = v
-                elif len(matches) == 1:
-                    print('AUTOFIX: Link %s will be fixed.' % matches[0])
-                    self.tofix[matches[0]] = k
                 else:
                     # If it is just a root change, fix it.
                     std_v = v.split('oficial')[1]

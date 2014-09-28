@@ -53,9 +53,7 @@ __status__ = 'Development'
 
 def read_iptc(abspath, charset='utf-8', new=False):
     '''Parses IPTC metadata from a photo with iptcinfo.py'''
-    print('Parsing %s' % abspath)
 
-    # Creates metadata object and checks if it is empty.
     info = IPTCInfo(abspath, True, charset)
     if len(info.data) < 4:
         print('IPTC is empty for %s' % abspath)

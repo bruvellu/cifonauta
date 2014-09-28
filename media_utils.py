@@ -9,7 +9,7 @@
 # Atualizado: 16 Feb 2011 01:09AM
 '''Biblioteca de apoio para arquivos multimídia.
 
-Guarda funções úteis para a manipulação de fotos e imagens. Criar thumbnails, 
+Guarda funções úteis para a manipulação de fotos e imagens. Criar thumbnails,
 extrair duração, otimizar, etc.
 
 Centro de Biologia Marinha da Universidade de São Paulo.
@@ -23,6 +23,7 @@ import re
 import subprocess
 
 from shutil import copy2, move
+from iptcinfo import IPTCInfo
 
 # Instancia logger.
 logger = logging.getLogger('cifonauta.utils')
@@ -50,6 +51,21 @@ __status__ = 'Development'
 #TODO Checar se o FFmpeg está instalado.
 
 
+def read_iptc(abspath, charset='utf-8', new=False):
+    '''Parses metadata from a photo.
+
+    Uses iptcinfo.py for IPTC and pyexiv2 for EXIF data.
+    '''
+    print('Parsing %s' % abspath)
+
+    # Creates metadata object and checks if it is empty.
+    info = IPTCInfo(self.source_filepath, True, charset)
+    if len(info.data) < 4:
+        print('IPTC is empty for %s' % abspath)
+
+    return info
+
+
 def create_thumb(filepath, destination):
     '''Cria thumbnail para foto.'''
     # Confere argumentos.
@@ -72,7 +88,7 @@ def create_thumb(filepath, destination):
 
     # Define comando a ser executado.
     magick_call = [
-            'convert', '-define', 'jpeg:size=200x150', filepath, '-thumbnail', 
+            'convert', '-define', 'jpeg:size=200x150', filepath, '-thumbnail',
             '120x90^', '-gravity', 'center', '-extent', '120x90', localpath
             ]
 
@@ -110,13 +126,13 @@ def create_still(filepath, destination):
     # Define comando a ser executado.
     if filepath.endswith('m2ts'):
         ffmpeg_call = [
-                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-filter_complex', 
+                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-filter_complex',
                 'scale=512:288', '-aspect', '16:9', '-ss', '1', '-f', 'image2',
                 stillpath
                 ]
     else:
         ffmpeg_call = [
-                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-filter_complex', 
+                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-filter_complex',
                 'scale=512:384', '-ss', '1', '-f', 'image2', stillpath
                 ]
 
@@ -150,7 +166,7 @@ def watermarker(filepath):
     # Arquivo com marca d'água.
     watermark = u'marca.png'
     # Constrói chamada para canto esquerdo embaixo.
-    mark_call = ['composite', '-gravity', 'southwest', watermark, filepath, 
+    mark_call = ['composite', '-gravity', 'southwest', watermark, filepath,
             filepath]
     try:
         subprocess.call(mark_call)
@@ -207,7 +223,7 @@ def get_gps(exif):
         gps['latdeg'] = exif['Exif.GPSInfo.GPSLatitude'].value[0]
         gps['latmin'] = exif['Exif.GPSInfo.GPSLatitude'].value[1]
         gps['latsec'] = exif['Exif.GPSInfo.GPSLatitude'].value[2]
-        latitude = get_decimal(gps['latref'], gps['latdeg'], gps['latmin'], 
+        latitude = get_decimal(gps['latref'], gps['latdeg'], gps['latmin'],
                 gps['latsec'])
 
         # Longitude.
@@ -215,7 +231,7 @@ def get_gps(exif):
         gps['longdeg'] = exif['Exif.GPSInfo.GPSLongitude'].value[0]
         gps['longmin'] = exif['Exif.GPSInfo.GPSLongitude'].value[1]
         gps['longsec'] = exif['Exif.GPSInfo.GPSLongitude'].value[2]
-        longitude = get_decimal(gps['longref'], gps['longdeg'], gps['longmin'], 
+        longitude = get_decimal(gps['longref'], gps['longdeg'], gps['longmin'],
                 gps['longsec'])
 
         # Gravando valores prontos.
@@ -245,7 +261,7 @@ def get_decimal(ref, deg, min, sec):
 def get_info(video):
     '''Pega informações do vídeo na marra e retorna dicionário.
 
-    Os valores são extraídos do stderr do ffmpeg usando expressões 
+    Os valores são extraídos do stderr do ffmpeg usando expressões
     regulares.
     '''
     try:

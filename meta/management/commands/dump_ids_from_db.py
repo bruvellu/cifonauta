@@ -15,7 +15,7 @@ class Command(BaseCommand):
 
         for i in images:
             photo_id = i.source_filepath.split('/')[-1]
-            photo_path = i.old_filepath.split('oficial')[1]
+            photo_path = i.old_filepath.split('oficial')[1][1:]
             db_kv[photo_id] = photo_path
             db_vk[photo_path] = photo_id
 
@@ -23,7 +23,7 @@ class Command(BaseCommand):
 
         for v in videos:
             video_id = v.source_filepath.split('/')[-1]
-            video_path = v.old_filepath.split('oficial')[1]
+            video_path = v.old_filepath.split('oficial')[1][1:]
             db_kv[video_id] = video_path
             db_vk[video_path] = video_id
 

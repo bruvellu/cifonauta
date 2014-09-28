@@ -311,7 +311,7 @@ def rename_file(filename, authors):
     else:
         initials = 'cbm'
     id = create_id()
-    new_filename = initials + '_' + id + '.' + filename.split('.')[1].lower()
+    new_filename = initials + '_' + id + os.path.splitext(filename)[1].lower()
     return new_filename
 
 def get_initials(authors):

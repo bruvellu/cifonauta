@@ -59,6 +59,7 @@ def read_iptc(abspath, charset='utf-8', new=False):
     info = IPTCInfo(abspath, True, charset)
     if len(info.data) < 4:
         print('IPTC is empty for %s' % abspath)
+        return None
 
     return info
 

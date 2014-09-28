@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Mirror a directory and its contents by creating symbolic links between
+# original files.
+#
+# Cifonauta keeps a source directory with original image files. Files are
+# linked to the new folder where they will get their unique IDs.
+
 import os
 
 EXTENSIONS = (

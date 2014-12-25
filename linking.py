@@ -8,6 +8,7 @@
 # linked to the new folder where they will get their unique IDs.
 
 import os
+import pickle
 
 EXTENSIONS = (
     'jpg', 'jpeg', 'avi', 'mov', 'mp4', 'ogg', 'ogv', 'dv', 'mpg',
@@ -147,6 +148,7 @@ class LinkManager:
             for sourcepath, linkpath in self.tofix.iteritems():
                 print('FIX %s -> %s' % (linkpath, sourcepath))
 
+                import pdb; pdb.set_trace()
                 # Instantiate link name.
                 linkname = os.path.basename(linkpath)
 
@@ -167,7 +169,7 @@ class LinkManager:
 
             if self.check_link(final_link):
                 # Needed for the comparison in the add_new function.
-                self.healthy_links.append(final_link)
+                self.healthy_links.append(sourcepath)
             else:
                 print('Problems in the new link: %s' % final_link)
         else:
@@ -215,9 +217,9 @@ class LinkManager:
         else:
             print('\nNo file to be deleted.')
 
-
     def add_new(self):
         '''Create links for new files.'''
+        import pdb; pdb.set_trace()
         # Select files without links.
         diff = set(self.sources) - set(self.healthy_links)
         if diff:

@@ -148,7 +148,6 @@ class LinkManager:
             for sourcepath, linkpath in self.tofix.iteritems():
                 print('FIX %s -> %s' % (linkpath, sourcepath))
 
-                import pdb; pdb.set_trace()
                 # Instantiate link name.
                 linkname = os.path.basename(linkpath)
 
@@ -219,7 +218,6 @@ class LinkManager:
 
     def add_new(self):
         '''Create links for new files.'''
-        import pdb; pdb.set_trace()
         # Select files without links.
         diff = set(self.sources) - set(self.healthy_links)
         if diff:
@@ -243,9 +241,9 @@ class LinkManager:
                 # Create link.
                 try:
                     os.symlink(filepath, linkpath)
-                    print('LINK %s -> %s' % (filepath, linkpath))
+                    print('\nLINK %s -> %s' % (filepath, linkpath))
                 except:
-                    print('Link could not be created: %s -> %s' %
+                    print('\nLink could not be created: %s -> %s' %
                             (filepath, linkpath))
         else:
             print('\nNo new file.')

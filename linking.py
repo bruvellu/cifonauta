@@ -241,9 +241,9 @@ class LinkManager:
                 # Create link.
                 try:
                     os.symlink(filepath, linkpath)
-                    print('\nLINK %s -> %s' % (filepath, linkpath))
+                    print('LINK %s -> %s' % (filepath, linkpath))
                 except:
-                    print('\nLink could not be created: %s -> %s' %
+                    print('Link could not be created: %s -> %s' %
                             (filepath, linkpath))
         else:
             print('\nNo new file.')
@@ -263,6 +263,8 @@ def main():
 
     # Add new links.
     manager.add_new()
+
+    print('')
 
 if __name__ == '__main__':
     main()

@@ -97,6 +97,73 @@ def create_thumb(filepath, destination):
         logger.warning('Erro ao criar thumb %s', localpath)
         return None
 
+
+def build_call(filepath):
+    '''Constrói o subprocesso para converter o vídeo com o FFmpeg.
+    #webm HD
+    ffmpeg -y -i hd.m2ts -i marca.png -metadata title="A WEBM HD" -metadata author="AN AUTHOR"
+    -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libvpx
+    -filter_complex "scale=512x288,overlay=0:main_h-overlay_h-0" hd.webm
+
+    #webm DV
+    ffmpeg -y -i dv.avi -i marca.png -metadata title="A WEBM DV" -metadata author="AN AUTHOR"
+    -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libvpx
+    -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" dv.webm
+
+    #ogg HD
+    ffmpeg -y -i hd.m2ts -i marca.png -metadata title="AN OGG HD" -metadata author="AN AUTHOR"
+    -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libtheora
+    -filter_complex "scale=512x288,overlay=0:main_h-overlay_h-0" hd.ogv
+
+    #ogg DV
+    ffmpeg -y -i dv.avi -i marca.png -metadata title="AN OGG DV" -metadata author="AN AUTHOR"
+    -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libtheora
+    -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" dv.ogv
+
+    #mp4 HD
+    ffmpeg -y -i hd.m2ts -i marca.png -metadata title="A MP4 HD" -metadata author="AN AUTHOR"
+    -b:v 600k -threads 0 -acodec libfaac -b:a 128k -ac 2 -ar 44100 -vcodec libx264
+    -filter_complex "scale=512x288,overlay=0:main_h-overlay_h-0" hd.mp4
+
+    #mp4 DV
+    ffmpeg -y -i dv.avi -i marca.png -metadata title="A MP4 DV" -metadata author="AN AUTHOR"
+    -b:v 600k -threads 0 -acodec libfaac -b:a 128k -ac 2 -ar 44100 -vcodec libx264
+    -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" dv.mp4
+    '''
+    # FFMPEG command.
+    call = [
+            'ffmpeg', '-y', '-i', filepath, '-i', 'marca.png',
+            '-b:v', '600k', '-threads', '0',
+            ]
+    if filepath.endswith('m2ts'):
+        call.extend([
+            '-filter_complex', 'scale=512x288,overlay=0:main_h-overlay_h-0',
+            '-aspect', '16:9',
+            ])
+    else:
+        call.extend([
+            '-filter_complex', 'scale=512x384,overlay=0:main_h-overlay_h-0',
+            '-aspect', '4:3',
+            ])
+
+    # Audio codec
+    if filepath.endswith('mp4'):
+        call.extend(['-acodec', 'libfaac', '-b:a', '128k',
+            '-ac', '2', '-ar', '44100'])
+    else:
+        call.extend(['-acodec', 'libvorbis', '-b:a', '128k',
+            '-ac', '2', '-ar', '44100'])
+
+    # Video codec
+    if filepath.endswith('webm'):
+        call.extend(['-vcodec', 'libvpx'])
+    elif filepath.endswith('mp4'):
+        call.extend(['-vcodec', 'libx264'])
+    if filepath.endswith('ogv'):
+        call.extend(['-vcodec', 'libtheora'])
+
+    return call
+
 def create_still(filepath, destination):
     '''Cria still para o vídeo e thumbnail em seguida.'''
     # Confere argumentos.

@@ -5,9 +5,10 @@
 
 import os
 import pickle
+import subprocess
 from datetime import datetime
 from shutil import copy2
-from media_utils import read_iptc, rename_file, convert_to_web, watermarker
+from media_utils import read_iptc, rename_file, convert_to_web, watermarker, build_call
 
 # Directory with symbolic links files.
 BASEPATH = os.path.join(os.environ['HOME'], 'linked_media/oficial')
@@ -138,8 +139,8 @@ class File:
 
     def process_for_web(self):
         '''Resize and add watermark for web.'''
+        print('Processing %s...' % self.filename)
         if self.filetype == 'photo':
-            print('Processing %s...' % self.filename)
             try:
                 # Convert file to web format.
                 converted = convert_to_web(self.sitepath, self.sitepath)
@@ -148,9 +149,28 @@ class File:
             except IOError:
                 print('Conversion error for %s, check ImageMagick.' % self.sitepath)
             else:
-                print('%s converted sucessfully!' % self.sitepath)
+                print('%s converted successfully!' % self.sitepath)
         elif self.filetype == 'video':
-            process_video
+            ffmpeg_call = build_call(self.sitepath)
+            webm_path = os.path.splitext(self.sitepath)[0] + '.webm'
+            mp4_path = os.path.splitext(self.sitepath)[0] + '.mp4'
+            ogv_path = os.path.splitext(self.sitepath)[0] + '.ogv'
+            # webm
+            ffmpeg_call.append(webm_path)
+            subprocess.call(ffmpeg_call)
+            print(ffmpeg_call)
+            ffmpeg_call.pop()
+            # mp4
+            ffmpeg_call.append(mp4_path)
+            subprocess.call(ffmpeg_call)
+            print(ffmpeg_call)
+            ffmpeg_call.pop()
+            # ogv
+            ffmpeg_call.append(ogv_path)
+            subprocess.call(ffmpeg_call)
+            print(ffmpeg_call)
+            ffmpeg_call.pop()
+            print('%s converted successfully!' % self.sitepath)
         else:
             pass
 

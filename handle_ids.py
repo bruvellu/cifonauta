@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#
+# Script looks into linked_media (folder with symbolic links) and identifies
+# new files, which are copied to the site_media folder with unique names and
+# converted to lightweight web formats.
 
 import os
 import pickle

@@ -11,10 +11,8 @@ import os
 import pickle
 
 # List of accepted extensions.
-EXTENSIONS = (
-    'jpg', 'jpeg', 'avi', 'mov', 'mp4', 'ogg', 'ogv', 'dv', 'mpg',
-    'mpeg', 'flv', 'm2ts', 'wmv', 'txt',
-)
+EXTENSIONS = ( 'jpg', 'jpeg', 'png', 'gif', 'avi', 'mov', 'mp4', 'ogg', 'ogv',
+              'dv', 'mpg', 'mpeg', 'flv', 'm2ts', 'wmv', 'txt',)
 
 
 class LinkManager:

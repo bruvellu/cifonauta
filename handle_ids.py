@@ -7,7 +7,7 @@ import os
 import pickle
 from datetime import datetime
 from shutil import copy2
-from media_utils import read_iptc, rename_file
+from media_utils import read_iptc, rename_file, convert_to_web, watermarker
 
 # Directory with symbolic links files.
 BASEPATH = os.path.join(os.environ['HOME'], 'linked_media/oficial')
@@ -70,7 +70,7 @@ class File:
             site_timestamp = datetime.fromtimestamp(os.path.getmtime(self.sitepath))
         except:
             return True
-        if self.timestamp != site_timestamp:
+        if self.timestamp > site_timestamp:
             return True
         else:
             return False
@@ -136,6 +136,23 @@ class File:
             os.rename(self.txt_abspath, self.renamed_txt_abspath)
             print('Renamed %s to %s' % (self.txt_abspath, self.renamed_txt_abspath))
 
+    def process_for_web(self):
+        '''Resize and add watermark for web.'''
+        if self.filetype == 'photo':
+            print('Processing %s...' % self.filename)
+            try:
+                # Convert file to web format.
+                converted = convert_to_web(self.sitepath, self.sitepath)
+                # Insert watermark.
+                watermark = watermarker(self.sitepath)
+            except IOError:
+                print('Conversion error for %s, check ImageMagick.' % self.sitepath)
+            else:
+                print('%s converted sucessfully!' % self.sitepath)
+        elif self.filetype == 'video':
+            process_video
+        else:
+            pass
 
 # Search all links in linked_media.
 for root, dirs, files in os.walk(BASEPATH):
@@ -145,7 +162,6 @@ for root, dirs, files in os.walk(BASEPATH):
             one_file = File(root, filename)
             if one_file.new or one_file.modified:
                 one_file.copy_to_site()
+                one_file.process_for_web()
             else:
                 continue
-                # copy file
-                # process media

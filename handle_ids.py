@@ -56,7 +56,7 @@ class File:
     def prepare_sitepath(self):
         '''Prepare paths for site media.'''
         # Define filetype.
-        middle_sitepath = os.path.join(BASESITE, self.filetype)
+        middle_sitepath = os.path.join(BASESITE, self.filetype + 's')
         # Create directory.
         try:
             os.makedirs(middle_sitepath)
@@ -89,9 +89,9 @@ class File:
 
     def get_filetype(self):
         '''Discover if photo or video.'''
-        if self.filename.endswith(PHOTO_EXTENSIONS):
+        if self.filename.lower().endswith(PHOTO_EXTENSIONS):
             return 'photo'
-        elif self.filename.endswith(VIDEO_EXTENSIONS):
+        elif self.filename.lower().endswith(VIDEO_EXTENSIONS):
             return 'video'
         else:
             return None

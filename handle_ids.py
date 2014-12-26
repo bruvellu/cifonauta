@@ -71,6 +71,7 @@ class File:
             site_timestamp = datetime.fromtimestamp(os.path.getmtime(self.sitepath))
         except:
             return True
+        print(self.timestamp, site_timestamp)
         if self.timestamp > site_timestamp:
             return True
         else:
@@ -79,6 +80,7 @@ class File:
     def copy_to_site(self):
         '''Copy linked file to site media directory.'''
         copy2(self.abspath, self.sitepath)
+        subprocess.call(['touch', self.sitepath])
         if self.filetype == 'video':
             self.txt_sitepath = os.path.splitext(self.sitepath)[0] + '.txt'
             copy2(self.txt_abspath, self.txt_sitepath)

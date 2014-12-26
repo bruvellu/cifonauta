@@ -164,6 +164,31 @@ def build_call(filepath):
 
     return call
 
+def grab_still(filepath):
+    '''Grab video's first frame.'''
+    # Path to still image.
+    stillpath = os.path.splitext(filepath)[0] + '.jpg'
+
+    # Command to be called.
+    if filepath.endswith('m2ts'):
+        ffmpeg_call = [ 'ffmpeg', '-y', '-i', filepath, '-vframes', '1',
+            '-filter_complex', 'scale=512:288', '-aspect', '16:9', '-ss',
+            '1', '-f', 'image2', stillpath ]
+    else:
+        ffmpeg_call = ['ffmpeg', '-y', '-i', filepath, '-vframes', '1',
+            '-filter_complex', 'scale=512:384', '-ss', '1', '-f', 'image2',
+            stillpath]
+
+    # Executing ffmpeg.
+    try:
+        subprocess.call(ffmpeg_call)
+        logger.debug('Still criado em %s', stillpath)
+        return stillpath
+    except IOError:
+        logger.warning('Erro ao criar still %s', stillpath)
+        return None, None
+
+
 def create_still(filepath, destination):
     '''Cria still para o vídeo e thumbnail em seguida.'''
     # Confere argumentos.

@@ -8,7 +8,7 @@ import pickle
 import subprocess
 from datetime import datetime
 from shutil import copy2
-from media_utils import read_iptc, rename_file, convert_to_web, watermarker, build_call
+from media_utils import read_iptc, rename_file, convert_to_web, watermarker, build_call, grab_still
 
 # Directory with symbolic links files.
 BASEPATH = os.path.join(os.environ['HOME'], 'linked_media/oficial')
@@ -158,19 +158,17 @@ class File:
             # webm
             ffmpeg_call.append(webm_path)
             subprocess.call(ffmpeg_call)
-            print(ffmpeg_call)
             ffmpeg_call.pop()
             # mp4
             ffmpeg_call.append(mp4_path)
             subprocess.call(ffmpeg_call)
-            print(ffmpeg_call)
             ffmpeg_call.pop()
             # ogv
             ffmpeg_call.append(ogv_path)
             subprocess.call(ffmpeg_call)
-            print(ffmpeg_call)
             ffmpeg_call.pop()
-            print('%s converted successfully!' % self.sitepath)
+            # Create still image.
+            grab_still(self.sitepath)
         else:
             pass
 

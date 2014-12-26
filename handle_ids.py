@@ -13,8 +13,14 @@ from media_utils import read_iptc, rename_file
 BASEPATH = os.path.join(os.environ['HOME'], 'linked_media/oficial')
 # Directory with symbolic links files.
 BASESITE = os.path.join(os.environ['HOME'], 'site_media')
+# Get list of file names in site_media.
+site_filenames = []
+for root, dirs, files in os.walk(BASESITE):
+    for filename in files:
+        site_filenames.append(filename)
 # Pickled file with unique names dumped from database.
-UNIQUE_NAMES = pickle.load(open('unique_names.pkl'))
+db_filenames = pickle.load(open('unique_names.pkl'))
+UNIQUE_NAMES = site_filenames + db_filenames
 # File extensions.
 PHOTO_EXTENSIONS = ('jpg', 'jpeg', 'png', 'gif',)
 VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogg', 'ogv', 'dv', 'mpg', 'mpeg',

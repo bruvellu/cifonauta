@@ -1,49 +1,55 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
+# Mirror a directory and its contents by creating symbolic links between
+# original files.
+#
+# Cifonauta keeps a source directory with original image files. Files are
+# linked to the new folder where they will get their unique IDs.
+
 import os
 import pickle
-from iptcinfo import IPTCInfo
-from remove import compile_paths
-from meta.models import Image, Video
 
-# Instancia logger do cifonauta.
-logger = logging.getLogger('cifonauta.linking')
+# List of accepted extensions.
+EXTENSIONS = ( 'jpg', 'jpeg', 'png', 'gif', 'avi', 'mov', 'mp4', 'ogg', 'ogv',
+              'dv', 'mpg', 'mpeg', 'flv', 'm2ts', 'wmv', 'txt',)
 
 
 class LinkManager:
-    def __init__(self, storage):
-        # Diretório com links para pasta oficial.
-        self.source_media = 'source_media/oficial'
-        # Diretório oficial com arquivos originais.
-        self.storage = storage
+    '''Handles links and original files.'''
+    def __init__(self):
+        # Define home.
+        home = os.environ['HOME']
+        # Directory with original files and folder structure.
+        self.storage = os.path.join(home, 'storage/oficial')
+        # Directory containing links to original files.
+        self.linked_media = os.path.join(home, 'linked_media/oficial')
 
-        # Listas para processamento.
-        self.links = []
+        # Check if directories exist.
+        if not os.path.isdir(self.linked_media):
+            os.makedirs(self.linked_media)
+
+        # Variables to be processed. XXX
+        self.healthy_links = []
         self.broken_links = {}
         self.tofix = {}
         self.lost = {}
 
-        # Lista de arquivos originais.
+        # List with original files.
         self.sources = self.get_paths(self.storage)
 
-        # Pega lista de arquivos.
-        self.filepaths = self.get_paths(self.source_media)
-        self.deal_links(self.filepaths)
+        # List of linked files.
+        self.linked_paths = self.get_paths(self.linked_media)
+
+        # Distribute files and links to list variables.
+        self.deal_links(self.linked_paths)
 
     def get_paths(self, folder):
-        '''Busca arquivos recursivamente na pasta indicada.
-
-        >>> folder = 'source_media/oficial'
-        >>> filepaths = get_paths(folder)
-        >>> isinstance(filepaths, list)
-        True
-        '''
+        '''Recursively search files in the directory.'''
         filepaths = []
         for root, dirs, files in os.walk(folder):
             for filename in files:
-                if not filename.endswith('~') or not filename.endswith('.txt'):
+                if filename.lower().endswith(EXTENSIONS):
                     filepath = os.path.join(root, filename)
                     filepaths.append(filepath)
                 else:
@@ -51,244 +57,216 @@ class LinkManager:
             else:
                 continue
         else:
-            logger.info('%s arquivos na pasta %s.', len(filepaths), folder)
+            print('%s files in folder %s.' % (len(filepaths), folder))
 
-        # Checa se não houve algum problema.
+        # Is the folder empty?
         if not filepaths:
-            logger.exception('Pasta %s vazia?', folder)
+            print('Empty folder %s?' % folder)
         return filepaths
 
     def deal_links(self, paths):
-        '''Verifica links quebrados e adiciona à lista correspondente.'''
+        '''Verify broken links and adds to the right list.'''
         for path in paths:
             linkpath = os.readlink(path)
             if self.check_link(linkpath):
-                self.links.append(linkpath)
-                logger.debug('Link saudável: %s', linkpath)
+                self.healthy_links.append(linkpath)
             else:
                 self.broken_links[path] = linkpath
-                logger.debug('Link quebrado: %s', linkpath)
 
     def handle_broken(self):
-        '''Processa links quebrados, tentando arrumar.
+        '''Process broken links
 
-        Retorna dicionário com arquivos para arrumar e arquivos perdidos.
+        Returns dictionary with files to fix and lost.
         '''
         if self.broken_links:
-            logger.info('Existem links quebrados.')
+            print('\nThere are broken links:')
             for k, v in self.broken_links.iteritems():
-                logger.debug('%s -> %s', k, v)
+                print('\nBROKEN %s -> %s' % (k, v))
                 matches = self.get_matches(v)
-                # Se não encontrar candidados o arquivo deve ter sido deletado.
+                # No matches suggests file was deleted.
                 if not matches:
-                    logger.debug('Nenhum candidato para %s foi encontrado!', v)
-                    # Adiciona para a lista de perdidos.
+                    print('\nNo candidate for %s was found!' % k)
+                    # Adds to the list of lost links.
                     self.lost[k] = v
                 elif len(matches) == 1:
                     logger.debug('AUTOFIX: Link %s será arrumado.', matches[0])
                     self.tofix[matches[0]] = k
                 else:
-                    logger.debug('%s mudou de lugar.', v)
-
                     # If it is just a root change, fix it.
                     std_v = v.split('oficial')[1]
                     link_found = False
                     for match in matches:
                         std_match = match.split('oficial')[1]
                         if std_match == std_v:
-                            logger.debug('AUTOFIX: Link %s será arrumado.', match)
+                            print('AUTOFIX: Link %s will be fixed.' % match)
                             self.tofix[match] = k
                             link_found = True
                             break
                     if not link_found:
-                        # Imprime opções na tela.
-                        print 'Indique a imagem correspondente no diretório oficial:\n'
-                        print '\t%s\n' % v
+                        print('\nSelect the correct path:\n')
+                        print('\t%s\n' % v)
                         for idx, val in enumerate(matches):
-                            print '\t[%d] ' % idx + val
-                        index = raw_input('\nDigite o número da imagem certa ' \
-                                '("i" para ignorar; "l" para perdidas): ')
-                        # Lida com input do usuário.
+                            print('\t[%d] ' % idx + val)
+                        index = raw_input('\nType the number of the correct image '
+                                        '("i" to ignore; "l" to lost): ')
                         if index == 'i':
-                            logger.debug('Ignorando o link quebrado: %s.', v)
+                            print('\n\tIgnoring broken link: %s.' % v)
                         elif index == 'l':
-                            logger.debug('Imagem perdida: %s', v)
+                            print('\n\tLost image: %s' % v)
                             self.lost[k] = v
                         elif not index.strip():
-                            logger.debug('Valor vazio, tente novamente.')
-                            print 'Valor vazio, tente novamente.'
+                            print('\n\tEmpty value, try again.')
                         elif int(index) > len(matches) - 1:
-                            logger.debug('Número inválido, tente novamente.')
-                            print 'Número inválido, tente novamente.'
+                            print('\n\tInvalid number, try again.')
                         else:
-                            logger.debug('Link %s será arrumado.', matches[int(index)])
+                            print('\n\tLink %s will be fixed.' % matches[int(index)])
                             self.tofix[matches[int(index)]] = k
+                        print
         else:
-            logger.info('Nenhum link quebrado.')
+            print('\nNo broken links.')
 
 
     def get_matches(self, link):
-        '''Compara nome do arquivo original com o link.'''
+        '''Compares broken link destination to the list of original files.'''
         matches = []
-        # Compara o destino do link com a lista de arquivos originais.
         for source in self.sources:
+            # Identical names suggest file changed folder.
             if os.path.basename(link) == os.path.basename(source):
-                # Se os nomes forem iguais o arquivo perdido pode ter
-                # mudado de pasta.
-                logger.debug('Encontrado suposto arquivo perdido: %s', source)
                 matches.append(source)
         return matches
 
     def check_link(self, linkpath):
-        '''Verifica se o link simbólico está quebrado ou não.'''
+        '''Verifies if symbolic link is broken or not.'''
         try:
             if os.lstat(linkpath):
                 return True
         except:
-            logger.debug('Link quebrado: %s', linkpath)
             return False
 
     def fixlinks(self):
-        '''Corrige o link.
-
-        Fazer teste.
-        '''
+        '''Fix broken links.'''
         if self.tofix:
-            logger.info('Corrigindo links.')
+            print('\nFixing links.')
             for sourcepath, linkpath in self.tofix.iteritems():
-                logger.debug('Corrigindo: %s', linkpath)
-                logger.debug('Para: %s', sourcepath)
+                print('FIX %s -> %s' % (linkpath, sourcepath))
 
-                # Instancia nome do link.
+                # Instantiate link name.
                 linkname = os.path.basename(linkpath)
 
-                # Padroniza o caminho relativo do link.
+                # Standardize relative path.
                 relative_path = self.standardize_path(sourcepath)
 
-                # Junta link relativo com o nome único do link.
+                # Join relative link with unique name.
                 relative_link = os.path.join(os.path.dirname(relative_path), linkname)
-                # Define o caminho final acrescentando o source_media.
-                final_link = os.path.join('source_media', relative_link)
+                # Final link path.
+                final_link = os.path.join(self.linked_media, relative_link)
 
-                # Renomeia movendo o arquivo e limpando pastas vazias
+                # Rename file cleaning empty folders.
                 os.renames(linkpath, final_link)
-                # Remove o arquivo para poder criar o link atualizado
+                # Remove file to create new updated link.
                 os.remove(final_link)
-                # Cria link simbólico atualizado
+                # Create updated symbolic link.
                 os.symlink(sourcepath, final_link)
 
             if self.check_link(final_link):
-                # Necessário para fazer a comparação no add_new.
-                self.links.append(final_link)
+                # Needed for the comparison in the add_new function.
+                self.healthy_links.append(sourcepath)
             else:
-                logger.debug('Link recém criado com problemas: %s',
-                        final_link)
+                print('Problems in the new link: %s' % final_link)
         else:
-            logger.debug('Nenhum link para arrumar...')
+            print('\nNo link to fix...')
 
 
     def standardize_path(self, linkpath):
-        '''Padroniza caminho dos links usando a pasta oficial como base.
+        '''Standardize link paths.
 
         >>> path = '/home/nelas/storage/oficial/Vellutini/Clypeaster/DSCN1999.JPG'
         >>> standardize_path(path)
-        'oficial/Vellutini/Clypeaster/DSCN1999.JPG'
+        'Vellutini/Clypeaster/DSCN1999.JPG'
         '''
-        # Separa pastas por separador.
+        # Split by slash.
         linklist = linkpath.split(os.sep)
         try:
-            # Estabelece o ponto onde o link será cortado.
-            ponto = linklist.index('oficial')
-            del linklist[:ponto]
+            # Point where link will be cut.
+            point = linklist.index('oficial')
+            del linklist[:point + 1]
             return os.path.join(*linklist)
         except:
-            logger.debug('Algo errado com o caminho %.', linkpath)
+            print('Something is wrong with the path %s' % linkpath)
             return None
 
     def handle_lost(self):
-        '''Lida com arquivos perdidos.'''
+        '''Handle lost files.'''
         if self.lost:
-            logger.info('%s arquivos perdidos', len(self.lost))
+            print('\n%s lost files' % len(self.lost))
             for k, v in self.lost.iteritems():
-                logger.debug('Perdidos: %s -> %s', k, v)
-                name = os.path.basename(k)
-                if name.endswith('txt'):
-                    logger.debug('Apagando arquivo txt: %s', name)
-                    os.remove(k)
-                try:
-                    media = Image.objects.get(web_filepath__icontains=name)
-                except:
+                print('LOST %s -> %s' % (k, v))
+                confirm = raw_input('Erase lost files? (y or n): ')
+                if confirm == 'y':
                     try:
-                        media = Video.objects.get(webm_filepath__icontains=name)
+                        os.remove(k)
+                        print('DELETED %s' % k)
                     except:
-                        logger.debug('Nenhuma imagem com nome %s', name)
-                        continue
-                if media:
+                        print('Maybe already gone: %s' % k)
                     try:
-                        paths = compile_paths(media)
-                        confirm = raw_input('Confirma? (s ou n): ')
-                        if confirm == 's':
-                            try:
-                                media.delete()
-                                logger.debug('Entrada de %s foi apagada!', media)
-                            except:
-                                logger.warning(
-                                        'Não rolou apagar %s do banco de dados',
-                                        media)
-                            for path in paths:
-                                try:
-                                    os.remove(path)
-                                    logger.debug('%s foi apagado!', path)
-                                except:
-                                    logger.warning('%s não foi apagado!', path)
+                        os.remove(v)
+                        print('DELETED %s' % v)
                     except:
-                        logger.debug('Algo errado na hora de ler a imagem.')
+                        print('Maybe already gone: %s' % v)
+                else:
+                    continue
         else:
-            logger.info('Nenhum arquivo para ser deletado.')
-
+            print('\nNo file to be deleted.')
 
     def add_new(self):
-        '''Cria links para os arquivos novos.'''
-        # Seleciona arquivos de mídia que não tem links.
-        diff = set(self.sources) - set(self.links)
+        '''Create links for new files.'''
+        # Select files without links.
+        diff = set(self.sources) - set(self.healthy_links)
         if diff:
-            logger.info('%s novos links serão criados', len(diff))
+            print('\n%s new links will be created.' % len(diff))
             for filepath in diff:
                 linkpath = self.standardize_path(filepath)
-                linkpath = os.path.join('source_media', linkpath)
-                # Cria diretórios necessários.
+                linkpath = os.path.join(self.linked_media, linkpath)
+                dirpath = os.path.dirname(linkpath)
+                # Create necessary directories.
                 try:
-                    os.makedirs(os.path.dirname(linkpath))
+                    os.makedirs(dirpath)
+                    print('Directory created: %s' % dirpath)
                 except OSError:
-                    logger.debug('Diretório %s já existe.', linkpath)
-                # Remove possível arquivo duplicado.
+                    pass
+                # Remove possible duplicate.
                 try:
                     os.remove(linkpath)
+                    print('Duplicate %s removed!' % linkpath)
                 except:
-                    logger.debug('Arquivo %s é novo mesmo.', linkpath)
-                # Cria o link, enfim.
+                    pass
+                # Create link.
                 try:
                     os.symlink(filepath, linkpath)
+                    print('LINK %s -> %s' % (filepath, linkpath))
                 except:
-                    logger.debug('Link não pode ser criado: %s -> %s',
-                            filepath, linkpath)
+                    print('Link could not be created: %s -> %s' %
+                            (filepath, linkpath))
         else:
-            logger.info('Nenhum arquivo novo.')
+            print('\nNo new file.')
 
-def main(storage):
-    logger.info('Verificando links da pasta oficial...')
+def main():
+    print('\nChecking links...')
 
-    # Instancia o manager.
-    manager = LinkManager(storage)
+    # Instantiate manager.
+    manager = LinkManager()
 
-    # Tenta dar um jeito nos links quebrados
+    # Handle broken links.
     manager.handle_broken()
     manager.fixlinks()
-    # Dá um jeito nos arquivos perdidos.
+
+    # Handle lost links.
     manager.handle_lost()
-    # Adiciona links para os arquivos novos.
+
+    # Add new links.
     manager.add_new()
 
-# Início do programa
+    print('')
+
 if __name__ == '__main__':
     main()

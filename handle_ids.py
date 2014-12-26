@@ -9,6 +9,8 @@ from media_utils import read_iptc, rename_file
 
 # Directory with symbolic links files.
 BASEPATH = os.path.join(os.environ['HOME'], 'linked_media/oficial')
+# Directory with symbolic links files.
+BASESITE = os.path.join(os.environ['HOME'], 'site_media')
 # Pickled file with unique names dumped from database.
 UNIQUE_NAMES = pickle.load(open('unique_names.pkl'))
 
@@ -25,6 +27,30 @@ class File:
             self.unique_name = ''
             self.get_unique_name()
             self.rename_new()
+        else:
+            self.unique_name = self.filename
+        self.modified = self.check_timestamp()
+        self.filetype = self.get_filetype()
+        self.sitepath = os.path.join(BASESITE, self.unique_name)
+
+    def check_timestamp(self):
+        '''Compare timestamps between linked and site media.'''
+        pass
+
+    def copy_to_site(self):
+        '''Copy linked file to site media directory.'''
+        copy(self.abspath, self.sitepath)
+        if self.filetype == 'video':
+            copy(self.txt_abspath, self.sitepath)
+
+    def get_filetype():
+        '''Discover if photo or video.'''
+        if self.filename.endswith(photo_extensions):
+            return 'photo'
+        elif self.filename.endswith(video_extensions):
+            return 'video'
+        else:
+            return None
 
     def check_txt(self):
         '''Check if there is a .txt associated file.'''
@@ -77,3 +103,6 @@ for root, dirs, files in os.walk(BASEPATH):
         if not filename.endswith('.txt'):
             # Create instance and rename if necessary.
             one_file = File(root, filename)
+            if one_file.new or one_file.modified:
+                # copy file
+                # process media

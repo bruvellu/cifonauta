@@ -70,10 +70,10 @@ class File:
         '''Compare timestamps between linked and site media.'''
         self.timestamp = datetime.fromtimestamp(os.path.getmtime(self.abspath))
         try:
-            site_timestamp = datetime.fromtimestamp(os.path.getmtime(self.sitepath))
+            site_timestamp = datetime.fromtimestamp(
+                os.path.getmtime(self.sitepath))
         except:
             return True
-        print(self.timestamp, site_timestamp)
         if self.timestamp > site_timestamp:
             return True
         else:
@@ -133,13 +133,17 @@ class File:
 
     def rename_new(self):
         '''Rename link with unique name.'''
-        self.renamed_path = os.path.join(os.path.split(self.abspath)[0], self.filename)
+        self.renamed_path = os.path.join(os.path.split(self.abspath)[0],
+                                         self.filename)
         os.rename(self.abspath, self.renamed_path)
         print('\nRenamed %s to %s' % (self.abspath, self.renamed_path))
         if self.txt_abspath:
-            self.renamed_txt_abspath = os.path.join(os.path.split(self.txt_abspath)[0], os.path.splitext(self.filename)[0] + '.txt')
+            self.renamed_txt_abspath = os.path.join(
+                os.path.split(self.txt_abspath)[0],
+                os.path.splitext(self.filename)[0] + '.txt')
             os.rename(self.txt_abspath, self.renamed_txt_abspath)
-            print('Renamed %s to %s' % (self.txt_abspath, self.renamed_txt_abspath))
+            print('Renamed %s to %s' % (self.txt_abspath,
+                                        self.renamed_txt_abspath))
 
     def process_for_web(self):
         '''Resize and add watermark for web.'''
@@ -147,11 +151,12 @@ class File:
         if self.filetype == 'photo':
             try:
                 # Convert file to web format.
-                converted = convert_to_web(self.sitepath, self.sitepath)
+                convert_to_web(self.sitepath, self.sitepath)
                 # Insert watermark.
-                watermark = watermarker(self.sitepath)
+                watermarker(self.sitepath)
             except IOError:
-                print('Conversion error for %s, check ImageMagick.' % self.sitepath)
+                print('Conversion error for %s, check ImageMagick.' %
+                      self.sitepath)
             else:
                 print('%s converted successfully!' % self.sitepath)
         elif self.filetype == 'video':

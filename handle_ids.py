@@ -5,6 +5,8 @@
 
 import os
 import pickle
+from datetime import datetime
+from shutil import copy2
 from media_utils import read_iptc, rename_file
 
 # Directory with symbolic links files.
@@ -13,41 +15,72 @@ BASEPATH = os.path.join(os.environ['HOME'], 'linked_media/oficial')
 BASESITE = os.path.join(os.environ['HOME'], 'site_media')
 # Pickled file with unique names dumped from database.
 UNIQUE_NAMES = pickle.load(open('unique_names.pkl'))
+# File extensions.
+PHOTO_EXTENSIONS = ('jpg', 'jpeg', 'png', 'gif',)
+VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogg', 'ogv', 'dv', 'mpg', 'mpeg',
+                    'flv', 'm2ts', 'wmv',)
 
 
 class File:
     def __init__(self, root, filename):
         self.root = root
         self.filename = filename
+        self.define_paths(self.root, self.filename)
+        self.authors = self.get_authors()
+        if not self.check_name():
+            self.get_unique_name()
+            self.rename_new()
+            self.define_paths(self.root, self.filename)
+            self.new = True
+        else:
+            self.new = False
+        self.filetype = self.get_filetype()
+        self.sitepath = self.prepare_sitepath()
+        self.modified = self.check_timestamp()
+
+    def define_paths(self, root, filename):
+        '''Define and redefine filepaths.'''
         self.filepath = os.path.join(root, filename)
         self.abspath = os.path.join(BASEPATH, self.filepath)
         self.txt_abspath = self.check_txt()
-        self.authors = self.get_authors()
-        if not self.check_name():
-            self.unique_name = ''
-            self.get_unique_name()
-            self.rename_new()
-        else:
-            self.unique_name = self.filename
-        self.modified = self.check_timestamp()
-        self.filetype = self.get_filetype()
-        self.sitepath = os.path.join(BASESITE, self.unique_name)
+
+    def prepare_sitepath(self):
+        '''Prepare paths for site media.'''
+        # Define filetype.
+        middle_sitepath = os.path.join(BASESITE, self.filetype)
+        # Create directory.
+        try:
+            os.makedirs(middle_sitepath)
+        except OSError:
+            pass
+        # Build final path.
+        sitepath = os.path.join(middle_sitepath, self.filename)
+        return sitepath
 
     def check_timestamp(self):
         '''Compare timestamps between linked and site media.'''
-        pass
+        self.timestamp = datetime.fromtimestamp(os.path.getmtime(self.abspath))
+        try:
+            site_timestamp = datetime.fromtimestamp(os.path.getmtime(self.sitepath))
+        except:
+            return True
+        if self.timestamp != site_timestamp:
+            return True
+        else:
+            return False
 
     def copy_to_site(self):
         '''Copy linked file to site media directory.'''
-        copy(self.abspath, self.sitepath)
+        copy2(self.abspath, self.sitepath)
         if self.filetype == 'video':
-            copy(self.txt_abspath, self.sitepath)
+            self.txt_sitepath = os.path.splitext(self.sitepath)[0] + '.txt'
+            copy2(self.txt_abspath, self.txt_sitepath)
 
-    def get_filetype():
+    def get_filetype(self):
         '''Discover if photo or video.'''
-        if self.filename.endswith(photo_extensions):
+        if self.filename.endswith(PHOTO_EXTENSIONS):
             return 'photo'
-        elif self.filename.endswith(video_extensions):
+        elif self.filename.endswith(VIDEO_EXTENSIONS):
             return 'video'
         else:
             return None
@@ -82,17 +115,18 @@ class File:
 
     def get_unique_name(self):
         '''Get a new unique name.'''
-        self.unique_name = rename_file(self.filename, self.authors)
+        unique_name = rename_file(self.filename, self.authors)
+        self.filename = unique_name
         if self.check_name():
             self.get_unique_name()
 
     def rename_new(self):
         '''Rename link with unique name.'''
-        self.renamed_path = os.path.join(os.path.split(self.abspath)[0], self.unique_name)
+        self.renamed_path = os.path.join(os.path.split(self.abspath)[0], self.filename)
         os.rename(self.abspath, self.renamed_path)
         print('\nRenamed %s to %s' % (self.abspath, self.renamed_path))
         if self.txt_abspath:
-            self.renamed_txt_abspath = os.path.join(os.path.split(self.txt_abspath)[0], os.path.splitext(self.unique_name)[0] + '.txt')
+            self.renamed_txt_abspath = os.path.join(os.path.split(self.txt_abspath)[0], os.path.splitext(self.filename)[0] + '.txt')
             os.rename(self.txt_abspath, self.renamed_txt_abspath)
             print('Renamed %s to %s' % (self.txt_abspath, self.renamed_txt_abspath))
 
@@ -104,5 +138,8 @@ for root, dirs, files in os.walk(BASEPATH):
             # Create instance and rename if necessary.
             one_file = File(root, filename)
             if one_file.new or one_file.modified:
+                one_file.copy_to_site()
+            else:
+                continue
                 # copy file
                 # process media

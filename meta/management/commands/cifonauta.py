@@ -21,6 +21,8 @@ class Command(BaseCommand):
             )
 
     SITE_MEDIA = 'site_media'
+    SITE_MEDIA_PHOTOS = 'site_media/photos'
+    SITE_MEDIA_VIDEOS = 'site_media/videos'
     n = 0
     n_new = 0
     n_up = 0
@@ -36,20 +38,29 @@ class Command(BaseCommand):
         # Initiate database instance.
         cbm = Database()
 
-        # Initiate search.
-        folder = Folder(self.SITE_MEDIA, n_max)
-
         # Choose which filetype.
         if only_photos:
-            filepaths = folder.get_files(type='photo')
+            photo_folder = Folder(self.SITE_MEDIA_PHOTOS, n_max)
+            photo_filepaths = photo_folder.get_files()
+            video_filepaths = []
         elif only_videos:
-            filepaths = folder.get_files(type='video')
+            video_folder = Folder(self.SITE_MEDIA_VIDEOS, n_max)
+            video_filepaths = video_folder.get_files()
+            photo_filepaths = []
         else:
-            filepaths = folder.get_files()
+            # Do photos first.
+            photo_folder = Folder(self.SITE_MEDIA_PHOTOS, n_max)
+            photo_filepaths = photo_folder.get_files()
+            # Do videos last.
+            video_folder = Folder(self.SITE_MEDIA_VIDEOS, n_max)
+            video_filepaths = video_folder.get_files()
 
-        print(filepaths)
+        print(photo_filepaths)
+        print(video_filepaths)
 
-        self.stdout.write('%d unique names. -p:%s, -m:%s' % (options['number'], options['photos'], options['videos']))
+        self.stdout.write('%d unique names. -p:%s, -m:%s' % (options['number'],
+                                                             options['photos'],
+                                                             options['videos']))
         self.stdout.write('Source:%s' % self.SITE_MEDIA)
 
 
@@ -287,37 +298,27 @@ class Folder:
         self.files = []
         print('Pasta a ser analisada: %s' % self.folder_path)
 
-    def get_files(self, type=None):
-        '''Busca recursivamente arquivos de uma pasta.
+    def get_files(self):
+        '''Search .jpg files recursively in a directory.
 
-        Identifica a extenso do arquivo e salva tipo junto com o caminho.
-        Retorna lista de tuplas com caminho e tipo.
+        Since photos and videos have a .jpg version created before this script only identifies the .jpg files.
+        Returns a list of filepaths.
         '''
         n = 0
+        EXTENSION = ('.jpg')
 
-        # Tuplas para o endswith()
-        PHOTO_EXTENSIONS = ('jpg', 'jpeg', 'png', 'gif',)
-        VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogg', 'ogv', 'dv', 'mpg', 'mpeg',
-                            'flv', 'm2ts', 'wmv',)
-
-        # Buscador de arquivos em ao
+        # File searcher.
         for root, dirs, files in os.walk(self.folder_path):
             for filename in files:
                 filepath = os.path.join(root, filename)
-                if filepath.lower().endswith(PHOTO_EXTENSIONS) and n < self.n_max:
-                    if type is None or type == 'photo':
-                        self.files.append((filepath, 'photo'))
-                        n += 1
-                    continue
-                elif filepath.lower().endswith(VIDEO_EXTENSIONS) and n < self.n_max:
-                    if type is None or type == 'video':
-                        self.files.append((filepath, 'video'))
-                        n += 1
+                if filepath.lower().endswith(EXTENSION) and n < self.n_max:
+                    self.files.append(filepath)
+                    n += 1
                     continue
             else:
                 continue
         else:
-            print('%d arquivos encontrados.', n)
+            print('%d files found.', n)
 
         return self.files
 

@@ -1,6 +1,9 @@
 from django.core.management.base import BaseCommand, CommandError
 from meta.models import Image, Video
 from optparse import make_option
+from datetime import datetime
+from iptcinfo import IPTCInfo
+from media_utils import check_file, dir_ready, get_exif, get_date, get_gps
 import os
 
 
@@ -55,17 +58,23 @@ class Command(BaseCommand):
             video_folder = Folder(self.SITE_MEDIA_VIDEOS, n_max)
             video_filepaths = video_folder.get_files()
 
+        for path in photo_filepaths:
+            photo = Photo(path)
+            photo.create_meta()
+            # Search photo in database.
+            #query = cbm.search_db(photo)
+            #print(query)
+
         print(photo_filepaths)
         print(video_filepaths)
 
         self.stdout.write('%d unique names. -p:%s, -m:%s' % (options['number'],
                                                              options['photos'],
                                                              options['videos']))
-        self.stdout.write('Source:%s' % self.SITE_MEDIA)
 
 
 class Database:
-    '''Define objeto que interage com o banco de dados.'''
+    '''Database object.'''
     def __init__(self):
         pass
 
@@ -74,8 +83,7 @@ class Database:
 
         Compare timestamps, if equal, skip, if different, update.
         '''
-        print
-        print('Procurando %s (%s) no banco de dados...',
+        print('Searching %s no banco de dados...',
                 media.filename, media.source_filepath)
         photopath = 'photos/'
         videopath = 'videos/'
@@ -318,7 +326,142 @@ class Folder:
             else:
                 continue
         else:
-            print('%d files found.', n)
+            print('%d files found.' % n)
 
         return self.files
+
+
+class Meta:
+    '''Metadata object'''
+    def __init__(self, media):
+        '''Initialize metadata.'''
+
+        print('Parsing %s metadata.' % media.filename)
+
+        if media.type == 'photo':
+            self.photo_init(media)
+        elif media.type == 'video':
+            self.video_init(media)
+
+        # Prepare some fields for the database.
+        self.prepare_meta()
+
+    def photo_init(self, media):
+        'Initialize photo metadata.'
+        # Create metadata object.
+        info = IPTCInfo(media.filepath, True, 'utf-8')
+        # Check if file has IPTC data.
+        if len(info.data) < 4:
+            print('%s has no IPTC data!' % media.filename)
+
+        # Define metadata.
+        self.filepath = os.path.abspath(media.filepath)
+        self.title = info.data['object name']                      #5
+        self.tags = info.data['keywords']                          #25
+        self.author = info.data['by-line']                         #80
+        self.city = info.data['city']                              #90
+        self.sublocation = info.data['sub-location']               #92
+        self.state = info.data['province/state']                   #95
+        self.country = info.data['country/primary location name']  #101
+        self.taxon = info.data['headline']                         #105
+        self.rights = info.data['copyright notice']                #116
+        self.caption = info.data['caption/abstract']               #120
+        self.size = info.data['special instructions']              #40
+        self.source = info.data['source']                          #115
+        self.references = info.data['credit']                      #110
+        self.timestamp = media.timestamp
+        self.notes = u''
+
+    def none_to_empty(self, metadata):
+        '''Convert None to empty string.'''
+        if metadata is None:
+            return u''
+        else:
+            return metadata
+
+    def prepare_meta(self):
+        '''Cleanup metadata for database input.'''
+        # Convert None to empty string.
+        self.title = self.none_to_empty(self.title)
+        self.tags = self.none_to_empty(self.tags)
+        self.author = self.none_to_empty(self.author)
+        self.city = self.none_to_empty(self.city)
+        self.sublocation = self.none_to_empty(self.sublocation)
+        self.state = self.none_to_empty(self.state)
+        self.country = self.none_to_empty(self.country)
+        self.taxon = self.none_to_empty(self.taxon)
+        self.rights = self.none_to_empty(self.rights)
+        self.caption = self.none_to_empty(self.caption)
+        self.size = self.none_to_empty(self.size)
+        self.source = self.none_to_empty(self.source)
+        self.references = self.none_to_empty(self.references)
+
+        #FIXME Check if tags are bundled in a list.
+        #if not isinstance(meta['tags'], list):
+
+        # Transform to list.
+        self.author = [a.strip() for a in self.author.split(',')]
+        self.source = [a.strip() for a in self.source.split(',')]
+        self.references = [a.strip() for a in self.references.split(',')]
+
+        #XXX Lidar com fortuitos aff. e espcies com 3 nomes?
+        #meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')]
+        temp_taxa = [a.strip() for a in self.taxon.split(',')]
+        clean_taxa = []
+        for taxon in temp_taxa:
+            tsplit = taxon.split()
+            if len(tsplit) == 2 and tsplit[-1] in ['sp', 'sp.', 'spp']:
+                tsplit.pop()
+                clean_taxa.append(tsplit[0])
+            else:
+                clean_taxa.append(taxon)
+        self.taxon = clean_taxa
+
+
+class Photo:
+    '''Photo object.'''
+    def __init__(self, filepath):
+        self.filepath = filepath
+        self.filename = os.path.basename(filepath)
+        self.timestamp = datetime.fromtimestamp(
+                os.path.getmtime(self.filepath))
+        self.type = 'photo'
+
+    def create_meta(self):
+        '''Parse and instantiate photo metadata.
+
+        Uses iptcinfo.py and pyexiv2 libraries for IPTC and EXIF.
+        '''
+        self.metadata = Meta(self)
+
+        # Extracting EXIF metadata.
+        exif = get_exif(self.filepath)
+        # Extracting data.
+        self.metadata.date = get_date(exif)
+        # Extracting geolocation.
+        self.metadata.gps = get_gps(exif)
+
+        print
+        print '\tVariable\tMetadata'
+        print '\t' + 40 * '-'
+        print '\t' + self.filepath
+        print '\t' + 40 * '-'
+        print '\tTitle:\t\t%s' % self.metadata.title
+        print '\tCaption:\t%s' % self.metadata.caption
+        print '\tTaxon:\t\t%s' % ', '.join(self.metadata.taxon)
+        print '\tTags:\t\t%s' % '\n\t\t\t'.join(self.metadata.tags)
+        print '\tSize:\t\t%s' % self.metadata.size
+        print '\tSource:\t%s' % ', '.join(self.metadata.source)
+        print '\tAuthor:\t\t%s' % ', '.join(self.metadata.author)
+        print '\tSublocation:\t%s' % self.metadata.sublocation
+        print '\tCity:\t\t%s' % self.metadata.city
+        print '\tState:\t\t%s' % self.metadata.state
+        print '\tCountry:\t%s' % self.metadata.country
+        print '\tRights:\t\t%s' % self.metadata.rights
+        print '\tDate:\t\t%s' % self.metadata.date
+        print
+        print '\tGeolocation:\t%s' % self.metadata.gps['geolocation'].decode("utf8")
+        print '\tDecimal:\t%s, %s' % (self.metadata.gps['latitude'],
+                self.metadata.gps['longitude'])
+        print
 

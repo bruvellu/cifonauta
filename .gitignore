@@ -6,9 +6,7 @@ virtual/*
 site_media/*
 source_media/*
 local_media/*
-weblarvae.sublime*
 logs/*
-meta/migrations/*
 wiki/*
 meta/static/css/style.min.css
 meta/static/js/plugins.min.js

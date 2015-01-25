@@ -7,6 +7,7 @@ from media_utils import check_file, dir_ready, get_exif, get_date, get_gps
 from meta.models import *
 import os
 import pickle
+import time
 
 
 class Command(BaseCommand):
@@ -28,12 +29,14 @@ class Command(BaseCommand):
     SITE_MEDIA = 'site_media'
     SITE_MEDIA_PHOTOS = 'site_media/photos'
     SITE_MEDIA_VIDEOS = 'site_media/videos'
-    n = 0
-    n_new = 0
-    n_up = 0
 
     def handle(self, *args, **options):
         '''Command execution trunk.'''
+        # Stats.
+        t0 = time.time()
+        n = 0
+        n_new = 0
+        n_updated = 0
 
         # Some variables.
         n_max = options['number']
@@ -80,7 +83,8 @@ class Command(BaseCommand):
                     print('UPDATING ENTRY...')
                     photo.create_meta()
                     cbm.update_db(photo, update=True)
-                    n_up += 1
+                    n_updated += 1
+        n = len(photo_filepaths)
 
         print(photo_filepaths)
         print(video_filepaths)
@@ -89,6 +93,16 @@ class Command(BaseCommand):
                                                              options['photos'],
                                                              options['videos']))
 
+        # Statistics.
+        print('\n%d ANALYZED FILES' % n)
+        print('%d new' % n_new)
+        print('%d updated' % n_updated)
+        t = int(time.time() - t0)
+        if t > 60:
+            print('\nRunning time: ' + str(t / 60) + ' min ' + str(t % 60) + ' s')
+        else:
+            print('\nRunning time: ' + str(t) + ' s')
+        print('\n%d analyzed, %d new, %d updated' % (n, n_new, n_updated))
 
 class Database:
     '''Database object.'''
@@ -115,6 +129,7 @@ class Database:
             # XXX Dirty hack to make naive timestamp.
             record.timestamp = record.timestamp.replace(tzinfo=None)
             if record.timestamp != media.timestamp:
+                print('%s != %s' % (record.timestamp, media.timestamp))
                 print('File has changed! Return 1')
                 return 1
             else:
@@ -131,7 +146,6 @@ class Database:
         media_meta = media.metadata.dictionary
 
         #FIXME authors are not lists and this is not working with the save sets.
-        import pdb; pdb.set_trace()
         # Taxonomic information.
         taxa = media_meta['taxon']
         del media_meta['taxon']
@@ -178,7 +192,6 @@ class Database:
             else:
                 del media_meta[k]
 
-        import pdb; pdb.set_trace()
         if not update:
             if media.type == 'photo':
                 entry = Image(**media_meta)
@@ -188,9 +201,9 @@ class Database:
             entry.save()
         else:
             if media.type == 'photo':
-                entry = Image.objects.get(web_filepath__icontains=media.filename)
+                entry = Image.objects.get(filename=media.filename)
             elif media.type == 'video':
-                entry = Video.objects.get(webm_filepath__icontains=media.filename.split('.')[0])
+                entry = Video.objects.get(filename=media.filename.split('.')[0])
             for k, v in media_meta.iteritems():
                 setattr(entry, k, v)
 
@@ -234,6 +247,7 @@ class Database:
                 print('"%s" automatically fixed to "%s"' % (value, bad_data[value]))
             except:
                 fixed_value = raw_input('\nNew metadata. Type to confirm: ')
+                fixed_value = unicode(fixed_value, 'utf-8')
             try:
                 model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), fixed_value))
                 if new:
@@ -271,7 +285,7 @@ class Database:
 
         Verifies if value is blank.
         '''
-        print('META (%s): %s' % field, meta)
+        print('META (%s): %s' % (field, meta))
         meta_instances = [self.get_instance(field, value) for value in meta if value.strip()]
         print('INSTANCES FOUND: %s' % meta_instances)
         eval('entry.%s_set.clear()' % field)
@@ -354,6 +368,9 @@ class Meta:
         # Prepare some fields for the database.
         self.prepare_meta()
 
+        # Make dictionary.
+        self.build_dictionary()
+
     def photo_init(self, media):
         'Initialize photo metadata.'
         # Create metadata object.
@@ -363,7 +380,8 @@ class Meta:
             print('%s has no IPTC data!' % media.filename)
 
         # Define metadata.
-        self.filepath = os.path.abspath(media.filepath)
+        self.filename = media.filename
+        self.filepath = os.path.relpath(media.filepath, 'site_media')
         self.title = info.data['object name']                      #5
         self.tags = info.data['keywords']                          #25
         self.author = info.data['by-line']                         #80
@@ -371,7 +389,7 @@ class Meta:
         self.sublocation = info.data['sub-location']               #92
         self.state = info.data['province/state']                   #95
         self.country = info.data['country/primary location name']  #101
-        self.taxon = info.data['headline']                         #105
+        self.taxon = info.data['headline']                        #105
         self.rights = info.data['copyright notice']                #116
         self.caption = info.data['caption/abstract']               #120
         self.size = info.data['special instructions']              #40
@@ -379,26 +397,6 @@ class Meta:
         self.references = info.data['credit']                      #110
         self.timestamp = media.timestamp
         self.notes = u''
-
-        self.dictionary = {
-            'filename': media.filename,
-            'filepath': self.filepath,
-            'title': self.title,
-            'tags': self.tags,
-            'author': self.author,
-            'city': self.city,
-            'sublocation': self.sublocation,
-            'state': self.state,
-            'country': self.country,
-            'taxon': self.taxon,
-            'rights': self.rights,
-            'caption': self.caption,
-            'size': self.size,
-            'source': self.source,
-            'references': self.references,
-            'timestamp': self.timestamp,
-            'notes': self.notes,
-            }
 
     def none_to_empty(self, metadata):
         '''Convert None to empty string.'''
@@ -432,7 +430,7 @@ class Meta:
         self.source = [a.strip() for a in self.source.split(',')]
         self.references = [a.strip() for a in self.references.split(',')]
 
-        #XXX Lidar com fortuitos aff. e espcies com 3 nomes?
+        #XXX Take care of aff. and species with 3 names?
         #meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')]
         temp_taxa = [a.strip() for a in self.taxon.split(',')]
         clean_taxa = []
@@ -445,6 +443,29 @@ class Meta:
                 clean_taxa.append(taxon)
         self.taxon = clean_taxa
 
+    def build_dictionary(self):
+        '''Generates dictionary for canonical database processing.'''
+
+        self.dictionary = {
+            'filename': self.filename,
+            'filepath': self.filepath,
+            'title': self.title,
+            'tags': self.tags,
+            'author': self.author,
+            'city': self.city,
+            'sublocation': self.sublocation,
+            'state': self.state,
+            'country': self.country,
+            'taxon': self.taxon,
+            'rights': self.rights,
+            'caption': self.caption,
+            'size': self.size,
+            'source': self.source,
+            'references': self.references,
+            'timestamp': self.timestamp,
+            'notes': self.notes,
+            }
+
 
 class Photo:
     '''Photo object.'''
@@ -454,7 +475,6 @@ class Photo:
         self.timestamp = datetime.fromtimestamp(
                 os.path.getmtime(self.filepath))
         self.type = 'photo'
-        #self.create_meta()
 
     def create_meta(self):
         '''Parse and instantiate photo metadata.

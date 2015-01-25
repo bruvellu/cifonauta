@@ -11,6 +11,10 @@ from django.db.models import signals
 class File(models.Model):
     '''Define campos comuns para arquivos de mídia.'''
     # File
+    filename = models.CharField(_(u'Nome único do arquivo.'), max_length=200,
+            blank=True, help_text=_(u'Nome único e identificador do arquivo.'))
+    filepath = models.CharField(_(u'arquivo fonte local (novo)'),
+            max_length=200, null=True, blank=True, help_text=_(u'Arquivo fonte na pasta local.'))
     source_filepath = models.CharField(_(u'arquivo fonte local'),
             max_length=200, blank=True, help_text=_(u'Arquivo fonte na pasta local.'))
     thumb_filepath = models.ImageField(_(u'thumbnail web'),
@@ -43,12 +47,9 @@ class File(models.Model):
             verbose_name=_(u'direitos'), help_text=_(u'Detentor dos direitos autorais da imagem.'))
     sublocation = models.ForeignKey('Sublocation', null=True, blank=True,
             verbose_name=_(u'local'), help_text=_(u'Localidade mostrada na imagem (ou local de coleta).'))
-    city = models.ForeignKey('City', null=True, blank=True,
-            verbose_name=('cidade'), help_text=_(u'Cidade mostrada na imagem (ou cidade de coleta).'))
-    state = models.ForeignKey('State', null=True, blank=True,
-            verbose_name=_(u'estado'), help_text=_(u'Estado mostrado na imagem (ou estado de coleta).'))
-    country = models.ForeignKey('Country', null=True, blank=True,
-            verbose_name=_(u'país'), help_text=_(u'País mostrado na imagem (ou país de coleta).'))
+    city = models.ForeignKey('City', null=True, blank=True, verbose_name=('cidade'), help_text=_(u'Cidade mostrada na imagem (ou cidade de coleta).'))
+    state = models.ForeignKey('State', null=True, blank=True, verbose_name=_(u'estado'), help_text=_(u'Estado mostrado na imagem (ou estado de coleta).'))
+    country = models.ForeignKey('Country', null=True, blank=True, verbose_name=_(u'país'), help_text=_(u'País mostrado na imagem (ou país de coleta).'))
 
     # EXIF
     date = models.DateTimeField(_(u'data'), blank=True, help_text=_(u'Data em que a imagem foi criada.'))

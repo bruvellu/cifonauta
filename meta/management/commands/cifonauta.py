@@ -4,7 +4,9 @@ from optparse import make_option
 from datetime import datetime
 from iptcinfo import IPTCInfo
 from media_utils import check_file, dir_ready, get_exif, get_date, get_gps
+from meta.models import *
 import os
+import pickle
 
 
 class Command(BaseCommand):
@@ -58,12 +60,27 @@ class Command(BaseCommand):
             video_folder = Folder(self.SITE_MEDIA_VIDEOS, n_max)
             video_filepaths = video_folder.get_files()
 
+        # Process photos.
         for path in photo_filepaths:
             photo = Photo(path)
-            photo.create_meta()
             # Search photo in database.
-            #query = cbm.search_db(photo)
-            #print(query)
+            query = cbm.search_db(photo)
+            if not query:
+                print('NEW FILE: %s.' % photo.filename)
+                photo.create_meta()
+                cbm.update_db(photo)
+                n_new += 1
+            else:
+                if query == 2:
+                    # Entry exists and timestamp has not changed.
+                    print('ENTRY UP-TO-DATE! NEXT...')
+                    continue
+                else:
+                    # Timestamps differ.
+                    print('UPDATING ENTRY...')
+                    photo.create_meta()
+                    cbm.update_db(photo, update=True)
+                    n_up += 1
 
         print(photo_filepaths)
         print(video_filepaths)
@@ -83,95 +100,91 @@ class Database:
 
         Compare timestamps, if equal, skip, if different, update.
         '''
-        print('Searching %s no banco de dados...',
-                media.filename, media.source_filepath)
+        print('Searching %s...' % media.filepath)
         photopath = 'photos/'
         videopath = 'videos/'
 
+        # Query for the exact filename to avoid confusion.
         try:
-            if media.type == "photo":
-                # Busca pelo nome exato do arquivo, para evitar confuso.
-                record = Image.objects.get(web_filepath=photopath + media.filename)
-            elif media.type == "video":
-                try:
-                    record = Video.objects.get(webm_filepath=videopath + media.filename.split('.')[0] + '.webm')
-                except:
-                    try:
-                        record = Video.objects.get(mp4_filepath=videopath + media.filename.split('.')[0] + '.mp4')
-                    except:
-                        try:
-                            record = Video.objects.get(ogg_filepath=videopath + media.filename.split('.')[0] + '.ogv')
-                        except:
-                            print('%s no est no banco de dados.',
-                                    media.filename)
-                            return False
-            print('Bingo! Registro de %s encontrado.', media.filename)
-            print('Comparando timestamp do arquivo com o registro...')
+            if media.type == 'photo':
+                record = Image.objects.get(filename=media.filename)
+            elif media.type == 'video':
+                record = Video.objects.get(filename=media.filename)
+            print('Bingo! Found %s.' % media.filename)
+            print('Comparing timestamp between file and db...')
             # XXX Dirty hack to make naive timestamp.
             record.timestamp = record.timestamp.replace(tzinfo=None)
             if record.timestamp != media.timestamp:
-                print('Arquivo mudou! Retorna 1')
+                print('File has changed! Return 1')
                 return 1
             else:
-                print('Arquivo no mudou! Retorna 2')
+                print('File has not changed! Return 2')
                 return 2
         except Image.DoesNotExist:
-            print('Registro no encontrado (Image.DoesNotExist).')
+            print('Entry not found.')
             return False
 
     def update_db(self, media, update=False):
-        '''Cria ou atualiza registro no banco de dados.'''
-        print('Atualizando o banco de dados...')
-        # Instancia metadados pra no dar conflito.
-        media_meta = media.meta
-        # Guarda objeto com infos taxonmicas.
+        '''Creates or updates database entry.'''
+        print('Updating database...')
+        # Instantiate metadata for processing.
+        media_meta = media.metadata.dictionary
+
+        #FIXME authors are not lists and this is not working with the save sets.
+        import pdb; pdb.set_trace()
+        # Taxonomic information.
         taxa = media_meta['taxon']
         del media_meta['taxon']
-        # Preveno contra extinto campo de espcie.
+
+        # Prevent deprecated field to show up.
         try:
             del media_meta['genus_sp']
         except:
             pass
-        # Guarda objeto com autores
+
+        # Authors.
         authors = media_meta['author']
-        # Guarda objeto com especialistas
+
+        # Sources.
         sources = media_meta['source']
         del media_meta['source']
-        # Guarda objeto com tags
+
+        # Tags.
         tags = media_meta['tags']
         del media_meta['tags']
-        # Guarda objeto com referncias
+
+        # References.
         refs = media_meta['references']
         del media_meta['references']
 
-        # No deixar entrada pblica se faltar ttulo ou autor
+        # Keep media with incomplete metadata private.
         if media_meta['title'] == '' or not media_meta['author']:
-            print('Mdia %s sem ttulo ou autor!',
-                    media_meta['source_filepath'])
+            print('Media %s has no title or author!' % media_meta['source_filepath'])
             media_meta['is_public'] = False
         else:
             media_meta['is_public'] = True
-        # Deleta para inserir autores separadamente.
+        # Delete key to insert authors separately.
         del media_meta['author']
 
-        # Transforma valores em instncias dos modelos
+        # Transform values in model instances.
         toget = ['size', 'rights', 'sublocation',
                 'city', 'state', 'country']
         for k in toget:
-            print('META (%s): %s', k, media_meta[k])
-            # Apenas criar se no estiver em branco.
+            print('META (%s): %s' % (k, media_meta[k]))
+            # Create only if not blank.
             if media_meta[k]:
                 media_meta[k] = self.get_instance(k, media_meta[k])
-                print('INSTANCES FOUND: %s', media_meta[k])
+                print('INSTANCES FOUND: %s' % media_meta[k])
             else:
                 del media_meta[k]
 
+        import pdb; pdb.set_trace()
         if not update:
             if media.type == 'photo':
                 entry = Image(**media_meta)
             elif media.type == 'video':
                 entry = Video(**media_meta)
-            # Tem que salvar para criar id, usado na hora de salvar as tags
+            # Saving is needed to create an ID, necessary for saving remaining metadata.
             entry.save()
         else:
             if media.type == 'photo':
@@ -181,32 +194,28 @@ class Database:
             for k, v in media_meta.iteritems():
                 setattr(entry, k, v)
 
-        # Atualiza autores
+        # Update authors.
         entry = self.update_sets(entry, 'author', authors)
 
-        # Atualiza especialistas
+        # Update sources.
         entry = self.update_sets(entry, 'source', sources)
 
-        # Atualiza txons
+        # Update taxa.
         entry = self.update_sets(entry, 'taxon', taxa)
 
-        # Atualiza marcadores
+        # Update tags.
         entry = self.update_sets(entry, 'tag', tags)
 
-        # Atualiza referncias
+        # Update references.
         entry = self.update_sets(entry, 'reference', refs)
 
-        # Salvando modificaes
+        # Saving modifications.
         entry.save()
 
-        print('Registro no banco de dados atualizado!')
+        print('Database entry updated!')
 
     def get_instance(self, table, value):
-        '''Retorna o id a partir do nome.'''
-        # TODO Create hook to avoid badly formatted characters to be saved.
-        # Any new tag should be manually confirmed and corrected.
-        #model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), value))
-
+        '''Returns ID from name.'''
         print('\nGET table: %s, value: %s' % (table, value))
 
         # Needs a default in case objects exists.
@@ -224,13 +233,13 @@ class Database:
                 fixed_value = bad_data[value]
                 print('"%s" automatically fixed to "%s"' % (value, bad_data[value]))
             except:
-                fixed_value = raw_input('\nNovo metadado. Digite para confirmar: ')
+                fixed_value = raw_input('\nNew metadata. Type to confirm: ')
             try:
                 model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), fixed_value))
                 if new:
-                    print('Novo metadado %s criado!' % fixed_value)
+                    print('New metadata %s created!' % fixed_value)
                 else:
-                    print('Metadado %s j existia!' % fixed_value)
+                    print('Metadata %s already existed!' % fixed_value)
                     # Add to bad data dictionary.
                     bad_data[value] = fixed_value
                     bad_data_file = open('bad_data.pkl', 'wb')
@@ -238,42 +247,41 @@ class Database:
                     bad_data_file.close()
                 # TODO Fix metadata field on original image!!!
             except:
-                print('Objeto %s no foi encontrado! Abortando...' % fixed_value)
+                print('Object %s not found! Aborting...' % fixed_value)
 
-        # Consulta ITIS para extrair txons.
+        # Check ITIS for taxonomic info.
         if table == 'taxon' and new:
             taxon = self.get_itis(value)
-            # Refora, caso a conexo falhe.
+            # Retry if connection fails.
             if not taxon:
                 taxon = self.get_itis(value)
                 if not taxon:
-                    print('Nova tentativa em 5s...')
+                    print('New try in 5s...')
                     time.sleep(5)
                     taxon = self.get_itis(value)
             try:
-                # Por fim, atualizar o modelo.
+                # Update model.
                 model = taxon.update_model(model)
             except:
-                print('No rolou pegar hierarquia...')
+                print('Could not get taxonomic hierarchy...')
         return model
 
     def update_sets(self, entry, field, meta):
-        '''Atualiza campos many to many do banco de dados.
+        '''Update many to many database fields.
 
-        Verifica se o value no est em branco, para no adicionar entradas em
-        branco no banco.
+        Verifies if value is blank.
         '''
-        print('META (%s): %s', field, meta)
+        print('META (%s): %s' % field, meta)
         meta_instances = [self.get_instance(field, value) for value in meta if value.strip()]
-        print('INSTANCES FOUND: %s', meta_instances)
+        print('INSTANCES FOUND: %s' % meta_instances)
         eval('entry.%s_set.clear()' % field)
         [eval('entry.%s_set.add(value)' % field) for value in meta_instances if meta_instances]
         return entry
 
     def get_itis(self, name):
-        '''Consulta banco de dados do ITIS.
+        '''Access ITIS database.
 
-        Extrai o txon pai e o ranking. Valores so guardados em:
+        Extract parent taxon and ranking.
 
         taxon.name
         taxon.rank
@@ -290,7 +298,7 @@ class Database:
 
 
 class Folder:
-    '''Classes de objetos para lidar com as pastas e seus arquivos.
+    '''Take care of directories and its files.
 
     >>> dir = 'source_media'
     >>> folder = Folder(dir, 100)
@@ -372,6 +380,26 @@ class Meta:
         self.timestamp = media.timestamp
         self.notes = u''
 
+        self.dictionary = {
+            'filename': media.filename,
+            'filepath': self.filepath,
+            'title': self.title,
+            'tags': self.tags,
+            'author': self.author,
+            'city': self.city,
+            'sublocation': self.sublocation,
+            'state': self.state,
+            'country': self.country,
+            'taxon': self.taxon,
+            'rights': self.rights,
+            'caption': self.caption,
+            'size': self.size,
+            'source': self.source,
+            'references': self.references,
+            'timestamp': self.timestamp,
+            'notes': self.notes,
+            }
+
     def none_to_empty(self, metadata):
         '''Convert None to empty string.'''
         if metadata is None:
@@ -426,6 +454,7 @@ class Photo:
         self.timestamp = datetime.fromtimestamp(
                 os.path.getmtime(self.filepath))
         self.type = 'photo'
+        #self.create_meta()
 
     def create_meta(self):
         '''Parse and instantiate photo metadata.
@@ -438,8 +467,12 @@ class Photo:
         exif = get_exif(self.filepath)
         # Extracting data.
         self.metadata.date = get_date(exif)
+        self.metadata.dictionary['date'] = self.metadata.date
         # Extracting geolocation.
         self.metadata.gps = get_gps(exif)
+        self.metadata.dictionary['geolocation'] = self.metadata.gps['geolocation']
+        self.metadata.dictionary['latitude'] = self.metadata.gps['latitude']
+        self.metadata.dictionary['longitude'] = self.metadata.gps['longitude']
 
         print
         print '\tVariable\tMetadata'

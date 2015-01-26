@@ -284,9 +284,7 @@ class Database:
 
         Verifies if value is blank.
         '''
-        print(u'META (%s): %s' % (field, meta))
         meta_instances = [self.get_instance(field, value) for value in meta if value.strip()]
-        print(u'INSTANCES FOUND: %s' % meta_instances)
         eval('entry.%s_set.clear()' % field)
         [eval('entry.%s_set.add(value)' % field) for value in meta_instances if meta_instances]
         return entry

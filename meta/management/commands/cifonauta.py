@@ -69,18 +69,18 @@ class Command(BaseCommand):
             # Search photo in database.
             query = cbm.search_db(photo)
             if not query:
-                print('NEW FILE: %s.' % photo.filename)
+                print(u'NEW FILE: %s.' % photo.filename)
                 photo.create_meta()
                 cbm.update_db(photo)
                 n_new += 1
             else:
                 if query == 2:
                     # Entry exists and timestamp has not changed.
-                    print('ENTRY UP-TO-DATE! NEXT...')
+                    print(u'ENTRY UP-TO-DATE! NEXT...')
                     continue
                 else:
                     # Timestamps differ.
-                    print('UPDATING ENTRY...')
+                    print(u'UPDATING ENTRY...')
                     photo.create_meta()
                     cbm.update_db(photo, update=True)
                     n_updated += 1
@@ -94,15 +94,15 @@ class Command(BaseCommand):
                                                              options['videos']))
 
         # Statistics.
-        print('\n%d ANALYZED FILES' % n)
-        print('%d new' % n_new)
-        print('%d updated' % n_updated)
+        print(u'\n%d ANALYZED FILES' % n)
+        print(u'%d new' % n_new)
+        print(u'%d updated' % n_updated)
         t = int(time.time() - t0)
         if t > 60:
-            print('\nRunning time: ' + str(t / 60) + ' min ' + str(t % 60) + ' s')
+            print(u'\nRunning time: ' + str(t / 60) + ' min ' + str(t % 60) + ' s')
         else:
-            print('\nRunning time: ' + str(t) + ' s')
-        print('\n%d analyzed, %d new, %d updated' % (n, n_new, n_updated))
+            print(u'\nRunning time: ' + str(t) + ' s')
+        print(u'\n%d analyzed, %d new, %d updated' % (n, n_new, n_updated))
 
 class Database:
     '''Database object.'''
@@ -114,7 +114,7 @@ class Database:
 
         Compare timestamps, if equal, skip, if different, update.
         '''
-        print('Searching %s...' % media.filepath)
+        print(u'Searching %s...' % media.filepath)
         photopath = 'photos/'
         videopath = 'videos/'
 
@@ -124,24 +124,24 @@ class Database:
                 record = Image.objects.get(filename=media.filename)
             elif media.type == 'video':
                 record = Video.objects.get(filename=media.filename)
-            print('Bingo! Found %s.' % media.filename)
-            print('Comparing timestamp between file and db...')
+            print(u'Bingo! Found %s.' % media.filename)
+            print(u'Comparing timestamp between file and db...')
             # XXX Dirty hack to make naive timestamp.
             record.timestamp = record.timestamp.replace(tzinfo=None)
             if record.timestamp != media.timestamp:
-                print('%s != %s' % (record.timestamp, media.timestamp))
-                print('File has changed! Return 1')
+                print(u'%s != %s' % (record.timestamp, media.timestamp))
+                print(u'File has changed! Return 1')
                 return 1
             else:
-                print('File has not changed! Return 2')
+                print(u'File has not changed! Return 2')
                 return 2
         except Image.DoesNotExist:
-            print('Entry not found.')
+            print(u'Entry not found.')
             return False
 
     def update_db(self, media, update=False):
         '''Creates or updates database entry.'''
-        print('Updating database...')
+        print(u'Updating database...')
         # Instantiate metadata for processing.
         media_meta = media.metadata.dictionary
 
@@ -172,7 +172,7 @@ class Database:
 
         # Keep media with incomplete metadata private.
         if media_meta['title'] == '' or not media_meta['author']:
-            print('Media %s has no title or author!' % media_meta['source_filepath'])
+            print(u'Media %s has no title or author!' % media_meta['source_filepath'])
             media_meta['is_public'] = False
         else:
             media_meta['is_public'] = True
@@ -183,11 +183,11 @@ class Database:
         toget = ['size', 'rights', 'sublocation',
                 'city', 'state', 'country']
         for k in toget:
-            print('META (%s): %s' % (k, media_meta[k]))
+            print(u'META (%s): %s' % (k, media_meta[k]))
             # Create only if not blank.
             if media_meta[k]:
                 media_meta[k] = self.get_instance(k, media_meta[k])
-                print('INSTANCES FOUND: %s' % media_meta[k])
+                print(u'INSTANCES FOUND: %s' % media_meta[k])
             else:
                 del media_meta[k]
 
@@ -224,11 +224,11 @@ class Database:
         # Saving modifications.
         entry.save()
 
-        print('Database entry updated!')
+        print(u'Database entry updated!')
 
     def get_instance(self, table, value):
         '''Returns ID from name.'''
-        print('\nGET table: %s, value: %s' % (table, value))
+        print(u'\nGET table: %s, value: %s' % (table, value))
 
         # Needs a default in case objects exists.
         new = False
@@ -243,16 +243,16 @@ class Database:
             bad_data_file.close()
             try:
                 fixed_value = bad_data[value]
-                print('"%s" automatically fixed to "%s"' % (value, bad_data[value]))
+                print(u'"%s" automatically fixed to "%s"' % (value, bad_data[value]))
             except:
                 fixed_value = raw_input('\nNew metadata. Type to confirm: ')
                 #fixed_value = unicode(fixed_value, 'utf-8')
             try:
                 model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), fixed_value))
                 if new:
-                    print('New metadata %s created!' % fixed_value)
+                    print(u'New metadata %s created!' % fixed_value)
                 else:
-                    print('Metadata %s already existed!' % fixed_value)
+                    print(u'Metadata %s already existed!' % fixed_value)
                     # Add to bad data dictionary.
                     bad_data[value] = fixed_value
                     bad_data_file = open('bad_data.pkl', 'wb')
@@ -260,7 +260,7 @@ class Database:
                     bad_data_file.close()
                 # TODO Fix metadata field on original image!!!
             except:
-                print('Object %s not found! Aborting...' % fixed_value)
+                print(u'Object %s not found! Aborting...' % fixed_value)
 
         # Check ITIS for taxonomic info.
         if table == 'taxon' and new:
@@ -269,14 +269,14 @@ class Database:
             if not taxon:
                 taxon = self.get_itis(value)
                 if not taxon:
-                    print('New try in 5s...')
+                    print(u'New try in 5s...')
                     time.sleep(5)
                     taxon = self.get_itis(value)
             try:
                 # Update model.
                 model = taxon.update_model(model)
             except:
-                print('Could not get taxonomic hierarchy...')
+                print(u'Could not get taxonomic hierarchy...')
         return model
 
     def update_sets(self, entry, field, meta):
@@ -284,9 +284,9 @@ class Database:
 
         Verifies if value is blank.
         '''
-        print('META (%s): %s' % (field, meta))
+        print(u'META (%s): %s' % (field, meta))
         meta_instances = [self.get_instance(field, value) for value in meta if value.strip()]
-        print('INSTANCES FOUND: %s' % meta_instances)
+        print(u'INSTANCES FOUND: %s' % meta_instances)
         eval('entry.%s_set.clear()' % field)
         [eval('entry.%s_set.add(value)' % field) for value in meta_instances if meta_instances]
         return entry
@@ -325,7 +325,7 @@ class Folder:
         self.folder_path = folder
         self.n_max = n_max
         self.files = []
-        print('Pasta a ser analisada: %s' % self.folder_path)
+        print(u'Directory to be analyzed: %s' % self.folder_path)
 
     def get_files(self):
         '''Search .jpg files recursively in a directory.
@@ -347,7 +347,7 @@ class Folder:
             else:
                 continue
         else:
-            print('%d files found.' % n)
+            print(u'%d files found.' % n)
 
         return self.files
 
@@ -357,7 +357,7 @@ class Meta:
     def __init__(self, media):
         '''Initialize metadata.'''
 
-        print('Parsing %s metadata.' % media.filename)
+        print(u'Parsing %s metadata.' % media.filename)
 
         if media.type == 'photo':
             self.photo_init(media)
@@ -376,7 +376,7 @@ class Meta:
         info = IPTCInfo(media.filepath, True, 'utf-8')
         # Check if file has IPTC data.
         if len(info.data) < 4:
-            print('%s has no IPTC data!' % media.filename)
+            print(u'%s has no IPTC data!' % media.filename)
 
         # Define metadata.
         self.filename = media.filename

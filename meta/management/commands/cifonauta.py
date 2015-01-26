@@ -145,7 +145,6 @@ class Database:
         # Instantiate metadata for processing.
         media_meta = media.metadata.dictionary
 
-        #FIXME authors are not lists and this is not working with the save sets.
         # Taxonomic information.
         taxa = media_meta['taxon']
         del media_meta['taxon']
@@ -247,7 +246,7 @@ class Database:
                 print('"%s" automatically fixed to "%s"' % (value, bad_data[value]))
             except:
                 fixed_value = raw_input('\nNew metadata. Type to confirm: ')
-                fixed_value = unicode(fixed_value, 'utf-8')
+                #fixed_value = unicode(fixed_value, 'utf-8')
             try:
                 model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), fixed_value))
                 if new:
@@ -422,9 +421,6 @@ class Meta:
         self.source = self.none_to_empty(self.source)
         self.references = self.none_to_empty(self.references)
 
-        #FIXME Check if tags are bundled in a list.
-        #if not isinstance(meta['tags'], list):
-
         # Transform to list.
         self.author = [a.strip() for a in self.author.split(',')]
         self.source = [a.strip() for a in self.source.split(',')]
@@ -466,6 +462,13 @@ class Meta:
             'notes': self.notes,
             }
 
+
+#TODO Implement Video class. Ideally transform Photo class in a Media class and
+# use the same prepare meta functions. Just add differentially the necessary
+# fields based on the media.type. Identification of video files will be done by
+# the large thumbnail already generated. It will be used as filename and the
+# txt will be used for metadata reading. In the future I should include all the
+# metadata into the image file and deprecate the txt file.
 
 class Photo:
     '''Photo object.'''

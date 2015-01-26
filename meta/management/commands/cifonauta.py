@@ -250,9 +250,9 @@ class Database:
             try:
                 model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), fixed_value))
                 if new:
-                    print(u'New metadata %s created!' % fixed_value)
+                    print(u'New metadata %s created!' % fixed_value.decode('utf-8'))
                 else:
-                    print(u'Metadata %s already existed!' % fixed_value)
+                    print(u'Metadata %s already existed!' % fixed_value.decode('utf-8'))
                     # Add to bad data dictionary.
                     bad_data[value] = fixed_value
                     bad_data_file = open('bad_data.pkl', 'wb')
@@ -260,7 +260,7 @@ class Database:
                     bad_data_file.close()
                 # TODO Fix metadata field on original image!!!
             except:
-                print(u'Object %s not found! Aborting...' % fixed_value)
+                print(u'Object %s not found! Aborting...' % fixed_value.decode('utf-8'))
 
         # Check ITIS for taxonomic info.
         if table == 'taxon' and new:

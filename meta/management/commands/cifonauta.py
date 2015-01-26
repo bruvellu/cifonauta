@@ -172,7 +172,7 @@ class Database:
 
         # Keep media with incomplete metadata private.
         if media_meta['title'] == '' or not media_meta['author']:
-            print(u'Media %s has no title or author!' % media_meta['source_filepath'])
+            print(u'Media %s has no title or author!' % media_meta['filepath'])
             media_meta['is_public'] = False
         else:
             media_meta['is_public'] = True
@@ -183,11 +183,9 @@ class Database:
         toget = ['size', 'rights', 'sublocation',
                 'city', 'state', 'country']
         for k in toget:
-            print(u'META (%s): %s' % (k, media_meta[k]))
             # Create only if not blank.
             if media_meta[k]:
                 media_meta[k] = self.get_instance(k, media_meta[k])
-                print(u'INSTANCES FOUND: %s' % media_meta[k])
             else:
                 del media_meta[k]
 

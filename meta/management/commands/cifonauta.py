@@ -86,7 +86,6 @@ class Command(BaseCommand):
                     n_updated += 1
         n = len(photo_filepaths)
 
-        print(photo_filepaths)
         print(video_filepaths)
 
         self.stdout.write('%d unique names. -p:%s, -m:%s' % (options['number'],
@@ -240,11 +239,10 @@ class Database:
             bad_data = pickle.load(bad_data_file)
             bad_data_file.close()
             try:
-                fixed_value = bad_data[value]
+                fixed_value = bad_data[value.decode('utf-8')]
                 print(u'"%s" automatically fixed to "%s"' % (value, bad_data[value]))
             except:
                 fixed_value = raw_input('\nNew metadata. Type to confirm: ')
-                #fixed_value = unicode(fixed_value, 'utf-8')
             try:
                 model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), fixed_value))
                 if new:

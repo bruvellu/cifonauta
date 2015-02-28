@@ -291,18 +291,18 @@ def org_page(request):
     sizes = Size.objects.order_by('position')
     #FIXME Does not work when locale is different!
     # Técnicas
-    technique = TagCategory.objects.get(name=u'Técnica')
-    microscopy = TagCategory.objects.get(name=u'Microscopia')
+    technique = TagCategory.objects.get(name_en=u'Technique')
+    microscopy = TagCategory.objects.get(name_en=u'Microscopy')
     # Estágios
-    stage = TagCategory.objects.get(name=u'Estágio de vida')
+    stage = TagCategory.objects.get(name_en=u'Life stage')
     stages = stage.tags.order_by('position')
     # Modos
-    pelagic = TagCategory.objects.get(name=u'Pelágicos')
-    benthic = TagCategory.objects.get(name=u'Bentônicos')
+    pelagic = TagCategory.objects.get(name_en=u'Pelagic')
+    benthic = TagCategory.objects.get(name_en=u'Benthic')
     # Habitat
-    habitat = TagCategory.objects.get(name=u'Habitat')
+    habitat = TagCategory.objects.get(name_en=u'Habitat')
     # Diversos
-    assorted = TagCategory.objects.get(name=u'Diversos')
+    assorted = TagCategory.objects.get(name_en=u'Miscellaneous')
     variables = RequestContext(request, {
         'sizes': sizes,
         'microscopy': microscopy,

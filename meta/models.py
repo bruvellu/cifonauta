@@ -78,7 +78,7 @@ class File(models.Model):
         return self._get_list(self.source_set, separator=separator)
 
     def get_tag_list_pt(self):
-        return self._get_list(self.tag_set, lang='pt')
+        return self._get_list(self.tag_set, lang='pt_br')
 
     def get_tag_list_en(self):
         return self._get_list(self.tag_set, lang='en')
@@ -90,13 +90,13 @@ class File(models.Model):
         return self._get_list(Taxon.get_taxon_and_parents(self.taxon_set))
 
     def get_taxon_common_list_pt(self):
-        return self._get_list(Taxon.get_taxon_and_parents(self.taxon_set), field_name='common', lang='pt')
+        return self._get_list(Taxon.get_taxon_and_parents(self.taxon_set), field_name='common', lang='pt_br')
 
     def get_taxon_common_list_en(self):
         return self._get_list(Taxon.get_taxon_and_parents(self.taxon_set), field_name='common', lang='en')
 
     def get_taxon_rank_list_pt(self):
-        return self._get_list(self.taxon_set, field_name='rank', lang='pt')
+        return self._get_list(self.taxon_set, field_name='rank', lang='pt_br')
 
     def get_taxon_rank_list_en(self):
         return self._get_list(self.taxon_set, field_name='rank', lang='en')

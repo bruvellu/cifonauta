@@ -18,7 +18,6 @@ Algoritmo:
 '''
 
 from django.conf import settings
-settings.configure()
 from suds.client import Client
 from meta.models import Taxon
 
@@ -123,6 +122,55 @@ class Itis:
 
         if rank_pt:
             return rank_pt
+        else:
+            return rank
+
+    def translate_pt2en(self, rank):
+        '''Traduz nome do ranking pro inglês.'''
+
+        pt2en = {
+                'Subforma': u'Subform',
+                'Superordem': u'Superorder',
+                'Variedade': u'Variety',
+                'Infraordem': u'Infraorder',
+                'Seção': u'Section',
+                'Subclasse': u'Subclass',
+                'Subseção': u'Subsection',
+                'Reino': u'Kingdom',
+                'Infrareino': u'Infrakingdom',
+                'Divisão': u'Division',
+                'Subtribo': u'Subtribe',
+                'Aberração': u'Aberration',
+                'Infraordem': u'InfraOrder',
+                'Subreino': u'Subkingdom',
+                'Infraclasse': u'Infraclass',
+                'Subfamília': u'Subfamily',
+                'Classe': u'Class',
+                'Superfamília': u'Superfamily',
+                'Subdivisão': u'Subdivision',
+                'Morfotipo': u'Morph',
+                'Raça': u'Race',
+                'Não especificado': u'Unspecified',
+                'Subordem': u'Suborder',
+                'Gênero': u'Genus',
+                'Ordem': u'Order',
+                'Subvariedade': u'Subvariety',
+                'Tribo': u'Tribe',
+                'Subgênero': u'Subgenus',
+                'Forma': u'Form',
+                'Família': u'Family',
+                'Subfilo': u'Subphylum',
+                'Estirpe': u'Stirp',
+                'Filo': u'Phylum',
+                'Superclasse': u'Superclass',
+                'Subespécie': u'Subspecies',
+                'Espécie': u'Species',
+                }
+
+        rank_en = pt2en[rank]
+
+        if rank_en:
+            return rank_en
         else:
             return rank
 

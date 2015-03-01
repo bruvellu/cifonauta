@@ -36,7 +36,7 @@ class MediaIndex(indexes.SearchIndex):
     highlight = indexes.BooleanField(model_attr='highlight', default=False)
 
     title_en = indexes.CharField(model_attr='title_en', default='')
-    title = indexes.CharField(model_attr='title_pt')
+    title = indexes.CharField(model_attr='title_pt_br')
 
     thumb = indexes.CharField(model_attr='thumb_filepath')
     url = indexes.CharField(model_attr='get_absolute_url')

@@ -92,7 +92,7 @@
 
   <div id="citethis" class="span-13">
     <div>
-      {% show_set authors '' '' ', ' '' '' '.' %} <strong>{{ media.title }}</strong>. {% blocktrans with host=request.META.HTTP_HOST media_url=media.get_absolute_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a href="{{ media_url }}">http://{{ host }}{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
+      {% show_set authors '' '' ', ' '' '' '.' %} <strong>{{ media.title }}</strong>. {% blocktrans with media_url=media.get_absolute_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a href="{{ media_url }}">http://cifonauta.cebimar.usp.br{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
     </div>
     <div class="align-right quiet">{% blocktrans %}Conheça os <a href="/termos/">termos de uso</a>.{% endblocktrans %}</div>
   </div>

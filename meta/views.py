@@ -1088,12 +1088,20 @@ def extract_set(image_list, video_list):
     else:
         video_ids = [0]
 
-    image_facets = image_list.facet('size').facet('sublocation')\
-        .facet('city').facet('state').facet('country')\
-        .facet('author').facet('tag').facet('taxon').facet_counts()['fields']
-    video_facets = video_list.facet('size').facet('sublocation')\
-        .facet('city').facet('state').facet('country')\
-        .facet('author').facet('tag').facet('taxon').facet_counts()['fields']
+    try:
+        image_facets = image_list.facet('size').facet('sublocation')\
+            .facet('city').facet('state').facet('country')\
+            .facet('author').facet('tag').facet('taxon').facet_counts()['fields']
+    except:
+        image_facets = {'author': [], 'city': [], 'country': [], 'size': [],
+                'state': [], 'sublocation': [], 'tag': [], 'taxon': []}
+    try:
+        video_facets = video_list.facet('size').facet('sublocation')\
+            .facet('city').facet('state').facet('country')\
+            .facet('author').facet('tag').facet('taxon').facet_counts()['fields']
+    except:
+        video_facets = {'author': [], 'city': [], 'country': [], 'size': [],
+                'state': [], 'sublocation': [], 'tag': [], 'taxon': []}
 
     refined_authors = Author.objects.filter(
             Q(id__in=[i[0] for i in image_facets['author']]) |

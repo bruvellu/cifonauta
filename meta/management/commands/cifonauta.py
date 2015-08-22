@@ -250,7 +250,7 @@ class Database:
                 else:
                     print(u'Metadata %s already existed!' % fixed_value.decode('utf-8'))
                     # Add to bad data dictionary.
-                    bad_data[value] = fixed_value
+                    bad_data[value.decode('utf-8')] = fixed_value
                     bad_data_file = open('bad_data.pkl', 'wb')
                     pickle.dump(bad_data, bad_data_file)
                     bad_data_file.close()

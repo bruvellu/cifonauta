@@ -15,7 +15,7 @@ admin.autodiscover()
 import os
 #from django.views.decorators.cache import cache_page
 from meta.views import *
-from meta.feeds import *
+# from meta.feeds import *
 from meta.models import *
 from cifonauta.settings import MEDIA_ROOT
 
@@ -78,11 +78,11 @@ urlpatterns = patterns('',
         (r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
 
         # Feeds
-        (r'^feed/latest/$', LatestMedia()),
-        (r'^feed/latest/(?P<type>[^\d]+)/$', LatestMedia()),
-        (r'^(?P<field>[^\d]+)/(?P<slug>[\w\-]+)/feed/$', MetaMedia()),
-        (r'^(?P<field>[^\d]+)/(?P<slug>[\w\-]+)/feed/(?P<type>[^\d]+)/$', MetaMedia()),
-        (r'^tours/feed/$', LatestTours()),
+        # (r'^feed/latest/$', LatestMedia()),
+        # (r'^feed/latest/(?P<type>[^\d]+)/$', LatestMedia()),
+        # (r'^(?P<field>[^\d]+)/(?P<slug>[\w\-]+)/feed/$', MetaMedia()),
+        # (r'^(?P<field>[^\d]+)/(?P<slug>[\w\-]+)/feed/(?P<type>[^\d]+)/$', MetaMedia()),
+        # (r'^tours/feed/$', LatestTours()),
 
         # Auth
         (r'^login/$', 'django.contrib.auth.views.login'),

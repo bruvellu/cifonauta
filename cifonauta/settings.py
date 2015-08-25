@@ -129,6 +129,17 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.request",
+    "django.core.context_processors.tz",
+    "django.contrib.messages.context_processors.messages"
+)
+
 # List of callables that know how to import templates from various sources.
 #TEMPLATE_LOADERS = (
         #('django.template.loaders.cached.Loader', (

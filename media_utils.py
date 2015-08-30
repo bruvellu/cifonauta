@@ -17,7 +17,7 @@ Centro de Biologia Marinha da Universidade de São Paulo.
 
 import logging
 import os
-import pyexiv2
+# import pyexiv2
 import random
 import re
 import subprocess
@@ -137,13 +137,13 @@ def build_call(filepath):
             ]
     if filepath.endswith('m2ts'):
         call.extend([
-            '-filter_complex', 'scale=512x288,overlay=0:main_h-overlay_h-0',
-            '-aspect', '16:9',
+            '-filter_complex', 'overlay=0:main_h-overlay_h-0',
+            '-s 512x288', '-aspect', '16:9',
             ])
     else:
         call.extend([
-            '-filter_complex', 'scale=512x384,overlay=0:main_h-overlay_h-0',
-            '-aspect', '4:3',
+            '-filter_complex', 'overlay=0:main_h-overlay_h-0',
+            '-s 512x384', '-aspect', '4:3',
             ])
 
     # Audio codec

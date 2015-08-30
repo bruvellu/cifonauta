@@ -137,12 +137,12 @@ def build_call(filepath):
             ]
     if filepath.endswith('m2ts'):
         call.extend([
-            '-filter_complex', '"overlay=0:main_h-overlay_h-0"',
+            '-filter_complex', 'overlay=0:main_h-overlay_h-0',
             '-s', '512x288', '-aspect', '16:9',
             ])
     else:
         call.extend([
-            '-filter_complex', '"overlay=0:main_h-overlay_h-0"',
+            '-filter_complex', 'overlay=0:main_h-overlay_h-0',
             '-s', '512x384', '-aspect', '4:3',
             ])
 

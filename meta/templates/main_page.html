@@ -20,9 +20,11 @@
 
 <section class="main shadow span-23 last" id="intro">
 <div class="span-8" id="destaque">
-  {% thumbnail main_image.filepath "300x200" crop="center" as im %}
-  <a href="{{ main_image.get_absolute_url }}"><img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ main_image.title }}"></a>
-  {% endthumbnail %}
+  <a href="{{ main_image.get_absolute_url }}">
+    {% thumbnail main_image.filepath "300x200" crop="center" as im %}
+    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ main_image.title }}">
+    {% endthumbnail %}
+  </a>
 </div>
 <div class="span-14 last">
   <h1>{% trans 'Explore a biodiversidade marinha' %}</h1>
@@ -52,10 +54,11 @@
 
 <div class="main span-8" id="photos">
   <h2><a href="/search/?type=photo">{% trans 'Fotos' %}</a></h2>
-
-  {% thumbnail photo.filepath "300x200" crop="center" as im %}
-  <a href="{{ photo.get_absolute_url }}"><img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ photo.title }}"></a>
-  {% endthumbnail %}
+  <a href="{{ photo.get_absolute_url }}">
+    {% thumbnail photo.filepath "300x200" crop="center" as im %}
+    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ photo.title }}">
+    {% endthumbnail %}
+  </a>
 
   <p class="quiet">
   {% blocktrans %}Além de fotos representativas de cada grupo disponibilizamos séries de um mesmo organismo possibilitando uma visualização mais completa de sua morfologia e tridimensionalidade.{% endblocktrans %}
@@ -64,10 +67,11 @@
 
 <div class="main span-8" id="videos">
   <h2><a href="/search/?type=video">{% trans 'Vídeos' %}</a></h2>
-
-  {% thumbnail video.filepath "300x200" crop="center" as im %}
-  <a href="{{ video.get_absolute_url }}"><img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ video.title }}"></a>
-  {% endthumbnail %}
+  <a href="{{ video.get_absolute_url }}">
+    {% thumbnail video.filepath "300x200" crop="center" as im %}
+    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ video.title }}">
+    {% endthumbnail %}
+  </a>
 
   <p class="quiet">
   {% blocktrans %}Mostram aspectos da biologia dos organismos como desenvolvimento, locomoção, comportamento e reprodução em vídeos de curta duração.{% endblocktrans %}
@@ -76,10 +80,11 @@
 
 <div class="main span-8 last" id="tours">
   <h2><a href="/tours/">{% trans 'Tours' %}</a></h2>
-
-  {% thumbnail tour_image.filepath "300x200" crop="center" as im %}
-  <a href="{{ tour.get_absolute_url }}"><img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ tour_image.title }}"></a>
-  {% endthumbnail %}
+  <a href="{{ tour.get_absolute_url }}">
+    {% thumbnail tour_image.filepath "300x200" crop="center" as im %}
+    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ tour_image.title }}">
+    {% endthumbnail %}
+  </a>
 
   <p class="quiet">
   {% blocktrans %}Seleção de imagens do banco sobre um tema específico com texto descritivo e slideshow. Conheça os <a href="/tours/">tours disponíveis</a>.{% endblocktrans %}

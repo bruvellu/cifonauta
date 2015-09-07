@@ -101,7 +101,11 @@
     <ul class="pagination">
       {% for result in photos %}{% with result.object as media %}
       <li>
-      <a href="#"><img class="shadow" src="{{ MEDIA_URL }}{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" /></a>
+      <a href="#">
+        {% thumbnail media.filepath "120x90" crop="center" as im %}
+        <img class="shadow" src="{{ im.url }}" alt="{{ media.title }}" title="{{ media.title }}" />
+        {% endthumbnail %}
+      </a>
       </li>
       {% endwith %}{% endfor %}
     </ul>

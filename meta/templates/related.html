@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n thumbnail %}
 <div id="related-form" class="span-15 last">
     <form action="." method="post">
         <div class="span-9" id="crumbs">
@@ -24,8 +24,12 @@
     <ul class="rel-thumbs">
         {% for media in rel_media %}
             {% if media.id == current.id %}
-            <li class="shadow size-{{ media.size.slug }} current">
-            <img src="{{ MEDIA_URL }}{{ media.thumb_filepath }}" alt="{{ media.title }}" title="{{ media.title }}" />
+            <_li class="shadow size-{{ media.size.slug }} current">
+
+            {% thumbnail media.filepath "120x90" crop="center" as im %}
+            <img src="{{ im.url }}" alt="{{ media.title }}" title="{{ media.title }}" />
+            {% endthumbnail %}
+
             {% if relative.next or relative.previous %}
                 {% if not relative.next %}
                 <div id="next-last">{% trans 'última' %}</div>

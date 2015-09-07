@@ -22,7 +22,7 @@
 <div class="span-8" id="destaque">
   <a href="{{ main_image.get_absolute_url }}">
     {% thumbnail main_image.filepath "300x200" crop="center" as im %}
-    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ main_image.title }}">
+    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ main_image.title }}">
     {% endthumbnail %}
   </a>
 </div>
@@ -56,7 +56,7 @@
   <h2><a href="/search/?type=photo">{% trans 'Fotos' %}</a></h2>
   <a href="{{ photo.get_absolute_url }}">
     {% thumbnail photo.filepath "300x200" crop="center" as im %}
-    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ photo.title }}">
+    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ photo.title }}">
     {% endthumbnail %}
   </a>
 
@@ -69,7 +69,7 @@
   <h2><a href="/search/?type=video">{% trans 'Vídeos' %}</a></h2>
   <a href="{{ video.get_absolute_url }}">
     {% thumbnail video.filepath "300x200" crop="center" as im %}
-    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ video.title }}">
+    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ video.title }}">
     {% endthumbnail %}
   </a>
 
@@ -82,7 +82,7 @@
   <h2><a href="/tours/">{% trans 'Tours' %}</a></h2>
   <a href="{{ tour.get_absolute_url }}">
     {% thumbnail tour_image.filepath "300x200" crop="center" as im %}
-    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ tour_image.title }}">
+    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ tour_image.title }}">
     {% endthumbnail %}
   </a>
 

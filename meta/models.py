@@ -13,8 +13,10 @@ class File(models.Model):
     # File
     filename = models.CharField(_(u'Nome único do arquivo.'), max_length=200,
             blank=True, help_text=_(u'Nome único e identificador do arquivo.'))
-    filepath = models.CharField(_(u'arquivo fonte local (novo)'),
-            max_length=200, null=True, blank=True, help_text=_(u'Arquivo fonte na pasta local.'))
+    # filepath = models.CharField(_(u'arquivo fonte local (novo)'),
+            # max_length=200, null=True, blank=True, help_text=_(u'Arquivo fonte na pasta local.'))
+    # filepath = models.ImageField(_(u'arquivo fonte local (novo)'), default='',
+            # upload_to='site_media/photos/', null=True, blank=True, help_text=_(u'Arquivo na pasta do site.'))
     source_filepath = models.CharField(_(u'arquivo fonte local'),
             max_length=200, blank=True, help_text=_(u'Arquivo fonte na pasta local.'))
     thumb_filepath = models.ImageField(_(u'thumbnail web'),

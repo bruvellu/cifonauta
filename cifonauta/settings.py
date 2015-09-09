@@ -18,6 +18,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = 'o3d^5p6yf($kcg=j*&%+-a3+j4(unk4uutgqnzsk^yy)=ggqv%'
 DEBUG = True
 TEMPLATE_DEBUG = True
+THUMBNAIL_DEBUG = True
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -174,6 +175,13 @@ HAYSTACK_CONNECTIONS = {
         'INDEX_NAME': 'haystack',
         },
 }
+import logging
+from sorl.thumbnail.log import ThumbnailLogHandler
+
+
+handler = ThumbnailLogHandler()
+handler.setLevel(logging.ERROR)
+logging.getLogger('sorl.thumbnail').addHandler(handler)
 
 # Logging.
 #LOGGING_CONFIG = None

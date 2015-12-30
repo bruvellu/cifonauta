@@ -86,7 +86,28 @@ class Command(BaseCommand):
                     n_updated += 1
         n = len(photo_filepaths)
 
-        print(video_filepaths)
+        # Process videos.
+        for path in video_filepaths:
+            video = Video(path)
+            # Search photo in database.
+            query = cbm.search_db(video)
+            if not query:
+                print(u'NEW FILE: %s.' % video.filename)
+                video.create_meta()
+                cbm.update_db(video)
+                n_new += 1
+            else:
+                if query == 2:
+                    # Entry exists and timestamp has not changed.
+                    print(u'ENTRY UP-TO-DATE! NEXT...')
+                    continue
+                else:
+                    # Timestamps differ.
+                    print(u'UPDATING ENTRY...')
+                    video.create_meta()
+                    cbm.update_db(video, update=True)
+                    n_updated += 1
+        n = len(video_filepaths)
 
         self.stdout.write('%d unique names. -p:%s, -m:%s' % (options['number'],
                                                              options['photos'],
@@ -250,7 +271,7 @@ class Database:
                 else:
                     print(u'Metadata %s already existed!' % fixed_value.decode('utf-8'))
                     # Add to bad data dictionary.
-                    bad_data[value.decode('utf-8')] = fixed_value
+                    bad_data[value] = fixed_value
                     bad_data_file = open('bad_data.pkl', 'wb')
                     pickle.dump(bad_data, bad_data_file)
                     bad_data_file.close()
@@ -382,7 +403,7 @@ class Meta:
         self.sublocation = info.data['sub-location']               #92
         self.state = info.data['province/state']                   #95
         self.country = info.data['country/primary location name']  #101
-        self.taxon = info.data['headline']                        #105
+        self.taxon = info.data['headline']                         #105
         self.rights = info.data['copyright notice']                #116
         self.caption = info.data['caption/abstract']               #120
         self.size = info.data['special instructions']              #40

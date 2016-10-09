@@ -373,7 +373,7 @@ def get_info(video):
     duration = length_re.group(0)
     codecs = precodec_re.group(0).split(', ')
     codec = codecs[0].split(' ')[0]
-    dimensions = codecs[2]
+    dimensions = codecs[-1]
     # Salvando valores limpos em um dicionário.
     details = {
             'duration': duration,

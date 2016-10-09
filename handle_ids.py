@@ -63,8 +63,10 @@ class File:
             os.makedirs(middle_sitepath)
         except OSError:
             pass
+        # Make sitepath always point to jpg file.
+        jpg_filename = os.path.splitext(self.filename)[0] + '.jpg'
         # Build final path.
-        sitepath = os.path.join(middle_sitepath, self.filename)
+        sitepath = os.path.join(middle_sitepath, jpg_filename)
         return sitepath
 
     def check_timestamp(self):
@@ -82,8 +84,8 @@ class File:
 
     def copy_to_site(self):
         '''Copy linked file to site media directory.'''
-        copy2(self.abspath, self.sitepath)
-        subprocess.call(['touch', self.sitepath])
+        # copy2(self.abspath, self.sitepath)
+        # subprocess.call(['touch', self.sitepath])
         if self.filetype == 'video':
             self.txt_sitepath = os.path.splitext(self.sitepath)[0] + '.txt'
             if self.txt_abspath:
@@ -130,7 +132,7 @@ class File:
 
     def check_name(self):
         '''Verifies if file name is an ID.'''
-        if self.filename in UNIQUE_NAMES:
+        if os.path.splitext(self.filename)[0] + '.jpg' in UNIQUE_NAMES:
             return True
         else:
             return False
@@ -162,7 +164,7 @@ class File:
         if self.filetype == 'photo':
             try:
                 # Convert file to web format.
-                convert_to_web(self.sitepath, self.sitepath)
+                convert_to_web(self.abspath, self.sitepath)
                 # Insert watermark.
                 watermarker(self.sitepath)
             except IOError:
@@ -171,7 +173,7 @@ class File:
             else:
                 print(u'%s converted successfully!' % self.sitepath)
         elif self.filetype == 'video':
-            ffmpeg_call = build_call(self.sitepath)
+            ffmpeg_call = build_call(self.abspath)
             webm_path = os.path.splitext(self.sitepath)[0] + '.webm'
             mp4_path = os.path.splitext(self.sitepath)[0] + '.mp4'
             ogv_path = os.path.splitext(self.sitepath)[0] + '.ogv'
@@ -188,9 +190,9 @@ class File:
             subprocess.call(ffmpeg_call)
             ffmpeg_call.pop()
             # Create still image.
-            grab_still(self.sitepath)
+            grab_still(mp4_path)
             # Finally, remove original source file to save space.
-            os.remove(self.sitepath)
+            #os.remove(self.sitepath)
         else:
             pass
 

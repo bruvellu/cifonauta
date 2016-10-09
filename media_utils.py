@@ -130,12 +130,19 @@ def build_call(filepath):
     -b:v 600k -threads 0 -acodec libfaac -b:a 128k -ac 2 -ar 44100 -vcodec libx264
     -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" dv.mp4
     '''
+    # Get info on file first.
+    infos = get_info(filepath)
+    dimensions = infos['dimensions']
+    width, height = dimensions.split('x')
+    ratio = float(width) / float(height)
+
     # FFMPEG command.
     call = [
             'ffmpeg', '-y', '-i', filepath, '-i', 'marca.png',
             '-b:v', '600k', '-threads', '0',
             ]
-    if filepath.endswith('m2ts'):
+    # If ratio is larger, HD dimensions.
+    if ratio > 1.4:
         call.extend([
             '-filter_complex', 'overlay=0:main_h-overlay_h-0',
             '-s', '512x288', '-aspect', '16:9',

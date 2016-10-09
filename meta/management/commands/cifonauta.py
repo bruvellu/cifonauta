@@ -3,7 +3,7 @@ from meta.models import Image, Video
 from optparse import make_option
 from datetime import datetime
 from iptcinfo import IPTCInfo
-from media_utils import check_file, dir_ready, get_exif, get_date, get_gps
+from media_utils import check_file, dir_ready, get_exif, get_date, get_gps, get_info
 from meta.models import *
 import os
 import pickle
@@ -84,11 +84,11 @@ class Command(BaseCommand):
                     photo.create_meta()
                     cbm.update_db(photo, update=True)
                     n_updated += 1
-        n = len(photo_filepaths)
+        n += len(photo_filepaths)
 
         # Process videos.
         for path in video_filepaths:
-            video = Video(path)
+            video = Movie(path)
             # Search photo in database.
             query = cbm.search_db(video)
             if not query:
@@ -107,7 +107,7 @@ class Command(BaseCommand):
                     video.create_meta()
                     cbm.update_db(video, update=True)
                     n_updated += 1
-        n = len(video_filepaths)
+        n += len(video_filepaths)
 
         self.stdout.write('%d unique names. -p:%s, -m:%s' % (options['number'],
                                                              options['photos'],
@@ -155,7 +155,7 @@ class Database:
             else:
                 print(u'File has not changed! Return 2')
                 return 2
-        except Image.DoesNotExist:
+        except:
             print(u'Entry not found.')
             return False
 
@@ -220,7 +220,7 @@ class Database:
             if media.type == 'photo':
                 entry = Image.objects.get(filename=media.filename)
             elif media.type == 'video':
-                entry = Video.objects.get(filename=media.filename.split('.')[0])
+                entry = Video.objects.get(filename=media.filename)
             for k, v in media_meta.iteritems():
                 setattr(entry, k, v)
 
@@ -393,6 +393,8 @@ class Meta:
         if len(info.data) < 4:
             print(u'%s has no IPTC data!' % media.filename)
 
+        #XXX What if there is no metadata? Will the lines below fail?
+
         # Define metadata.
         self.filename = media.filename
         self.filepath = os.path.relpath(media.filepath, 'site_media')
@@ -411,6 +413,54 @@ class Meta:
         self.references = info.data['credit']                      #110
         self.timestamp = media.timestamp
         self.notes = u''
+
+    def video_init(self, media):
+        'Initialize video metadata.'
+        #TODO First check image file with regular photo_init.
+        # Create metadata object.
+        #info = IPTCInfo(media.filepath, True, 'utf-8')
+        # Check if file has IPTC data.
+        #if len(info.data) < 4:
+        #    print(u'%s has no IPTC data!' % media.filename)
+
+        # Check and get metadata from accessory txt file.
+        txt_path = os.path.splitext(media.filepath)[0] + '.txt'
+        try:
+            os.lstat(txt_path)
+            txt_file = open(txt_path, 'rb')
+        except:
+            txt_file = ''
+
+        # Fill out metadata from accessory txt file.
+        if txt_file:
+            txt_dic = pickle.load(txt_file)
+
+            # Define metadata.
+            self.filename = media.filename
+            self.filepath = os.path.relpath(media.filepath, 'site_media')
+            self.timestamp = media.timestamp
+            self.title = txt_dic['title']
+            self.tags = txt_dic['tags']
+            self.author = txt_dic['author']
+            self.city = txt_dic['city']
+            self.sublocation = txt_dic['sublocation']
+            self.state = txt_dic['state']
+            self.country = txt_dic['country']
+            self.taxon = txt_dic['taxon']
+            self.rights = txt_dic['rights']
+            self.caption = txt_dic['caption']
+            self.size = txt_dic['size']
+            self.source = txt_dic['source']
+            self.references = txt_dic['references']
+            self.notes = u''
+
+            # Close file.
+            txt_file.close()
+        else:
+            # Accessory txt does not exist. Only give minimal info.
+            self.filename = media.filename
+            self.filepath = os.path.relpath(media.filepath, 'site_media')
+            self.timestamp = media.timestamp
 
     def none_to_empty(self, metadata):
         '''Convert None to empty string.'''
@@ -478,13 +528,6 @@ class Meta:
             }
 
 
-#TODO Implement Video class. Ideally transform Photo class in a Media class and
-# use the same prepare meta functions. Just add differentially the necessary
-# fields based on the media.type. Identification of video files will be done by
-# the large thumbnail already generated. It will be used as filename and the
-# txt will be used for metadata reading. In the future I should include all the
-# metadata into the image file and deprecate the txt file.
-
 class Photo:
     '''Photo object.'''
     def __init__(self, filepath):
@@ -511,6 +554,68 @@ class Photo:
         self.metadata.dictionary['geolocation'] = self.metadata.gps['geolocation']
         self.metadata.dictionary['latitude'] = self.metadata.gps['latitude']
         self.metadata.dictionary['longitude'] = self.metadata.gps['longitude']
+
+        print
+        print '\tVariable\tMetadata'
+        print '\t' + 40 * '-'
+        print '\t' + self.filepath
+        print '\t' + 40 * '-'
+        print '\tTitle:\t\t%s' % self.metadata.title
+        print '\tCaption:\t%s' % self.metadata.caption
+        print '\tTaxon:\t\t%s' % ', '.join(self.metadata.taxon)
+        print '\tTags:\t\t%s' % '\n\t\t\t'.join(self.metadata.tags)
+        print '\tSize:\t\t%s' % self.metadata.size
+        print '\tSource:\t%s' % ', '.join(self.metadata.source)
+        print '\tAuthor:\t\t%s' % ', '.join(self.metadata.author)
+        print '\tSublocation:\t%s' % self.metadata.sublocation
+        print '\tCity:\t\t%s' % self.metadata.city
+        print '\tState:\t\t%s' % self.metadata.state
+        print '\tCountry:\t%s' % self.metadata.country
+        print '\tRights:\t\t%s' % self.metadata.rights
+        print '\tDate:\t\t%s' % self.metadata.date
+        print
+        print '\tGeolocation:\t%s' % self.metadata.gps['geolocation'].decode("utf8")
+        print '\tDecimal:\t%s, %s' % (self.metadata.gps['latitude'],
+                self.metadata.gps['longitude'])
+        print
+
+
+#TODO Implement Video class. Ideally transform Photo class in a Media class and
+# use the same prepare meta functions. Just add differentially the necessary
+# fields based on the media.type. Identification of video files will be done by
+# the large thumbnail already generated. It will be used as filename and the
+# txt will be used for metadata reading. In the future I should include all the
+# metadata into the image file and deprecate the txt file.
+
+class Movie:
+    '''Movie object.'''
+    def __init__(self, filepath):
+        self.filepath = filepath
+        self.filename = os.path.basename(filepath)
+        self.timestamp = datetime.fromtimestamp(
+                os.path.getmtime(self.filepath))
+        self.type = 'video'
+
+    def create_meta(self):
+        '''Parse and instantiate video metadata.'''
+        self.metadata = Meta(self)
+
+        # Extracting EXIF metadata.
+        exif = get_exif(self.filepath)
+        # Extracting data.
+        self.metadata.date = get_date(exif)
+        self.metadata.dictionary['date'] = self.metadata.date
+        # Extracting geolocation.
+        self.metadata.gps = get_gps(exif)
+        self.metadata.dictionary['geolocation'] = self.metadata.gps['geolocation']
+        self.metadata.dictionary['latitude'] = self.metadata.gps['latitude']
+        self.metadata.dictionary['longitude'] = self.metadata.gps['longitude']
+
+        # Extracts duration, dimensions and video codec.
+        infos = get_info(self.filepath)
+        self.metadata.dictionary['duration'] = infos['duration']
+        self.metadata.dictionary['dimensions'] = infos['dimensions']
+        self.metadata.dictionary['codec'] = infos['codec']
 
         print
         print '\tVariable\tMetadata'

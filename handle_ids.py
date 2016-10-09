@@ -13,9 +13,9 @@ from shutil import copy2
 from media_utils import read_iptc, rename_file, convert_to_web, watermarker, build_call, grab_still
 
 # Directory with symbolic links files.
-BASEPATH = os.path.join(os.environ['HOME'], 'linked_media/oficial')
+BASEPATH = os.path.abspath('linked_media/oficial')
 # Directory with symbolic links files.
-BASESITE = os.path.join(os.environ['HOME'], 'site_media')
+BASESITE = os.path.abspath('site_media')
 # Get list of file names in site_media.
 site_filenames = []
 for root, dirs, files in os.walk(BASESITE):
@@ -49,8 +49,9 @@ class File:
 
     def define_paths(self, root, filename):
         '''Define and redefine filepaths.'''
-        self.filepath = os.path.join(root, filename)
-        self.abspath = os.path.join(BASEPATH, self.filepath)
+        self.filepath = os.path.join(root.decode('utf-8'), filename.decode('utf-8'))
+        self.abspath = os.path.abspath(self.filepath)
+        self.srcpath = os.readlink(self.abspath)
         self.txt_abspath = self.check_txt()
 
     def prepare_sitepath(self):
@@ -85,7 +86,8 @@ class File:
         subprocess.call(['touch', self.sitepath])
         if self.filetype == 'video':
             self.txt_sitepath = os.path.splitext(self.sitepath)[0] + '.txt'
-            copy2(self.txt_abspath, self.txt_sitepath)
+            if self.txt_abspath:
+                copy2(self.txt_abspath, self.txt_sitepath)
 
     def get_filetype(self):
         '''Discover if photo or video.'''
@@ -103,7 +105,16 @@ class File:
             os.lstat(txt_abspath)
             return txt_abspath
         except:
-            return ''
+            try:
+                head = os.path.split(self.abspath)[0]
+                tail = os.path.split(self.srcpath)[1]
+                raw_txt = os.path.join(head, os.path.splitext(tail)[0] + '.txt')
+                os.lstat(raw_txt)
+                new_txt = os.path.splitext(self.abspath)[0] + '.txt'
+                os.rename(raw_txt, new_txt)
+                return new_txt
+            except:
+                return ''
 
     def get_authors(self):
         '''Reads IPTC and extracts authors.'''
@@ -136,18 +147,18 @@ class File:
         self.renamed_path = os.path.join(os.path.split(self.abspath)[0],
                                          self.filename)
         os.rename(self.abspath, self.renamed_path)
-        print('\nRenamed %s to %s' % (self.abspath, self.renamed_path))
+        print(u'\nRenamed %s to %s' % (self.abspath, self.renamed_path))
         if self.txt_abspath:
             self.renamed_txt_abspath = os.path.join(
                 os.path.split(self.txt_abspath)[0],
                 os.path.splitext(self.filename)[0] + '.txt')
             os.rename(self.txt_abspath, self.renamed_txt_abspath)
-            print('Renamed %s to %s' % (self.txt_abspath,
+            print(u'Renamed %s to %s' % (self.txt_abspath,
                                         self.renamed_txt_abspath))
 
     def process_for_web(self):
         '''Resize and add watermark for web.'''
-        print('Processing %s...' % self.filename)
+        print(u'Processing %s...' % self.filename)
         if self.filetype == 'photo':
             try:
                 # Convert file to web format.
@@ -155,10 +166,10 @@ class File:
                 # Insert watermark.
                 watermarker(self.sitepath)
             except IOError:
-                print('Conversion error for %s, check ImageMagick.' %
+                print(u'Conversion error for %s, check ImageMagick.' %
                       self.sitepath)
             else:
-                print('%s converted successfully!' % self.sitepath)
+                print(u'%s converted successfully!' % self.sitepath)
         elif self.filetype == 'video':
             ffmpeg_call = build_call(self.sitepath)
             webm_path = os.path.splitext(self.sitepath)[0] + '.webm'
@@ -178,6 +189,8 @@ class File:
             ffmpeg_call.pop()
             # Create still image.
             grab_still(self.sitepath)
+            # Finally, remove original source file to save space.
+            os.remove(self.sitepath)
         else:
             pass
 

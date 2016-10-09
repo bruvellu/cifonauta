@@ -18,12 +18,10 @@ EXTENSIONS = ( 'jpg', 'jpeg', 'png', 'gif', 'avi', 'mov', 'mp4', 'ogg', 'ogv',
 class LinkManager:
     '''Handles links and original files.'''
     def __init__(self):
-        # Define home.
-        home = os.environ['HOME']
         # Directory with original files and folder structure.
-        self.storage = os.path.join(home, 'storage/oficial')
+        self.source_media = os.path.abspath('source_media/oficial')
         # Directory containing links to original files.
-        self.linked_media = os.path.join(home, 'linked_media/oficial')
+        self.linked_media = os.path.abspath('linked_media/oficial')
 
         # Check if directories exist.
         if not os.path.isdir(self.linked_media):
@@ -36,7 +34,7 @@ class LinkManager:
         self.lost = {}
 
         # List with original files.
-        self.sources = self.get_paths(self.storage)
+        self.sources = self.get_paths(self.source_media)
 
         # List of linked files.
         self.linked_paths = self.get_paths(self.linked_media)
@@ -89,7 +87,7 @@ class LinkManager:
                     # Adds to the list of lost links.
                     self.lost[k] = v
                 elif len(matches) == 1:
-                    logger.debug('AUTOFIX: Link %s será arrumado.', matches[0])
+                    print('AUTOFIX: Link %s será arrumado.', matches[0])
                     self.tofix[matches[0]] = k
                 else:
                     # If it is just a root change, fix it.
@@ -178,12 +176,7 @@ class LinkManager:
 
 
     def standardize_path(self, linkpath):
-        '''Standardize link paths.
-
-        >>> path = '/home/nelas/storage/oficial/Vellutini/Clypeaster/DSCN1999.JPG'
-        >>> standardize_path(path)
-        'Vellutini/Clypeaster/DSCN1999.JPG'
-        '''
+        '''Standardize link paths.'''
         # Split by slash.
         linklist = linkpath.split(os.sep)
         try:
@@ -201,8 +194,8 @@ class LinkManager:
             print('\n%s lost files' % len(self.lost))
             for k, v in self.lost.iteritems():
                 print('LOST %s -> %s' % (k, v))
-                confirm = raw_input('Erase lost files? (y or n): ')
-                if confirm == 'y':
+                confirm = raw_input('Erase lost file? (yes, no, none, all): ')
+                if confirm == 'yes':
                     try:
                         os.remove(k)
                         print('DELETED %s' % k)
@@ -213,8 +206,22 @@ class LinkManager:
                         print('DELETED %s' % v)
                     except:
                         print('Maybe already gone: %s' % v)
-                else:
+                elif confirm == 'no':
                     continue
+                elif confirm == 'none':
+                    break
+                elif confirm == 'all':
+                    for k, v in self.lost.iteritems():
+                        try:
+                            os.remove(k)
+                            print('DELETED %s' % k)
+                        except:
+                            print('Maybe already gone: %s' % k)
+                        try:
+                            os.remove(v)
+                            print('DELETED %s' % v)
+                        except:
+                            print('Maybe already gone: %s' % v)
         else:
             print('\nNo file to be deleted.')
 

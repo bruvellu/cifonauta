@@ -387,17 +387,33 @@ class Meta:
 
     def photo_init(self, media):
         'Initialize photo metadata.'
+
+        # Define default values.
+        self.filename = media.filename
+        self.filepath = os.path.relpath(media.filepath, 'site_media')
+        self.timestamp = media.timestamp
+        self.title = u''
+        self.tags = u''
+        self.author = u''
+        self.city = u''
+        self.sublocation = u''
+        self.state = u''
+        self.country = u''
+        self.taxon = u''
+        self.rights = u''
+        self.caption = u''
+        self.size = u''
+        self.source = u''
+        self.references = u''
+        self.notes = u''
+
         # Create metadata object.
         info = IPTCInfo(media.filepath, True, 'utf-8')
         # Check if file has IPTC data.
         if len(info.data) < 4:
             print(u'%s has no IPTC data!' % media.filename)
 
-        #XXX What if there is no metadata? Will the lines below fail?
-
-        # Define metadata.
-        self.filename = media.filename
-        self.filepath = os.path.relpath(media.filepath, 'site_media')
+        # Fill values with IPTC data.
         self.title = info.data['object name']                      #5
         self.tags = info.data['keywords']                          #25
         self.author = info.data['by-line']                         #80
@@ -411,7 +427,6 @@ class Meta:
         self.size = info.data['special instructions']              #40
         self.source = info.data['source']                          #115
         self.references = info.data['credit']                      #110
-        self.timestamp = media.timestamp
         self.notes = u''
 
     def video_init(self, media):
@@ -422,6 +437,25 @@ class Meta:
         # Check if file has IPTC data.
         #if len(info.data) < 4:
         #    print(u'%s has no IPTC data!' % media.filename)
+
+        # Set default values.
+        self.filename = media.filename
+        self.filepath = os.path.relpath(media.filepath, 'site_media')
+        self.timestamp = media.timestamp
+        self.title = u''
+        self.tags = u''
+        self.author = u''
+        self.city = u''
+        self.sublocation = u''
+        self.state = u''
+        self.country = u''
+        self.taxon = u''
+        self.rights = u''
+        self.caption = u''
+        self.size = u''
+        self.source = u''
+        self.references = u''
+        self.notes = u''
 
         # Check and get metadata from accessory txt file.
         txt_path = os.path.splitext(media.filepath)[0] + '.txt'
@@ -436,9 +470,6 @@ class Meta:
             txt_dic = pickle.load(txt_file)
 
             # Define metadata.
-            self.filename = media.filename
-            self.filepath = os.path.relpath(media.filepath, 'site_media')
-            self.timestamp = media.timestamp
             self.title = txt_dic['title']
             self.tags = txt_dic['tags']
             self.author = txt_dic['author']
@@ -456,11 +487,6 @@ class Meta:
 
             # Close file.
             txt_file.close()
-        else:
-            # Accessory txt does not exist. Only give minimal info.
-            self.filename = media.filename
-            self.filepath = os.path.relpath(media.filepath, 'site_media')
-            self.timestamp = media.timestamp
 
     def none_to_empty(self, metadata):
         '''Convert None to empty string.'''

@@ -1,4 +1,4 @@
-{% load i18n cache thumbnail %}
+{% load i18n thumbnail %}
 {% get_current_language as LANGUAGE_CODE %}
 
 <div id="ajaxcontent">
@@ -32,14 +32,13 @@
 
 <div class="span-2 last border-top border-right border-bottom sideinfo" id="media-sideinfo">
   <div class="border-bottom" id="views">
-    {% cache 1 pageviews media.id media.datatype %}<span id="pageviews">{{ pageviews }}</span>{% endcache %} {% trans 'visita' %}{{ pageviews|pluralize }}
+    <span id="pageviews">{{ pageviews }}</span> {% trans 'visita' %}{{ pageviews|pluralize }}
   </div>
   {% if taxa %}
   {% include 'biodb.html' %}
   {% endif %}
 
   {% if media.size.name %}
-  {% cache 2592000 scale_bar LANGUAGE_CODE media.size.slug %}
   {% spaceless %}
   <div class="span-2 last border-top" id="size">
     <div class="size-{{ media.size.slug }}" id="size-string" title="{% trans 'Tamanho do organismo' %}: {{ media.size }}">
@@ -54,7 +53,6 @@
     </div>
   </div>
   {% endspaceless %}
-  {% endcache %}
   {% endif %}
 
 </div>
@@ -94,7 +92,7 @@
 
   <div id="citethis" class="span-13">
     <div>
-      {% show_set authors '' '' ', ' '' '' '.' %} <strong>{{ media.title }}</strong>. {% blocktrans with host=request.META.HTTP_HOST media_url=media.get_absolute_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a href="{{ media_url }}">http://{{ host }}{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
+      {% show_set authors '' '' ', ' '' '' '.' %} <strong>{{ media.title }}</strong>. {% blocktrans with media_url=media.get_absolute_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a href="{{ media_url }}">http://cifonauta.cebimar.usp.br{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
     </div>
     <div class="align-right quiet">{% blocktrans %}Conheça os <a href="/termos/">termos de uso</a>.{% endblocktrans %}</div>
   </div>

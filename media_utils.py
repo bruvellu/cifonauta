@@ -9,7 +9,7 @@
 # Atualizado: 16 Feb 2011 01:09AM
 '''Biblioteca de apoio para arquivos multimídia.
 
-Guarda funções úteis para a manipulação de fotos e imagens. Criar thumbnails, 
+Guarda funções úteis para a manipulação de fotos e imagens. Criar thumbnails,
 extrair duração, otimizar, etc.
 
 Centro de Biologia Marinha da Universidade de São Paulo.
@@ -23,6 +23,7 @@ import re
 import subprocess
 
 from shutil import copy2, move
+from iptcinfo import IPTCInfo
 
 # Instancia logger.
 logger = logging.getLogger('cifonauta.utils')
@@ -50,6 +51,17 @@ __status__ = 'Development'
 #TODO Checar se o FFmpeg está instalado.
 
 
+def read_iptc(abspath, charset='utf-8', new=False):
+    '''Parses IPTC metadata from a photo with iptcinfo.py'''
+
+    info = IPTCInfo(abspath, True, charset)
+    if len(info.data) < 4:
+        print('IPTC is empty for %s' % abspath)
+        return None
+
+    return info
+
+
 def create_thumb(filepath, destination):
     '''Cria thumbnail para foto.'''
     # Confere argumentos.
@@ -72,7 +84,7 @@ def create_thumb(filepath, destination):
 
     # Define comando a ser executado.
     magick_call = [
-            'convert', '-define', 'jpeg:size=200x150', filepath, '-thumbnail', 
+            'convert', '-define', 'jpeg:size=200x150', filepath, '-thumbnail',
             '120x90^', '-gravity', 'center', '-extent', '120x90', localpath
             ]
 
@@ -84,6 +96,105 @@ def create_thumb(filepath, destination):
     except IOError:
         logger.warning('Erro ao criar thumb %s', localpath)
         return None
+
+
+def build_call(filepath):
+    '''Constrói o subprocesso para converter o vídeo com o FFmpeg.
+    #webm HD
+    ffmpeg -y -i hd.m2ts -i marca.png -metadata title="A WEBM HD" -metadata author="AN AUTHOR"
+    -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libvpx
+    -filter_complex "scale=512x288,overlay=0:main_h-overlay_h-0" hd.webm
+
+    #webm DV
+    ffmpeg -y -i dv.avi -i marca.png -metadata title="A WEBM DV" -metadata author="AN AUTHOR"
+    -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libvpx
+    -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" dv.webm
+
+    #ogg HD
+    ffmpeg -y -i hd.m2ts -i marca.png -metadata title="AN OGG HD" -metadata author="AN AUTHOR"
+    -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libtheora
+    -filter_complex "scale=512x288,overlay=0:main_h-overlay_h-0" hd.ogv
+
+    #ogg DV
+    ffmpeg -y -i dv.avi -i marca.png -metadata title="AN OGG DV" -metadata author="AN AUTHOR"
+    -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libtheora
+    -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" dv.ogv
+
+    #mp4 HD
+    ffmpeg -y -i hd.m2ts -i marca.png -metadata title="A MP4 HD" -metadata author="AN AUTHOR"
+    -b:v 600k -threads 0 -acodec libfaac -b:a 128k -ac 2 -ar 44100 -vcodec libx264
+    -filter_complex "scale=512x288,overlay=0:main_h-overlay_h-0" hd.mp4
+
+    #mp4 DV
+    ffmpeg -y -i dv.avi -i marca.png -metadata title="A MP4 DV" -metadata author="AN AUTHOR"
+    -b:v 600k -threads 0 -acodec libfaac -b:a 128k -ac 2 -ar 44100 -vcodec libx264
+    -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" dv.mp4
+    '''
+    # Get info on file first.
+    infos = get_info(filepath)
+    dimensions = infos['dimensions']
+    width, height = dimensions.split('x')
+    ratio = float(width) / float(height)
+
+    # FFMPEG command.
+    call = [
+            'ffmpeg', '-y', '-i', filepath, '-i', 'marca.png',
+            '-b:v', '600k', '-threads', '0',
+            ]
+    # If ratio is larger, HD dimensions.
+    if ratio > 1.4:
+        call.extend([
+            '-filter_complex', 'overlay=0:main_h-overlay_h-0',
+            '-s', '512x288', '-aspect', '16:9',
+            ])
+    else:
+        call.extend([
+            '-filter_complex', 'overlay=0:main_h-overlay_h-0',
+            '-s', '512x384', '-aspect', '4:3',
+            ])
+
+    # Audio codec
+    if filepath.endswith('mp4'):
+        call.extend(['-acodec', 'libfaac', '-b:a', '128k',
+            '-ac', '2', '-ar', '44100'])
+    else:
+        call.extend(['-acodec', 'libvorbis', '-b:a', '128k',
+            '-ac', '2', '-ar', '44100'])
+
+    # Video codec
+    if filepath.endswith('webm'):
+        call.extend(['-vcodec', 'libvpx'])
+    elif filepath.endswith('mp4'):
+        call.extend(['-vcodec', 'libx264'])
+    if filepath.endswith('ogv'):
+        call.extend(['-vcodec', 'libtheora'])
+
+    return call
+
+def grab_still(filepath):
+    '''Grab video's first frame.'''
+    # Path to still image.
+    stillpath = os.path.splitext(filepath)[0] + '.jpg'
+
+    # Command to be called.
+    if filepath.endswith('m2ts'):
+        ffmpeg_call = [ 'ffmpeg', '-y', '-i', filepath, '-vframes', '1',
+            '-filter_complex', 'scale=512:288', '-aspect', '16:9', '-ss',
+            '1', '-f', 'image2', stillpath ]
+    else:
+        ffmpeg_call = ['ffmpeg', '-y', '-i', filepath, '-vframes', '1',
+            '-filter_complex', 'scale=512:384', '-ss', '1', '-f', 'image2',
+            stillpath]
+
+    # Executing ffmpeg.
+    try:
+        subprocess.call(ffmpeg_call)
+        logger.debug('Still criado em %s', stillpath)
+        return stillpath
+    except IOError:
+        logger.warning('Erro ao criar still %s', stillpath)
+        return None, None
+
 
 def create_still(filepath, destination):
     '''Cria still para o vídeo e thumbnail em seguida.'''
@@ -110,13 +221,13 @@ def create_still(filepath, destination):
     # Define comando a ser executado.
     if filepath.endswith('m2ts'):
         ffmpeg_call = [
-                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-filter_complex', 
+                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-filter_complex',
                 'scale=512:288', '-aspect', '16:9', '-ss', '1', '-f', 'image2',
                 stillpath
                 ]
     else:
         ffmpeg_call = [
-                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-filter_complex', 
+                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-filter_complex',
                 'scale=512:384', '-ss', '1', '-f', 'image2', stillpath
                 ]
 
@@ -150,7 +261,7 @@ def watermarker(filepath):
     # Arquivo com marca d'água.
     watermark = u'marca.png'
     # Constrói chamada para canto esquerdo embaixo.
-    mark_call = ['composite', '-gravity', 'southwest', watermark, filepath, 
+    mark_call = ['composite', '-gravity', 'southwest', watermark, filepath,
             filepath]
     try:
         subprocess.call(mark_call)
@@ -207,7 +318,7 @@ def get_gps(exif):
         gps['latdeg'] = exif['Exif.GPSInfo.GPSLatitude'].value[0]
         gps['latmin'] = exif['Exif.GPSInfo.GPSLatitude'].value[1]
         gps['latsec'] = exif['Exif.GPSInfo.GPSLatitude'].value[2]
-        latitude = get_decimal(gps['latref'], gps['latdeg'], gps['latmin'], 
+        latitude = get_decimal(gps['latref'], gps['latdeg'], gps['latmin'],
                 gps['latsec'])
 
         # Longitude.
@@ -215,7 +326,7 @@ def get_gps(exif):
         gps['longdeg'] = exif['Exif.GPSInfo.GPSLongitude'].value[0]
         gps['longmin'] = exif['Exif.GPSInfo.GPSLongitude'].value[1]
         gps['longsec'] = exif['Exif.GPSInfo.GPSLongitude'].value[2]
-        longitude = get_decimal(gps['longref'], gps['longdeg'], gps['longmin'], 
+        longitude = get_decimal(gps['longref'], gps['longdeg'], gps['longmin'],
                 gps['longsec'])
 
         # Gravando valores prontos.
@@ -245,7 +356,7 @@ def get_decimal(ref, deg, min, sec):
 def get_info(video):
     '''Pega informações do vídeo na marra e retorna dicionário.
 
-    Os valores são extraídos do stderr do ffmpeg usando expressões 
+    Os valores são extraídos do stderr do ffmpeg usando expressões
     regulares.
     '''
     try:
@@ -269,7 +380,7 @@ def get_info(video):
     duration = length_re.group(0)
     codecs = precodec_re.group(0).split(', ')
     codec = codecs[0].split(' ')[0]
-    dimensions = codecs[2]
+    dimensions = codecs[-1]
     # Salvando valores limpos em um dicionário.
     details = {
             'duration': duration,
@@ -298,7 +409,7 @@ def rename_file(filename, authors):
     else:
         initials = 'cbm'
     id = create_id()
-    new_filename = initials + '_' + id + '.' + filename.split('.')[1].lower()
+    new_filename = initials + '_' + id + os.path.splitext(filename)[1].lower()
     return new_filename
 
 def get_initials(authors):

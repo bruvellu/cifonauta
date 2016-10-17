@@ -30,11 +30,11 @@ import linking
 from itis import Itis
 from media_utils import *
 
-# Django environment import
-from django.core.management import setup_environ
-import settings
-setup_environ(settings)
+# Django environment setup.
+import django
+django.setup()
 from meta.models import *
+from django.conf import settings
 
 __author__ = 'Bruno Vellutini'
 __copyright__ = 'Copyright 2010-2011, CEBIMar-USP'
@@ -83,6 +83,8 @@ class Database:
                             return False
             logger.debug('Bingo! Registro de %s encontrado.', media.filename)
             logger.info('Comparando timestamp do arquivo com o registro...')
+            # XXX Dirty hack to make naive timestamp.
+            record.timestamp = record.timestamp.replace(tzinfo=None)
             if record.timestamp != media.timestamp:
                 logger.debug('Arquivo mudou! Retorna 1')
                 return 1
@@ -108,7 +110,7 @@ class Database:
             pass
         # Guarda objeto com autores
         authors = media_meta['author']
-        # Guarda objeto com especialistas 
+        # Guarda objeto com especialistas
         sources = media_meta['source']
         del media_meta['source']
         # Guarda objeto com tags
@@ -120,7 +122,7 @@ class Database:
 
         # Não deixar entrada pública se faltar título ou autor
         if media_meta['title'] == '' or not media_meta['author']:
-            logger.debug('Mídia %s sem título ou autor!', 
+            logger.debug('Mídia %s sem título ou autor!',
                     media_meta['source_filepath'])
             media_meta['is_public'] = False
         else:
@@ -177,9 +179,45 @@ class Database:
 
     def get_instance(self, table, value):
         '''Retorna o id a partir do nome.'''
-        model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), value))
+        # TODO Create hook to avoid badly formatted characters to be saved.
+        # Any new tag should be manually confirmed and corrected.
+        #model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), value))
+
+        print('\nGET table: %s, value: %s' % (table, value))
+
+        # Needs a default in case objects exists.
+        new = False
+
+        # Try to get object. If it doesn't exist, confirm to avoid bad metadata.
+        try:
+            model = eval('%s.objects.get(name="%s")' % (table.capitalize(), value))
+        except:
+            # Load bad data dictionary.
+            bad_data_file = open('bad_data.pkl', 'rb')
+            bad_data = pickle.load(bad_data_file)
+            bad_data_file.close()
+            try:
+                fixed_value = bad_data[value]
+                print('"%s" automatically fixed to "%s"' % (value, bad_data[value]))
+            except:
+                fixed_value = raw_input('\nNovo metadado. Digite para confirmar: ')
+            try:
+                model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), fixed_value))
+                if new:
+                    print('Novo metadado %s criado!' % fixed_value)
+                else:
+                    print('Metadado %s já existia!' % fixed_value)
+                    # Add to bad data dictionary.
+                    bad_data[value] = fixed_value
+                    bad_data_file = open('bad_data.pkl', 'wb')
+                    pickle.dump(bad_data, bad_data_file)
+                    bad_data_file.close()
+                # TODO Fix metadata field on original image!!!
+            except:
+                print('Objeto %s não foi encontrado! Abortando...' % fixed_value)
+
+        # Consulta ITIS para extrair táxons.
         if table == 'taxon' and new:
-            # Consulta ITIS para extrair táxons.
             taxon = self.get_itis(value)
             # Reforça, caso a conexão falhe.
             if not taxon:
@@ -259,7 +297,7 @@ class Movie:
 
     def create_meta(self, new=False):
         '''Define as variáveis dos metadados do vídeo.'''
-        logger.info('Lendo os metadados de %s e criando objetos.' % 
+        logger.info('Lendo os metadados de %s e criando objetos.' %
                 self.filename)
         # Limpa metadados pra não misturar com o anterior.
         self.meta = {}
@@ -295,7 +333,7 @@ class Movie:
             meta_text = open(txt_path, 'rb')
             logger.debug('Arquivo acessório %s existe!', txt_path)
         except:
-            logger.debug('Arquivo acessório de %s não existe!', 
+            logger.debug('Arquivo acessório de %s não existe!',
                     self.source_filepath)
             meta_text = ''
 
@@ -392,8 +430,8 @@ class Movie:
                 '-b:v', '600k', '-threads', '0',
                 ]
         #TODO Achar um jeito mais confiável de saber se é HD...
-        # Comando cria objeto da marca d'água e redimensiona para 100px de 
-        # largura, redimensiona o vídeo para o tamanho certo de acordo com seu 
+        # Comando cria objeto da marca d'água e redimensiona para 100px de
+        # largura, redimensiona o vídeo para o tamanho certo de acordo com seu
         # tipo e insere a marca no canto esquerdo embaixo.
         if self.source_filepath.endswith('m2ts'):
             call.extend([
@@ -456,11 +494,11 @@ class Movie:
                     webm_site_filepath = os.path.join(self.site_dir, webm_name)
                     copy(webm_filepath, webm_site_filepath)
                 except:
-                    logger.warning('Erro ao copiar %s para o site.', 
+                    logger.warning('Erro ao copiar %s para o site.',
                             webm_filepath)
                 web_paths['webm_filepath'] = webm_site_filepath
             except:
-                logger.warning('Processamento do WebM (%s) não funcionou!', 
+                logger.warning('Processamento do WebM (%s) não funcionou!',
                         webm_filepath)
             try:
                 # MP4
@@ -473,14 +511,14 @@ class Movie:
                         subprocess.call(['qt-faststart', mp4_site_filepath,
                             mp4_site_filepath])
                     except:
-                        logger.debug('qt-faststart não funcionou para %s', 
+                        logger.debug('qt-faststart não funcionou para %s',
                                 mp4_filepath)
                 except:
-                    logger.warning('Erro ao copiar %s para o site.', 
+                    logger.warning('Erro ao copiar %s para o site.',
                             mp4_filepath)
                 web_paths['mp4_filepath'] = mp4_site_filepath
             except:
-                logger.warning('Processamento do x264 (%s) não funcionou!', 
+                logger.warning('Processamento do x264 (%s) não funcionou!',
                         mp4_filepath)
             try:
                 # OGG
@@ -490,11 +528,11 @@ class Movie:
                     ogg_site_filepath = os.path.join(self.site_dir, ogg_name)
                     copy(ogg_filepath, ogg_site_filepath)
                 except:
-                    logger.warning('Erro ao copiar %s para o site.', 
+                    logger.warning('Erro ao copiar %s para o site.',
                             ogg_filepath)
                 web_paths['ogg_filepath'] = ogg_site_filepath
             except:
-                logger.warning('Processamento do OGG (%s) não funcionou!', 
+                logger.warning('Processamento do OGG (%s) não funcionou!',
                         ogg_filepath)
         except IOError:
             logger.warning('Erro na conversão de %s.')
@@ -511,7 +549,7 @@ class Movie:
                 copy(still_localpath, self.site_thumb_dir)
                 logger.debug('Still copiado para %s', self.site_thumb_dir)
             except IOError:
-                logger.warning('Não conseguiu copiar thumb ou still em %s', 
+                logger.warning('Não conseguiu copiar thumb ou still em %s',
                         self.site_thumb_dir)
 
             # Define caminho para o thumb e still do site.
@@ -662,13 +700,13 @@ class Photo:
             # Copia foto para pasta site_media se .
             copy(photo_localpath, photo_sitepath)
         except IOError:
-            logger.warning('Erro na conversão de %s, verifique o ImageMagick.', 
+            logger.warning('Erro na conversão de %s, verifique o ImageMagick.',
                     self.source_filepath)
             # Evita que o loop seja interrompido.
             return None, None
         else:
             logger.info('%s convertida com sucesso!', self.source_filepath)
-            thumb_localpath = create_thumb(self.source_filepath, 
+            thumb_localpath = create_thumb(self.source_filepath,
                     self.local_thumb_dir)
 
             # Copia thumb da pasta local para site_media.
@@ -759,16 +797,16 @@ def prepare_meta(meta):
     #if not isinstance(meta['tags'], list):
 
     # Preparando autor(es) para o banco de dados
-    meta['author'] = [a.strip() for a in meta['author'].split(',')] 
+    meta['author'] = [a.strip() for a in meta['author'].split(',')]
     # Preparando especialista(s) para o banco de dados
-    meta['source'] = [a.strip() for a in meta['source'].split(',')] 
+    meta['source'] = [a.strip() for a in meta['source'].split(',')]
     # Preparando referências para o banco de dados
-    meta['references'] = [a.strip() for a in meta['references'].split(',')] 
+    meta['references'] = [a.strip() for a in meta['references'].split(',')]
     # Preparando taxon(s) para o banco de dados
     #XXX Lidar com fortuitos sp.?
     #XXX Lidar com fortuitos aff. e espécies com 3 nomes?
-    #meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')] 
-    temp_taxa = [a.strip() for a in meta['taxon'].split(',')] 
+    #meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')]
+    temp_taxa = [a.strip() for a in meta['taxon'].split(',')]
     clean_taxa = []
     for taxon in temp_taxa:
         tsplit = taxon.split()
@@ -888,7 +926,7 @@ def main(argv):
             n_max, force_update, only_photos, only_videos)
 
     # Verifica e atualiza links entre pasta "oficial" e "source_media".
-    linking.main()
+    linking.main(settings.STORAGE_FOLDER)
 
     # Cria instância do bd
     cbm = Database()

@@ -9,7 +9,6 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from django.db.transaction import commit_on_success
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -292,18 +291,18 @@ def org_page(request):
     sizes = Size.objects.order_by('position')
     #FIXME Does not work when locale is different!
     # Técnicas
-    technique = TagCategory.objects.get(name=u'Técnica')
-    microscopy = TagCategory.objects.get(name=u'Microscopia')
+    technique = TagCategory.objects.get(name_en=u'Technique')
+    microscopy = TagCategory.objects.get(name_en=u'Microscopy')
     # Estágios
-    stage = TagCategory.objects.get(name=u'Estágio de vida')
+    stage = TagCategory.objects.get(name_en=u'Life stage')
     stages = stage.tags.order_by('position')
     # Modos
-    pelagic = TagCategory.objects.get(name=u'Pelágicos')
-    benthic = TagCategory.objects.get(name=u'Bentônicos')
+    pelagic = TagCategory.objects.get(name_en=u'Pelagic')
+    benthic = TagCategory.objects.get(name_en=u'Benthic')
     # Habitat
-    habitat = TagCategory.objects.get(name=u'Habitat')
+    habitat = TagCategory.objects.get(name_en=u'Habitat')
     # Diversos
-    assorted = TagCategory.objects.get(name=u'Diversos')
+    assorted = TagCategory.objects.get(name_en=u'Miscellaneous')
     variables = RequestContext(request, {
         'sizes': sizes,
         'microscopy': microscopy,
@@ -394,7 +393,6 @@ def translate_page(request):
 
 
 # Single
-@commit_on_success  # TODO Colocar save em função separada?
 def photo_page(request, image_id):
     '''Página única de cada imagem com todas as informações.'''
     # Pega o objeto.
@@ -511,7 +509,6 @@ def photo_page(request, image_id):
         return render_to_response('media_page.html', variables)
 
 
-@commit_on_success  # TODO Colocar save em função separada?
 def video_page(request, video_id):
     '''Página única de cada vídeo com todas as informações.'''
     # Pega o objeto.
@@ -1091,12 +1088,20 @@ def extract_set(image_list, video_list):
     else:
         video_ids = [0]
 
-    image_facets = image_list.facet('size').facet('sublocation')\
-        .facet('city').facet('state').facet('country')\
-        .facet('author').facet('tag').facet('taxon').facet_counts()['fields']
-    video_facets = video_list.facet('size').facet('sublocation')\
-        .facet('city').facet('state').facet('country')\
-        .facet('author').facet('tag').facet('taxon').facet_counts()['fields']
+    try:
+        image_facets = image_list.facet('size').facet('sublocation')\
+            .facet('city').facet('state').facet('country')\
+            .facet('author').facet('tag').facet('taxon').facet_counts()['fields']
+    except:
+        image_facets = {'author': [], 'city': [], 'country': [], 'size': [],
+                'state': [], 'sublocation': [], 'tag': [], 'taxon': []}
+    try:
+        video_facets = video_list.facet('size').facet('sublocation')\
+            .facet('city').facet('state').facet('country')\
+            .facet('author').facet('tag').facet('taxon').facet_counts()['fields']
+    except:
+        video_facets = {'author': [], 'city': [], 'country': [], 'size': [],
+                'state': [], 'sublocation': [], 'tag': [], 'taxon': []}
 
     refined_authors = Author.objects.filter(
             Q(id__in=[i[0] for i in image_facets['author']]) |

@@ -1,5 +1,4 @@
-{% load cache i18n %}
-{% cache 2592000 footer LANGUAGE_CODE %}
+{% load i18n %}
 
 <div class="span-24 last" id="footerbase">
 
@@ -51,7 +50,6 @@
   <div class="span-4">
     <h4>{% trans 'Novidades' %}</h4>
     <ul class="padlist">
-      <li><a href="/blog/">{% trans 'Blog' %}</a></li>
       <li><a href="http://twitter.com/cifonauta">Twitter</a></li>
       <li><a href="https://www.facebook.com/cifonauta">Facebook</a></li>
     </ul>
@@ -66,4 +64,3 @@
     </ul>
   </div>
 </div>
-{% endcache %}

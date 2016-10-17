@@ -17,49 +17,21 @@ Algoritmo:
     - Achado o táxon é necessário traduzir (translate) e salvar no objeto
 '''
 
+from django.conf import settings
 from suds.client import Client
-import logging
-
-# Django environment import
-from django.core.management import setup_environ
-import settings
-setup_environ(settings)
 from meta.models import Taxon
-
-# Criando o logger.
-logger = logging.getLogger('itis')
-logger.setLevel(logging.DEBUG)
-logger.propagate = False
-# Define formato das mensagens.
-formatter = logging.Formatter('[%(levelname)s] %(asctime)s @ %(module)s %(funcName)s (l%(lineno)d): %(message)s')
-
-# Cria o manipulador do console.
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.DEBUG)
-# Define a formatação para o console.
-console_handler.setFormatter(formatter)
-# Adiciona o console para o logger.
-logger.addHandler(console_handler)
-
-# Cria o manipulador do arquivo.log.
-#file_handler = logging.FileHandler('logs/itis.log')
-#file_handler.setLevel(logging.DEBUG)
-## Define a formatação para o arquivo.log.
-#file_handler.setFormatter(formatter)
-## Adiciona o arquivo.log para o logger.
-#logger.addHandler(file_handler)
 
 
 class Itis:
     '''Interação com o ITIS'''
     def __init__(self, query):
-        logger.info('Iniciando contato com ITIS.')
+        print('Iniciando contato com ITIS.')
 
-        self.url = 'http://www.itis.gov/ITISWebService.xml'
+        self.url = 'http://www.itis.gov/ITISWebService/services/ITISService?wsdl'
         try:
             self.client = Client(self.url)
         except:
-            print u'Não conseguiu conectar o cliente!'
+            print('Não conseguiu conectar o cliente!')
 
         self.query = query
         self.name = u''
@@ -116,6 +88,7 @@ class Itis:
                 'Subclass': u'Subclasse',
                 'Subsection': u'Subseção',
                 'Kingdom': u'Reino',
+                'Infrakingdom': u'Infrareino',
                 'Division': u'Divisão',
                 'Subtribe': u'Subtribo',
                 'Aberration': u'Aberração',
@@ -149,6 +122,55 @@ class Itis:
 
         if rank_pt:
             return rank_pt
+        else:
+            return rank
+
+    def translate_pt2en(self, rank):
+        '''Traduz nome do ranking pro inglês.'''
+
+        pt2en = {
+                'Subforma': u'Subform',
+                'Superordem': u'Superorder',
+                'Variedade': u'Variety',
+                'Infraordem': u'Infraorder',
+                'Seção': u'Section',
+                'Subclasse': u'Subclass',
+                'Subseção': u'Subsection',
+                'Reino': u'Kingdom',
+                'Infrareino': u'Infrakingdom',
+                'Divisão': u'Division',
+                'Subtribo': u'Subtribe',
+                'Aberração': u'Aberration',
+                'Infraordem': u'InfraOrder',
+                'Subreino': u'Subkingdom',
+                'Infraclasse': u'Infraclass',
+                'Subfamília': u'Subfamily',
+                'Classe': u'Class',
+                'Superfamília': u'Superfamily',
+                'Subdivisão': u'Subdivision',
+                'Morfotipo': u'Morph',
+                'Raça': u'Race',
+                'Não especificado': u'Unspecified',
+                'Subordem': u'Suborder',
+                'Gênero': u'Genus',
+                'Ordem': u'Order',
+                'Subvariedade': u'Subvariety',
+                'Tribo': u'Tribe',
+                'Subgênero': u'Subgenus',
+                'Forma': u'Form',
+                'Família': u'Family',
+                'Subfilo': u'Subphylum',
+                'Estirpe': u'Stirp',
+                'Filo': u'Phylum',
+                'Superclasse': u'Superclass',
+                'Subespécie': u'Subspecies',
+                'Espécie': u'Species',
+                }
+
+        rank_en = pt2en[rank]
+
+        if rank_en:
+            return rank_en
         else:
             return rank
 
@@ -193,7 +215,7 @@ class Itis:
         </ns:searchByScientificNameResponse>
 
         '''
-        logger.info('Procurando TSN de %s...', query)
+        print('Procurando TSN de %s...' % query)
 
         # Tenta executar a busca usando o query. Caso a conexão falhe, tenta
         # novamente.
@@ -201,10 +223,10 @@ class Itis:
             results = self.client.service.searchByScientificName(query)
         except:
             while attempt < 3:
-                logger.warning('Não conseguiu conectar... tentativa=%d' % attempt)
+                print('Não conseguiu conectar... tentativa=%d' % attempt)
                 attempt += 1
                 self.search_by_scientific_name(query, attempt)
-            logger.critical('Terminando conexão. Não está rolando.')
+            print('Terminando conexão. Não está rolando.')
             results = None
         return results
 
@@ -222,11 +244,11 @@ class Itis:
         if results.scientificNames:
             # Se houver mais de 1 resultado, comparar valores.
             if len(results.scientificNames) > 1:
-                logger.debug('Mais de um táxon encontrado!')
+                print('Mais de um táxon encontrado!')
                 theone = []
                 # Tentando encontrar o táxon certo.
                 for entry in results.scientificNames:
-                    print entry.combinedName
+                    print(entry.combinedName)
                     if self.fix(entry.combinedName) == query:
                         theone.append(entry)
                 if len(theone) == 1:
@@ -234,8 +256,7 @@ class Itis:
                     data['name'] = self.fix(taxon.combinedName)
                     data['tsn'] = taxon.tsn
                     data['valid'] = self.is_valid(taxon.tsn)
-                    logger.info('Táxon com nome exato encontrado: %s',
-                            data['name'])
+                    print('Táxon com nome exato encontrado: %s' % data['name'])
                 elif len(theone) > 1:
                     # Checa qual destes táxons é válido.
                     for entry in theone:
@@ -245,15 +266,14 @@ class Itis:
                             data['name'] = self.fix(entry.combinedName)
                             data['tsn'] = entry.tsn
                             data['valid'] = True
-                            logger.info('Táxon válido encontrado: %s',
-                                    data['name'])
+                            print('Táxon válido encontrado: %s' % data['name'])
                             # Assume que só existe 1 táxon oficialmente aceito.
                             #TODO Verificar isso...
                             break
                     else:
-                        logger.warning('Nenhum táxon com nome %s é válido.', query)
+                        print('Nenhum táxon com nome %s é válido.' % query)
                 else:
-                    logger.info('Nenhum táxon com o nome exato %s foi encontrado.', query)
+                    print('Nenhum táxon com o nome exato %s foi encontrado.' % query)
                     #TODO busca pelo gênero.
             else:
                 taxon = results.scientificNames[0]
@@ -261,7 +281,7 @@ class Itis:
                 data['tsn'] = taxon.tsn
                 data['valid'] = self.is_valid(taxon.tsn)
         else:
-            logger.info('Nenhum táxon com o nome de %s foi encontrado.', query)
+            print('Nenhum táxon com o nome de %s foi encontrado.' % query)
             #TODO busca pelo gênero.
         return data
 
@@ -285,7 +305,7 @@ class Itis:
         try:
             response = self.client.service.getAcceptedNamesFromTSN(tsn)
         except:
-            logger.warning('Problema na conexão para checar a validade de %d', tsn)
+            print('Problema na conexão para checar a validade de %d' % tsn)
             response = None
         return response
 
@@ -302,13 +322,13 @@ class Itis:
         http://www.itis.gov/ITISWebService/services/ITISService/getFullHierarchyFromTSN?tsn=1378
         '''
         #XXX Garantir que o táxon é válido antes de puxar a hierarquia.
-        logger.info('Pegando hierarquia...')
+        print('Pegando hierarquia...')
 
         # Tenta se conectar.
         try:
             hierarchy = self.client.service.getFullHierarchyFromTSN(tsn)
         except:
-            logger.warning('Erro ao puxar a hierarquia de %s, problema na conexão', tsn)
+            print('Erro ao puxar a hierarquia de %s, problema na conexão' % tsn)
             hierarchy = None
         return hierarchy
 
@@ -360,30 +380,30 @@ class Itis:
     def update_model(self, taxon):
         '''Update database table with newly fetched records.'''
         if not self.name:
-            logger.critical('No taxon is defined! Aborting...')
+            print('No taxon is defined! Aborting...')
 
         #XXX Melhor se perguntar se o táxon é válido, ou não?
 
         # Update parents.
         if self.parents:
             for parent in self.parents:
-                logger.debug('Atualizando %s...', parent.taxonName)
+                print('Atualizando %s...' % parent.taxonName)
                 above, new = Taxon.objects.get_or_create(name=parent.taxonName)
                 above.rank = parent.rankName
                 above.tsn = parent.tsn
                 if parent.parentName:
                     above.parent = Taxon.objects.get(name=parent.parentName)
                 above.save()
-                logger.debug('%s salvo!', above.name)
+                print('%s salvo!' % above.name)
 
         # Atualiza o táxon em questão.
-        logger.debug('Atualizando %s...', self.name)
+        print('Atualizando %s...' % self.name)
         taxon.rank = self.rank
         taxon.tsn = self.tsn
         if self.parent:
             taxon.parent = Taxon.objects.get(name=self.parent['name'])
         taxon.save()
-        logger.debug('%s salvo!', self.name)
+        print('%s salvo!' % self.name)
         return taxon
 
 

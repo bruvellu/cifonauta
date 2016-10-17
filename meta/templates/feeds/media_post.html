@@ -9,7 +9,7 @@
 
   <div style="margin-bottom:10px;">
     {% if obj.datatype == 'photo' %}
-    <img width="510" src="http://{{ site.domain }}{{ MEDIA_URL }}{{ obj.web_filepath }}" alt="{{ obj.title }}" title="{{ obj.title }}" />
+    <img width="510" src="http://{{ site.domain }}{{ MEDIA_URL }}{{ obj.filepath }}" alt="{{ obj.title }}" title="{{ obj.title }}" />
     {% else %}
     {% if obj.datatype == 'video' %}
     <iframe class="cifonauta-player" type="text/html" width="512" height="384" src="http://{{ site.domain }}/embed/{{ obj.id }}/" frameborder="0"></iframe>

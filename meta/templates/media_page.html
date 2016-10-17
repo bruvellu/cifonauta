@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n cache thumbnail %}
+{% load i18n thumbnail %}
 {% get_current_language as LANGUAGE_CODE %}
 
 {% block title %}{{ media.title }} | {{ block.super }}{% endblock %}
@@ -11,7 +11,7 @@
 
 <meta property="og:title" content="{{ media.title }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.thumb_filepath }}" />
+<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.filepath }}" />
 <meta property="og:description" content="{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %}; {% show_set authors '' '' ', ' '' %}" />
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 

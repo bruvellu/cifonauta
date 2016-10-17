@@ -173,7 +173,7 @@ def show_related(context, media, form, related):
         if media.size:
             qobj = Q(size=media.size_id)
             query = mediaque(media, qobj)
-            rel_media, relative = slicer(query, media.id) 
+            rel_media, relative = slicer(query, media.id)
         else:
             rel_media = ''
 
@@ -181,7 +181,7 @@ def show_related(context, media, form, related):
         if media.sublocation:
             qobj = Q(sublocation=media.sublocation_id)
             query = mediaque(media, qobj)
-            rel_media, relative = slicer(query, media.id) 
+            rel_media, relative = slicer(query, media.id)
         else:
             rel_media = ''
 
@@ -189,7 +189,7 @@ def show_related(context, media, form, related):
         if media.city:
             qobj = Q(city=media.city_id)
             query = mediaque(media, qobj)
-            rel_media, relative = slicer(query, media.id) 
+            rel_media, relative = slicer(query, media.id)
         else:
             rel_media = ''
 
@@ -197,7 +197,7 @@ def show_related(context, media, form, related):
         if media.state:
             qobj = Q(state=media.state_id)
             query = mediaque(media, qobj)
-            rel_media, relative = slicer(query, media.id) 
+            rel_media, relative = slicer(query, media.id)
         else:
             rel_media = ''
 
@@ -205,7 +205,7 @@ def show_related(context, media, form, related):
         if media.country:
             qobj = Q(country=media.country_id)
             query = mediaque(media, qobj)
-            rel_media, relative = slicer(query, media.id) 
+            rel_media, relative = slicer(query, media.id)
         else:
             rel_media = ''
 
@@ -244,7 +244,7 @@ def show_tree(current=None):
 
     Usar o selected_related para pegar o 'parent' diminuiu 100 queries!
     '''
-    taxa = Taxon.tree.select_related('parent')
+    taxa = Taxon.objects.select_related('parent')
     return {'taxa': taxa, 'current': current}
 
 @register.inclusion_tag('searchbox.html')
@@ -321,7 +321,7 @@ def icount(value, field):
 @register.filter
 def truncate(value, arg):
     """
-    Truncates a string after a given number of chars  
+    Truncates a string after a given number of chars
     Argument: Number of chars to truncate after
 
     From: http://djangosnippets.org/snippets/163/

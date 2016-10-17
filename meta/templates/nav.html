@@ -1,8 +1,6 @@
-{% load cache i18n %}
+{% load i18n %}
 
-{% cache 2592000 feedback %}
 <div id="feedback"><a href="/feedback/">feedback</a></div>
-{% endcache %}
 
 {% if user.is_authenticated %}
 <span id="admin">
@@ -11,12 +9,12 @@
     <li><a href="/private/">privadas</a></li>
     <li><a href="/fixmedia/">fixmedia</a></li>
     <li><a href="/translate/">traduzir</a></li>
-    <li><a href="{% url django.contrib.auth.views.logout %}">logout</a></li>
+    <li><a href="{% url 'django.contrib.auth.views.logout' %}">logout</a></li>
   </ul>
 </span>
 {% else %}
 <span id="admin">
-  <a href="{% url django.contrib.auth.views.login %}">login</a>
+  <a href="{% url 'django.contrib.auth.views.login' %}">login</a>
 </span>
 {% endif %}
 
@@ -33,7 +31,6 @@
 </div>
 
 {% with fullpath=request.get_full_path %}
-{% cache 2592000 menu LANGUAGE_CODE fullpath %}
 <ul class="menu" id="media">
   <li>
   <a {% if fullpath == '/search/?type=photo' %}class="selected"{% endif %} href="/search/?type=photo">{% trans 'fotos' %}</a>
@@ -42,22 +39,22 @@
   <a {% if fullpath == '/search/?type=video' %}class="selected"{% endif %} href="/search/?type=video">{% trans 'vídeos' %}</a>
   </li>
   <li>
-  <a {% if fullpath == '/tours/' %}class="selected"{% endif %} href="{% url tours_url %}">{% trans 'tours' %}</a>
+  <a {% if fullpath == '/tours/' %}class="selected"{% endif %} href="{% url 'tours_url' %}">{% trans 'tours' %}</a>
   </li>
   <li>
-  <a {% if fullpath == '/taxa/' %}class="selected"{% endif %} href="{% url taxa_url %}">{% trans 'táxons' %}</a>
+  <a {% if fullpath == '/taxa/' %}class="selected"{% endif %} href="{% url 'taxa_url' %}">{% trans 'táxons' %}</a>
   </li>
   <li>
-  <a {% if fullpath == '/tags/' %}class="selected"{% endif %} href="{% url tags_url %}">{% trans 'marcadores' %}</a>
+  <a {% if fullpath == '/tags/' %}class="selected"{% endif %} href="{% url 'tags_url' %}">{% trans 'marcadores' %}</a>
   </li>
   <li>
-  <a {% if fullpath == '/places/' %}class="selected"{% endif %} href="{% url places_url %}">{% trans 'localidades' %}</a>
+  <a {% if fullpath == '/places/' %}class="selected"{% endif %} href="{% url 'places_url' %}">{% trans 'localidades' %}</a>
   </li>
   <li>
-  <a {% if fullpath == '/authors/' %}class="selected"{% endif %} href="{% url authors_url %}">{% trans 'autores' %}</a>
+  <a {% if fullpath == '/authors/' %}class="selected"{% endif %} href="{% url 'authors_url' %}">{% trans 'autores' %}</a>
   </li>
   <li>
-  <a {% if fullpath == '/literature/' %}class="selected"{% endif %} href="{% url refs_url %}">{% trans 'referências' %}</a>
+  <a {% if fullpath == '/literature/' %}class="selected"{% endif %} href="{% url 'refs_url' %}">{% trans 'referências' %}</a>
   </li>
 </ul>
 <ul class="menu" id="about">
@@ -67,9 +64,5 @@
   <li><a 
     {% if fullpath == '/about/' or fullpath == '/content/' or fullpath == '/organization/' or fullpath == '/credits/' or fullpath == '/details/' or fullpath == '/development/' or fullpath == '/roadmap/' or fullpath == '/terms/' %}class="selected"{% endif %}href="/about/">{% trans 'sobre' %}</a>
   </li>
-  <li>
-  <a {% if fullpath == '/blog/' %}class="selected"{% endif %}href="/blog/">{% trans 'blog' %}</a>
-  </li>
 </ul>
-{% endcache %}
 {% endwith %}

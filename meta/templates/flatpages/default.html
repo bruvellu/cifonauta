@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
-{% load markup i18n %}
+{% load i18n %}
 {% block title %}{{ flatpage.title }} | {{ block.super }}{% endblock %}
 
 {% block meta-keywords %}{{ flatpage.title }}{% endblock %}
-{% block meta-description %}{{ flatpage.content|markdown|striptags|truncatewords:30 }}{% endblock %}
+{% block meta-description %}{{ flatpage.content|striptags|truncatewords:30 }}{% endblock %}
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 {% block extra-head %}
 
 <meta property="og:title" content="{{ flatpage.title }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:type" content="article" />
-<meta property="og:description" content="{{ flatpage.content|markdown|striptags|truncatewords:30 }}" />
+<meta property="og:description" content="{{ flatpage.content|striptags|truncatewords:30 }}" />
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 
 {% endblock %}
@@ -18,7 +18,7 @@
 {% block content %}
 <section class="span-16">
 <header class="span-16 last"><h1>{{ flatpage.title }}</h1></header>
-{{ flatpage.content|markdown|safe }}
+{{ flatpage.content }}
 
 {% if request.META.PATH_INFO == '/feedback/' %}
 <div id="comments" class="span-16 last">

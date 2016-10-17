@@ -6,17 +6,17 @@
     <p>{% blocktrans %}Use os sinais [<span class="sign plus">+</span>] e [<span class="sign minus">−</span>] para refinar sua busca ou clique no nome para abrir a página do metadado.{% endblocktrans %}</p>
 
 {% if data.tag or queries.tag %}
-<h3>{% trans 'Marcadores' %} | <a href="{% url tags_url %}" title="{% trans 'Todos os marcadores' %}">{% trans 'ver todos' %}</a></h3>
+<h3>{% trans 'Marcadores' %} | <a href="{% url 'tags_url' %}" title="{% trans 'Todos os marcadores' %}">{% trans 'ver todos' %}</a></h3>
     {% include 'fino.html' with actives=queries.tag inactives=data.tag field='tag' %}
 {% endif %}
 
 {% if data.author or queries.author %}
-<h3>{% trans 'Autores' %} | <a href="{% url authors_url %}" title="{% trans 'Todos os autores' %}">{% trans 'ver todos' %}</a></h3>
+<h3>{% trans 'Autores' %} | <a href="{% url 'authors_url' %}" title="{% trans 'Todos os autores' %}">{% trans 'ver todos' %}</a></h3>
     {% include 'fino.html' with actives=queries.author inactives=data.author field='author' %}
 {% endif %}
 
 {% if data.taxon or queries.taxon %}
-<h3>{% trans 'Táxons' %} | <a href="{% url taxa_url %}" title="{% trans 'Todos os táxons' %}">{% trans 'ver todos' %}</a></h3>
+<h3>{% trans 'Táxons' %} | <a href="{% url 'taxa_url' %}" title="{% trans 'Todos os táxons' %}">{% trans 'ver todos' %}</a></h3>
     {% include 'fino.html' with actives=queries.taxon inactives=data.taxon field='taxon' %}
 {% endif %}
 

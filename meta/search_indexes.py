@@ -36,7 +36,7 @@ class MediaIndex(indexes.SearchIndex):
     highlight = indexes.BooleanField(model_attr='highlight', default=False)
 
     title_en = indexes.CharField(model_attr='title_en', default='')
-    title = indexes.CharField(model_attr='title_pt')
+    title = indexes.CharField(model_attr='title_pt_br')
 
     thumb = indexes.CharField(model_attr='thumb_filepath')
     url = indexes.CharField(model_attr='get_absolute_url')
@@ -67,7 +67,7 @@ class MediaIndex(indexes.SearchIndex):
         return [reference.id for reference in media.reference_set.all()]
         #Taxon.objects.filter(images__pk = object.pk)]
 
-    def index_queryset(self):
+    def index_queryset(self, using=None):
         '''Used when the entire index for model is updated.'''
         return self.get_model().objects.filter(is_public=True)
         #select_related('author', 'tag', 'taxon', 'size', 'sublocation', 'city', 'state', 'country', 'rights')

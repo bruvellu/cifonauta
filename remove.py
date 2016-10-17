@@ -6,9 +6,8 @@ import sys
 import getopt
 
 # Django environment import
-from django.core.management import setup_environ
-import settings
-setup_environ(settings)
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cifonauta.settings")
+
 from meta.models import *
 
 

@@ -780,36 +780,6 @@ nav.main {
   padding: 4px 0 4px 18px;
 }
 
-#feedback {
-  position:fixed;
-  right:0;
-  top:4em;
-  z-index:1000;
-  -moz-opacity:0.9;
-  opacity:0.9;
-  filter: alpha(opacity=90);
-}
-
-#feedback a {
-  background:#94B1CA;
-  background: -moz-linear-gradient(center top , #94B1CA 0%, #6B92B2 100%) repeat scroll 0 0 transparent; /* firefox */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#6B92B2), color-stop(100%,#7296B3)); /* webkit */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#94B1CA', endColorstr='#6B92B2',GradientType=0 ); /* ie */
-  font-weight:bold;
-  -moz-border-radius: 10px 0 0 10px;
-  -webkit-border-radius: 10px 0 0 10px;
-  border-radius: 10px 0 0 10px;
-  border-color:#fafafa #fff #fafafa #eeeeee;
-  border-style:solid none solid solid;
-  border-width:5px medium 5px 5px;
-  color:#fff;
-  padding:4px 12px 4px 16px;
-}
-
-#feedback a:hover {
-  background:#C6D880;
-}
-
 /* BODY */
 #content {
   display: block;

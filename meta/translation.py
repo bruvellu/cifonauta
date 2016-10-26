@@ -1,4 +1,4 @@
-from modeltranslation.translator import translator, TranslationOptions
+from modeltranslation.translator import register, TranslationOptions
 from meta.models import Image, Video, Tag, TagCategory, Taxon, City, State, Country, Tour
 from django.contrib.flatpages.models import FlatPage
 

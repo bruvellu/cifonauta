@@ -1,18 +1,10 @@
-from meta import models
+from meta.models import *
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin
 from django.contrib.flatpages.models import FlatPage
 
-admin.site.register(models.Author)
-admin.site.register(models.Source)
-admin.site.register(models.Rights)
-admin.site.register(models.Sublocation)
-admin.site.register(models.Reference)
-admin.site.register(models.TourPosition)
-
-
 # Translation admin.
-class FlatPageTransAdmin(TranslationAdmin):
+class FlatPageAdmin(TranslationAdmin):
     pass
 
 
@@ -56,15 +48,24 @@ class SizeAdmin(TranslationAdmin):
     pass
 
 
-admin.site.unregister(FlatPage)
-admin.site.register(FlatPage, FlatPageTransAdmin)
+# Regular models.
+admin.site.register(Author)
+admin.site.register(Source)
+admin.site.register(Rights)
+admin.site.register(Sublocation)
+admin.site.register(Reference)
+admin.site.register(TourPosition)
 
-admin.site.register(models.Image, ImageAdmin)
-admin.site.register(models.Video, VideoAdmin)
-admin.site.register(models.Tag, TagAdmin)
-admin.site.register(models.TagCategory, TagAdmin)
-admin.site.register(models.Taxon, TaxonAdmin)
-admin.site.register(models.City, CityAdmin)
-admin.site.register(models.State, StateAdmin)
-admin.site.register(models.Country, CountryAdmin)
-admin.site.register(models.Tour, TourAdmin)
+# Translation models.
+admin.site.unregister(FlatPage)
+admin.site.register(FlatPage, FlatPageAdmin)
+admin.site.register(Image, ImageAdmin)
+admin.site.register(Video, VideoAdmin)
+admin.site.register(Tag, TagAdmin)
+admin.site.register(TagCategory, TagAdmin)
+admin.site.register(Taxon, TaxonAdmin)
+admin.site.register(City, CityAdmin)
+admin.site.register(State, StateAdmin)
+admin.site.register(Country, CountryAdmin)
+admin.site.register(Tour, TourAdmin)
+admin.site.register(Size, SizeAdmin)

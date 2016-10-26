@@ -38,7 +38,6 @@ INSTALLED_APPS = (
     'meta',
     'mptt',
     'rosetta',
-    #'debug_toolbar',
     'sorl.thumbnail',
 
     'django.contrib.sites',
@@ -49,8 +48,6 @@ INSTALLED_APPS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware',
-    #'debug_toolbar.middleware.DebugToolbarMiddleware',
-
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -81,7 +78,6 @@ DATABASES = {
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
-
 LANGUAGE_CODE = 'pt-br'
 ADMIN_LANGUAGE_CODE = 'pt-br'
 
@@ -141,33 +137,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages"
 )
 
-# List of callables that know how to import templates from various sources.
-#TEMPLATE_LOADERS = (
-        #('django.template.loaders.cached.Loader', (
-            #'django.template.loaders.app_directories.Loader',
-            ##'django.template.loaders.filesystem.Loader',
-            #)),
-        #'django.template.loaders.eggs.Loader',
-#)
-
-#MIDDLEWARE_CLASSES = (
-        ##'johnny.middleware.LocalStoreClearMiddleware',
-        ##'johnny.middleware.QueryCacheMiddleware',
-        #'django.middleware.cache.UpdateCacheMiddleware',
-        #'django.middleware.locale.LocaleMiddleware',
-        #'utils.AdminLocaleURLMiddleware',
-        #'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-        #'django.middleware.transaction.TransactionMiddleware',
-        #'django.middleware.cache.FetchFromCacheMiddleware',
-#)
-
-# Required for Debug Toolbar and sorl-thumbnail.
+# Required for sorl-thumbnail.
 INTERNAL_IPS = ('127.0.0.1', '::1')
-#DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
-#INSTALLED_APPS = (
-#)
-
+# Elasticsearch
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
@@ -175,10 +148,9 @@ HAYSTACK_CONNECTIONS = {
         'INDEX_NAME': 'haystack',
         },
 }
+
 import logging
 from sorl.thumbnail.log import ThumbnailLogHandler
-
-
 handler = ThumbnailLogHandler()
 handler.setLevel(logging.ERROR)
 logging.getLogger('sorl.thumbnail').addHandler(handler)

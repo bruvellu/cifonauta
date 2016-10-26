@@ -102,6 +102,9 @@ LANGUAGES = (
    ('pt-br', ugettext('Português')),
    ('en', ugettext('English')),
 )
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'pt-br'
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('pt-br', 'en')
+MODELTRANSLATION_AUTO_POPULATE = True
 
 # Needed for Django sites framework. Keep it active.
 SITE_ID = 1

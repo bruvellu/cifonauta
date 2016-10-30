@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'haystack',
 
     'meta',
+    'model_translator',
     'mptt',
     'rosetta',
     'sorl.thumbnail',

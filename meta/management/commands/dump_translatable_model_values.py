@@ -43,9 +43,9 @@ class Command(BaseCommand):
                 values = model.objects.values_list(field, flat=True)
                 # Write values to file.
                 for v in values:
-                    # TODO: Define the easiest to parse comment.
-                    trans_file.write('# Translators: model={model}, field={field}.\n'.format(model=model.__name__, field=field))
-                    trans_file.write('_(\'{}\')\n'.format(v.encode('utf-8')))
+                    if v:
+                        trans_file.write('# Translators: model={model}, field={field}.\n'.format(model=model.__name__, field=field))
+                        trans_file.write('_(\'{}\')\n'.format(v.encode('utf-8')))
                 self.stdout.write('\t{}... done.'.format(field))
 
         # Close file.

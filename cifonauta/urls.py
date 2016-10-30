@@ -89,7 +89,7 @@ urlpatterns = patterns('',
         (r'^logout/$', 'django.contrib.auth.views.logout'),
 
         # Translate
-        (r'^translate/', include('rosetta.urls')),
+        (r'^rosetta/', include('rosetta.urls')),
 
         # Manage
         (r'^private/$', hidden_page),

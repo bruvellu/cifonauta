@@ -1,13 +1,15 @@
 from django.core.management.base import BaseCommand, CommandError
-from meta.models import Image, Video
-from optparse import make_option
-from datetime import datetime
-from iptcinfo import IPTCInfo
-from media_utils import check_file, dir_ready, get_exif, get_date, get_gps, get_info
-from meta.models import *
+from django.utils import translation
+
 import os
 import pickle
 import time
+from optparse import make_option
+from datetime import datetime
+from iptcinfo import IPTCInfo
+
+from media_utils import check_file, dir_ready, get_exif, get_date, get_gps, get_info
+from meta import models
 
 
 class Command(BaseCommand):
@@ -46,7 +48,7 @@ class Command(BaseCommand):
         # Initiate database instance.
         cbm = Database()
 
-        # Choose which filetype.
+        # Choose which file type.
         if only_photos:
             photo_folder = Folder(self.SITE_MEDIA_PHOTOS, n_max)
             photo_filepaths = photo_folder.get_files()
@@ -138,12 +140,15 @@ class Database:
         photopath = 'photos/'
         videopath = 'videos/'
 
+        # Set language to Portuguese.
+        translation.activate('pt-br')
+
         # Query for the exact filename to avoid confusion.
         try:
             if media.type == 'photo':
-                record = Image.objects.get(filename=media.filename)
+                record = models.Image.objects.get(filename=media.filename)
             elif media.type == 'video':
-                record = Video.objects.get(filename=media.filename)
+                record = models.Video.objects.get(filename=media.filename)
             print(u'Bingo! Found %s.' % media.filename)
             print(u'Comparing timestamp between file and db...')
             # XXX Dirty hack to make naive timestamp.
@@ -162,6 +167,10 @@ class Database:
     def update_db(self, media, update=False):
         '''Creates or updates database entry.'''
         print(u'Updating database...')
+
+        # Set language to Portuguese.
+        translation.activate('pt-br')
+
         # Instantiate metadata for processing.
         media_meta = media.metadata.dictionary
 
@@ -211,16 +220,16 @@ class Database:
 
         if not update:
             if media.type == 'photo':
-                entry = Image(**media_meta)
+                entry = models.Image(**media_meta)
             elif media.type == 'video':
-                entry = Video(**media_meta)
+                entry = models.Video(**media_meta)
             # Saving is needed to create an ID, necessary for saving remaining metadata.
             entry.save()
         else:
             if media.type == 'photo':
-                entry = Image.objects.get(filename=media.filename)
+                entry = models.Image.objects.get(filename=media.filename)
             elif media.type == 'video':
-                entry = Video.objects.get(filename=media.filename)
+                entry = models.Video.objects.get(filename=media.filename)
             for k, v in media_meta.iteritems():
                 setattr(entry, k, v)
 
@@ -246,6 +255,10 @@ class Database:
 
     def get_instance(self, table, value):
         '''Returns ID from name.'''
+
+        # Set language to Portuguese.
+        translation.activate('pt-br')
+
         print(u'\nGET table: %s, value: %s' % (table, value))
 
         # Needs a default in case objects exists.
@@ -253,7 +266,8 @@ class Database:
 
         # Try to get object. If it doesn't exist, confirm to avoid bad metadata.
         try:
-            model = eval('%s.objects.get(name="%s")' % (table.capitalize(), value))
+            empty_model = getattr(models, table.capitalize())
+            model = empty_model.objects.get(name=value)
         except:
             # Load bad data dictionary.
             bad_data_file = open('bad_data.pkl', 'rb')
@@ -265,7 +279,8 @@ class Database:
             except:
                 fixed_value = raw_input('\nNew metadata. Type to confirm: ')
             try:
-                model, new = eval('%s.objects.get_or_create(name="%s")' % (table.capitalize(), fixed_value))
+                empty_model = getattr(models, table.capitalize())
+                model, new = empty_model.objects.get_or_create(name=fixed_value)
                 if new:
                     print(u'New metadata %s created!' % fixed_value.decode('utf-8'))
                 else:
@@ -302,8 +317,13 @@ class Database:
         Verifies if value is blank.
         '''
         meta_instances = [self.get_instance(field, value) for value in meta if value.strip()]
-        eval('entry.%s_set.clear()' % field)
-        [eval('entry.%s_set.add(value)' % field) for value in meta_instances if meta_instances]
+        # Get set and clear it.
+        meta_set = getattr(entry, field + '_set')
+        meta_set.clear()
+        # Add updated values to set.
+        if meta_instances:
+            for value in meta_instances:
+                meta_set.add(value)
         return entry
 
     def get_itis(self, name):

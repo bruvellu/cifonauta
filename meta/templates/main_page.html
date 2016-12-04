@@ -90,28 +90,5 @@
 </div>
 </section>
 
-<section class="main span-16">
-<div class="main span-16" id="highthumbs">
-  <h2>{% trans 'Destaques' %}</h2>
-  <ul class="thumbs">
-    {% for media in thumbs %}
-    <li class="shadow size-{{ media.size.slug }}">
-    {% include 'thumb.html' %}
-    </li>
-    {% endfor %}
-  </ul>
-</div>
-</section>
-
 {% endblock %}
 
-{% block sidebar %}
-
-<aside class="main span-8 last">
-<h2>{% trans 'Navegue por táxons' %}</h2>
-<div class="block shadow">
-  {% show_tree %}
-</div>
-</aside>
-
-{% endblock %}

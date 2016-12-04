@@ -34,8 +34,6 @@ def main_page(request):
         main_image = Image.objects.filter(cover=True, is_public=True).select_related('size').order_by('?')[0]
         photo = Image.objects.filter(cover=True, is_public=True).select_related('size').exclude(id=main_image.id).order_by('?')[0]
 
-        # Faz lista de destaques.
-        thumbs = Image.objects.filter(highlight=True, is_public=True).select_related('size').order_by('?')[:8]
     except:
         main_image, photo, thumbs = '', '', []
 
@@ -59,7 +57,6 @@ def main_page(request):
         'video': video,
         'tour': tour,
         'tour_image': tour_image,
-        'thumbs': thumbs,
         })
     return render_to_response('main_page.html', variables)
 

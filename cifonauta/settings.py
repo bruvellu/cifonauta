@@ -81,6 +81,10 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 LANGUAGE_CODE = 'pt-br'
 ADMIN_LANGUAGE_CODE = 'pt-br'
+LOCALE_PATHS = (
+        os.path.join(BASE_DIR, 'meta/locale'),
+        os.path.join(BASE_DIR, 'model_translator/locale'),
+        )
 
 # Rosetta settings.
 ROSETTA_MESSAGES_SOURCE_LANGUAGE_CODE = 'pt-br'

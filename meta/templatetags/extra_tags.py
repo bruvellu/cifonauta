@@ -232,7 +232,7 @@ def show_stats():
     photos = Image.objects.filter(is_public=True).count()
     videos = Video.objects.filter(is_public=True).count()
     tags = Tag.objects.count()
-    spp = Taxon.objects.filter(rank=u'Espécie').count()
+    spp = Taxon.objects.filter(rank_en=u'Species').count()
     locations = Sublocation.objects.count()
     return {'photos': photos, 'videos': videos, 'spp': spp, 'locations': locations, 'tags': tags}
 

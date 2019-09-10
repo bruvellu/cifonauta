@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('image_count', models.PositiveIntegerField(default=0, help_text='Number of photos linked to this tag.', verbose_name='number of photos', editable=False)),
                 ('video_count', models.PositiveIntegerField(default=0, help_text='Number of videos linked to this tag.', verbose_name='number of videos', editable=False)),
                 ('images', models.ManyToManyField(help_text='Photos linked to this tag.', to='meta.Image', null=True, verbose_name='photos', blank=True)),
-                ('parent', models.ForeignKey(related_name=b'tags', blank=True, to='meta.TagCategory', help_text='Category to which this tag belongs.', null=True, verbose_name='father')),
+                ('parent', models.ForeignKey(related_name='tags', blank=True, to='meta.TagCategory', help_text='Category to which this tag belongs.', null=True, verbose_name='father', on_delete=models.DO_NOTHING)),
                 ('videos', models.ManyToManyField(help_text='Videos linked to this tag.', to='meta.Video', null=True, verbose_name='videos', blank=True)),
             ],
             options={

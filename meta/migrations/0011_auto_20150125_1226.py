@@ -35,13 +35,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='image',
             name='country',
-            field=models.ForeignKey(blank=True, to='meta.Country', help_text='Country shown in the image (or country where it was collected).', null=True, verbose_name='country'),
+            field=models.ForeignKey(blank=True, to='meta.Country', help_text='Country shown in the image (or country where it was collected).', null=True, verbose_name='country', on_delete=models.DO_NOTHING),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='video',
             name='country',
-            field=models.ForeignKey(blank=True, to='meta.Country', help_text='Country shown in the image (or country where it was collected).', null=True, verbose_name='country'),
+            field=models.ForeignKey(blank=True, to='meta.Country', help_text='Country shown in the image (or country where it was collected).', null=True, verbose_name='country', on_delete=models.DO_NOTHING),
             preserve_default=True,
         ),
     ]

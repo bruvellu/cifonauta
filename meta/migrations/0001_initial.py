@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.db import models, migrations
 
 
@@ -64,7 +61,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('source_filepath', models.CharField(help_text='Local source file.', max_length=200, verbose_name='local source file', blank=True)),
-                ('thumb_filepath', models.ImageField(help_text='Folder storing thumbnails.', upload_to=b'site_media/images/thumbs', verbose_name='web thumbnail')),
+                ('thumb_filepath', models.ImageField(help_text='Folder storing thumbnails.', upload_to='site_media/images/thumbs', verbose_name='web thumbnail')),
                 ('old_filepath', models.CharField(help_text='Path to original file.', max_length=200, verbose_name='original source file', blank=True)),
                 ('timestamp', models.DateTimeField(help_text='File modification date.', verbose_name='timestamp')),
                 ('highlight', models.BooleanField(default=False, help_text='Image that deserves highlight.', verbose_name='highlight')),
@@ -85,10 +82,10 @@ class Migration(migrations.Migration):
                 ('geolocation', models.CharField(help_text='Image geolocation in decimal format.', max_length=25, verbose_name='geolocation', blank=True)),
                 ('latitude', models.CharField(help_text='Latitude where image was created.', max_length=12, verbose_name='latitude', blank=True)),
                 ('longitude', models.CharField(help_text='Longitude where image was created.', max_length=12, verbose_name='longitude', blank=True)),
-                ('web_filepath', models.ImageField(help_text='Path to web file.', upload_to=b'site_media/images/', verbose_name='web file')),
-                ('datatype', models.CharField(default=b'photo', help_text='Media type.', max_length=10, verbose_name='media type')),
-                ('city', models.ForeignKey(blank=True, to='meta.City', help_text='City shown in the image (or city where it was collected).', null=True, verbose_name=b'cidade')),
-                ('country', models.ForeignKey(blank=True, to='meta.Country', help_text='Country shown in the image (or country where it was collected).', null=True, verbose_name='country')),
+                ('web_filepath', models.ImageField(help_text='Path to web file.', upload_to='site_media/images/', verbose_name='web file')),
+                ('datatype', models.CharField(default='photo', help_text='Media type.', max_length=10, verbose_name='media type')),
+                ('city', models.ForeignKey(blank=True, to='meta.City', help_text='City shown in the image (or city where it was collected).', null=True, verbose_name='cidade', on_delete=models.DO_NOTHING)),
+                ('country', models.ForeignKey(blank=True, to='meta.Country', help_text='Country shown in the image (or country where it was collected).', null=True, verbose_name='country', on_delete=models.DO_NOTHING)),
             ],
             options={
                 'ordering': ['id'],
@@ -133,9 +130,9 @@ class Migration(migrations.Migration):
             name='Size',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(help_text='Size class name.', unique=True, max_length=32, verbose_name='name', choices=[(b'<0,1 mm', b'<0,1 mm'), (b'0,1 - 1,0 mm', b'0,1 - 1,0 mm'), (b'1,0 - 10 mm', b'1,0 - 10 mm'), (b'10 - 100 mm', b'10 - 100 mm'), (b'>100 mm', b'>100 mm')])),
-                ('name_pt', models.CharField(help_text='Size class name.', unique=True, max_length=32, verbose_name='name', choices=[(b'<0,1 mm', b'<0,1 mm'), (b'0,1 - 1,0 mm', b'0,1 - 1,0 mm'), (b'1,0 - 10 mm', b'1,0 - 10 mm'), (b'10 - 100 mm', b'10 - 100 mm'), (b'>100 mm', b'>100 mm')])),
-                ('name_en', models.CharField(null=True, choices=[(b'<0,1 mm', b'<0,1 mm'), (b'0,1 - 1,0 mm', b'0,1 - 1,0 mm'), (b'1,0 - 10 mm', b'1,0 - 10 mm'), (b'10 - 100 mm', b'10 - 100 mm'), (b'>100 mm', b'>100 mm')], max_length=32, blank=True, help_text='Size class name.', unique=True, verbose_name='name')),
+                ('name', models.CharField(help_text='Size class name.', unique=True, max_length=32, verbose_name='name', choices=[('<0,1 mm', '<0,1 mm'), ('0,1 - 1,0 mm', '0,1 - 1,0 mm'), ('1,0 - 10 mm', '1,0 - 10 mm'), ('10 - 100 mm', '10 - 100 mm'), ('>100 mm', '>100 mm')])),
+                ('name_pt', models.CharField(help_text='Size class name.', unique=True, max_length=32, verbose_name='name', choices=[('<0,1 mm', '<0,1 mm'), ('0,1 - 1,0 mm', '0,1 - 1,0 mm'), ('1,0 - 10 mm', '1,0 - 10 mm'), ('10 - 100 mm', '10 - 100 mm'), ('>100 mm', '>100 mm')])),
+                ('name_en', models.CharField(null=True, choices=[('<0,1 mm', '<0,1 mm'), ('0,1 - 1,0 mm', '0,1 - 1,0 mm'), ('1,0 - 10 mm', '1,0 - 10 mm'), ('10 - 100 mm', '10 - 100 mm'), ('>100 mm', '>100 mm')], max_length=32, blank=True, help_text='Size class name.', unique=True, verbose_name='name')),
                 ('slug', models.SlugField(help_text='Size class name slug.', max_length=32, verbose_name='slug', blank=True)),
                 ('description', models.TextField(help_text='Size name description.', verbose_name='description', blank=True)),
                 ('description_pt', models.TextField(help_text='Size name description.', verbose_name='description', blank=True)),
@@ -246,7 +243,7 @@ class Migration(migrations.Migration):
                 ('description_pt', models.TextField(help_text='Tag category description.', verbose_name='description', blank=True)),
                 ('description_en', models.TextField(help_text='Tag category description.', null=True, verbose_name='description', blank=True)),
                 ('position', models.PositiveIntegerField(default=0, help_text='Define category order.', verbose_name='position')),
-                ('parent', models.ForeignKey(related_name=b'tagcat_children', blank=True, to='meta.TagCategory', help_text='Tag category parent.', null=True, verbose_name='father')),
+                ('parent', models.ForeignKey(related_name='tagcat_children', blank=True, to='meta.TagCategory', help_text='Tag category parent.', null=True, verbose_name='father', on_delete=models.DO_NOTHING)),
             ],
             options={
                 'verbose_name': 'tag categories',
@@ -275,7 +272,7 @@ class Migration(migrations.Migration):
                 ('tree_id', models.PositiveIntegerField(editable=False, db_index=True)),
                 ('level', models.PositiveIntegerField(editable=False, db_index=True)),
                 ('images', models.ManyToManyField(help_text='Photos linked to this taxon.', to='meta.Image', null=True, verbose_name='photos', blank=True)),
-                ('parent', models.ForeignKey(related_name=b'children', blank=True, to='meta.Taxon', help_text='Taxon parent.', null=True, verbose_name='father')),
+                ('parent', models.ForeignKey(related_name='children', blank=True, to='meta.Taxon', help_text='Taxon parent.', null=True, verbose_name='father', on_delete=models.DO_NOTHING)),
             ],
             options={
                 'ordering': ['name'],
@@ -302,7 +299,7 @@ class Migration(migrations.Migration):
                 ('video_count', models.PositiveIntegerField(default=0, help_text='Number of videos linked to this tour.', verbose_name='number of videos', editable=False)),
                 ('images', models.ManyToManyField(help_text='Photos linked to this tour.', to='meta.Image', null=True, verbose_name='photos', blank=True)),
                 ('references', models.ManyToManyField(help_text='References linked to this tour.', to='meta.Reference', null=True, verbose_name='references', blank=True)),
-                ('stats', models.OneToOneField(null=True, editable=False, to='meta.Stats', help_text='Stores tour stats.', verbose_name='statistics')),
+                ('stats', models.OneToOneField(null=True, editable=False, to='meta.Stats', help_text='Stores tour stats.', verbose_name='statistics', on_delete=models.DO_NOTHING)),
             ],
             options={
                 'verbose_name': 'tour',
@@ -315,8 +312,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('position', models.PositiveIntegerField(default=0, help_text='Define image order in a tour.', verbose_name='position')),
-                ('photo', models.ForeignKey(to='meta.Image')),
-                ('tour', models.ForeignKey(to='meta.Tour')),
+                ('photo', models.ForeignKey(to='meta.Image', on_delete=models.DO_NOTHING)),
+                ('tour', models.ForeignKey(to='meta.Tour', on_delete=models.DO_NOTHING)),
             ],
             options={
                 'ordering': ['position', 'tour__id'],
@@ -330,7 +327,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('source_filepath', models.CharField(help_text='Local source file.', max_length=200, verbose_name='local source file', blank=True)),
-                ('thumb_filepath', models.ImageField(help_text='Folder storing thumbnails.', upload_to=b'site_media/images/thumbs', verbose_name='web thumbnail')),
+                ('thumb_filepath', models.ImageField(help_text='Folder storing thumbnails.', upload_to='site_media/images/thumbs', verbose_name='web thumbnail')),
                 ('old_filepath', models.CharField(help_text='Path to original file.', max_length=200, verbose_name='original source file', blank=True)),
                 ('timestamp', models.DateTimeField(help_text='File modification date.', verbose_name='timestamp')),
                 ('highlight', models.BooleanField(default=False, help_text='Image that deserves highlight.', verbose_name='highlight')),
@@ -351,21 +348,21 @@ class Migration(migrations.Migration):
                 ('geolocation', models.CharField(help_text='Image geolocation in decimal format.', max_length=25, verbose_name='geolocation', blank=True)),
                 ('latitude', models.CharField(help_text='Latitude where image was created.', max_length=12, verbose_name='latitude', blank=True)),
                 ('longitude', models.CharField(help_text='Longitude where image was created.', max_length=12, verbose_name='longitude', blank=True)),
-                ('webm_filepath', models.FileField(help_text='Path to .webm file.', upload_to=b'site_media/videos/', verbose_name='webm file', blank=True)),
-                ('ogg_filepath', models.FileField(help_text='Path to .ogg file.', upload_to=b'site_media/videos/', verbose_name='ogg file', blank=True)),
-                ('mp4_filepath', models.FileField(help_text='Path to .mp4 file.', upload_to=b'site_media/videos/', verbose_name='mp4 file', blank=True)),
-                ('datatype', models.CharField(default=b'video', help_text='Media type.', max_length=10, verbose_name='media type')),
-                ('large_thumb', models.ImageField(help_text='Path to large thumbnail of the video.', upload_to=b'site_media/images/thumbs', verbose_name='large thumbnail')),
-                ('duration', models.CharField(default=b'00:00:00', help_text='Video duration formatted as HH:MM:SS.', max_length=20, verbose_name='duration')),
-                ('dimensions', models.CharField(default=b'0x0', help_text='Video original dimensions.', max_length=20, verbose_name='dimensions')),
-                ('codec', models.CharField(default=b'', help_text='Video original codec.', max_length=20, verbose_name='codec')),
-                ('city', models.ForeignKey(blank=True, to='meta.City', help_text='City shown in the image (or city where it was collected).', null=True, verbose_name=b'cidade')),
-                ('country', models.ForeignKey(blank=True, to='meta.Country', help_text='Country shown in the image (or country where it was collected).', null=True, verbose_name='country')),
-                ('rights', models.ForeignKey(blank=True, to='meta.Rights', help_text='Copyrights owner of the image.', null=True, verbose_name='rights')),
-                ('size', models.ForeignKey(default=b'', to='meta.Size', blank=True, help_text='Size class of the organism in the image.', null=True, verbose_name='size')),
-                ('state', models.ForeignKey(blank=True, to='meta.State', help_text='State shown in the image (or state where it was collected).', null=True, verbose_name='state')),
-                ('stats', models.OneToOneField(null=True, editable=False, to='meta.Stats', help_text='Store stats about an image.', verbose_name='statistics')),
-                ('sublocation', models.ForeignKey(blank=True, to='meta.Sublocation', help_text='Place shown in the image (or collection site).', null=True, verbose_name='place')),
+                ('webm_filepath', models.FileField(help_text='Path to .webm file.', upload_to='site_media/videos/', verbose_name='webm file', blank=True)),
+                ('ogg_filepath', models.FileField(help_text='Path to .ogg file.', upload_to='site_media/videos/', verbose_name='ogg file', blank=True)),
+                ('mp4_filepath', models.FileField(help_text='Path to .mp4 file.', upload_to='site_media/videos/', verbose_name='mp4 file', blank=True)),
+                ('datatype', models.CharField(default='video', help_text='Media type.', max_length=10, verbose_name='media type')),
+                ('large_thumb', models.ImageField(help_text='Path to large thumbnail of the video.', upload_to='site_media/images/thumbs', verbose_name='large thumbnail')),
+                ('duration', models.CharField(default='00:00:00', help_text='Video duration formatted as HH:MM:SS.', max_length=20, verbose_name='duration')),
+                ('dimensions', models.CharField(default='0x0', help_text='Video original dimensions.', max_length=20, verbose_name='dimensions')),
+                ('codec', models.CharField(default='', help_text='Video original codec.', max_length=20, verbose_name='codec')),
+                ('city', models.ForeignKey(blank=True, to='meta.City', help_text='City shown in the image (or city where it was collected).', null=True, verbose_name='cidade', on_delete=models.DO_NOTHING)),
+                ('country', models.ForeignKey(blank=True, to='meta.Country', help_text='Country shown in the image (or country where it was collected).', null=True, verbose_name='country', on_delete=models.DO_NOTHING)),
+                ('rights', models.ForeignKey(blank=True, to='meta.Rights', help_text='Copyrights owner of the image.', null=True, verbose_name='rights', on_delete=models.DO_NOTHING)),
+                ('size', models.ForeignKey(default='', to='meta.Size', blank=True, help_text='Size class of the organism in the image.', null=True, verbose_name='size', on_delete=models.DO_NOTHING)),
+                ('state', models.ForeignKey(blank=True, to='meta.State', help_text='State shown in the image (or state where it was collected).', null=True, verbose_name='state', on_delete=models.DO_NOTHING)),
+                ('stats', models.OneToOneField(null=True, editable=False, to='meta.Stats', help_text='Store stats about an image.', verbose_name='statistics', on_delete=models.DO_NOTHING)),
+                ('sublocation', models.ForeignKey(blank=True, to='meta.Sublocation', help_text='Place shown in the image (or collection site).', null=True, verbose_name='place', on_delete=models.DO_NOTHING)),
             ],
             options={
                 'ordering': ['id'],
@@ -389,7 +386,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='tag',
             name='parent',
-            field=models.ForeignKey(related_name=b'tags', blank=True, to='meta.TagCategory', help_text='Category to which this tag belongs.', null=True, verbose_name='father'),
+            field=models.ForeignKey(related_name='tags', blank=True, to='meta.TagCategory', help_text='Category to which this tag belongs.', null=True, verbose_name='father', on_delete=models.DO_NOTHING),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -413,31 +410,31 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='image',
             name='rights',
-            field=models.ForeignKey(blank=True, to='meta.Rights', help_text='Copyrights owner of the image.', null=True, verbose_name='rights'),
+            field=models.ForeignKey(blank=True, to='meta.Rights', help_text='Copyrights owner of the image.', null=True, verbose_name='rights', on_delete=models.DO_NOTHING),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='image',
             name='size',
-            field=models.ForeignKey(default=b'', to='meta.Size', blank=True, help_text='Size class of the organism in the image.', null=True, verbose_name='size'),
+            field=models.ForeignKey(default='', to='meta.Size', blank=True, help_text='Size class of the organism in the image.', null=True, verbose_name='size', on_delete=models.DO_NOTHING),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='image',
             name='state',
-            field=models.ForeignKey(blank=True, to='meta.State', help_text='State shown in the image (or state where it was collected).', null=True, verbose_name='state'),
+            field=models.ForeignKey(blank=True, to='meta.State', help_text='State shown in the image (or state where it was collected).', null=True, verbose_name='state', on_delete=models.DO_NOTHING),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='image',
             name='stats',
-            field=models.OneToOneField(null=True, editable=False, to='meta.Stats', help_text='Store stats about an image.', verbose_name='statistics'),
+            field=models.OneToOneField(null=True, editable=False, to='meta.Stats', help_text='Store stats about an image.', verbose_name='statistics', on_delete=models.DO_NOTHING),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='image',
             name='sublocation',
-            field=models.ForeignKey(blank=True, to='meta.Sublocation', help_text='Place shown in the image (or collection site).', null=True, verbose_name='place'),
+            field=models.ForeignKey(blank=True, to='meta.Sublocation', help_text='Place shown in the image (or collection site).', null=True, verbose_name='place', on_delete=models.DO_NOTHING),
             preserve_default=True,
         ),
         migrations.AddField(

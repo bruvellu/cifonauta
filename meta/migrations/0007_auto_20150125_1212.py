@@ -36,13 +36,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='image',
             name='city',
-            field=models.ForeignKey(blank=True, to='meta.City', help_text='City shown in the image (or city where it was collected).', null=True, verbose_name=b'cidade'),
+            field=models.ForeignKey(blank=True, to='meta.City', help_text='City shown in the image (or city where it was collected).', null=True, verbose_name=b'cidade', on_delete=models.DO_NOTHING),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='video',
             name='city',
-            field=models.ForeignKey(blank=True, to='meta.City', help_text='City shown in the image (or city where it was collected).', null=True, verbose_name=b'cidade'),
+            field=models.ForeignKey(blank=True, to='meta.City', help_text='City shown in the image (or city where it was collected).', null=True, verbose_name=b'cidade', on_delete=models.DO_NOTHING),
             preserve_default=True,
         ),
     ]

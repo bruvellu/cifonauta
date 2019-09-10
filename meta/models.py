@@ -28,8 +28,6 @@ class File(models.Model):
     highlight = models.BooleanField(_(u'destaque'), default=False, help_text=_(u'Imagem que merece destaque.'))
     cover = models.BooleanField(_(u'imagem de capa'), default=False, help_text=_(u'Imagem esteticamente bela, para usar na página principal.'))
     is_public = models.BooleanField(_(u'público'), default=False, help_text=_(u'Informa se imagem está visível para visitantes anônimos do site.'))
-    review = models.BooleanField(_(u'sob revisão'), default=False, help_text=_(u'Informa se imagem deve ser revisada.'))
-    notes = models.TextField(_(u'anotações'), blank=True, help_text=_(u'Campo de anotações extras sobre a imagem.'))
     pub_date = models.DateTimeField(_(u'data de publicação'), auto_now_add=True, help_text=_(u'Data de publicação da imagem no Cifonauta.'))
 
     # IPTC
@@ -40,8 +38,6 @@ class File(models.Model):
     # blank está se referindo à interface de admin.
     size = models.ForeignKey('Size', null=True, blank=True, default='',
             verbose_name=_(u'tamanho'), help_text=_(u'Classe de tamanho do organismo na imagem.'), on_delete=models.DO_NOTHING)
-    rights = models.ForeignKey('Rights', null=True, blank=True,
-            verbose_name=_(u'direitos'), help_text=_(u'Detentor dos direitos autorais da imagem.'), on_delete=models.DO_NOTHING)
     sublocation = models.ForeignKey('Sublocation', null=True, blank=True,
             verbose_name=_(u'local'), help_text=_(u'Localidade mostrada na imagem (ou local de coleta).'), on_delete=models.DO_NOTHING)
     city = models.ForeignKey('City', null=True, blank=True, verbose_name=('cidade'), help_text=_(u'Cidade mostrada na imagem (ou cidade de coleta).'), on_delete=models.DO_NOTHING)

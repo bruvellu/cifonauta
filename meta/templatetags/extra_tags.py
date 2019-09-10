@@ -120,7 +120,7 @@ def mediaque(media, qobj):
     elif media.datatype == 'video':
         query = Video.objects.filter(qobj, is_public=True).order_by('id')
     else:
-        print '%s é um datatype desconhecido.' % media.datatype
+        print('%s é um datatype desconhecido.' % media.datatype)
     return query
 
 @register.inclusion_tag('related.html', takes_context=True)

@@ -6,16 +6,15 @@ import os
 from meta.forms import *
 from meta.models import *
 from django.template import RequestContext
-from django.shortcuts import render_to_response
-from django.shortcuts import get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
 from remove import compile_paths
-from meta.search_indexes import MlSearchQuerySet, strip_accents
+#from meta.search_indexes import MlSearchQuerySet, strip_accents
 from django.http import HttpResponse
 import json
 
@@ -51,14 +50,14 @@ def main_page(request):
     except:
         tour, tour_image = '', ''
 
-    variables = RequestContext(request, {
+    context = {
         'main_image': main_image,
         'photo': photo,
         'video': video,
         'tour': tour,
         'tour_image': tour_image,
-        })
-    return render_to_response('main_page.html', variables)
+        }
+    return render(request, 'main_page.html', context)
 
 
 def search_page(request):
@@ -276,7 +275,7 @@ def search_page(request):
         'n_form': n_form,
         'keywords': keywords,
         })
-    return render_to_response('buscar.html', variables)
+    return render('buscar.html', variables)
 
 
 def org_page(request):
@@ -311,7 +310,7 @@ def org_page(request):
         'habitat': habitat,
         'assorted': assorted,
         })
-    return render_to_response('organizacao.html', variables)
+    return render('organizacao.html', variables)
 
 
 # Manage
@@ -327,7 +326,7 @@ def hidden_page(request):
         'images': images,
         'videos': videos,
         })
-    return render_to_response('hidden.html', variables)
+    return render('hidden.html', variables)
 
 
 @login_required
@@ -352,9 +351,9 @@ def fixmedia_page(request):
             try:
                 media.delete()
             except:
-                print 'Não rolou apagar do banco de dados?'
+                print('Não rolou apagar do banco de dados?')
         except:
-            print 'Algo deu errado para ler os caminhos.'
+            print('Algo deu errado para ler os caminhos.')
         # Insere no log?
         for path in paths:
             logger.debug('Supostamente removido: %s', path)
@@ -379,14 +378,14 @@ def fixmedia_page(request):
         'deleted': deleted,
         'not_deleted': not_deleted,
         })
-    return render_to_response('fixmedia.html', variables)
+    return render('fixmedia.html', variables)
 
 
 @login_required
 def translate_page(request):
     '''Página inicial para traduções.'''
     variables = RequestContext(request, {})
-    return render_to_response('translate.html', variables)
+    return render('translate.html', variables)
 
 
 # Single
@@ -500,10 +499,10 @@ def photo_page(request, image_id):
         'pageviews': pageviews,
         })
     if request.is_ajax():
-        #return render_to_response('disqus.html', variables)
-        return render_to_response('media_page_ajax.html', variables)
+        #return render('disqus.html', variables)
+        return render('media_page_ajax.html', variables)
     else:
-        return render_to_response('media_page.html', variables)
+        return render('media_page.html', variables)
 
 
 def video_page(request, video_id):
@@ -620,10 +619,10 @@ def video_page(request, video_id):
         'pageviews': pageviews,
         })
     if request.is_ajax():
-#        return render_to_response('disqus.html', variables)
-        return render_to_response('media_page_ajax.html', variables)
+#        return render('disqus.html', variables)
+        return render('media_page_ajax.html', variables)
     else:
-        return render_to_response('media_page.html', variables)
+        return render('media_page.html', variables)
 
 
 def embed_page(request, video_id):
@@ -632,7 +631,7 @@ def embed_page(request, video_id):
     variables = RequestContext(request, {
         'media': video,
         })
-    return render_to_response('embed.html', variables)
+    return render('embed.html', variables)
 
 
 def meta_page(request, model_name, field, slug):
@@ -718,7 +717,7 @@ def meta_page(request, model_name, field, slug):
         'queries': queries,
         'n_form': n_form,
         })
-    return render_to_response('meta_page.html', variables)
+    return render('meta_page.html', variables)
 
 
 def tour_page(request, slug):
@@ -752,7 +751,7 @@ def tour_page(request, slug):
         'references': references,
         'pageviews': pageviews,
         })
-    return render_to_response('tour_page.html', variables)
+    return render('tour_page.html', variables)
 
 
 # Menu
@@ -765,7 +764,7 @@ def taxa_page(request):
     variables = RequestContext(request, {
         'genera': genera,
         })
-    return render_to_response('taxa_page.html', variables)
+    return render('taxa_page.html', variables)
 
 
 def places_page(request):
@@ -780,7 +779,7 @@ def places_page(request):
         'states': states,
         'countries': countries,
         })
-    return render_to_response('places_page.html', variables)
+    return render('places_page.html', variables)
 
 
 def tags_page(request):
@@ -791,7 +790,7 @@ def tags_page(request):
         'tagcats': tagcats,
         'sizes': sizes,
         })
-    return render_to_response('tags_page.html', variables)
+    return render('tags_page.html', variables)
 
 
 def authors_page(request):
@@ -802,7 +801,7 @@ def authors_page(request):
         'authors': authors,
         'sources': sources,
         })
-    return render_to_response('authors_page.html', variables)
+    return render('authors_page.html', variables)
 
 
 def refs_page(request):
@@ -811,20 +810,20 @@ def refs_page(request):
     variables = RequestContext(request, {
         'references': references,
         })
-    return render_to_response('refs_page.html', variables)
+    return render('refs_page.html', variables)
 
 
 # Tests
 def empty_page(request):
     '''Página com template vazio somente para testes de performance.'''
     variables = RequestContext(request, {})
-    return render_to_response('empty_page.html', variables)
+    return render('empty_page.html', variables)
 
 
 def static_page(request):
     '''Página estática somente para testes de performance.'''
     variables = RequestContext(request, {})
-    return render_to_response('static_page.html', variables)
+    return render('static_page.html', variables)
 
 
 def dynamic_page(request):
@@ -833,7 +832,7 @@ def dynamic_page(request):
     variables = RequestContext(request, {
         'images': images,
         })
-    return render_to_response('dynamic_page.html', variables)
+    return render('dynamic_page.html', variables)
 
 
 def tours_page(request):
@@ -842,7 +841,7 @@ def tours_page(request):
     variables = RequestContext(request, {
         'tours': tours,
         })
-    return render_to_response('tours_page.html', variables)
+    return render('tours_page.html', variables)
 
 
 @csrf_protect
@@ -859,7 +858,7 @@ def press_page(request):
         'videos': videos,
         'cover_photo': cover_photo,
         })
-    return render_to_response('press_page.html', variables)
+    return render('press_page.html', variables)
 
 
 # Internal functions

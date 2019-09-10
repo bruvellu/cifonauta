@@ -2,7 +2,6 @@
 
 from django.template.defaultfilters import slugify
 
-from external.mendeley import mendeley
 
 
 # Não é signal, apenas função acessória.
@@ -157,27 +156,27 @@ def update_count(signal, instance, sender, **kwargs):
     try:
         instance.size.counter()
     except:
-        print 'Size == NULL (id=%d)' % instance.id
+        print('Size == NULL (id=%d)' % instance.id)
     # Sublocation
     try:
         instance.sublocation.counter()
     except:
-        print 'Sublocation == NULL (id=%d)' % instance.id
+        print('Sublocation == NULL (id=%d)' % instance.id)
     # City
     try:
         instance.city.counter()
     except:
-        print 'City == NULL (id=%d)' % instance.id
+        print('City == NULL (id=%d)' % instance.id)
     # State
     try:
         instance.state.counter()
     except:
-        print 'State == NULL (id=%d)' % instance.id
+        print('State == NULL (id=%d)' % instance.id)
     # Country
     try:
         instance.country.counter()
     except:
-        print 'Country == NULL (id=%d)' % instance.id
+        print('Country == NULL (id=%d)' % instance.id)
 
 
 def makestats(signal, instance, sender, **kwargs):

@@ -17,14 +17,14 @@ def check(photos, videos):
     for id in photos:
         isok = Image.objects.filter(id=id).exists()
         if not isok:
-            print 'Não existe foto com id=%s!' % id
+            print('Não existe foto com id=%s!' % id)
             sys.exit(2)
     for id in videos:
         isok = Video.objects.filter(id=id).exists()
         if not isok:
-            print 'Não existe vídeo com id=%s!' % id
+            print('Não existe vídeo com id=%s!' % id)
             sys.exit(2)
-    print 'id estão beleza, continuando...'
+    print('id estão beleza, continuando...')
     return True
 
 
@@ -36,16 +36,16 @@ def compile_paths(media):
             media.thumb_filepath.path,
             media.thumb_filepath.path.replace('site_media', 'local_media'),
             ]
-    print
-    print 'VOCÊ ESTÁ PRESTES A DELETAR A IMAGEM:'''
-    print '\t', media.datatype, media.id, ' - ', media.title
+    print()
+    print('VOCÊ ESTÁ PRESTES A DELETAR A IMAGEM:''')
+    print('\t', media.datatype, media.id, ' - ', media.title)
     if media.caption:
-        print '\t', media.caption
-    print '\t', ', '.join([author.name for author in media.author_set.all()])
+        print('\t', media.caption)
+    print('\t', ', '.join([author.name for author in media.author_set.all()]))
     if media.highlight:
-        print '\tÉ um destaque!'
+        print('\tÉ um destaque!')
     if media.cover:
-        print '\tÉ uma imagem de capa!'
+        print('\tÉ uma imagem de capa!')
     if media.datatype == 'video':
         to_be_removed.append(media.large_thumb.path)
         to_be_removed.append(media.large_thumb.path.replace(
@@ -66,10 +66,10 @@ def compile_paths(media):
         to_be_removed.append(media.web_filepath.path)
         to_be_removed.append(media.web_filepath.path.replace(
             'site_media', 'local_media'))
-    print '\tESTES ARQUIVOS SERÃO REMOVIDOS:'''
+    print('\tESTES ARQUIVOS SERÃO REMOVIDOS:''')
     for path in to_be_removed:
-        print '\t', path
-    print
+        print('\t', path)
+    print()
 
     return to_be_removed
 
@@ -82,15 +82,15 @@ def delete(media, force=False):
     else:
         proceed = raw_input('Deseja continuar? (s ou n): ')
     if proceed == 's':
-        print '\nDeletando objeto...'
+        print('\nDeletando objeto...')
         media.delete()
         for path in to_be_removed:
             try:
-                print 'Deletando', path
+                print('Deletando', path)
                 os.remove(path)
             except:
-                print 'NÃO CONSEGUI DELETAR O ARQUIVO:'
-                print path
+                print('NÃO CONSEGUI DELETAR O ARQUIVO:')
+                print(path)
                 jump = raw_input('Continuar? (s ou n): ')
                 if jump == 'n':
                     sys.exit(2)
@@ -100,7 +100,7 @@ def delete(media, force=False):
         if original == 's':
             os.remove(original_file)
     except:
-        print 'Arquivo original já não existe...'
+        print('Arquivo original já não existe...')
 
 
 def prepare(photos, videos):
@@ -154,13 +154,13 @@ def main(argv):
             'force',
             ])
     except getopt.GetoptError:
-        print 'Algo de errado nos argumentos...'
+        print('Algo de errado nos argumentos...')
         sys.exit(2)
 
     for opt, arg in opts:
         if opt in ('-h', '--help'):
-            print '\tUsage: ./remove.py -p 2352,87 -v 314\n\t\t**Delete photos with id 2352 and 87 and video with id 314.'
-            print '\tUsage: ./remove.py -af\n\t\t**Force deletion of orphaned and duplicated images.'
+            print('\tUsage: ./remove.py -p 2352,87 -v 314\n\t\t**Delete photos with id 2352 and 87 and video with id 314.')
+            print('\tUsage: ./remove.py -af\n\t\t**Force deletion of orphaned and duplicated images.')
             sys.exit()
         elif opt in ('-p', '--photo'):
             for id in arg.split(','):

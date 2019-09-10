@@ -27,9 +27,6 @@ class File(models.Model):
     # Website
     highlight = models.BooleanField(_(u'destaque'), default=False, help_text=_(u'Imagem que merece destaque.'))
     cover = models.BooleanField(_(u'imagem de capa'), default=False, help_text=_(u'Imagem esteticamente bela, para usar na página principal.'))
-    stats = models.OneToOneField('Stats', null=True, editable=False,
-            verbose_name=_(u'estatísticas'),
-            help_text=_(u'Reúne estatísticas sobre a imagem.'))
     is_public = models.BooleanField(_(u'público'), default=False, help_text=_(u'Informa se imagem está visível para visitantes anônimos do site.'))
     review = models.BooleanField(_(u'sob revisão'), default=False, help_text=_(u'Informa se imagem deve ser revisada.'))
     notes = models.TextField(_(u'anotações'), blank=True, help_text=_(u'Campo de anotações extras sobre a imagem.'))
@@ -42,14 +39,14 @@ class File(models.Model):
     # null está se referindo ao NULL do banco de dados e
     # blank está se referindo à interface de admin.
     size = models.ForeignKey('Size', null=True, blank=True, default='',
-            verbose_name=_(u'tamanho'), help_text=_(u'Classe de tamanho do organismo na imagem.'))
+            verbose_name=_(u'tamanho'), help_text=_(u'Classe de tamanho do organismo na imagem.'), on_delete=models.DO_NOTHING)
     rights = models.ForeignKey('Rights', null=True, blank=True,
-            verbose_name=_(u'direitos'), help_text=_(u'Detentor dos direitos autorais da imagem.'))
+            verbose_name=_(u'direitos'), help_text=_(u'Detentor dos direitos autorais da imagem.'), on_delete=models.DO_NOTHING)
     sublocation = models.ForeignKey('Sublocation', null=True, blank=True,
-            verbose_name=_(u'local'), help_text=_(u'Localidade mostrada na imagem (ou local de coleta).'))
-    city = models.ForeignKey('City', null=True, blank=True, verbose_name=('cidade'), help_text=_(u'Cidade mostrada na imagem (ou cidade de coleta).'))
-    state = models.ForeignKey('State', null=True, blank=True, verbose_name=_(u'estado'), help_text=_(u'Estado mostrado na imagem (ou estado de coleta).'))
-    country = models.ForeignKey('Country', null=True, blank=True, verbose_name=_(u'país'), help_text=_(u'País mostrado na imagem (ou país de coleta).'))
+            verbose_name=_(u'local'), help_text=_(u'Localidade mostrada na imagem (ou local de coleta).'), on_delete=models.DO_NOTHING)
+    city = models.ForeignKey('City', null=True, blank=True, verbose_name=('cidade'), help_text=_(u'Cidade mostrada na imagem (ou cidade de coleta).'), on_delete=models.DO_NOTHING)
+    state = models.ForeignKey('State', null=True, blank=True, verbose_name=_(u'estado'), help_text=_(u'Estado mostrado na imagem (ou estado de coleta).'), on_delete=models.DO_NOTHING)
+    country = models.ForeignKey('Country', null=True, blank=True, verbose_name=_(u'país'), help_text=_(u'País mostrado na imagem (ou país de coleta).'), on_delete=models.DO_NOTHING)
 
     # EXIF
     date = models.DateTimeField(_(u'data'), blank=True, help_text=_(u'Data em que a imagem foi criada.'))
@@ -111,7 +108,6 @@ class Image(File):
     def __unicode__(self):
         return self.title
 
-    @models.permalink
     def get_absolute_url(self):
         return ('image_url', [str(self.id)])
 
@@ -140,7 +136,6 @@ class Video(File):
     def __unicode__(self):
         return self.title
 
-    @models.permalink
     def get_absolute_url(self):
         return ('video_url', [str(self.id)])
 
@@ -153,9 +148,9 @@ class Video(File):
 class Author(models.Model):
     name = models.CharField(_(u'nome'), max_length=200, unique=True, help_text=_(u'Nome do autor.'))
     slug = models.SlugField(_(u'slug'), max_length=200, blank=True, help_text=_(u'Slug do nome do autor.'))
-    images = models.ManyToManyField(Image, null=True, blank=True,
+    images = models.ManyToManyField(Image, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este autor.'))
-    videos = models.ManyToManyField(Video, null=True, blank=True,
+    videos = models.ManyToManyField(Video, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este autor.'))
     image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0,
             editable=False, help_text=_(u'Número de fotos associadas a este autor.'))
@@ -164,7 +159,6 @@ class Author(models.Model):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
         return ('author_url', [self.slug])
 
@@ -186,9 +180,9 @@ class Author(models.Model):
 class Source(models.Model):
     name = models.CharField(_(u'nome'), max_length=200, unique=True, help_text=_(u'Nome do especialista.'))
     slug = models.SlugField(_(u'slug'), max_length=200, blank=True, help_text=_(u'Slug do nome do especialista.'))
-    images = models.ManyToManyField(Image, null=True, blank=True,
+    images = models.ManyToManyField(Image, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este especialista.'))
-    videos = models.ManyToManyField(Video, null=True, blank=True,
+    videos = models.ManyToManyField(Video, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este especialista.'))
     image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0,
             editable=False, help_text=_(u'Número de fotos associadas a este especialista.'))
@@ -197,7 +191,6 @@ class Source(models.Model):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
         return ('source_url', [self.slug])
 
@@ -220,12 +213,12 @@ class Tag(models.Model):
     name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome do marcador.'))
     slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome do marcador.'))
     description = models.TextField(_(u'descrição'), blank=True, help_text=_(u'Descrição do marcador.'))
-    images = models.ManyToManyField(Image, null=True, blank=True,
+    images = models.ManyToManyField(Image, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este marcador.'))
-    videos = models.ManyToManyField(Video, null=True, blank=True,
+    videos = models.ManyToManyField(Video, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este marcador.'))
     parent = models.ForeignKey('TagCategory', blank=True, null=True,
-            related_name='tags', verbose_name=_(u'pai'), help_text=_(u'Categoria a que este marcador pertence.'))
+            related_name='tags', verbose_name=_(u'pai'), help_text=_(u'Categoria a que este marcador pertence.'), on_delete=models.DO_NOTHING)
     position = models.PositiveIntegerField(_(u'posição'), default=0, help_text=_(u'Definem a ordem dos marcadores em um queryset.'))
     image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas a este marcador.'))
     video_count = models.PositiveIntegerField(_(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associadas a este marcador.'))
@@ -233,7 +226,6 @@ class Tag(models.Model):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
         return ('tag_url', [self.slug])
 
@@ -257,7 +249,7 @@ class TagCategory(models.Model):
     slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome da categoria de marcadores.'))
     description = models.TextField(_(u'descrição'), blank=True, help_text=_(u'Descrição da categoria de marcadores.'))
     position = models.PositiveIntegerField(_(u'posição'), default=0, help_text=_(u'Define a ordem das categorias.'))
-    parent = models.ForeignKey('self', blank=True, null=True, related_name='tagcat_children', verbose_name=_(u'pai'), help_text=_(u'Categoria pai desta categoria de marcadores.'))
+    parent = models.ForeignKey('self', blank=True, null=True, related_name='tagcat_children', verbose_name=_(u'pai'), help_text=_(u'Categoria pai desta categoria de marcadores.'), on_delete=models.DO_NOTHING)
     #TODO? Toda vez que uma tag é salva, atualizar a contagem das imagens e
     # vídeos das categorias. Seria a soma dos marcadores, só?
 
@@ -278,10 +270,10 @@ class Taxon(MPTTModel):
     tsn = models.PositiveIntegerField(null=True, blank=True, help_text=_(u'TSN, o identificador do táxon no ITIS.'))
     aphia = models.PositiveIntegerField(null=True, blank=True, help_text=_(u'APHIA, o identificador do táxon no WoRMS.'))
     parent = models.ForeignKey('self', blank=True, null=True,
-            related_name='children', verbose_name=_(u'pai'), help_text=_(u'Táxon pai deste táxon.'))
-    images = models.ManyToManyField(Image, null=True, blank=True,
+            related_name='children', verbose_name=_(u'pai'), help_text=_(u'Táxon pai deste táxon.'), on_delete=models.DO_NOTHING)
+    images = models.ManyToManyField(Image, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este táxon.'))
-    videos = models.ManyToManyField(Video, null=True, blank=True,
+    videos = models.ManyToManyField(Video, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este táxon.'))
     image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0,
             editable=False, help_text=_(u'Número de fotos associadas a este táxon.'))
@@ -290,7 +282,6 @@ class Taxon(MPTTModel):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
         return ('taxon_url', [self.slug])
 
@@ -351,7 +342,6 @@ class Size(models.Model):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
         return ('size_url', [self.slug])
 
@@ -394,7 +384,6 @@ class Sublocation(models.Model):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
         return ('sublocation_url', [self.slug])
 
@@ -424,7 +413,6 @@ class City(models.Model):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
         return ('city_url', [self.slug])
 
@@ -454,7 +442,6 @@ class State(models.Model):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
         return ('state_url', [self.slug])
 
@@ -484,7 +471,6 @@ class Country(models.Model):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
         return ('country_url', [self.slug])
 
@@ -507,9 +493,9 @@ class Reference(models.Model):
     name = models.CharField(_(u'nome'), max_length=100, unique=True, help_text=_(u'Identificador da referência (Mendeley ID).'))
     slug = models.SlugField(_(u'slug'), max_length=100, blank=True, help_text=_(u'Slug do identificar da referência.'))
     citation = models.TextField(_(u'citação'), blank=True, help_text=_(u'Citação formatada da referência.'))
-    images = models.ManyToManyField(Image, null=True, blank=True,
+    images = models.ManyToManyField(Image, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas à esta referência.'))
-    videos = models.ManyToManyField(Video, null=True, blank=True,
+    videos = models.ManyToManyField(Video, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados à esta referência.'))
     image_count = models.PositiveIntegerField(
             _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas à esta referência.'))
@@ -519,7 +505,6 @@ class Reference(models.Model):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
         return ('reference_url', [self.slug])
 
@@ -546,14 +531,11 @@ class Tour(models.Model):
     is_public = models.BooleanField(_(u'público'), default=False, help_text=_(u'Informa se o tour está visível para visitantes anônimos.'))
     pub_date = models.DateTimeField(_(u'data de publicação'), auto_now_add=True, help_text=_(u'Data de publicação do tour no Cifonauta.'))
     timestamp = models.DateTimeField(_(u'data de modificação'), auto_now=True, help_text=_(u'Data da última modificação do tour.'))
-    stats = models.OneToOneField('Stats', null=True, editable=False,
-            verbose_name=_(u'estatísticas'),
-            help_text=_(u'Guarda estatísticas de acesso ao tour.'))
-    images = models.ManyToManyField(Image, null=True, blank=True,
+    images = models.ManyToManyField(Image, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este tour.'))
-    videos = models.ManyToManyField(Video, null=True, blank=True,
+    videos = models.ManyToManyField(Video, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este tour.'))
-    references = models.ManyToManyField(Reference, null=True, blank=True,
+    references = models.ManyToManyField(Reference, blank=True,
             verbose_name=_(u'referências'), help_text=_(u'Referências associadas a este tour.'))
     image_count = models.PositiveIntegerField(
             _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas a este tour.'))
@@ -563,7 +545,6 @@ class Tour(models.Model):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
         return ('tour_url', [self.slug])
 
@@ -584,8 +565,8 @@ class Tour(models.Model):
 
 class TourPosition(models.Model):
     '''Define a posição da imagem no tour.'''
-    photo = models.ForeignKey(Image)
-    tour = models.ForeignKey(Tour)
+    photo = models.ForeignKey(Image, on_delete=models.DO_NOTHING)
+    tour = models.ForeignKey(Tour, on_delete=models.DO_NOTHING)
     position = models.PositiveIntegerField(_(u'posição'), default=0, help_text=_(u'Define a ordem das imagens em um tour.'))
 
     def __unicode__(self):
@@ -596,27 +577,6 @@ class TourPosition(models.Model):
         verbose_name = _(u'posição no tour')
         verbose_name_plural = _(u'posições no tour')
         ordering = ['position', 'tour__id']
-
-
-class Stats(models.Model):
-    '''Modelo para abrigar estatísticas sobre modelos.'''
-    pageviews = models.PositiveIntegerField(_(u'visitas'), default=0,
-            editable=False, help_text=_(u'Número de impressões de página de uma imagem.'))
-
-    def __unicode__(self):
-        try:
-            related = self.image
-        except:
-            try:
-                related = self.video
-            except:
-                related = self.tour
-        return '%s visitas (%s, id=%d)' % (self.pageviews, related, related.id)
-
-    class Meta:
-        verbose_name = _(u'estatísticas')
-        verbose_name_plural = _(u'estatísticas')
-
 
 
 # Slugify before saving.
@@ -643,7 +603,3 @@ signals.post_delete.connect(update_count, sender=Video)
 # Add position to tour images.
 signals.post_save.connect(set_position, sender=Tour)
 #signals.post_delete.connect(set_position, sender=Tour)
-# Create stats object before object creation
-signals.pre_save.connect(makestats, sender=Image)
-signals.pre_save.connect(makestats, sender=Video)
-signals.pre_save.connect(makestats, sender=Tour)

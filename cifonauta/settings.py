@@ -33,8 +33,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'haystack',
-
     'meta',
     'model_translator',
     'mptt',
@@ -47,7 +45,8 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,13 +54,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
     'django.middleware.locale.LocaleMiddleware',
-    'utils.AdminLocaleURLMiddleware',
-
     'django.middleware.cache.FetchFromCacheMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-)
+]
 
 ROOT_URLCONF = 'cifonauta.urls'
 WSGI_APPLICATION = 'cifonauta.wsgi.application'
@@ -134,16 +130,29 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Examples: "http://foo.com/static/admin/", "/static/admin/".
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.core.context_processors.request",
-    "django.core.context_processors.tz",
-    "django.contrib.messages.context_processors.messages"
-)
+TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [],
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.request',
+                    'django.template.context_processors.i18n',
+                    'django.template.context_processors.media',
+                    'django.template.context_processors.static',
+                    'django.template.context_processors.tz',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                    ],
+                'builtins': [
+                    'meta.templatetags.extra_tags',
+                    ],
+                },
+            },
+        ]
+
 
 # Required for sorl-thumbnail.
 INTERNAL_IPS = ('127.0.0.1', '::1')

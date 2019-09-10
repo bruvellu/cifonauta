@@ -36,13 +36,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='image',
             name='state',
-            field=models.ForeignKey(blank=True, to='meta.State', help_text='State shown in the image (or state where it was collected).', null=True, verbose_name='state'),
+            field=models.ForeignKey(blank=True, to='meta.State', help_text='State shown in the image (or state where it was collected).', null=True, verbose_name='state', on_delete=models.DO_NOTHING),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='video',
             name='state',
-            field=models.ForeignKey(blank=True, to='meta.State', help_text='State shown in the image (or state where it was collected).', null=True, verbose_name='state'),
+            field=models.ForeignKey(blank=True, to='meta.State', help_text='State shown in the image (or state where it was collected).', null=True, verbose_name='state', on_delete=models.DO_NOTHING),
             preserve_default=True,
         ),
     ]

@@ -356,19 +356,6 @@ class Size(models.Model):
         ordering = ['position']
 
 
-class Rights(models.Model):
-    name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome do detentor dos direitos autorais.'))
-    slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome do detentor dos direitos autorais.'))
-
-    def __unicode__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = _(u'detentor dos direitos')
-        verbose_name_plural = _(u'detentores dos direitos')
-        ordering = ['name']
-
-
 class Sublocation(models.Model):
     name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome da localidade.'))
     slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome da localidade.'))
@@ -582,7 +569,6 @@ signals.pre_save.connect(slug_pre_save, sender=TagCategory)
 signals.pre_save.connect(slug_pre_save, sender=Taxon)
 signals.pre_save.connect(slug_pre_save, sender=Size)
 signals.pre_save.connect(slug_pre_save, sender=Source)
-signals.pre_save.connect(slug_pre_save, sender=Rights)
 signals.pre_save.connect(slug_pre_save, sender=Sublocation)
 signals.pre_save.connect(slug_pre_save, sender=City)
 signals.pre_save.connect(slug_pre_save, sender=State)

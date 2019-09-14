@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel
 from meta.signals import *
@@ -305,24 +306,33 @@ class Source(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome do marcador.'))
-    slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome do marcador.'))
-    description = models.TextField(_(u'descrição'), blank=True, help_text=_(u'Descrição do marcador.'))
+    name = models.CharField(_('nome'), max_length=64, unique=True,
+            help_text=_('Nome do marcador.'))
+    slug = models.SlugField(_('slug'), max_length=64, default='', blank=True,
+            help_text=_('Slug do nome do marcador.'))
+    description = models.TextField(_('descrição'), default='', blank=True,
+            help_text=_('Descrição do marcador.'))
+    media = models.ManyToManyField('Media', blank=True,
+            verbose_name=_('fotos'),
+            help_text=_('Fotos associadas a este marcador.'))
+    parent = models.ForeignKey('TagCategory', on_delete=models.SET_NULL,
+            null=True, blank=True, related_name='tags',
+            verbose_name=_('categoria'),
+            help_text=_('Categoria a que este marcador pertence.'))
+
     images = models.ManyToManyField(Image, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este marcador.'))
     videos = models.ManyToManyField(Video, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este marcador.'))
-    parent = models.ForeignKey('TagCategory', blank=True, null=True,
-            related_name='tags', verbose_name=_(u'pai'), help_text=_(u'Categoria a que este marcador pertence.'), on_delete=models.DO_NOTHING)
     position = models.PositiveIntegerField(_(u'posição'), default=0, help_text=_(u'Definem a ordem dos marcadores em um queryset.'))
     image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas a este marcador.'))
     video_count = models.PositiveIntegerField(_(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associadas a este marcador.'))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return ('tag_url', [self.slug])
+        return reverse('tag_url', args=[self.slug])
 
     def counter(self):
         '''Conta o número de imagens+vídeos associados à M2M.
@@ -334,9 +344,9 @@ class Tag(models.Model):
         self.save()
 
     class Meta:
-        verbose_name = _(u'marcador')
-        verbose_name_plural = _(u'marcadores')
-        #ordering = ['position', 'name']
+        verbose_name = _('marcador')
+        verbose_name_plural = _('marcadores')
+        ordering = ['name']
 
 
 class TagCategory(models.Model):

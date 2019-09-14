@@ -37,7 +37,7 @@ class Media(models.Model):
             help_text=_('Imagem que merece destaque.'))
     is_public = models.BooleanField(_('público'), default=False,
             help_text=_('Visível para visitantes.'))
-    pub_date = models.DateTimeField(_('data de publicação'), null=True,
+    pub_date = models.DateTimeField(_('data de publicação'), auto_now_add=True,
             help_text=_('Data de publicação da imagem no Cifonauta.'))
 
 

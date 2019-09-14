@@ -8,6 +8,17 @@ from django.db.models import Q
 from django.db.models import signals
 
 
+class Media(models.Model):
+    '''Table containing both image and video files.'''
+
+    # File
+    filepath = models.CharField(_('arquivo original.'), max_length=200,
+            unique=True, help_text=_('Caminho único para arquivo original.'))
+    old_image = models.PositiveIntegerField(default=0, blank=True,
+            help_text=_('ID da imagem no antigo modelo.'))
+    old_video = models.PositiveIntegerField(default=0, blank=True,
+            help_text=_('ID do vídeo no antigo modelo.'))
+
 class File(models.Model):
     '''Define campos comuns para arquivos de mídia.'''
     # File

@@ -18,6 +18,17 @@ class Media(models.Model):
             help_text=_('Arquivo processado para a web.'))
     coverpath = models.ImageField(_('amostra do arquivo.'), unique=True,
             help_text=_('Imagem de amostra do arquivo processado.'))
+    timestamp = models.DateTimeField(_('data de modificação'), null=True, blank=True,
+            help_text=_('Data da última modificação do arquivo.'))
+    datatype = models.CharField(_('tipo de mídia'), max_length=15, blank=True,
+            help_text=_('Tipo de mídia.'))
+    duration = models.CharField(_('duração'), max_length=20,
+            default='00:00:00', blank=True,
+            help_text=_('Duração do vídeo no formato HH:MM:SS.'))
+    dimensions = models.CharField(_('dimensões'), max_length=20, default='0x0',
+            blank=True, help_text=_('Dimensões do vídeo original.'))
+
+    # Website
     old_image = models.PositiveIntegerField(default=0, blank=True,
             help_text=_('ID da imagem no antigo modelo.'))
     old_video = models.PositiveIntegerField(default=0, blank=True,

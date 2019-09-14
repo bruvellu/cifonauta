@@ -338,21 +338,20 @@ class Tag(models.Model):
 
 
 class TagCategory(models.Model):
-    name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome da categoria de marcadores.'))
-    slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome da categoria de marcadores.'))
-    description = models.TextField(_(u'descrição'), blank=True, help_text=_(u'Descrição da categoria de marcadores.'))
-    position = models.PositiveIntegerField(_(u'posição'), default=0, help_text=_(u'Define a ordem das categorias.'))
-    parent = models.ForeignKey('self', blank=True, null=True, related_name='tagcat_children', verbose_name=_(u'pai'), help_text=_(u'Categoria pai desta categoria de marcadores.'), on_delete=models.DO_NOTHING)
-    #TODO? Toda vez que uma tag é salva, atualizar a contagem das imagens e
-    # vídeos das categorias. Seria a soma dos marcadores, só?
+    name = models.CharField(_('nome'), max_length=64, unique=True,
+            help_text=_('Nome da categoria de marcadores.'))
+    slug = models.SlugField(_('slug'), max_length=64, default='', blank=True,
+            help_text=_('Slug do nome da categoria de marcadores.'))
+    description = models.TextField(_('descrição'), default='', blank=True,
+            help_text=_('Descrição da categoria de marcadores.'))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = _(u'categoria de marcadores')
-        verbose_name_plural = _(u'categorias de marcadores')
-        #ordering = ['position', 'name']
+        verbose_name = _('categoria de marcadores')
+        verbose_name_plural = _('categorias de marcadores')
+        ordering = ['name']
 
 
 class Taxon(MPTTModel):

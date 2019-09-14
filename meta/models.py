@@ -14,6 +14,10 @@ class Media(models.Model):
     # File
     filepath = models.CharField(_('arquivo original.'), max_length=200,
             unique=True, help_text=_('Caminho único para arquivo original.'))
+    sitepath = models.FileField(_('arquivo web.'), default='', blank=True,
+            help_text=_('Arquivo processado para a web.'))
+    coverpath = models.ImageField(_('amostra do arquivo.'), default='', blank=True,
+            help_text=_('Imagem de amostra do arquivo processado.'))
     old_image = models.PositiveIntegerField(default=0, blank=True,
             help_text=_('ID da imagem no antigo modelo.'))
     old_video = models.PositiveIntegerField(default=0, blank=True,

@@ -355,14 +355,26 @@ class TagCategory(models.Model):
 
 
 class Taxon(MPTTModel):
-    name = models.CharField(_(u'nome'), max_length=256, unique=True, help_text=_(u'Nome do táxon.'))
-    slug = models.SlugField(_(u'slug'), max_length=256, blank=True, help_text=_(u'Slug do nome do táxon.'))
-    common = models.CharField(_(u'nome popular'), max_length=256, blank=True, help_text=_(u'Nome popular do táxon.'))
+    name = models.CharField(_('nome'), max_length=256, unique=True,
+            help_text=_('Nome do táxon.'))
+    slug = models.SlugField(_('slug'), max_length=256, blank=True,
+            help_text=_('Slug do nome do táxon.'))
     rank = models.CharField(_(u'rank'), max_length=256, blank=True, help_text=_(u'Ranking taxonômico do táxon.'))
-    tsn = models.PositiveIntegerField(null=True, blank=True, help_text=_(u'TSN, o identificador do táxon no ITIS.'))
-    aphia = models.PositiveIntegerField(null=True, blank=True, help_text=_(u'APHIA, o identificador do táxon no WoRMS.'))
-    parent = models.ForeignKey('self', blank=True, null=True,
-            related_name='children', verbose_name=_(u'pai'), help_text=_(u'Táxon pai deste táxon.'), on_delete=models.DO_NOTHING)
+    aphia = models.PositiveIntegerField(null=True, blank=True,
+            help_text=_('APHIA, o identificador do táxon no WoRMS.'))
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,
+            null=True, related_name='children', verbose_name=_('pai'),
+            help_text=_('Táxon pai deste táxon.'))
+    media = models.ManyToManyField( 'Media', blank=True,
+            verbose_name=_('fotos'),
+            help_text=_('Fotos associadas a este táxon.'))
+    timestamp = models.DateTimeField( _('data de modificação'), blank=True,
+            null=True, help_text=_('Data da última modificação do arquivo.'))
+
+
+    common = models.CharField(_('nome popular'), max_length=256, blank=True,
+            help_text=_('Nome popular do táxon.'))
+    tsn = models.PositiveIntegerField(null=True, blank=True, help_text=_('TSN, o identificador do táxon no ITIS.'))
     images = models.ManyToManyField(Image, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este táxon.'))
     videos = models.ManyToManyField(Video, blank=True,
@@ -371,11 +383,11 @@ class Taxon(MPTTModel):
             editable=False, help_text=_(u'Número de fotos associadas a este táxon.'))
     video_count = models.PositiveIntegerField(_(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associados a este táxon.'))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return ('taxon_url', [self.slug])
+        return reverse('taxon_url', args=[self.slug])
 
     def counter(self):
         '''Conta o número de imagens+vídeos associados.
@@ -408,8 +420,8 @@ class Taxon(MPTTModel):
         return Taxon.objects.filter(query)
 
     class Meta:
-        verbose_name = _(u'táxon')
-        verbose_name_plural = _(u'táxons')
+        verbose_name = _('táxon')
+        verbose_name_plural = _('táxons')
         ordering = ['name']
 
 

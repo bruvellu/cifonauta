@@ -36,6 +36,10 @@ class Media(models.Model):
             help_text=_('Data de publicação da imagem no Cifonauta.'))
 
     # Metadata
+    title = models.CharField(_('título'), max_length=200, default='',
+            blank=True, help_text=_('Título da imagem.'))
+    caption = models.TextField(_('legenda'), default='', blank=True,
+            help_text=_('Legenda da imagem.'))
     date = models.DateTimeField(_('data'), null=True, blank=True,
             help_text=_('Data de criação da imagem.'))
     geolocation = models.CharField(_('geolocalização'), default='',

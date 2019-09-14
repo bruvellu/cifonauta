@@ -320,6 +320,7 @@ class Tag(models.Model):
             verbose_name=_('categoria'),
             help_text=_('Categoria a que este marcador pertence.'))
 
+    # Deprecated
     images = models.ManyToManyField(Image, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este marcador.'))
     videos = models.ManyToManyField(Video, blank=True,
@@ -371,8 +372,7 @@ class Taxon(MPTTModel):
     timestamp = models.DateTimeField( _('data de modificação'), blank=True,
             null=True, help_text=_('Data da última modificação do arquivo.'))
 
-
-    common = models.CharField(_('nome popular'), max_length=256, null=True, blank=True, help_text=_('Nome popular do táxon.'))
+    # Deprecated
     images = models.ManyToManyField(Image, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este táxon.'))
     videos = models.ManyToManyField(Video, blank=True,

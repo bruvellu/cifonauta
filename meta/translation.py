@@ -25,7 +25,7 @@ class TagCatTranslation(TranslationOptions):
 
 @register(Taxon)
 class TaxonTranslation(TranslationOptions):
-    fields = ('common', 'rank',)
+    fields = ('rank',)
 
 @register(City)
 class CityTranslation(TranslationOptions):

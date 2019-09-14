@@ -55,6 +55,22 @@ class Media(models.Model):
     dimensions = models.CharField(_('dimensões'), max_length=20, default='0x0',
             blank=True, help_text=_('Dimensões do vídeo original.'))
 
+    # Foreign metadata
+    size = models.ForeignKey('Size', on_delete=models.SET_NULL, null=True,
+            blank=True, verbose_name=_('tamanho'),
+            help_text=_('Classe de tamanho do organismo na imagem.'))
+    sublocation = models.ForeignKey('Sublocation', on_delete=models.SET_NULL,
+            null=True, blank=True, verbose_name=_('local'),
+            help_text=_('Localidade mostrada na imagem (ou local de coleta).'))
+    city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True,
+            blank=True, verbose_name=_('cidade'),
+            help_text=_('Cidade mostrada na imagem (ou cidade de coleta).'))
+    state = models.ForeignKey('State', on_delete=models.SET_NULL, null=True,
+            blank=True, verbose_name=_('estado'),
+            help_text=_('Estado mostrado na imagem (ou estado de coleta).'))
+    country = models.ForeignKey('Country', on_delete=models.SET_NULL,
+            null=True, blank=True, verbose_name=_('país'),
+            help_text=_('País mostrado na imagem (ou país de coleta).'))
 
 
 class File(models.Model):

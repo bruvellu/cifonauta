@@ -33,6 +33,13 @@ class Media(models.Model):
             help_text=_('ID da imagem no antigo modelo.'))
     old_video = models.PositiveIntegerField(default=0, blank=True,
             help_text=_('ID do vídeo no antigo modelo.'))
+    highlight = models.BooleanField(_('destaque'), default=False,
+            help_text=_('Imagem que merece destaque.'))
+    is_public = models.BooleanField(_('público'), default=False,
+            help_text=_('Visível para visitantes.'))
+    pub_date = models.DateTimeField(_('data de publicação'), null=True,
+            help_text=_('Data de publicação da imagem no Cifonauta.'))
+
 
 class File(models.Model):
     '''Define campos comuns para arquivos de mídia.'''

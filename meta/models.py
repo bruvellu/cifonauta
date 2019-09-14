@@ -372,16 +372,11 @@ class Taxon(MPTTModel):
             null=True, help_text=_('Data da última modificação do arquivo.'))
 
 
-    common = models.CharField(_('nome popular'), max_length=256, blank=True,
-            help_text=_('Nome popular do táxon.'))
-    tsn = models.PositiveIntegerField(null=True, blank=True, help_text=_('TSN, o identificador do táxon no ITIS.'))
+    common = models.CharField(_('nome popular'), max_length=256, null=True, blank=True, help_text=_('Nome popular do táxon.'))
     images = models.ManyToManyField(Image, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este táxon.'))
     videos = models.ManyToManyField(Video, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este táxon.'))
-    image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0,
-            editable=False, help_text=_(u'Número de fotos associadas a este táxon.'))
-    video_count = models.PositiveIntegerField(_(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associados a este táxon.'))
 
     def __str__(self):
         return self.name
@@ -389,20 +384,9 @@ class Taxon(MPTTModel):
     def get_absolute_url(self):
         return reverse('taxon_url', args=[self.slug])
 
-    def counter(self):
-        '''Conta o número de imagens+vídeos associados.
-
-        Atualiza os respectivos campos image_count e video_count.
-        '''
-        self.image_count = self.images.count()
-        self.video_count = self.videos.count()
-        self.save()
-
     @staticmethod
     def get_taxon_and_parents(qs):
-        """
-        Returns all parents and current taxon from a QuerySet of taxons
-        """
+        '''Returns all parents and current taxon from a QuerySet of taxons.'''
         tree_list = {}
         query = Q()
 

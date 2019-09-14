@@ -324,24 +324,12 @@ class Tag(models.Model):
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este marcador.'))
     videos = models.ManyToManyField(Video, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este marcador.'))
-    position = models.PositiveIntegerField(_(u'posição'), default=0, help_text=_(u'Definem a ordem dos marcadores em um queryset.'))
-    image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas a este marcador.'))
-    video_count = models.PositiveIntegerField(_(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associadas a este marcador.'))
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
         return reverse('tag_url', args=[self.slug])
-
-    def counter(self):
-        '''Conta o número de imagens+vídeos associados à M2M.
-
-        Atualiza os respectivos campos image_count e video_count.
-        '''
-        self.image_count = self.images.count()
-        self.video_count = self.videos.count()
-        self.save()
 
     class Meta:
         verbose_name = _('marcador')

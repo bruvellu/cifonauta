@@ -18,15 +18,10 @@ class Media(models.Model):
             help_text=_('Arquivo processado para a web.'))
     coverpath = models.ImageField(_('amostra do arquivo.'), unique=True,
             help_text=_('Imagem de amostra do arquivo processado.'))
-    timestamp = models.DateTimeField(_('data de modificação'),
-            help_text=_('Data da última modificação do arquivo.'))
     datatype = models.CharField(_('tipo de mídia'), max_length=15,
             help_text=_('Tipo de mídia.'))
-    duration = models.CharField(_('duração'), max_length=20,
-            default='00:00:00', blank=True,
-            help_text=_('Duração do vídeo no formato HH:MM:SS.'))
-    dimensions = models.CharField(_('dimensões'), max_length=20, default='0x0',
-            blank=True, help_text=_('Dimensões do vídeo original.'))
+    timestamp = models.DateTimeField(_('data de modificação'),
+            help_text=_('Data da última modificação do arquivo.'))
 
     # Website
     old_image = models.PositiveIntegerField(default=0, blank=True,
@@ -39,6 +34,23 @@ class Media(models.Model):
             help_text=_('Visível para visitantes.'))
     pub_date = models.DateTimeField(_('data de publicação'), auto_now_add=True,
             help_text=_('Data de publicação da imagem no Cifonauta.'))
+
+    # Metadata
+    date = models.DateTimeField(_('data'), null=True, blank=True,
+            help_text=_('Data de criação da imagem.'))
+    geolocation = models.CharField(_('geolocalização'), default='',
+            max_length=25, blank=True,
+            help_text=_('Geolocalização da imagem no formato decimal.'))
+    latitude = models.CharField(_('latitude'), default='', max_length=25,
+            blank=True, help_text=_('Latitude onde a imagem foi criada.'))
+    longitude = models.CharField(_('longitude'), default='', max_length=25,
+            blank=True, help_text=_('Longitude onde a imagem foi criada.'))
+    duration = models.CharField(_('duração'), max_length=20,
+            default='00:00:00', blank=True,
+            help_text=_('Duração do vídeo no formato HH:MM:SS.'))
+    dimensions = models.CharField(_('dimensões'), max_length=20, default='0x0',
+            blank=True, help_text=_('Dimensões do vídeo original.'))
+
 
 
 class File(models.Model):

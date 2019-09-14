@@ -410,41 +410,41 @@ class Taxon(MPTTModel):
 
 
 class Size(models.Model):
-    SIZES = (
-            ('<0,1 mm', '<0,1 mm'),
-            ('0,1 - 1,0 mm', '0,1 - 1,0 mm'),
-            ('1,0 - 10 mm', '1,0 - 10 mm'),
-            ('10 - 100 mm', '10 - 100 mm'),
-            ('>100 mm', '>100 mm')
-            )
-    name = models.CharField(_(u'nome'), max_length=32, unique=True,
-            choices=SIZES, help_text=_(u'Nome da classe de tamanho.'))
-    slug = models.SlugField(_(u'slug'), max_length=32, blank=True, help_text=_(u'Slug do nome da classe de tamanho.'))
-    description = models.TextField(_(u'descrição'), blank=True, help_text=_(u'Descrição da classe de tamanho.'))
-    position = models.PositiveIntegerField(_(u'posição'), default=0, help_text=_(u'Define ordem das classes de tamanho em um queryset.'))
-    image_count = models.PositiveIntegerField(
-            _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas à esta classe de tamanho.'))
-    video_count = models.PositiveIntegerField(
-            _(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associados à esta classe de tamanho.'))
 
-    def __unicode__(self):
+    NANO = '<0,1 mm'
+    MICRO = '0,1 - 1,0 mm'
+    MILI = '1,0 - 10 mm'
+    CENTI = '10 - 100 mm'
+    MACRO = '>100 mm'
+    
+    SIZE_CHOICES = [
+            (NANO, '<0,1 mm'),
+            (MICRO, '0,1 - 1,0 mm'),
+            (MILI, '1,0 - 10 mm'),
+            (CENTI, '10 - 100 mm'),
+            (MACRO, '>100 mm')
+            ]
+
+    name = models.CharField(_('nome'), max_length=32, unique=True,
+            choices=SIZE_CHOICES, help_text=_('Nome da classe de tamanho.'))
+    slug = models.SlugField(_('slug'), max_length=32, blank=True,
+            help_text=_('Slug do nome da classe de tamanho.'))
+    description = models.TextField(_('descrição'), blank=True,
+            help_text=_('Descrição da classe de tamanho.'))
+
+    # Deprecated
+    position = models.PositiveIntegerField(_('posição'), default=0,
+            help_text=_('Define ordem das classes de tamanho em um queryset.'))
+
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return ('size_url', [self.slug])
-
-    def counter(self):
-        '''Conta o número de imagens+vídeos associados à ForeignKey.
-
-        Atualiza os respectivos campos image_count e video_count.
-        '''
-        self.image_count = self.image_set.count()
-        self.video_count = self.video_set.count()
-        self.save()
+        return reverse('size_url', args=[self.slug])
 
     class Meta:
-        verbose_name = _(u'tamanho')
-        verbose_name_plural = _(u'tamanhos')
+        verbose_name = _('tamanho')
+        verbose_name_plural = _('tamanhos')
         ordering = ['position']
 
 

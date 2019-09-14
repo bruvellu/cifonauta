@@ -72,6 +72,40 @@ class Media(models.Model):
             null=True, blank=True, verbose_name=_('país'),
             help_text=_('País mostrado na imagem (ou país de coleta).'))
 
+    def __str__(self):
+        return 'ID={} {} ({})'.format(self.id, self.title, self.datatype)
+
+    def get_absolute_url(self):
+        return reverse('media_url', args=[str(self.id)])
+
+    class Meta:
+        verbose_name = _('arquivo')
+        verbose_name_plural = _('arquivos')
+        ordering = ['id']
+
+
+class Person(models.Model):
+    name = models.CharField(_('nome'), max_length=200, unique=True, blank=True,
+            help_text=_('Nome do autor.'))
+    slug = models.SlugField(_('slug'), max_length=200, unique=True, blank=True,
+            help_text=_('Slug do nome do autor.'))
+    is_author = models.BooleanField(_('author'), default=False,
+            help_text=_('Informa se a pessoa é autora.'))
+    media = models.ManyToManyField('Media', blank=True,
+            verbose_name=_('fotos'),
+            help_text=_('Arquivos associados a este autor.'))
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('person_url', args=[self.slug])
+
+    class Meta:
+        verbose_name = _('pessoa')
+        verbose_name_plural = _('pessoas')
+        ordering = ['name']
+
 
 class File(models.Model):
     '''Define campos comuns para arquivos de mídia.'''

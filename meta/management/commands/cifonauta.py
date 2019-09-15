@@ -1,39 +1,38 @@
-from django.core.management.base import BaseCommand, CommandError
-from django.utils import translation
-
 import os
 import pickle
 import time
+
 from optparse import make_option
 from datetime import datetime
-from iptcinfo import IPTCInfo
+from django.core.management.base import BaseCommand, CommandError
+from django.utils import translation
+from django.utils import timezone
 
-from media_utils import check_file, dir_ready, get_exif, get_date, get_gps, get_info
+from cifonauta.settings import BASE_DIR, SOURCE_ROOT, MEDIA_ROOT, PHOTO_EXTENSIONS, VIDEO_EXTENSIONS, MEDIA_EXTENSIONS
+from media_utils import *
+from linking import LinkManager
 from meta import models
+from worms import Aphia
 
 
 class Command(BaseCommand):
     args = ''
-    help = 'Main function of the Cifonauta database organizer.'
+    help = 'Main function of the Cifonauta database.'
 
-    option_list = BaseCommand.option_list + (
-            make_option('-n', '--number', action='store', type='int',
+    def add_arguments(self, parser):
+        parser.add_argument('-n', '--number', action='store',
                         dest='number', default=20000,
-                        help='Number of files to scan.'),
-            make_option('-p', '--only-photos', action='store_true',
+                        help='Number of files to scan.')
+        parser.add_argument('-p', '--only-photos', action='store_true',
                         dest='photos', default=False,
-                        help='Only scan photos.'),
-            make_option('-m', '--only-movies', action='store_true',
+                        help='Only scan photos.')
+        parser.add_argument('-m', '--only-movies', action='store_true',
                         dest='videos', default=False,
-                        help='Only scan videos.'),
-            )
-
-    SITE_MEDIA = 'site_media'
-    SITE_MEDIA_PHOTOS = 'site_media/photos'
-    SITE_MEDIA_VIDEOS = 'site_media/videos'
+                        help='Only scan videos.')
 
     def handle(self, *args, **options):
         '''Command execution trunk.'''
+
         # Stats.
         t0 = time.time()
         n = 0
@@ -41,135 +40,97 @@ class Command(BaseCommand):
         n_updated = 0
 
         # Some variables.
-        n_max = options['number']
+        n_max = int(options['number'])
         only_photos = options['photos']
         only_videos = options['videos']
+
+        # Choose which file extensions.
+        if only_photos:
+            extensions = PHOTO_EXTENSIONS
+        elif only_videos:
+            extensions = VIDEO_EXTENSIONS
+        else:
+            extensions = MEDIA_EXTENSIONS
 
         # Initiate database instance.
         cbm = Database()
 
-        # Choose which file type.
-        if only_photos:
-            photo_folder = Folder(self.SITE_MEDIA_PHOTOS, n_max)
-            photo_filepaths = photo_folder.get_files()
-            video_filepaths = []
-        elif only_videos:
-            video_folder = Folder(self.SITE_MEDIA_VIDEOS, n_max)
-            video_filepaths = video_folder.get_files()
-            photo_filepaths = []
-        else:
-            # Do photos first.
-            photo_folder = Folder(self.SITE_MEDIA_PHOTOS, n_max)
-            photo_filepaths = photo_folder.get_files()
-            # Do videos last.
-            video_folder = Folder(self.SITE_MEDIA_VIDEOS, n_max)
-            video_filepaths = video_folder.get_files()
+        # Get list of files in source_media.
+        source_media = Folder(SOURCE_ROOT, extensions, n_max)
 
-        # Process photos.
-        for path in photo_filepaths:
-            photo = Photo(path)
-            # Search photo in database.
-            query = cbm.search_db(photo)
-            if not query:
-                print(u'NEW FILE: %s.' % photo.filename)
-                photo.create_meta()
-                cbm.update_db(photo)
+        self.stdout.write('\nProcessing {} file(s)...'.format(n_max))
+
+        # Process files in source_media.
+        for src_file in source_media.files[:n_max]:
+            # Search database.
+            record, modified = cbm.search_db(src_file)
+            # Entry exists and timestamp has not changed.
+            if record and not modified:
+                self.stdout.write('\nENTRY UP-TO-DATE! NEXT...')
+            # Entry exists and timestamps differ.
+            elif record and modified:
+                self.stdout.write('\nUPDATING ENTRY...')
+                src_file.create_meta(record)
+                cbm.update_db(src_file, update=True)
+                self.stdout.write('\nPROCESSING MEDIA...')
+                src_file.process_media()
+                n_updated += 1
+            # Entry does not exits in the database.
+            elif not record:
+                self.stdout.write('NEW FILE!')
+                src_file.create_meta()
+                cbm.update_db(src_file)
+                self.stdout.write('\nPROCESSING MEDIA...')
+                src_file.process_media()
                 n_new += 1
-            else:
-                if query == 2:
-                    # Entry exists and timestamp has not changed.
-                    print(u'ENTRY UP-TO-DATE! NEXT...')
-                    continue
-                else:
-                    # Timestamps differ.
-                    print(u'UPDATING ENTRY...')
-                    photo.create_meta()
-                    cbm.update_db(photo, update=True)
-                    n_updated += 1
-        n += len(photo_filepaths)
 
-        # Process videos.
-        for path in video_filepaths:
-            video = Movie(path)
-            # Search photo in database.
-            query = cbm.search_db(video)
-            if not query:
-                print(u'NEW FILE: %s.' % video.filename)
-                video.create_meta()
-                cbm.update_db(video)
-                n_new += 1
-            else:
-                if query == 2:
-                    # Entry exists and timestamp has not changed.
-                    print(u'ENTRY UP-TO-DATE! NEXT...')
-                    continue
-                else:
-                    # Timestamps differ.
-                    print(u'UPDATING ENTRY...')
-                    video.create_meta()
-                    cbm.update_db(video, update=True)
-                    n_updated += 1
-        n += len(video_filepaths)
 
-        self.stdout.write('%d unique names. -p:%s, -m:%s' % (options['number'],
-                                                             options['photos'],
-                                                             options['videos']))
+        # Number of files analyzed.
+        n = len(source_media.files[:n_max])
 
         # Statistics.
-        print(u'\n%d ANALYZED FILES' % n)
-        print(u'%d new' % n_new)
-        print(u'%d updated' % n_updated)
-        t = int(time.time() - t0)
+        self.stdout.write('\nFINISHED!')
+        self.stdout.write('{} files'.format(n))
+        self.stdout.write('{} new'.format(n_new))
+        self.stdout.write('{} updated'.format(n_updated))
+        t = time.time() - t0
         if t > 60:
-            print(u'\nRunning time: ' + str(t / 60) + ' min ' + str(t % 60) + ' s')
+            self.stdout.write('\nRunning time: {} min {} s\n'.format(int(t / 60), int(t % 60)))
         else:
-            print(u'\nRunning time: ' + str(t) + ' s')
-        print(u'\n%d analyzed, %d new, %d updated' % (n, n_new, n_updated))
+            self.stdout.write('\nRunning time: {:.1f} s\n'.format(t))
+
 
 class Database:
     '''Database object.'''
     def __init__(self):
-        pass
+        # Set language to Portuguese.
+        translation.activate('pt-br')
 
     def search_db(self, media):
         '''Query database for filename.
 
-        Compare timestamps, if equal, skip, if different, update.
+        Compare timestamps and return record and status (True or False).
         '''
-        print(u'Searching %s...' % media.filepath)
-        photopath = 'photos/'
-        videopath = 'videos/'
-
-        # Set language to Portuguese.
-        translation.activate('pt-br')
+        print('\nQUERY: {}'.format(media.filepath))
 
         # Query for the exact filename to avoid confusion.
         try:
-            if media.type == 'photo':
-                record = models.Image.objects.get(filename=media.filename)
-            elif media.type == 'video':
-                record = models.Video.objects.get(filename=media.filename)
-            print(u'Bingo! Found %s.' % media.filename)
-            print(u'Comparing timestamp between file and db...')
-            # XXX Dirty hack to make naive timestamp.
-            record.timestamp = record.timestamp.replace(tzinfo=None)
+            record = models.Media.objects.get(filepath=media.filepath)
+            print('DB RECORD: Yes')
             if record.timestamp != media.timestamp:
-                print(u'%s != %s' % (record.timestamp, media.timestamp))
-                print(u'File has changed! Return 1')
-                return 1
+                print()
+                print('MODIFIED: Yes -> {} != {}'.format(record.timestamp, media.timestamp))
+                return record, True
             else:
-                print(u'File has not changed! Return 2')
-                return 2
+                print('MODIFIED: No')
+                return record, False
         except:
-            print(u'Entry not found.')
-            return False
+            print('DB RECORD: No')
+            return None, False
 
     def update_db(self, media, update=False):
         '''Creates or updates database entry.'''
-        print(u'Updating database...')
-
-        # Set language to Portuguese.
-        translation.activate('pt-br')
+        print('\nDATABASE:')
 
         # Instantiate metadata for processing.
         media_meta = media.metadata.dictionary
@@ -196,12 +157,11 @@ class Database:
         del media_meta['tags']
 
         # References.
-        refs = media_meta['references']
-        del media_meta['references']
+        #refs = media_meta['references']
+        #del media_meta['references']
 
         # Keep media with incomplete metadata private.
         if media_meta['title'] == '' or not media_meta['author']:
-            print(u'Media %s has no title or author!' % media_meta['filepath'])
             media_meta['is_public'] = False
         else:
             media_meta['is_public'] = True
@@ -209,8 +169,7 @@ class Database:
         del media_meta['author']
 
         # Transform values in model instances.
-        toget = ['size', 'rights', 'sublocation',
-                'city', 'state', 'country']
+        toget = ['size', 'sublocation', 'city', 'state', 'country']
         for k in toget:
             # Create only if not blank.
             if media_meta[k]:
@@ -218,26 +177,20 @@ class Database:
             else:
                 del media_meta[k]
 
+        # Saving is needed to create an ID.
         if not update:
-            if media.type == 'photo':
-                entry = models.Image(**media_meta)
-            elif media.type == 'video':
-                entry = models.Video(**media_meta)
-            # Saving is needed to create an ID, necessary for saving remaining metadata.
+            entry = models.Media(**media_meta)
             entry.save()
         else:
-            if media.type == 'photo':
-                entry = models.Image.objects.get(filename=media.filename)
-            elif media.type == 'video':
-                entry = models.Video.objects.get(filename=media.filename)
-            for k, v in media_meta.iteritems():
+            entry = models.Media.objects.get(filepath=media_meta['filepath'])
+            for k, v in media_meta.items():
                 setattr(entry, k, v)
 
         # Update authors.
         entry = self.update_sets(entry, 'author', authors)
 
         # Update sources.
-        entry = self.update_sets(entry, 'source', sources)
+        entry = self.update_sets(entry, 'person', sources)
 
         # Update taxa.
         entry = self.update_sets(entry, 'taxon', taxa)
@@ -246,12 +199,12 @@ class Database:
         entry = self.update_sets(entry, 'tag', tags)
 
         # Update references.
-        entry = self.update_sets(entry, 'reference', refs)
+        #entry = self.update_sets(entry, 'reference', refs)
 
         # Saving modifications.
         entry.save()
 
-        print(u'Database entry updated!')
+        print('Entry updated!')
 
     def get_instance(self, table, value):
         '''Returns ID from name.'''
@@ -259,56 +212,59 @@ class Database:
         # Set language to Portuguese.
         translation.activate('pt-br')
 
-        print(u'\nGET table: %s, value: %s' % (table, value))
+        print('  {} = {}'.format(table, value))
 
         # Needs a default in case objects exists.
         new = False
 
         # Try to get object. If it doesn't exist, confirm to avoid bad metadata.
         try:
-            empty_model = getattr(models, table.capitalize())
-            model = empty_model.objects.get(name=value)
+            if table == 'author':
+                empty_model = getattr(models, 'person'.capitalize())
+                model = empty_model.objects.get(name=value)
+                model.is_author = True
+                model.save()
+            else:
+                empty_model = getattr(models, table.capitalize())
+                model = empty_model.objects.get(name=value)
         except:
             # Load bad data dictionary.
-            bad_data_file = open('bad_data.pkl', 'rb')
-            bad_data = pickle.load(bad_data_file)
-            bad_data_file.close()
             try:
-                fixed_value = bad_data[value.decode('utf-8')]
-                print(u'"%s" automatically fixed to "%s"' % (value, bad_data[value]))
+                bad_data_file = open('bad_data.pkl')
+                bad_data = pickle.load(bad_data_file)
+                bad_data_file.close()
             except:
-                fixed_value = raw_input('\nNew metadata. Type to confirm: ')
+                bad_data = {}
             try:
-                empty_model = getattr(models, table.capitalize())
-                model, new = empty_model.objects.get_or_create(name=fixed_value)
-                if new:
-                    print(u'New metadata %s created!' % fixed_value.decode('utf-8'))
+                fixed_value = bad_data[value]
+                print('  "{}" automatically fixed to "{}"'.format(value, bad_data[value]))
+            except:
+                fixed_value = input('\n     Press enter to confirm OR type the correct value: ') or value
+            try:
+                if table == 'author':
+                    empty_model = getattr(models, 'person'.capitalize())
+                    model, new = empty_model.objects.get_or_create(name=fixed_value, is_author=True)
                 else:
-                    print(u'Metadata %s already existed!' % fixed_value.decode('utf-8'))
+                    empty_model = getattr(models, table.capitalize())
+                    model, new = empty_model.objects.get_or_create(name=fixed_value)
+                if new:
+                    print('     > "{}" created!\n'.format(fixed_value))
+                else:
+                    print('     > "{}" already existed!\n'.format(fixed_value))
                     # Add to bad data dictionary.
                     bad_data[value] = fixed_value
-                    bad_data_file = open('bad_data.pkl', 'wb')
+                    bad_data_file = open('bad_data.pkl', 'w')
                     pickle.dump(bad_data, bad_data_file)
                     bad_data_file.close()
                 # TODO Fix metadata field on original image!!!
             except:
-                print(u'Object %s not found! Aborting...' % fixed_value.decode('utf-8'))
+                print('Object {} not found! Aborting...'.format(fixed_value))
 
-        # Check ITIS for taxonomic info.
+        # Check WoRMS for taxonomic info.
         if table == 'taxon' and new:
-            taxon = self.get_itis(value)
-            # Retry if connection fails.
-            if not taxon:
-                taxon = self.get_itis(value)
-                if not taxon:
-                    print(u'New try in 5s...')
-                    time.sleep(5)
-                    taxon = self.get_itis(value)
-            try:
-                # Update model.
-                model = taxon.update_model(model)
-            except:
-                print(u'Could not get taxonomic hierarchy...')
+            taxon = self.get_worms(value)
+            if taxon:
+                model = taxon
         return model
 
     def update_sets(self, entry, field, meta):
@@ -316,169 +272,219 @@ class Database:
 
         Verifies if value is blank.
         '''
-        meta_instances = [self.get_instance(field, value) for value in meta if value.strip()]
-        # Get set and clear it.
-        meta_set = getattr(entry, field + '_set')
-        meta_set.clear()
-        # Add updated values to set.
-        if meta_instances:
-            for value in meta_instances:
-                meta_set.add(value)
+        if meta:
+            meta_instances = [self.get_instance(field, value) for value in meta if value.strip()]
+            # Get set and clear it.
+            if field == 'author':
+                field = 'person'
+            meta_set = getattr(entry, field + '_set')
+            meta_set.clear()
+            # Add updated values to set.
+            if meta_instances:
+                for value in meta_instances:
+                    meta_set.add(value)
         return entry
 
-    def get_itis(self, name):
-        '''Access ITIS database.
-
-        Extract parent taxon and ranking.
-
-        taxon.name
-        taxon.rank
-        taxon.tsn
-        taxon.parents
-        taxon.parent['name']
-        taxon.parent['tsn']
-        '''
-        try:
-            taxon = Itis(name)
-        except:
+    def get_worms(self, name):
+        '''Query WoRMS database and get valid record.'''
+        aphia = Aphia()
+        record = aphia.get_best_match(name)
+        if record:
+            taxon, new = models.Taxon.objects.get_or_create(name=record['scientificname'])
+            taxon.rank_en = record['rank']
+            taxon.aphia = record['AphiaID']
+            taxon.timestamp = timezone.now()
+            taxon.save()
+        else:
             return None
-        return taxon
 
 
 class Folder:
-    '''Take care of directories and its files.
+    '''Take care of directories and its files.'''
 
-    >>> dir = 'source_media'
-    >>> folder = Folder(dir, 100)
-    >>> os.path.isdir(folder.folder_path)
-    True
-    >>> filepaths = folder.get_files()
-    >>> isinstance(filepaths, list)
-    True
-    '''
-    def __init__(self, folder, n_max):
+    def __init__(self, folder, extensions, n_max):
         self.folder_path = folder
+        self.extensions = extensions
         self.n_max = n_max
         self.files = []
-        print(u'Directory to be analyzed: %s' % self.folder_path)
+
+        print('\nDIRECTORY: {}'.format(self.folder_path))
+
+        # Call function to get files.
+        self.get_files()
 
     def get_files(self):
-        '''Search .jpg files recursively in a directory.
-
-        Since photos and videos have a .jpg version created before this script only identifies the .jpg files.
-        Returns a list of filepaths.
-        '''
-        n = 0
-        EXTENSION = ('.jpg')
-
-        # File searcher.
+        '''Recursively search files in the directory.'''
         for root, dirs, files in os.walk(self.folder_path):
             for filename in files:
-                filepath = os.path.join(root, filename)
-                if filepath.lower().endswith(EXTENSION) and n < self.n_max:
-                    self.files.append(filepath)
-                    n += 1
+                if filename.lower().endswith(self.extensions):
+                    #print(root, dirs, filename)
+                    rel_dir = os.path.relpath(root, BASE_DIR)
+                    filepath = os.path.join(rel_dir, filename)
+                    source_file = File(filepath)
+                    self.files.append(source_file)
+                else:
                     continue
             else:
                 continue
         else:
-            print(u'%d files found.' % n)
+            print('FILES: {}'.format(len(self.files)))
 
+        # Is the folder empty?
+        if not self.files:
+            print('Empty folder {}?'.format(self.folder_path))
         return self.files
+
+
+class File:
+    '''A general file model.'''
+    def __init__(self, filepath):
+        self.filepath = filepath
+        self.filename = os.path.basename(filepath)
+        self.timestamp = timezone.make_aware(datetime.fromtimestamp(
+            os.path.getmtime(self.filepath)))
+        self.type = self.get_filetype()
+        self.metadata = None
+
+    def __str__(self):
+        return self.filepath
+
+    def get_filetype(self):
+        '''Find out if photo or video based on the extension.'''
+        if self.filepath.lower().endswith(PHOTO_EXTENSIONS):
+            return 'photo'
+        elif self.filepath.lower().endswith(VIDEO_EXTENSIONS):
+            return 'video'
+        else:
+            return 'unknown'
+
+    def create_meta(self, db_entry=None):
+        '''Parse and instantiate media metadata.
+
+        Uses GExiv2 library for IPTC and EXIF.
+        '''
+        self.metadata = Meta(self, db_entry)
+
+    def process_media(self):
+        '''Copy and process files to site_media.'''
+
+        if self.type == 'photo':
+            # Process photo.
+            photo_sitepath = os.path.join('site_media', self.metadata.sitepath)
+            photo_to_web(self.filepath, photo_sitepath)
+            # Process photo cover.
+            photo_coverpath = os.path.join('site_media', self.metadata.coverpath)
+            photo_to_web(self.filepath, photo_coverpath, size=512)
+        elif self.type == 'video':
+            # Process video.
+            video_sitepath = os.path.join('site_media', self.metadata.sitepath)
+            video_to_web(self.filepath, video_sitepath, self.metadata)
+            # Process video cover.
+            video_coverpath = os.path.join('site_media', self.metadata.coverpath)
+            grab_still(self.filepath, video_coverpath)
+
 
 
 class Meta:
     '''Metadata object'''
-    def __init__(self, media):
+    def __init__(self, media, db_entry=None):
         '''Initialize metadata.'''
+        self.media = media
+        self.db_entry = db_entry
+        self.dictionary = {}
 
-        print(u'Parsing %s metadata.' % media.filename)
+        # Default values.
+        self.filepath = self.media.filepath
+        self.sitepath = ''
+        self.coverpath = ''
+        self.datatype = self.media.type
+        self.timestamp = self.media.timestamp
+        self.date = self.media.timestamp  # Default to modification date.
+        self.title = ''
+        self.caption = ''
+        self.tags = ''
+        self.author = ''
+        self.city = ''
+        self.sublocation = ''
+        self.state = ''
+        self.country = ''
+        self.taxon = ''
+        self.size = ''
+        self.source = ''
+        #self.references = ''
 
-        if media.type == 'photo':
-            self.photo_init(media)
-        elif media.type == 'video':
-            self.video_init(media)
+        self.gps = {'geolocation':'','latitude':'','longitude':''}
+        self.geolocation = ''
+        self.latitude = ''
+        self.longitude = ''
+
+        self.duration = ''
+        self.dimensions = ''
+        self.codec = ''
+
+        # Parse metadata.
+        if self.media.type == 'photo':
+            self.parse_photo()
+        elif self.media.type == 'video':
+            self.parse_video()
 
         # Prepare some fields for the database.
         self.prepare_meta()
 
+        # Define paths.
+        self.define_paths()
+
         # Make dictionary.
         self.build_dictionary()
 
-    def photo_init(self, media):
-        'Initialize photo metadata.'
+        # Print summary of metadata.
+        self.print_metadata()
 
-        # Define default values.
-        self.filename = media.filename
-        self.filepath = os.path.relpath(media.filepath, 'site_media')
-        self.timestamp = media.timestamp
-        self.title = u''
-        self.tags = u''
-        self.author = u''
-        self.city = u''
-        self.sublocation = u''
-        self.state = u''
-        self.country = u''
-        self.taxon = u''
-        self.rights = u''
-        self.caption = u''
-        self.size = u''
-        self.source = u''
-        self.references = u''
-        self.notes = u''
+    def parse_photo(self):
+        '''Parse photo metadata.'''
 
         # Create metadata object.
-        info = IPTCInfo(media.filepath, True, 'utf-8')
-        # Check if file has IPTC data.
-        if len(info.data) < 4:
-            print(u'%s has no IPTC data!' % media.filename)
+        info = read_photo_metadata(self.media.filepath)
 
         # Fill values with IPTC data.
-        self.title = info.data['object name']                      #5
-        self.tags = info.data['keywords']                          #25
-        self.author = info.data['by-line']                         #80
-        self.city = info.data['city']                              #90
-        self.sublocation = info.data['sub-location']               #92
-        self.state = info.data['province/state']                   #95
-        self.country = info.data['country/primary location name']  #101
-        self.taxon = info.data['headline']                         #105
-        self.rights = info.data['copyright notice']                #116
-        self.caption = info.data['caption/abstract']               #120
-        self.size = info.data['special instructions']              #40
-        self.source = info.data['source']                          #115
-        self.references = info.data['credit']                      #110
-        self.notes = u''
+        self.title = self.get_photo_tag(info, 'Iptc.Application2.ObjectName')         #5
+        self.caption = self.get_photo_tag(info, 'Iptc.Application2.CaptionAbstract')  #120
+        self.tags = self.get_photo_tag(info, 'Iptc.Application2.Keywords')            #25
+        self.author = self.get_photo_tag(info, 'Iptc.Application2.Byline')            #80
+        self.city = self.get_photo_tag(info, 'Iptc.Application2.City')                #90
+        self.sublocation = self.get_photo_tag(info, 'Iptc.Application2.SubLocation')  #92
+        self.state = self.get_photo_tag(info, 'Iptc.Application2.ProvinceState')      #95
+        self.country = self.get_photo_tag(info, 'Iptc.Application2.CountryName')      #101
+        self.taxon = self.get_photo_tag(info, 'Iptc.Application2.Headline')           #105
+        self.size = self.get_photo_tag(info, 'Iptc.Application2.SpecialInstructions') #40
+        self.source = self.get_photo_tag(info, 'Iptc.Application2.Source')            #115
+        #self.references = self.get_photo_tag(info, 'Iptc.Application2.Credit')        #110
 
-    def video_init(self, media):
-        'Initialize video metadata.'
-        #TODO First check image file with regular photo_init.
-        # Create metadata object.
-        #info = IPTCInfo(media.filepath, True, 'utf-8')
-        # Check if file has IPTC data.
-        #if len(info.data) < 4:
-        #    print(u'%s has no IPTC data!' % media.filename)
+        # Extracting EXIF data.
+        self.date = get_date(info)
+        self.gps = get_gps(info)
+        self.geolocation = self.gps['geolocation']
+        self.latitude = self.gps['latitude']
+        self.longitude = self.gps['longitude']
 
-        # Set default values.
-        self.filename = media.filename
-        self.filepath = os.path.relpath(media.filepath, 'site_media')
-        self.timestamp = media.timestamp
-        self.title = u''
-        self.tags = u''
-        self.author = u''
-        self.city = u''
-        self.sublocation = u''
-        self.state = u''
-        self.country = u''
-        self.taxon = u''
-        self.rights = u''
-        self.caption = u''
-        self.size = u''
-        self.source = u''
-        self.references = u''
-        self.notes = u''
+    def get_photo_tag(self, info, tag):
+        '''Get tag value or return empty string.'''
+        # Keywords need a different command.
+        multiples = ['Iptc.Application2.Keywords']
+        try:
+            if tag in multiples:
+                value = info.get_tag_multiple(tag)
+            else:
+                value = info.get_tag_string(tag)
+        except:
+            value = ''
+        return value
+
+    def parse_video(self):
+        '''Parse video metadata.'''
 
         # Check and get metadata from accessory txt file.
-        txt_path = os.path.splitext(media.filepath)[0] + '.txt'
+        txt_path = os.path.splitext(self.filepath)[0] + '.txt'
         try:
             os.lstat(txt_path)
             txt_file = open(txt_path, 'rb')
@@ -490,28 +496,50 @@ class Meta:
             txt_dic = pickle.load(txt_file)
 
             # Define metadata.
-            self.title = txt_dic['title']
-            self.tags = txt_dic['tags']
-            self.author = txt_dic['author']
-            self.city = txt_dic['city']
-            self.sublocation = txt_dic['sublocation']
-            self.state = txt_dic['state']
-            self.country = txt_dic['country']
-            self.taxon = txt_dic['taxon']
-            self.rights = txt_dic['rights']
-            self.caption = txt_dic['caption']
-            self.size = txt_dic['size']
-            self.source = txt_dic['source']
-            self.references = txt_dic['references']
-            self.notes = u''
+            self.title = self.get_video_tag(txt_dic, 'title')
+            self.tags = self.get_video_tag(txt_dic, 'tags')
+            self.author = self.get_video_tag(txt_dic, 'author')
+            self.city = self.get_video_tag(txt_dic, 'city')
+            self.sublocation = self.get_video_tag(txt_dic, 'sublocation')
+            self.state = self.get_video_tag(txt_dic, 'state')
+            self.country = self.get_video_tag(txt_dic, 'country')
+            self.taxon = self.get_video_tag(txt_dic, 'taxon')
+            self.rights = self.get_video_tag(txt_dic, 'rights')
+            self.caption = self.get_video_tag(txt_dic, 'caption')
+            self.size = self.get_video_tag(txt_dic, 'size')
+            self.source = self.get_video_tag(txt_dic, 'source')
+            #self.references = self.get_video_tag(txt_dic, 'references')
+            self.date = self.get_video_tag(txt_dic, 'date')
+            self.geolocation = self.get_video_tag(txt_dic, 'geolocation')
+            self.latitude = self.get_video_tag(txt_dic, 'latitude')
+            self.longitude = self.get_video_tag(txt_dic, 'longitude')
 
             # Close file.
             txt_file.close()
 
+        # TODO: Check if geolocation is empty.
+
+        # Extracts duration, dimensions and video codec.
+        infos = get_info(self.filepath)
+        self.duration = infos['duration']
+        self.dimensions = infos['dimensions']
+        self.codec = infos['codec']
+
+
+    def get_video_tag(self, info, tag):
+        '''Extracts tag from accessory text file.'''
+        try:
+            value = info[tag]
+            if tag == 'date':
+                value = timezone.make_aware(datetime.strptime(value, '%Y-%m-%d %H:%M:%S'))
+        except:
+            value = ''
+        return value
+
     def none_to_empty(self, metadata):
         '''Convert None to empty string.'''
         if metadata is None:
-            return u''
+            return ''
         else:
             return metadata
 
@@ -519,6 +547,7 @@ class Meta:
         '''Cleanup metadata for database input.'''
         # Convert None to empty string.
         self.title = self.none_to_empty(self.title)
+        self.caption = self.none_to_empty(self.caption)
         self.tags = self.none_to_empty(self.tags)
         self.author = self.none_to_empty(self.author)
         self.city = self.none_to_empty(self.city)
@@ -526,37 +555,65 @@ class Meta:
         self.state = self.none_to_empty(self.state)
         self.country = self.none_to_empty(self.country)
         self.taxon = self.none_to_empty(self.taxon)
-        self.rights = self.none_to_empty(self.rights)
-        self.caption = self.none_to_empty(self.caption)
         self.size = self.none_to_empty(self.size)
         self.source = self.none_to_empty(self.source)
-        self.references = self.none_to_empty(self.references)
+        #self.references = self.none_to_empty(self.references)
 
         # Transform to list.
-        self.author = [a.strip() for a in self.author.split(',')]
-        self.source = [a.strip() for a in self.source.split(',')]
-        self.references = [a.strip() for a in self.references.split(',')]
+        if self.author:
+            self.author = [a.strip() for a in self.author.split(',')]
+        else:
+            self.author = []
+        if self.source:
+            self.source = [a.strip() for a in self.source.split(',')]
+        else:
+            self.source = []
+        #self.references = [a.strip() for a in self.references.split(',')]
 
-        #XXX Take care of aff. and species with 3 names?
-        #meta['taxon'] = [a.strip() for a in meta['taxon'].split(',')]
-        temp_taxa = [a.strip() for a in self.taxon.split(',')]
-        clean_taxa = []
-        for taxon in temp_taxa:
-            tsplit = taxon.split()
-            if len(tsplit) == 2 and tsplit[-1] in ['sp', 'sp.', 'spp']:
-                tsplit.pop()
-                clean_taxa.append(tsplit[0])
-            else:
-                clean_taxa.append(taxon)
-        self.taxon = clean_taxa
+        if self.taxon:
+            temp_taxa = [a.strip() for a in self.taxon.split(',')]
+            clean_taxa = []
+            # Take care of aff. and species with 3 names.
+            for taxon in temp_taxa:
+                tsplit = taxon.split()
+                if len(tsplit) == 2 and tsplit[-1] in ['sp', 'sp.', 'spp']:
+                    tsplit.pop()
+                    clean_taxa.append(tsplit[0])
+                else:
+                    clean_taxa.append(taxon)
+            self.taxon = clean_taxa
+        else:
+            self.taxon = []
+
+    def define_paths(self):
+        '''Define sitepaths.'''
+        if self.db_entry:
+            # Get names from database.
+            self.sitepath = self.db_entry.sitepath.name
+            self.coverpath = self.db_entry.coverpath.name
+        else:
+            # Create new sitename.
+            self.sitename = create_filename(self.media.filename, self.author)
+
+            # Create new sitepath.
+            if self.media.type == 'photo':
+                self.sitepath = '{}.jpg'.format(os.path.splitext(self.sitename)[0])
+            elif self.media.type == 'video':
+                self.sitepath = '{}.mp4'.format(os.path.splitext(self.sitename)[0])
+
+            # Create new coverpath.
+            self.coverpath = '{}_{}.jpg'.format(os.path.splitext(self.sitepath)[0], 'cover')
 
     def build_dictionary(self):
         '''Generates dictionary for canonical database processing.'''
 
         self.dictionary = {
-            'filename': self.filename,
             'filepath': self.filepath,
+            'sitepath': self.sitepath,
+            'coverpath': self.coverpath,
+            'datatype': self.datatype,
             'title': self.title,
+            'caption': self.caption,
             'tags': self.tags,
             'author': self.author,
             'city': self.city,
@@ -564,126 +621,28 @@ class Meta:
             'state': self.state,
             'country': self.country,
             'taxon': self.taxon,
-            'rights': self.rights,
-            'caption': self.caption,
             'size': self.size,
             'source': self.source,
-            'references': self.references,
+            #'references': self.references,
             'timestamp': self.timestamp,
-            'notes': self.notes,
+            'date': self.date,
+            'geolocation': self.geolocation,
+            'latitude': self.latitude,
+            'longitude': self.longitude,
+            'duration': self.duration,
+            'dimensions': self.dimensions,
+            'codec': self.codec,
             }
 
-
-class Photo:
-    '''Photo object.'''
-    def __init__(self, filepath):
-        self.filepath = filepath
-        self.filename = os.path.basename(filepath)
-        self.timestamp = datetime.fromtimestamp(
-                os.path.getmtime(self.filepath))
-        self.type = 'photo'
-
-    def create_meta(self):
-        '''Parse and instantiate photo metadata.
-
-        Uses iptcinfo.py and pyexiv2 libraries for IPTC and EXIF.
-        '''
-        self.metadata = Meta(self)
-
-        # Extracting EXIF metadata.
-        exif = get_exif(self.filepath)
-        # Extracting data.
-        self.metadata.date = get_date(exif)
-        self.metadata.dictionary['date'] = self.metadata.date
-        # Extracting geolocation.
-        self.metadata.gps = get_gps(exif)
-        self.metadata.dictionary['geolocation'] = self.metadata.gps['geolocation']
-        self.metadata.dictionary['latitude'] = self.metadata.gps['latitude']
-        self.metadata.dictionary['longitude'] = self.metadata.gps['longitude']
-
-        print
-        print '\tVariable\tMetadata'
-        print '\t' + 40 * '-'
-        print '\t' + self.filepath
-        print '\t' + 40 * '-'
-        print '\tTitle:\t\t%s' % self.metadata.title
-        print '\tCaption:\t%s' % self.metadata.caption
-        print '\tTaxon:\t\t%s' % ', '.join(self.metadata.taxon)
-        print '\tTags:\t\t%s' % '\n\t\t\t'.join(self.metadata.tags)
-        print '\tSize:\t\t%s' % self.metadata.size
-        print '\tSource:\t%s' % ', '.join(self.metadata.source)
-        print '\tAuthor:\t\t%s' % ', '.join(self.metadata.author)
-        print '\tSublocation:\t%s' % self.metadata.sublocation
-        print '\tCity:\t\t%s' % self.metadata.city
-        print '\tState:\t\t%s' % self.metadata.state
-        print '\tCountry:\t%s' % self.metadata.country
-        print '\tRights:\t\t%s' % self.metadata.rights
-        print '\tDate:\t\t%s' % self.metadata.date
-        print
-        print '\tGeolocation:\t%s' % self.metadata.gps['geolocation'].decode("utf8")
-        print '\tDecimal:\t%s, %s' % (self.metadata.gps['latitude'],
-                self.metadata.gps['longitude'])
-        print
-
-
-#TODO Implement Video class. Ideally transform Photo class in a Media class and
-# use the same prepare meta functions. Just add differentially the necessary
-# fields based on the media.type. Identification of video files will be done by
-# the large thumbnail already generated. It will be used as filename and the
-# txt will be used for metadata reading. In the future I should include all the
-# metadata into the image file and deprecate the txt file.
-
-class Movie:
-    '''Movie object.'''
-    def __init__(self, filepath):
-        self.filepath = filepath
-        self.filename = os.path.basename(filepath)
-        self.timestamp = datetime.fromtimestamp(
-                os.path.getmtime(self.filepath))
-        self.type = 'video'
-
-    def create_meta(self):
-        '''Parse and instantiate video metadata.'''
-        self.metadata = Meta(self)
-
-        # Extracting EXIF metadata.
-        exif = get_exif(self.filepath)
-        # Extracting data.
-        self.metadata.date = get_date(exif)
-        self.metadata.dictionary['date'] = self.metadata.date
-        # Extracting geolocation.
-        self.metadata.gps = get_gps(exif)
-        self.metadata.dictionary['geolocation'] = self.metadata.gps['geolocation']
-        self.metadata.dictionary['latitude'] = self.metadata.gps['latitude']
-        self.metadata.dictionary['longitude'] = self.metadata.gps['longitude']
-
-        # Extracts duration, dimensions and video codec.
-        infos = get_info(self.filepath)
-        self.metadata.dictionary['duration'] = infos['duration']
-        self.metadata.dictionary['dimensions'] = infos['dimensions']
-        self.metadata.dictionary['codec'] = infos['codec']
-
-        print
-        print '\tVariable\tMetadata'
-        print '\t' + 40 * '-'
-        print '\t' + self.filepath
-        print '\t' + 40 * '-'
-        print '\tTitle:\t\t%s' % self.metadata.title
-        print '\tCaption:\t%s' % self.metadata.caption
-        print '\tTaxon:\t\t%s' % ', '.join(self.metadata.taxon)
-        print '\tTags:\t\t%s' % '\n\t\t\t'.join(self.metadata.tags)
-        print '\tSize:\t\t%s' % self.metadata.size
-        print '\tSource:\t%s' % ', '.join(self.metadata.source)
-        print '\tAuthor:\t\t%s' % ', '.join(self.metadata.author)
-        print '\tSublocation:\t%s' % self.metadata.sublocation
-        print '\tCity:\t\t%s' % self.metadata.city
-        print '\tState:\t\t%s' % self.metadata.state
-        print '\tCountry:\t%s' % self.metadata.country
-        print '\tRights:\t\t%s' % self.metadata.rights
-        print '\tDate:\t\t%s' % self.metadata.date
-        print
-        print '\tGeolocation:\t%s' % self.metadata.gps['geolocation'].decode("utf8")
-        print '\tDecimal:\t%s, %s' % (self.metadata.gps['latitude'],
-                self.metadata.gps['longitude'])
-        print
+    def print_metadata(self):
+        '''Print metadata for reference.'''
+        print('\nMETADATA:')
+        for k, v in self.dictionary.items():
+            if v:
+                if isinstance(v, list):
+                    print('  {}:'.format(k))
+                    for i in v:
+                        print('    {}'.format(i))
+                else:
+                    print('  {} = {}'.format(k, v))
 

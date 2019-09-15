@@ -88,7 +88,7 @@ class DisplayForm(forms.Form):
     n = forms.ChoiceField(
             required=False,
             choices=ITEMS,
-            initial='16',
+            initial='40',
             label=_('Arquivos por página')
             )
     orderby = forms.ChoiceField(

@@ -4,7 +4,6 @@
 <span id="admin">
   <ul>
     <li><a href="/admin/">admin</a></li>
-    <li><a href="/private/">privadas</a></li>
     <li><a href="/fixmedia/">fixmedia</a></li>
     <li><a href="/rosetta/">traduzir</a></li>
     <li><a href="{% url 'logout' %}">logout</a></li>
@@ -31,10 +30,10 @@
 {% with fullpath=request.get_full_path %}
 <ul class="menu" id="media">
   <li>
-  <a {% if fullpath == '/search/?type=photo' %}class="selected"{% endif %} href="/search/?type=photo">{% trans 'fotos' %}</a>
+  <a {% if fullpath == '/search/?datatype=photo' %}class="selected"{% endif %} href="/search/?datatype=photo">{% trans 'fotos' %}</a>
   </li>
   <li>
-  <a {% if fullpath == '/search/?type=video' %}class="selected"{% endif %} href="/search/?type=video">{% trans 'vídeos' %}</a>
+  <a {% if fullpath == '/search/?datatype=video' %}class="selected"{% endif %} href="/search/?datatype=video">{% trans 'vídeos' %}</a>
   </li>
   <li>
   <a {% if fullpath == '/tours/' %}class="selected"{% endif %} href="{% url 'tours_url' %}">{% trans 'tours' %}</a>
@@ -49,7 +48,7 @@
   <a {% if fullpath == '/places/' %}class="selected"{% endif %} href="{% url 'places_url' %}">{% trans 'localidades' %}</a>
   </li>
   <li>
-  <a {% if fullpath == '/authors/' %}class="selected"{% endif %} href="{% url 'authors_url' %}">{% trans 'autores' %}</a>
+  <a {% if fullpath == '/authors/' %}class="selected"{% endif %} href="{% url 'persons_url' %}">{% trans 'autores' %}</a>
   </li>
   <li>
   <a {% if fullpath == '/literature/' %}class="selected"{% endif %} href="{% url 'refs_url' %}">{% trans 'referências' %}</a>

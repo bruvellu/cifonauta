@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Buscador' %} | {{ block.super }}{% endblock %}
+{% block meta-keywords %}<!--{{ keywords }}-->{% endblock %}
+{% block meta-description %}{% trans 'Buscador do banco de imagens Cifonauta.' %}{% endblock %}
+{% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
+
+{% block extra-head %}
+<meta property="og:title" content="{% trans 'Buscador' %}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:type" content="article" />
+<meta property="og:description" content="{% trans 'Buscador do banco de imagens Cifonauta.' %}" />
+<meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+{% endblock %}
+
+{% block content %}
+<section class="span-16">
+<div id="search-results">
+  {% include 'gallery.html' %}
+</div>
+</section>
+{% endblock %}
+
+{% block sidebar %}
+<aside class="span-8 last">
+
+<div class="block shadow">
+  <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
+    {{ display_form.as_p}}
+    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display" />
+  </form>
+</div>
+
+</aside>
+
+{% endblock %}

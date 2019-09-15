@@ -1,0 +1,50 @@
+[
+{
+  "fields": {
+    "video_count": 780,
+    "name": "Brazil",
+    "name_pt_br": "Brasil",
+    "name_en": "Brazil",
+    "image_count": 11050,
+    "slug": "brasil"
+  },
+  "model": "meta.country",
+  "pk": 1
+},
+{
+  "fields": {
+    "video_count": 2,
+    "name": "Japan",
+    "name_pt_br": "Jap\u00e3o",
+    "name_en": "Japan",
+    "image_count": 270,
+    "slug": "japao"
+  },
+  "model": "meta.country",
+  "pk": 2
+},
+{
+  "fields": {
+    "video_count": 0,
+    "name": "South Africa",
+    "name_pt_br": "\u00c1frica do Sul",
+    "name_en": "South Africa",
+    "image_count": 7,
+    "slug": "africa-do-sul"
+  },
+  "model": "meta.country",
+  "pk": 3
+},
+{
+  "fields": {
+    "video_count": 0,
+    "name": "Australia",
+    "name_pt_br": "Austr\u00e1lia",
+    "name_en": "Australia",
+    "image_count": 1,
+    "slug": "australia"
+  },
+  "model": "meta.country",
+  "pk": 4
+}
+]

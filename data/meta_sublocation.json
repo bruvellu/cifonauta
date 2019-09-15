@@ -1,0 +1,882 @@
+[
+{
+  "fields": {
+    "video_count": 178,
+    "image_count": 1448,
+    "name": "Ba\u00eda do Ara\u00e7\u00e1",
+    "slug": "baia-do-araca"
+  },
+  "model": "meta.sublocation",
+  "pk": 1
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 79,
+    "name": "Ponta do Ara\u00e7\u00e1",
+    "slug": "ponta-do-araca"
+  },
+  "model": "meta.sublocation",
+  "pk": 2
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 42,
+    "name": "Picinguaba",
+    "slug": "picinguaba"
+  },
+  "model": "meta.sublocation",
+  "pk": 3
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 64,
+    "name": "Martim de S\u00e1",
+    "slug": "martim-de-sa"
+  },
+  "model": "meta.sublocation",
+  "pk": 4
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 88,
+    "name": "Praia da Fazenda",
+    "slug": "praia-da-fazenda"
+  },
+  "model": "meta.sublocation",
+  "pk": 5
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 36,
+    "name": "Ponta do Cambiri",
+    "slug": "ponta-do-cambiri"
+  },
+  "model": "meta.sublocation",
+  "pk": 6
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 31,
+    "name": "Barra do Sa\u00ed",
+    "slug": "barra-do-sai"
+  },
+  "model": "meta.sublocation",
+  "pk": 7
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 40,
+    "name": "Pico de S\u00e3o Sebasti\u00e3o",
+    "slug": "pico-de-sao-sebastiao"
+  },
+  "model": "meta.sublocation",
+  "pk": 8
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 67,
+    "name": "Praia da Baleia",
+    "slug": "praia-da-baleia"
+  },
+  "model": "meta.sublocation",
+  "pk": 9
+},
+{
+  "fields": {
+    "video_count": 1,
+    "image_count": 59,
+    "name": "Arquip\u00e9lago de Alcatrazes",
+    "slug": "arquipelago-de-alcatrazes"
+  },
+  "model": "meta.sublocation",
+  "pk": 10
+},
+{
+  "fields": {
+    "video_count": 6,
+    "image_count": 12,
+    "name": "Toque-toque Grande",
+    "slug": "toque-toque-grande"
+  },
+  "model": "meta.sublocation",
+  "pk": 11
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 4,
+    "name": "Praia  de Ubatumirim",
+    "slug": "praia-de-ubatumirim"
+  },
+  "model": "meta.sublocation",
+  "pk": 12
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 57,
+    "name": "Parcel da Praia Grande",
+    "slug": "parcel-da-praia-grande"
+  },
+  "model": "meta.sublocation",
+  "pk": 13
+},
+{
+  "fields": {
+    "video_count": 157,
+    "image_count": 3348,
+    "name": "Canal de S\u00e3o Sebasti\u00e3o",
+    "slug": "canal-de-sao-sebastiao"
+  },
+  "model": "meta.sublocation",
+  "pk": 14
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 77,
+    "name": "Praia das Pitangueiras",
+    "slug": "praia-das-pitangueiras"
+  },
+  "model": "meta.sublocation",
+  "pk": 15
+},
+{
+  "fields": {
+    "video_count": 23,
+    "image_count": 1402,
+    "name": "CEBIMar",
+    "slug": "cebimar"
+  },
+  "model": "meta.sublocation",
+  "pk": 16
+},
+{
+  "fields": {
+    "video_count": 17,
+    "image_count": 308,
+    "name": "Yacht Club de Ilhabela",
+    "slug": "yacht-club-de-ilhabela"
+  },
+  "model": "meta.sublocation",
+  "pk": 17
+},
+{
+  "fields": {
+    "video_count": 5,
+    "image_count": 264,
+    "name": "Farol dos Moleques",
+    "slug": "farol-dos-moleques"
+  },
+  "model": "meta.sublocation",
+  "pk": 18
+},
+{
+  "fields": {
+    "video_count": 11,
+    "image_count": 341,
+    "name": "Ponta do Jarob\u00e1",
+    "slug": "ponta-do-jaroba"
+  },
+  "model": "meta.sublocation",
+  "pk": 19
+},
+{
+  "fields": {
+    "video_count": 4,
+    "image_count": 88,
+    "name": "Praia do Cabelo Gordo",
+    "slug": "praia-do-cabelo-gordo"
+  },
+  "model": "meta.sublocation",
+  "pk": 20
+},
+{
+  "fields": {
+    "video_count": 2,
+    "image_count": 261,
+    "name": "Ponta do Baleeiro",
+    "slug": "ponta-do-baleeiro"
+  },
+  "model": "meta.sublocation",
+  "pk": 21
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 240,
+    "name": "Praia Grande",
+    "slug": "praia-grande"
+  },
+  "model": "meta.sublocation",
+  "pk": 22
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 125,
+    "name": "Saco Grande",
+    "slug": "saco-grande"
+  },
+  "model": "meta.sublocation",
+  "pk": 23
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 7,
+    "name": "False Bay",
+    "slug": "false-bay"
+  },
+  "model": "meta.sublocation",
+  "pk": 24
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 336,
+    "name": "Praia do Segredo",
+    "slug": "praia-do-segredo"
+  },
+  "model": "meta.sublocation",
+  "pk": 25
+},
+{
+  "fields": {
+    "video_count": 7,
+    "image_count": 136,
+    "name": "Praia de Bareque\u00e7aba",
+    "slug": "praia-de-barequecaba"
+  },
+  "model": "meta.sublocation",
+  "pk": 26
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 84,
+    "name": "Praia das Cigarras",
+    "slug": "praia-das-cigarras"
+  },
+  "model": "meta.sublocation",
+  "pk": 27
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 16,
+    "name": "Pier do Yacht Club de Ilhabela",
+    "slug": "pier-do-yacht-club-de-ilhabela"
+  },
+  "model": "meta.sublocation",
+  "pk": 28
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 22,
+    "name": "Plataforma continental, 10-20m",
+    "slug": "plataforma-continental-10-20m"
+  },
+  "model": "meta.sublocation",
+  "pk": 29
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 21,
+    "name": "Praia do Zimbro",
+    "slug": "praia-do-zimbro"
+  },
+  "model": "meta.sublocation",
+  "pk": 30
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 43,
+    "name": "Praia da Enseada",
+    "slug": "praia-da-enseada"
+  },
+  "model": "meta.sublocation",
+  "pk": 31
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 7,
+    "name": "Seto marine biological laboratory  ",
+    "slug": "seto-marine-biological-laboratory"
+  },
+  "model": "meta.sublocation",
+  "pk": 32
+},
+{
+  "fields": {
+    "video_count": 18,
+    "image_count": 44,
+    "name": "Pier Petrobras",
+    "slug": "pier-petrobras"
+  },
+  "model": "meta.sublocation",
+  "pk": 33
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 4,
+    "name": "Ilha de Anhatomirim",
+    "slug": "ilha-de-anhatomirim"
+  },
+  "model": "meta.sublocation",
+  "pk": 34
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 5,
+    "name": "Praia de S\u00e3o Francisco",
+    "slug": "praia-de-sao-francisco"
+  },
+  "model": "meta.sublocation",
+  "pk": 35
+},
+{
+  "fields": {
+    "video_count": 2,
+    "image_count": 186,
+    "name": "Seto fishing port",
+    "slug": "seto-fishing-port"
+  },
+  "model": "meta.sublocation",
+  "pk": 36
+},
+{
+  "fields": {
+    "video_count": 2,
+    "image_count": 16,
+    "name": "Cost\u00e3o do Carneiro",
+    "slug": "costao-do-carneiro"
+  },
+  "model": "meta.sublocation",
+  "pk": 37
+},
+{
+  "fields": {
+    "video_count": 2,
+    "image_count": 87,
+    "name": "Ilha de B\u00fazios",
+    "slug": "ilha-de-buzios"
+  },
+  "model": "meta.sublocation",
+  "pk": 38
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 3,
+    "name": "Praia do Guaec\u00e1",
+    "slug": "praia-do-guaeca"
+  },
+  "model": "meta.sublocation",
+  "pk": 40
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 1,
+    "name": "Portinho",
+    "slug": "portinho"
+  },
+  "model": "meta.sublocation",
+  "pk": 41
+},
+{
+  "fields": {
+    "video_count": 18,
+    "image_count": 17,
+    "name": "Praia Preta",
+    "slug": "praia-preta"
+  },
+  "model": "meta.sublocation",
+  "pk": 42
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 1,
+    "name": "Praia do Engenho D'\u00e1gua",
+    "slug": "praia-do-engenho-dagua"
+  },
+  "model": "meta.sublocation",
+  "pk": 43
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 14,
+    "name": "Aqu\u00e1rio de Ilhabela",
+    "slug": "aquario-de-ilhabela"
+  },
+  "model": "meta.sublocation",
+  "pk": 44
+},
+{
+  "fields": {
+    "video_count": 144,
+    "image_count": 282,
+    "name": "Ilha Ita\u00e7uc\u00ea",
+    "slug": "ilha-itacuce"
+  },
+  "model": "meta.sublocation",
+  "pk": 45
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 2,
+    "name": "Enseada do Bananal, Ilha Grande",
+    "slug": "enseada-do-bananal-ilha-grande"
+  },
+  "model": "meta.sublocation",
+  "pk": 46
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 11,
+    "name": "Naufr\u00e1gio Pinguino, Ilha Grande",
+    "slug": "naufragio-pinguino-ilha-grande"
+  },
+  "model": "meta.sublocation",
+  "pk": 47
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 48,
+    "name": "Piscina dos Amores",
+    "slug": "piscina-dos-amores"
+  },
+  "model": "meta.sublocation",
+  "pk": 48
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 2,
+    "name": "Ant\u00e1rtica",
+    "slug": "antartica"
+  },
+  "model": "meta.sublocation",
+  "pk": 49
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 1,
+    "name": "Caraguatatuba",
+    "slug": "caraguatatuba"
+  },
+  "model": "meta.sublocation",
+  "pk": 50
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 7,
+    "name": "Praia do Sino",
+    "slug": "praia-do-sino"
+  },
+  "model": "meta.sublocation",
+  "pk": 53
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 8,
+    "name": "Saco do Eust\u00e1quio",
+    "slug": "saco-do-eustaquio"
+  },
+  "model": "meta.sublocation",
+  "pk": 56
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 8,
+    "name": "Ilha dos Porcos",
+    "slug": "ilha-dos-porcos"
+  },
+  "model": "meta.sublocation",
+  "pk": 57
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 14,
+    "name": "Ilha Grande",
+    "slug": "ilha-grande"
+  },
+  "model": "meta.sublocation",
+  "pk": 58
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 9,
+    "name": "REVIZEE, esta\u00e7\u00e3o 6678",
+    "slug": "revizee-estacao-6678"
+  },
+  "model": "meta.sublocation",
+  "pk": 59
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 2,
+    "name": "REVIZEE, esta\u00e7\u00e3o 6658",
+    "slug": "revizee-estacao-6658"
+  },
+  "model": "meta.sublocation",
+  "pk": 60
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 6,
+    "name": "REVIZEE, esta\u00e7\u00e3o 6661",
+    "slug": "revizee-estacao-6661"
+  },
+  "model": "meta.sublocation",
+  "pk": 61
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 2,
+    "name": "REVIZEE, esta\u00e7\u00e3o 6693",
+    "slug": "revizee-estacao-6693"
+  },
+  "model": "meta.sublocation",
+  "pk": 62
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 4,
+    "name": "REVIZEE, esta\u00e7\u00e3o 6664",
+    "slug": "revizee-estacao-6664"
+  },
+  "model": "meta.sublocation",
+  "pk": 63
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 2,
+    "name": "REVIZEE, esta\u00e7\u00e3o 6665",
+    "slug": "revizee-estacao-6665"
+  },
+  "model": "meta.sublocation",
+  "pk": 64
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 3,
+    "name": "REVIZEE, esta\u00e7\u00e3o 6793",
+    "slug": "revizee-estacao-6793"
+  },
+  "model": "meta.sublocation",
+  "pk": 65
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 2,
+    "name": "REVIZEE, esta\u00e7\u00e3o 6776",
+    "slug": "revizee-estacao-6776"
+  },
+  "model": "meta.sublocation",
+  "pk": 66
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 29,
+    "name": "Abrolhos",
+    "slug": "abrolhos"
+  },
+  "model": "meta.sublocation",
+  "pk": 75
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 1,
+    "name": "TVS boat club marina",
+    "slug": "tvs-boat-club-marina"
+  },
+  "model": "meta.sublocation",
+  "pk": 76
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 8,
+    "name": "Riacho Doce",
+    "slug": "riacho-doce"
+  },
+  "model": "meta.sublocation",
+  "pk": 77
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 7,
+    "name": "Praia de Encantadas, Ilha do Mel",
+    "slug": "praia-de-encantadas-ilha-do-mel"
+  },
+  "model": "meta.sublocation",
+  "pk": 78
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 5,
+    "name": "Pontinha,  Ilha do Mel",
+    "slug": "pontinha-ilha-do-mel"
+  },
+  "model": "meta.sublocation",
+  "pk": 79
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 19,
+    "name": "Laje Branca, Ilha Grande",
+    "slug": "laje-branca-ilha-grande"
+  },
+  "model": "meta.sublocation",
+  "pk": 80
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 6,
+    "name": "Ponta Grossa, Ilha Grande",
+    "slug": "ponta-grossa-ilha-grande"
+  },
+  "model": "meta.sublocation",
+  "pk": 81
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 5,
+    "name": "Ponta da Nh\u00e1 Pina, Ilha do Mel",
+    "slug": "ponta-da-nha-pina-ilha-do-mel"
+  },
+  "model": "meta.sublocation",
+  "pk": 82
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 4,
+    "name": "Praia dos Meros, Ilha Grande",
+    "slug": "praia-dos-meros-ilha-grande"
+  },
+  "model": "meta.sublocation",
+  "pk": 83
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 41,
+    "name": "Praia da Feiticeira",
+    "slug": "praia-da-feiticeira"
+  },
+  "model": "meta.sublocation",
+  "pk": 84
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 4,
+    "name": "Praia do Tombo",
+    "slug": "praia-do-tombo"
+  },
+  "model": "meta.sublocation",
+  "pk": 85
+},
+{
+  "fields": {
+    "video_count": 6,
+    "image_count": 36,
+    "name": "Naufragio do navio Velasquez",
+    "slug": "naufragio-do-navio-velasquez"
+  },
+  "model": "meta.sublocation",
+  "pk": 86
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 1,
+    "name": "Praia da Cidade",
+    "slug": "praia-da-cidade"
+  },
+  "model": "meta.sublocation",
+  "pk": 87
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 5,
+    "name": "Istmo do Baleeiro",
+    "slug": "istmo-do-baleeiro"
+  },
+  "model": "meta.sublocation",
+  "pk": 88
+},
+{
+  "fields": {
+    "video_count": 33,
+    "image_count": 0,
+    "name": "Ilha do Tamandu\u00e1",
+    "slug": "ilha-do-tamandua"
+  },
+  "model": "meta.sublocation",
+  "pk": 92
+},
+{
+  "fields": {
+    "video_count": 5,
+    "image_count": 0,
+    "name": "Itassuc\u00ea",
+    "slug": "itassuce"
+  },
+  "model": "meta.sublocation",
+  "pk": 93
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 15,
+    "name": "Lagoa Verde, Ilha Grande",
+    "slug": "lagoa-verde-ilha-grande"
+  },
+  "model": "meta.sublocation",
+  "pk": 94
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 46,
+    "name": "Praia de Jaconema, Ilha Grande",
+    "slug": "praia-de-jaconema-ilha-grande"
+  },
+  "model": "meta.sublocation",
+  "pk": 95
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 66,
+    "name": "Praia",
+    "slug": "praia"
+  },
+  "model": "meta.sublocation",
+  "pk": 96
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 67,
+    "name": "Manguezal",
+    "slug": "manguezal"
+  },
+  "model": "meta.sublocation",
+  "pk": 97
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 84,
+    "name": "Banco n\u00e3o vegetado",
+    "slug": "banco-nao-vegetado"
+  },
+  "model": "meta.sublocation",
+  "pk": 98
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 31,
+    "name": "Baixio n\u00e3o vegetado",
+    "slug": "baixio-nao-vegetado"
+  },
+  "model": "meta.sublocation",
+  "pk": 99
+},
+{
+  "fields": {
+    "video_count": 72,
+    "image_count": 52,
+    "name": "Porto Novo",
+    "slug": "porto-novo"
+  },
+  "model": "meta.sublocation",
+  "pk": 100
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 30,
+    "name": "Calhetas",
+    "slug": "calhetas"
+  },
+  "model": "meta.sublocation",
+  "pk": 101
+},
+{
+  "fields": {
+    "video_count": 15,
+    "image_count": 14,
+    "name": "Cigarras",
+    "slug": "cigarras"
+  },
+  "model": "meta.sublocation",
+  "pk": 102
+},
+{
+  "fields": {
+    "video_count": 15,
+    "image_count": 34,
+    "name": "Enseada",
+    "slug": "enseada"
+  },
+  "model": "meta.sublocation",
+  "pk": 103
+},
+{
+  "fields": {
+    "video_count": 0,
+    "image_count": 8,
+    "name": "Pier Pontal da Cruz",
+    "slug": "pier-pontal-da-cruz"
+  },
+  "model": "meta.sublocation",
+  "pk": 104
+}
+]

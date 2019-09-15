@@ -1,0 +1,122 @@
+[
+{
+  "fields": {
+    "video_count": 780,
+    "name": "SP",
+    "name_pt_br": "SP",
+    "name_en": "SP",
+    "image_count": 10746,
+    "slug": "sp"
+  },
+  "model": "meta.state",
+  "pk": 1
+},
+{
+  "fields": {
+    "video_count": 0,
+    "name": "ES",
+    "name_pt_br": "ES",
+    "name_en": "ES",
+    "image_count": 22,
+    "slug": "es"
+  },
+  "model": "meta.state",
+  "pk": 2
+},
+{
+  "fields": {
+    "video_count": 0,
+    "name": "AL",
+    "name_pt_br": "AL",
+    "name_en": "AL",
+    "image_count": 64,
+    "slug": "al"
+  },
+  "model": "meta.state",
+  "pk": 3
+},
+{
+  "fields": {
+    "video_count": 0,
+    "name": "RJ",
+    "name_pt_br": "RJ",
+    "name_en": "RJ",
+    "image_count": 117,
+    "slug": "rj"
+  },
+  "model": "meta.state",
+  "pk": 4
+},
+{
+  "fields": {
+    "video_count": 0,
+    "name": "BA",
+    "name_pt_br": "BA",
+    "name_en": "BA",
+    "image_count": 29,
+    "slug": "ba"
+  },
+  "model": "meta.state",
+  "pk": 5
+},
+{
+  "fields": {
+    "video_count": 0,
+    "name": "PA",
+    "name_pt_br": "PA",
+    "name_en": "PA",
+    "image_count": 14,
+    "slug": "pa"
+  },
+  "model": "meta.state",
+  "pk": 6
+},
+{
+  "fields": {
+    "video_count": 0,
+    "name": "PE",
+    "name_pt_br": "PE",
+    "name_en": "PE",
+    "image_count": 13,
+    "slug": "pe"
+  },
+  "model": "meta.state",
+  "pk": 7
+},
+{
+  "fields": {
+    "video_count": 0,
+    "name": "SC",
+    "name_pt_br": "SC",
+    "name_en": "SC",
+    "image_count": 10,
+    "slug": "sc"
+  },
+  "model": "meta.state",
+  "pk": 8
+},
+{
+  "fields": {
+    "video_count": 0,
+    "name": "PR",
+    "name_pt_br": "PR",
+    "name_en": "PR",
+    "image_count": 17,
+    "slug": "pr"
+  },
+  "model": "meta.state",
+  "pk": 9
+},
+{
+  "fields": {
+    "video_count": 0,
+    "name": "PB",
+    "name_pt_br": "PB",
+    "name_en": "PB",
+    "image_count": 1,
+    "slug": "pb"
+  },
+  "model": "meta.state",
+  "pk": 10
+}
+]

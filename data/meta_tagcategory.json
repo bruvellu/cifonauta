@@ -1,0 +1,122 @@
+[
+{
+  "fields": {
+    "description": "Different techniques used to acquire images from the database divided in 4 categories: underwater, macrophotography, landscape e microscopy.",
+    "parent": null,
+    "name_pt_br": "T\u00e9cnica",
+    "description_en": "Different techniques used to acquire images from the database divided in 4 categories: underwater, macrophotography, landscape e microscopy.",
+    "position": 0,
+    "description_pt_br": "Diferentes t\u00e9cnicas utilizadas para capturar as imagens do banco divididas em 4 categorias: submersa, macrofotografia, paisagem e microscopia.",
+    "name_en": "Technique",
+    "slug": "tecnica",
+    "name": "Technique"
+  },
+  "model": "meta.tagcategory",
+  "pk": 1
+},
+{
+  "fields": {
+    "description": "Each life stage of an organism may have a different way of life. Therefore, this classification refers to the lifestyle depicted in the image.",
+    "parent": null,
+    "name_pt_br": "Modo de vida",
+    "description_en": "Each life stage of an organism may have a different way of life. Therefore, this classification refers to the lifestyle depicted in the image.",
+    "position": 3,
+    "description_pt_br": "Cada est\u00e1gio de vida de um organismo pode ter um modo de vida diferente. Por isso, essa classifica\u00e7\u00e3o refere-se ao modo de vida da fase ilustrada na imagem.",
+    "name_en": "Life mode",
+    "slug": "modo-de-vida",
+    "name": "Life mode"
+  },
+  "model": "meta.tagcategory",
+  "pk": 2
+},
+{
+  "fields": {
+    "description": "Organisms living on or in the sea bottom.",
+    "parent": 2,
+    "name_pt_br": "Bent\u00f4nicos",
+    "description_en": "Organisms living on or in the sea bottom.",
+    "position": 5,
+    "description_pt_br": "Organismos que vivem no leito dos oceanos e mares, fixos ou n\u00e3o a um substrato.",
+    "name_en": "Benthic",
+    "slug": "bentonicos",
+    "name": "Benthic"
+  },
+  "model": "meta.tagcategory",
+  "pk": 3
+},
+{
+  "fields": {
+    "description": "Organisms living in the water column.",
+    "parent": 2,
+    "name_pt_br": "Pel\u00e1gicos",
+    "description_en": "Organisms living in the water column.",
+    "position": 4,
+    "description_pt_br": "Organismos que vivem na coluna d\u2019\u00e1gua.",
+    "name_en": "Pelagic",
+    "slug": "pelagicos",
+    "name": "Pelagic"
+  },
+  "model": "meta.tagcategory",
+  "pk": 4
+},
+{
+  "fields": {
+    "description": "Microscopy techniques used to acquire the image.",
+    "parent": 1,
+    "name_pt_br": "Microscopia",
+    "description_en": "Microscopy techniques used to acquire the image.",
+    "position": 1,
+    "description_pt_br": "T\u00e9cnicas de microscopia utilizadas para capturar a imagem.",
+    "name_en": "Microscopy",
+    "slug": "microscopia",
+    "name": "Microscopy"
+  },
+  "model": "meta.tagcategory",
+  "pk": 5
+},
+{
+  "fields": {
+    "description": "Tags that do not fit into other categories. Could be common terms frequently searched.",
+    "parent": null,
+    "name_pt_br": "Diversos",
+    "description_en": "Tags that do not fit into other categories. Could be common terms frequently searched.",
+    "position": 10,
+    "description_pt_br": "Marcadores que n\u00e3o se encaixam nas outras categorias. Podem ser termos comuns frequentemente procurados.",
+    "name_en": "Miscellaneous",
+    "slug": "diversos",
+    "name": "Miscellaneous"
+  },
+  "model": "meta.tagcategory",
+  "pk": 6
+},
+{
+  "fields": {
+    "description": "We also indicate the habitat of each organism whenever possible.",
+    "parent": null,
+    "name_pt_br": "Habitat",
+    "description_en": "We also indicate the habitat of each organism whenever possible.",
+    "position": 6,
+    "description_pt_br": "Tamb\u00e9m indicamos os habitats de cada organismo, quando poss\u00edvel.",
+    "name_en": "Habitat",
+    "slug": "habitat",
+    "name": "Habitat"
+  },
+  "model": "meta.tagcategory",
+  "pk": 7
+},
+{
+  "fields": {
+    "description": "The organisms photographed are not always adults.",
+    "parent": null,
+    "name_pt_br": "Est\u00e1gio de vida",
+    "description_en": "The organisms photographed are not always adults.",
+    "position": 2,
+    "description_pt_br": "Nem sempre os organismos fotografados s\u00e3o indiv\u00edduos adultos.",
+    "name_en": "Life stage",
+    "slug": "estagio-de-vida",
+    "name": "Life stage"
+  },
+  "model": "meta.tagcategory",
+  "pk": 8
+}
+]

@@ -1,24 +1,14 @@
 {% load i18n %}
 
 <div id="messages">
-    {% if images.paginator.count or videos.paginator.count %}
+    {% if entries.paginator.count %}
     <div class="success">
-        {% if images.paginator.count %}
-        {{ images.paginator.count }} {% trans 'foto' %}{{ images.paginator.count|pluralize }} {% endif %}{% if images.paginator.count and videos.paginator.count %}{% trans 'e' %} {% endif %}{% if videos.paginator.count %}{{ videos.paginator.count }} {% trans 'vídeo' %}{{ videos.paginator.count|pluralize }} {% endif %}
+        {{ entries.paginator.count }} {% trans 'arquivo' %}{{ entries.paginator.count|pluralize }} {% trans 'encontrado' %}{{ entries.paginator.count|pluralize }}
     </div>
     {% endif %}
-
-    {% if not images.paginator.count or not videos.paginator.count %}
+    {% if not entries.paginator.count %}
     <div class="notice">
-        {% if not videos.paginator.count and not images.paginator.count %}
-            {% trans 'Nenhuma foto e nenhum vídeo' %}
-        {% else %}
-            {% if not images.paginator.count %}
-                {% trans 'Nenhuma foto' %}
-            {% else %}
-                {% trans 'Nenhum vídeo' %}
-            {% endif %}
-        {% endif %}
+        {% trans 'Nenhum arquivo encontrado' %}
     </div>
     {% endif %}
 </div>

@@ -5,8 +5,8 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel
 from meta.signals import *
+
 from django.db.models import Q
-from django.db.models import signals
 
 
 class Media(models.Model):
@@ -586,18 +586,18 @@ class Tour(models.Model):
 
 
 # Slugify before saving.
-signals.pre_save.connect(slug_pre_save, sender=Author)
-signals.pre_save.connect(slug_pre_save, sender=Tag)
-signals.pre_save.connect(slug_pre_save, sender=TagCategory)
-signals.pre_save.connect(slug_pre_save, sender=Taxon)
-signals.pre_save.connect(slug_pre_save, sender=Size)
-signals.pre_save.connect(slug_pre_save, sender=Source)
-signals.pre_save.connect(slug_pre_save, sender=Sublocation)
-signals.pre_save.connect(slug_pre_save, sender=City)
-signals.pre_save.connect(slug_pre_save, sender=State)
-signals.pre_save.connect(slug_pre_save, sender=Country)
-signals.pre_save.connect(slug_pre_save, sender=Reference)
-signals.pre_save.connect(slug_pre_save, sender=Tour)
+models.signals.pre_save.connect(slug_pre_save, sender=Author)
+models.signals.pre_save.connect(slug_pre_save, sender=Tag)
+models.signals.pre_save.connect(slug_pre_save, sender=TagCategory)
+models.signals.pre_save.connect(slug_pre_save, sender=Taxon)
+models.signals.pre_save.connect(slug_pre_save, sender=Size)
+models.signals.pre_save.connect(slug_pre_save, sender=Source)
+models.signals.pre_save.connect(slug_pre_save, sender=Sublocation)
+models.signals.pre_save.connect(slug_pre_save, sender=City)
+models.signals.pre_save.connect(slug_pre_save, sender=State)
+models.signals.pre_save.connect(slug_pre_save, sender=Country)
+models.signals.pre_save.connect(slug_pre_save, sender=Reference)
+models.signals.pre_save.connect(slug_pre_save, sender=Tour)
 
 # Create citation with bibkey.
-signals.pre_save.connect(citation_pre_save, sender=Reference)
+models.signals.pre_save.connect(citation_pre_save, sender=Reference)

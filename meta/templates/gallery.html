@@ -6,79 +6,46 @@
 
 {% include 'messages.html' %}
 
-{% if images.paginator.count %}
-
+{% if entries.paginator.count %}
 
 <section id="photo-gallery">
+
 <header class="span-16 last">
-<h2 class="span-10">{% trans 'Foto' %}{{ images.paginator.count|pluralize }} ({{ images.paginator.count }}){% if field %} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/photos/" title="{% trans 'Cifonauta: apenas fotos' %} ({{ field }}={{ meta.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span>{% endif %}</h2>
+  <h2 class="span-10">{{ entries.paginator.count }} {% trans 'arquivo' %}{{ entries.paginator.count|pluralize }} {% if field %} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/photos/" title="{% trans 'Cifonauta RSS feed' %} ({{ field }}={{ meta.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span>{% endif %}</h2>
 </header>
 
-{% include 'pagination.html' with media=images %}
+{% if entries.paginator.num_pages > 1 %}
+{% include 'pagination.html' %}
+{% endif %}
 
-    <ul class="thumbs">
-        {% for result in images.object_list %}
-        {% if result.object %}
-        	{% with result.object as media %}
-	            {% if media.is_public %}
-	            <li class="shadow size-{{ media.size.slug }}">
-	            {% include 'thumb.html' %}
-	            </li>
-	            {% endif %}
-        	{% endwith %}
-        {% else %}
-        	{% with result as media %}
-	            {% if media.is_public %}
-	            <li class="shadow size-{{ media.size.slug }}">
-	            {% include 'thumb.html' %}
-	            </li>
-	            {% endif %}
-        	{% endwith %}
-        {% endif %}
+<ul class="thumbs">
 
+  {% for media in entries.object_list %}
+    {% if media.is_public %}
+      <li class="shadow size-{{ media.size.slug }}">
+      {% include 'thumb.html' %}
+      </li>
+    {% endif %}
+  {% endfor %}
 
-        {% endfor %}
-    </ul>
+</ul>
 
-{% include 'pagination.html' with media=images %}
+{% if entries.paginator.num_pages > 1 %}
+{% include 'pagination.html' %}
+{% endif %}
 
 </section>
 
 <hr class="space">
 
-{% endif %}
+{% else %}
 
-{% if videos.paginator.count %}
-<section id="video-gallery">
+<section id="photo-gallery">
 <header class="span-16 last">
-<h2 class="span-10">{% trans 'Vídeo' %}{{ videos.paginator.count|pluralize }} ({{ videos.paginator.count }}){% if field %} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/videos/" title="{% trans 'Cifonauta: apenas vídeos' %} ({{ field }}={{ meta.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span>{% endif %}</h2>
+<h2 class="span-10">
+{% trans 'Nenhum arquivo encontrado :(' %}
+</h2>
 </header>
-
-{% include 'pagination.html' with media=videos %}
-
-    <ul class="thumbs">
-        {% for result in videos.object_list %}
-        {% if result.object %}
-	        {% with result.object as media %}
-	            {% if media.is_public %}
-	            <li class="shadow size-{{ media.size.slug }}">
-	            {% include 'thumb.html' %}
-	            </li>
-	            {% endif %}
-	        {% endwith %}
-	    {% else %}
-	        {% with result as media %}
-	            {% if media.is_public %}
-	            <li class="shadow size-{{ media.size.slug }}">
-	            {% include 'thumb.html' %}
-	            </li>
-	            {% endif %}
-	        {% endwith %}	    
-	    {% endif %}
-        {% endfor %}
-    </ul>
-
-{% include 'pagination.html' with media=videos %}
-
 </section>
+
 {% endif %}

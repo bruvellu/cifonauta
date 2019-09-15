@@ -573,42 +573,16 @@ class Tour(models.Model):
     videos = models.ManyToManyField(Video, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este tour.'))
 
-    image_count = models.PositiveIntegerField(
-            _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas a este tour.'))
-    video_count = models.PositiveIntegerField(
-            _(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associados a este tour.'))
-
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
         return reverse('tour_url', args=[self.slug])
 
-    def counter(self):
-        '''Counts and updates the number of associated media files.'''
-        self.media_count = self.media.count()
-        self.save()
-
     class Meta:
         verbose_name = _('tour')
         verbose_name_plural = _('tours')
         ordering = ['name']
-
-
-class TourPosition(models.Model):
-    '''Define a posição da imagem no tour.'''
-    photo = models.ForeignKey(Image, on_delete=models.DO_NOTHING)
-    tour = models.ForeignKey(Tour, on_delete=models.DO_NOTHING)
-    position = models.PositiveIntegerField(_(u'posição'), default=0, help_text=_(u'Define a ordem das imagens em um tour.'))
-
-    def __unicode__(self):
-        return '%d, %s (id=%s) @ %s' % (self.position, self.photo.title,
-                self.photo.id, self.tour.name)
-
-    class Meta:
-        verbose_name = _(u'posição no tour')
-        verbose_name_plural = _(u'posições no tour')
-        ordering = ['position', 'tour__id']
 
 
 # Slugify before saving.
@@ -624,13 +598,6 @@ signals.pre_save.connect(slug_pre_save, sender=State)
 signals.pre_save.connect(slug_pre_save, sender=Country)
 signals.pre_save.connect(slug_pre_save, sender=Reference)
 signals.pre_save.connect(slug_pre_save, sender=Tour)
+
 # Create citation with bibkey.
 signals.pre_save.connect(citation_pre_save, sender=Reference)
-# Update models autocount field.
-signals.post_save.connect(update_count, sender=Image)
-signals.post_delete.connect(update_count, sender=Image)
-signals.post_save.connect(update_count, sender=Video)
-signals.post_delete.connect(update_count, sender=Video)
-# Add position to tour images.
-signals.post_save.connect(set_position, sender=Tour)
-#signals.post_delete.connect(set_position, sender=Tour)

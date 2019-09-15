@@ -53,7 +53,6 @@ admin.site.register(Author)
 admin.site.register(Source)
 admin.site.register(Sublocation)
 admin.site.register(Reference)
-admin.site.register(TourPosition)
 
 # Translation models.
 admin.site.unregister(FlatPage)

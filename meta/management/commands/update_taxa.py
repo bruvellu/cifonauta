@@ -248,4 +248,3 @@ def translate_rank(rank):
            return rank
    else:
        return rank
-

@@ -503,32 +503,21 @@ class State(models.Model):
 
 
 class Country(models.Model):
-    name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome do país.'))
-    slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome do país.'))
-    image_count = models.PositiveIntegerField(
-            _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas a este país.'))
-    video_count = models.PositiveIntegerField(
-            _(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associados a este país.'))
+    name = models.CharField(_('nome'), max_length=64, unique=True,
+            help_text=_('Nome do país.'))
+    slug = models.SlugField(_('slug'), max_length=64, blank=True,
+            help_text=_('Slug do nome do país.'))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return ('country_url', [self.slug])
-
-    def counter(self):
-        '''Conta o número de imagens+vídeos associados à ForeignKey.
-
-        Atualiza os respectivos campos image_count e video_count.
-        '''
-        self.image_count = self.image_set.count()
-        self.video_count = self.video_set.count()
-        self.save()
+        return reverse('country_url', args=[self.slug])
 
     class Meta:
-        verbose_name = _(u'país')
-        verbose_name_plural = _(u'país')
-        #ordering = ['name']
+        verbose_name = _('país')
+        verbose_name_plural = _('país')
+        ordering = ['name']
 
 
 class Reference(models.Model):

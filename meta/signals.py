@@ -2,10 +2,8 @@
 
 from django.template.defaultfilters import slugify
 
-
-
 # Não é signal, apenas função acessória.
-#XXX Trocar de lugar, eventualmente.
+# FIXME Trocar de lugar, eventualmente.
 def citation_html(reference):
     '''Retorna citação formatada em HTML.
 
@@ -117,16 +115,15 @@ def slug_pre_save(signal, instance, sender, **kwargs):
 
 
 def update_count(signal, instance, sender, **kwargs):
-    '''Atualiza o contador de fotos e vídeos.'''
-    #TODO Incluir os outros modelos!
+    '''Update media counter.'''
     ## Many 2 Many
     # Authors
-    authors = instance.author_set.all()
+    authors = instance.person_set.filter(is_author=True)
     if authors:
         for author in authors:
             author.counter()
     # Sources
-    sources = instance.source_set.all()
+    sources = instance.person_set.filter(is_author=False)
     if sources:
         for source in sources:
             source.counter()
@@ -156,27 +153,27 @@ def update_count(signal, instance, sender, **kwargs):
     try:
         instance.size.counter()
     except:
-        print('Size == NULL (id=%d)' % instance.id)
+        print('Size == NULL (id={})'.format(instance.id))
     # Sublocation
     try:
         instance.sublocation.counter()
     except:
-        print('Sublocation == NULL (id=%d)' % instance.id)
+        print('Sublocation == NULL (id={})'.format(instance.id))
     # City
     try:
         instance.city.counter()
     except:
-        print('City == NULL (id=%d)' % instance.id)
+        print('City == NULL (id={})'.format(instance.id))
     # State
     try:
         instance.state.counter()
     except:
-        print('State == NULL (id=%d)' % instance.id)
+        print('State == NULL (id={})'.format(instance.id))
     # Country
     try:
         instance.country.counter()
     except:
-        print('Country == NULL (id=%d)' % instance.id)
+        print('Country == NULL (id={})'.format(instance.id))
 
 
 def makestats(signal, instance, sender, **kwargs):
@@ -189,13 +186,12 @@ def makestats(signal, instance, sender, **kwargs):
 
 
 def set_position(signal, instance, sender, **kwargs):
-    '''Cria objeto com posição no tour, se não existir.'''
-    #TODO Create unset_position signal.
+    '''Create object with tour position.'''
     from meta.models import TourPosition
-    images = instance.images.all()
-    for image in images:
+    media = instance.media.all()
+    for item in media:
         try:
-            query = TourPosition.objects.get(photo=image, tour=instance)
+            query = TourPosition.objects.get(media=item, tour=instance)
         except:
-            tp = TourPosition(photo=image, tour=instance)
+            tp = TourPosition(media=item, tour=instance)
             tp.save()

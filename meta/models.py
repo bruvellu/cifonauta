@@ -550,42 +550,49 @@ class Reference(models.Model):
 
 
 class Tour(models.Model):
-    name = models.CharField(_(u'nome'), max_length=100, unique=True, help_text=_(u'Nome do tour.'))
-    slug = models.SlugField(_(u'slug'), max_length=100, blank=True, help_text=_(u'Slug do nome do tour.'))
-    description = models.TextField(_(u'descrição'), blank=True, help_text=_(u'Descrição do tour.'))
-    is_public = models.BooleanField(_(u'público'), default=False, help_text=_(u'Informa se o tour está visível para visitantes anônimos.'))
-    pub_date = models.DateTimeField(_(u'data de publicação'), auto_now_add=True, help_text=_(u'Data de publicação do tour no Cifonauta.'))
-    timestamp = models.DateTimeField(_(u'data de modificação'), auto_now=True, help_text=_(u'Data da última modificação do tour.'))
+    name = models.CharField(_('nome'), max_length=100, unique=True,
+            help_text=_('Nome do tour.'))
+    slug = models.SlugField(_('slug'), max_length=100, blank=True,
+            help_text=_('Slug do nome do tour.'))
+    description = models.TextField(_('descrição'), blank=True,
+            help_text=_('Descrição do tour.'))
+    is_public = models.BooleanField(_('público'), default=False,
+            help_text=_('Informa se o tour está visível para visitantes anônimos.'))
+    pub_date = models.DateTimeField(_('data de publicação'), auto_now_add=True,
+            help_text=_('Data de publicação do tour no Cifonauta.'))
+    timestamp = models.DateTimeField(_('data de modificação'), auto_now=True,
+            help_text=_('Data da última modificação do tour.'))
+    media = models.ManyToManyField('Media', blank=True,
+            verbose_name=_('arquivos'), help_text=_('Arquivos associadas a este tour.'))
+    references = models.ManyToManyField('Reference', blank=True,
+            verbose_name=_('referências'), help_text=_('Referências associadas a este tour.'))
+
+    # Deprecated
     images = models.ManyToManyField(Image, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este tour.'))
     videos = models.ManyToManyField(Video, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este tour.'))
-    references = models.ManyToManyField(Reference, blank=True,
-            verbose_name=_(u'referências'), help_text=_(u'Referências associadas a este tour.'))
+
     image_count = models.PositiveIntegerField(
             _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas a este tour.'))
     video_count = models.PositiveIntegerField(
             _(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associados a este tour.'))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return ('tour_url', [self.slug])
+        return reverse('tour_url', args=[self.slug])
 
     def counter(self):
-        '''Conta o número de imagens+vídeos associados à M2M.
-
-        Atualiza os respectivos campos image_count e video_count.
-        '''
-        self.image_count = self.images.count()
-        self.video_count = self.videos.count()
+        '''Counts and updates the number of associated media files.'''
+        self.media_count = self.media.count()
         self.save()
 
     class Meta:
-        verbose_name = _(u'tour')
-        verbose_name_plural = _(u'tours')
-        #ordering = ['name']
+        verbose_name = _('tour')
+        verbose_name_plural = _('tours')
+        ordering = ['name']
 
 
 class TourPosition(models.Model):

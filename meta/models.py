@@ -537,21 +537,11 @@ class Reference(models.Model):
     videos = models.ManyToManyField(Video, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados à esta referência.'))
 
-    image_count = models.PositiveIntegerField(
-            _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas à esta referência.'))
-    video_count = models.PositiveIntegerField(
-            _(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associados à esta referência.'))
-
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
         return reverse('reference_url', args=[self.slug])
-
-    def counter(self):
-        '''Counts and updates the number of associated media files.'''
-        self.media_count = self.media.count()
-        self.save()
 
     class Meta:
         verbose_name = _('referência')

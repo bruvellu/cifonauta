@@ -485,31 +485,20 @@ class City(models.Model):
 
 
 class State(models.Model):
-    name = models.CharField(_(u'nome'), max_length=64, unique=True, help_text=_(u'Nome do estado.'))
-    slug = models.SlugField(_(u'slug'), max_length=64, blank=True, help_text=_(u'Slug do nome do estado.'))
-    image_count = models.PositiveIntegerField(
-            _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas a este estado.'))
-    video_count = models.PositiveIntegerField(
-            _(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associados a este estado.'))
+    name = models.CharField(_('nome'), max_length=64, unique=True,
+            help_text=_('Nome do estado.'))
+    slug = models.SlugField(_('slug'), max_length=64, blank=True,
+            help_text=_('Slug do nome do estado.'))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return ('state_url', [self.slug])
-
-    def counter(self):
-        '''Conta o número de imagens+vídeos associados à ForeignKey.
-
-        Atualiza os respectivos campos image_count e video_count.
-        '''
-        self.image_count = self.image_set.count()
-        self.video_count = self.video_set.count()
-        self.save()
+        return reverse('state_url', args=[self.slug])
 
     class Meta:
-        verbose_name = _(u'estado')
-        verbose_name_plural = _(u'estados')
+        verbose_name = _('estado')
+        verbose_name_plural = _('estados')
         ordering = ['name']
 
 

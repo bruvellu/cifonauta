@@ -44,14 +44,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # Get all taxa.
-        images = Image.objects.all()
-        videos = Video.objects.all()
+        media = Media.objects.all()
         taxa = Taxon.objects.all()
 
         # All media taxa.
-        image_taxa = list(images.values_list('taxon__name', flat=True))
-        video_taxa = list(videos.values_list('taxon__name', flat=True))
-        all_taxa = list(set(image_taxa + video_taxa))
+        all_taxa = list(media.values_list('taxon__name', flat=True))
         print(all_taxa)
 
         for taxon_name in all_taxa:

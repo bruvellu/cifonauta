@@ -26,7 +26,7 @@ class Command(BaseCommand):
 
 
 def translate_rank(rank):
-    '''Translate ranks inteligently.'''
+    '''Translate ranks intelligently.'''
 
     pt2en = {
             u'Subforma': u'Subform',

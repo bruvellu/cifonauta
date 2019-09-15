@@ -11,11 +11,10 @@
     </p>
   </div>
   <div class="span-6 last">
-    <h3>{% trans 'Ficha Técnica' %}</h3>
-    <p class="upper">{{ tour.images.count }} {% trans 'imagens' %}, {{ tour.stats.pageviews }} {% trans 'visitas' %}</p>
+    <h3 class="upper">{{ tour.media.count }} {% trans 'imagens' %}</h3>
     <ul class="padlist">
       <li>
-      <strong>{% trans 'Criação' %}:</strong> {{ tour.pub_date }}
+      <strong>{% trans 'Criado' %}:</strong> {{ tour.pub_date }}
       </li>
       <li>
       <strong>{% trans 'Modificado' %}:</strong> {{ tour.timestamp }}

@@ -1,8 +1,8 @@
 <ul class="metalist">
     {% for meta in metalist %}
     <li class="metaitem {% cycle 'darkrow' 'lightrow' %}">
-    <a href="{{ meta.get_absolute_url }}" {% if meta.description %}title="{{ meta.description }}"{% endif %}>{{ meta.name|truncate:28 }}</a>
-        <span class="metacount quiet">{{ meta.image_count|add:meta.video_count }}</span>
+    <a href="{{ meta.get_absolute_url }}" {% if meta.description %}title="{{ meta.description }}"{% endif %}>{{ meta.name|truncatechars:28 }}</a>
+        <span class="metacount quiet">{{ meta.media_count }}</span>
     </li>
     {% endfor %}
 </ul>

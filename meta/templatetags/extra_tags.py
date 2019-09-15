@@ -111,16 +111,8 @@ def slicer(query, media_id):
 
 
 def mediaque(media, qobj):
-    '''Retorna queryset de vídeo ou foto, baseado no datatype.
-
-    Usado no navegador linear.
-    '''
-    if media.datatype == 'photo':
-        query = Image.objects.filter(qobj, is_public=True).order_by('id')
-    elif media.datatype == 'video':
-        query = Video.objects.filter(qobj, is_public=True).order_by('id')
-    else:
-        print('%s é um datatype desconhecido.' % media.datatype)
+    '''Returns queryset used in the linear browser.'''
+    query = Media.objects.filter(qobj, is_public=True).order_by('id')
     return query
 
 @register.inclusion_tag('related.html', takes_context=True)
@@ -227,12 +219,11 @@ def show_related(context, media, form, related):
 
 @register.inclusion_tag('stats.html')
 def show_stats():
-    '''Gera linha com estatísticas do banco.'''
-    #TODO Otimizar isso é necessário? Guardar no banco de dados?
-    photos = Image.objects.filter(is_public=True).count()
-    videos = Video.objects.filter(is_public=True).count()
+    '''Generates the stats line in the header.'''
+    photos = Media.objects.filter(is_public=True, datatype='photo').count()
+    videos = Media.objects.filter(is_public=True, datatype='video').count()
     tags = Tag.objects.count()
-    spp = Taxon.objects.filter(rank_en=u'Species').count()
+    spp = Taxon.objects.filter(rank_en='Species').count()
     locations = Sublocation.objects.count()
     return {'photos': photos, 'videos': videos, 'spp': spp, 'locations': locations, 'tags': tags}
 
@@ -247,14 +238,14 @@ def show_tree(current=None):
     taxa = Taxon.objects.select_related('parent')
     return {'taxa': taxa, 'current': current}
 
-@register.inclusion_tag('searchbox.html')
+@register.inclusion_tag('search_box.html')
 def search_box(query=None):
-    '''Gera buscador para ser usado no header do site.'''
+    '''Creates search form in the header.'''
     if query:
-        form = SearchForm({'query': query})
+        search_form = SearchForm({'query': query})
     else:
-        form = SearchForm()
-    return {'form': form}
+        search_form = SearchForm()
+    return {'search_form': search_form}
 
 @register.filter
 def sp_em(meta, autoescape=None):

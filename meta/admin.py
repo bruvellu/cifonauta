@@ -8,11 +8,7 @@ class FlatPageAdmin(TranslationAdmin):
     pass
 
 
-class ImageAdmin(TranslationAdmin):
-    pass
-
-
-class VideoAdmin(TranslationAdmin):
+class MediaAdmin(TranslationAdmin):
     pass
 
 
@@ -21,10 +17,6 @@ class TagAdmin(TranslationAdmin):
 
 
 class TagCatAdmin(TranslationAdmin):
-    pass
-
-
-class TaxonAdmin(TranslationAdmin):
     pass
 
 
@@ -49,19 +41,17 @@ class SizeAdmin(TranslationAdmin):
 
 
 # Regular models.
-admin.site.register(Author)
-admin.site.register(Source)
+admin.site.register(Person)
 admin.site.register(Sublocation)
 admin.site.register(Reference)
+admin.site.register(Taxon)
 
 # Translation models.
 admin.site.unregister(FlatPage)
 admin.site.register(FlatPage, FlatPageAdmin)
-admin.site.register(Image, ImageAdmin)
-admin.site.register(Video, VideoAdmin)
+admin.site.register(Media, MediaAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(TagCategory, TagAdmin)
-admin.site.register(Taxon, TaxonAdmin)
 admin.site.register(City, CityAdmin)
 admin.site.register(State, StateAdmin)
 admin.site.register(Country, CountryAdmin)

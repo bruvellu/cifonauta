@@ -521,37 +521,41 @@ class Country(models.Model):
 
 
 class Reference(models.Model):
-    name = models.CharField(_(u'nome'), max_length=100, unique=True, help_text=_(u'Identificador da referência (Mendeley ID).'))
-    slug = models.SlugField(_(u'slug'), max_length=100, blank=True, help_text=_(u'Slug do identificar da referência.'))
-    citation = models.TextField(_(u'citação'), blank=True, help_text=_(u'Citação formatada da referência.'))
+    name = models.CharField(_('nome'), max_length=100, unique=True,
+            help_text=_('Identificador da referência (Mendeley ID).'))
+    slug = models.SlugField(_('slug'), max_length=100, blank=True,
+            help_text=_('Slug do identificar da referência.'))
+    citation = models.TextField(_('citação'), blank=True,
+            help_text=_('Citação formatada da referência.'))
+    media = models.ManyToManyField('Media', blank=True,
+            verbose_name=_('fotos'),
+            help_text=_('Fotos associadas à esta referência.'))
+
+    # Deprecated
     images = models.ManyToManyField(Image, blank=True,
             verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas à esta referência.'))
     videos = models.ManyToManyField(Video, blank=True,
             verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados à esta referência.'))
+
     image_count = models.PositiveIntegerField(
             _(u'número de fotos'), default=0, editable=False, help_text=_(u'Número de fotos associadas à esta referência.'))
     video_count = models.PositiveIntegerField(
             _(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associados à esta referência.'))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return ('reference_url', [self.slug])
+        return reverse('reference_url', args=[self.slug])
 
     def counter(self):
-        '''Conta o número de imagens+vídeos associados à M2M.
-
-        Atualiza os respectivos campos image_count e video_count.
-        '''
-        #XXX Fiz desse jeito para não chamar o save(), já que ele se conecta ao
-        # Mendeley no signal pre_save (deixando o save() lento...).
-        Reference.objects.filter(id=self.id).update(image_count=self.images.count())
-        Reference.objects.filter(id=self.id).update(video_count=self.videos.count())
+        '''Counts and updates the number of associated media files.'''
+        self.media_count = self.media.count()
+        self.save()
 
     class Meta:
-        verbose_name = _(u'referência')
-        verbose_name_plural = _(u'referências')
+        verbose_name = _('referência')
+        verbose_name_plural = _('referências')
         ordering = ['-citation']
 
 

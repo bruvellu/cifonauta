@@ -1,54 +1,35 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-# media_utils.py @ CIFONAUTA
-# Copyleft 2010-2011 - Bruno C. Vellutini | organelas.com
-#
-#TODO Definir licença.
-#
-# Atualizado: 16 Feb 2011 01:09AM
-'''Biblioteca de apoio para arquivos multimídia.
 
-Guarda funções úteis para a manipulação de fotos e imagens. Criar thumbnails,
-extrair duração, otimizar, etc.
+'''Library for media utilities.
 
-Centro de Biologia Marinha da Universidade de São Paulo.
+Common functions to read image metadata and create thumbnails.
 '''
 
 import logging
 import os
-import pyexiv2
 import random
 import re
 import subprocess
-
+from datetime import datetime
+from django.utils import timezone
 from shutil import copy2, move
-from iptcinfo import IPTCInfo
 
-# Instancia logger.
+import gi
+gi.require_version('GExiv2', '0.10')
+from gi.repository import GExiv2
+
+# Get logger.
 logger = logging.getLogger('cifonauta.utils')
 
-__author__ = 'Bruno Vellutini'
-__copyright__ = 'Copyright 2010-2011, CEBIMar-USP'
-__credits__ = 'Bruno C. Vellutini'
-__license__ = 'DEFINIR'
-__version__ = '0.1'
-__maintainer__ = 'Bruno Vellutini'
-__email__ = 'organelas@gmail.com'
-__status__ = 'Development'
 
-# build_call
-# process_video
-# create_meta?
-# process image
-# optimize
-# rename_file
-# get_initials
-# create_id
-# prepare_meta
-
-#TODO Checar se o ImageMagick está instalado.
-#TODO Checar se o FFmpeg está instalado.
+def read_photo_metadata(filepath):
+    '''Parses image metadata using GExiv2.'''
+    metadata = GExiv2.Metadata(filepath)
+    if not metadata.get_tags():
+        return None
+    else:
+        return metadata
 
 
 def read_iptc(abspath, charset='utf-8', new=False):
@@ -98,102 +79,72 @@ def create_thumb(filepath, destination):
         return None
 
 
-def build_call(filepath):
-    '''Constrói o subprocesso para converter o vídeo com o FFmpeg.
-    #webm HD
-    ffmpeg -y -i hd.m2ts -i marca.png -metadata title="A WEBM HD" -metadata author="AN AUTHOR"
-    -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libvpx
-    -filter_complex "scale=512x288,overlay=0:main_h-overlay_h-0" hd.webm
+def video_to_web(filepath, sitepath, metadata):
+    '''Convert video for web using FFmpeg.
 
-    #webm DV
-    ffmpeg -y -i dv.avi -i marca.png -metadata title="A WEBM DV" -metadata author="AN AUTHOR"
-    -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libvpx
-    -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" dv.webm
-
-    #ogg HD
-    ffmpeg -y -i hd.m2ts -i marca.png -metadata title="AN OGG HD" -metadata author="AN AUTHOR"
-    -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libtheora
-    -filter_complex "scale=512x288,overlay=0:main_h-overlay_h-0" hd.ogv
-
-    #ogg DV
-    ffmpeg -y -i dv.avi -i marca.png -metadata title="AN OGG DV" -metadata author="AN AUTHOR"
-    -b:v 600k -threads 0 -acodec libvorbis -b:a 128k -ac 2 -ar 44100 -vcodec libtheora
-    -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" dv.ogv
-
-    #mp4 HD
+    # HD
     ffmpeg -y -i hd.m2ts -i marca.png -metadata title="A MP4 HD" -metadata author="AN AUTHOR"
     -b:v 600k -threads 0 -acodec libfaac -b:a 128k -ac 2 -ar 44100 -vcodec libx264
     -filter_complex "scale=512x288,overlay=0:main_h-overlay_h-0" hd.mp4
 
-    #mp4 DV
+    # SD
     ffmpeg -y -i dv.avi -i marca.png -metadata title="A MP4 DV" -metadata author="AN AUTHOR"
     -b:v 600k -threads 0 -acodec libfaac -b:a 128k -ac 2 -ar 44100 -vcodec libx264
-    -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" dv.mp4
+    -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" '-aspect', '4:3',dv.mp4
     '''
-    # Get info on file first.
-    infos = get_info(filepath)
-    dimensions = infos['dimensions']
-    width, height = dimensions.split('x')
-    ratio = float(width) / float(height)
 
     # FFMPEG command.
-    call = [
-            'ffmpeg', '-y', '-i', filepath, '-i', 'marca.png',
-            '-b:v', '600k', '-threads', '0',
+    video_call = [
+            'ffmpeg', '-y',
+            '-hide_banner',
+            '-loglevel', 'error',
+            '-threads', '0',
+            '-i', filepath,
+            '-i', 'marca.png',
+            '-metadata', 'title={}'.format(metadata.title),
+            '-metadata', 'artist={}'.format(metadata.author),
+            '-b:v', '600k',
+            '-filter_complex', 'scale=512:-2,overlay=0:main_h-overlay_h-0',
+            sitepath
             ]
-    # If ratio is larger, HD dimensions.
-    if ratio > 1.4:
-        call.extend([
-            '-filter_complex', 'overlay=0:main_h-overlay_h-0',
-            '-s', '512x288', '-aspect', '16:9',
-            ])
-    else:
-        call.extend([
-            '-filter_complex', 'overlay=0:main_h-overlay_h-0',
-            '-s', '512x384', '-aspect', '4:3',
-            ])
 
-    # Audio codec
-    if filepath.endswith('mp4'):
-        call.extend(['-acodec', 'libfaac', '-b:a', '128k',
-            '-ac', '2', '-ar', '44100'])
-    else:
-        call.extend(['-acodec', 'libvorbis', '-b:a', '128k',
-            '-ac', '2', '-ar', '44100'])
+    # Audio codec.
+    #video_call.extend(['-acodec', 'libfaac', '-b:a', '128k', '-ac', '2', '-ar', '44100'])
 
-    # Video codec
-    if filepath.endswith('webm'):
-        call.extend(['-vcodec', 'libvpx'])
-    elif filepath.endswith('mp4'):
-        call.extend(['-vcodec', 'libx264'])
-    if filepath.endswith('ogv'):
-        call.extend(['-vcodec', 'libtheora'])
+    # Video codec.
+    #video_call.extend(['-vcodec', 'libx264'])
 
-    return call
+    # Add destination.
+    #video_call.append(sitepath)
 
-def grab_still(filepath):
+    # Execute.
+    subprocess.call(video_call)
+
+
+def grab_still(filepath, coverpath):
     '''Grab video's first frame.'''
-    # Path to still image.
-    stillpath = os.path.splitext(filepath)[0] + '.jpg'
 
     # Command to be called.
-    if filepath.endswith('m2ts'):
-        ffmpeg_call = [ 'ffmpeg', '-y', '-i', filepath, '-vframes', '1',
-            '-filter_complex', 'scale=512:288', '-aspect', '16:9', '-ss',
-            '1', '-f', 'image2', stillpath ]
-    else:
-        ffmpeg_call = ['ffmpeg', '-y', '-i', filepath, '-vframes', '1',
-            '-filter_complex', 'scale=512:384', '-ss', '1', '-f', 'image2',
-            stillpath]
+    ffmpeg_call = [
+            'ffmpeg', '-y',
+            '-hide_banner',
+            '-loglevel', 'error',
+            '-i', filepath,
+            '-vframes', '1',
+            '-filter_complex', 'scale=512:-2',
+            '-ss', '1',
+            '-f', 'image2',
+            coverpath
+            ]
 
     # Executing ffmpeg.
     try:
         subprocess.call(ffmpeg_call)
-        logger.debug('Still criado em %s', stillpath)
-        return stillpath
+        logger.debug('Still criado em %s', coverpath)
+        return coverpath
     except IOError:
-        logger.warning('Erro ao criar still %s', stillpath)
-        return None, None
+        logger.warning('Erro ao criar still %s', coverpath)
+        return None
 
 
 def create_still(filepath, destination):
@@ -244,100 +195,92 @@ def create_still(filepath, destination):
         logger.warning('Erro ao criar still %s', stillpath)
         return None, None
 
-def convert_to_web(filepath, finalpath):
-    '''Redimensiona e otimiza fotos para a rede.'''
+def photo_to_web(filepath, sitepath, size=800):
+    '''Resizes and optimizes the photo for the web.'''
+    sitepath_jpg = '{}.jpg'.format(os.path.splitext(sitepath)[0])
     convert_call = ['convert', filepath, '-density', '72', '-format', 'jpg',
-            '-quality', '70', '-resize', '800x800>', finalpath]
+            '-quality', '70', '-resize', '{}x{}>'.format(size, size), sitepath_jpg]
     try:
         subprocess.call(convert_call)
-        logger.debug('%s processado com sucesso.', finalpath)
-        return finalpath
+        watermarker(sitepath_jpg)
+        logger.debug('%s processed.', sitepath)
+        return sitepath
     except:
-        logger.critical('Erro ao converter %s', filepath)
+        logger.critical('Error converting %s', filepath)
         return None
 
 def watermarker(filepath):
-    '''Insere marca d'água em foto.'''
-    # Arquivo com marca d'água.
-    watermark = u'marca.png'
-    # Constrói chamada para canto esquerdo embaixo.
+    '''Insert watermark.'''
+    # Watermark file.
+    watermark = 'marca.png'
+    # Put on the left lower side.
     mark_call = ['composite', '-gravity', 'southwest', watermark, filepath,
             filepath]
     try:
         subprocess.call(mark_call)
-        logger.debug('Marca adicionada em %s', filepath)
+        logger.debug('Watermark added to %s', filepath)
         return True
     except:
-        logger.warning('Erro ao adicionar marca em %s', filepath)
+        logger.warning('Error to add watermark on %s', filepath)
         return False
 
-def get_exif(filepath):
-    '''Extrai o exif da foto usando o pyexiv2 0.3.0.'''
-    logger.debug('Extraindo EXIF de %s', filepath)
-    exif = pyexiv2.ImageMetadata(filepath)
-    exif.read()
-    return exif
-
-def get_exif_date(exif):
-    '''Extrai a data em que foi criada a foto do EXIF.'''
+def get_exif_date(info):
+    '''Extract creation date from GExiv2 object.'''
     try:
-        date = exif['Exif.Photo.DateTimeOriginal']
+        date = info['Exif.Photo.DateTimeOriginal']
     except:
         try:
-            date = exif['Exif.Photo.DateTimeDigitized']
+            date = info['Exif.Photo.DateTimeDigitized']
         except:
             try:
-                date = exif['Exif.Image.DateTime']
+                date = info['Exif.Image.DateTime']
             except:
                 return False
-    return date.value
+    return date
 
-def get_date(exif):
-    '''Retorna a data da foto já pronta para metadados.'''
-    # Extrai data do exif.
-    date = get_exif_date(exif)
-    # Faz parsing do valor extraído.
-    try:
-        date_string = date.strftime('%Y-%m-%d %I:%M:%S')
-    except:
-        date_string = ''
-    if date_string and date_string != '0000:00:00 00:00:00':
-        return date
+def get_date(info):
+    '''Return the creation data ready for media metadata.'''
+    # Extract date from EXIF.
+    date = get_exif_date(info)
+    if date:
+        tz_date = timezone.make_aware(datetime.strptime(date, '%Y:%m:%d %H:%M:%S'))
     else:
-        return '1900-01-01 01:01:01'
+        tz_date = timezone.make_aware(datetime.strptime('1900:01:01 01:01:01', '%Y:%m:%d %H:%M:%S'))
+    return tz_date
 
-def get_gps(exif):
-    '''Extrai coordenadas guardadas no EXIF.'''
-    # Para guardar valores.
+def get_gps(info):
+    '''Extract GPS coordinates from GExiv2 object.'''
+    # Store values.
     gps = {}
     gps_data = {}
 
-    try:
+    if info and 'Exif.GPSInfo.GPSLatitude' in info.get_tags():
         # Latitude.
-        gps['latref'] = exif['Exif.GPSInfo.GPSLatitudeRef'].value
-        gps['latdeg'] = exif['Exif.GPSInfo.GPSLatitude'].value[0]
-        gps['latmin'] = exif['Exif.GPSInfo.GPSLatitude'].value[1]
-        gps['latsec'] = exif['Exif.GPSInfo.GPSLatitude'].value[2]
+        lat_split = info['Exif.GPSInfo.GPSLatitude'].split() # ['23/1', '49/1', '59/1']
+        gps['latdeg'] = int(lat_split[0].split('/')[0]) # ['23', '1']
+        gps['latmin'] = int(lat_split[1].split('/')[0]) # ['49', '1']
+        gps['latsec'] = int(lat_split[2].split('/')[0]) # ['59', '1']
+        gps['latref'] = info['Exif.GPSInfo.GPSLatitudeRef']
         latitude = get_decimal(gps['latref'], gps['latdeg'], gps['latmin'],
                 gps['latsec'])
 
         # Longitude.
-        gps['longref'] = exif['Exif.GPSInfo.GPSLongitudeRef'].value
-        gps['longdeg'] = exif['Exif.GPSInfo.GPSLongitude'].value[0]
-        gps['longmin'] = exif['Exif.GPSInfo.GPSLongitude'].value[1]
-        gps['longsec'] = exif['Exif.GPSInfo.GPSLongitude'].value[2]
+        long_split = info['Exif.GPSInfo.GPSLongitude'].split() # ['23/1', '49/1', '59/1']
+        gps['longdeg'] = int(long_split[0].split('/')[0])
+        gps['longmin'] = int(long_split[1].split('/')[0])
+        gps['longsec'] = int(long_split[2].split('/')[0])
+        gps['longref'] = info['Exif.GPSInfo.GPSLongitudeRef']
         longitude = get_decimal(gps['longref'], gps['longdeg'], gps['longmin'],
                 gps['longsec'])
 
-        # Gravando valores prontos.
-        gps_data['geolocation'] = '%s %d°%d\'%d" %s %d°%d\'%d"' % (
+        # Record values.
+        gps_data['geolocation'] = '{} {}°{}\'{}" {} {}°{}\'{}"'.format(
                 gps['latref'], gps['latdeg'], gps['latmin'], gps['latsec'],
                 gps['longref'], gps['longdeg'], gps['longmin'], gps['longsec'])
-        gps_data['latitude'] = '%f' % latitude
-        gps_data['longitude'] = '%f' % longitude
-    except:
-        logger.debug('Foto sem dados de GPS.')
-        # Gravando valores prontos.
+        gps_data['latitude'] = '{}'.format(latitude)
+        gps_data['longitude'] = '{}'.format(longitude)
+    else:
+        logger.debug('No GPS data.')
         gps_data['geolocation'] = ''
         gps_data['latitude'] = ''
         gps_data['longitude'] = ''
@@ -401,34 +344,31 @@ def check_file(filepath):
     media_file = os.path.isfile(filepath)
     return media_file
 
-def rename_file(filename, authors):
-    '''Renomeia arquivo com iniciais e identificador.'''
+def create_filename(filename, authors):
+    '''Create filename with author initials and unique ID.'''
     logger.debug('Renomeando %s', filename)
     if authors:
         initials = get_initials(authors)
     else:
         initials = 'cbm'
-    id = create_id()
-    new_filename = initials + '_' + id + os.path.splitext(filename)[1].lower()
+    unique_id = create_id()
+    new_filename = initials + '_' + unique_id + os.path.splitext(filename)[1].lower()
     return new_filename
 
 def get_initials(authors):
-    '''Extrai iniciais dos autores.
+    '''Extract author initials.
 
-    Faz split por vírgulas, caso tenha mais de 1 autor; para cada autor faz
-    split por espaços em branco e pega apenas a primeira letra; junta iniciais
-    em sequência; junta autores separados por hífen.
-
-    Não está muito legível, mas é isso aí.
+    Input is list of authors. Split each name by spaces and save first letter.
+    Concatenate initials and join them by a dash.
     '''
-    initials = '-'.join([''.join([sil[:1] for sil in word.strip().split(' ')]) for word in authors.split(',')]).lower()
+    initials = '-'.join([''.join([sil[:1] for sil in word.strip().split(' ')]) for word in authors]).lower()
     return initials
 
 def create_id():
-    '''Cria identificador único para nome do arquivo.'''
+    '''Create unique ID for filename.'''
     chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    id = ''.join([random.choice(chars) for x in xrange(6)])
-    return id
+    unique_id = ''.join([random.choice(chars) for x in range(6)])
+    return unique_id
 
 def fix_filename(root, filename):
     '''Checa validade do nome do arquivo.'''

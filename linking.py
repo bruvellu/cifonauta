@@ -17,11 +17,11 @@ EXTENSIONS = ( 'jpg', 'jpeg', 'png', 'gif', 'avi', 'mov', 'mp4', 'ogg', 'ogv',
 
 class LinkManager:
     '''Handles links and original files.'''
-    def __init__(self):
+    def __init__(self, source_media, site_media):
         # Directory with original files and folder structure.
-        self.source_media = os.path.abspath('source_media/oficial')
+        self.source_media = os.path.abspath(source_media)
         # Directory containing links to original files.
-        self.linked_media = os.path.abspath('linked_media/oficial')
+        self.linked_media = os.path.abspath(site_media)
 
         # Check if directories exist.
         if not os.path.isdir(self.linked_media):

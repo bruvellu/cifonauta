@@ -16,7 +16,7 @@ from functools import reduce
 from operator import or_
 
 from .models import *
-#from .forms import *
+from .forms import *
 from remove import compile_paths
 
 
@@ -965,41 +965,3 @@ def build_url(meta, field, queries, remove=False, append=None):
             queries[field] = [q for q in queries[field] if not q['slug'] == meta['slug']]
     return url
 
-
-# @csrf_exempt
-# def ajax_autocomplete(request):
-    # limit = 5  # max results in number
-    # max_str = 30  # max result text size, in chars
-    # search_query = strip_accents(request.GET.get('q', ''))  # get without accents query
-    # query = MlSearchQuerySet().autocomplete(content_auto=search_query)
-    # results = query.values('title', 'rendered', 'thumb', 'url')
-    # suffix = query.get_language_suffix()  # get language suffix to 'languaged' fields
-    # final_results = []  # array of results
-    # titles = []
-    # for d in results:
-        # text = d['rendered%s' % suffix]
-        # title = d['title%s' % suffix]
-        # thumb = d['thumb']
-        # url = d['url']
-        # if limit <= 0:
-            # break
-        # # check if there is already some result with same title
-        # if title not in titles:
-            # limit -= 1
-            # titles.append(title)
-            # label = ''
-            # desc = title
-            # if text:  # if there is a text field, otherwise search is not cached
-                # for t in text.split("\n"):
-                    # if search_query.lower() in t.lower():
-                        # ts = t.split(":")  # : separates label from real text, in the rendered field
-                        # label = ts[0]
-                        # desc = ":".join(ts[1:])
-                        # if len(t) > max_str:  # cut str if it's too long
-                            # i = desc.lower().find(search_query.lower())
-                            # start = max(0, i - max_str / 2)
-                            # end = min(len(desc), i + max_str / 2)
-                            # desc = '...' + desc[start:end] + '...'
-                        # break
-            # final_results.append({'title': title, 'desc': desc, 'label': label, 'thumb': thumb, 'url': url})
-    # return HttpResponse(json.dumps(final_results), content_type='application/json')

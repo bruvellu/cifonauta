@@ -230,7 +230,7 @@ class Database:
         except:
             # Load bad data dictionary.
             try:
-                bad_data_file = open('bad_data.pkl')
+                bad_data_file = open('bad_data.pkl', 'rb')
                 bad_data = pickle.load(bad_data_file)
                 bad_data_file.close()
             except:
@@ -253,12 +253,12 @@ class Database:
                     print('     > "{}" already existed!\n'.format(fixed_value))
                     # Add to bad data dictionary.
                     bad_data[value] = fixed_value
-                    bad_data_file = open('bad_data.pkl', 'w')
+                    bad_data_file = open('bad_data.pkl', 'wb')
                     pickle.dump(bad_data, bad_data_file)
                     bad_data_file.close()
                 # TODO Fix metadata field on original image!!!
             except:
-                print('Object {} not found! Aborting...'.format(fixed_value))
+                print('Object "{}" not found! Or auto-fix failed.'.format(fixed_value))
 
         # Check WoRMS for taxonomic info.
         if table == 'taxon' and new:
@@ -421,7 +421,6 @@ class Meta:
 
         self.duration = ''
         self.dimensions = ''
-        self.codec = ''
 
         # Parse metadata.
         if self.media.type == 'photo':
@@ -520,11 +519,10 @@ class Meta:
 
         # TODO: Check if geolocation is empty.
 
-        # Extracts duration, dimensions and video codec.
+        # Extracts duration and dimensions
         infos = get_info(self.filepath)
         self.duration = infos['duration']
         self.dimensions = infos['dimensions']
-        self.codec = infos['codec']
 
 
     def get_video_tag(self, info, tag):
@@ -632,7 +630,6 @@ class Meta:
             'longitude': self.longitude,
             'duration': self.duration,
             'dimensions': self.dimensions,
-            'codec': self.codec,
             }
 
     def print_metadata(self):

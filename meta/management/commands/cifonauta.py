@@ -116,7 +116,7 @@ class Database:
         # Query for the exact filename to avoid confusion.
         try:
             record = models.Media.objects.get(filepath=media.filepath)
-            print('DB RECORD: Yes')
+            print('DB RECORD: Yes -> {}'.format(record))
             if record.timestamp != media.timestamp:
                 print()
                 print('MODIFIED: Yes -> {} != {}'.format(record.timestamp, media.timestamp))
@@ -369,6 +369,7 @@ class File:
         '''Copy and process files to site_media.'''
 
         if self.type == 'photo':
+            # TODO: Replace site_media by MEDIA_ROOT
             # Process photo.
             photo_sitepath = os.path.join('site_media', self.metadata.sitepath)
             photo_to_web(self.filepath, photo_sitepath)

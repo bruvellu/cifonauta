@@ -2,26 +2,19 @@
 
 <!-- Begin VideoJS -->
 <div class="video-js-box">
-    <video id="cifovideo" class="video-js" tabindex="0" width="512" height="{{ height }}" poster="{{ MEDIA_URL }}{{ media.filepath }}" controls preload loop>
-    <source src="{{ MEDIA_URL }}{{ media.mp4_filepath }}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
-    <source src="{{ MEDIA_URL }}{{ media.webm_filepath }}m" type='video/webm; codecs="vp8, vorbis"' />
-    <source src="{{ MEDIA_URL }}{{ media.ogg_filepath }}" type='video/ogg; codecs="theora, vorbis"' />
-    <object id="cifovideo-flash" class="vjs-flash-fallback" width="512" height="{{ height }}" type="application/x-shockwave-flash" data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">
+
+    <video id="cifovideo" class="video-js" tabindex="0" width="512" height="{{ media.dimensions|slice:"4:" }}" poster="{{ MEDIA_URL }}{{ media.coverpath }}" controls preload loop>
+
+    <source src="{{ MEDIA_URL }}{{ media.sitepath }}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+
+    <object id="cifovideo-flash" class="vjs-flash-fallback" width="512" height="{{ media.dimensions|slice:"4:" }}" type="application/x-shockwave-flash" data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">
         <param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />
         <param name="wmode" value="opaque" />
         <param name="allowfullscreen" value="true" />
-        <param name="flashvars" value='config={"playlist":["{{ MEDIA_URL }}{{ media.filepath }}", {"url": "{{ MEDIA_URL }}{{ media.mp4_filepath }}","autoPlay":false,"autoBuffering":true}]}' />
-        <img src="{{ MEDIA_URL }}{{ media.filepath }}" width="512" height="{{ height }}" alt="{% trans 'Still do vídeo' %}"
-        title="{% trans 'Playback de vídeo indisponível' %}" />
+        <param name="flashvars" value='config={"playlist":["{{ MEDIA_URL }}{{ media.coverpath }}", {"url": "{{ MEDIA_URL }}{{ media.sitepath }}","autoPlay":false,"autoBuffering":true}]}' />
+        <img src="{{ MEDIA_URL }}{{ media.coverpath }}" width="512" height="{{ media.dimensions|slice:"4:" }}" alt="{% trans 'Cover do vídeo' %}" title="{% trans 'Playback de vídeo indisponível' %}" />
     </object>
-    {% trans 'Tem algo muito errado no seu navegador...' %}
+
     </video>
-    {% comment %}
-    <p class="vjs-no-video"><strong>Download Video:</strong>
-    <a href="{{ MEDIA_URL }}{{ media.mp4_filepath }}">MP4</a>,
-    <a href="{{ MEDIA_URL }}{{ media.webm_filepath }}m">WebM</a>,
-    <a href="{{ MEDIA_URL }}{{ media.ogg_filepath }}">Ogg</a><br>
-    </p>
-    {% endcomment %}
 </div>
 <!-- End VideoJS -->

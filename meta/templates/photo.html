@@ -1,15 +1,11 @@
-{% load thumbnail %}
-
-  {% thumbnail media.filepath "510" crop="center" as im %}
-  <a href="{{ MEDIA_URL }}{{ media.filepath }}" class="highslide" onclick="return hs.expand(this)">
-      <img src="{{ im.url }}" alt="{{ media.title }}" title="{{ media.title }}" width="510" />
-  </a>
-  {% endthumbnail %}
-
+<a href="{{ MEDIA_URL }}{{ media.sitepath }}" class="highslide" onclick="return hs.expand(this)">
+  <img src="{{ MEDIA_URL }}{{ media.coverpath }}" alt="{{ media.title }}" title="{{ media.title }}" width="512" />
+</a>
 
 {% if media.title %}
 <div class="highslide-heading">{{ media.title }}</div>
 {% endif %}
+
 {% if media.caption %}
 <div class="highslide-caption">{{ media.caption }}</div>
 {% endif %}

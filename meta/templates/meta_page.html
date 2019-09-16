@@ -43,7 +43,7 @@
 
 </header>
 
-{% if image_list or video_list %}
+{% if media_list %}
   {% include 'gallery.html' %}
 {% else %}
   <h2>{% trans 'Nenhuma imagem encontrada.' %}</h2>
@@ -62,8 +62,6 @@
     {% csrf_token %}
   </form>
 </div>
-
-{% include 'mais.html' %}
 
 </aside>
 {% endblock %}

@@ -11,13 +11,13 @@
 
 <meta property="og:title" content="{{ media.title }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.filepath }}" />
+<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.sitepath }}" />
 <meta property="og:description" content="{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %}; {% show_set authors '' '' ', ' '' %}" />
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 
 {% if media.datatype == 'video' %}
-<meta property="og:video" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.mp4_filepath }}" />
-<meta property="og:video:height" content="{{ height }}" />
+<meta property="og:video" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.sitepath }}" />
+<meta property="og:video:height" content="{{ media.dimensions|slice:"4:" }}" />
 <meta property="og:video:width" content="512" />
 <meta property="og:video:type" content="application/x-shockwave-flash" />
 <meta property="og:type" content="cifonauta:video" />
@@ -86,7 +86,7 @@ $(document).ready( function(){
 	<div class="borders block shadow" id="social">
 	  <h2>{% trans 'Compartilhar' %}</h2>
 	  <div class="align-center"> <!-- Video embed code -->
-	    <input id="embed-code" type="text" size="28" value='<iframe class="cifonauta-player" scrolling="no" type="text/html" width="512" height="{{ height }}" src="http://{{ request.get_host }}/embed/{{ media.id }}/" frameborder="0"></iframe>' onclick="this.focus(); this.select();">
+	    <input id="embed-code" type="text" size="28" value='<iframe class="cifonauta-player" scrolling="no" type="text/html" width="512" height="{{ media.dimensions|slice:"4:" }}" src="http://{{ request.get_host }}/embed/{{ media.id }}/" frameborder="0"></iframe>' onclick="this.focus(); this.select();">
 	  </div>
 	</div>
 	{% endif %}

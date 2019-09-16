@@ -348,16 +348,6 @@ def media_page(request, media_id):
                 'tours': tour_list
                 })
 
-    #XXX Será o save() mais eficiente que o update()?
-    # Este era o comando antigo para atualizar, só pra lembrar.
-    #Image.objects.filter(id=image_id).update(view_count=F('view_count') + 1)
-    #TODO Checar sessão para evitar overdose de views
-    #stats = Stats.objects.get(image=image)
-    stats = media.stats
-    #stats.pageviews = stats.pageviews + 1
-    #stats.save()
-    #Stats.objects.get(image=image).update(pageviews=F('pageviews') + 1)
-    pageviews = stats.pageviews
     tags = media.tag_set.all()
     authors = media.person_set.filter(is_author=True)
     taxa = media.taxon_set.all()
@@ -374,7 +364,6 @@ def media_page(request, media_id):
         'taxa': taxa,
         'sources': sources,
         'references': references,
-        'pageviews': pageviews,
         }
 
     if request.is_ajax():
@@ -479,10 +468,6 @@ def tour_page(request, slug):
     authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(entries)
     # Only using authors/taxa/tags for meta keywords.
 
-    # Updates pageviews.
-    # TODO: Check code, it seems not to be working.
-    pageviews = tour.stats.pageviews
-
     context = {
         'tour': tour,
         'entries': entries,
@@ -491,7 +476,6 @@ def tour_page(request, slug):
         'taxa': taxa,
         'tags': tags,
         'references': references,
-        'pageviews': pageviews,
         }
 
     return render(request, 'tour_page.html', context)

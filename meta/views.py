@@ -233,21 +233,20 @@ def org_page(request):
     Além de buscar as descrições de cada categoria, mostra exemplos aleatórios de imagens.
     '''
     # Tamanhos
-    sizes = Size.objects.order_by('position')
-    #FIXME Does not work when locale is different!
+    sizes = Size.objects.all()
     # Técnicas
-    technique = TagCategory.objects.get(name_en=u'Technique')
-    microscopy = TagCategory.objects.get(name_en=u'Microscopy')
+    technique = TagCategory.objects.get(name_en='Technique')
+    microscopy = TagCategory.objects.get(name_en='Microscopy')
     # Estágios
-    stage = TagCategory.objects.get(name_en=u'Life stage')
-    stages = stage.tags.order_by('position')
+    stage = TagCategory.objects.get(name_en='Life stage')
+    stages = stage.tags.all()
     # Modos
-    pelagic = TagCategory.objects.get(name_en=u'Pelagic')
-    benthic = TagCategory.objects.get(name_en=u'Benthic')
+    pelagic = TagCategory.objects.get(name_en='Pelagic')
+    benthic = TagCategory.objects.get(name_en='Benthic')
     # Habitat
-    habitat = TagCategory.objects.get(name_en=u'Habitat')
+    habitat = TagCategory.objects.get(name_en='Habitat')
     # Diversos
-    assorted = TagCategory.objects.get(name_en=u'Miscellaneous')
+    assorted = TagCategory.objects.get(name_en='Miscellaneous')
     context = {
         'sizes': sizes,
         'microscopy': microscopy,
@@ -259,7 +258,7 @@ def org_page(request):
         'habitat': habitat,
         'assorted': assorted,
         }
-    return render(request, 'organizacao.html', context)
+    return render(request, 'organization.html', context)
 
 
 # Single media file

@@ -26,9 +26,9 @@ def home_page(request):
 
     # Photos
     try:
-        main_image = Media.objects.filter(cover=True, is_public=True,
+        main_image = Media.objects.filter(highlight=True, is_public=True,
                 datatype='photo').select_related('size').order_by('?')[0]
-        photo = Media.objects.filter(cover=True, is_public=True,
+        photo = Media.objects.filter(highlight=True, is_public=True,
                 datatype='photo').select_related('size').exclude(id=main_image.id).order_by('?')[0]
 
     except:
@@ -36,7 +36,7 @@ def home_page(request):
 
     # Video
     try:
-        video = Media.objects.filter(cover=True, is_public=True,
+        video = Media.objects.filter(highlight=True, is_public=True,
                 datatype='video').order_by('?')[0]
     except:
         video = ''
@@ -318,11 +318,6 @@ def media_page(request, media_id):
                 media.highlight = True
             else:
                 media.highlight = False
-            # Atualiza campo do destaque de capa.
-            if 'cover' in request.POST:
-                media.cover = True
-            else:
-                media.cover = False
             # Salva imagem.
             media.save()
     if not form:
@@ -337,14 +332,12 @@ def media_page(request, media_id):
             tour_list = media.tour_set.values_list('id', flat=True)
             admin_form = AdminForm(initial={
                 'highlight': media.highlight,
-                'cover': media.cover,
                 'tours': tour_list
                 })
         except:
             tour_list = Tour.objects.values_list('id', flat=True)
             admin_form = AdminForm(initial={
                 'highlight': False,
-                'cover': False,
                 'tours': tour_list
                 })
 

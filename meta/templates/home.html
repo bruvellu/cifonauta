@@ -10,7 +10,7 @@
 <meta property="og:title" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ main_image.filepath }}" />
+<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ main_image.coverpath }}" />
 <meta property="og:description" content="{% blocktrans %}O banco de imagens <em>Cifonauta</em> contém uma grande variedade de fotos e vídeos provenientes de atividades científicas em biologia marinha. As imagens possuem classificação taxonômica, estágio de vida, habitat e outras informações que permitem navegar de maneira intuitiva e didática.{% endblocktrans %}" />
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 
@@ -21,7 +21,7 @@
 <section class="main shadow span-23 last" id="intro">
 <div class="span-8" id="destaque">
   <a href="{{ main_image.get_absolute_url }}">
-    {% thumbnail main_image.filepath "300x200" crop="center" as im %}
+    {% thumbnail main_image.coverpath "300x200" crop="center" as im %}
     <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ main_image.title }}">
     {% endthumbnail %}
   </a>
@@ -53,7 +53,7 @@
 <div class="main span-8" id="photos">
   <h2><a href="/search/?type=photo">{% trans 'Fotos' %}</a></h2>
   <a href="{{ photo.get_absolute_url }}">
-    {% thumbnail photo.filepath "300x200" crop="center" as im %}
+    {% thumbnail photo.coverpath "300x200" crop="center" as im %}
     <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ photo.title }}">
     {% endthumbnail %}
   </a>
@@ -66,7 +66,7 @@
 <div class="main span-8" id="videos">
   <h2><a href="/search/?type=video">{% trans 'Vídeos' %}</a></h2>
   <a href="{{ video.get_absolute_url }}">
-    {% thumbnail video.filepath "300x200" crop="center" as im %}
+    {% thumbnail video.coverpath "300x200" crop="center" as im %}
     <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ video.title }}">
     {% endthumbnail %}
   </a>
@@ -79,7 +79,7 @@
 <div class="main span-8 last" id="tours">
   <h2><a href="/tours/">{% trans 'Tours' %}</a></h2>
   <a href="{{ tour.get_absolute_url }}">
-    {% thumbnail tour_image.filepath "300x200" crop="center" as im %}
+    {% thumbnail tour_image.coverpath "300x200" crop="center" as im %}
     <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ tour_image.title }}">
     {% endthumbnail %}
   </a>

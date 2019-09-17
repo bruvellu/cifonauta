@@ -261,6 +261,11 @@ def get_gps(info):
         gps['latmin'] = int(lat_split[1].split('/')[0]) # ['49', '1']
         gps['latsec'] = int(lat_split[2].split('/')[0]) # ['59', '1']
         gps['latref'] = info['Exif.GPSInfo.GPSLatitudeRef']
+
+        # Make sure sec has only two digits.
+        if len(str(gps['latsec'])) > 2:
+            gps['latsec'] = int(str(gps['latsec'])[:2])
+
         latitude = get_decimal(gps['latref'], gps['latdeg'], gps['latmin'],
                 gps['latsec'])
 
@@ -270,6 +275,11 @@ def get_gps(info):
         gps['longmin'] = int(long_split[1].split('/')[0])
         gps['longsec'] = int(long_split[2].split('/')[0])
         gps['longref'] = info['Exif.GPSInfo.GPSLongitudeRef']
+
+        # Make sure sec has only two digits.
+        if len(str(gps['longsec'])) > 2:
+            gps['longsec'] = int(str(gps['longsec'])[:2])
+
         longitude = get_decimal(gps['longref'], gps['longdeg'], gps['longmin'],
                 gps['longsec'])
 

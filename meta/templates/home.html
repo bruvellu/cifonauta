@@ -51,7 +51,7 @@
 </div>
 
 <div class="main span-8" id="photos">
-  <h2><a href="/search/?type=photo">{% trans 'Fotos' %}</a></h2>
+  <h2><a href="/search/?datatype=photo">{% trans 'Fotos' %}</a></h2>
   <a href="{{ photo.get_absolute_url }}">
     {% thumbnail photo.coverpath "300x200" crop="center" as im %}
     <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ photo.title }}">
@@ -64,7 +64,7 @@
 </div>
 
 <div class="main span-8" id="videos">
-  <h2><a href="/search/?type=video">{% trans 'Vídeos' %}</a></h2>
+  <h2><a href="/search/?datatype=video">{% trans 'Vídeos' %}</a></h2>
   <a href="{{ video.get_absolute_url }}">
     {% thumbnail video.coverpath "300x200" crop="center" as im %}
     <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ video.title }}">

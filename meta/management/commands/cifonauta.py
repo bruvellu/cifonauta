@@ -530,6 +530,7 @@ class Meta:
         try:
             value = info[tag]
             if tag == 'date':
+                # FIXME: This will fail silently if the date has no time.
                 value = timezone.make_aware(datetime.strptime(value, '%Y-%m-%d %H:%M:%S'))
         except:
             value = ''

@@ -447,7 +447,7 @@ def tour_page(request, slug):
     tour = get_object_or_404(Tour, slug=slug)
     # TODO: Think better how references will be managed.
     references = tour.references.all()
-    entries = tour.media.select_related('size', 'sublocation', 'city', 'state', 'country').order_by('tourposition')
+    entries = tour.media.select_related('size', 'sublocation', 'city', 'state', 'country')
 
     # Get first thumbnail.
     try:

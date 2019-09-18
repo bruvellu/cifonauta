@@ -1,9 +1,21 @@
 {% extends 'base.html' %}
 {% load i18n thumbnail %}
-{% block title %}{{ tour.name }} | {% trans 'Tour' %} | {{ block.super }}{% endblock %}
-{% block meta-keywords %}{{ tour.name }}, {% show_set tags '' '' ', ' '' %}, {% show_set taxa '' '' ', ' '' %}{% endblock %}
-{% block meta-description %}{{ tour.description|striptags|truncatewords:30 }}{% endblock %}
-{% block meta-author %}{% show_set authors '' '' ', ' '' %}{% endblock %}
+
+{% block title %}
+{{ tour.name }} | {% trans 'Tour' %} | {{ block.super }}
+{% endblock %}
+
+{% block meta-keywords %}
+{{ tour.name }}, {% show_set tags '' '' ', ' '' %}, {% show_set taxa '' '' ', ' '' %}
+{% endblock %}
+
+{% block meta-description %}
+{{ tour.description|striptags|truncatewords:30 }}
+{% endblock %}
+
+{% block meta-author %}
+{% show_set authors '' '' ', ' '' %}
+{% endblock %}
 
 {% block extra-head %}
 <meta property="og:title" content="{{ tour.name }}" />
@@ -13,6 +25,7 @@
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 <meta property="og:type" content="cifonauta:tour" />
 
+<link rel="stylesheet" href="{{ STATIC_URL }}js/videojs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
 {% endblock %}
 
 {% block content %}
@@ -20,31 +33,45 @@
 
 {% if tour.is_public or user.is_authenticated %}
 
-<article id="tour" class="{{ tour.slug }} views-{{ pageviews }}">
+<article id="tour" class="{{ tour.slug }}">
 
 <header class="span-24 last">
-<div class="quiet" id="metafield">{% trans 'Tour' %}: </div>
-<h1>{{ tour.name }} <span class="feed-icon"><a href="/tour/{{ tour.slug }}/feed/all/" title="{% trans 'Cifonauta: fotos e vídeos' %} (tour={{ tour.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span></h1>
+
+  <div class="quiet" id="metafield">{% trans 'Tour' %}: </div>
+
+  <h1>{{ tour.name }} <span class="feed-icon"><a href="/tour/{{ tour.slug }}/feed/all/" title="{% trans 'Cifonauta: fotos e vídeos' %} (tour={{ tour.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span></h1>
+
 </header>
 
 <div class="span-24 last" id="slides">
+
   <div class="span-1">
+
     <a href="#" class="prev"><img src="{{ STATIC_URL }}js/slides/arrow-prev.png" width="24" height="43" alt="{% trans 'Anterior' %}"></a>
+
   </div>
-  {% comment %}TODO adapt to HTML5{% endcomment %}
+
   <div class="slides_container shadow span-21">
-    {% for result in photos %}{% with result.object as media %}
+
+    {% for media in entries %}
+
     <div class="span-21 eachslide last">
-      <div class="span-13">{% include 'photo.html' %}</div>
+
+      <div class="span-13">
+        
+	{% if media.datatype == 'photo' %}
+	  {% include 'photo.html' %}
+	{% elif media.datatype == 'video' %}
+	  {% include 'video.html' %}
+	{% endif %}
+      </div>
+
       <div class="span-8 last">
+
         <h2>{{ media.title }}</h2>
-        {% if media.caption %}
-        <p>{{ media.caption }}</p>
-        {% else %}
-        {% if user.is_authenticated %}
-        <p>{% trans 'SEM LEGENDA' %}</p>
-        {% endif %}
-        {% endif %}
+
+        {% if media.caption %} <p>{{ media.caption }}</p> {% endif %}
+
         <div>
           {% with author_all=media.author_set.all %}
           {% if author_all %}
@@ -89,7 +116,6 @@
         </div>
       </div>
     </div>
-    {% endwith %}
     {% endfor %}
   </div>
 
@@ -113,15 +139,14 @@
 </div>
 
 <div class="span-15" id="tour-description">
-  <h2>{{ tour.name }}</h2>
-  {{ tour.description }}
+  {{ tour.description|safe }}
 </div>
 
 <div class="span-8 last metagroup">
   <h2>{% trans 'Ficha Técnica' %}</h2>
   <ul class="metalist">
     <li>
-    <strong>{% trans 'Número de imagens' %}:</strong> {{ photos.count }}
+    <strong>{% trans 'Número de imagens' %}:</strong> {{ tour.media.count }}
     </li>
     <li>
     <strong>{% trans 'Data de criação' %}:</strong> {{ tour.pub_date }}
@@ -134,9 +159,6 @@
     </li>
     <li>
     <strong>{% trans 'Marcadores presentes' %}:</strong> {% show_set tags '' '' ', ' 'link' %}
-    </li>
-    <li>
-    <strong>{% trans 'Número de visitas' %}:</strong> <span id="pageviews">{{ pageviews }}</span>
     </li>
   </ul>
 </div>

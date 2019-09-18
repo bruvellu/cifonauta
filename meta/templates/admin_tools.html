@@ -12,13 +12,7 @@
 <h3>Atalhos administração</h3>
 <ul>
     <li>
-        {% if media.datatype == 'photo' %}
-            Tipo: <a href="/admin/meta/image/{{ media.id }}/"><strong>FOTO</strong></a>
-        {% else %}
-            {% if media.datatype == 'video' %}
-                Tipo: <a href="/admin/meta/video/{{ media.id }}/"><strong>VÍDEO</strong></a>
-            {% endif %}
-        {% endif %}
+        <a href="/admin/meta/media/{{ media.id }}/"><strong>Editar</strong></a>
     </li>
 
     {% if tags %}

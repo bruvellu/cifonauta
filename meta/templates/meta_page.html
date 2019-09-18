@@ -57,8 +57,9 @@
 <aside class="span-8 last">
 <div class="block shadow">
   <form action="{{ request.path }}" method="post">
+    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" style="float:right;" />
     {{ n_form.as_p}}
-    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display" />
+    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" style="float:right; margin: -2em 0 0 0;" />
     {% csrf_token %}
   </form>
 </div>

@@ -1047,6 +1047,8 @@ div#notes {
 
 #linear-nav {
   padding: 0 1em;
+  text-align:center;
+  text-align:center;
 }
 
 #navbox {
@@ -1166,6 +1168,15 @@ div#search-status {
   -webkit-box-shadow: 2px 2px 5px #ddd;
   -moz-box-shadow: 2px 2px 5px #ddd;
   box-shadow: 2px 2px 5px #ddd; 
+}
+
+#display-top {
+  float:right;
+}
+
+#display-bottom {
+  float:right;
+  margin: -2em 0 0 0;
 }
 
 #limpar {

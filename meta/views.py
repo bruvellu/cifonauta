@@ -406,7 +406,7 @@ def meta_page(request, model_name, field, slug):
     if field == 'taxon':
         q = [Q(**filter_args), ]
         q = recurse(model, q)
-        media_list = Media.objects.filter(reduce(operator.or_, q)).select_related('size', 'sublocation', 'city', 'state', 'country').order_by(orderby)
+        media_list = Media.objects.filter(reduce(or_, q)).select_related('size', 'sublocation', 'city', 'state', 'country').order_by(orderby)
     else:
         media_list = Media.objects.filter(**filter_args).select_related('size', 'sublocation', 'city', 'state', 'country').order_by(orderby)
 

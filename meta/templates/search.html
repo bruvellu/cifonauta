@@ -26,8 +26,9 @@
 
 <div class="block shadow">
   <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
+    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" style="float:right;" />
     {{ display_form.as_p}}
-    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display" />
+    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" style="float:right; margin: -2em 0 0 0;" />
   </form>
 </div>
 

@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 
 METAS = (
-        ('author', _('autor')),
+        ('person', _('autor')),
         ('taxon', _('táxon')),
         ('size', _('tamanho')),
         ('sublocation', _('local')),

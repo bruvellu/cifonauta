@@ -129,14 +129,14 @@ def show_related(context, media, form, related):
         choices[c[0]] = c[1]
 
     # Se o choice escolhido no navegador for:
-    if related == u'author':
+    if related == 'person':
         # Salva queryset para performance.
-        authors = media.author_set.all()
-        if authors:
+        persons = media.person_set.all()
+        if persons:
             qobj = Q()
-            for meta in authors:
+            for meta in persons:
                 # Adiciona parâmetros para futuro query usando Q.
-                qobj.add(Q(author=meta), Q.OR)
+                qobj.add(Q(person=meta), Q.OR)
             if qobj.__len__():
                 # Se objeto não estiver vazio, descobrir seu tipo (foto ou vídeo) e gerar o queryset.
                 query = mediaque(media, qobj)
@@ -147,7 +147,7 @@ def show_related(context, media, form, related):
         else:
             rel_media = ''
 
-    elif related == u'taxon':
+    elif related == 'taxon':
         taxa = media.taxon_set.all()
         if taxa:
             qobj = Q()
@@ -161,7 +161,7 @@ def show_related(context, media, form, related):
         else:
             rel_media = ''
 
-    elif related == u'size':
+    elif related == 'size':
         if media.size:
             qobj = Q(size=media.size_id)
             query = mediaque(media, qobj)
@@ -169,7 +169,7 @@ def show_related(context, media, form, related):
         else:
             rel_media = ''
 
-    elif related == u'sublocation':
+    elif related == 'sublocation':
         if media.sublocation:
             qobj = Q(sublocation=media.sublocation_id)
             query = mediaque(media, qobj)
@@ -177,7 +177,7 @@ def show_related(context, media, form, related):
         else:
             rel_media = ''
 
-    elif related == u'city':
+    elif related == 'city':
         if media.city:
             qobj = Q(city=media.city_id)
             query = mediaque(media, qobj)
@@ -185,7 +185,7 @@ def show_related(context, media, form, related):
         else:
             rel_media = ''
 
-    elif related == u'state':
+    elif related == 'state':
         if media.state:
             qobj = Q(state=media.state_id)
             query = mediaque(media, qobj)
@@ -205,9 +205,9 @@ def show_related(context, media, form, related):
         rel_media = ''
 
     # Mostra os valores avaliados para o navegador linear.
-    if related == u'author':
-        crumbs = authors
-    elif related == u'taxon':
+    if related == 'person':
+        crumbs = persons
+    elif related == 'taxon':
         crumbs = taxa
     else:
         #XXX Necessário forçar a criação de uma lista.

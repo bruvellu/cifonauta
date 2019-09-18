@@ -32,7 +32,7 @@
 {% block content %}
 <section id="media-page" class="span-16">
 	<div id="ajaxcontent">
-{% include "media_page_ajax.html" %}
+		{% include "media_page_ajax.html" %}
 	</div>
 </section>
 
@@ -81,15 +81,6 @@ $(document).ready( function(){
 
 {% block sidebar %}
 <aside class="main span-8 last">
-
-	{% if media.datatype == 'video' %}
-	<div class="borders block shadow" id="social">
-	  <h2>{% trans 'Compartilhar' %}</h2>
-	  <div class="align-center"> <!-- Video embed code -->
-	    <input id="embed-code" type="text" size="28" value='<iframe class="cifonauta-player" scrolling="no" type="text/html" width="512" height="{{ media.dimensions|slice:"4:" }}" src="http://{{ request.get_host }}/embed/{{ media.id }}/" frameborder="0"></iframe>' onclick="this.focus(); this.select();">
-	  </div>
-	</div>
-	{% endif %}
 
 	<div class="borders block shadow">
 	  {% show_tree taxa %}

@@ -90,7 +90,7 @@
 </div>
 
 <div id="press-photos" class="span-15 last">
-  {% thumbnail cover_photo.filepath "550x412" crop="center" as im %}
+  {% thumbnail cover_photo.sitepath "550x412" crop="center" as im %}
   <a href="{{ cover_photo.get_absolute_url }}"><img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ cover_photo.title }}"></a>
   {% endthumbnail %}
 

@@ -544,11 +544,11 @@ def tours_page(request):
 def press_page(request):
     '''Página com kit imprensa, texto melhores imagens.'''
     # Fotos
-    photos = Media.objects.filter(highlight=True, datatype='photo').order_by('?')
+    photos = Media.objects.filter(highlight=True, is_public=True, datatype='photo').order_by('?')
     cover_photo = photos[0]
     photos = photos.exclude(id=cover_photo.id)[:8]
     # Videos
-    videos = Media.objects.filter(highlight=True, datatype='video').order_by('?')[:8]
+    videos = Media.objects.filter(highlight=True, is_public=True, datatype='video').order_by('?')[:8]
     context = {
         'photos': photos,
         'videos': videos,

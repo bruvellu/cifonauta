@@ -3,7 +3,7 @@
 
 <div id="ajaxcontent">
 {% if media %}
-<article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} size-{{ media.size.slug }} {% show_set sources 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }} views-{{ pageviews }}">
+<article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} size-{{ media.size.slug }} {% show_set sources 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }}">
 <header class="span-16 last">
 <h1>{{ media.title }}</h1>
 </header>
@@ -32,7 +32,9 @@
 
 <div class="span-2 last border-top border-right border-bottom sideinfo" id="media-sideinfo">
   <div class="border-bottom" id="views">
+  {% comment %}
     <span id="pageviews">{{ pageviews }}</span> {% trans 'visita' %}{{ pageviews|pluralize }}
+  {% endcomment %}
   </div>
   {% if taxa %}
   {% include 'biodb.html' %}

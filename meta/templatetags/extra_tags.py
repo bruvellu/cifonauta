@@ -36,7 +36,7 @@ def print_thumb(context, field, obj):
     media_url = context['MEDIA_URL']
     params = {field: obj, 'is_public': True}
     try:
-        media = Image.objects.filter(**params).order_by('?')[0]
+        media = Media.objects.filter(**params).order_by('?')[0]
     except:
         media = ''
     return {'media': media, 'MEDIA_URL': media_url}

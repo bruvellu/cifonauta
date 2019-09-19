@@ -108,203 +108,6 @@ class Person(models.Model):
         ordering = ['name']
 
 
-class File(models.Model):
-    '''Define campos comuns para arquivos de mídia.'''
-    # File
-    filename = models.CharField(_(u'Nome único do arquivo.'), max_length=200,
-            blank=True, help_text=_(u'Nome único e identificador do arquivo.'))
-    filepath = models.ImageField(_(u'arquivo fonte local (novo)'), default='',
-            upload_to='site_media/photos/', null=True, blank=True, help_text=_(u'Arquivo na pasta do site.'))
-    source_filepath = models.CharField(_(u'arquivo fonte local'),
-            max_length=200, blank=True, help_text=_(u'Arquivo fonte na pasta local.'))
-    thumb_filepath = models.ImageField(_(u'thumbnail web'),
-            upload_to='site_media/images/thumbs', help_text=_(u'Pasta que guarda thumbnails.'))
-    old_filepath = models.CharField(_(u'arquivo fonte original'),
-            max_length=200, blank=True, help_text=_(u'Caminho para o arquivo original.'))
-    timestamp = models.DateTimeField(_(u'data de modificação'),
-            help_text=_(u'Data da última modificação do arquivo.'))
-
-    # Website
-    highlight = models.BooleanField(_(u'destaque'), default=False, help_text=_(u'Imagem que merece destaque.'))
-    cover = models.BooleanField(_(u'imagem de capa'), default=False, help_text=_(u'Imagem esteticamente bela, para usar na página principal.'))
-    is_public = models.BooleanField(_(u'público'), default=False, help_text=_(u'Informa se imagem está visível para visitantes anônimos do site.'))
-    pub_date = models.DateTimeField(_(u'data de publicação'), auto_now_add=True, help_text=_(u'Data de publicação da imagem no Cifonauta.'))
-
-    # IPTC
-    title = models.CharField(_(u'título'), max_length=200, blank=True, help_text=_(u'Título da imagem.'))
-    caption = models.TextField(_(u'legenda'), blank=True, help_text=_(u'Legenda da imagem.'))
-    #NOTA null e blank devem ser True
-    # null está se referindo ao NULL do banco de dados e
-    # blank está se referindo à interface de admin.
-    size = models.ForeignKey('Size', null=True, blank=True, default='',
-            verbose_name=_(u'tamanho'), help_text=_(u'Classe de tamanho do organismo na imagem.'), on_delete=models.DO_NOTHING)
-    sublocation = models.ForeignKey('Sublocation', null=True, blank=True,
-            verbose_name=_(u'local'), help_text=_(u'Localidade mostrada na imagem (ou local de coleta).'), on_delete=models.DO_NOTHING)
-    city = models.ForeignKey('City', null=True, blank=True, verbose_name=('cidade'), help_text=_(u'Cidade mostrada na imagem (ou cidade de coleta).'), on_delete=models.DO_NOTHING)
-    state = models.ForeignKey('State', null=True, blank=True, verbose_name=_(u'estado'), help_text=_(u'Estado mostrado na imagem (ou estado de coleta).'), on_delete=models.DO_NOTHING)
-    country = models.ForeignKey('Country', null=True, blank=True, verbose_name=_(u'país'), help_text=_(u'País mostrado na imagem (ou país de coleta).'), on_delete=models.DO_NOTHING)
-
-    # EXIF
-    date = models.DateTimeField(_(u'data'), blank=True, help_text=_(u'Data em que a imagem foi criada.'))
-    geolocation = models.CharField(_(u'geolocalização'), max_length=25,
-            blank=True, help_text=_(u'Geolocalização da imagem no formato decimal.'))
-    latitude = models.CharField(_(u'latitude'), max_length=12, blank=True, help_text=_(u'Latitude onde foi criada a imagem.'))
-    longitude = models.CharField(_(u'longitude'), max_length=12, blank=True, help_text=_(u'Longitude onde foi criada a imagem.'))
-
-    class Meta:
-        abstract = True
-        verbose_name = _(u'arquivo')
-        verbose_name_plural = _(u'arquivos')
-
-    def _get_list(self, obj_set, field_name="name", lang=False, separator=' , '):
-        if lang:
-            name = "%s_%s" % (field_name, lang)
-        else:
-            name = field_name
-        results = []
-        return separator.join(obj_set.values_list(name, flat=True))
-
-    def get_authors_list(self, separator=','):
-        return self._get_list(self.author_set, separator=separator)
-
-    def get_sources_list(self, separator=','):
-        return self._get_list(self.source_set, separator=separator)
-
-    def get_tag_list_pt(self):
-        return self._get_list(self.tag_set, lang='pt_br')
-
-    def get_tag_list_en(self):
-        return self._get_list(self.tag_set, lang='en')
-
-    def get_taxon_name_list_no_parents(self):
-        return str(self.taxon_set.values_list('pk', flat=True))[1:-1]
-
-    def get_taxon_name_list(self):
-        return self._get_list(Taxon.get_taxon_and_parents(self.taxon_set))
-
-    def get_taxon_common_list_pt(self):
-        return self._get_list(Taxon.get_taxon_and_parents(self.taxon_set), field_name='common', lang='pt_br')
-
-    def get_taxon_common_list_en(self):
-        return self._get_list(Taxon.get_taxon_and_parents(self.taxon_set), field_name='common', lang='en')
-
-    def get_taxon_rank_list_pt(self):
-        return self._get_list(self.taxon_set, field_name='rank', lang='pt_br')
-
-    def get_taxon_rank_list_en(self):
-        return self._get_list(self.taxon_set, field_name='rank', lang='en')
-
-
-class Image(File):
-    web_filepath = models.ImageField(_(u'arquivo web'),
-            upload_to='site_media/images/', help_text=_(u'Caminho para o arquivo web.'))
-    datatype = models.CharField(_(u'tipo de mídia'), max_length=10,
-            default='photo', help_text=_(u'Tipo de mídia.'))
-
-    def __unicode__(self):
-        return self.title
-
-    def get_absolute_url(self):
-        return ('image_url', [str(self.id)])
-
-    class Meta:
-        verbose_name = _(u'foto')
-        verbose_name_plural = _(u'fotos')
-        ordering = ['id']
-
-
-class Video(File):
-    webm_filepath = models.FileField(_(u'arquivo webm'),
-            upload_to='site_media/videos/', blank=True, help_text=_(u'Caminho para o arquivo WEBM.'))
-    ogg_filepath = models.FileField(_(u'arquivo ogg'),
-            upload_to='site_media/videos/', blank=True, help_text=_(u'Caminho para o arquivo OGG.'))
-    mp4_filepath = models.FileField(_(u'arquivo mp4'),
-            upload_to='site_media/videos/', blank=True, help_text=_(u'Caminho para o arquivo MP4.'))
-    datatype = models.CharField(_(u'tipo de mídia'), max_length=10,
-            default='video', help_text=_(u'Tipo de mídia.'))
-    large_thumb = models.ImageField(_(u'thumbnail grande'),
-            upload_to='site_media/images/thumbs', help_text=_(u'Caminho para o thumbnail grande do vídeo.'))
-    duration = models.CharField(_(u'duração'), max_length=20,
-            default='00:00:00', help_text=_(u'Duração do vídeo no formato HH:MM:SS.'))
-    dimensions = models.CharField(_(u'dimensões'), max_length=20, default='0x0', help_text=_(u'Dimensões do vídeo original.'))
-    codec = models.CharField(_(u'codec'), max_length=20, default='', help_text=_(u'Codec do vídeo original.'))
-
-    def __unicode__(self):
-        return self.title
-
-    def get_absolute_url(self):
-        return ('video_url', [str(self.id)])
-
-    class Meta:
-        verbose_name = _(u'vídeo')
-        verbose_name_plural = _(u'vídeos')
-        ordering = ['id']
-
-
-class Author(models.Model):
-    name = models.CharField(_(u'nome'), max_length=200, unique=True, help_text=_(u'Nome do autor.'))
-    slug = models.SlugField(_(u'slug'), max_length=200, blank=True, help_text=_(u'Slug do nome do autor.'))
-    images = models.ManyToManyField(Image, blank=True,
-            verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este autor.'))
-    videos = models.ManyToManyField(Video, blank=True,
-            verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este autor.'))
-    image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0,
-            editable=False, help_text=_(u'Número de fotos associadas a este autor.'))
-    video_count = models.PositiveIntegerField(_(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associados a este autor.'))
-
-    def __unicode__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return ('author_url', [self.slug])
-
-    def counter(self):
-        '''Conta o número de imagens+vídeos associados.
-
-        Atualiza os respectivos campos image_count e video_count.
-        '''
-        self.image_count = self.images.count()
-        self.video_count = self.videos.count()
-        self.save()
-
-    class Meta:
-        verbose_name = _(u'autor')
-        verbose_name_plural = _(u'autores')
-        ordering = ['name']
-
-
-class Source(models.Model):
-    name = models.CharField(_(u'nome'), max_length=200, unique=True, help_text=_(u'Nome do especialista.'))
-    slug = models.SlugField(_(u'slug'), max_length=200, blank=True, help_text=_(u'Slug do nome do especialista.'))
-    images = models.ManyToManyField(Image, blank=True,
-            verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este especialista.'))
-    videos = models.ManyToManyField(Video, blank=True,
-            verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este especialista.'))
-    image_count = models.PositiveIntegerField(_(u'número de fotos'), default=0,
-            editable=False, help_text=_(u'Número de fotos associadas a este especialista.'))
-    video_count = models.PositiveIntegerField(_(u'número de vídeos'), default=0, editable=False, help_text=_(u'Número de vídeos associados a este especialista.'))
-
-    def __unicode__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return ('source_url', [self.slug])
-
-    def counter(self):
-        '''Conta o número de imagens+vídeos associados.
-
-        Atualiza os respectivos campos image_count e video_count.
-        '''
-        self.image_count = self.images.count()
-        self.video_count = self.videos.count()
-        self.save()
-
-    class Meta:
-        verbose_name = _(u'especialista')
-        verbose_name_plural = _(u'especialistas')
-        ordering = ['name']
-
-
 class Tag(models.Model):
     name = models.CharField(_('nome'), max_length=64, unique=True,
             help_text=_('Nome do marcador.'))
@@ -319,12 +122,6 @@ class Tag(models.Model):
             null=True, blank=True, related_name='tags',
             verbose_name=_('categoria'),
             help_text=_('Categoria a que este marcador pertence.'))
-
-    # Deprecated
-    images = models.ManyToManyField(Image, blank=True,
-            verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este marcador.'))
-    videos = models.ManyToManyField(Video, blank=True,
-            verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este marcador.'))
 
     def __str__(self):
         return self.name
@@ -371,12 +168,6 @@ class Taxon(MPTTModel):
             help_text=_('Fotos associadas a este táxon.'))
     timestamp = models.DateTimeField( _('data de modificação'), blank=True,
             null=True, help_text=_('Data da última modificação do arquivo.'))
-
-    # Deprecated
-    images = models.ManyToManyField(Image, blank=True,
-            verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este táxon.'))
-    videos = models.ManyToManyField(Video, blank=True,
-            verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este táxon.'))
 
     def __str__(self):
         return self.name
@@ -531,12 +322,6 @@ class Reference(models.Model):
             verbose_name=_('fotos'),
             help_text=_('Fotos associadas à esta referência.'))
 
-    # Deprecated
-    images = models.ManyToManyField(Image, blank=True,
-            verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas à esta referência.'))
-    videos = models.ManyToManyField(Video, blank=True,
-            verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados à esta referência.'))
-
     def __str__(self):
         return self.name
 
@@ -567,12 +352,6 @@ class Tour(models.Model):
     references = models.ManyToManyField('Reference', blank=True,
             verbose_name=_('referências'), help_text=_('Referências associadas a este tour.'))
 
-    # Deprecated
-    images = models.ManyToManyField(Image, blank=True,
-            verbose_name=_(u'fotos'), help_text=_(u'Fotos associadas a este tour.'))
-    videos = models.ManyToManyField(Video, blank=True,
-            verbose_name=_(u'vídeos'), help_text=_(u'Vídeos associados a este tour.'))
-
     def __str__(self):
         return self.name
 
@@ -586,12 +365,11 @@ class Tour(models.Model):
 
 
 # Slugify before saving.
-models.signals.pre_save.connect(slug_pre_save, sender=Author)
+models.signals.pre_save.connect(slug_pre_save, sender=Person)
 models.signals.pre_save.connect(slug_pre_save, sender=Tag)
 models.signals.pre_save.connect(slug_pre_save, sender=TagCategory)
 models.signals.pre_save.connect(slug_pre_save, sender=Taxon)
 models.signals.pre_save.connect(slug_pre_save, sender=Size)
-models.signals.pre_save.connect(slug_pre_save, sender=Source)
 models.signals.pre_save.connect(slug_pre_save, sender=Sublocation)
 models.signals.pre_save.connect(slug_pre_save, sender=City)
 models.signals.pre_save.connect(slug_pre_save, sender=State)

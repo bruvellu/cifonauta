@@ -182,6 +182,5 @@ logging.getLogger('sorl.thumbnail').addHandler(handler)
 
 # Import server settings.
 hostname = socket.gethostname()
-HOSTNAMES = ['cifonauta', '200.144.254.111']
-if hostname in HOSTNAMES:
+if hostname == 'cifonauta':
     from .server_settings import *

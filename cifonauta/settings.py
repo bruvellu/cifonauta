@@ -184,6 +184,6 @@ handler.setLevel(logging.ERROR)
 logging.getLogger('sorl.thumbnail').addHandler(handler)
 
 # Import server settings.
-#hostname = socket.gethostname()
-#if hostname == 'cifonauta' or hostname == 'cebimar-002':
-#    from server_settings import *
+hostname = socket.gethostname()
+if hostname == 'Cifonauta':
+    from server_settings import *

@@ -73,46 +73,20 @@ class DisplayForm(forms.Form):
     Country = apps.get_model('meta', 'Country')
     # Taxon = apps.get_model('meta', 'Taxon')
 
-    query = forms.CharField(
-            required=False,
-            label=_('Buscar por'),
-            widget=forms.TextInput(),
-            )
-    datatype = forms.ChoiceField(
-            required=False,
-            choices=DATATYPES,
-            initial='all',
-            label=_('Tipo de arquivo')
-            )
-    n = forms.ChoiceField(
-            required=False,
-            choices=ITEMS,
-            initial='40',
-            label=_('Arquivos por página')
-            )
-    orderby = forms.ChoiceField(
-            required=False,
-            choices=ORDER_BY,
-            initial='random',
-            label=_('Ordenar por')
-            )
-    order = forms.ChoiceField(
-            required=False,
-            choices=ORDER,
-            initial='desc',
-            label=_('Ordem')
-            )
-    highlight = forms.BooleanField(
-            required=False,
-            initial=False,
-            label=_('Somente destaques')
-            )
-    operator = forms.ChoiceField(
-            required=False,
-            choices=OPERATORS,
-            initial='and',
-            label=_('Operador')
-            )
+    query = forms.CharField(required=False, label=_('Buscar por'),
+            widget=forms.TextInput(),)
+    datatype = forms.ChoiceField(required=False, choices=DATATYPES,
+            initial='all', label=_('Tipo de arquivo'))
+    n = forms.ChoiceField(required=False, choices=ITEMS, initial='40',
+            label=_('Arquivos por página'))
+    orderby = forms.ChoiceField(required=False, choices=ORDER_BY,
+            initial='random', label=_('Ordenar por'))
+    order = forms.ChoiceField(required=False, choices=ORDER, initial='desc',
+            label=_('Ordem'))
+    highlight = forms.BooleanField(required=False, initial=False,
+            label=_('Somente destaques'))
+    operator = forms.ChoiceField(required=False, choices=OPERATORS,
+            initial='and', label=_('Operador'))
     size = forms.ModelMultipleChoiceField(queryset=Size.objects.all(),
             widget=forms.CheckboxSelectMultiple(), required=False,
             label=_('Tamanhos'))

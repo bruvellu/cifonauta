@@ -96,7 +96,7 @@ def search_page(request):
         if 'author' in request.GET:
             # Extract objects from request.GET.
             get_authors = request.GET.getlist('author')
-            authors = Person.objects.filter(slug__in=get_authors)
+            authors = Person.objects.filter(id__in=get_authors)
 
             # Filter media by field and operator.
             media_list = filter_request(media_list, authors, 'person', operator)
@@ -109,7 +109,7 @@ def search_page(request):
         # Tag
         if 'tag' in request.GET:
             get_tags = request.GET.getlist('tag')
-            tags = Tag.objects.filter(slug__in=get_tags)
+            tags = Tag.objects.filter(id__in=get_tags)
             media_list = filter_request(media_list, tags, 'tag', operator)
             form_tags = list(get_tags)
         else:
@@ -118,7 +118,7 @@ def search_page(request):
         # Size
         if 'size' in request.GET:
             get_sizes = request.GET.getlist('size')
-            sizes = Size.objects.filter(slug__in=get_sizes)
+            sizes = Size.objects.filter(id__in=get_sizes)
             media_list = filter_request(media_list, sizes, 'size', operator)
             form_sizes = list(get_sizes)
         else:
@@ -127,7 +127,7 @@ def search_page(request):
         # Taxon
         if 'taxon' in request.GET:
             get_taxa = request.GET.getlist('taxon')
-            taxa = Taxon.objects.filter(slug__in=get_taxa)
+            taxa = Taxon.objects.filter(id__in=get_taxa)
             media_list = filter_request(media_list, taxa, 'taxon', operator)
             form_taxa = list(get_taxa)
         else:
@@ -136,7 +136,7 @@ def search_page(request):
         # Sublocation
         if 'sublocation' in request.GET:
             get_sublocations = request.GET.getlist('sublocation')
-            sublocations = Sublocation.objects.filter(slug__in=get_sublocations)
+            sublocations = Sublocation.objects.filter(id__in=get_sublocations)
             media_list = filter_request(media_list, sublocations, 'sublocation', operator)
             form_sublocations = list(get_sublocations)
         else:
@@ -145,7 +145,7 @@ def search_page(request):
         # City
         if 'city' in request.GET:
             get_cities = request.GET.getlist('city')
-            cities = City.objects.filter(slug__in=get_cities)
+            cities = City.objects.filter(id__in=get_cities)
             media_list = filter_request(media_list, cities, 'city', operator)
             form_cities = list(get_cities)
         else:
@@ -154,7 +154,7 @@ def search_page(request):
         # State
         if 'state' in request.GET:
             get_states = request.GET.getlist('state')
-            states = State.objects.filter(slug__in=get_states)
+            states = State.objects.filter(id__in=get_states)
             media_list = filter_request(media_list, states, 'state', operator)
             form_states = list(get_states)
         else:
@@ -163,7 +163,7 @@ def search_page(request):
         # Country
         if 'country' in request.GET:
             get_countries = request.GET.getlist('country')
-            countries = Country.objects.filter(slug__in=get_countries)
+            countries = Country.objects.filter(id__in=get_countries)
             media_list = filter_request(media_list, countries, 'country', operator)
             form_countries = list(get_countries)
         else:

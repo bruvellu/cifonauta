@@ -17,10 +17,7 @@ import socket
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-
-# Dummy security settings.
+# Dummy (!) settings. Production values are in server/server_settings.py
 SECRET_KEY = 'o3d^5p6yf($kcg=j*&%+-a3+j4(unk4uutgqnzsk^yy)=ggqv%'
 DEBUG = True
 THUMBNAIL_DEBUG = True
@@ -185,5 +182,5 @@ logging.getLogger('sorl.thumbnail').addHandler(handler)
 
 # Import server settings.
 hostname = socket.gethostname()
-if hostname == 'Cifonauta':
+if hostname == 'cifonauta':
     from server_settings import *

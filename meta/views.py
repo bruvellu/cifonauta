@@ -191,7 +191,7 @@ def search_page(request):
         media_list = media_list.order_by(sorting)
 
         # Forçar int para paginator.
-        n_page = int(request.GET.get('n', '16'))
+        n_page = int(request.GET.get('n', '40'))
 
         # Define modified display form.
         display_form = DisplayForm({
@@ -369,7 +369,7 @@ def meta_page(request, model_name, field, slug):
 
     # Control ordering.
     n_form = DisplayForm(initial={
-        'n': 16,
+        'n': 40,
         'order': 'random',
         'highlight': False,
         })
@@ -727,7 +727,7 @@ def control_form(request):
             order = request.session['order']
             highlight = request.session['highlight']
         except:
-            n_form = DisplayForm(initial={'n': 16, 'orderby': 'random', 'order': 'desc', 'highlight': False})
+            n_form = DisplayForm(initial={'n': 40, 'orderby': 'random', 'order': 'desc', 'highlight': False})
             n_page = 16
             orderby = 'random'
             order = 'desc'

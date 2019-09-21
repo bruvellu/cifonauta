@@ -56,7 +56,7 @@
 {% block sidebar %}
 <aside class="span-8 last">
 <div class="block shadow">
-  <form action="{{ request.path }}" method="post">
+  <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
     <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-top" />
     {{ n_form.as_p}}
     <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-bottom" />

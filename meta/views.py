@@ -5,7 +5,7 @@ import logging
 import os
 
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.urls import reverse
@@ -259,6 +259,17 @@ def org_page(request):
         'assorted': assorted,
         }
     return render(request, 'organization.html', context)
+
+
+def old_media(request, datatype, old_id):
+    '''Redirect old Image and Video URLs to new Media pages.'''
+
+    if datatype == 'image':
+        media = get_object_or_404(Media, old_image=old_id)
+    elif datatype == 'video':
+        media = get_object_or_404(Media, old_video=old_id)
+
+    return redirect('media_url', media_id=media.id)
 
 
 # Single media file

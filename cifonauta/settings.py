@@ -172,13 +172,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Required for sorl-thumbnail.
-INTERNAL_IPS = ('127.0.0.1', '::1')
-
-import logging
-from sorl.thumbnail.log import ThumbnailLogHandler
-handler = ThumbnailLogHandler()
-handler.setLevel(logging.ERROR)
-logging.getLogger('sorl.thumbnail').addHandler(handler)
+#INTERNAL_IPS = ('127.0.0.1', '::1')
+#
+#import logging
+#from sorl.thumbnail.log import ThumbnailLogHandler
+#handler = ThumbnailLogHandler()
+#handler.setLevel(logging.ERROR)
+#logging.getLogger('sorl.thumbnail').addHandler(handler)
 
 # Import server settings.
 hostname = socket.gethostname()

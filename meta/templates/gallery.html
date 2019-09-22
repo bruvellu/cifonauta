@@ -11,7 +11,7 @@
 <section id="photo-gallery">
 
 <header class="span-16 last">
-  <h2 class="span-10">{{ entries.paginator.count }} {% trans 'arquivo' %}{{ entries.paginator.count|pluralize }} {% if field %} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/photos/" title="{% trans 'Cifonauta RSS feed' %} ({{ field }}={{ meta.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span>{% endif %}</h2>
+  <h2 class="span-10">{{ entries.paginator.count }} {% trans 'arquivo' %}{{ entries.paginator.count|pluralize }}</h2>
 </header>
 
 {% if entries.paginator.num_pages > 1 %}

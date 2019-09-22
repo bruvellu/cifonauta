@@ -58,12 +58,5 @@ urlpatterns = [
         # Sitemaps
         #url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
 
-        # Feeds
-        # (r'^feed/latest/$', LatestMedia()),
-        # (r'^feed/latest/(?P<type>[^\d]+)/$', LatestMedia()),
-        # (r'^(?P<field>[^\d]+)/(?P<slug>[\w\-]+)/feed/$', MetaMedia()),
-        # (r'^(?P<field>[^\d]+)/(?P<slug>[\w\-]+)/feed/(?P<type>[^\d]+)/$', MetaMedia()),
-        # (r'^tours/feed/$', LatestTours()),
-
         # Site media
         ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

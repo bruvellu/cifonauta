@@ -16,11 +16,6 @@
 <meta property="og:description" content="{{ meta.description }}" />
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 
-
-<link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: fotos e vídeos' %} ({{ field }}={{ meta.name }})" href="/{{ field }}/{{ meta.slug }}/feed/all/" />
-<link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: fotos' %} ({{ field }}={{ meta.name }})" href="/{{ field }}/{{ meta.slug }}/feed/photos/" />
-<link rel="alternate" type="application/rss+xml" title="{% trans 'Cifonauta: vídeos' %} ({{ field }}={{ meta.name }})" href="/{{ field }}/{{ meta.slug }}/feed/videos/" />
-
 {% endblock %}
 
 {% block content %}
@@ -29,7 +24,7 @@
 <div class="quiet" id="metafield">
   {% trans field %}{% if field == 'tag' %} ({{ meta.parent|lower }}){% else %}{% if field == 'taxon' %} ({% if meta.rank %}{{ meta.rank|lower }}{% else %}{% trans 'sem ranking' %}{% endif %}){% endif %}{% endif %}:
 </div>
-<h1>{{ meta|sp_em }} <span class="feed-icon"><a href="/{{ field }}/{{ meta.slug }}/feed/all/" title="{% trans 'Cifonauta: fotos e vídeos' %} ({{ field }}={{ meta.name }})"><img src="{{ STATIC_URL }}feed.png" alt="RSS" /></a></span></h1>
+<h1>{{ meta|sp_em }}</h1>
 
 {% if meta.citation %}
 <div id="citation">

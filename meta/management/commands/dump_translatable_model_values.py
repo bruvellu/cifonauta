@@ -1,14 +1,13 @@
 from django.core.management.base import BaseCommand, CommandError
-from meta.models import Image, Video, Tag, TagCategory, Taxon, City, State, Country, Tour, Size
+from meta.models import Media, Tag, TagCategory, Taxon, City, State, Country, Tour, Size
 from django.utils import translation
 
 # Model fields that need translation.
 all_fields = [
-        (Image, ['title', 'caption']),
-        (Video, ['title', 'caption']),
+        (Media, ['title', 'caption']),
+        (Taxon, ['rank']),
         (Tag, ['name', 'description']),
         (TagCategory, ['name', 'description']),
-        (Taxon, ['common', 'rank']),
         (City, ['name']),
         (State, ['name']),
         (Country, ['name']),
@@ -29,7 +28,7 @@ class Command(BaseCommand):
         filepath = 'model_translator/values_for_translation.py'
         self.stdout.write('\nDUMP FILE: {}'.format(filepath))
         # Open file and begin.
-        trans_file = open(filepath, 'wb')
+        trans_file = open(filepath, 'w')
         trans_file.write('from django.utils.translation import ugettext_lazy as _\n\n')
 
         # Loop through models.
@@ -45,7 +44,7 @@ class Command(BaseCommand):
                 for v in values:
                     if v:
                         trans_file.write('# Translators: model={model}, field={field}.\n'.format(model=model.__name__, field=field))
-                        trans_file.write('_(\'{}\')\n'.format(v.encode('utf-8')))
+                        trans_file.write('_(\'{}\')\n'.format(v))
                 self.stdout.write('\t{}... done.'.format(field))
 
         # Close file.

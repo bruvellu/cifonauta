@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-22 12:15-0300\n"
-"PO-Revision-Date: 2019-09-22 12:24-0306\n"
+"POT-Creation-Date: 2019-09-22 12:35-0300\n"
+"PO-Revision-Date: 2019-09-22 12:35-0306\n"
 "Last-Translator: b'Bruno Vellutini <organelas@gmail.com>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -84,7 +84,6 @@ msgid "vídeos"
 msgstr "videos"
 
 #: forms.py:45
-#| msgid "ver todos"
 msgid "todos"
 msgstr "all"
 
@@ -109,12 +108,10 @@ msgid "Navegando por"
 msgstr "Browsing by"
 
 #: forms.py:79
-#| msgid "arquivo"
 msgid "Tipo de arquivo"
 msgstr "Type of file"
 
 #: forms.py:81
-#| msgid "Thumbs por página"
 msgid "Arquivos por página"
 msgstr "Files per page"
 
@@ -131,7 +128,6 @@ msgid "Somente destaques"
 msgstr "Highlights only"
 
 #: forms.py:89
-#| msgid "marcador"
 msgid "Operador"
 msgstr "Operator"
 
@@ -181,27 +177,22 @@ msgid "Escolher tour(s)"
 msgstr "Pick tour(s)"
 
 #: models.py:16
-#| msgid "arquivo fonte original"
 msgid "arquivo original."
 msgstr "original file."
 
 #: models.py:17
-#| msgid "Caminho para o arquivo original."
 msgid "Caminho único para arquivo original."
 msgstr "Unique path to original file."
 
 #: models.py:18
-#| msgid "arquivo web"
 msgid "arquivo web."
 msgstr "web file."
 
 #: models.py:19
-#| msgid "Arquivo fonte na pasta local."
 msgid "Arquivo processado para a web."
 msgstr "Media file processed for the web."
 
 #: models.py:20
-#| msgid "Caminho para o arquivo web."
 msgid "amostra do arquivo."
 msgstr "sample of the file."
 
@@ -270,7 +261,6 @@ msgid "data"
 msgstr "date"
 
 #: models.py:45
-#| msgid "Data de criação"
 msgid "Data de criação da imagem."
 msgstr "Media creation date."
 
@@ -287,7 +277,6 @@ msgid "latitude"
 msgstr "latitude"
 
 #: models.py:50
-#| msgid "Data em que a imagem foi criada."
 msgid "Latitude onde a imagem foi criada."
 msgstr "Latitude the file was created."
 
@@ -296,7 +285,6 @@ msgid "longitude"
 msgstr "longitude"
 
 #: models.py:52
-#| msgid "Data em que a imagem foi criada."
 msgid "Longitude onde a imagem foi criada."
 msgstr "Longitude the file was created."
 
@@ -373,7 +361,6 @@ msgid "Informa se a pessoa é autora."
 msgstr "Informs if the person is an author."
 
 #: models.py:97
-#| msgid "Vídeos associados a este autor."
 msgid "Arquivos associados a este autor."
 msgstr "Media linked to this author."
 
@@ -598,7 +585,6 @@ msgid "Data da última modificação do tour."
 msgstr "Tour modification date."
 
 #: models.py:351
-#| msgid "Fotos associadas a este tour."
 msgid "Arquivos associadas a este tour."
 msgstr "Media linked to this tour."
 
@@ -862,7 +848,6 @@ msgid "Feedback"
 msgstr "Feedback"
 
 #: templates/gallery.html:46
-#| msgid "Nenhuma imagem encontrada."
 msgid "Nenhum arquivo encontrado :("
 msgstr "No image found :("
 
@@ -899,8 +884,9 @@ msgid "organização do conteúdo"
 msgstr "content organization"
 
 #: templates/home.html:35
-msgid "termos de uso das imagens"
-msgstr "image terms of use"
+#| msgid "Termos de uso"
+msgid "termos de uso"
+msgstr "Terms of use"
 
 #: templates/home.html:35
 msgid "imprensa"
@@ -997,9 +983,6 @@ msgstr "Geolocation"
 
 #: templates/media_page_ajax.html:99
 #, python-format
-#| msgid ""
-#| "s <em>Cifonauta</em>. Disponível em: <a "
-#| "rl)s\">http://%(host)s%(media_url)s</a> Acesso em:"
 msgid ""
 "Banco de imagens <em>Cifonauta</em>. Disponível em: <a "
 "href=\"%(media_url)s\">http://cifonauta.cebimar.usp.br%(media_url)s</a> "
@@ -1010,7 +993,6 @@ msgstr ""
 "Accessed:"
 
 #: templates/media_page_ajax.html:101
-#| msgid "Conheça os <a href=\"/termos/\">termos de uso</a>."
 msgid "Conheça os <a href=\"/terms/\">termos de uso</a>."
 msgstr "Read the <a href=\"/termos/\">terms of use</a>."
 
@@ -1035,12 +1017,10 @@ msgid "Nenhuma imagem encontrada."
 msgstr "No image found."
 
 #: templates/messages.html:6
-#| msgid "Encontrar"
 msgid "encontrado"
 msgstr "found"
 
 #: templates/messages.html:11
-#| msgid "Nenhuma imagem encontrada."
 msgid "Nenhum arquivo encontrado"
 msgstr "No files found."
 
@@ -1204,7 +1184,6 @@ msgid "anterior"
 msgstr "previous"
 
 #: templates/pagination.html:11
-#| msgid "Páginas"
 msgid "Página"
 msgstr "Page"
 
@@ -1408,7 +1387,6 @@ msgstr[0] "image"
 msgstr[1] "images"
 
 #: templates/related.html:103
-#| msgid "vídeo"
 msgid "vídeo"
 msgid_plural "vídeos"
 msgstr[0] "video"
@@ -1471,7 +1449,6 @@ msgid "imagens"
 msgstr "images"
 
 #: templates/tour_entry.html:17
-#| msgid "Criação"
 msgid "Criado"
 msgstr "Created"
 
@@ -1557,6 +1534,5 @@ msgstr ""
 "*Taxonomic hierarchy fetched automatically from <a href=\"http://www.itis.gov/\">ITIS</a>."
 
 #: templates/video.html:15
-#| msgid "Still do vídeo"
 msgid "Cover do vídeo"
 msgstr "Video snapshot"

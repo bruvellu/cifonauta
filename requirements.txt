@@ -6,5 +6,5 @@ psycopg2
 requests
 sorl-thumbnail
 suds-jurko
-fabric3
+fabric
 pillow

@@ -1157,7 +1157,7 @@ div#search-status {
   box-shadow: 2px 2px 5px #ddd; 
 }
 
-#displayform ul {
+.displayform ul {
   list-style-type: none;
   padding-left: 1em;
 }

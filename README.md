@@ -1,7 +1,7 @@
 **Cifonauta** is an image database for marine biology created by the [Center
 for Marine Biology](http://www.usb.br/cbm/) of the [University of São
-Paulo](http://www.usp.br/) (CEBIMar/USP) to share photos and videos produced
-in-house by the past and current research projects and teaching activities. The
+Paulo](http://www.usp.br/) (CEBIMar/USP) to share photos and videos produced by
+past and current research projects and teaching activities in the center. The
 content is annotated with accurate scientific information such as taxonomic
 classification, life stage, geolocation, references, and other tags, and can be
 browsed and refined interactively.

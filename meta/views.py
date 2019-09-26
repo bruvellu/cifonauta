@@ -514,7 +514,7 @@ def places_page(request):
 
 def tags_page(request):
     '''Página mostrando tags organizados por categoria.'''
-    tagcats = TagCategory.objects.prefetch_related('tags').exclude(name='Modo de vida')
+    tagcats = TagCategory.objects.prefetch_related('tags')
     sizes = Size.objects.order_by('id')
     context = {
         'tagcats': tagcats,

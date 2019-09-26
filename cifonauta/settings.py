@@ -171,6 +171,9 @@ STATIC_URL = '/static/'
 # Make sure to use a trailing slash.
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
+# Increase limit for fields
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 15000
+
 # Required for sorl-thumbnail.
 #INTERNAL_IPS = ('127.0.0.1', '::1')
 #

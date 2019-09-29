@@ -169,7 +169,7 @@ class Database:
         del media_meta['author']
 
         # Transform values in model instances.
-        toget = ['size', 'sublocation', 'city', 'state', 'country']
+        toget = ['sublocation', 'city', 'state', 'country']
         for k in toget:
             # Create only if not blank.
             if media_meta[k]:
@@ -558,6 +558,22 @@ class Meta:
         self.size = self.none_to_empty(self.size)
         self.source = self.none_to_empty(self.source)
         #self.references = self.none_to_empty(self.references)
+
+        # Size choices.
+        size_choices = {
+                '<0,1 mm': 'micro',
+                '0,1 - 1,0 mm': 'tiny',
+                '1,0 - 10 mm': 'visible',
+                '10 - 100 mm': 'large',
+                '>100 mm': 'huge',
+                }
+
+        # Convert size to tag and use slug string.
+        if self.size:
+            self.tags.append(self.size)
+            self.size = size_choices[self.size]
+        else:
+            self.size = 'none'
 
         # Transform to list.
         if self.author:

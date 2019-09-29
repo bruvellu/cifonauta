@@ -97,7 +97,7 @@
   <h2>{% trans 'Fotos em destaque' %}</h2>
   <ul class="thumbs">
     {% for media in photos %}
-    <li class="shadow size-{{ media.size.slug }}">
+    <li class="shadow size-{{ media.size }}">
     {% include 'thumb.html' %}
     </li>
     {% endfor %}
@@ -106,7 +106,7 @@
   <h2>{% trans 'Vídeos em destaque' %}</h2>
   <ul class="thumbs">
     {% for media in videos %}
-    <li class="shadow size-{{ media.size.slug }}">
+    <li class="shadow size-{{ media.size }}">
     {% include 'thumb.html' %}
     </li>
     {% endfor %}

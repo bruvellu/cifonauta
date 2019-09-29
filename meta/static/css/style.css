@@ -1349,19 +1349,19 @@ ul.rel-thumbs img {
   width:88px;
 }
 
-ul.thumbs li.size-01-mm, .size-01-mm {
+ul.thumbs li.size-micro, .size-micro {
   background: #94B1CA !important;
 }
-ul.thumbs li.size-01-10-mm, .size-01-10-mm {
+ul.thumbs li.size-tiny, .size-tiny {
   background: #BACC70 !important;
 }
-ul.thumbs li.size-10-10-mm, .size-10-10-mm {
+ul.thumbs li.size-visible, .size-visible {
   background: #FFE866 !important;
 }
-ul.thumbs li.size-10-100-mm, .size-10-100-mm {
+ul.thumbs li.size-large, .size-large {
   background: #FFB566 !important;
 }
-ul.thumbs li.size-100-mm, .size-100-mm {
+ul.thumbs li.size-huge, .size-huge {
   background: #B25959 !important;
 }
 

@@ -22,7 +22,7 @@
 
   {% for media in entries.object_list %}
     {% if media.is_public %}
-      <li class="shadow size-{{ media.size.slug }}">
+      <li class="shadow size-{{ media.size }}">
       {% include 'thumb.html' %}
       </li>
     {% endif %}

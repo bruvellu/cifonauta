@@ -3,7 +3,7 @@
 
 <div id="ajaxcontent">
 {% if media %}
-<article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} size-{{ media.size.slug }} {% show_set sources 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }}">
+<article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} size-{{ media.size }} {% show_set sources 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }}">
 <header class="span-16 last">
 <h1>{{ media.title }}</h1>
 </header>
@@ -40,18 +40,16 @@
   {% include 'biodb.html' %}
   {% endif %}
 
-  {% if media.size.name %}
+  {% if media.size %}
   {% spaceless %}
   <div class="span-2 last border-top" id="size">
-    <div class="size-{{ media.size.slug }}" id="size-string" title="{% trans 'Tamanho do organismo' %}: {{ media.size }}">
-      {{ media.size }}
-    </div>
+    <div class="size-{{ media.size }}" id="size-string" title="{% trans 'Tamanho do organismo' %}"></div>
     <div class="size-legend">
-      <div class="size-01-mm" title="<0,1 mm"></div>
-      <div class="size-01-10-mm" title="0,1 - 1,0 mm"></div>
-      <div class="size-10-10-mm" title="1,0 - 10 mm"></div>
-      <div class="size-10-100-mm" title="10 - 100 mm"></div>
-      <div class="size-100-mm" title=">100 mm"></div>
+      <div class="size-micro" title="<0,1 mm"></div>
+      <div class="size-tiny" title="0,1 - 1,0 mm"></div>
+      <div class="size-visible" title="1,0 - 10 mm"></div>
+      <div class="size-large" title="10 - 100 mm"></div>
+      <div class="size-huge" title=">100 mm"></div>
     </div>
   </div>
   {% endspaceless %}

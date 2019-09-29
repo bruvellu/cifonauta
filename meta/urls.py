@@ -29,7 +29,6 @@ urlpatterns = [
         path('tag/<slug:slug>/', views.meta_page, extra(models.Tag, 'tag'), name='tag_url'),
         path('author/<slug:slug>/', views.meta_page, extra(models.Person, 'person'), name='person_url'),
         path('taxon/<slug:slug>/', views.meta_page, extra(models.Taxon, 'taxon'), name='taxon_url'),
-        path('size/(<slug:slug>/', views.meta_page, extra(models.Size, 'size'), name='size_url'),
         path('place/<slug:slug>/', views.meta_page, extra(models.Sublocation, 'sublocation'), name='sublocation_url'),
         path('city/<slug:slug>/', views.meta_page, extra(models.City, 'city'), name='city_url'),
         path('state/<slug:slug>/', views.meta_page, extra(models.State, 'state'), name='state_url'),

@@ -59,9 +59,6 @@ class Media(models.Model):
             blank=True, help_text=_('Classe de tamanho.'))
 
     # Foreign metadata
-    size = models.ForeignKey('Size', on_delete=models.SET_NULL, null=True,
-            blank=True, verbose_name=_('tamanho'),
-            help_text=_('Classe de tamanho do organismo na imagem.'))
     sublocation = models.ForeignKey('Sublocation', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('local'),
             help_text=_('Localidade mostrada na imagem (ou local de coleta).'))
@@ -202,45 +199,6 @@ class Taxon(MPTTModel):
         ordering = ['name']
 
 
-class Size(models.Model):
-
-    NANO = '<0,1 mm'
-    MICRO = '0,1 - 1,0 mm'
-    MILI = '1,0 - 10 mm'
-    CENTI = '10 - 100 mm'
-    MACRO = '>100 mm'
-    
-    SIZE_CHOICES = [
-            (NANO, '<0,1 mm'),
-            (MICRO, '0,1 - 1,0 mm'),
-            (MILI, '1,0 - 10 mm'),
-            (CENTI, '10 - 100 mm'),
-            (MACRO, '>100 mm')
-            ]
-
-    name = models.CharField(_('nome'), max_length=32, unique=True,
-            choices=SIZE_CHOICES, help_text=_('Nome da classe de tamanho.'))
-    slug = models.SlugField(_('slug'), max_length=32, blank=True,
-            help_text=_('Slug do nome da classe de tamanho.'))
-    description = models.TextField(_('descrição'), blank=True,
-            help_text=_('Descrição da classe de tamanho.'))
-
-    # Deprecated
-    position = models.PositiveIntegerField(_('posição'), default=0,
-            help_text=_('Define ordem das classes de tamanho em um queryset.'))
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse('size_url', args=[self.slug])
-
-    class Meta:
-        verbose_name = _('tamanho')
-        verbose_name_plural = _('tamanhos')
-        ordering = ['position']
-
-
 class Sublocation(models.Model):
     name = models.CharField(_('nome'), max_length=64, unique=True,
             help_text=_('Nome da localidade.'))
@@ -371,7 +329,6 @@ models.signals.pre_save.connect(slug_pre_save, sender=Person)
 models.signals.pre_save.connect(slug_pre_save, sender=Tag)
 models.signals.pre_save.connect(slug_pre_save, sender=TagCategory)
 models.signals.pre_save.connect(slug_pre_save, sender=Taxon)
-models.signals.pre_save.connect(slug_pre_save, sender=Size)
 models.signals.pre_save.connect(slug_pre_save, sender=Sublocation)
 models.signals.pre_save.connect(slug_pre_save, sender=City)
 models.signals.pre_save.connect(slug_pre_save, sender=State)

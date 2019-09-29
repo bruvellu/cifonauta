@@ -1,5 +1,5 @@
 from modeltranslation.translator import register, TranslationOptions
-from meta.models import Media, Taxon, Tag, TagCategory, City, State, Country, Tour, Size
+from meta.models import Media, Taxon, Tag, TagCategory, City, State, Country, Tour
 from django.contrib.flatpages.models import FlatPage
 
 
@@ -38,8 +38,3 @@ class CountryTranslation(TranslationOptions):
 @register(Tour)
 class TourTranslation(TranslationOptions):
     fields = ('name', 'description',)
-
-@register(Size)
-class SizeTranslation(TranslationOptions):
-    fields = ('description',)
-

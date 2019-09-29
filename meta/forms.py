@@ -64,7 +64,6 @@ class RelatedForm(forms.Form):
 class DisplayForm(forms.Form):
     '''Parameters to alter search results.'''
 
-    Size = apps.get_model('meta', 'Size')
     Person = apps.get_model('meta', 'Person')
     Tag = apps.get_model('meta', 'Tag')
     Sublocation = apps.get_model('meta', 'Sublocation')
@@ -87,9 +86,6 @@ class DisplayForm(forms.Form):
             label=_('Somente destaques'))
     operator = forms.ChoiceField(required=False, choices=OPERATORS,
             initial='and', label=_('Operador'))
-    size = forms.ModelMultipleChoiceField(queryset=Size.objects.all(),
-            widget=forms.CheckboxSelectMultiple(), required=False,
-            label=_('Tamanhos'))
     author = forms.ModelMultipleChoiceField(queryset=Person.objects.all(),
             widget=forms.CheckboxSelectMultiple(), required=False,
             label=_('Autores'))

@@ -36,10 +36,6 @@ class TourAdmin(TranslationAdmin):
     pass
 
 
-class SizeAdmin(TranslationAdmin):
-    pass
-
-
 # Regular models.
 admin.site.register(Person)
 admin.site.register(Sublocation)
@@ -56,4 +52,3 @@ admin.site.register(City, CityAdmin)
 admin.site.register(State, StateAdmin)
 admin.site.register(Country, CountryAdmin)
 admin.site.register(Tour, TourAdmin)
-admin.site.register(Size, SizeAdmin)

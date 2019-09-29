@@ -36,11 +36,11 @@
         <th>{% trans 'Descrição' %}</th>
         <th>{% trans 'Exemplo' %}</th>
     </tr>
-    {% for size in sizes %}
+    {% for tag in sizes.tags.all %}
     <tr>
-        <td class="bold">{{ size }}</td>
-        <td>{% if size.description %}{{ size.description }}{% endif %}</td>
-        <td>{% print_thumb 'size' size %}</td>
+        <td class="bold">{{ tag }}</td>
+        <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
+        <td>{% print_thumb 'tag' tag %}</td>
     </tr>
     {% endfor %}
 </table>

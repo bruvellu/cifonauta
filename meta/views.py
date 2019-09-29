@@ -27,9 +27,9 @@ def home_page(request):
     # Photos
     try:
         main_image = Media.objects.filter(highlight=True, is_public=True,
-                datatype='photo').select_related('size').order_by('?')[0]
+                datatype='photo').order_by('?')[0]
         photo = Media.objects.filter(highlight=True, is_public=True,
-                datatype='photo').select_related('size').exclude(id=main_image.id).order_by('?')[0]
+                datatype='photo').exclude(id=main_image.id).order_by('?')[0]
 
     except:
         main_image, photo = '', ''
@@ -115,15 +115,6 @@ def search_page(request):
         else:
             form_tags = []
 
-        # Size
-        if 'size' in request.GET:
-            get_sizes = request.GET.getlist('size')
-            sizes = Size.objects.filter(id__in=get_sizes)
-            media_list = filter_request(media_list, sizes, 'size', operator)
-            form_sizes = list(get_sizes)
-        else:
-            form_sizes = []
-
         # Taxon
         if 'taxon' in request.GET:
             get_taxa = request.GET.getlist('taxon')
@@ -204,7 +195,6 @@ def search_page(request):
             'operator': operator,
             'author': form_authors,
             'tag': form_tags,
-            'size': form_sizes,
             'sublocation': form_sublocations,
             'city': form_cities,
             'state': form_states,
@@ -233,7 +223,7 @@ def org_page(request):
     Além de buscar as descrições de cada categoria, mostra exemplos aleatórios de imagens.
     '''
     # Tamanhos
-    sizes = Size.objects.all()
+    sizes = TagCategory.objects.get(name_en='Size')
     # Técnicas
     technique = TagCategory.objects.get(name_en='Imaging technique')
     microscopy = TagCategory.objects.get(name_en='Microscopy')
@@ -275,7 +265,7 @@ def media_page(request, media_id):
     '''Invididual page for media file with all the information.'''
 
     # Get object.
-    media = get_object_or_404(Media.objects.select_related('size', 'sublocation', 'city', 'state', 'country'), id=media_id)
+    media = get_object_or_404(Media.objects.select_related('sublocation', 'city', 'state', 'country'), id=media_id)
 
     # Nullify forms.
     form, admin_form = None, None
@@ -391,7 +381,6 @@ def meta_page(request, model_name, field, slug):
             'query': '',
             'author': [],
             'tag': [],
-            'size': [],
             'taxon': [],
             'sublocation': [],
             'city': [],
@@ -415,9 +404,9 @@ def meta_page(request, model_name, field, slug):
     if field == 'taxon':
         q = [Q(**filter_args), ]
         q = recurse(model, q)
-        media_list = Media.objects.filter(reduce(or_, q)).select_related('size', 'sublocation', 'city', 'state', 'country').order_by(orderby)
+        media_list = Media.objects.filter(reduce(or_, q)).select_related('sublocation', 'city', 'state', 'country').order_by(orderby)
     else:
-        media_list = Media.objects.filter(**filter_args).select_related('size', 'sublocation', 'city', 'state', 'country').order_by(orderby)
+        media_list = Media.objects.filter(**filter_args).select_related('sublocation', 'city', 'state', 'country').order_by(orderby)
 
     # Restrict to highlights.
     if highlight:
@@ -456,7 +445,7 @@ def tour_page(request, slug):
     tour = get_object_or_404(Tour, slug=slug)
     # TODO: Think better how references will be managed.
     references = tour.references.all()
-    entries = tour.media.select_related('size', 'sublocation', 'city', 'state', 'country')
+    entries = tour.media.select_related('sublocation', 'city', 'state', 'country')
 
     # Get first thumbnail.
     try:
@@ -466,7 +455,7 @@ def tour_page(request, slug):
 
     # Extract media metadata.
     # TODO: Do I really need to get all of these?
-    authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(entries)
+    authors, taxa, sublocations, cities, states, countries, tags = extract_set(entries)
     # Only using authors/taxa/tags for meta keywords.
 
     context = {
@@ -513,10 +502,8 @@ def places_page(request):
 def tags_page(request):
     '''Página mostrando tags organizados por categoria.'''
     tagcats = TagCategory.objects.prefetch_related('tags')
-    sizes = Size.objects.order_by('id')
     context = {
         'tagcats': tagcats,
-        'sizes': sizes,
         }
     return render(request, 'tags_page.html', context)
 
@@ -623,14 +610,13 @@ def show_info(media_list, queries, full_results=False):
     if full_results:
         authors = Person.objects.exclude(media__isnull=True)
         taxa = Taxon.objects.exclude(media__isnull=True)
-        sizes = Size.objects.all()
         sublocations = Sublocation.objects.all()
         cities = City.objects.all()
         states = State.objects.all()
         countries = Country.objects.all()
         tags = Tag.objects.exclude(media__isnull=True)
     else:
-        authors, taxa, sizes, sublocations, cities, states, countries, tags = extract_set(media_list)
+        authors, taxa, sublocations, cities, states, countries, tags = extract_set(media_list)
 
     for k, v in queries.items():
         if v:
@@ -638,8 +624,6 @@ def show_info(media_list, queries, full_results=False):
                 authors = authors.exclude(pk__in=queries['author'])
             elif k == 'tag':
                 tags = tags.exclude(pk__in=queries['tag'])
-            elif k == 'size':
-                sizes = sizes.exclude(pk__in=queries['size'])
             elif k == 'taxon':
                 taxa = taxa.exclude(pk__in=queries['taxon'])
             elif k == 'sublocation':
@@ -661,7 +645,6 @@ def show_info(media_list, queries, full_results=False):
     data = {
             'author': authors.values(),
             'taxon': taxa.values(),
-            'size': sizes.values(),
             'sublocation': sublocations.values(),
             'city': cities.values(),
             'state': states.values(),
@@ -762,13 +745,12 @@ def extract_set(media_list):
     authors = Person.objects.filter(id__in=media_list.values_list('person', flat=True))
     tags = Tag.objects.filter(id__in=media_list.values_list('tag', flat=True))
     taxa = Taxon.objects.filter(id__in=media_list.values_list('taxon', flat=True))
-    sizes = Size.objects.filter(id__in=media_list.values_list('size', flat=True))
     sublocations = Sublocation.objects.filter(id__in=media_list.values_list('sublocation', flat=True))
     cities = City.objects.filter(id__in=media_list.values_list('city', flat=True))
     states = State.objects.filter(id__in=media_list.values_list('state', flat=True))
     countries = Country.objects.filter(id__in=media_list.values_list('country', flat=True))
 
-    return authors, taxa, sizes, sublocations, cities, states, countries, tags
+    return authors, taxa, sublocations, cities, states, countries, tags
 
 
 def add_meta(meta, field, query):
@@ -866,9 +848,7 @@ def build_url(meta, field, queries, remove=False, append=None):
 
     # Se for para remover o metadado, remover.
     if remove:
-        if field == 'size':
-            queries[field] = [q for q in queries[field] if not q['id'] == meta['id']]
-        elif field == 'datatype':
+        if field == 'datatype':
             if not queries[field]:
                 do_not_readd = True
             queries[field] = []
@@ -894,9 +874,7 @@ def build_url(meta, field, queries, remove=False, append=None):
             search_field = False
 
             # Tratamento diferenciado para alguns metadados.
-            if k == 'size':
-                final_list = [str(size['id']) for size in v]
-            elif k == 'datatype':
+            if k == 'datatype':
                 final_list = [datatype for datatype in v]
             elif k == 'n':
                 final_list = v
@@ -942,9 +920,7 @@ def build_url(meta, field, queries, remove=False, append=None):
         # Como modificações no queries passa para próximos ítens, é necessário
         # retirar o valor da variável (do queries) após criação do url.
         #TODO Criar função remove_meta.
-        if field == 'size':
-            queries[field] = [q for q in queries[field] if not q['id'] == meta['id']]
-        elif field == 'datatype':
+        if field == 'datatype':
             queries[field] = [q for q in queries[field] if not q == meta]
         else:
             queries[field] = [q for q in queries[field] if not q['slug'] == meta['slug']]

@@ -21,13 +21,8 @@ Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o re
 <section class="span-24 last">
 <header><h1>{% trans 'Marcadores' %}</h1></header>
 
-    <div class="span-7 metagroup">
-        <h2>{% trans 'Tamanhos' %}</h2>
-        {% print_metalist sizes 'size' %}
-    </div>
-
     {% for tagcat in tagcats %}
-    <div class="span-{% cycle '7' '7 last' '7' %} metagroup">
+    <div class="span-{% cycle '7' '7' '7 last' %} metagroup">
         <h2>{{ tagcat.name }}</h2>
         {% if tagcat.description %}
             <p class="quiet">{{ tagcat.description }}</p>

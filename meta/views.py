@@ -242,7 +242,6 @@ def org_page(request):
     stages = stage.tags.all()
     # Modos
     pelagic = TagCategory.objects.get(name_en='Pelagic')
-    benthic = TagCategory.objects.get(name_en='Benthic')
     # Habitat
     habitat = TagCategory.objects.get(name_en='Habitat')
     # Diversos
@@ -254,7 +253,6 @@ def org_page(request):
         'stages': stages,
         'stage': stage,
         'pelagic': pelagic,
-        'benthic': benthic,
         'habitat': habitat,
         'assorted': assorted,
         }

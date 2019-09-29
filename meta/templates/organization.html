@@ -115,21 +115,6 @@
     {% endfor %}
 </table>
 
-<table>
-    <tr>
-        <th>{{ benthic.name }}</th>
-        <th>{{ benthic.description }}</th>
-        <th>{% trans 'Exemplo' %}</th>
-    </tr>
-    {% for tag in benthic.tags.all %}
-    <tr>
-        <td class="bold">{{ tag }}</td>
-        <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
-        <td>{% print_thumb 'tag' tag %}</td>
-    </tr>
-    {% endfor %}
-</table>
-
 <h2>{{ habitat.name }}</h2>
 <p>{{ habitat.description }}</p>
 

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-22 17:37-0300\n"
-"PO-Revision-Date: 2019-09-22 17:42-0306\n"
+"POT-Creation-Date: 2019-09-29 12:49-0300\n"
+"PO-Revision-Date: 2019-09-29 12:52-0306\n"
 "Last-Translator: b'Bruno Vellutini <organelas@gmail.com>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -16235,10 +16235,9 @@ msgstr "Silver impregnation technique."
 
 #. Translators: model=Tag, field=description.
 #: values_for_translation.py:38774
-#, fuzzy
 #| msgid "Região costeira que fica exposta somente na maré baixa."
 msgid "Região costeira permanentemente submersa."
-msgstr "Coastal region only exposed at low tide."
+msgstr "Coastal region permanently submerged."
 
 #. Translators: model=Tag, field=description.
 #: values_for_translation.py:38776
@@ -16307,11 +16306,10 @@ msgstr "Scanning electron microscopy."
 
 #. Translators: model=Tag, field=description.
 #: values_for_translation.py:38794
-#, fuzzy
 #| msgid ""
 #| "Que vive próximo ao fundo do mar, embora possua capacidade de natação ativa."
 msgid "Vive disperso na coluna d´água mas é capaz de natação ativa."
-msgstr "Pelagic organisms living close to the bottom."
+msgstr "Living in the water column but capable of active swimming."
 
 #. Translators: model=Tag, field=description.
 #: values_for_translation.py:38796
@@ -16327,17 +16325,15 @@ msgstr "The type specimen used in the original description of a species."
 
 #. Translators: model=Tag, field=description.
 #: values_for_translation.py:38800
-#, fuzzy
 #| msgid "Organismos que vivem na coluna d’água."
 msgid "Organismos vivendo na coluna d´água."
 msgstr "Organisms living in the water column."
 
 #. Translators: model=Tag, field=description.
 #: values_for_translation.py:38802
-#, fuzzy
 #| msgid "Organismos que vivem na coluna d’água."
 msgid "Organismos que vivem à deriva na coluna d´água."
-msgstr "Organisms living in the water column."
+msgstr "Organisms drifting in the water column."
 
 #. Translators: model=Tag, field=description.
 #: values_for_translation.py:38804

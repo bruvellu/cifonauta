@@ -26,7 +26,7 @@
             {% if media.id == current.id %}
             <li class="shadow size-{{ media.size.slug }} current">
 
-            {% thumbnail media.filepath "120x90" crop="center" as im %}
+            {% thumbnail media.coverpath "120x90" crop="center" as im %}
             <img src="{{ im.url }}" alt="{{ media.title }}" title="{{ media.title }}" />
             {% endthumbnail %}
 

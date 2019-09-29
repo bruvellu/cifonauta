@@ -31,11 +31,7 @@
 </figure>
 
 <div class="span-2 last border-top border-right border-bottom sideinfo" id="media-sideinfo">
-  <div class="border-bottom" id="views">
-  {% comment %}
-    <span id="pageviews">{{ pageviews }}</span> {% trans 'visita' %}{{ pageviews|pluralize }}
-  {% endcomment %}
-  </div>
+
   {% if taxa %}
   {% include 'biodb.html' %}
   {% endif %}
@@ -43,7 +39,7 @@
   {% if media.size %}
   {% spaceless %}
   <div class="span-2 last border-top" id="size">
-    <div class="size-{{ media.size }}" id="size-string" title="{% trans 'Tamanho do organismo' %}"></div>
+    <div class="size-{{ media.size }}" id="size-string">{% trans 'Tamanho' %}</div>
     <div class="size-legend">
       <div class="size-micro" title="<0,1 mm"></div>
       <div class="size-tiny" title="0,1 - 1,0 mm"></div>

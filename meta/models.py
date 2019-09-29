@@ -55,7 +55,7 @@ class Media(models.Model):
             help_text=_('Duração do vídeo no formato HH:MM:SS.'))
     dimensions = models.CharField(_('dimensões'), max_length=20, default='0x0',
             blank=True, help_text=_('Dimensões do vídeo original.'))
-    size_class = models.CharField(_('tamanho'), max_length=10, default='none',
+    size = models.CharField(_('tamanho'), max_length=10, default='none',
             blank=True, help_text=_('Classe de tamanho.'))
 
     # Foreign metadata

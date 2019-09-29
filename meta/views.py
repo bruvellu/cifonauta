@@ -235,14 +235,13 @@ def org_page(request):
     # Tamanhos
     sizes = Size.objects.all()
     # Técnicas
-    technique = TagCategory.objects.get(name_en='Technique')
+    technique = TagCategory.objects.get(name_en='Imaging technique')
     microscopy = TagCategory.objects.get(name_en='Microscopy')
     # Estágios
     stage = TagCategory.objects.get(name_en='Life stage')
     stages = stage.tags.all()
     # Modos
-    pelagic = TagCategory.objects.get(name_en='Pelagic')
-    benthic = TagCategory.objects.get(name_en='Benthic')
+    mode = TagCategory.objects.get(name_en='Life mode')
     # Habitat
     habitat = TagCategory.objects.get(name_en='Habitat')
     # Diversos
@@ -253,8 +252,7 @@ def org_page(request):
         'technique': technique,
         'stages': stages,
         'stage': stage,
-        'pelagic': pelagic,
-        'benthic': benthic,
+        'mode': mode,
         'habitat': habitat,
         'assorted': assorted,
         }

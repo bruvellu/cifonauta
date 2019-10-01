@@ -1,6 +1,5 @@
 from django.urls import path
 from . import views
-from . import models
 
 def extra(model, field):
     return {'model_name': model, 'field': field}
@@ -26,12 +25,20 @@ urlpatterns = [
         path('video/<int:old_id>/', views.old_media, {'datatype': 'video'}),
 
         # Meta pages
-        path('tag/<slug:slug>/', views.meta_page, extra(models.Tag, 'tag'), name='tag_url'),
-        path('author/<slug:slug>/', views.meta_page, extra(models.Person, 'person'), name='person_url'),
-        path('taxon/<slug:slug>/', views.meta_page, extra(models.Taxon, 'taxon'), name='taxon_url'),
-        path('place/<slug:slug>/', views.meta_page, extra(models.Sublocation, 'sublocation'), name='sublocation_url'),
-        path('city/<slug:slug>/', views.meta_page, extra(models.City, 'city'), name='city_url'),
-        path('state/<slug:slug>/', views.meta_page, extra(models.State, 'state'), name='state_url'),
-        path('country/<slug:slug>/', views.meta_page, extra(models.Country, 'country'), name='country_url'),
-        path('reference/<slug:slug>/', views.meta_page, extra(models.Reference, 'reference'), name='reference_url'),
+        path('tag/<slug:slug>/', views.search_page, extra('Tag', 'tag'),
+            name='tag_url'),
+        path('author/<slug:slug>/', views.search_page, extra('Person',
+            'author'), name='person_url'),
+        path('taxon/<slug:slug>/', views.search_page, extra('Taxon', 'taxon'),
+            name='taxon_url'),
+        path('place/<slug:slug>/', views.search_page, extra('Sublocation',
+            'sublocation'), name='sublocation_url'),
+        path('city/<slug:slug>/', views.search_page, extra('City', 'city'),
+            name='city_url'),
+        path('state/<slug:slug>/', views.search_page, extra('State', 'state'),
+            name='state_url'),
+        path('country/<slug:slug>/', views.search_page, extra('Country',
+            'country'), name='country_url'),
+        path('reference/<slug:slug>/', views.search_page, extra('Reference',
+            'reference'), name='reference_url'),
         ]

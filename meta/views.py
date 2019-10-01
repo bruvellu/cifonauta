@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
-from operator import or_
+from operator import or_, and_
 
 from .models import *
 from .forms import *
@@ -60,7 +60,7 @@ def home_page(request):
 
 # TODO: Why search and metadata pages do not have the same view?
 
-def search_page(request):
+def search_page(request, model_name='', field='', slug=''):
     '''Default gallery view for displaying and filtering metadata.'''
 
     # Get public media.
@@ -69,14 +69,23 @@ def search_page(request):
     # Check request.GET for query refinements.
     if request.method == 'GET':
 
+        # Make mutable copy of request.GET QueryDict.
+        query_dict = request.GET.copy()
+
+        # Inject meta information to request.
+        if field:
+            model = apps.get_model('meta', model_name)
+            instance = get_object_or_404(model, slug=slug)
+            query_dict.appendlist(field, instance.id)
+
         # Datatype.
-        datatype = request.GET.get('datatype', 'all')
+        datatype = query_dict.get('datatype', 'all')
         if not datatype == 'all':
             # Only filter if datatype is not all (i.e. photos or videos).
             media_list = media_list.filter(datatype=datatype)
 
         # Query
-        query = request.GET.get('query', '').strip()
+        query = query_dict.get('query', '').strip()
         if query:
             vector = SearchVector('title', weight='A') + \
                      SearchVector('caption', weight='A') + \
@@ -90,12 +99,12 @@ def search_page(request):
             media_list = media_list.annotate(search=vector).filter(search=query)
 
         # Operator
-        operator = request.GET.get('operator', 'and')
+        operator = query_dict.get('operator', 'and')
 
         # Author
-        if 'author' in request.GET:
-            # Extract objects from request.GET.
-            get_authors = request.GET.getlist('author')
+        if 'author' in query_dict:
+            # Extract objects from query_dict.
+            get_authors = query_dict.getlist('author')
             authors = Person.objects.filter(id__in=get_authors)
 
             # Filter media by field and operator.
@@ -107,8 +116,8 @@ def search_page(request):
             form_authors = []
 
         # Tag
-        if 'tag' in request.GET:
-            get_tags = request.GET.getlist('tag')
+        if 'tag' in query_dict:
+            get_tags = query_dict.getlist('tag')
             tags = Tag.objects.filter(id__in=get_tags)
             media_list = filter_request(media_list, tags, 'tag', operator)
             form_tags = list(get_tags)
@@ -116,8 +125,8 @@ def search_page(request):
             form_tags = []
 
         # Taxon
-        if 'taxon' in request.GET:
-            get_taxa = request.GET.getlist('taxon')
+        if 'taxon' in query_dict:
+            get_taxa = query_dict.getlist('taxon')
             taxa = Taxon.objects.filter(id__in=get_taxa)
             media_list = filter_request(media_list, taxa, 'taxon', operator)
             form_taxa = list(get_taxa)
@@ -125,8 +134,8 @@ def search_page(request):
             form_taxa = []
 
         # Sublocation
-        if 'sublocation' in request.GET:
-            get_sublocations = request.GET.getlist('sublocation')
+        if 'sublocation' in query_dict:
+            get_sublocations = query_dict.getlist('sublocation')
             sublocations = Sublocation.objects.filter(id__in=get_sublocations)
             media_list = filter_request(media_list, sublocations, 'sublocation', operator)
             form_sublocations = list(get_sublocations)
@@ -134,8 +143,8 @@ def search_page(request):
             form_sublocations = []
 
         # City
-        if 'city' in request.GET:
-            get_cities = request.GET.getlist('city')
+        if 'city' in query_dict:
+            get_cities = query_dict.getlist('city')
             cities = City.objects.filter(id__in=get_cities)
             media_list = filter_request(media_list, cities, 'city', operator)
             form_cities = list(get_cities)
@@ -143,8 +152,8 @@ def search_page(request):
             form_cities = []
 
         # State
-        if 'state' in request.GET:
-            get_states = request.GET.getlist('state')
+        if 'state' in query_dict:
+            get_states = query_dict.getlist('state')
             states = State.objects.filter(id__in=get_states)
             media_list = filter_request(media_list, states, 'state', operator)
             form_states = list(get_states)
@@ -152,24 +161,33 @@ def search_page(request):
             form_states = []
 
         # Country
-        if 'country' in request.GET:
-            get_countries = request.GET.getlist('country')
+        if 'country' in query_dict:
+            get_countries = query_dict.getlist('country')
             countries = Country.objects.filter(id__in=get_countries)
             media_list = filter_request(media_list, countries, 'country', operator)
             form_countries = list(get_countries)
         else:
             form_countries = []
 
+        # Reference
+        if 'reference' in query_dict:
+            get_references = query_dict.getlist('reference')
+            references = Reference.objects.filter(id__in=get_references)
+            media_list = filter_request(media_list, references, 'reference', operator)
+            form_references = list(get_references)
+        else:
+            form_references = []
+
         # Sort and display options.
 
         # Get highlights only.
-        highlight = request.GET.get('highlight', False)
+        highlight = query_dict.get('highlight', False)
         if highlight:
             media_list = media_list.filter(highlight=1)
 
         # Orderby: replace 'random' by '?'
-        orderby = request.GET.get('orderby', 'random')
-        order = request.GET.get('order', 'desc')
+        orderby = query_dict.get('orderby', 'random')
+        order = query_dict.get('order', 'desc')
         if orderby == 'random':
             sorting = '?'
         else:
@@ -182,7 +200,7 @@ def search_page(request):
         media_list = media_list.order_by(sorting)
 
         # Forçar int para paginator.
-        n_page = int(request.GET.get('n', '40'))
+        n_page = int(query_dict.get('n', '40'))
 
         # Define modified display form.
         display_form = DisplayForm({
@@ -207,7 +225,7 @@ def search_page(request):
         display_form = DisplayForm()
 
     # Return paginated list.
-    entries = get_paginated(request, media_list, n_page)
+    entries = get_paginated(query_dict, media_list, n_page)
     #import pdb; pdb.set_trace()
 
     context = {
@@ -424,8 +442,6 @@ def meta_page(request, model_name, field, slug):
     # Extrai metadados das imagens.
     data, queries, urls = show_info(media_list, queries)
 
-    print(entries.object_list)
-
     context = {
         'entries': entries,
         'media_list': media_list,
@@ -565,12 +581,12 @@ def catch_get(keys, get):
         False
 
 
-def get_paginated(request, media_list, n_page=16):
+def get_paginated(query_dict, media_list, n_page=16):
     '''Return queryset paginator. n_page must be integer.'''
     paginator = Paginator(media_list, n_page)
     # Make sure page request is an int. If not, deliver first page.
     try:
-        page = int(request.GET.get('page', '1'))
+        page = int(query_dict.get('page', '1'))
     except ValueError:
         page = 1
     # If page request (9999) is out of range, deliver last page of results.
@@ -774,7 +790,7 @@ def add_meta(meta, field, query):
 
 def filter_request(media_list, objects, field, operator):
     '''Filter media based on fields and operator.'''
-
+    
     if operator == 'and':
         for obj in objects:
             media_list = media_list.filter(**{field: obj})
@@ -783,6 +799,10 @@ def filter_request(media_list, objects, field, operator):
         queries = []
         for obj in objects:
             queries.append(Q(**{field: obj}))
+            if field == 'taxon':
+                children = obj.get_descendants()
+                for child in children:
+                    queries.append(Q(**{field: child}))
 
         media_list = media_list.filter(reduce(or_, queries)).distinct()
     

@@ -77,6 +77,8 @@ def search_page(request, model_name='', field='', slug=''):
             model = apps.get_model('meta', model_name)
             instance = get_object_or_404(model, slug=slug)
             query_dict.appendlist(field, instance.id)
+        else:
+            instance = ''
 
         # Datatype.
         datatype = query_dict.get('datatype', 'all')
@@ -226,11 +228,12 @@ def search_page(request, model_name='', field='', slug=''):
 
     # Return paginated list.
     entries = get_paginated(query_dict, media_list, n_page)
-    #import pdb; pdb.set_trace()
 
     context = {
         'entries': entries,
         'display_form': display_form,
+        'meta': instance,
+        'field': field,
         }
     return render(request, 'search.html', context)
 

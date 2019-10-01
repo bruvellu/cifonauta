@@ -38597,6 +38597,16 @@ _('Species')
 # Translators: model=Taxon, field=rank.
 _('Species')
 # Translators: model=Tag, field=name.
+_('0,1 - 1,0 mm')
+# Translators: model=Tag, field=name.
+_('<0,1 mm')
+# Translators: model=Tag, field=name.
+_('>100 mm')
+# Translators: model=Tag, field=name.
+_('10 - 100 mm')
+# Translators: model=Tag, field=name.
+_('1,0 - 10 mm')
+# Translators: model=Tag, field=name.
 _('3d')
 # Translators: model=Tag, field=name.
 _('adulto')
@@ -38625,13 +38635,13 @@ _('comensal')
 # Translators: model=Tag, field=name.
 _('confocal')
 # Translators: model=Tag, field=name.
+_('contraste de interferência diferencial')
+# Translators: model=Tag, field=name.
 _('coral')
 # Translators: model=Tag, field=name.
 _('costão rochoso')
 # Translators: model=Tag, field=name.
 _('demersal')
-# Translators: model=Tag, field=name.
-_('dic')
 # Translators: model=Tag, field=name.
 _('embrião')
 # Translators: model=Tag, field=name.
@@ -38731,6 +38741,16 @@ _('substrato inconsolidado')
 # Translators: model=Tag, field=name.
 _('unicelular')
 # Translators: model=Tag, field=description.
+_('Embriões, larvas e seres planctônicos.')
+# Translators: model=Tag, field=description.
+_('Organismos unicelulares e detalhes de organismos multicelulares.')
+# Translators: model=Tag, field=description.
+_('Organismos ainda maiores.')
+# Translators: model=Tag, field=description.
+_('Organismos macroscópicos.')
+# Translators: model=Tag, field=description.
+_('Seres diminutos, mas visíveis a olho nu.')
+# Translators: model=Tag, field=description.
 _('Organismo com capacidade reprodutiva sexuada plena.')
 # Translators: model=Tag, field=description.
 _('Qualquer um dos vários animais gelatinosos aquáticos, particularmente o estágio de medusa dos cnidários.')
@@ -38745,11 +38765,11 @@ _('Imagens produzidas no Centro de Biologia Marinha da Universidade de São Paul
 # Translators: model=Tag, field=description.
 _('Microscopia confocal.')
 # Translators: model=Tag, field=description.
+_('Contraste de interferência diferencial (ou Nomarski).')
+# Translators: model=Tag, field=description.
 _('Ambiente de transição entre os meios marinho e terrestre, formado por rochas.')
 # Translators: model=Tag, field=description.
 _('Que vive próximo ao fundo do mar, embora possua capacidade de natação ativa.')
-# Translators: model=Tag, field=description.
-_('Contraste de interferência diferencial (ou Nomarski).')
 # Translators: model=Tag, field=description.
 _('Organismo em estágios iniciais de desenvolvimento.')
 # Translators: model=Tag, field=description.
@@ -38811,8 +38831,6 @@ _('Organismo que vive associado a outro, sem que haja prejuízo para ambos.')
 # Translators: model=Tag, field=description.
 _('Organismo consistindo ou formado por uma única célula.')
 # Translators: model=TagCategory, field=name.
-_('Bentônicos')
-# Translators: model=TagCategory, field=name.
 _('Diversos')
 # Translators: model=TagCategory, field=name.
 _('Estágio de vida')
@@ -38823,11 +38841,9 @@ _('Microscopia')
 # Translators: model=TagCategory, field=name.
 _('Modo de vida')
 # Translators: model=TagCategory, field=name.
-_('Pelágicos')
+_('Tamanho')
 # Translators: model=TagCategory, field=name.
-_('Técnica')
-# Translators: model=TagCategory, field=description.
-_('Organismos que vivem no leito dos oceanos e mares, fixos ou não a um substrato.')
+_('Técnica fotográfica')
 # Translators: model=TagCategory, field=description.
 _('Marcadores que não se encaixam nas outras categorias. Podem ser termos comuns frequentemente procurados.')
 # Translators: model=TagCategory, field=description.
@@ -38839,9 +38855,9 @@ _('Técnicas de microscopia utilizadas para capturar a imagem.')
 # Translators: model=TagCategory, field=description.
 _('Cada estágio de vida de um organismo pode ter um modo de vida diferente. Por isso, essa classificação refere-se ao modo de vida da fase ilustrada na imagem.')
 # Translators: model=TagCategory, field=description.
-_('Organismos que vivem na coluna d’água.')
+_('Classes de tamanhos: micro = <0,1 mm; minúsculo = 0,1 - 1,0 mm; visível = 1,0 - 10 mm; grande = 10 - 100 mm; enorme = >100 mm.')
 # Translators: model=TagCategory, field=description.
-_('Diferentes técnicas utilizadas para capturar as imagens do banco divididas em 4 categorias: submersa, macrofotografia, paisagem e microscopia.')
+_('Tipo baseado nas diferentes técnicas utilizadas para capturar as imagens do banco divididas em 4 categorias: submersa, macrofotografia, paisagem e microscopia.')
 # Translators: model=City, field=name.
 _('Angra dos Reis')
 # Translators: model=City, field=name.

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-22 17:37-0300\n"
-"PO-Revision-Date: 2019-09-22 17:42-0306\n"
+"POT-Creation-Date: 2019-10-01 19:24-0300\n"
+"PO-Revision-Date: 2019-10-01 19:38-0306\n"
 "Last-Translator: b'Bruno Vellutini <organelas@gmail.com>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -460,7 +460,7 @@ msgstr "Bryozoan"
 #: values_for_translation.py:906 values_for_translation.py:908
 #: values_for_translation.py:910 values_for_translation.py:912
 #: values_for_translation.py:914 values_for_translation.py:916
-#: values_for_translation.py:918 values_for_translation.py:38914
+#: values_for_translation.py:918 values_for_translation.py:38930
 msgid "Baía do Araçá"
 msgstr "Araçá Bay"
 
@@ -6996,7 +6996,7 @@ msgstr "Clam"
 #. Translators: model=Media, field=title.
 #: values_for_translation.py:18732 values_for_translation.py:18734
 msgid "Marcas do bivalve Macoma em sedimento arenolamoso na região entremarés"
-msgstr ""
+msgstr "Marks made by the bivalve Macoma into the sand and mud bottom"
 
 #. Translators: model=Media, field=title.
 #: values_for_translation.py:18760 values_for_translation.py:18762
@@ -8924,6 +8924,9 @@ msgid ""
 "As cracas são crustáceos exclusivamente marinhos que geralmente vivem "
 "fixados a rochas, conchas, raízes, corais etc."
 msgstr ""
+"Barnacles are an entirely marine group of crustaceans with a sessile way of "
+"life, attached permanently to a hard substrate, such as rocks, shells, "
+"corals, roots etc."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:25604 values_for_translation.py:25666
@@ -8998,7 +9001,7 @@ msgid ""
 "As lepas são crustáceos cirrípedes como as cracas, distinguindo-se destas "
 "pela presença de um pedúnculo que as fixa a objetos flutuantes ou animais "
 "pelágicos."
-msgstr ""
+msgstr "Pedunculate barnacle"
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:25738 values_for_translation.py:25744
@@ -9079,7 +9082,7 @@ msgid ""
 "das praias.\" (Rodrigues, 1999). Os excrementos de B. gigas são facilmente "
 "visualizados na superfiície descoberta da Baía do Araçá durante as marés "
 "baixas."
-msgstr ""
+msgstr "Acorn worm (enteropneust)  - marine burrowing wormlike invertebrate."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:25850 values_for_translation.py:25856
@@ -9874,7 +9877,7 @@ msgstr "Adult medusa. Detail of gonads."
 msgid ""
 "Colônias sobre o hidrozoário Lytocarpus filamentosus (Lamarck, 1816), 7 "
 "December 1903, SAM H34."
-msgstr ""
+msgstr "Colony on the hydroid Lytocarpus filamentosus"
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:27046
@@ -11958,7 +11961,7 @@ msgstr ""
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:31042
 msgid "disciplina diversidade e evolução 2007."
-msgstr ""
+msgstr "diversity and evolution course 2007"
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:31046
@@ -14616,6 +14619,25 @@ msgid ""
 "licença Creative Commons by-nc-sa (http://creativecommons.org/licenses/by-"
 "nc-sa/2.5/br/)."
 msgstr ""
+"O vídeo retrata o ciclo de vida da bolacha-do-mar Clypeaster subdepressus e "
+"faz parte do meu projeto de mestrado pelo Instituto de Biociências da "
+"Universidade de São Paulo. Coletamos os adultos em fundos arenosos do Canal "
+"de São Sebastião (São Sebastião, SP, Brasil) e os induzimos a liberarem seus"
+" gametas (óvulos e espermatozóides). Fizemos a fecundação in vitro e "
+"acompanhamos o desenvolvimento dos embriões no laboratório, sob microscopia "
+"de luz. Os embriões tornam-se larvas natantes, com cerca de 0\t2 mm, que "
+"alimentamos com microalgas até sua metamorfose. A pequena bolacha-do-mar "
+"cresce dentro da larva. Quando os minúsculos pés e espinhos estão formados a"
+" larva afunda e sofre a metamorfose. O filhote de bolacha-do-mar reabsorve "
+"os tecidos larvais e passa a explorar seu novo habitat, entre os grãos de "
+"areia. Fizemos todas as filmagens no Centro de Biologia Marinha da "
+"Universidade de São Paulo (CEBIMar-USP), localizado em São Sebastião, SP, "
+"Brasil, litoral norte do estado de São Paulo (http://www.usp.br/cbm). Mais "
+"informações sobre este projeto podem ser encontradas no site "
+"(http://mestrado.organelas.com). Baixe a trilha sonora no site da netlabel "
+"AEROTONE (http://tinyurl.com/MyFirstTrumpet-Frerk). Este vídeo está sob uma "
+"licença Creative Commons by-nc-sa (http://creativecommons.org/licenses/by-"
+"nc-sa/2.5/br/)."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:34588 values_for_translation.py:34592
@@ -15772,346 +15794,397 @@ msgstr "species"
 
 #. Translators: model=Tag, field=name.
 #: values_for_translation.py:38600
+msgid "0,1 - 1,0 mm"
+msgstr "0.1 - 1.0 mm"
+
+#. Translators: model=Tag, field=name.
+#: values_for_translation.py:38602
+msgid "<0,1 mm"
+msgstr "<0.1 mm"
+
+#. Translators: model=Tag, field=name.
+#: values_for_translation.py:38604
+msgid ">100 mm"
+msgstr ">100 mm"
+
+#. Translators: model=Tag, field=name.
+#: values_for_translation.py:38606
+msgid "10 - 100 mm"
+msgstr "10 - 100 mm"
+
+#. Translators: model=Tag, field=name.
+#: values_for_translation.py:38608
+msgid "1,0 - 10 mm"
+msgstr "1.0 - 10 mm"
+
+#. Translators: model=Tag, field=name.
+#: values_for_translation.py:38610
 msgid "3d"
 msgstr "3d"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38602
+#: values_for_translation.py:38612
 msgid "adulto"
 msgstr "adult"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38604
+#: values_for_translation.py:38614
 msgid "água-viva"
 msgstr "jellyfish"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38606
+#: values_for_translation.py:38616
 msgid "alga"
 msgstr "alga"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38608
+#: values_for_translation.py:38618
 msgid "ameaçada de extinção"
 msgstr "risk of extinction"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38610
+#: values_for_translation.py:38620
 msgid "baixio não vegetado"
 msgstr "baixio não vegetado"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38612
+#: values_for_translation.py:38622
 msgid "banco não vegetado"
 msgstr "banco não vegetado"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38614
+#: values_for_translation.py:38624
 msgid "bentônico"
 msgstr "benthic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38616
+#: values_for_translation.py:38626
 msgid "campo claro"
 msgstr "bright field"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38618
+#: values_for_translation.py:38628
 msgid "campo escuro"
 msgstr "dark field"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38620
+#: values_for_translation.py:38630
 msgid "cebimar-usp"
 msgstr "cebimar-usp"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38622
+#: values_for_translation.py:38632
 msgid "cnidarian tree of life project"
 msgstr "cnidarian tree of life project"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38624
+#: values_for_translation.py:38634
 msgid "comensal"
 msgstr "commensal"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38626
+#: values_for_translation.py:38636
 msgid "confocal"
 msgstr "confocal"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38628
+#: values_for_translation.py:38638
+#| msgid "Contraste de interferência diferencial (ou Nomarski)."
+msgid "contraste de interferência diferencial"
+msgstr "Differential interference contrast"
+
+#. Translators: model=Tag, field=name.
+#: values_for_translation.py:38640
 msgid "coral"
 msgstr "coral"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38630
+#: values_for_translation.py:38642
 msgid "costão rochoso"
 msgstr "rocky-shore"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38632
+#: values_for_translation.py:38644
 msgid "demersal"
 msgstr "demersal"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38634
-msgid "dic"
-msgstr "dic"
-
-#. Translators: model=Tag, field=name.
-#: values_for_translation.py:38636
+#: values_for_translation.py:38646
 msgid "embrião"
 msgstr "embryo"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38638
+#: values_for_translation.py:38648
 msgid "entremarés"
 msgstr "intertidal"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38640
+#: values_for_translation.py:38650
 msgid "epibionte"
 msgstr "epibiotic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38642
+#: values_for_translation.py:38652
 msgid "epifauna"
 msgstr "epifauna"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38644
+#: values_for_translation.py:38654
 msgid "espécie introduzida"
 msgstr "introduced species"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38646
+#: values_for_translation.py:38656
 msgid "espécie invasora"
 msgstr "invasive species"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38648
+#: values_for_translation.py:38658
 msgid "fitoplâncton"
 msgstr "phytoplankton"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38650
+#: values_for_translation.py:38660
 msgid "gameta"
 msgstr "gamete"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38652
+#: values_for_translation.py:38662
 msgid "holótipo"
 msgstr "holotype"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38654
+#: values_for_translation.py:38664
 msgid "impregnação protargol"
 msgstr "protargol impregnation"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38656
+#: values_for_translation.py:38666
 msgid "infauna"
 msgstr "infauna"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38658
+#: values_for_translation.py:38668
 msgid "infralitoral"
 msgstr "infralittoral"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38660
+#: values_for_translation.py:38670
 msgid "interface"
 msgstr "interface"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38662
+#: values_for_translation.py:38672
 msgid "intersticial"
 msgstr "interstitial"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38664
+#: values_for_translation.py:38674
 msgid "juvenil"
 msgstr "juvenile"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38666
+#: values_for_translation.py:38676
 msgid "larva"
 msgstr "larva"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38668
+#: values_for_translation.py:38678
 msgid "lecitotrófica"
 msgstr "lecithotrophic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38670
+#: values_for_translation.py:38680
 msgid "luz polarizada"
 msgstr "polarized light"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38672
+#: values_for_translation.py:38682
 msgid "macrofauna"
 msgstr "macrofauna"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38674
+#: values_for_translation.py:38684
 msgid "macrofotografia"
 msgstr "macrophotography"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38676
+#: values_for_translation.py:38686
 msgid "manguezal"
 msgstr "mangrove"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38678
+#: values_for_translation.py:38688
 msgid "medusóide"
 msgstr "medusoid"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38680
+#: values_for_translation.py:38690
 msgid "meiofauna"
 msgstr "meiofauna"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38682
+#: values_for_translation.py:38692
 msgid "mergulho"
 msgstr "diving"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38684
+#: values_for_translation.py:38694
 msgid "mesolitoral"
 msgstr "mesolitoral"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38686
+#: values_for_translation.py:38696
 msgid "metamorfose"
 msgstr "metamorphosis"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38688
+#: values_for_translation.py:38698
 msgid "mev"
 msgstr "mev"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38690
+#: values_for_translation.py:38700
 msgid "nectônico"
 msgstr "nektonic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38692
+#: values_for_translation.py:38702
 msgid "neotipo"
 msgstr "neotype"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38694
+#: values_for_translation.py:38704
 msgid "paisagem"
 msgstr "landscape"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38696
+#: values_for_translation.py:38706
 msgid "parasita"
 msgstr "parasite"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38698
+#: values_for_translation.py:38708
 msgid "parátipo"
 msgstr "paratype"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38700
+#: values_for_translation.py:38710
 msgid "paratomia"
 msgstr "paratomy"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38702
+#: values_for_translation.py:38712
 msgid "pelágico"
 msgstr "pelagic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38704
+#: values_for_translation.py:38714
 msgid "placa de recrutamento"
 msgstr "recruitment plate"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38706
+#: values_for_translation.py:38716
 msgid "planctônico"
 msgstr "planktonic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38708
+#: values_for_translation.py:38718
 msgid "planctotrófica"
 msgstr "planktotrophic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38710
+#: values_for_translation.py:38720
 msgid "pleustônico"
 msgstr "pleustonic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38712
+#: values_for_translation.py:38722
 msgid "pólipo"
 msgstr "polyp"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38714
+#: values_for_translation.py:38724
 msgid "praia"
 msgstr "sand beach"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38716
+#: values_for_translation.py:38726
 msgid "progênese"
 msgstr "progenesis"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38718
+#: values_for_translation.py:38728
 msgid "seto marine biological laboratory"
 msgstr "seto marine biological laboratory"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38720
+#: values_for_translation.py:38730
 msgid "simbiose"
 msgstr "symbiosis"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38722
+#: values_for_translation.py:38732
 msgid "south african museum"
 msgstr "south african museum"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38724
+#: values_for_translation.py:38734
 msgid "submersa"
 msgstr "submarine"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38726
+#: values_for_translation.py:38736
 msgid "substrato artificial"
 msgstr "artificial substrate"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38728
+#: values_for_translation.py:38738
 msgid "substrato consolidado"
 msgstr "hard bottom"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38730
+#: values_for_translation.py:38740
 msgid "substrato inconsolidado"
 msgstr "soft bottom"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38732
+#: values_for_translation.py:38742
 msgid "unicelular"
 msgstr "unicellular"
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38734
+#: values_for_translation.py:38744
+msgid "Embriões, larvas e seres planctônicos."
+msgstr "Embryos, larvae and planktonic creatures."
+
+#. Translators: model=Tag, field=description.
+#: values_for_translation.py:38746
+msgid "Organismos unicelulares e detalhes de organismos multicelulares."
+msgstr "Unicellular organisms and details of multicellular organisms."
+
+#. Translators: model=Tag, field=description.
+#: values_for_translation.py:38748
+msgid "Organismos ainda maiores."
+msgstr "Even larger organisms."
+
+#. Translators: model=Tag, field=description.
+#: values_for_translation.py:38750
+msgid "Organismos macroscópicos."
+msgstr "Macroscopic organisms."
+
+#. Translators: model=Tag, field=description.
+#: values_for_translation.py:38752
+msgid "Seres diminutos, mas visíveis a olho nu."
+msgstr "Tiny creatures but visible at the naked eye."
+
+#. Translators: model=Tag, field=description.
+#: values_for_translation.py:38754
 msgid "Organismo com capacidade reprodutiva sexuada plena."
 msgstr "Sexually mature organism."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38736
+#: values_for_translation.py:38756
 msgid ""
 "Qualquer um dos vários animais gelatinosos aquáticos, particularmente o "
 "estágio de medusa dos cnidários."
@@ -16120,25 +16193,24 @@ msgstr ""
 "of cnidarians."
 
 #. Translators: model=Tag, field=description.
-#. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38738 values_for_translation.py:38830
+#: values_for_translation.py:38758
 msgid ""
 "Organismos que vivem no leito dos oceanos e mares, fixos ou não a um "
 "substrato."
 msgstr "Organisms living on or in the sea bottom."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38740
+#: values_for_translation.py:38760
 msgid "Iluminação difusa."
 msgstr "Diffuse illumination."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38742
+#: values_for_translation.py:38762
 msgid "Iluminação oblíqua e fundo escuro."
 msgstr "Oblique illumination and dark field."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38744
+#: values_for_translation.py:38764
 msgid ""
 "Imagens produzidas no Centro de Biologia Marinha da Universidade de São "
 "Paulo (CEBIMar/USP)."
@@ -16147,12 +16219,17 @@ msgstr ""
 "Paulo (CEBIMar/USP)."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38746
+#: values_for_translation.py:38766
 msgid "Microscopia confocal."
 msgstr "Confocal microscopy."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38748
+#: values_for_translation.py:38768
+msgid "Contraste de interferência diferencial (ou Nomarski)."
+msgstr "Differential interference contrast microscopy."
+
+#. Translators: model=Tag, field=description.
+#: values_for_translation.py:38770
 msgid ""
 "Ambiente de transição entre os meios marinho e terrestre, formado por "
 "rochas."
@@ -16160,45 +16237,40 @@ msgstr ""
 "Transition between marine and terrestrial environments formed by rocks."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38750
+#: values_for_translation.py:38772
 msgid ""
 "Que vive próximo ao fundo do mar, embora possua capacidade de natação ativa."
 msgstr "Pelagic organisms living close to the bottom."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38752
-msgid "Contraste de interferência diferencial (ou Nomarski)."
-msgstr "Differential interference contrast microscopy."
-
-#. Translators: model=Tag, field=description.
-#: values_for_translation.py:38754
+#: values_for_translation.py:38774
 msgid "Organismo em estágios iniciais de desenvolvimento."
 msgstr "Organism in its early stages of development."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38756
+#: values_for_translation.py:38776
 msgid "Região costeira que fica exposta somente na maré baixa."
 msgstr "Coastal region only exposed at low tide."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38758
+#: values_for_translation.py:38778
 msgid "Que vive na superfí­cie de outro organismo."
 msgstr "Organism living on the body surface of its host."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38760
+#: values_for_translation.py:38780
 msgid "Que vive na superfície do substrato."
 msgstr "Organisms living on the surface of soft bottoms. "
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38762
+#: values_for_translation.py:38782
 msgid ""
 "Espécie que foi acidental ou deliberadamente transportada para fora de sua "
 "área normal de distribuição."
 msgstr "A species living outside its native distributional range."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38764
+#: values_for_translation.py:38784
 msgid ""
 "Espécie cujo estabelecimento e dispersão ameaçam a diversidade biológica da "
 "região em que foi introduzida."
@@ -16207,7 +16279,7 @@ msgstr ""
 "affect the habitats and regions they invade."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38766
+#: values_for_translation.py:38786
 msgid ""
 "Referentes aos vários grupos de organismos aquáticos e autotróficos, desde "
 "os microscópicos e unicelulares até as formas multicelulares, que se "
@@ -16219,36 +16291,35 @@ msgstr ""
 "plants by the absence of true roots, stems, and leaves."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38768
+#: values_for_translation.py:38788
 msgid "Célula reprodutiva madura (espermatozoide ou óvulo)"
 msgstr "A mature sexual reproductive cell (sperm or egg)"
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38770
+#: values_for_translation.py:38790
 msgid "O espécime tipo utilizado na descrição original de uma espécie."
 msgstr "The type specimen used in the original description of a species."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38772
+#: values_for_translation.py:38792
 msgid "Técnica de impregnação com prata."
 msgstr "Silver impregnation technique."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38774
-#, fuzzy
+#: values_for_translation.py:38794
 #| msgid "Região costeira que fica exposta somente na maré baixa."
 msgid "Região costeira permanentemente submersa."
-msgstr "Coastal region only exposed at low tide."
+msgstr "Coastal region permanently submerged."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38776
+#: values_for_translation.py:38796
 msgid ""
 "Organismo que ainda não atingiu a capacidade reprodutiva, embora seja "
 "morfologicamente semelhante a um adulto."
 msgstr "Sexually immature organism that resembles an adult."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38778
+#: values_for_translation.py:38798
 msgid ""
 "Estágio pós-embrionário que difere da forma adulta na sua morfologia, "
 "comportamento, habitat entre outros. Não se reproduz de maneira sexuada."
@@ -16257,18 +16328,18 @@ msgstr ""
 " behavior, habitat, and others. Does not reproduce sexually."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38780
+#: values_for_translation.py:38800
 msgid "Larva que se desenvolve apenas com reservas internas de vitelo."
 msgstr "Non-feeding larva."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38782
+#: values_for_translation.py:38802
 msgid ""
 "Microscopia utilizando luz polarizada que revela estruturas birrefringentes."
 msgstr "Polarized light microscopy reveals birefringent structures."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38784
+#: values_for_translation.py:38804
 msgid ""
 "Detalhe tirado com câmera convencional; muitas vezes de organismos em "
 "aquários."
@@ -16277,7 +16348,7 @@ msgstr ""
 "aquarium."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38786
+#: values_for_translation.py:38806
 msgid ""
 "Ecossistema costeiro de transição entre os ambientes terrestre e marinho, "
 "dominado por espécies vegetais típicas, geralmente associado a locais onde "
@@ -16287,12 +16358,12 @@ msgstr ""
 " grows in areas that are frequently inundated with salt and fresh water."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38788
+#: values_for_translation.py:38808
 msgid "Tirado embaixo d’água com caixa-estanque."
 msgstr "Photographs taken under water."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38790
+#: values_for_translation.py:38810
 msgid ""
 "Mudança na forma e/ou estrutura do corpo que ocorre entre o estágio larval e"
 " a forma juvenil ou adulta."
@@ -16301,116 +16372,109 @@ msgstr ""
 "juvenile or adult."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38792
+#: values_for_translation.py:38812
 msgid "Microscopia eletrônica de varredura."
 msgstr "Scanning electron microscopy."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38794
-#, fuzzy
+#: values_for_translation.py:38814
 #| msgid ""
 #| "Que vive próximo ao fundo do mar, embora possua capacidade de natação ativa."
 msgid "Vive disperso na coluna d´água mas é capaz de natação ativa."
-msgstr "Pelagic organisms living close to the bottom."
+msgstr ""
+"Lives dispersed in the water column but is capable of active swimming."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38796
+#: values_for_translation.py:38816
 msgid "Mostra um ambiente."
 msgstr "Depicts an environment."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38798
+#: values_for_translation.py:38818
 msgid ""
 "Um espécime selecionado para substituir um holotipo que foi perdido ou "
 "destruído."
 msgstr "The type specimen used in the original description of a species."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38800
-#, fuzzy
+#: values_for_translation.py:38820
 #| msgid "Organismos que vivem na coluna d’água."
 msgid "Organismos vivendo na coluna d´água."
 msgstr "Organisms living in the water column."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38802
-#, fuzzy
+#: values_for_translation.py:38822
 #| msgid "Organismos que vivem na coluna d’água."
 msgid "Organismos que vivem à deriva na coluna d´água."
-msgstr "Organisms living in the water column."
+msgstr "Organisms drifting in the water column."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38804
+#: values_for_translation.py:38824
 msgid "Larva que se alimenta de organismos planctônicos"
 msgstr "Feeding larva."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38806
+#: values_for_translation.py:38826
 msgid ""
 "Que flutua na superfície da água, como algumas plantas e a caravela-"
 "portuguesa."
 msgstr "Organisms floating in the water surface."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38808
+#: values_for_translation.py:38828
 msgid ""
 "Faixa de terra coberta de lama, areia ou seixos, às margens de um corpo de "
 "água."
 msgstr "Landform along the shoreline consisting sand, gravel, or pebbles."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38810
+#: values_for_translation.py:38830
 msgid ""
 "Organismo que vive associado a outro, sem que haja prejuízo para ambos."
 msgstr "Organism living with, on, or in another, without injury to either."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38812
+#: values_for_translation.py:38832
 msgid "Organismo consistindo ou formado por uma única célula."
 msgstr "Organism having or consisting of a single cell."
 
 #. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38814
-msgid "Bentônicos"
-msgstr "Benthic"
-
-#. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38816
+#: values_for_translation.py:38834
 msgid "Diversos"
 msgstr "Miscellaneous"
 
 #. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38818
+#: values_for_translation.py:38836
 msgid "Estágio de vida"
 msgstr "Life stage"
 
 #. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38820
+#: values_for_translation.py:38838
 msgid "Habitat"
 msgstr "Habitat"
 
 #. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38822
+#: values_for_translation.py:38840
 msgid "Microscopia"
 msgstr "Microscopy"
 
 #. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38824
+#: values_for_translation.py:38842
 msgid "Modo de vida"
 msgstr "Life mode"
 
 #. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38826
-msgid "Pelágicos"
-msgstr "Pelagic"
+#: values_for_translation.py:38844
+msgid "Tamanho"
+msgstr "Size"
 
 #. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38828
-msgid "Técnica"
-msgstr "Technique"
+#: values_for_translation.py:38846
+msgid "Técnica fotográfica"
+msgstr "Imaging technique"
 
 #. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38832
+#: values_for_translation.py:38848
 msgid ""
 "Marcadores que não se encaixam nas outras categorias. Podem ser termos "
 "comuns frequentemente procurados."
@@ -16419,22 +16483,22 @@ msgstr ""
 " searched."
 
 #. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38834
+#: values_for_translation.py:38850
 msgid "Nem sempre os organismos fotografados são indivíduos adultos."
 msgstr "The organisms photographed are not always adults."
 
 #. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38836
+#: values_for_translation.py:38852
 msgid "Também indicamos os habitats de cada organismo, quando possível."
 msgstr "We also indicate the habitat of each organism whenever possible."
 
 #. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38838
+#: values_for_translation.py:38854
 msgid "Técnicas de microscopia utilizadas para capturar a imagem."
 msgstr "Microscopy techniques used to acquire the image."
 
 #. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38840
+#: values_for_translation.py:38856
 msgid ""
 "Cada estágio de vida de um organismo pode ter um modo de vida diferente. Por"
 " isso, essa classificação refere-se ao modo de vida da fase ilustrada na "
@@ -16444,206 +16508,214 @@ msgstr ""
 "this classification refers to the lifestyle depicted in the image."
 
 #. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38842
-msgid "Organismos que vivem na coluna d’água."
-msgstr "Organisms living in the water column."
+#: values_for_translation.py:38858
+msgid ""
+"Classes de tamanhos: micro = <0,1 mm; minúsculo = 0,1 - 1,0 mm; visível = "
+"1,0 - 10 mm; grande = 10 - 100 mm; enorme = >100 mm."
+msgstr ""
+"Size classes: micro = <0,1 mm; tiny = 0,1 - 1,0 mm; visible = 1,0 - 10 mm; "
+"large = 10 - 100 mm; huge = >100 mm."
 
 #. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38844
+#: values_for_translation.py:38860
+#| msgid ""
+#| "Diferentes técnicas utilizadas para capturar as imagens do banco divididas "
+#| "em 4 categorias: submersa, macrofotografia, paisagem e microscopia."
 msgid ""
-"Diferentes técnicas utilizadas para capturar as imagens do banco divididas "
-"em 4 categorias: submersa, macrofotografia, paisagem e microscopia."
+"Tipo baseado nas diferentes técnicas utilizadas para capturar as imagens do "
+"banco divididas em 4 categorias: submersa, macrofotografia, paisagem e "
+"microscopia."
 msgstr ""
 "Different techniques used to acquire images from the database divided in 4 "
 "categories: underwater, macrophotography, landscape e microscopy."
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38846
+#: values_for_translation.py:38862
 msgid "Angra dos Reis"
 msgstr "Angra dos Reis"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38848
+#: values_for_translation.py:38864
 msgid "Boracéia"
 msgstr "Boracéia"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38850
+#: values_for_translation.py:38866
 msgid "Cananéia"
 msgstr "Cananéia"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38852
+#: values_for_translation.py:38868
 msgid "Caraguatatuba"
 msgstr "Caraguatatuba"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38854
+#: values_for_translation.py:38870
 msgid "Florianópolis"
 msgstr "Florianópolis"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38856
+#: values_for_translation.py:38872
 msgid "Guarujá"
 msgstr "Guarujá"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38858
+#: values_for_translation.py:38874
 msgid "Ilhabela"
 msgstr "Ilhabela"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38860
+#: values_for_translation.py:38876
 msgid "Jequiá da Praia"
 msgstr "Jequiá da Praia"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38862
+#: values_for_translation.py:38878
 msgid "Jureia"
 msgstr "Jureia"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38864
+#: values_for_translation.py:38880
 msgid "Juréia"
 msgstr "Juréia"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38866
+#: values_for_translation.py:38882
 msgid "Maceió"
 msgstr "Maceió"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38868
+#: values_for_translation.py:38884
 msgid "Marechal Deodoro"
 msgstr "Marechal Deodoro"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38870
+#: values_for_translation.py:38886
 msgid "Paranaguá"
 msgstr "Paranaguá"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38872
+#: values_for_translation.py:38888
 msgid "Salinópolis"
 msgstr "Salinópolis"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38874
+#: values_for_translation.py:38890
 msgid "São Sebastião"
 msgstr "São Sebastião"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38876
+#: values_for_translation.py:38892
 msgid "Shirahama"
 msgstr "Shirahama"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38878
+#: values_for_translation.py:38894
 msgid "Townsville"
 msgstr "Townsville"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38880
+#: values_for_translation.py:38896
 msgid "Ubatuba"
 msgstr "Ubatuba"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38882
+#: values_for_translation.py:38898
 msgid "Ubatumirim"
 msgstr "Ubatumirim"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38884
+#: values_for_translation.py:38900
 msgid "AL"
 msgstr "AL"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38886
+#: values_for_translation.py:38902
 msgid "BA"
 msgstr "BA"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38888
+#: values_for_translation.py:38904
 msgid "ES"
 msgstr "ES"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38890
+#: values_for_translation.py:38906
 msgid "PA"
 msgstr "PA"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38892
+#: values_for_translation.py:38908
 msgid "PB"
 msgstr "PB"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38894
+#: values_for_translation.py:38910
 msgid "PE"
 msgstr "PE"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38896
+#: values_for_translation.py:38912
 msgid "PR"
 msgstr "PR"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38898
+#: values_for_translation.py:38914
 msgid "RJ"
 msgstr "RJ"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38900
+#: values_for_translation.py:38916
 msgid "SC"
 msgstr "SC"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38902
+#: values_for_translation.py:38918
 msgid "SP"
 msgstr "SP"
 
 #. Translators: model=Country, field=name.
-#: values_for_translation.py:38904
+#: values_for_translation.py:38920
 msgid "África do Sul"
 msgstr "South Africa"
 
 #. Translators: model=Country, field=name.
-#: values_for_translation.py:38906
+#: values_for_translation.py:38922
 msgid "Austrália"
 msgstr "Australia"
 
 #. Translators: model=Country, field=name.
-#: values_for_translation.py:38908
+#: values_for_translation.py:38924
 msgid "Brasil"
 msgstr "Brazil"
 
 #. Translators: model=Country, field=name.
-#: values_for_translation.py:38910
+#: values_for_translation.py:38926
 msgid "Japão"
 msgstr "Japan"
 
 #. Translators: model=Tour, field=name.
-#: values_for_translation.py:38912
+#: values_for_translation.py:38928
 msgid "Águas-vivas e outras criaturas gelatinosas"
 msgstr "Jellies and other gelatinous creatures "
 
 #. Translators: model=Tour, field=name.
-#: values_for_translation.py:38916
+#: values_for_translation.py:38932
 msgid "Ciclo de vida de um equinodermo"
 msgstr "The life cycle of an echinoderm"
 
 #. Translators: model=Tour, field=name.
-#: values_for_translation.py:38918
+#: values_for_translation.py:38934
 msgid "Larvas marinhas"
 msgstr "Marine larvae"
 
 #. Translators: model=Tour, field=name.
-#: values_for_translation.py:38920
+#: values_for_translation.py:38936
 msgid "Plâncton: pequenos gigantes"
 msgstr "Plankton: microscopic giants"
 
 #. Translators: model=Tour, field=description.
-#: values_for_translation.py:38922
+#: values_for_translation.py:38938
 msgid ""
 "<p>Inserida em uma das mais belas e turísticas regiões litorâneas do país – "
 "o Litoral Norte do Estado de São Paulo –, a Baía do Araçá (São Sebastião, "
@@ -16740,7 +16812,7 @@ msgstr ""
 "heritage for the enjoyment of this and future generations.</p>"
 
 #. Translators: model=Tour, field=description.
-#: values_for_translation.py:38924
+#: values_for_translation.py:38940
 msgid ""
 "<p>Neste tour você pode acompanhar os estágios de vida da bolacha-do-mar "
 "<em>Clypeaster subdepressus</em>. Este equinodermo é parente dos ouriços-do-"
@@ -16775,7 +16847,7 @@ msgstr ""
 "grains.</p>"
 
 #. Translators: model=Tour, field=description.
-#: values_for_translation.py:38926
+#: values_for_translation.py:38942
 msgid ""
 "<p>Embora geralmente pequenos em tamanho, os seres planctônicos são "
 "verdadeiros gigantes em importância. Base das cadeias alimentares marinhas, "

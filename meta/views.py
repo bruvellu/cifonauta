@@ -384,81 +384,6 @@ def media_page(request, media_id):
         return render(request, 'media_page.html', context)
 
 
-def meta_page(request, model_name, field, slug):
-    '''Gallery for media with metadata page.'''
-
-    # Control ordering.
-    n_form = DisplayForm(initial={
-        'n': 40,
-        'order': 'random',
-        'highlight': False,
-        })
-
-    # Define forms and variables.
-    n_form, n_page, orderby, order, highlight = control_form(request)
-
-    # Queries store request variables to the refiner.
-    queries = {
-            'query': '',
-            'author': [],
-            'tag': [],
-            'taxon': [],
-            'sublocation': [],
-            'city': [],
-            'state': [],
-            'country': [],
-            'datatype': [],
-            }
-
-    # XXX Serve para identificar o field na meta_page. Mas precisa ser
-    # um queryset para rolar o values_list do show_info no extra_tags.
-    # Se possível otimizar isso.
-    qmodels = model_name.objects.filter(slug__in=[slug])
-    queries[field] = qmodels
-
-    # Get object.
-    model = get_object_or_404(model_name, slug=slug)
-
-    # Build arguments.
-    filter_args = {field: model.id, 'is_public': True}
-
-    if field == 'taxon':
-        q = [Q(**filter_args), ]
-        q = recurse(model, q)
-        media_list = Media.objects.filter(reduce(or_, q)).select_related('sublocation', 'city', 'state', 'country').order_by(orderby)
-    else:
-        media_list = Media.objects.filter(**filter_args).select_related('sublocation', 'city', 'state', 'country').order_by(orderby)
-
-    # Restrict to highlights.
-    if highlight:
-        media_list = media_list.filter(highlight=1)
-    # Revert order.
-    if order == 'desc':
-        media_list = media_list.reverse()
-
-    # Force int for paginator.
-    n_page = int(n_page)
-
-    # Create pagination.
-    entries = get_paginated(request, media_list, n_page)
-
-    # Extrai metadados das imagens.
-    data, queries, urls = show_info(media_list, queries)
-
-    context = {
-        'entries': entries,
-        'media_list': media_list,
-        'meta': model,
-        'queries': queries,
-        'data': data,
-        'urls': urls,
-        'field': field,
-        'queries': queries,
-        'n_form': n_form,
-        }
-    return render(request, 'meta_page.html', context)
-
-
 def tour_page(request, slug):
     '''Tour page.'''
     tour = get_object_or_404(Tour, slug=slug)
@@ -600,16 +525,6 @@ def get_paginated(query_dict, media_list, n_page=16):
     return media_page
 
 
-def recurse(taxon, q=None):
-    '''Recursivamente retorna todos os táxons-filho em um Q object.'''
-    if not q:
-        q = []
-    children = taxon.get_descendants()
-    for child in children:
-        q.append(Q(**{'taxon': child.id}))
-    return q
-
-
 def show_info(media_list, queries, full_results=False):
     '''Extrai metadados das imagens e exclui o que estiver nas queries.
 
@@ -620,10 +535,7 @@ def show_info(media_list, queries, full_results=False):
     Retorna 3 objetos: data, queries e urls.
     '''
 
-    # TODO Revise and simplify function.
-    # TODO Update documentation to English.
-
-    #import pdb; pdb.set_trace()
+    # TODO: DEPRECATED, DELETE!
 
     # Define querysets.
     if full_results:
@@ -707,6 +619,9 @@ def show_info(media_list, queries, full_results=False):
 
 def control_form(request):
     '''Build the control form and return options.'''
+
+    # TODO: DEPRECATED, DELETE!
+
     # Usando POST para definir:
     #   1. Número de resultados por página.
     #   2. Ordenação por qual metadado (id, visitas, datas, etc).

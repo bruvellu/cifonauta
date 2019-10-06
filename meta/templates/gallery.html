@@ -15,7 +15,7 @@
 {% if meta %}
 
 <div class="quiet" id="metafield">
-  {% trans field %}{% if field == 'tag' %} ({{ meta.parent|lower }}){% else %}{% if field == 'taxon' %} ({% if meta.rank %}{{ meta.rank|lower }}{% else %}{% trans 'sem ranking' %}{% endif %}){% endif %}{% endif %}:
+  {% trans field %}{% if field == 'tag' %} ({{ meta.category|lower }}){% else %}{% if field == 'taxon' %} ({% if meta.rank %}{{ meta.rank|lower }}{% else %}{% trans 'sem ranking' %}{% endif %}){% endif %}{% endif %}:
 </div>
 
 {% if meta.citation %}

@@ -38830,33 +38830,33 @@ _('Faixa de terra coberta de lama, areia ou seixos, às margens de um corpo de �
 _('Organismo que vive associado a outro, sem que haja prejuízo para ambos.')
 # Translators: model=Tag, field=description.
 _('Organismo consistindo ou formado por uma única célula.')
-# Translators: model=TagCategory, field=name.
+# Translators: model=Category, field=name.
 _('Diversos')
-# Translators: model=TagCategory, field=name.
+# Translators: model=Category, field=name.
 _('Estágio de vida')
-# Translators: model=TagCategory, field=name.
+# Translators: model=Category, field=name.
 _('Habitat')
-# Translators: model=TagCategory, field=name.
+# Translators: model=Category, field=name.
 _('Microscopia')
-# Translators: model=TagCategory, field=name.
+# Translators: model=Category, field=name.
 _('Modo de vida')
-# Translators: model=TagCategory, field=name.
+# Translators: model=Category, field=name.
 _('Tamanho')
-# Translators: model=TagCategory, field=name.
+# Translators: model=Category, field=name.
 _('Técnica fotográfica')
-# Translators: model=TagCategory, field=description.
+# Translators: model=Category, field=description.
 _('Marcadores que não se encaixam nas outras categorias. Podem ser termos comuns frequentemente procurados.')
-# Translators: model=TagCategory, field=description.
+# Translators: model=Category, field=description.
 _('Nem sempre os organismos fotografados são indivíduos adultos.')
-# Translators: model=TagCategory, field=description.
+# Translators: model=Category, field=description.
 _('Também indicamos os habitats de cada organismo, quando possível.')
-# Translators: model=TagCategory, field=description.
+# Translators: model=Category, field=description.
 _('Técnicas de microscopia utilizadas para capturar a imagem.')
-# Translators: model=TagCategory, field=description.
+# Translators: model=Category, field=description.
 _('Cada estágio de vida de um organismo pode ter um modo de vida diferente. Por isso, essa classificação refere-se ao modo de vida da fase ilustrada na imagem.')
-# Translators: model=TagCategory, field=description.
+# Translators: model=Category, field=description.
 _('Classes de tamanhos: micro = <0,1 mm; minúsculo = 0,1 - 1,0 mm; visível = 1,0 - 10 mm; grande = 10 - 100 mm; enorme = >100 mm.')
-# Translators: model=TagCategory, field=description.
+# Translators: model=Category, field=description.
 _('Tipo baseado nas diferentes técnicas utilizadas para capturar as imagens do banco divididas em 4 categorias: submersa, macrofotografia, paisagem e microscopia.')
 # Translators: model=City, field=name.
 _('Angra dos Reis')

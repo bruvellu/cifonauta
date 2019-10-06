@@ -117,7 +117,7 @@ class Tag(models.Model):
     media = models.ManyToManyField('Media', blank=True,
             verbose_name=_('fotos'),
             help_text=_('Fotos associadas a este marcador.'))
-    parent = models.ForeignKey('TagCategory', on_delete=models.SET_NULL,
+    category = models.ForeignKey('TagCategory', on_delete=models.SET_NULL,
             null=True, blank=True, related_name='tags',
             verbose_name=_('categoria'),
             help_text=_('Categoria a que este marcador pertence.'))

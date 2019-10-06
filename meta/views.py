@@ -244,19 +244,19 @@ def org_page(request):
     Além de buscar as descrições de cada categoria, mostra exemplos aleatórios de imagens.
     '''
     # Tamanhos
-    sizes = TagCategory.objects.get(name_en='Size')
+    sizes = Category.objects.get(name_en='Size')
     # Técnicas
-    technique = TagCategory.objects.get(name_en='Imaging technique')
-    microscopy = TagCategory.objects.get(name_en='Microscopy')
+    technique = Category.objects.get(name_en='Imaging technique')
+    microscopy = Category.objects.get(name_en='Microscopy')
     # Estágios
-    stage = TagCategory.objects.get(name_en='Life stage')
+    stage = Category.objects.get(name_en='Life stage')
     stages = stage.tags.all()
     # Modos
-    mode = TagCategory.objects.get(name_en='Life mode')
+    mode = Category.objects.get(name_en='Life mode')
     # Habitat
-    habitat = TagCategory.objects.get(name_en='Habitat')
+    habitat = Category.objects.get(name_en='Habitat')
     # Diversos
-    assorted = TagCategory.objects.get(name_en='Miscellaneous')
+    assorted = Category.objects.get(name_en='Miscellaneous')
     context = {
         'sizes': sizes,
         'microscopy': microscopy,
@@ -445,9 +445,9 @@ def places_page(request):
 
 def tags_page(request):
     '''Página mostrando tags organizados por categoria.'''
-    tagcats = TagCategory.objects.prefetch_related('tags')
+    cats = Category.objects.prefetch_related('tags')
     context = {
-        'tagcats': tagcats,
+        'cats': cats,
         }
     return render(request, 'tags_page.html', context)
 

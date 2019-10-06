@@ -16,7 +16,7 @@ class TagAdmin(TranslationAdmin):
     pass
 
 
-class TagCatAdmin(TranslationAdmin):
+class CatAdmin(TranslationAdmin):
     pass
 
 
@@ -47,7 +47,7 @@ admin.site.unregister(FlatPage)
 admin.site.register(FlatPage, FlatPageAdmin)
 admin.site.register(Media, MediaAdmin)
 admin.site.register(Tag, TagAdmin)
-admin.site.register(TagCategory, TagAdmin)
+admin.site.register(Category, TagAdmin)
 admin.site.register(City, CityAdmin)
 admin.site.register(State, StateAdmin)
 admin.site.register(Country, CountryAdmin)

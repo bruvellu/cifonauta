@@ -117,7 +117,7 @@ class Tag(models.Model):
     media = models.ManyToManyField('Media', blank=True,
             verbose_name=_('fotos'),
             help_text=_('Fotos associadas a este marcador.'))
-    category = models.ForeignKey('TagCategory', on_delete=models.SET_NULL,
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL,
             null=True, blank=True, related_name='tags',
             verbose_name=_('categoria'),
             help_text=_('Categoria a que este marcador pertence.'))
@@ -134,7 +134,7 @@ class Tag(models.Model):
         ordering = ['name']
 
 
-class TagCategory(models.Model):
+class Category(models.Model):
     name = models.CharField(_('nome'), max_length=64, unique=True,
             help_text=_('Nome da categoria de marcadores.'))
     slug = models.SlugField(_('slug'), max_length=64, default='', blank=True,
@@ -327,7 +327,7 @@ class Tour(models.Model):
 # Slugify before saving.
 models.signals.pre_save.connect(slug_pre_save, sender=Person)
 models.signals.pre_save.connect(slug_pre_save, sender=Tag)
-models.signals.pre_save.connect(slug_pre_save, sender=TagCategory)
+models.signals.pre_save.connect(slug_pre_save, sender=Category)
 models.signals.pre_save.connect(slug_pre_save, sender=Taxon)
 models.signals.pre_save.connect(slug_pre_save, sender=Sublocation)
 models.signals.pre_save.connect(slug_pre_save, sender=City)

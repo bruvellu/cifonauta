@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from meta.models import Media, Tag, TagCategory, Taxon, City, State, Country, Tour
+from meta.models import Media, Tag, Category, Taxon, City, State, Country, Tour
 from django.utils import translation
 import polib
 import re
@@ -8,7 +8,7 @@ import re
 models = {
         'Media': Media,
         'Tag': Tag,
-        'TagCategory': TagCategory,
+        'Category': Category,
         'Taxon': Taxon,
         'City': City,
         'State': State,

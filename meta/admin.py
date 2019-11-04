@@ -38,7 +38,7 @@ class TourAdmin(TranslationAdmin):
 
 # Regular models.
 admin.site.register(Person)
-admin.site.register(Sublocation)
+admin.site.register(Location)
 admin.site.register(Reference)
 admin.site.register(Taxon)
 

@@ -169,7 +169,7 @@ class Database:
         del media_meta['author']
 
         # Transform values in model instances.
-        toget = ['sublocation', 'city', 'state', 'country']
+        toget = ['location', 'city', 'state', 'country']
         for k in toget:
             # Create only if not blank.
             if media_meta[k]:
@@ -406,7 +406,7 @@ class Meta:
         self.tags = ''
         self.author = ''
         self.city = ''
-        self.sublocation = ''
+        self.location = ''
         self.state = ''
         self.country = ''
         self.taxon = ''
@@ -452,7 +452,7 @@ class Meta:
         self.tags = self.get_photo_tag(info, 'Iptc.Application2.Keywords')            #25
         self.author = self.get_photo_tag(info, 'Iptc.Application2.Byline')            #80
         self.city = self.get_photo_tag(info, 'Iptc.Application2.City')                #90
-        self.sublocation = self.get_photo_tag(info, 'Iptc.Application2.SubLocation')  #92
+        self.location = self.get_photo_tag(info, 'Iptc.Application2.SubLocation')     #92
         self.state = self.get_photo_tag(info, 'Iptc.Application2.ProvinceState')      #95
         self.country = self.get_photo_tag(info, 'Iptc.Application2.CountryName')      #101
         self.taxon = self.get_photo_tag(info, 'Iptc.Application2.Headline')           #105
@@ -500,7 +500,7 @@ class Meta:
             self.tags = self.get_video_tag(txt_dic, 'tags')
             self.author = self.get_video_tag(txt_dic, 'author')
             self.city = self.get_video_tag(txt_dic, 'city')
-            self.sublocation = self.get_video_tag(txt_dic, 'sublocation')
+            self.location = self.get_video_tag(txt_dic, 'sublocation')
             self.state = self.get_video_tag(txt_dic, 'state')
             self.country = self.get_video_tag(txt_dic, 'country')
             self.taxon = self.get_video_tag(txt_dic, 'taxon')
@@ -551,7 +551,7 @@ class Meta:
         self.tags = self.none_to_empty(self.tags)
         self.author = self.none_to_empty(self.author)
         self.city = self.none_to_empty(self.city)
-        self.sublocation = self.none_to_empty(self.sublocation)
+        self.location = self.none_to_empty(self.location)
         self.state = self.none_to_empty(self.state)
         self.country = self.none_to_empty(self.country)
         self.taxon = self.none_to_empty(self.taxon)
@@ -633,7 +633,7 @@ class Meta:
             'tags': self.tags,
             'author': self.author,
             'city': self.city,
-            'sublocation': self.sublocation,
+            'location': self.location,
             'state': self.state,
             'country': self.country,
             'taxon': self.taxon,

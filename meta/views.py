@@ -93,7 +93,7 @@ def search_page(request, model_name='', field='', slug=''):
                      SearchVector('caption', weight='A') + \
                      SearchVector(StringAgg('person__name', delimiter=' '), weight='A') + \
                      SearchVector(StringAgg('tag__name', delimiter=' '), weight='B') + \
-                     SearchVector(StringAgg('sublocation__name', delimiter=' '), weight='B') + \
+                     SearchVector(StringAgg('location__name', delimiter=' '), weight='B') + \
                      SearchVector(StringAgg('city__name', delimiter=' '), weight='B') + \
                      SearchVector(StringAgg('state__name', delimiter=' '), weight='B') + \
                      SearchVector(StringAgg('country__name', delimiter=' '), weight='B')
@@ -135,14 +135,14 @@ def search_page(request, model_name='', field='', slug=''):
         else:
             form_taxa = []
 
-        # Sublocation
-        if 'sublocation' in query_dict:
-            get_sublocations = query_dict.getlist('sublocation')
-            sublocations = Sublocation.objects.filter(id__in=get_sublocations)
-            media_list = filter_request(media_list, sublocations, 'sublocation', operator)
-            form_sublocations = list(get_sublocations)
+        # Location
+        if 'location' in query_dict:
+            get_locations = query_dict.getlist('location')
+            locations = Location.objects.filter(id__in=get_locations)
+            media_list = filter_request(media_list, locations, 'location', operator)
+            form_locations = list(get_locations)
         else:
-            form_sublocations = []
+            form_locations = []
 
         # City
         if 'city' in query_dict:
@@ -215,7 +215,7 @@ def search_page(request, model_name='', field='', slug=''):
             'operator': operator,
             'author': form_authors,
             'tag': form_tags,
-            'sublocation': form_sublocations,
+            'location': form_locations,
             'city': form_cities,
             'state': form_states,
             'country': form_countries,
@@ -286,7 +286,7 @@ def media_page(request, media_id):
     '''Invididual page for media file with all the information.'''
 
     # Get object.
-    media = get_object_or_404(Media.objects.select_related('sublocation', 'city', 'state', 'country'), id=media_id)
+    media = get_object_or_404(Media.objects.select_related('location', 'city', 'state', 'country'), id=media_id)
 
     # Nullify forms.
     form, admin_form = None, None
@@ -389,7 +389,7 @@ def tour_page(request, slug):
     tour = get_object_or_404(Tour, slug=slug)
     # TODO: Think better how references will be managed.
     references = tour.references.all()
-    entries = tour.media.select_related('sublocation', 'city', 'state', 'country')
+    entries = tour.media.select_related('location', 'city', 'state', 'country')
 
     # Get first thumbnail.
     try:
@@ -399,7 +399,7 @@ def tour_page(request, slug):
 
     # Extract media metadata.
     # TODO: Do I really need to get all of these?
-    authors, taxa, sublocations, cities, states, countries, tags = extract_set(entries)
+    authors, taxa, locations, cities, states, countries, tags = extract_set(entries)
     # Only using authors/taxa/tags for meta keywords.
 
     context = {
@@ -430,12 +430,12 @@ def taxa_page(request):
 
 def places_page(request):
     '''Página mostrando locais de maneira organizada.'''
-    sublocations = Sublocation.objects.order_by('name')
+    locations = Location.objects.order_by('name')
     cities = City.objects.order_by('name')
     states = State.objects.order_by('name')
     countries = Country.objects.order_by('name')
     context = {
-        'sublocations': sublocations,
+        'locations': locations,
         'cities': cities,
         'states': states,
         'countries': countries,
@@ -534,12 +534,12 @@ def extract_set(media_list):
     authors = Person.objects.filter(id__in=media_list.values_list('person', flat=True))
     tags = Tag.objects.filter(id__in=media_list.values_list('tag', flat=True))
     taxa = Taxon.objects.filter(id__in=media_list.values_list('taxon', flat=True))
-    sublocations = Sublocation.objects.filter(id__in=media_list.values_list('sublocation', flat=True))
+    locations = Location.objects.filter(id__in=media_list.values_list('location', flat=True))
     cities = City.objects.filter(id__in=media_list.values_list('city', flat=True))
     states = State.objects.filter(id__in=media_list.values_list('state', flat=True))
     countries = Country.objects.filter(id__in=media_list.values_list('country', flat=True))
 
-    return authors, taxa, sublocations, cities, states, countries, tags
+    return authors, taxa, locations, cities, states, countries, tags
 
 
 def add_meta(meta, field, query):

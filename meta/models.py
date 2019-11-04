@@ -43,13 +43,6 @@ class Media(models.Model):
             help_text=_('Legenda da imagem.'))
     date = models.DateTimeField(_('data'), null=True, blank=True,
             help_text=_('Data de criação da imagem.'))
-    geolocation = models.CharField(_('geolocalização'), default='',
-            max_length=25, blank=True,
-            help_text=_('Geolocalização da imagem no formato decimal.'))
-    latitude = models.CharField(_('latitude'), default='', max_length=25,
-            blank=True, help_text=_('Latitude onde a imagem foi criada.'))
-    longitude = models.CharField(_('longitude'), default='', max_length=25,
-            blank=True, help_text=_('Longitude onde a imagem foi criada.'))
     duration = models.CharField(_('duração'), max_length=20,
             default='00:00:00', blank=True,
             help_text=_('Duração do vídeo no formato HH:MM:SS.'))
@@ -57,9 +50,16 @@ class Media(models.Model):
             blank=True, help_text=_('Dimensões do vídeo original.'))
     size = models.CharField(_('tamanho'), max_length=10, default='none',
             blank=True, help_text=_('Classe de tamanho.'))
+    geolocation = models.CharField(_('geolocalização'), default='',
+            max_length=25, blank=True,
+            help_text=_('Geolocalização da imagem no formato decimal.'))
+    latitude = models.CharField(_('latitude'), default='', max_length=25,
+            blank=True, help_text=_('Latitude onde a imagem foi criada.'))
+    longitude = models.CharField(_('longitude'), default='', max_length=25,
+            blank=True, help_text=_('Longitude onde a imagem foi criada.'))
 
     # Foreign metadata
-    sublocation = models.ForeignKey('Sublocation', on_delete=models.SET_NULL,
+    location = models.ForeignKey('Location', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('local'),
             help_text=_('Localidade mostrada na imagem (ou local de coleta).'))
     city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True,
@@ -199,7 +199,7 @@ class Taxon(MPTTModel):
         ordering = ['name']
 
 
-class Sublocation(models.Model):
+class Location(models.Model):
     name = models.CharField(_('nome'), max_length=64, unique=True,
             help_text=_('Nome da localidade.'))
     slug = models.SlugField(_('slug'), max_length=64, blank=True,
@@ -209,7 +209,7 @@ class Sublocation(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('sublocation_url', args=[self.slug])
+        return reverse('location_url', args=[self.slug])
 
     class Meta:
         verbose_name = _('local')
@@ -329,7 +329,7 @@ models.signals.pre_save.connect(slug_pre_save, sender=Person)
 models.signals.pre_save.connect(slug_pre_save, sender=Tag)
 models.signals.pre_save.connect(slug_pre_save, sender=Category)
 models.signals.pre_save.connect(slug_pre_save, sender=Taxon)
-models.signals.pre_save.connect(slug_pre_save, sender=Sublocation)
+models.signals.pre_save.connect(slug_pre_save, sender=Location)
 models.signals.pre_save.connect(slug_pre_save, sender=City)
 models.signals.pre_save.connect(slug_pre_save, sender=State)
 models.signals.pre_save.connect(slug_pre_save, sender=Country)

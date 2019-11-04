@@ -3,7 +3,7 @@
 
 <div id="ajaxcontent">
 {% if media %}
-<article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} size-{{ media.size }} {% show_set sources 'source-' '' ' ' 'slug' %} sublocation-{{ media.sublocation.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }}">
+<article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} size-{{ media.size }} {% show_set sources 'source-' '' ' ' 'slug' %} location-{{ media.location.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }}">
 <header class="span-16 last">
 <h1>{{ media.title }}</h1>
 </header>
@@ -72,9 +72,9 @@
     <br>
     {% endif %}
     {% comment %} Retirar o "name" desnecessário... {% endcomment %}
-    {% if media.sublocation.name or media.city.name or media.state.name or media.country.name %}
+    {% if media.location.name or media.city.name or media.state.name or media.country.name %}
     <strong>{% trans 'Local' %}:</strong> 
-    {% if media.sublocation.name %}<span id="sublocation">{{ media.sublocation }},</span>{% endif %}
+    {% if media.location.name %}<span id="location">{{ media.location }},</span>{% endif %}
     {% if media.city.name %}<span id="city">{{ media.city }},</span>{% endif %}
     {% if media.state.name %}<span id="state">{{ media.state }},</span>{% endif %}
     {% if media.country.name %}<span id="country">{{ media.country }}</span>{% endif %}

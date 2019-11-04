@@ -92,9 +92,9 @@
           <br>
           {% endif %}
 
-          {% if media.sublocation.name or media.city.name or media.state.name or media.country.name %}
+          {% if media.location.name or media.city.name or media.state.name or media.country.name %}
           <strong>{% trans 'Local' %}:</strong>
-          {% if media.sublocation.name %}<span id="sublocation">{{ media.sublocation }},</span>{% endif %}
+          {% if media.location.name %}<span id="location">{{ media.location }},</span>{% endif %}
           {% if media.city.name %}<span id="city">{{ media.city }},</span>{% endif %}
           {% if media.state.name %}<span id="state">{{ media.state }},</span>{% endif %}
           {% if media.country.name %}<span id="country">{{ media.country }}</span>{% endif %}

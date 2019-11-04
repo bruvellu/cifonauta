@@ -169,9 +169,9 @@ def show_related(context, media, form, related):
         else:
             rel_media = ''
 
-    elif related == 'sublocation':
-        if media.sublocation:
-            qobj = Q(sublocation=media.sublocation_id)
+    elif related == 'location':
+        if media.location:
+            qobj = Q(location=media.location_id)
             query = mediaque(media, qobj)
             rel_media, relative = slicer(query, media.id)
         else:
@@ -224,7 +224,7 @@ def show_stats():
     videos = Media.objects.filter(is_public=True, datatype='video').count()
     tags = Tag.objects.count()
     spp = Taxon.objects.filter(rank_en='Species').count()
-    locations = Sublocation.objects.count()
+    locations = Location.objects.count()
     return {'photos': photos, 'videos': videos, 'spp': spp, 'locations': locations, 'tags': tags}
 
 @register.inclusion_tag('tree.html')

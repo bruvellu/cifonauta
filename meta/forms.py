@@ -10,7 +10,7 @@ METAS = (
         ('person', _('autor')),
         ('taxon', _('táxon')),
         ('size', _('tamanho')),
-        ('sublocation', _('local')),
+        ('location', _('local')),
         ('city', _('cidade')),
         ('state', _('estado')),
         ('country', _('país')),
@@ -66,7 +66,7 @@ class DisplayForm(forms.Form):
 
     Person = apps.get_model('meta', 'Person')
     Tag = apps.get_model('meta', 'Tag')
-    Sublocation = apps.get_model('meta', 'Sublocation')
+    Location = apps.get_model('meta', 'Location')
     City = apps.get_model('meta', 'City')
     State = apps.get_model('meta', 'State')
     Country = apps.get_model('meta', 'Country')
@@ -92,7 +92,7 @@ class DisplayForm(forms.Form):
     tag = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(),
             widget=forms.CheckboxSelectMultiple(), required=False,
             label=_('Marcadores'))
-    sublocation = forms.ModelMultipleChoiceField(queryset=Sublocation.objects.all(),
+    location = forms.ModelMultipleChoiceField(queryset=Location.objects.all(),
             widget=forms.CheckboxSelectMultiple(), required=False,
             label=_('Localidades'))
     city = forms.ModelMultipleChoiceField(queryset=City.objects.all(),

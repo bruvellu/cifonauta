@@ -25,9 +25,9 @@
     {% include 'fino.html' with actives=queries.size inactives=data.size field='size' %}
 {% endif %}
 
-{% if data.sublocation or queries.sublocation %}
+{% if data.location or queries.location %}
 <h3>{% trans 'Local' %}</h3>
-    {% include 'fino.html' with actives=queries.sublocation inactives=data.sublocation field='sublocation' %}
+    {% include 'fino.html' with actives=queries.location inactives=data.location field='location' %}
 {% endif %}
 
 {% if data.city or queries.city %}

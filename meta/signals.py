@@ -154,11 +154,11 @@ def update_count(signal, instance, sender, **kwargs):
         instance.size.counter()
     except:
         print('Size == NULL (id={})'.format(instance.id))
-    # Sublocation
+    # Location
     try:
-        instance.sublocation.counter()
+        instance.location.counter()
     except:
-        print('Sublocation == NULL (id={})'.format(instance.id))
+        print('Location == NULL (id={})'.format(instance.id))
     # City
     try:
         instance.city.counter()

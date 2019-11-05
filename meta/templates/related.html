@@ -24,7 +24,7 @@
     <ul class="rel-thumbs">
         {% for media in rel_media %}
             {% if media.id == current.id %}
-            <li class="shadow size-{{ media.size.slug }} current">
+            <li class="shadow size-{{ media.size }} current">
 
             {% thumbnail media.coverpath "120x90" crop="center" as im %}
             <img src="{{ im.url }}" alt="{{ media.title }}" title="{{ media.title }}" />
@@ -41,7 +41,7 @@
 
             </li>
             {% else %}
-            <li class="shadow size-{{ media.size.slug }}">
+            <li class="shadow size-{{ media.size }}">
             {% include 'thumb.html' %}
             </li>
             {% endif %}

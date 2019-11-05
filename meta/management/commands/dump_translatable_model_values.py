@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from meta.models import Media, Tag, TagCategory, Taxon, City, State, Country, Tour, Size
+from meta.models import Media, Tag, Category, Taxon, City, State, Country, Tour
 from django.utils import translation
 
 # Model fields that need translation.
@@ -7,12 +7,11 @@ all_fields = [
         (Media, ['title', 'caption']),
         (Taxon, ['rank']),
         (Tag, ['name', 'description']),
-        (TagCategory, ['name', 'description']),
+        (Category, ['name', 'description']),
         (City, ['name']),
         (State, ['name']),
         (Country, ['name']),
         (Tour, ['name', 'description']),
-        (Size, ['description'])
         ]
 
 

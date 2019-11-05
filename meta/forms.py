@@ -10,7 +10,7 @@ METAS = (
         ('person', _('autor')),
         ('taxon', _('táxon')),
         ('size', _('tamanho')),
-        ('sublocation', _('local')),
+        ('location', _('local')),
         ('city', _('cidade')),
         ('state', _('estado')),
         ('country', _('país')),
@@ -64,10 +64,9 @@ class RelatedForm(forms.Form):
 class DisplayForm(forms.Form):
     '''Parameters to alter search results.'''
 
-    Size = apps.get_model('meta', 'Size')
     Person = apps.get_model('meta', 'Person')
     Tag = apps.get_model('meta', 'Tag')
-    Sublocation = apps.get_model('meta', 'Sublocation')
+    Location = apps.get_model('meta', 'Location')
     City = apps.get_model('meta', 'City')
     State = apps.get_model('meta', 'State')
     Country = apps.get_model('meta', 'Country')
@@ -87,16 +86,13 @@ class DisplayForm(forms.Form):
             label=_('Somente destaques'))
     operator = forms.ChoiceField(required=False, choices=OPERATORS,
             initial='and', label=_('Operador'))
-    size = forms.ModelMultipleChoiceField(queryset=Size.objects.all(),
-            widget=forms.CheckboxSelectMultiple(), required=False,
-            label=_('Tamanhos'))
     author = forms.ModelMultipleChoiceField(queryset=Person.objects.all(),
             widget=forms.CheckboxSelectMultiple(), required=False,
             label=_('Autores'))
     tag = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(),
             widget=forms.CheckboxSelectMultiple(), required=False,
             label=_('Marcadores'))
-    sublocation = forms.ModelMultipleChoiceField(queryset=Sublocation.objects.all(),
+    location = forms.ModelMultipleChoiceField(queryset=Location.objects.all(),
             widget=forms.CheckboxSelectMultiple(), required=False,
             label=_('Localidades'))
     city = forms.ModelMultipleChoiceField(queryset=City.objects.all(),

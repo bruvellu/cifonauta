@@ -43,6 +43,13 @@ class Media(models.Model):
             help_text=_('Legenda da imagem.'))
     date = models.DateTimeField(_('data'), null=True, blank=True,
             help_text=_('Data de criação da imagem.'))
+    duration = models.CharField(_('duração'), max_length=20,
+            default='00:00:00', blank=True,
+            help_text=_('Duração do vídeo no formato HH:MM:SS.'))
+    dimensions = models.CharField(_('dimensões'), max_length=20, default='0x0',
+            blank=True, help_text=_('Dimensões do vídeo original.'))
+    size = models.CharField(_('tamanho'), max_length=10, default='none',
+            blank=True, help_text=_('Classe de tamanho.'))
     geolocation = models.CharField(_('geolocalização'), default='',
             max_length=25, blank=True,
             help_text=_('Geolocalização da imagem no formato decimal.'))
@@ -50,17 +57,9 @@ class Media(models.Model):
             blank=True, help_text=_('Latitude onde a imagem foi criada.'))
     longitude = models.CharField(_('longitude'), default='', max_length=25,
             blank=True, help_text=_('Longitude onde a imagem foi criada.'))
-    duration = models.CharField(_('duração'), max_length=20,
-            default='00:00:00', blank=True,
-            help_text=_('Duração do vídeo no formato HH:MM:SS.'))
-    dimensions = models.CharField(_('dimensões'), max_length=20, default='0x0',
-            blank=True, help_text=_('Dimensões do vídeo original.'))
 
     # Foreign metadata
-    size = models.ForeignKey('Size', on_delete=models.SET_NULL, null=True,
-            blank=True, verbose_name=_('tamanho'),
-            help_text=_('Classe de tamanho do organismo na imagem.'))
-    sublocation = models.ForeignKey('Sublocation', on_delete=models.SET_NULL,
+    location = models.ForeignKey('Location', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('local'),
             help_text=_('Localidade mostrada na imagem (ou local de coleta).'))
     city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True,
@@ -118,7 +117,7 @@ class Tag(models.Model):
     media = models.ManyToManyField('Media', blank=True,
             verbose_name=_('fotos'),
             help_text=_('Fotos associadas a este marcador.'))
-    parent = models.ForeignKey('TagCategory', on_delete=models.SET_NULL,
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL,
             null=True, blank=True, related_name='tags',
             verbose_name=_('categoria'),
             help_text=_('Categoria a que este marcador pertence.'))
@@ -135,7 +134,7 @@ class Tag(models.Model):
         ordering = ['name']
 
 
-class TagCategory(models.Model):
+class Category(models.Model):
     name = models.CharField(_('nome'), max_length=64, unique=True,
             help_text=_('Nome da categoria de marcadores.'))
     slug = models.SlugField(_('slug'), max_length=64, default='', blank=True,
@@ -200,46 +199,7 @@ class Taxon(MPTTModel):
         ordering = ['name']
 
 
-class Size(models.Model):
-
-    NANO = '<0,1 mm'
-    MICRO = '0,1 - 1,0 mm'
-    MILI = '1,0 - 10 mm'
-    CENTI = '10 - 100 mm'
-    MACRO = '>100 mm'
-    
-    SIZE_CHOICES = [
-            (NANO, '<0,1 mm'),
-            (MICRO, '0,1 - 1,0 mm'),
-            (MILI, '1,0 - 10 mm'),
-            (CENTI, '10 - 100 mm'),
-            (MACRO, '>100 mm')
-            ]
-
-    name = models.CharField(_('nome'), max_length=32, unique=True,
-            choices=SIZE_CHOICES, help_text=_('Nome da classe de tamanho.'))
-    slug = models.SlugField(_('slug'), max_length=32, blank=True,
-            help_text=_('Slug do nome da classe de tamanho.'))
-    description = models.TextField(_('descrição'), blank=True,
-            help_text=_('Descrição da classe de tamanho.'))
-
-    # Deprecated
-    position = models.PositiveIntegerField(_('posição'), default=0,
-            help_text=_('Define ordem das classes de tamanho em um queryset.'))
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse('size_url', args=[self.slug])
-
-    class Meta:
-        verbose_name = _('tamanho')
-        verbose_name_plural = _('tamanhos')
-        ordering = ['position']
-
-
-class Sublocation(models.Model):
+class Location(models.Model):
     name = models.CharField(_('nome'), max_length=64, unique=True,
             help_text=_('Nome da localidade.'))
     slug = models.SlugField(_('slug'), max_length=64, blank=True,
@@ -249,7 +209,7 @@ class Sublocation(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('sublocation_url', args=[self.slug])
+        return reverse('location_url', args=[self.slug])
 
     class Meta:
         verbose_name = _('local')
@@ -367,10 +327,9 @@ class Tour(models.Model):
 # Slugify before saving.
 models.signals.pre_save.connect(slug_pre_save, sender=Person)
 models.signals.pre_save.connect(slug_pre_save, sender=Tag)
-models.signals.pre_save.connect(slug_pre_save, sender=TagCategory)
+models.signals.pre_save.connect(slug_pre_save, sender=Category)
 models.signals.pre_save.connect(slug_pre_save, sender=Taxon)
-models.signals.pre_save.connect(slug_pre_save, sender=Size)
-models.signals.pre_save.connect(slug_pre_save, sender=Sublocation)
+models.signals.pre_save.connect(slug_pre_save, sender=Location)
 models.signals.pre_save.connect(slug_pre_save, sender=City)
 models.signals.pre_save.connect(slug_pre_save, sender=State)
 models.signals.pre_save.connect(slug_pre_save, sender=Country)

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-29 12:49-0300\n"
-"PO-Revision-Date: 2019-09-29 12:52-0306\n"
+"POT-Creation-Date: 2019-10-06 14:25-0300\n"
+"PO-Revision-Date: 2019-10-01 19:38-0306\n"
 "Last-Translator: b'Bruno Vellutini <organelas@gmail.com>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -460,7 +460,7 @@ msgstr "Bryozoan"
 #: values_for_translation.py:906 values_for_translation.py:908
 #: values_for_translation.py:910 values_for_translation.py:912
 #: values_for_translation.py:914 values_for_translation.py:916
-#: values_for_translation.py:918 values_for_translation.py:38914
+#: values_for_translation.py:918 values_for_translation.py:38930
 msgid "Baía do Araçá"
 msgstr "Araçá Bay"
 
@@ -5263,12 +5263,12 @@ msgstr "Anfioxo - região anterior, vista dorsal"
 #: values_for_translation.py:14374 values_for_translation.py:18952
 msgid ""
 "Anfioxo - detalhe da região anterior, vista ventral, destacando os cirros - "
-"estruturas que se dispõem ao redor da boca e impedem a entrada de particulas"
-" muito grandes"
+"estruturas que se dispõem ao redor da boca e impedem a entrada de particulas "
+"muito grandes"
 msgstr ""
 "Anfioxo - detalhe da região anterior, vista ventral, destacando os cirros - "
-"estruturas que se dispõem ao redor da boca e impedem a entrada de particulas"
-" muito grandes"
+"estruturas que se dispõem ao redor da boca e impedem a entrada de particulas "
+"muito grandes"
 
 #. Translators: model=Media, field=title.
 #: values_for_translation.py:14354 values_for_translation.py:14368
@@ -5682,8 +5682,7 @@ msgstr "Embryo during cleavages"
 #: values_for_translation.py:16040 values_for_translation.py:16070
 #: values_for_translation.py:16076 values_for_translation.py:16088
 #: values_for_translation.py:16154 values_for_translation.py:16258
-msgid ""
-"Células ectodérmicas durante formação da blástula em uma bolacha-do-mar"
+msgid "Células ectodérmicas durante formação da blástula em uma bolacha-do-mar"
 msgstr ""
 "Células ectodérmicas durante formação da blástula em uma bolacha-do-mar"
 
@@ -5811,8 +5810,7 @@ msgstr "Ectodermic cells during blastula formation"
 #: values_for_translation.py:15874 values_for_translation.py:15948
 #: values_for_translation.py:15978 values_for_translation.py:16128
 #: values_for_translation.py:16164 values_for_translation.py:16178
-msgid ""
-"Células ectodérmicas durante formação da blástula de uma bolacha-do-mar"
+msgid "Células ectodérmicas durante formação da blástula de uma bolacha-do-mar"
 msgstr ""
 "Células ectodérmicas durante formação da blástula de uma bolacha-do-mar"
 
@@ -6658,8 +6656,7 @@ msgstr ""
 
 #. Translators: model=Media, field=title.
 #: values_for_translation.py:17426
-msgid ""
-"Hidrozoário colonial flutuante, vista aboral - detalhe do disco central"
+msgid "Hidrozoário colonial flutuante, vista aboral - detalhe do disco central"
 msgstr ""
 "Hidrozoário colonial flutuante, vista aboral - detalhe do disco central"
 
@@ -6996,7 +6993,7 @@ msgstr "Clam"
 #. Translators: model=Media, field=title.
 #: values_for_translation.py:18732 values_for_translation.py:18734
 msgid "Marcas do bivalve Macoma em sedimento arenolamoso na região entremarés"
-msgstr ""
+msgstr "Marks made by the bivalve Macoma into the sand and mud bottom"
 
 #. Translators: model=Media, field=title.
 #: values_for_translation.py:18760 values_for_translation.py:18762
@@ -8401,8 +8398,8 @@ msgid ""
 "Generalista em se tratando de alimentação, o bem-te-vi patrulha os costões "
 "rochosos das zonas litorâneas a procura de pequenos invertebrados."
 msgstr ""
-"The Great Kiskadee is an omnivorous bird, catching insects, fruits and small"
-" vertebrates (fishes) and invertebrates at the sea shore."
+"The Great Kiskadee is an omnivorous bird, catching insects, fruits and small "
+"vertebrates (fishes) and invertebrates at the sea shore."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:24772 values_for_translation.py:24774
@@ -8469,12 +8466,12 @@ msgstr ""
 #: values_for_translation.py:24972 values_for_translation.py:24984
 #: values_for_translation.py:24990 values_for_translation.py:25010
 msgid ""
-"O talha-mar, também conhecido como corta-água ou corta-mar, pesca geralmente"
-" durante o crepúsculo, voando muito próximo à água, com a parte inferior do "
+"O talha-mar, também conhecido como corta-água ou corta-mar, pesca geralmente "
+"durante o crepúsculo, voando muito próximo à água, com a parte inferior do "
 "bico cortando a superfície da água."
 msgstr ""
-"The black skimmer flies very close to the water, with the lower beak cutting"
-" the water surface."
+"The black skimmer flies very close to the water, with the lower beak cutting "
+"the water surface."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:24794 values_for_translation.py:24802
@@ -8522,8 +8519,8 @@ msgid ""
 "O bivalve Anomalocardia brasiliana vivem em fundos areno-lodosos, sendo "
 "comestível e de ampla ocorrência na costa brasileira."
 msgstr ""
-"The edible bivalve Anomalocardia brasiliana inhabit sand flats, being common"
-" along the Brazilian coastline."
+"The edible bivalve Anomalocardia brasiliana inhabit sand flats, being common "
+"along the Brazilian coastline."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:25036 values_for_translation.py:25040
@@ -8579,14 +8576,13 @@ msgstr "Bryozoan colony (Bugula) on the seagrass Halodule emarginata."
 #: values_for_translation.py:33132 values_for_translation.py:33134
 msgid ""
 "Zoobotryum é comum no litoral norte de São Paulo, sobretudo em regiões "
-"portuárias e abrigadas. Forma colônias arborecentes longas e esbranquiçadas,"
-" que mais se parecem com algas. Tem sido considerada uma espécie invasora em"
-" várias partes do mundo."
+"portuárias e abrigadas. Forma colônias arborecentes longas e esbranquiçadas, "
+"que mais se parecem com algas. Tem sido considerada uma espécie invasora em "
+"várias partes do mundo."
 msgstr ""
 "Zoobotryum is common on the northern coast of São Paulo, especially in "
 "sheltered port areas. Their colonies are branched and whitish and resemble "
-"algae. It has been considered an invasive species in many parts of the "
-"world."
+"algae. It has been considered an invasive species in many parts of the world."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:25102 values_for_translation.py:25108
@@ -8616,8 +8612,7 @@ msgstr "Bryozoan colony (Bugula) on a crab."
 msgid ""
 "Colônias incrustantes são comuns em seixos e rochas da região entremares."
 msgstr ""
-"Encrusting colonies are common in pebbles and rocks in the intertidal "
-"region."
+"Encrusting colonies are common in pebbles and rocks in the intertidal region."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:25166 values_for_translation.py:25186
@@ -8809,8 +8804,7 @@ msgstr "Sandy-muddy bottom in the intertidal zone during low tide."
 msgid ""
 "Vista geral durante maré enchente; ao fundo núcleo de manguezal localizado "
 "na parte superior da região entremarés."
-msgstr ""
-"General view during flood tide; in the background, the mangrove trees."
+msgstr "General view during flood tide; in the background, the mangrove trees."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:25388
@@ -8850,8 +8844,8 @@ msgstr "View of the central region of the bay."
 #: values_for_translation.py:25452
 msgid "Vista do costão rochosos próximo à ponta do Araçá."
 msgstr ""
-" Vista do costão rochosos próximo à ponta do Araçá."
-"                                                                                                          "
+" Vista do costão rochosos próximo à ponta do "
+"Araçá.                                                                                                          "
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:25490
@@ -8872,8 +8866,8 @@ msgstr "View of the Pedroso island."
 #: values_for_translation.py:25558 values_for_translation.py:25560
 #: values_for_translation.py:25564 values_for_translation.py:25566
 msgid ""
-"Este estranho animal- na verdade uma colônia de pólipos -  é comum na região"
-" entremares, podendo estar parcialmente ou totalmente coberto por sedimento "
+"Este estranho animal- na verdade uma colônia de pólipos -  é comum na região "
+"entremares, podendo estar parcialmente ou totalmente coberto por sedimento "
 "durante a maré baixa."
 msgstr ""
 "The sea pansy is a collection of polyps having different forms and "
@@ -8887,8 +8881,8 @@ msgstr ""
 #: values_for_translation.py:25562 values_for_translation.py:27948
 msgid ""
 "Dynamena crisioides é uma das espécies diminutas de invertebrados que "
-"habitam a região entremarés e suportam a exposição ao ar e ao sol durante as"
-" marés baixas."
+"habitam a região entremarés e suportam a exposição ao ar e ao sol durante as "
+"marés baixas."
 msgstr ""
 "Dynamena crisioides is one of the species restricted to intertidal habitats "
 "along tropical and subtropical coasts."
@@ -8924,6 +8918,9 @@ msgid ""
 "As cracas são crustáceos exclusivamente marinhos que geralmente vivem "
 "fixados a rochas, conchas, raízes, corais etc."
 msgstr ""
+"Barnacles are an entirely marine group of crustaceans with a sessile way of "
+"life, attached permanently to a hard substrate, such as rocks, shells, "
+"corals, roots etc."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:25604 values_for_translation.py:25666
@@ -8973,8 +8970,8 @@ msgstr "Crab"
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:25628 values_for_translation.py:25640
 msgid ""
-"O caranguejo-aranha possui pernas muito longas e finas, corpo triangular e e"
-" estreito anteriormente, formando um rostro."
+"O caranguejo-aranha possui pernas muito longas e finas, corpo triangular e e "
+"estreito anteriormente, formando um rostro."
 msgstr ""
 "The spider crab has very long and thin legs and a  narrow triangular body "
 "with a long rostrum."
@@ -8982,8 +8979,8 @@ msgstr ""
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:25630 values_for_translation.py:25678
 msgid ""
-"O siri-azul é uma espécie comum no litoral de São Paulo, ocorrendo próximo a"
-" manguezais e regiões estuarinas. Comercialmente importante para o ser "
+"O siri-azul é uma espécie comum no litoral de São Paulo, ocorrendo próximo a "
+"manguezais e regiões estuarinas. Comercialmente importante para o ser "
 "humano, é também recurso alimentar para outros organismos aquáticos e aves "
 "litorâneas."
 msgstr ""
@@ -8998,7 +8995,7 @@ msgid ""
 "As lepas são crustáceos cirrípedes como as cracas, distinguindo-se destas "
 "pela presença de um pedúnculo que as fixa a objetos flutuantes ou animais "
 "pelágicos."
-msgstr ""
+msgstr "Pedunculate barnacle"
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:25738 values_for_translation.py:25744
@@ -9049,16 +9046,16 @@ msgid ""
 "resistentes. A coloração dos espinhos e carapaça varia do marrom escuro ao "
 "negro. Conhecida popularmente pelo nome de \"pindá\", é  uma espécie muito "
 "abundante em nossa costa, predominantemente litorânea e freqüentemente "
-"encontrada  dentro de  locas escavadas em rochas, em regiões de mar calmo ou"
-" batido. Alimenta-se de algas e animais incrustrantes. Ocorre desde a "
-"Flórida até o sul do Brasil, bem como em regiões costeiras de ilhas, tais "
-"como Antilhas, Bermudas, Ascenção, Santa Helena e Angola."
+"encontrada  dentro de  locas escavadas em rochas, em regiões de mar calmo ou "
+"batido. Alimenta-se de algas e animais incrustrantes. Ocorre desde a Flórida "
+"até o sul do Brasil, bem como em regiões costeiras de ilhas, tais como "
+"Antilhas, Bermudas, Ascenção, Santa Helena e Angola."
 msgstr ""
 "The black sea urchin spines has relatively thick and very resistant spines. "
 "The coloration of the spines and carapace varies from dark brown to black. "
 "Known locally as “pindá” it is an abundant species on the Brazilian coast, "
-"coastal, found predominantly in holes bore into the rocks. It feeds on algae"
-" and encrusting animals. Occurs from Florida to southern Brazil, as well as "
+"coastal, found predominantly in holes bore into the rocks. It feeds on algae "
+"and encrusting animals. Occurs from Florida to southern Brazil, as well as "
 "West Indies, Bermuda, Ascension Island, St Helena and Angola."
 
 #. Translators: model=Media, field=caption.
@@ -9074,12 +9071,12 @@ msgid ""
 "comumente alcançando mais de 1 metro de comprimento. Habitam, "
 "preferencialmente, fundos rasos, sendo 5 espécies registradas em São Paulo. "
 "Balanoglossus gigas, uma das maiores espécies do grupo, podendo atingir 2,5 "
-"metros de comprimento, está potencialmente ameaçada no litoral de São Paulo,"
-" devido à poluição das águas e do sedimento e ao assoreamento e aterramento "
+"metros de comprimento, está potencialmente ameaçada no litoral de São Paulo, "
+"devido à poluição das águas e do sedimento e ao assoreamento e aterramento "
 "das praias.\" (Rodrigues, 1999). Os excrementos de B. gigas são facilmente "
 "visualizados na superfiície descoberta da Baía do Araçá durante as marés "
 "baixas."
-msgstr ""
+msgstr "Acorn worm (enteropneust)  - marine burrowing wormlike invertebrate."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:25850 values_for_translation.py:25856
@@ -9103,8 +9100,7 @@ msgstr "Sargasso seaweed."
 #: values_for_translation.py:25920 values_for_translation.py:25924
 #: values_for_translation.py:25928 values_for_translation.py:26204
 #: values_for_translation.py:26220
-msgid ""
-"                                                                                                                     "
+msgid "                                                                                                                     "
 msgstr ""
 
 #. Translators: model=Media, field=caption.
@@ -9309,8 +9305,7 @@ msgstr "São Sebastião Channel."
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:26186
 msgid ""
-"Vista do Canal de São Sebastião - Terminal Marítimo Almirante Barroso - "
-"TEBAR"
+"Vista do Canal de São Sebastião - Terminal Marítimo Almirante Barroso - TEBAR"
 msgstr ""
 "View of São Sebastião channel - Almirante Barroso Petroliferous Terminal "
 "(TEBAR)."
@@ -9874,7 +9869,7 @@ msgstr "Adult medusa. Detail of gonads."
 msgid ""
 "Colônias sobre o hidrozoário Lytocarpus filamentosus (Lamarck, 1816), 7 "
 "December 1903, SAM H34."
-msgstr ""
+msgstr "Colony on the hydroid Lytocarpus filamentosus"
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:27046
@@ -9894,8 +9889,7 @@ msgstr "Hydranth, 82x."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:27062
-msgid ""
-"Colônia crescendo sobre o sertulariídeo Sertularia marginata. Hidrante."
+msgid "Colônia crescendo sobre o sertulariídeo Sertularia marginata. Hidrante."
 msgstr "Colony on the hydroid Sertularia marginata. Hydranth."
 
 #. Translators: model=Media, field=caption.
@@ -10000,8 +9994,8 @@ msgstr "Adult medusae. Detail of umbrella margin."
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:27178
 msgid ""
-"Medusa adulta. Detalhe do manúbrio, massa de células vacuoladas e gônadas em"
-" vista lateral."
+"Medusa adulta. Detalhe do manúbrio, massa de células vacuoladas e gônadas em "
+"vista lateral."
 msgstr "Adult medusa."
 
 #. Translators: model=Media, field=caption.
@@ -10619,19 +10613,19 @@ msgstr "Polyp with medusa bud."
 #: values_for_translation.py:33100 values_for_translation.py:33102
 #: values_for_translation.py:33104
 msgid ""
-"A Porpita é um hidrozoário colonial que vive flutuando na superfície do mar."
-" Os pólipos estão arranjados concentricamente na superfície inferior de um "
-"disco central quitinoso. Há um pólipo grande central (gastrozoóide) e ao seu"
-" redor inúmeros gastro-gonozoóides, que são responsáveis pela ingestão de "
+"A Porpita é um hidrozoário colonial que vive flutuando na superfície do mar. "
+"Os pólipos estão arranjados concentricamente na superfície inferior de um "
+"disco central quitinoso. Há um pólipo grande central (gastrozoóide) e ao seu "
+"redor inúmeros gastro-gonozoóides, que são responsáveis pela ingestão de "
 "alimento e produção de medusas. Mais externamente, se distribuem os pólipos "
 "responsáveis pela captura de alimento e defesa, os dactilozoóides."
 msgstr ""
-"Porpita is a colonial hydrozoan which lives floating on the sea surface. The"
-" polyps are arranged concentrically on the lower surface of a hard, "
-"chitinous central disk. There is a large central polyp (gastrozooid) around "
-"of which are arranged numerous gastro-gonozoids, polyps responsible for food"
-" intake and production of jellyfish. The dactilozooids are the polyps "
-"responsible for capturing food and defense, being located more externally."
+"Porpita is a colonial hydrozoan which lives floating on the sea surface. The "
+"polyps are arranged concentrically on the lower surface of a hard, chitinous "
+"central disk. There is a large central polyp (gastrozooid) around of which "
+"are arranged numerous gastro-gonozoids, polyps responsible for food intake "
+"and production of jellyfish. The dactilozooids are the polyps responsible "
+"for capturing food and defense, being located more externally."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:27950 values_for_translation.py:27954
@@ -10984,8 +10978,7 @@ msgid ""
 "Exemplar adulto em vista lateral. Detalhe das papiplas do corpo e pés "
 "ambulacrais."
 msgstr ""
-"Adult specimen in lateral view. Deetail of body papillae and ambulacral "
-"feet."
+"Adult specimen in lateral view. Deetail of body papillae and ambulacral feet."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:29022 values_for_translation.py:29512
@@ -11222,11 +11215,11 @@ msgstr "Adult in aboral view."
 #: values_for_translation.py:29456 values_for_translation.py:34524
 #: values_for_translation.py:34528 values_for_translation.py:34532
 msgid ""
-"Adulto em vista aboral - detalhe da superfície do corpo, detacando espinhos,"
-" pedicelárias e pés ambulacrais."
+"Adulto em vista aboral - detalhe da superfície do corpo, detacando espinhos, "
+"pedicelárias e pés ambulacrais."
 msgstr ""
-"Adulto em vista aboral - detalhe da superfície do corpo, detacando espinhos,"
-" pedicelárias e pés ambulacrais."
+"Adulto em vista aboral - detalhe da superfície do corpo, detacando espinhos, "
+"pedicelárias e pés ambulacrais."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:29462 values_for_translation.py:29464
@@ -11312,8 +11305,7 @@ msgstr "Pentacrinoid larva of a feather star on a red alga."
 #: values_for_translation.py:29670 values_for_translation.py:29672
 #: values_for_translation.py:29674 values_for_translation.py:29676
 #: values_for_translation.py:29678
-msgid ""
-"Pentacrinoid larva of a feather star on a hydroid (Eudendrium carneum)."
+msgid "Pentacrinoid larva of a feather star on a hydroid (Eudendrium carneum)."
 msgstr ""
 "Pentacrinoid larva of a feather star on a hydroid (Eudendrium carneum)."
 
@@ -11604,8 +11596,8 @@ msgstr ""
 "The Echiura, or spoon worms, have a pear shaped, non-segmented body and a "
 "large and non-retractile proboscis. In the anterior ventral region there is "
 "a pair of setae or hooks. They live in burrows in sand, mud, corals and "
-"coral crevices. Some species are found inside the tests of dead sand dollars"
-" and between the shells of dead bivalves.  There is strong evidence that "
+"coral crevices. Some species are found inside the tests of dead sand dollars "
+"and between the shells of dead bivalves.  There is strong evidence that "
 "echiurans are in fact modified annelids."
 
 #. Translators: model=Media, field=caption.
@@ -11738,8 +11730,7 @@ msgstr "Distal introvert."
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:30602
 msgid ""
-"Região distal do introverte - coroa de tentáculos e ganchos em forma de "
-"cone."
+"Região distal do introverte - coroa de tentáculos e ganchos em forma de cone."
 msgstr "Distal introvert showing tentacular crown and conical hooks."
 
 #. Translators: model=Media, field=caption.
@@ -11930,12 +11921,12 @@ msgid ""
 "corais, conchas e algas, sendo comensais de muitas espécies de "
 "invertebrados, como esponjas, poliquetas, sipuncúlidos. São frequentemente "
 "encontrados dentro dos tubos e galerias de seus hospedeiros. Eles são muito "
-"parecidos com alguns briozoários e hidrozoários pelo aspecto geral e hábito."
-" Os indivíduos são formados basicamente por uma região distal superior, "
-"denominada cálice e que possui uma coroa de tentáculos ciliados, e uma haste"
-" denominada pedúnculo, na qual o cálice é sustentado; o pedúnculo pode ser "
-"preso diretamente ao substrato através de uma estrutura dilatada, denominada"
-" pé e característico das espécies solitárias, ou através de estolões nas "
+"parecidos com alguns briozoários e hidrozoários pelo aspecto geral e hábito. "
+"Os indivíduos são formados basicamente por uma região distal superior, "
+"denominada cálice e que possui uma coroa de tentáculos ciliados, e uma haste "
+"denominada pedúnculo, na qual o cálice é sustentado; o pedúnculo pode ser "
+"preso diretamente ao substrato através de uma estrutura dilatada, denominada "
+"pé e característico das espécies solitárias, ou através de estolões nas "
 "espécies coloniais."
 msgstr ""
 "Os Entoprocta (=Kamptozoa) compreendem um filo de animais invertebrados "
@@ -11947,18 +11938,18 @@ msgstr ""
 "corais, conchas e algas, sendo comensais de muitas espécies de "
 "invertebrados, como esponjas, poliquetas, sipuncúlidos. São frequentemente "
 "encontrados dentro dos tubos e galerias de seus hospedeiros. Eles são muito "
-"parecidos com alguns briozoários e hidrozoários pelo aspecto geral e hábito."
-" Os indivíduos são formados basicamente por uma região distal superior, "
-"denominada cálice e que possui uma coroa de tentáculos ciliados, e uma haste"
-" denominada pedúnculo, na qual o cálice é sustentado; o pedúnculo pode ser "
-"preso diretamente ao substrato através de uma estrutura dilatada, denominada"
-" pé e característico das espécies solitárias, ou através de estolões nas "
+"parecidos com alguns briozoários e hidrozoários pelo aspecto geral e hábito. "
+"Os indivíduos são formados basicamente por uma região distal superior, "
+"denominada cálice e que possui uma coroa de tentáculos ciliados, e uma haste "
+"denominada pedúnculo, na qual o cálice é sustentado; o pedúnculo pode ser "
+"preso diretamente ao substrato através de uma estrutura dilatada, denominada "
+"pé e característico das espécies solitárias, ou através de estolões nas "
 "espécies coloniais."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:31042
 msgid "disciplina diversidade e evolução 2007."
-msgstr ""
+msgstr "diversity and evolution course 2007"
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:31046
@@ -12066,9 +12057,9 @@ msgid ""
 "esquelética longitudinal. Possuem um plano corporal muito semelhante ao dos "
 "peixes, que inclui também um sistema digestivo situado ventralmente e "
 "envolvido lateralmente pela musculatura segmentar do tronco, organizada em "
-"forma de “V”. São animais exclusivamente marinhos que ocorrem desde os polos"
-" até o equador, em fundos arenosos usualmente rasos. As cerca de 30 espécies"
-" viventes são agrupadas em três gêneros. Os adultos permanecem com a parte "
+"forma de “V”. São animais exclusivamente marinhos que ocorrem desde os polos "
+"até o equador, em fundos arenosos usualmente rasos. As cerca de 30 espécies "
+"viventes são agrupadas em três gêneros. Os adultos permanecem com a parte "
 "posterior do corpo enterrada no sedimento, ficando a região anterior livre "
 "para filtrar água e, assim, obter alimento (geralmente fitoplâncton). Podem "
 "nadar, mas raramente o fazem."
@@ -12080,8 +12071,8 @@ msgstr ""
 "situated neural tube, and ventrally-situated alimentary system sandwiched "
 "laterally with myotomes (or myomeres), arranged as a series of segmented "
 "muscle blocks on each side. They are exclusively marine, inhabiting "
-"intertidal to subtidal sandy bottoms in boreal to tropical waters around the"
-" world. Recently, however, the true deep-sea species was firstly described. "
+"intertidal to subtidal sandy bottoms in boreal to tropical waters around the "
+"world. Recently, however, the true deep-sea species was firstly described. "
 "The adults have at benthic life within the superficial layer of bottom "
 "sediment, and are filter-feeders. Adults can also swim, but only rarely and "
 "sporadically."
@@ -12279,9 +12270,8 @@ msgid ""
 "Encontrado em experimento de fecundação artificial. Não sabemos se foi um "
 "desenvolvimento anormal ou se a larva estava se reproduzindo assexuadamente."
 msgstr ""
-"Found during an artificial fertilization experiment. We do not know if it is"
-" the result of abnormal development or if the larva was reproducing "
-"asexually."
+"Found during an artificial fertilization experiment. We do not know if it is "
+"the result of abnormal development or if the larva was reproducing asexually."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:31428 values_for_translation.py:31436
@@ -12417,8 +12407,7 @@ msgstr "Larva with six arms and vestibule invagination on the left side."
 msgid ""
 "Ponta dos braços antero-laterais com acúmulo de células com grânulos "
 "vermelhos."
-msgstr ""
-"Tip of antero-lateral arms with aggregates of cells with red granules."
+msgstr "Tip of antero-lateral arms with aggregates of cells with red granules."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:31520 values_for_translation.py:31632
@@ -12502,8 +12491,7 @@ msgstr "Pair of coeloms developing next to the gut in a two-arm larva."
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:31640
 msgid ""
-"Larva com 4 pares de braços e celomas estendidos ao longo do tubo "
-"digestório."
+"Larva com 4 pares de braços e celomas estendidos ao longo do tubo digestório."
 msgstr "Larva with four pairs of arms and coeloms extended along the gut."
 
 #. Translators: model=Media, field=caption.
@@ -12651,8 +12639,7 @@ msgstr "Oral ciliated band during early four-arm pluteus larva."
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:31932
 msgid ""
-"Estágio inicial com apenas 2 braços (pós-orais). Detalhe do esqueleto "
-"larval."
+"Estágio inicial com apenas 2 braços (pós-orais). Detalhe do esqueleto larval."
 msgstr "Early stage with two arms (post-oral). Detail of the larval skeleton."
 
 #. Translators: model=Media, field=caption.
@@ -12699,8 +12686,8 @@ msgstr "Anal region in a six-arm stage."
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:32028
 msgid ""
-"Estágio inicial com apenas 2 braços (pós-orais). Detalhe de um dos braços em"
-" crescimento."
+"Estágio inicial com apenas 2 braços (pós-orais). Detalhe de um dos braços em "
+"crescimento."
 msgstr "Early stage with two arms (post-oral). Detail of a growing arm."
 
 #. Translators: model=Media, field=caption.
@@ -12779,8 +12766,8 @@ msgstr "Epithelial cilia."
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:32130
 msgid ""
-"Estágio inicial com apenas 2 braços (pós-orais). Detalhe da região oral onde"
-" os braços antero-laterais estão se desenvolvendo."
+"Estágio inicial com apenas 2 braços (pós-orais). Detalhe da região oral onde "
+"os braços antero-laterais estão se desenvolvendo."
 msgstr ""
 "Early stage with only two arms (post-oral). Detail of the oral region where "
 "the antero-lateral arms are developing."
@@ -12998,8 +12985,8 @@ msgid ""
 "Ânus na superfície aboral do jovem (estrutura curva em vermelho) e bolota "
 "fecal sendo liberada."
 msgstr ""
-"Anus in the aboral surface of the juvenile (red structure) and fecal pellets"
-" being released."
+"Anus in the aboral surface of the juvenile (red structure) and fecal pellets "
+"being released."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:32236 values_for_translation.py:32280
@@ -13132,8 +13119,7 @@ msgstr ""
 #: values_for_translation.py:32702 values_for_translation.py:32704
 msgid ""
 "Blastóporo e anel de células mesenquimais secretando o esqueleto da larva."
-msgstr ""
-"Blastopore and ring of mesenchyme cells secreting the larval skeleton."
+msgstr "Blastopore and ring of mesenchyme cells secreting the larval skeleton."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:32632
@@ -13147,8 +13133,7 @@ msgstr ""
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:32634
 msgid ""
-"Estágio avançado com o arquêntero próximo da placa apical. Foco na "
-"ectoderme."
+"Estágio avançado com o arquêntero próximo da placa apical. Foco na ectoderme."
 msgstr ""
 "Advanced stage with the archenteron near the apical plate. Focus at the "
 "ectoderm."
@@ -13211,8 +13196,7 @@ msgstr "Secreting the calcareous skeleton."
 msgid ""
 "Anel de células mesenquimais durante o início da secreção do esqueleto "
 "calcário."
-msgstr ""
-"Ring of mesenchyme cells beginning to secrete the calcareous skeleton."
+msgstr "Ring of mesenchyme cells beginning to secrete the calcareous skeleton."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:32660
@@ -13319,9 +13303,9 @@ msgid ""
 "poucos óvulos que ainda não liberaram o segundo corpúsculo polar e a "
 "vesícula germinativa ainda está visível, como nesta foto."
 msgstr ""
-"Normally released eggs of this species already finished the meiotic process."
-" However, after spawning it is possible to find ovules that did not expelled"
-" the second polar body and the germinal vesicle is still visible."
+"Normally released eggs of this species already finished the meiotic process. "
+"However, after spawning it is possible to find ovules that did not expelled "
+"the second polar body and the germinal vesicle is still visible."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:32798 values_for_translation.py:32806
@@ -13438,8 +13422,8 @@ msgstr ""
 #: values_for_translation.py:32874
 msgid ""
 "Processamento em campo de placas de recrutamento. Essas placas permanecem "
-"submersas e as comunidades se desenvolvem somente na face inferior, livre do"
-" depósito de sedimento."
+"submersas e as comunidades se desenvolvem somente na face inferior, livre do "
+"depósito de sedimento."
 msgstr ""
 "Recruitment panels being processed in the field. These plates remain "
 "submerged and communities develop only on the underside, where there is no "
@@ -13464,11 +13448,11 @@ msgstr ""
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:32880
 msgid ""
-"Espécie de ascídia não identificada e que não consta das listas  de espécies"
-" da região. Não se sabe ao certo se é uma espécie rara ou um animal exótico."
+"Espécie de ascídia não identificada e que não consta das listas  de espécies "
+"da região. Não se sabe ao certo se é uma espécie rara ou um animal exótico."
 msgstr ""
-"This species of sea squirt Polyclinum sp. was not on the lists of species in"
-" the region. It is unknown if it is a rare species or an exotic animal."
+"This species of sea squirt Polyclinum sp. was not on the lists of species in "
+"the region. It is unknown if it is a rare species or an exotic animal."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:32882
@@ -13486,9 +13470,9 @@ msgid ""
 "espinhos. Fora da água, esse animal se desintegra facilmente, o que exige "
 "cuidado extremo na sua manipulação."
 msgstr ""
-"Species of sponge with fused spicules forming structures like thorns. Out of"
-" the water, this animal disintegrates easily, which requires extreme care in"
-" handling."
+"Species of sponge with fused spicules forming structures like thorns. Out of "
+"the water, this animal disintegrates easily, which requires extreme care in "
+"handling."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:32886
@@ -13498,8 +13482,8 @@ msgid ""
 "bivalves (Isognomon bicolor) e várias espécies de ascídias, esponjas e "
 "briozoários."
 msgstr ""
-"Picture that illustrates the biodiversity that can be found in an area of "
-"​​approximately 10 cm2. Among the most visible groups, bivalves (Isognomon "
+"Picture that illustrates the biodiversity that can be found in an area of ​​"
+"approximately 10 cm2. Among the most visible groups, bivalves (Isognomon "
 "bicolor) and various species of sea squirts, sponges and bryozoans are the "
 "ones that stand out."
 
@@ -13507,11 +13491,11 @@ msgstr ""
 #: values_for_translation.py:32888
 msgid ""
 "Um consumidor se alimentando da comunidade incrustante. O siri Cronius "
-"ruber, espécie competidora com o siri introduzido do indo-pacífico Charybdis"
-" hellerii."
+"ruber, espécie competidora com o siri introduzido do indo-pacífico Charybdis "
+"hellerii."
 msgstr ""
-"A consumer feeding on the fouling community, the crab Cronius ruber competes"
-" with the introduced crab Charybdis hellerii of the Indo-Pacific ."
+"A consumer feeding on the fouling community, the crab Cronius ruber competes "
+"with the introduced crab Charybdis hellerii of the Indo-Pacific ."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:32890
@@ -13522,8 +13506,8 @@ msgid ""
 "cobre e unidades controle, respectivamente."
 msgstr ""
 "Panels used to test the effect of copper-based paints in community "
-"composition. The blue and white frames delimit experimental units subject to"
-" the effects of copper and control units, respectively."
+"composition. The blue and white frames delimit experimental units subject to "
+"the effects of copper and control units, respectively."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:32892
@@ -13534,8 +13518,8 @@ msgstr "Common colonial ascidian in the marina of YCI."
 #: values_for_translation.py:32894
 msgid ""
 "Ascídia colonial que ocupa grandes extensões em paredes verticais. As "
-"ascídias são organismos filtradores que se alimentam de partículas orgânicas"
-" em suspensão. Os sifões oral e atrial, por onde a água entra e sai, "
+"ascídias são organismos filtradores que se alimentam de partículas orgânicas "
+"em suspensão. Os sifões oral e atrial, por onde a água entra e sai, "
 "respectivamente, são bem visíveis para cada zoóide."
 msgstr ""
 "Colonial ascidian occupying large extensions of vertical walls. Sea squirts "
@@ -13593,13 +13577,13 @@ msgstr "Epitoke being formed by schizogamy."
 msgid ""
 "A maioria dos foronídios apresenta desenvolvimento indireto, com a formação "
 "de uma larva planctotrófica denominada actinotroca, que passa semanas na "
-"coluna d´água até assentar no habitat do adulto, que inclui tanto substratos"
-" consolidados quanto inconsolidados, dependendo da espécie."
+"coluna d´água até assentar no habitat do adulto, que inclui tanto substratos "
+"consolidados quanto inconsolidados, dependendo da espécie."
 msgstr ""
 "Most phoronids have indirect development, with the formation of a "
 "planktotrophic larva called actinotroch. Actinotroch larvae spend weeks in "
-"the water column before settling in the habitat of the adult, which includes"
-" both consolidated and unconsolidated substrates, depending on the species."
+"the water column before settling in the habitat of the adult, which includes "
+"both consolidated and unconsolidated substrates, depending on the species."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:33320 values_for_translation.py:33326
@@ -13966,8 +13950,8 @@ msgstr "Cleaning fish."
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:33528
 msgid ""
-"Peixe-morcego durante atividade alimentar noturna (note o ilício ou \"isca\""
-" exposto sob o rostro)."
+"Peixe-morcego durante atividade alimentar noturna (note o ilício ou \"isca\" "
+"exposto sob o rostro)."
 msgstr ""
 "Batfish during nocturnal feeding activity (note the illicium or \"bait\" "
 "exposed under the rostrum)."
@@ -14599,23 +14583,42 @@ msgid ""
 "O vídeo retrata o ciclo de vida da bolacha-do-mar Clypeaster subdepressus e "
 "faz parte do meu projeto de mestrado pelo Instituto de Biociências da "
 "Universidade de São Paulo. Coletamos os adultos em fundos arenosos do Canal "
-"de São Sebastião (São Sebastião, SP, Brasil) e os induzimos a liberarem seus"
-" gametas (óvulos e espermatozóides). Fizemos a fecundação in vitro e "
+"de São Sebastião (São Sebastião, SP, Brasil) e os induzimos a liberarem seus "
+"gametas (óvulos e espermatozóides). Fizemos a fecundação in vitro e "
 "acompanhamos o desenvolvimento dos embriões no laboratório, sob microscopia "
 "de luz. Os embriões tornam-se larvas natantes, com cerca de 0,2 mm, que "
 "alimentamos com microalgas até sua metamorfose. A pequena bolacha-do-mar "
-"cresce dentro da larva. Quando os minúsculos pés e espinhos estão formados a"
-" larva afunda e sofre a metamorfose. O filhote de bolacha-do-mar reabsorve "
-"os tecidos larvais e passa a explorar seu novo habitat, entre os grãos de "
+"cresce dentro da larva. Quando os minúsculos pés e espinhos estão formados a "
+"larva afunda e sofre a metamorfose. O filhote de bolacha-do-mar reabsorve os "
+"tecidos larvais e passa a explorar seu novo habitat, entre os grãos de "
 "areia. Fizemos todas as filmagens no Centro de Biologia Marinha da "
 "Universidade de São Paulo (CEBIMar-USP), localizado em São Sebastião, SP, "
 "Brasil, litoral norte do estado de São Paulo (http://www.usp.br/cbm). Mais "
-"informações sobre este projeto podem ser encontradas no site "
-"(http://mestrado.organelas.com). Baixe a trilha sonora no site da netlabel "
-"AEROTONE (http://tinyurl.com/MyFirstTrumpet-Frerk). Este vídeo está sob uma "
-"licença Creative Commons by-nc-sa (http://creativecommons.org/licenses/by-"
-"nc-sa/2.5/br/)."
+"informações sobre este projeto podem ser encontradas no site (http://"
+"mestrado.organelas.com). Baixe a trilha sonora no site da netlabel AEROTONE "
+"(http://tinyurl.com/MyFirstTrumpet-Frerk). Este vídeo está sob uma licença "
+"Creative Commons by-nc-sa (http://creativecommons.org/licenses/by-nc-sa/2.5/"
+"br/)."
 msgstr ""
+"O vídeo retrata o ciclo de vida da bolacha-do-mar Clypeaster subdepressus e "
+"faz parte do meu projeto de mestrado pelo Instituto de Biociências da "
+"Universidade de São Paulo. Coletamos os adultos em fundos arenosos do Canal "
+"de São Sebastião (São Sebastião, SP, Brasil) e os induzimos a liberarem seus "
+"gametas (óvulos e espermatozóides). Fizemos a fecundação in vitro e "
+"acompanhamos o desenvolvimento dos embriões no laboratório, sob microscopia "
+"de luz. Os embriões tornam-se larvas natantes, com cerca de 0\t2 mm, que "
+"alimentamos com microalgas até sua metamorfose. A pequena bolacha-do-mar "
+"cresce dentro da larva. Quando os minúsculos pés e espinhos estão formados a "
+"larva afunda e sofre a metamorfose. O filhote de bolacha-do-mar reabsorve os "
+"tecidos larvais e passa a explorar seu novo habitat, entre os grãos de "
+"areia. Fizemos todas as filmagens no Centro de Biologia Marinha da "
+"Universidade de São Paulo (CEBIMar-USP), localizado em São Sebastião, SP, "
+"Brasil, litoral norte do estado de São Paulo (http://www.usp.br/cbm). Mais "
+"informações sobre este projeto podem ser encontradas no site (http://"
+"mestrado.organelas.com). Baixe a trilha sonora no site da netlabel AEROTONE "
+"(http://tinyurl.com/MyFirstTrumpet-Frerk). Este vídeo está sob uma licença "
+"Creative Commons by-nc-sa (http://creativecommons.org/licenses/by-nc-sa/2.5/"
+"br/)."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:34588 values_for_translation.py:34592
@@ -15772,346 +15775,396 @@ msgstr "species"
 
 #. Translators: model=Tag, field=name.
 #: values_for_translation.py:38600
+msgid "0,1 - 1,0 mm"
+msgstr "0.1 - 1.0 mm"
+
+#. Translators: model=Tag, field=name.
+#: values_for_translation.py:38602
+msgid "<0,1 mm"
+msgstr "<0.1 mm"
+
+#. Translators: model=Tag, field=name.
+#: values_for_translation.py:38604
+msgid ">100 mm"
+msgstr ">100 mm"
+
+#. Translators: model=Tag, field=name.
+#: values_for_translation.py:38606
+msgid "10 - 100 mm"
+msgstr "10 - 100 mm"
+
+#. Translators: model=Tag, field=name.
+#: values_for_translation.py:38608
+msgid "1,0 - 10 mm"
+msgstr "1.0 - 10 mm"
+
+#. Translators: model=Tag, field=name.
+#: values_for_translation.py:38610
 msgid "3d"
 msgstr "3d"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38602
+#: values_for_translation.py:38612
 msgid "adulto"
 msgstr "adult"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38604
+#: values_for_translation.py:38614
 msgid "água-viva"
 msgstr "jellyfish"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38606
+#: values_for_translation.py:38616
 msgid "alga"
 msgstr "alga"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38608
+#: values_for_translation.py:38618
 msgid "ameaçada de extinção"
 msgstr "risk of extinction"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38610
+#: values_for_translation.py:38620
 msgid "baixio não vegetado"
 msgstr "baixio não vegetado"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38612
+#: values_for_translation.py:38622
 msgid "banco não vegetado"
 msgstr "banco não vegetado"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38614
+#: values_for_translation.py:38624
 msgid "bentônico"
 msgstr "benthic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38616
+#: values_for_translation.py:38626
 msgid "campo claro"
 msgstr "bright field"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38618
+#: values_for_translation.py:38628
 msgid "campo escuro"
 msgstr "dark field"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38620
+#: values_for_translation.py:38630
 msgid "cebimar-usp"
 msgstr "cebimar-usp"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38622
+#: values_for_translation.py:38632
 msgid "cnidarian tree of life project"
 msgstr "cnidarian tree of life project"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38624
+#: values_for_translation.py:38634
 msgid "comensal"
 msgstr "commensal"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38626
+#: values_for_translation.py:38636
 msgid "confocal"
 msgstr "confocal"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38628
+#: values_for_translation.py:38638
+msgid "contraste de interferência diferencial"
+msgstr "Differential interference contrast"
+
+#. Translators: model=Tag, field=name.
+#: values_for_translation.py:38640
 msgid "coral"
 msgstr "coral"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38630
+#: values_for_translation.py:38642
 msgid "costão rochoso"
 msgstr "rocky-shore"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38632
+#: values_for_translation.py:38644
 msgid "demersal"
 msgstr "demersal"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38634
-msgid "dic"
-msgstr "dic"
-
-#. Translators: model=Tag, field=name.
-#: values_for_translation.py:38636
+#: values_for_translation.py:38646
 msgid "embrião"
 msgstr "embryo"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38638
+#: values_for_translation.py:38648
 msgid "entremarés"
 msgstr "intertidal"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38640
+#: values_for_translation.py:38650
 msgid "epibionte"
 msgstr "epibiotic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38642
+#: values_for_translation.py:38652
 msgid "epifauna"
 msgstr "epifauna"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38644
+#: values_for_translation.py:38654
 msgid "espécie introduzida"
 msgstr "introduced species"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38646
+#: values_for_translation.py:38656
 msgid "espécie invasora"
 msgstr "invasive species"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38648
+#: values_for_translation.py:38658
 msgid "fitoplâncton"
 msgstr "phytoplankton"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38650
+#: values_for_translation.py:38660
 msgid "gameta"
 msgstr "gamete"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38652
+#: values_for_translation.py:38662
 msgid "holótipo"
 msgstr "holotype"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38654
+#: values_for_translation.py:38664
 msgid "impregnação protargol"
 msgstr "protargol impregnation"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38656
+#: values_for_translation.py:38666
 msgid "infauna"
 msgstr "infauna"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38658
+#: values_for_translation.py:38668
 msgid "infralitoral"
 msgstr "infralittoral"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38660
+#: values_for_translation.py:38670
 msgid "interface"
 msgstr "interface"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38662
+#: values_for_translation.py:38672
 msgid "intersticial"
 msgstr "interstitial"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38664
+#: values_for_translation.py:38674
 msgid "juvenil"
 msgstr "juvenile"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38666
+#: values_for_translation.py:38676
 msgid "larva"
 msgstr "larva"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38668
+#: values_for_translation.py:38678
 msgid "lecitotrófica"
 msgstr "lecithotrophic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38670
+#: values_for_translation.py:38680
 msgid "luz polarizada"
 msgstr "polarized light"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38672
+#: values_for_translation.py:38682
 msgid "macrofauna"
 msgstr "macrofauna"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38674
+#: values_for_translation.py:38684
 msgid "macrofotografia"
 msgstr "macrophotography"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38676
+#: values_for_translation.py:38686
 msgid "manguezal"
 msgstr "mangrove"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38678
+#: values_for_translation.py:38688
 msgid "medusóide"
 msgstr "medusoid"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38680
+#: values_for_translation.py:38690
 msgid "meiofauna"
 msgstr "meiofauna"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38682
+#: values_for_translation.py:38692
 msgid "mergulho"
 msgstr "diving"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38684
+#: values_for_translation.py:38694
 msgid "mesolitoral"
 msgstr "mesolitoral"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38686
+#: values_for_translation.py:38696
 msgid "metamorfose"
 msgstr "metamorphosis"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38688
+#: values_for_translation.py:38698
 msgid "mev"
 msgstr "mev"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38690
+#: values_for_translation.py:38700
 msgid "nectônico"
 msgstr "nektonic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38692
+#: values_for_translation.py:38702
 msgid "neotipo"
 msgstr "neotype"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38694
+#: values_for_translation.py:38704
 msgid "paisagem"
 msgstr "landscape"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38696
+#: values_for_translation.py:38706
 msgid "parasita"
 msgstr "parasite"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38698
+#: values_for_translation.py:38708
 msgid "parátipo"
 msgstr "paratype"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38700
+#: values_for_translation.py:38710
 msgid "paratomia"
 msgstr "paratomy"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38702
+#: values_for_translation.py:38712
 msgid "pelágico"
 msgstr "pelagic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38704
+#: values_for_translation.py:38714
 msgid "placa de recrutamento"
 msgstr "recruitment plate"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38706
+#: values_for_translation.py:38716
 msgid "planctônico"
 msgstr "planktonic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38708
+#: values_for_translation.py:38718
 msgid "planctotrófica"
 msgstr "planktotrophic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38710
+#: values_for_translation.py:38720
 msgid "pleustônico"
 msgstr "pleustonic"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38712
+#: values_for_translation.py:38722
 msgid "pólipo"
 msgstr "polyp"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38714
+#: values_for_translation.py:38724
 msgid "praia"
 msgstr "sand beach"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38716
+#: values_for_translation.py:38726
 msgid "progênese"
 msgstr "progenesis"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38718
+#: values_for_translation.py:38728
 msgid "seto marine biological laboratory"
 msgstr "seto marine biological laboratory"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38720
+#: values_for_translation.py:38730
 msgid "simbiose"
 msgstr "symbiosis"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38722
+#: values_for_translation.py:38732
 msgid "south african museum"
 msgstr "south african museum"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38724
+#: values_for_translation.py:38734
 msgid "submersa"
 msgstr "submarine"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38726
+#: values_for_translation.py:38736
 msgid "substrato artificial"
 msgstr "artificial substrate"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38728
+#: values_for_translation.py:38738
 msgid "substrato consolidado"
 msgstr "hard bottom"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38730
+#: values_for_translation.py:38740
 msgid "substrato inconsolidado"
 msgstr "soft bottom"
 
 #. Translators: model=Tag, field=name.
-#: values_for_translation.py:38732
+#: values_for_translation.py:38742
 msgid "unicelular"
 msgstr "unicellular"
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38734
+#: values_for_translation.py:38744
+msgid "Embriões, larvas e seres planctônicos."
+msgstr "Embryos, larvae and planktonic creatures."
+
+#. Translators: model=Tag, field=description.
+#: values_for_translation.py:38746
+msgid "Organismos unicelulares e detalhes de organismos multicelulares."
+msgstr "Unicellular organisms and details of multicellular organisms."
+
+#. Translators: model=Tag, field=description.
+#: values_for_translation.py:38748
+msgid "Organismos ainda maiores."
+msgstr "Even larger organisms."
+
+#. Translators: model=Tag, field=description.
+#: values_for_translation.py:38750
+msgid "Organismos macroscópicos."
+msgstr "Macroscopic organisms."
+
+#. Translators: model=Tag, field=description.
+#: values_for_translation.py:38752
+msgid "Seres diminutos, mas visíveis a olho nu."
+msgstr "Tiny creatures but visible at the naked eye."
+
+#. Translators: model=Tag, field=description.
+#: values_for_translation.py:38754
 msgid "Organismo com capacidade reprodutiva sexuada plena."
 msgstr "Sexually mature organism."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38736
+#: values_for_translation.py:38756
 msgid ""
 "Qualquer um dos vários animais gelatinosos aquáticos, particularmente o "
 "estágio de medusa dos cnidários."
@@ -16120,25 +16173,24 @@ msgstr ""
 "of cnidarians."
 
 #. Translators: model=Tag, field=description.
-#. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38738 values_for_translation.py:38830
+#: values_for_translation.py:38758
 msgid ""
 "Organismos que vivem no leito dos oceanos e mares, fixos ou não a um "
 "substrato."
 msgstr "Organisms living on or in the sea bottom."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38740
+#: values_for_translation.py:38760
 msgid "Iluminação difusa."
 msgstr "Diffuse illumination."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38742
+#: values_for_translation.py:38762
 msgid "Iluminação oblíqua e fundo escuro."
 msgstr "Oblique illumination and dark field."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38744
+#: values_for_translation.py:38764
 msgid ""
 "Imagens produzidas no Centro de Biologia Marinha da Universidade de São "
 "Paulo (CEBIMar/USP)."
@@ -16147,58 +16199,57 @@ msgstr ""
 "Paulo (CEBIMar/USP)."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38746
+#: values_for_translation.py:38766
 msgid "Microscopia confocal."
 msgstr "Confocal microscopy."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38748
+#: values_for_translation.py:38768
+msgid "Contraste de interferência diferencial (ou Nomarski)."
+msgstr "Differential interference contrast microscopy."
+
+#. Translators: model=Tag, field=description.
+#: values_for_translation.py:38770
 msgid ""
-"Ambiente de transição entre os meios marinho e terrestre, formado por "
-"rochas."
+"Ambiente de transição entre os meios marinho e terrestre, formado por rochas."
 msgstr ""
 "Transition between marine and terrestrial environments formed by rocks."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38750
+#: values_for_translation.py:38772
 msgid ""
 "Que vive próximo ao fundo do mar, embora possua capacidade de natação ativa."
 msgstr "Pelagic organisms living close to the bottom."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38752
-msgid "Contraste de interferência diferencial (ou Nomarski)."
-msgstr "Differential interference contrast microscopy."
-
-#. Translators: model=Tag, field=description.
-#: values_for_translation.py:38754
+#: values_for_translation.py:38774
 msgid "Organismo em estágios iniciais de desenvolvimento."
 msgstr "Organism in its early stages of development."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38756
+#: values_for_translation.py:38776
 msgid "Região costeira que fica exposta somente na maré baixa."
 msgstr "Coastal region only exposed at low tide."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38758
+#: values_for_translation.py:38778
 msgid "Que vive na superfí­cie de outro organismo."
 msgstr "Organism living on the body surface of its host."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38760
+#: values_for_translation.py:38780
 msgid "Que vive na superfície do substrato."
 msgstr "Organisms living on the surface of soft bottoms. "
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38762
+#: values_for_translation.py:38782
 msgid ""
 "Espécie que foi acidental ou deliberadamente transportada para fora de sua "
 "área normal de distribuição."
 msgstr "A species living outside its native distributional range."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38764
+#: values_for_translation.py:38784
 msgid ""
 "Espécie cujo estabelecimento e dispersão ameaçam a diversidade biológica da "
 "região em que foi introduzida."
@@ -16207,67 +16258,65 @@ msgstr ""
 "affect the habitats and regions they invade."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38766
+#: values_for_translation.py:38786
 msgid ""
 "Referentes aos vários grupos de organismos aquáticos e autotróficos, desde "
 "os microscópicos e unicelulares até as formas multicelulares, que se "
-"distinguem das plantas verdadeiras por não possuírem raízes, caules e "
-"folhas."
+"distinguem das plantas verdadeiras por não possuírem raízes, caules e folhas."
 msgstr ""
 "Any of numerous groups of  aquatic, autotrophic organisms ranging from "
 "microscopic single-celled forms to multicellular ones, distinguished from "
 "plants by the absence of true roots, stems, and leaves."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38768
+#: values_for_translation.py:38788
 msgid "Célula reprodutiva madura (espermatozoide ou óvulo)"
 msgstr "A mature sexual reproductive cell (sperm or egg)"
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38770
+#: values_for_translation.py:38790
 msgid "O espécime tipo utilizado na descrição original de uma espécie."
 msgstr "The type specimen used in the original description of a species."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38772
+#: values_for_translation.py:38792
 msgid "Técnica de impregnação com prata."
 msgstr "Silver impregnation technique."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38774
-#| msgid "Região costeira que fica exposta somente na maré baixa."
+#: values_for_translation.py:38794
 msgid "Região costeira permanentemente submersa."
 msgstr "Coastal region permanently submerged."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38776
+#: values_for_translation.py:38796
 msgid ""
 "Organismo que ainda não atingiu a capacidade reprodutiva, embora seja "
 "morfologicamente semelhante a um adulto."
 msgstr "Sexually immature organism that resembles an adult."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38778
+#: values_for_translation.py:38798
 msgid ""
 "Estágio pós-embrionário que difere da forma adulta na sua morfologia, "
 "comportamento, habitat entre outros. Não se reproduz de maneira sexuada."
 msgstr ""
-"Post-embryonic stage that usually differs from the adult form in morphology,"
-" behavior, habitat, and others. Does not reproduce sexually."
+"Post-embryonic stage that usually differs from the adult form in morphology, "
+"behavior, habitat, and others. Does not reproduce sexually."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38780
+#: values_for_translation.py:38800
 msgid "Larva que se desenvolve apenas com reservas internas de vitelo."
 msgstr "Non-feeding larva."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38782
+#: values_for_translation.py:38802
 msgid ""
 "Microscopia utilizando luz polarizada que revela estruturas birrefringentes."
 msgstr "Polarized light microscopy reveals birefringent structures."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38784
+#: values_for_translation.py:38804
 msgid ""
 "Detalhe tirado com câmera convencional; muitas vezes de organismos em "
 "aquários."
@@ -16276,375 +16325,370 @@ msgstr ""
 "aquarium."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38786
+#: values_for_translation.py:38806
 msgid ""
 "Ecossistema costeiro de transição entre os ambientes terrestre e marinho, "
 "dominado por espécies vegetais típicas, geralmente associado a locais onde "
 "há encontro de águas de rios e do mar."
 msgstr ""
-"Transition zone between land and sea, dominated by a typical vegetation that"
-" grows in areas that are frequently inundated with salt and fresh water."
+"Transition zone between land and sea, dominated by a typical vegetation that "
+"grows in areas that are frequently inundated with salt and fresh water."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38788
+#: values_for_translation.py:38808
 msgid "Tirado embaixo d’água com caixa-estanque."
 msgstr "Photographs taken under water."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38790
+#: values_for_translation.py:38810
 msgid ""
-"Mudança na forma e/ou estrutura do corpo que ocorre entre o estágio larval e"
-" a forma juvenil ou adulta."
+"Mudança na forma e/ou estrutura do corpo que ocorre entre o estágio larval e "
+"a forma juvenil ou adulta."
 msgstr ""
 "Change in shape and/or body structure that occurs between the larval and "
 "juvenile or adult."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38792
+#: values_for_translation.py:38812
 msgid "Microscopia eletrônica de varredura."
 msgstr "Scanning electron microscopy."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38794
-#| msgid ""
-#| "Que vive próximo ao fundo do mar, embora possua capacidade de natação ativa."
+#: values_for_translation.py:38814
 msgid "Vive disperso na coluna d´água mas é capaz de natação ativa."
-msgstr "Living in the water column but capable of active swimming."
+msgstr "Lives dispersed in the water column but is capable of active swimming."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38796
+#: values_for_translation.py:38816
 msgid "Mostra um ambiente."
 msgstr "Depicts an environment."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38798
+#: values_for_translation.py:38818
 msgid ""
 "Um espécime selecionado para substituir um holotipo que foi perdido ou "
 "destruído."
 msgstr "The type specimen used in the original description of a species."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38800
-#| msgid "Organismos que vivem na coluna d’água."
+#: values_for_translation.py:38820
 msgid "Organismos vivendo na coluna d´água."
 msgstr "Organisms living in the water column."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38802
-#| msgid "Organismos que vivem na coluna d’água."
+#: values_for_translation.py:38822
 msgid "Organismos que vivem à deriva na coluna d´água."
 msgstr "Organisms drifting in the water column."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38804
+#: values_for_translation.py:38824
 msgid "Larva que se alimenta de organismos planctônicos"
 msgstr "Feeding larva."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38806
+#: values_for_translation.py:38826
 msgid ""
 "Que flutua na superfície da água, como algumas plantas e a caravela-"
 "portuguesa."
 msgstr "Organisms floating in the water surface."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38808
+#: values_for_translation.py:38828
 msgid ""
 "Faixa de terra coberta de lama, areia ou seixos, às margens de um corpo de "
 "água."
 msgstr "Landform along the shoreline consisting sand, gravel, or pebbles."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38810
-msgid ""
-"Organismo que vive associado a outro, sem que haja prejuízo para ambos."
+#: values_for_translation.py:38830
+msgid "Organismo que vive associado a outro, sem que haja prejuízo para ambos."
 msgstr "Organism living with, on, or in another, without injury to either."
 
 #. Translators: model=Tag, field=description.
-#: values_for_translation.py:38812
+#: values_for_translation.py:38832
 msgid "Organismo consistindo ou formado por uma única célula."
 msgstr "Organism having or consisting of a single cell."
 
-#. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38814
-msgid "Bentônicos"
-msgstr "Benthic"
-
-#. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38816
+#. Translators: model=Category, field=name.
+#: values_for_translation.py:38834
 msgid "Diversos"
 msgstr "Miscellaneous"
 
-#. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38818
+#. Translators: model=Category, field=name.
+#: values_for_translation.py:38836
 msgid "Estágio de vida"
 msgstr "Life stage"
 
-#. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38820
+#. Translators: model=Category, field=name.
+#: values_for_translation.py:38838
 msgid "Habitat"
 msgstr "Habitat"
 
-#. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38822
+#. Translators: model=Category, field=name.
+#: values_for_translation.py:38840
 msgid "Microscopia"
 msgstr "Microscopy"
 
-#. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38824
+#. Translators: model=Category, field=name.
+#: values_for_translation.py:38842
 msgid "Modo de vida"
 msgstr "Life mode"
 
-#. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38826
-msgid "Pelágicos"
-msgstr "Pelagic"
+#. Translators: model=Category, field=name.
+#: values_for_translation.py:38844
+msgid "Tamanho"
+msgstr "Size"
 
-#. Translators: model=TagCategory, field=name.
-#: values_for_translation.py:38828
-msgid "Técnica"
-msgstr "Technique"
+#. Translators: model=Category, field=name.
+#: values_for_translation.py:38846
+msgid "Técnica fotográfica"
+msgstr "Imaging technique"
 
-#. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38832
+#. Translators: model=Category, field=description.
+#: values_for_translation.py:38848
 msgid ""
 "Marcadores que não se encaixam nas outras categorias. Podem ser termos "
 "comuns frequentemente procurados."
 msgstr ""
-"Tags that do not fit into other categories. Could be common terms frequently"
-" searched."
+"Tags that do not fit into other categories. Could be common terms frequently "
+"searched."
 
-#. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38834
+#. Translators: model=Category, field=description.
+#: values_for_translation.py:38850
 msgid "Nem sempre os organismos fotografados são indivíduos adultos."
 msgstr "The organisms photographed are not always adults."
 
-#. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38836
+#. Translators: model=Category, field=description.
+#: values_for_translation.py:38852
 msgid "Também indicamos os habitats de cada organismo, quando possível."
 msgstr "We also indicate the habitat of each organism whenever possible."
 
-#. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38838
+#. Translators: model=Category, field=description.
+#: values_for_translation.py:38854
 msgid "Técnicas de microscopia utilizadas para capturar a imagem."
 msgstr "Microscopy techniques used to acquire the image."
 
-#. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38840
+#. Translators: model=Category, field=description.
+#: values_for_translation.py:38856
 msgid ""
-"Cada estágio de vida de um organismo pode ter um modo de vida diferente. Por"
-" isso, essa classificação refere-se ao modo de vida da fase ilustrada na "
+"Cada estágio de vida de um organismo pode ter um modo de vida diferente. Por "
+"isso, essa classificação refere-se ao modo de vida da fase ilustrada na "
 "imagem."
 msgstr ""
 "Each life stage of an organism may have a different way of life. Therefore, "
 "this classification refers to the lifestyle depicted in the image."
 
-#. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38842
-msgid "Organismos que vivem na coluna d’água."
-msgstr "Organisms living in the water column."
-
-#. Translators: model=TagCategory, field=description.
-#: values_for_translation.py:38844
+#. Translators: model=Category, field=description.
+#: values_for_translation.py:38858
 msgid ""
-"Diferentes técnicas utilizadas para capturar as imagens do banco divididas "
-"em 4 categorias: submersa, macrofotografia, paisagem e microscopia."
+"Classes de tamanhos: micro = <0,1 mm; minúsculo = 0,1 - 1,0 mm; visível = "
+"1,0 - 10 mm; grande = 10 - 100 mm; enorme = >100 mm."
+msgstr ""
+"Size classes: micro = <0,1 mm; tiny = 0,1 - 1,0 mm; visible = 1,0 - 10 mm; "
+"large = 10 - 100 mm; huge = >100 mm."
+
+#. Translators: model=Category, field=description.
+#: values_for_translation.py:38860
+msgid ""
+"Tipo baseado nas diferentes técnicas utilizadas para capturar as imagens do "
+"banco divididas em 4 categorias: submersa, macrofotografia, paisagem e "
+"microscopia."
 msgstr ""
 "Different techniques used to acquire images from the database divided in 4 "
 "categories: underwater, macrophotography, landscape e microscopy."
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38846
+#: values_for_translation.py:38862
 msgid "Angra dos Reis"
 msgstr "Angra dos Reis"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38848
+#: values_for_translation.py:38864
 msgid "Boracéia"
 msgstr "Boracéia"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38850
+#: values_for_translation.py:38866
 msgid "Cananéia"
 msgstr "Cananéia"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38852
+#: values_for_translation.py:38868
 msgid "Caraguatatuba"
 msgstr "Caraguatatuba"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38854
+#: values_for_translation.py:38870
 msgid "Florianópolis"
 msgstr "Florianópolis"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38856
+#: values_for_translation.py:38872
 msgid "Guarujá"
 msgstr "Guarujá"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38858
+#: values_for_translation.py:38874
 msgid "Ilhabela"
 msgstr "Ilhabela"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38860
+#: values_for_translation.py:38876
 msgid "Jequiá da Praia"
 msgstr "Jequiá da Praia"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38862
+#: values_for_translation.py:38878
 msgid "Jureia"
 msgstr "Jureia"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38864
+#: values_for_translation.py:38880
 msgid "Juréia"
 msgstr "Juréia"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38866
+#: values_for_translation.py:38882
 msgid "Maceió"
 msgstr "Maceió"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38868
+#: values_for_translation.py:38884
 msgid "Marechal Deodoro"
 msgstr "Marechal Deodoro"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38870
+#: values_for_translation.py:38886
 msgid "Paranaguá"
 msgstr "Paranaguá"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38872
+#: values_for_translation.py:38888
 msgid "Salinópolis"
 msgstr "Salinópolis"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38874
+#: values_for_translation.py:38890
 msgid "São Sebastião"
 msgstr "São Sebastião"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38876
+#: values_for_translation.py:38892
 msgid "Shirahama"
 msgstr "Shirahama"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38878
+#: values_for_translation.py:38894
 msgid "Townsville"
 msgstr "Townsville"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38880
+#: values_for_translation.py:38896
 msgid "Ubatuba"
 msgstr "Ubatuba"
 
 #. Translators: model=City, field=name.
-#: values_for_translation.py:38882
+#: values_for_translation.py:38898
 msgid "Ubatumirim"
 msgstr "Ubatumirim"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38884
+#: values_for_translation.py:38900
 msgid "AL"
 msgstr "AL"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38886
+#: values_for_translation.py:38902
 msgid "BA"
 msgstr "BA"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38888
+#: values_for_translation.py:38904
 msgid "ES"
 msgstr "ES"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38890
+#: values_for_translation.py:38906
 msgid "PA"
 msgstr "PA"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38892
+#: values_for_translation.py:38908
 msgid "PB"
 msgstr "PB"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38894
+#: values_for_translation.py:38910
 msgid "PE"
 msgstr "PE"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38896
+#: values_for_translation.py:38912
 msgid "PR"
 msgstr "PR"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38898
+#: values_for_translation.py:38914
 msgid "RJ"
 msgstr "RJ"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38900
+#: values_for_translation.py:38916
 msgid "SC"
 msgstr "SC"
 
 #. Translators: model=State, field=name.
-#: values_for_translation.py:38902
+#: values_for_translation.py:38918
 msgid "SP"
 msgstr "SP"
 
 #. Translators: model=Country, field=name.
-#: values_for_translation.py:38904
+#: values_for_translation.py:38920
 msgid "África do Sul"
 msgstr "South Africa"
 
 #. Translators: model=Country, field=name.
-#: values_for_translation.py:38906
+#: values_for_translation.py:38922
 msgid "Austrália"
 msgstr "Australia"
 
 #. Translators: model=Country, field=name.
-#: values_for_translation.py:38908
+#: values_for_translation.py:38924
 msgid "Brasil"
 msgstr "Brazil"
 
 #. Translators: model=Country, field=name.
-#: values_for_translation.py:38910
+#: values_for_translation.py:38926
 msgid "Japão"
 msgstr "Japan"
 
 #. Translators: model=Tour, field=name.
-#: values_for_translation.py:38912
+#: values_for_translation.py:38928
 msgid "Águas-vivas e outras criaturas gelatinosas"
 msgstr "Jellies and other gelatinous creatures "
 
 #. Translators: model=Tour, field=name.
-#: values_for_translation.py:38916
+#: values_for_translation.py:38932
 msgid "Ciclo de vida de um equinodermo"
 msgstr "The life cycle of an echinoderm"
 
 #. Translators: model=Tour, field=name.
-#: values_for_translation.py:38918
+#: values_for_translation.py:38934
 msgid "Larvas marinhas"
 msgstr "Marine larvae"
 
 #. Translators: model=Tour, field=name.
-#: values_for_translation.py:38920
+#: values_for_translation.py:38936
 msgid "Plâncton: pequenos gigantes"
 msgstr "Plankton: microscopic giants"
 
 #. Translators: model=Tour, field=description.
-#: values_for_translation.py:38922
+#: values_for_translation.py:38938
 msgid ""
 "<p>Inserida em uma das mais belas e turísticas regiões litorâneas do país – "
 "o Litoral Norte do Estado de São Paulo –, a Baía do Araçá (São Sebastião, "
-"SP), além de conter remanescentes de manguezal e de abrigar alta diversidade"
-" biológica, é também um verdadeiro laboratório a céu aberto e um importante "
+"SP), além de conter remanescentes de manguezal e de abrigar alta diversidade "
+"biológica, é também um verdadeiro laboratório a céu aberto e um importante "
 "reduto de catadores de moluscos e pescadores artesanais.</p><p>Considerada "
 "área natural de expansão do porto, por pouco o Araçá não desapareceu da "
 "paisagem de São Sebastião. Em 1987, o aterro da baía, previsto no plano "
@@ -16660,23 +16704,23 @@ msgid ""
 "foi anunciada novamente, desta vez no Plano de Desenvolvimento do Porto de "
 "São Sebastião, gerido pela Companhia Docas.</p><p>Contudo, este aparente "
 "futuro lúgubre não poderia ser mais impróprio. Apesar de poluído e "
-"empobrecido, o Araçá insiste em dar mostras de vitalidade. Espécies marinhas"
-" que haviam desaparecido em conseqüência da dragagem reapareceram anos após "
-"o crime ecológico impune. Garças e colhereiros são vistos com mais "
-"freqüência nas águas rasas e lamacentas da baía.</p><p>Embora longe da "
-"condição prístina que em parte motivou a criação do CEBIMar na década de "
-"1950, o Araçá continua objeto de estudo e ensino. É um dos mais peculiares "
-"ambientes marinhos do litoral – um dos poucos manguezais do canal, onde "
-"vivem organismos raramente representados em outros locais. São 733 espécies "
+"empobrecido, o Araçá insiste em dar mostras de vitalidade. Espécies marinhas "
+"que haviam desaparecido em conseqüência da dragagem reapareceram anos após o "
+"crime ecológico impune. Garças e colhereiros são vistos com mais freqüência "
+"nas águas rasas e lamacentas da baía.</p><p>Embora longe da condição "
+"prístina que em parte motivou a criação do CEBIMar na década de 1950, o "
+"Araçá continua objeto de estudo e ensino. É um dos mais peculiares ambientes "
+"marinhos do litoral – um dos poucos manguezais do canal, onde vivem "
+"organismos raramente representados em outros locais. São 733 espécies "
 "registradas para a área das quais 34 foram descritas como novas para a "
 "ciência; muitas ainda não foram encontradas em outras localidades. Na lista "
 "ainda existem espécies de poliquetas, equinodermos e hemicordados ameaçadas "
-"de extinção. Por ser uma região de mangue, diversas espécies marinhas passam"
-" parte de seu ciclo de vida no local como crustáceos e peixes.</p><p>O Araçá"
-" também abriga espécies que servem de recursos naturais como moluscos, "
+"de extinção. Por ser uma região de mangue, diversas espécies marinhas passam "
+"parte de seu ciclo de vida no local como crustáceos e peixes.</p><p>O Araçá "
+"também abriga espécies que servem de recursos naturais como moluscos, "
 "camarões e peixes. Pescadores artesanais e catadores de mariscos e siris "
-"usufruem da baía nos dias de marés suficientemente baixas e comercializam os"
-" produtos em feiras livres, além de consumo próprio.</p><p>Os dados "
+"usufruem da baía nos dias de marés suficientemente baixas e comercializam os "
+"produtos em feiras livres, além de consumo próprio.</p><p>Os dados "
 "científicos acumulados em mais de 50 anos de pesquisa e os depoimentos da "
 "comunidade revelam o quanto a conservação dessa região representa para a "
 "Ciência e para a vida de quem dela depende. Nesse sentido, é inquestionável "
@@ -16687,40 +16731,40 @@ msgid ""
 "sedimentação no canal, possivelmente causando assoreamento ou erosão nas "
 "praias e costões adjacentes. A possível e desejada relação entre turismo "
 "sustentado e ambiente dificilmente floresce em zonas portuárias e "
-"industriais. São Sebastião tem a responsabilidade de manter íntegro o frágil"
-" patrimônio ambiental sob sua tutela, para usufruto desta e das gerações "
+"industriais. São Sebastião tem a responsabilidade de manter íntegro o frágil "
+"patrimônio ambiental sob sua tutela, para usufruto desta e das gerações "
 "futuras.</p>"
 msgstr ""
-"<p>The Araçá Bay (São Sebastião, State of São Paulo), within one of Brazil’s"
-" most beautiful coastlines, has small relict mangrove stands and a very "
+"<p>The Araçá Bay (São Sebastião, State of São Paulo), within one of Brazil’s "
+"most beautiful coastlines, has small relict mangrove stands and a very "
 "diverse marine ecosystem. As such, the bay is a natural laboratory as well "
 "as important for local small-scale fishing.</p><p>Considered a natural area "
-"for expansion of the port of São Sebastião, the Araçá bay almost disappeared"
-" from the landscape. In 1987, the filling project of the bay was prevented "
-"by pressure from environmentalists and the scientific community. A year "
-"later, the bay was dredged for the placement of a sewage outfall, which "
-"caused profound ecological damage, habitat destruction, and death of "
-"organisms. For twenty years the sewage generated in the central region of "
-"the municipality was dumped in the vicinity of Araçá through this outfall, "
-"which remains operating without an environmental license. Moreover, the "
-"growing urbanization contributes to the environmental impacts on the bay, "
-"increasing the amount of waste and sewage dumped. In 2008, the threat of "
-"filling the remainder of the Araçá Bay was announced again.</p><p>However, "
-"although polluted and depleted, the Araçá insists to show vitality. Marine "
-"species that had disappeared as a result of the dredging reappeared several "
-"years after this ecological crime. Herons and spoonbills are seen more often"
-" in the shallow and muddy waters of the bay.</p><p>While far from its "
-"pristine condition, which partly motivated the creation of CEBIMar in the "
-"1950s, the Araçá remains a place for studying and teaching. It is one of the"
-" most unique coastal marine environments - one of the few mangroves in the "
-"coast of São Sebastião, which harbors high biodiversity. 733 species were "
-"recorded for the area of which 34 were described as new to science, many "
-"have not been found elsewhere. In the list there are endangered species of "
+"for expansion of the port of São Sebastião, the Araçá bay almost disappeared "
+"from the landscape. In 1987, the filling project of the bay was prevented by "
+"pressure from environmentalists and the scientific community. A year later, "
+"the bay was dredged for the placement of a sewage outfall, which caused "
+"profound ecological damage, habitat destruction, and death of organisms. For "
+"twenty years the sewage generated in the central region of the municipality "
+"was dumped in the vicinity of Araçá through this outfall, which remains "
+"operating without an environmental license. Moreover, the growing "
+"urbanization contributes to the environmental impacts on the bay, increasing "
+"the amount of waste and sewage dumped. In 2008, the threat of filling the "
+"remainder of the Araçá Bay was announced again.</p><p>However, although "
+"polluted and depleted, the Araçá insists to show vitality. Marine species "
+"that had disappeared as a result of the dredging reappeared several years "
+"after this ecological crime. Herons and spoonbills are seen more often in "
+"the shallow and muddy waters of the bay.</p><p>While far from its pristine "
+"condition, which partly motivated the creation of CEBIMar in the 1950s, the "
+"Araçá remains a place for studying and teaching. It is one of the most "
+"unique coastal marine environments - one of the few mangroves in the coast "
+"of São Sebastião, which harbors high biodiversity. 733 species were recorded "
+"for the area of which 34 were described as new to science, many have not "
+"been found elsewhere. In the list there are endangered species of "
 "polychaetes, echinoderms and hemichordates. Being a mangrove area, several "
 "marine species common to the region spend part of their life cycles in the "
 "bay, such as crustaceans and fish.</p><p>The Araçá is also home to species "
-"that are natural resources such as mollusks, shrimps and fish. Fishermen and"
-" shellfish gatherers take advantage of low tides to collect these resources "
+"that are natural resources such as mollusks, shrimps and fish. Fishermen and "
+"shellfish gatherers take advantage of low tides to collect these resources "
 "for their own consumption or to market them in free markets.</p><p>The "
 "traditional knowledge and scientific data accumulated in more than 50 years "
 "of research show how the conservation of this region is important for "
@@ -16728,20 +16772,20 @@ msgstr ""
 "unquestionable need to protect species that insist on keeping the precious "
 "wealth of the bay of Araçá.</p><p>The reclamation of Araçá will not only "
 "destroy this complex ecosystem, the ecological damage will certainly not be "
-"restricted to the region. The rectification of the coastline will affect the"
-" dynamics of sedimentation in the channel, possibly causing siltation or "
+"restricted to the region. The rectification of the coastline will affect the "
+"dynamics of sedimentation in the channel, possibly causing siltation or "
 "erosion on nearby beaches. The desired sustainable relationship between "
 "tourism and environment rarely blooms in ports and industrial areas. São "
 "Sebastião has the responsibility to keep safe this fragile environmental "
 "heritage for the enjoyment of this and future generations.</p>"
 
 #. Translators: model=Tour, field=description.
-#: values_for_translation.py:38924
+#: values_for_translation.py:38940
 msgid ""
 "<p>Neste tour você pode acompanhar os estágios de vida da bolacha-do-mar "
 "<em>Clypeaster subdepressus</em>. Este equinodermo é parente dos ouriços-do-"
-"mar, mas seu corpo é achatado e vive semi-enterrado na areia do fundo do "
-"mar.</p><p>Os embriões e larvas foram criados em laboratório no CEBIMar e "
+"mar, mas seu corpo é achatado e vive semi-enterrado na areia do fundo do mar."
+"</p><p>Os embriões e larvas foram criados em laboratório no CEBIMar e "
 "fotografados até se transformarem em pequenos juvenis. Para tal, coletamos "
 "os adultos no Canal de São Sebastião (São Sebastião, SP, Brasil) e os "
 "induzimos a liberarem seus gametas (óvulos e espermatozóides). Fizemos a "
@@ -16755,23 +16799,22 @@ msgid ""
 "grãos de areia.</p>"
 msgstr ""
 "<p>In this tour you can follow the life stages of the sea biscuit "
-"<em>Clypeaster subdepressus</em>. This echinoderm is related to sea urchins,"
-" but its body is flattened and it lives semi-buried in sand "
-"beds.</p><p>Embryos and larvae were raised in the laboratory at CEBIMar and "
+"<em>Clypeaster subdepressus</em>. This echinoderm is related to sea urchins, "
+"but its body is flattened and it lives semi-buried in sand beds.</"
+"p><p>Embryos and larvae were raised in the laboratory at CEBIMar and "
 "photographed until they become juveniles. To accomplish that we collected "
 "adults from São Sebastião Channel (São Sebastião, SP, Brasil) and induced "
 "the release of gametes (ova and sperm). We conducted an <em>in vitro</em> "
-"fertilization and documented embryo development under light "
-"microscopy.</p><p>After a few hours of cell divisions embryos became "
-"swimming larvae (pluteus), approximately 0.2 mm wide, which were fed with "
-"microalgae until metamorphosis. Inside the larva a small sea biscuit begins "
-"to grow. When the first podia and spines are formed the larva sinks to the "
-"bottom and goes through metamorphosis. The juvenile sea biscuit reabsorbs "
-"the larval tissues and begins to explore the new habitat between sand "
-"grains.</p>"
+"fertilization and documented embryo development under light microscopy.</"
+"p><p>After a few hours of cell divisions embryos became swimming larvae "
+"(pluteus), approximately 0.2 mm wide, which were fed with microalgae until "
+"metamorphosis. Inside the larva a small sea biscuit begins to grow. When the "
+"first podia and spines are formed the larva sinks to the bottom and goes "
+"through metamorphosis. The juvenile sea biscuit reabsorbs the larval tissues "
+"and begins to explore the new habitat between sand grains.</p>"
 
 #. Translators: model=Tour, field=description.
-#: values_for_translation.py:38926
+#: values_for_translation.py:38942
 msgid ""
 "<p>Embora geralmente pequenos em tamanho, os seres planctônicos são "
 "verdadeiros gigantes em importância. Base das cadeias alimentares marinhas, "
@@ -16784,65 +16827,64 @@ msgid ""
 "vagam livremente, sendo transportados pelas correntes marinhas.</p><p>Além "
 "de pequenos, os planctontes são também transparentes ou translúcidos, e "
 "passam facilmente despercebidos por nós ― observá-los exige o uso de "
-"microscópios e aparatos especiais de captura, as redes de plâncton. Contudo,"
-" eles são muito abundantes e se reproduzem com uma rapidez incrível. Um "
-"litro de água do mar pode conter dezenas de milhares desses pequenos "
-"organismos. Muitos deles são produtores primários, isto é, realizam "
-"fotossíntese, e são denominados de <em>fitoplâncton</em>. Os "
-"fitoplanctontes, que incluem vários grupos de \"microalgas\", vivem apenas "
-"nas camadas superiores e iluminadas dos oceanos. Produzem grande parte do "
-"oxigênio atmosférico, além de servir como alimento para uma parcela do "
-"plâncton incapaz de obter energia diretamente da luz do sol e que depende "
-"deles para sobreviver, o <em>zooplâncton</em>. </p><p>Além de se alimentarem"
-" de fitoplâncton, as espécies de zooplâncton podem consumir bactérias e "
-"material orgânico particulado. E, por sua vez, servem de alimento para "
-"organismos maiores, incluindo outras espécies de zooplâncton, peixes e até "
-"baleias.</p><p>Muitos organismos passam todo o seu ciclo de vida no "
-"plâncton, como os unicelulares e espécies de invertebrados: copépodes, "
-"moluscos, crustáceos, poliquetas etc. Mas a comunidade planctônica é "
-"composta também pelas larvas de invertebrados e de certos peixes, cujos "
-"adultos habitam o fundo do mar ou a coluna de água (veja o tour <a "
-"href=\"/web/20130606133023/http://cifonauta.cebimar.usp.br/tour/larvas-"
-"marinhas/\">Larvas Marinhas</a>). </p><p>Os seres do plâncton vivem em um "
-"mundo fisicamente diferente do que estamos acostumados. Nesse meio, a força "
-"da viscosidade da água impera sobre os seus corpos microscópicos, que têm "
-"\"dificuldade\" para se deslocar. Para entender melhor esse fenômeno, "
-"imagine-se em uma piscina de melado, onde só é possível nadar ou mexer "
-"qualquer parte de seu corpo em câmara lenta. É neste tipo de ambiente que os"
-" organismos planctônicos obtêm alimento e se reproduzem há milhões de "
-"anos.</p>"
+"microscópios e aparatos especiais de captura, as redes de plâncton. Contudo, "
+"eles são muito abundantes e se reproduzem com uma rapidez incrível. Um litro "
+"de água do mar pode conter dezenas de milhares desses pequenos organismos. "
+"Muitos deles são produtores primários, isto é, realizam fotossíntese, e são "
+"denominados de <em>fitoplâncton</em>. Os fitoplanctontes, que incluem vários "
+"grupos de \"microalgas\", vivem apenas nas camadas superiores e iluminadas "
+"dos oceanos. Produzem grande parte do oxigênio atmosférico, além de servir "
+"como alimento para uma parcela do plâncton incapaz de obter energia "
+"diretamente da luz do sol e que depende deles para sobreviver, o "
+"<em>zooplâncton</em>. </p><p>Além de se alimentarem de fitoplâncton, as "
+"espécies de zooplâncton podem consumir bactérias e material orgânico "
+"particulado. E, por sua vez, servem de alimento para organismos maiores, "
+"incluindo outras espécies de zooplâncton, peixes e até baleias.</p><p>Muitos "
+"organismos passam todo o seu ciclo de vida no plâncton, como os unicelulares "
+"e espécies de invertebrados: copépodes, moluscos, crustáceos, poliquetas "
+"etc. Mas a comunidade planctônica é composta também pelas larvas de "
+"invertebrados e de certos peixes, cujos adultos habitam o fundo do mar ou a "
+"coluna de água (veja o tour <a href=\"/web/20130606133023/http://cifonauta."
+"cebimar.usp.br/tour/larvas-marinhas/\">Larvas Marinhas</a>). </p><p>Os seres "
+"do plâncton vivem em um mundo fisicamente diferente do que estamos "
+"acostumados. Nesse meio, a força da viscosidade da água impera sobre os seus "
+"corpos microscópicos, que têm \"dificuldade\" para se deslocar. Para "
+"entender melhor esse fenômeno, imagine-se em uma piscina de melado, onde só "
+"é possível nadar ou mexer qualquer parte de seu corpo em câmara lenta. É "
+"neste tipo de ambiente que os organismos planctônicos obtêm alimento e se "
+"reproduzem há milhões de anos.</p>"
 msgstr ""
 "<p>Although generally small in size, planktonic beings are giants in "
-"stature. Basis of marine food chains, the plankton (Greek <em>planktos</em>,"
-" drifting) comprises a great diversity of uni- and multicellular organisms "
-"that live dispersed in water. This community is largely less than 0.01 mm to"
-" a few centimeters, but there are notable exceptions such as jellyfish and "
+"stature. Basis of marine food chains, the plankton (Greek <em>planktos</em>, "
+"drifting) comprises a great diversity of uni- and multicellular organisms "
+"that live dispersed in water. This community is largely less than 0.01 mm to "
+"a few centimeters, but there are notable exceptions such as jellyfish and "
 "the Portuguese man-of-war, which tentacles can reach meters in length. Many "
 "swim well, but not enough to overcome the force of water. Therefore, they "
 "roam freely, being transported by marine currents.</p><p>In addition to "
 "being small, planktonic organisms are also transparent or translucent, and "
 "easily overlooked ― examining them requires the use of microscopes and "
-"special collecting devices, as several kinds of plankton nets. However, they"
-" are very abundant and reproduce with incredible speed. One liter of "
-"seawater can contain tens of thousands of these small organisms. Many of "
-"them are primary producers, i.e., perform photosynthesis, and are called "
+"special collecting devices, as several kinds of plankton nets. However, they "
+"are very abundant and reproduce with incredible speed. One liter of seawater "
+"can contain tens of thousands of these small organisms. Many of them are "
+"primary producers, i.e., perform photosynthesis, and are called "
 "<em>phytoplankton</em>. The phytoplankton, which includes several groups of "
 "&quot;microalgae&quot; that live only in the well-lit upper layer of oceans "
 "water, produces much of the atmospheric oxygen, and serve as food for a "
-"portion of the plankton unable to get energy directly from sunlight and that"
-" depends on it for survival, the <em>zooplankton</em>.</p><p>Besides feeding"
-" on phytoplankton, zooplankton species can consume bacteria and particulate "
+"portion of the plankton unable to get energy directly from sunlight and that "
+"depends on it for survival, the <em>zooplankton</em>.</p><p>Besides feeding "
+"on phytoplankton, zooplankton species can consume bacteria and particulate "
 "organic matter. And, in turn, they serve as food for larger organisms, "
 "including other species of zooplankton, fish and even whales.</p><p>Many "
 "organisms spend all their life cycle in the plankton, such as both "
 "unicellular and invertebrate species: copepods, mollusks, crustaceans, "
 "polychaetes, etc. But the plankton community is also composed by the larvae "
 "of invertebrates and some fish whose adults inhabit the seabed or the water "
-"column (see the tour <a href=\"/tour/larvas-marinhas/\">Marine "
-"larvae</a>).</p><p>The plankters live in a physically different world than "
-"ours. In their environment, viscous forces prevail over their microscopic "
-"bodies, which have &quot;difficulty&quot; moving. To better understand this "
-"phenomenon, imagine yourself in a pool of molasses, in which it is only "
-"possible to swim or move any part of your body in slow motion. It is in this"
-" kind of environment that planktonic organisms obtain food and reproduce for"
-" millions of years.</p>"
+"column (see the tour <a href=\"/tour/larvas-marinhas/\">Marine larvae</a>).</"
+"p><p>The plankters live in a physically different world than ours. In their "
+"environment, viscous forces prevail over their microscopic bodies, which "
+"have &quot;difficulty&quot; moving. To better understand this phenomenon, "
+"imagine yourself in a pool of molasses, in which it is only possible to swim "
+"or move any part of your body in slow motion. It is in this kind of "
+"environment that planktonic organisms obtain food and reproduce for millions "
+"of years.</p>"

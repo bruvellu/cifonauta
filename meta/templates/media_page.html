@@ -3,7 +3,7 @@
 {% get_current_language as LANGUAGE_CODE %}
 
 {% block title %}{{ media.title }} | {{ block.super }}{% endblock %}
-{% block meta-keywords %}{% show_set tags '' '' ', ' '' %}, {% show_set authors '' '' ', ' '' %}, {% show_set taxa '' '' ', ' '' %}, {% show_set sources '' '' ', ' '' %}, {{ media.sublocation.name }}, {{ media.city.name }}, {{ media.state.name }}, {{ media.country.slug }}{% endblock %}
+{% block meta-keywords %}{% show_set tags '' '' ', ' '' %}, {% show_set authors '' '' ', ' '' %}, {% show_set taxa '' '' ', ' '' %}, {% show_set sources '' '' ', ' '' %}, {{ media.location.name }}, {{ media.city.name }}, {{ media.state.name }}, {{ media.country.slug }}{% endblock %}
 {% block meta-description %}{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %} {% trans 'Por' %} {% show_set authors '' '' ', ' '' %}.{% endblock %}
 {% block meta-author %}{% show_set authors '' '' ', ' '' %}{% endblock %}
 

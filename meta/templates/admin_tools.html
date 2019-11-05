@@ -51,8 +51,8 @@
     </ul>
     {% endif %}
 
-    {% if media.sublocation %}
-    <li>Local: <a href="/admin/meta/sublocation/{{ media.sublocation.id }}/">{{ media.sublocation.name }}</a></li>
+    {% if media.location %}
+    <li>Local: <a href="/admin/meta/location/{{ media.location.id }}/">{{ media.location.name }}</a></li>
     {% endif %}
 
     {% if media.city %}

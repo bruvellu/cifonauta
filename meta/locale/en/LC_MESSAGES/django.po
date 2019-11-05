@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-06 14:25-0300\n"
+"POT-Creation-Date: 2019-11-05 18:57-0300\n"
 "PO-Revision-Date: 2019-10-01 19:27-0306\n"
 "Last-Translator: b'Bruno Vellutini <organelas@gmail.com>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +26,7 @@ msgstr "author"
 msgid "táxon"
 msgstr "taxon"
 
-#: forms.py:12 models.py:58
+#: forms.py:12 models.py:51
 msgid "tamanho"
 msgstr "size"
 
@@ -261,48 +261,48 @@ msgid "Data de criação da imagem."
 msgstr "Media creation date."
 
 #: models.py:46
-msgid "geolocalização"
-msgstr "geolocation"
-
-#: models.py:48
-msgid "Geolocalização da imagem no formato decimal."
-msgstr "Image geolocation in decimal format."
-
-#: models.py:49
-msgid "latitude"
-msgstr "latitude"
-
-#: models.py:50
-msgid "Latitude onde a imagem foi criada."
-msgstr "Latitude the file was created."
-
-#: models.py:51
-msgid "longitude"
-msgstr "longitude"
-
-#: models.py:52
-msgid "Longitude onde a imagem foi criada."
-msgstr "Longitude the file was created."
-
-#: models.py:53
 msgid "duração"
 msgstr "duration"
 
-#: models.py:55
+#: models.py:48
 msgid "Duração do vídeo no formato HH:MM:SS."
 msgstr "Video duration formatted as HH:MM:SS."
 
-#: models.py:56
+#: models.py:49
 msgid "dimensões"
 msgstr "dimensions"
 
-#: models.py:57
+#: models.py:50
 msgid "Dimensões do vídeo original."
 msgstr "Video original dimensions."
 
-#: models.py:59
+#: models.py:52
 msgid "Classe de tamanho."
 msgstr "Size class."
+
+#: models.py:53
+msgid "geolocalização"
+msgstr "geolocation"
+
+#: models.py:55
+msgid "Geolocalização da imagem no formato decimal."
+msgstr "Image geolocation in decimal format."
+
+#: models.py:56
+msgid "latitude"
+msgstr "latitude"
+
+#: models.py:57
+msgid "Latitude onde a imagem foi criada."
+msgstr "Latitude the file was created."
+
+#: models.py:58
+msgid "longitude"
+msgstr "longitude"
+
+#: models.py:59
+msgid "Longitude onde a imagem foi criada."
+msgstr "Longitude the file was created."
 
 #: models.py:64
 msgid "Localidade mostrada na imagem (ou local de coleta)."

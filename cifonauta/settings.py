@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'mptt',
     'rosetta',
     'sorl.thumbnail',
+    'debug_toolbar',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -174,9 +176,9 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 # Increase limit for fields
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 15000
 
-# Required for sorl-thumbnail.
-#INTERNAL_IPS = ('127.0.0.1', '::1')
-#
+# Required for debug_toolbar
+INTERNAL_IPS = ['127.0.0.1']
+
 #import logging
 #from sorl.thumbnail.log import ThumbnailLogHandler
 #handler = ThumbnailLogHandler()

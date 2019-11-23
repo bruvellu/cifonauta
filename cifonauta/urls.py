@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+import debug_toolbar
 
 #admin.autodiscover()
 
@@ -49,6 +50,7 @@ from django.urls import include, path
 
 
 urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
         path('admin/', admin.site.urls),
         path('', include('django.contrib.auth.urls')),
         path('', include('meta.urls')),

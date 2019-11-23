@@ -4,14 +4,9 @@
 <span id="admin">
   <ul>
     <li><a href="/admin/">admin</a></li>
-    <li><a href="/fixmedia/">fixmedia</a></li>
     <li><a href="/rosetta/">traduzir</a></li>
     <li><a href="{% url 'logout' %}">logout</a></li>
   </ul>
-</span>
-{% else %}
-<span id="admin">
-  <a href="{% url 'login' %}">login</a>
 </span>
 {% endif %}
 

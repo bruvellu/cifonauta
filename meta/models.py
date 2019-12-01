@@ -324,6 +324,25 @@ class Tour(models.Model):
         ordering = ['name']
 
 
+class Stats(models.Model):
+    '''Gather database statistics.'''
+    site = models.CharField(_('website'), max_length=100, unique=True,
+            help_text=_('Nome do sítio.'))
+    photos = models.PositiveIntegerField(default=0,
+            help_text=_('Número total de fotos públicas.'))
+    videos = models.PositiveIntegerField(default=0,
+            help_text=_('Número total de vídeos públicos.'))
+    tags = models.PositiveIntegerField(default=0,
+            help_text=_('Número total de marcadores.'))
+    species = models.PositiveIntegerField(default=0,
+            help_text=_('Número total de espécies.'))
+    locations = models.PositiveIntegerField(default=0,
+            help_text=_('Número total de localidades.'))
+
+    def __str__(self):
+        return f'{self.site}: {self.photos} fotos / {self.videos} vídeos / {self.tags} marcadores / {self.species} espécies / {self.locations} locais'
+
+
 # Slugify before saving.
 models.signals.pre_save.connect(slug_pre_save, sender=Person)
 models.signals.pre_save.connect(slug_pre_save, sender=Tag)

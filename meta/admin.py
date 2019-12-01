@@ -41,6 +41,7 @@ admin.site.register(Person)
 admin.site.register(Location)
 admin.site.register(Reference)
 admin.site.register(Taxon)
+admin.site.register(Stats)
 
 # Translation models.
 admin.site.unregister(FlatPage)

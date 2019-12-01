@@ -14,6 +14,8 @@ from meta.forms import *
 
 register = template.Library()
 
+# TODO: Cleanup this file...
+
 main_ranks = [u'Reino', u'Filo', u'Classe', u'Ordem', u'Família', u'Gênero', u'Espécie', u'Kingdom', u'Phylum', u'Class', u'Order', u'Family', u'Genus', u'Species']
 
 @register.inclusion_tag('metalist.html')
@@ -32,7 +34,7 @@ def taxon_paths(taxon):
 
 @register.inclusion_tag('thumb_org.html', takes_context=True)
 def print_thumb(context, field, obj):
-    '''Gera thumbnail aleatório de determinado metadado.'''
+    '''Generates random thumbnail for supplied metadata.'''
     # Load model and parameters
     Media = apps.get_model('meta', 'Media')
     media_url = context['MEDIA_URL']

@@ -10,7 +10,6 @@ from django.utils import timezone
 
 from cifonauta.settings import BASE_DIR, SOURCE_ROOT, MEDIA_ROOT, PHOTO_EXTENSIONS, VIDEO_EXTENSIONS, MEDIA_EXTENSIONS
 from media_utils import *
-from linking import LinkManager
 from meta import models
 from worms import Aphia
 
@@ -84,7 +83,6 @@ class Command(BaseCommand):
                 src_file.process_media()
                 n_new += 1
 
-
         # Number of files analyzed.
         n = len(source_media.files[:n_max])
 
@@ -93,6 +91,12 @@ class Command(BaseCommand):
         self.stdout.write('{} files'.format(n))
         self.stdout.write('{} new'.format(n_new))
         self.stdout.write('{} updated'.format(n_updated))
+
+        # Database statistics.
+        self.stdout.write('\nDATABASE STATS')
+        cbm.update_stats()
+
+        # Running time.
         t = time.time() - t0
         if t > 60:
             self.stdout.write('\nRunning time: {} min {} s\n'.format(int(t / 60), int(t % 60)))
@@ -297,6 +301,25 @@ class Database:
             taxon.save()
         else:
             return None
+
+    def update_stats(self):
+        '''Updates site wide statistics.'''
+
+        # Get main stats object
+        cifo = models.Stats.objects.get(site='cifonauta')
+
+        # Updates values
+        cifo.photos = models.Media.objects.filter(is_public=True, datatype='photo').count()
+        cifo.videos = models.Media.objects.filter(is_public=True, datatype='video').count()
+        cifo.tags = models.Tag.objects.count()
+        cifo.species = models.Taxon.objects.filter(rank_en='Species').count()
+        cifo.locations = models.Location.objects.count()
+
+        # Saves stats object
+        cifo.save()
+
+        # Print out stats
+        print(cifo)
 
 
 class Folder:

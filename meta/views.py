@@ -17,7 +17,6 @@ from operator import or_, and_
 
 from .models import *
 from .forms import *
-from remove import compile_paths
 
 
 # Home

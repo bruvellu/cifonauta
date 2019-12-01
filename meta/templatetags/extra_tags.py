@@ -10,7 +10,6 @@ from django.template.defaultfilters import slugify
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
-from meta.models import *
 from meta.forms import *
 
 register = template.Library()
@@ -34,6 +33,8 @@ def taxon_paths(taxon):
 @register.inclusion_tag('thumb_org.html', takes_context=True)
 def print_thumb(context, field, obj):
     '''Gera thumbnail aleatório de determinado metadado.'''
+    # Load model and parameters
+    Media = apps.get_model('meta', 'Media')
     media_url = context['MEDIA_URL']
     params = {field: obj, 'is_public': True}
     try:
@@ -113,6 +114,7 @@ def slicer(query, media_id):
 
 def mediaque(media, qobj):
     '''Returns queryset used in the linear browser.'''
+    Media = apps.get_model('meta', 'Media')
     query = Media.objects.filter(qobj, is_public=True).order_by('id')
     return query
 
@@ -236,6 +238,7 @@ def show_tree(current=None):
 
     Usar o selected_related para pegar o 'parent' diminuiu 100 queries!
     '''
+    Taxon = apps.get_model('meta', 'Taxon')
     taxa = Taxon.objects.select_related('parent')
     return {'taxa': taxa, 'current': current}
 
@@ -302,13 +305,6 @@ def in_list(value, arg):
 def wordsplit(value):
     '''Retorna lista de palavras.'''
     return value.split()
-
-@register.filter
-def icount(value, field):
-    '''Conta número de imagens+vídeos associados com metadado.'''
-    q = {field:value}
-    return Image.objects.filter(**q).count() + Video.objects.filter(**q).count()
-
 
 @register.filter
 def truncate(value, arg):

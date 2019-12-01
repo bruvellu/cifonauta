@@ -2,15 +2,16 @@
 
 import operator
 
-from meta.models import *
-from meta.forms import *
 from django import template
+from django.apps import apps
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db.models import Q
 from django.template.defaultfilters import slugify
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
+from meta.models import *
+from meta.forms import *
 
 register = template.Library()
 
@@ -220,12 +221,12 @@ def show_related(context, media, form, related):
 @register.inclusion_tag('stats.html')
 def show_stats():
     '''Generates the stats line in the header.'''
-    photos = Media.objects.filter(is_public=True, datatype='photo').count()
-    videos = Media.objects.filter(is_public=True, datatype='video').count()
-    tags = Tag.objects.count()
-    spp = Taxon.objects.filter(rank_en='Species').count()
-    locations = Location.objects.count()
-    return {'photos': photos, 'videos': videos, 'spp': spp, 'locations': locations, 'tags': tags}
+    # Load model.
+    Stats = apps.get_model('meta', 'Stats')
+    cifo = Stats.objects.get(site='cifonauta')
+
+    return {'photos': cifo.photos, 'videos': cifo.videos, 'species':
+            cifo.species, 'locations': cifo.locations, 'tags': cifo.tags}
 
 @register.inclusion_tag('tree.html')
 def show_tree(current=None):

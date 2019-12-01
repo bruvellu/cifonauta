@@ -1,18 +1,14 @@
 {% load i18n %}
 
 <a href="/">
-  <hgroup class="main span-10">
-  <!--
-  Using span to workaround Firefox 3.6 horrendous bug
-  with anchors nesting h1, h2, within HTML5 <header>
-  https://bugzilla.mozilla.org/show_bug.cgi?id=514122
-  -->
-  <span id="maintitle">Cifonauta</span>
-  <span id="tagline">{% trans 'banco de imagens de biologia marinha' %}</span>
+  <hgroup class="main span-9">
+  <img id="logo" src="{{ STATIC_URL }}logo.png">
+  <h1 id="maintitle">Cifonauta</h1>
+  <h2 id="tagline" {% if LANGUAGE_CODE == 'en' %}style="letter-spacing: 1.6px;"{% endif %}>{% trans 'banco de imagens de biologia marinha' %}</h2>
   </hgroup>
 </a>
 
-<div class="span-14 last" id="stats-search">
+<div class="span-15 last" id="stats-search">
 
   <div class="quiet" id="stats"> {% show_stats %} </div>
 

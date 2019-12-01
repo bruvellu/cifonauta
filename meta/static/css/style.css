@@ -629,11 +629,6 @@ Based on work by Jørgen Arnor Gårdsø Lom [http://twistedintellect.com/] */
   margin:0 0 2em 0;
 }
 
-header.main hgroup.main {
-  background:url("/static/logo.png") no-repeat scroll 270px 18px transparent;
-  overflow:hidden;
-}
-
 #maintitle, #tagline {
   padding:0;
   font-weight:normal;
@@ -641,9 +636,26 @@ header.main hgroup.main {
 }
 
 #maintitle {
-  letter-spacing:2px;
-  font-weight:bolder;
+  font-weight:bold;
   font-size:4.5em;
+  margin:0 20px 0 0;
+}
+
+#tagline {
+  color:#666666;
+  font-size:1em;
+  text-transform:uppercase;
+  font-weight:lighter;
+  display:block;
+  margin:-15px 0 0 0;
+  padding: 0 24px 0 82px;
+  text-align:center;
+}
+
+#logo {
+  float:left;
+  width:75px;
+  margin:17px 0 0 0;
 }
 
 #main-more {
@@ -651,18 +663,6 @@ header.main hgroup.main {
 }
 
 #main-message {
-}
-
-#tagline {
-  color:#666666;
-  font-size:0.92em;
-  text-transform:uppercase;
-  font-weight:lighter;
-  margin:-20px 0 0 0px;
-  text-align:right;
-  width:268px;
-  padding:0 0 0.3em 0;
-  display:block;
 }
 
 #admin {

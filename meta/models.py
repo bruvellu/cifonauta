@@ -342,6 +342,10 @@ class Stats(models.Model):
     def __str__(self):
         return f'{self.site}: {self.photos} fotos / {self.videos} vídeos / {self.tags} marcadores / {self.species} espécies / {self.locations} locais'
 
+    class Meta:
+        verbose_name = _('estatísticas')
+        verbose_name_plural = _('estatísticas')
+
 
 # Slugify before saving.
 models.signals.pre_save.connect(slug_pre_save, sender=Person)

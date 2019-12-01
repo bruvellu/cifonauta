@@ -340,7 +340,8 @@ class Stats(models.Model):
             help_text=_('Número total de localidades.'))
 
     def __str__(self):
-        return f'{self.site}: {self.photos} fotos / {self.videos} vídeos / {self.tags} marcadores / {self.species} espécies / {self.locations} locais'
+        return '{}: {} fotos / {} vídeos / {} marcadores / {} espécies / {} locais'.format(
+                self.site, self.photos, self.videos, self.tags, self.species, self.locations)
 
     class Meta:
         verbose_name = _('estatísticas')

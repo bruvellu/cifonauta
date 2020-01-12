@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.contrib.postgres.search import SearchVector
+from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
 from operator import or_, and_
@@ -49,13 +49,15 @@ def home_page(request):
         }
     return render(request, 'home.html', context)
 
-# TODO: Why search and metadata pages do not have the same view?
 
 def search_page(request, model_name='', field='', slug=''):
     '''Default gallery view for displaying and filtering metadata.'''
 
     # Get public media.
     media_list = Media.objects.filter(is_public=True)
+
+    # Get language of current session
+    language = request.COOKIES['django_language']
 
     # Check request.GET for query refinements.
     if request.method == 'GET':
@@ -80,16 +82,25 @@ def search_page(request, model_name='', field='', slug=''):
         # Query
         query = query_dict.get('query', '').strip()
         if query:
-            vector = SearchVector('title', weight='A') + \
-                     SearchVector('caption', weight='A') + \
-                     SearchVector(StringAgg('person__name', delimiter=' '), weight='A') + \
-                     SearchVector(StringAgg('tag__name', delimiter=' '), weight='B') + \
-                     SearchVector(StringAgg('location__name', delimiter=' '), weight='B') + \
-                     SearchVector(StringAgg('city__name', delimiter=' '), weight='B') + \
-                     SearchVector(StringAgg('state__name', delimiter=' '), weight='B') + \
-                     SearchVector(StringAgg('country__name', delimiter=' '), weight='B')
 
-            media_list = media_list.annotate(search=vector).filter(search=query)
+            # Create postgres SearchQuery
+            # TODO: if search_type='raw' create conditional
+            search_query = SearchQuery(query, config='portuguese_unaccent')
+
+            # Create search vectors
+            vector = SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') + \
+                     SearchVector('title_en', weight='A', config='portuguese_unaccent')
+
+                     # SearchVector('caption', weight='A') + \
+                     # SearchVector(StringAgg('person__name', delimiter=' '), weight='A') + \
+                     # SearchVector(StringAgg('tag__name', delimiter=' '), weight='B') + \
+                     # SearchVector(StringAgg('location__name', delimiter=' '), weight='B') + \
+                     # SearchVector(StringAgg('city__name', delimiter=' '), weight='B') + \
+                     # SearchVector(StringAgg('state__name', delimiter=' '), weight='B') + \
+                     # SearchVector(StringAgg('country__name', delimiter=' '), weight='B')
+
+            # Filter media_list by search_query
+            media_list = media_list.annotate(search=vector).filter(search=search_query)
 
         # Operator
         operator = query_dict.get('operator', 'and')

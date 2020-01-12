@@ -23,6 +23,8 @@ class TagTranslation(TranslationOptions):
 class CatTranslation(TranslationOptions):
     fields = ('name', 'description',)
 
+# TODO: Translate locations as well.
+
 @register(City)
 class CityTranslation(TranslationOptions):
     fields = ('name',)

@@ -109,7 +109,7 @@ def search_page(request, model_name='', field='', slug=''):
             media_list = media_list.annotate(search=vector).filter(search=search_query)
 
         # Operator
-        operator = query_dict.get('operator', 'and')
+        operator = query_dict.get('operator', 'or')
 
         # Author
         if 'author' in query_dict:
@@ -571,7 +571,8 @@ def add_meta(meta, field, query):
 
 def filter_request(media_list, objects, field, operator):
     '''Filter media based on fields and operator.'''
-    
+
+    #TODO: Taxon descendants are not shown with AND operator.
     if operator == 'and':
         for obj in objects:
             media_list = media_list.filter(**{field: obj})

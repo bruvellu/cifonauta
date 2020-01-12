@@ -46,8 +46,8 @@ DATATYPES = (
         )
 
 OPERATORS = (
-        ('and', _('E')),
         ('or', _('OU')),
+        ('and', _('E')),
         )
 
 

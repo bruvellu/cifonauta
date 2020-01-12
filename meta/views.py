@@ -88,16 +88,21 @@ def search_page(request, model_name='', field='', slug=''):
             search_query = SearchQuery(query, config='portuguese_unaccent')
 
             # Create search vectors
+            # TODO: create and search location translations
             vector = SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') + \
-                     SearchVector('title_en', weight='A', config='portuguese_unaccent')
-
-                     # SearchVector('caption', weight='A') + \
-                     # SearchVector(StringAgg('person__name', delimiter=' '), weight='A') + \
-                     # SearchVector(StringAgg('tag__name', delimiter=' '), weight='B') + \
-                     # SearchVector(StringAgg('location__name', delimiter=' '), weight='B') + \
-                     # SearchVector(StringAgg('city__name', delimiter=' '), weight='B') + \
-                     # SearchVector(StringAgg('state__name', delimiter=' '), weight='B') + \
-                     # SearchVector(StringAgg('country__name', delimiter=' '), weight='B')
+                     SearchVector('title_en', weight='A', config='portuguese_unaccent') + \
+                     SearchVector('caption_pt_br', weight='A', config='portuguese_unaccent') + \
+                     SearchVector('caption_en', weight='A', config='portuguese_unaccent') + \
+                     SearchVector(StringAgg('person__name', delimiter=' '), weight='B', config='portuguese_unaccent') + \
+                     SearchVector(StringAgg('tag__name_pt_br', delimiter=' '), weight='B', config='portuguese_unaccent') + \
+                     SearchVector(StringAgg('tag__name_en', delimiter=' '), weight='B', config='portuguese_unaccent') + \
+                     SearchVector('location__name', weight='C', config='portuguese_unaccent') + \
+                     SearchVector('city__name_pt_br', weight='C', config='portuguese_unaccent') + \
+                     SearchVector('city__name_en', weight='C', config='portuguese_unaccent') + \
+                     SearchVector('state__name_pt_br', weight='C', config='portuguese_unaccent') + \
+                     SearchVector('state__name_en', weight='C', config='portuguese_unaccent') + \
+                     SearchVector('country__name_pt_br', weight='C', config='portuguese_unaccent') + \
+                     SearchVector('country__name_en', weight='C', config='portuguese_unaccent')
 
             # Filter media_list by search_query
             media_list = media_list.annotate(search=vector).filter(search=search_query)

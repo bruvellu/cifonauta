@@ -96,6 +96,7 @@ def search_page(request, model_name='', field='', slug=''):
                      SearchVector(StringAgg('person__name', delimiter=' '), weight='B', config='portuguese_unaccent') + \
                      SearchVector(StringAgg('tag__name_pt_br', delimiter=' '), weight='B', config='portuguese_unaccent') + \
                      SearchVector(StringAgg('tag__name_en', delimiter=' '), weight='B', config='portuguese_unaccent') + \
+                     SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B', config='portuguese_unaccent') + \
                      SearchVector('location__name', weight='C', config='portuguese_unaccent') + \
                      SearchVector('city__name_pt_br', weight='C', config='portuguese_unaccent') + \
                      SearchVector('city__name_en', weight='C', config='portuguese_unaccent') + \

@@ -19,7 +19,6 @@ function open_tree(taxas){
 	});
 };
 
-
 // Highslide
 hs.graphicsDir = '/static/js/highslide/graphics/';
 hs.outlineType = 'rounded-white';
@@ -49,36 +48,6 @@ function loadSocial(script) {
   defered.async = true;
   var holder = document.getElementById("deferedjs");
   holder.parentNode.insertBefore(defered, holder);
-}
-
-//Social
-var social = $("#intro");
-if (social.length > 0) {
-    // Twitter button.
-    loadSocial("//platform.twitter.com/widgets.js");
-
-    // Google Plus button
-    loadSocial("//apis.google.com/js/plusone.js");
-
-    // Facebook Like button
-    loadSocial("//connect.facebook.net/en_US/all.js#xfbml=1");
-}
-
-
-// Add2Any button
-var media = $("#media-page");
-if (media.length > 0) {
-    function my_addtoany_onready() {
-    a2a_config.target = '.share-this';
-    a2a.init('page');
-    }
-    // Setup AddToAny "onReady" callback
-    var a2a_config = a2a_config || {};
-    a2a_config.tracking_callback = {
-    ready: my_addtoany_onready
-    };
-    // Load AddToAny script asynchronously
-    loadSocial("//static.addtoany.com/menu/page.js");
 }
 
 // Document ready functions.

@@ -1,4 +1,4 @@
-django==2.2.8
+django==2.2.11
 django-mptt
 django-rosetta
 django-modeltranslation

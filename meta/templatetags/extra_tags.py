@@ -166,13 +166,14 @@ def show_related(context, media, form, related):
         else:
             rel_media = ''
 
-    elif related == 'size':
-        if media.size:
-            qobj = Q(size=media.size_id)
-            query = mediaque(media, qobj)
-            rel_media, relative = slicer(query, media.id)
-        else:
-            rel_media = ''
+    # FIXME: Size is not an object anymore, disable for now.
+    # elif related == 'size':
+        # if media.size:
+            # qobj = Q(size=media.size_id)
+            # query = mediaque(media, qobj)
+            # rel_media, relative = slicer(query, media.id)
+        # else:
+            # rel_media = ''
 
     elif related == 'location':
         if media.location:

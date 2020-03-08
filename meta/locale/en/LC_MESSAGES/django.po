@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-01 11:43-0300\n"
-"PO-Revision-Date: 2019-12-01 11:43-0306\n"
+"POT-Creation-Date: 2020-03-08 20:48-0300\n"
+"PO-Revision-Date: 2020-03-08 20:49-0306\n"
 "Last-Translator: b'Bruno Vellutini <organelas@gmail.com>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -25,10 +25,6 @@ msgstr "author"
 #: forms.py:11 models.py:197
 msgid "táxon"
 msgstr "taxon"
-
-#: forms.py:12 models.py:51
-msgid "tamanho"
-msgstr "size"
 
 #: forms.py:13 models.py:63 models.py:215
 msgid "local"
@@ -88,12 +84,12 @@ msgid "todos"
 msgstr "all"
 
 #: forms.py:49
-msgid "E"
-msgstr "AND"
-
-#: forms.py:50
 msgid "OU"
 msgstr "OR"
+
+#: forms.py:50
+msgid "E"
+msgstr "AND"
 
 #: forms.py:55 forms.py:75
 msgid "Buscar por"
@@ -143,20 +139,20 @@ msgstr "Authors"
 msgid "Marcadores"
 msgstr "Tags"
 
-#: forms.py:97 templates/footer.html:43 templates/places_page.html:6
-#: templates/places_page.html:12 templates/places_page.html:20
+#: forms.py:97 templates/footer.html:43 templates/places_page.html:5
+#: templates/places_page.html:11 templates/places_page.html:19
 msgid "Localidades"
 msgstr "Places"
 
-#: forms.py:100 templates/mais.html:34 templates/places_page.html:27
+#: forms.py:100 templates/mais.html:34 templates/places_page.html:26
 msgid "Cidades"
 msgstr "Cities"
 
-#: forms.py:103 templates/mais.html:39 templates/places_page.html:31
+#: forms.py:103 templates/mais.html:39 templates/places_page.html:30
 msgid "Estados"
 msgstr "States"
 
-#: forms.py:106 templates/mais.html:44 templates/places_page.html:36
+#: forms.py:106 templates/mais.html:44 templates/places_page.html:35
 msgid "Países"
 msgstr "Countries"
 
@@ -275,6 +271,10 @@ msgstr "dimensions"
 #: models.py:50
 msgid "Dimensões do vídeo original."
 msgstr "Video original dimensions."
+
+#: models.py:51
+msgid "tamanho"
+msgstr "size"
 
 #: models.py:52
 msgid "Classe de tamanho."
@@ -598,7 +598,7 @@ msgstr "Total number of species."
 msgid "Número total de localidades."
 msgstr "Total number of places."
 
-#: models.py:346 models.py:347
+#: models.py:347 models.py:348
 msgid "estatísticas"
 msgstr "statistics"
 
@@ -618,8 +618,8 @@ msgstr "Authors included in the Cifonauta image database."
 #: templates/buscar.html:14 templates/embed.html:6
 #: templates/flatpages/default.html:14 templates/home.html:10
 #: templates/home.html:15 templates/media_page.html:16
-#: templates/media_page_ajax.html:145 templates/meta_page.html:17
-#: templates/organization.html:15 templates/places_page.html:15
+#: templates/media_page_ajax.html:144 templates/meta_page.html:17
+#: templates/organization.html:15 templates/places_page.html:14
 #: templates/press_page.html:13 templates/refs_page.html:13
 #: templates/search.html:13 templates/tags_page.html:17
 #: templates/taxa_page.html:13 templates/tour_page.html:25
@@ -846,7 +846,7 @@ msgstr "no ranking"
 msgid "Nenhum arquivo encontrado :("
 msgstr "No image found :("
 
-#: templates/header.html:11
+#: templates/header.html:7
 msgid "banco de imagens de biologia marinha"
 msgstr "marine biology image database"
 
@@ -880,7 +880,7 @@ msgstr "content organization"
 
 #: templates/home.html:35
 msgid "termos de uso"
-msgstr "Terms of use"
+msgstr "terms of use"
 
 #: templates/home.html:35
 msgid "imprensa"
@@ -1184,15 +1184,15 @@ msgstr "of"
 msgid "próxima"
 msgstr "next"
 
-#: templates/places_page.html:7
+#: templates/places_page.html:6
 msgid "locais, biologia marinha, biodiversidade"
 msgstr "places, marine biology, biodiversity"
 
-#: templates/places_page.html:8 templates/places_page.html:14
+#: templates/places_page.html:7 templates/places_page.html:13
 msgid "Localidades incluídas no banco de imagens Cifonauta."
 msgstr "Places included in the Cifonauta image database."
 
-#: templates/places_page.html:23
+#: templates/places_page.html:22
 msgid "Locais"
 msgstr "Locations"
 

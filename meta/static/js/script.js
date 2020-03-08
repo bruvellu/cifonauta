@@ -11,13 +11,15 @@ var treeview = $("#colaptree").treeview({
   animated: "fast",
   persist: "location",
 });
-function open_tree(taxas){
-	// Close all tree
-	$('ul.treeview li div.collapsable-hitarea').click();
-	$.each((taxas.split(',')), function(index){
-		$('#taxa' + this).parents('li').children('div.expandable-hitarea').click()
-	});
-};
+
+// FIXME: This was closing the open tree! Not sure what it is for.
+//function open_tree(taxas){
+	//// Close all tree
+	//$('ul.treeview li div.collapsable-hitarea').click();
+	//$.each((taxas.split(',')), function(index){
+		//$('#taxa' + this).parents('li').children('div.expandable-hitarea').click()
+	//});
+//};
 
 // Highslide
 hs.graphicsDir = '/static/js/highslide/graphics/';
@@ -41,15 +43,6 @@ $('#slides').slides({
   generatePagination: false
 });
 
-function loadSocial(script) {
-  var defered = document.createElement("script");
-  defered.type = "text/javascript";
-  defered.src = script;
-  defered.async = true;
-  var holder = document.getElementById("deferedjs");
-  holder.parentNode.insertBefore(defered, holder);
-}
-
 // Document ready functions.
 $(document).ready(function(){
 
@@ -62,8 +55,8 @@ $(document).ready(function(){
   // Disqus
   $('#comments p').click(loadDisqus);
 
-  // Esconde avisos.
-  $("#colaptree").delay(400).fadeIn('slow');
+  // FIXME: Esconde árvore?
+  //$("#colaptree").delay(400).fadeIn('slow');
 
   // Esconde avisos.
   $(".success, .notice, .error").delay(10000).fadeOut('slow');

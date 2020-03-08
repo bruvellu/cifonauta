@@ -1233,7 +1233,8 @@ footer.paginator {
   -moz-opacity:0.9;
   opacity:0.9;
   filter:alpha(opacity=90);
-  zoom:1;
+  transform: scale(1);
+  transform-origin: 0 0;
   position:relative;
 }
 
@@ -1281,7 +1282,8 @@ ul.rel-thumbs li.current {
   -moz-opacity:0.4;
   opacity:0.4;
   filter:alpha(opacity=40);
-  zoom:1;
+  transform: scale(1);
+  transform-origin: 0 0;
 }
 
 ul.thumbs .lupa, ul.rel-thumbs .lupa, div.thumbs-org .lupa {
@@ -1504,7 +1506,8 @@ Reset list default style
   -moz-opacity:0.4;
   opacity:0.4;
   filter:alpha(opacity=40);
-  zoom:1;
+  transform: scale(1);
+  transform-origin: 0 0;
 }
 
 #slides .pagination img {
@@ -1569,9 +1572,7 @@ www.webaim.org/techniques/css/invisiblecontent/  &  j.mp/visuallyhidden */
 nicolasgallagher.com/micro-clearfix-hack/ */
 .clearfix:before, .clearfix:after { content: ""; display: table; }
 .clearfix:after { clear: both; }
-.clearfix { zoom: 1; }
-
-
+.clearfix { transform: scale(1); transform-origin: 0 0; }
 
 /**
  * Placeholder media queries for responsive design. Modify as design requires.

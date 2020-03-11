@@ -55,7 +55,8 @@ $(document).ready(function(){
   // Disqus
   $('#comments p').click(loadDisqus);
 
-  // FIXME: Esconde árvore?
+  // Mostra árvore na página taxa/
+  // FIXME: #colaptree display set to none. Precisa disso?
   //$("#colaptree").delay(400).fadeIn('slow');
 
   // Esconde avisos.

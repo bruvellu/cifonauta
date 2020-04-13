@@ -92,7 +92,7 @@ class Person(models.Model):
     is_author = models.BooleanField(_('author'), default=False,
             help_text=_('Informa se a pessoa é autora.'))
     media = models.ManyToManyField('Media', blank=True,
-            verbose_name=_('fotos'),
+            verbose_name=_('arquivos'),
             help_text=_('Arquivos associados a este autor.'))
 
     def __str__(self):
@@ -115,8 +115,8 @@ class Tag(models.Model):
     description = models.TextField(_('descrição'), default='', blank=True,
             help_text=_('Descrição do marcador.'))
     media = models.ManyToManyField('Media', blank=True,
-            verbose_name=_('fotos'),
-            help_text=_('Fotos associadas a este marcador.'))
+            verbose_name=_('arquivos'),
+            help_text=_('Arquivos associadas a este marcador.'))
     category = models.ForeignKey('Category', on_delete=models.SET_NULL,
             null=True, blank=True, related_name='tags',
             verbose_name=_('categoria'),
@@ -163,8 +163,8 @@ class Taxon(MPTTModel):
             null=True, related_name='children', verbose_name=_('pai'),
             help_text=_('Táxon pai deste táxon.'))
     media = models.ManyToManyField( 'Media', blank=True,
-            verbose_name=_('fotos'),
-            help_text=_('Fotos associadas a este táxon.'))
+            verbose_name=_('arquivos'),
+            help_text=_('Arquivos associadas a este táxon.'))
     timestamp = models.DateTimeField( _('data de modificação'), blank=True,
             null=True, help_text=_('Data da última modificação do arquivo.'))
 
@@ -279,8 +279,8 @@ class Reference(models.Model):
     citation = models.TextField(_('citação'), blank=True,
             help_text=_('Citação formatada da referência.'))
     media = models.ManyToManyField('Media', blank=True,
-            verbose_name=_('fotos'),
-            help_text=_('Fotos associadas à esta referência.'))
+            verbose_name=_('arquivos'),
+            help_text=_('Arquivos associadas à esta referência.'))
 
     def __str__(self):
         return self.name

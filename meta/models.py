@@ -280,7 +280,7 @@ class Reference(models.Model):
             help_text=_('Citação formatada da referência.'))
     media = models.ManyToManyField('Media', blank=True,
             verbose_name=_('arquivos'),
-            help_text=_('Arquivos associados à esta referência.'))
+            help_text=_('Arquivos associados a esta referência.'))
 
     def __str__(self):
         return self.name

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-08 20:48-0300\n"
-"PO-Revision-Date: 2020-03-08 20:49-0306\n"
+"POT-Creation-Date: 2020-04-13 15:58-0300\n"
+"PO-Revision-Date: 2020-04-13 15:58-0306\n"
 "Last-Translator: b'Bruno Vellutini <organelas@gmail.com>'\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -38,7 +38,7 @@ msgstr "city"
 msgid "estado"
 msgstr "state"
 
-#: forms.py:16 models.py:72 models.py:269 models.py:270
+#: forms.py:16 models.py:72 models.py:269
 msgid "país"
 msgstr "country"
 
@@ -70,8 +70,7 @@ msgstr "timestamp"
 msgid "aleatório"
 msgstr "random"
 
-#: forms.py:43 models.py:95 models.py:118 models.py:166 models.py:282
-#: templates/nav.html:29 templates/stats.html:3
+#: forms.py:43 templates/nav.html:29 templates/stats.html:3
 msgid "fotos"
 msgstr "photos"
 
@@ -324,7 +323,8 @@ msgstr "Country shown in the image (or country where it was collected)."
 msgid "arquivo"
 msgstr "file"
 
-#: models.py:83 models.py:311
+#: models.py:83 models.py:95 models.py:118 models.py:166 models.py:282
+#: models.py:311
 msgid "arquivos"
 msgstr "files"
 
@@ -383,16 +383,16 @@ msgid "Descrição do marcador."
 msgstr "Tag description."
 
 #: models.py:119
-msgid "Fotos associadas a este marcador."
-msgstr "Photos linked to this tag."
+msgid "Arquivos associados a este marcador."
+msgstr "Media linked to this tag."
 
-#: models.py:122
-msgid "categoria"
-msgstr "category"
+#: models.py:122 models.py:150
+msgid "categorias"
+msgstr "categories"
 
 #: models.py:123
-msgid "Categoria a que este marcador pertence."
-msgstr "Category to which this tag belongs."
+msgid "Categoria associada a este marcador."
+msgstr "Category linked to this tag."
 
 #: models.py:132
 msgid "marcador"
@@ -415,12 +415,8 @@ msgid "Descrição da categoria de marcadores."
 msgstr "Tag category description."
 
 #: models.py:149
-msgid "categoria de marcadores"
-msgstr "tag categories"
-
-#: models.py:150
-msgid "categorias de marcadores"
-msgstr "tag categories"
+msgid "categoria"
+msgstr "category"
 
 #: models.py:156
 msgid "Nome do táxon."
@@ -451,8 +447,8 @@ msgid "Táxon pai deste táxon."
 msgstr "Taxon parent."
 
 #: models.py:167
-msgid "Fotos associadas a este táxon."
-msgstr "Photos linked to this taxon."
+msgid "Arquivos associados a este táxon."
+msgstr "Media linked to this taxon."
 
 #: models.py:198 templates/nav.html:38
 msgid "táxons"
@@ -502,6 +498,10 @@ msgstr "Country name."
 msgid "Slug do nome do país."
 msgstr "Country name slug."
 
+#: models.py:270
+msgid "países"
+msgstr "countries"
+
 #: models.py:276
 msgid "Identificador da referência (Mendeley ID)."
 msgstr "Reference identifier (Mendeley ID)."
@@ -519,8 +519,9 @@ msgid "Citação formatada da referência."
 msgstr "Reference formatted reference."
 
 #: models.py:283
-msgid "Fotos associadas à esta referência."
-msgstr "Photos linked to this reference."
+#| msgid "Arquivos associados à esta referência."
+msgid "Arquivos associados a esta referência."
+msgstr "Media linked to this reference."
 
 #: models.py:292
 msgid "referência"
@@ -555,7 +556,7 @@ msgid "Data da última modificação do tour."
 msgstr "Tour modification date."
 
 #: models.py:311
-msgid "Arquivos associadas a este tour."
+msgid "Arquivos associados a este tour."
 msgstr "Media linked to this tour."
 
 #: models.py:313

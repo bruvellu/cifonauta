@@ -13,7 +13,8 @@ class MediaAdmin(TranslationAdmin):
 
 
 class TagAdmin(TranslationAdmin):
-    pass
+    filter_horizontal = ('media',)
+
 
 class CatAdmin(TranslationAdmin):
     pass
@@ -31,15 +32,24 @@ class CountryAdmin(TranslationAdmin):
     pass
 
 
+class PersonAdmin(admin.ModelAdmin):
+    filter_horizontal = ('media',)
+
+
+class TaxonAdmin(admin.ModelAdmin):
+    filter_horizontal = ('media',)
+
+
+class ReferenceAdmin(admin.ModelAdmin):
+    filter_horizontal = ('media',)
+
+
 class TourAdmin(TranslationAdmin):
-    pass
+    filter_horizontal = ('media', 'references',)
 
 
 # Regular models.
-admin.site.register(Person)
 admin.site.register(Location)
-admin.site.register(Reference)
-admin.site.register(Taxon)
 admin.site.register(Stats)
 
 # Translation models.
@@ -52,3 +62,7 @@ admin.site.register(City, CityAdmin)
 admin.site.register(State, StateAdmin)
 admin.site.register(Country, CountryAdmin)
 admin.site.register(Tour, TourAdmin)
+admin.site.register(Person, PersonAdmin)
+admin.site.register(Taxon, TaxonAdmin)
+admin.site.register(Reference, ReferenceAdmin)
+

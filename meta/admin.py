@@ -1,7 +1,7 @@
-from meta.models import *
 from django.contrib import admin
-from modeltranslation.admin import TranslationAdmin
 from django.contrib.flatpages.models import FlatPage
+from meta.models import *
+from modeltranslation.admin import TranslationAdmin
 
 # Translation admin.
 class FlatPageAdmin(TranslationAdmin):
@@ -14,7 +14,6 @@ class MediaAdmin(TranslationAdmin):
 
 class TagAdmin(TranslationAdmin):
     pass
-
 
 class CatAdmin(TranslationAdmin):
     pass
@@ -48,7 +47,7 @@ admin.site.unregister(FlatPage)
 admin.site.register(FlatPage, FlatPageAdmin)
 admin.site.register(Media, MediaAdmin)
 admin.site.register(Tag, TagAdmin)
-admin.site.register(Category, TagAdmin)
+admin.site.register(Category, CatAdmin)
 admin.site.register(City, CityAdmin)
 admin.site.register(State, StateAdmin)
 admin.site.register(Country, CountryAdmin)

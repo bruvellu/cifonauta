@@ -116,7 +116,7 @@ class Tag(models.Model):
             help_text=_('Descrição do marcador.'))
     media = models.ManyToManyField('Media', blank=True,
             verbose_name=_('arquivos'),
-            help_text=_('Arquivos associadas a este marcador.'))
+            help_text=_('Arquivos associados a este marcador.'))
     category = models.ForeignKey('Category', on_delete=models.SET_NULL,
             null=True, blank=True, related_name='tags',
             verbose_name=_('categorias'),
@@ -164,7 +164,7 @@ class Taxon(MPTTModel):
             help_text=_('Táxon pai deste táxon.'))
     media = models.ManyToManyField( 'Media', blank=True,
             verbose_name=_('arquivos'),
-            help_text=_('Arquivos associadas a este táxon.'))
+            help_text=_('Arquivos associados a este táxon.'))
     timestamp = models.DateTimeField( _('data de modificação'), blank=True,
             null=True, help_text=_('Data da última modificação do arquivo.'))
 
@@ -280,7 +280,7 @@ class Reference(models.Model):
             help_text=_('Citação formatada da referência.'))
     media = models.ManyToManyField('Media', blank=True,
             verbose_name=_('arquivos'),
-            help_text=_('Arquivos associadas à esta referência.'))
+            help_text=_('Arquivos associados à esta referência.'))
 
     def __str__(self):
         return self.name
@@ -308,7 +308,7 @@ class Tour(models.Model):
     timestamp = models.DateTimeField(_('data de modificação'), auto_now=True,
             help_text=_('Data da última modificação do tour.'))
     media = models.ManyToManyField('Media', blank=True,
-            verbose_name=_('arquivos'), help_text=_('Arquivos associadas a este tour.'))
+            verbose_name=_('arquivos'), help_text=_('Arquivos associados a este tour.'))
     references = models.ManyToManyField('Reference', blank=True,
             verbose_name=_('referências'), help_text=_('Referências associadas a este tour.'))
 

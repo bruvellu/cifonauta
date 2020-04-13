@@ -119,8 +119,8 @@ class Tag(models.Model):
             help_text=_('Arquivos associadas a este marcador.'))
     category = models.ForeignKey('Category', on_delete=models.SET_NULL,
             null=True, blank=True, related_name='tags',
-            verbose_name=_('categoria'),
-            help_text=_('Categoria a que este marcador pertence.'))
+            verbose_name=_('categorias'),
+            help_text=_('Categoria associada a este marcador.'))
 
     def __str__(self):
         return self.name
@@ -146,8 +146,8 @@ class Category(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = _('categoria de marcadores')
-        verbose_name_plural = _('categorias de marcadores')
+        verbose_name = _('categoria')
+        verbose_name_plural = _('categorias')
         ordering = ['name']
 
 
@@ -267,7 +267,7 @@ class Country(models.Model):
 
     class Meta:
         verbose_name = _('país')
-        verbose_name_plural = _('país')
+        verbose_name_plural = _('países')
         ordering = ['name']
 
 

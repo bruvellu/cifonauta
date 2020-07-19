@@ -1,4 +1,5 @@
-django==2.2.12
+wheel
+django==2.2.13
 django-mptt
 django-rosetta
 django-modeltranslation
@@ -8,3 +9,4 @@ sorl-thumbnail
 suds-jurko
 fabric
 pillow
+django-debug-toolbar

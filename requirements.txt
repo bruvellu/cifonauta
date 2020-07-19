@@ -10,3 +10,4 @@ suds-jurko
 fabric
 pillow
 django-debug-toolbar
+patchwork

@@ -1,6 +1,6 @@
 {% load i18n thumbnail %}
 <div id="related-form" class="span-15 last">
-    <form action="." method="post">
+    <form action="." method="post">{% csrf_token %}
         <div class="span-9" id="crumbs">
         {{ form.type.label_tag }}<strong> {{ type }}:</strong>
         <span class="quiet">
@@ -15,7 +15,6 @@
             {{ form.type }}
             <input name="related" type="submit" value="{% trans 'Trocar' %}" class="fashion" /> 
         </div>
-        {% csrf_token %}
     </form>
 </div>
 

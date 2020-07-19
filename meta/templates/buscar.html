@@ -63,10 +63,9 @@
 {% if show_results %}
 
 <div class="block shadow">
-  <form action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="post">
+  <form action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="post">{% csrf_token %}
     {{ n_form.as_p}}
     <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display" />
-    {% csrf_token %}
   </form>
 </div>
 

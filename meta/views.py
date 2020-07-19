@@ -56,9 +56,6 @@ def search_page(request, model_name='', field='', slug=''):
     # Get public media.
     media_list = Media.objects.filter(is_public=True)
 
-    # Get language of current session
-    language = request.COOKIES['django_language']
-
     # Check request.GET for query refinements.
     if request.method == 'GET':
 

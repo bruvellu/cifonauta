@@ -11,8 +11,7 @@
 {% endif %}
 
 <div id="languages">
-  <form action="/i18n/setlang/" method="post">
-    {% csrf_token %}
+  <form action="/i18n/setlang/" method="post">{% csrf_token %}
     <select name="language">
       {% for lang in LANGUAGES %}
       <option value="{{ lang.0 }}"{% if lang.0 == LANGUAGE_CODE %} selected="selected"{% endif %}>{{ lang.1 }}</option>

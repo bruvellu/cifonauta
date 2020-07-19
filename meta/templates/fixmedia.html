@@ -31,10 +31,9 @@
         <li>
             {% include 'thumb.html' %}<br>
             {{ media.datatype }} id={{ media.id }}
-            <form action="." method="post">
+            <form action="." method="post">{% csrf_token %}
                 <input type="submit" value="remover" class="fashion float-right" id="fixmedia" />
                 <input type="hidden" value="{{ media.id }}" name="{{ media.datatype }}" />
-                {% csrf_token %}
             </form>
         </li>
         {% endfor %}
@@ -56,10 +55,9 @@
                 <li>
                 {% include 'thumb.html' %}<br>
                     {{ media.datatype }} id={{ media.id }}
-                    <form action="." method="post">
+                    <form action="." method="post">{% csrf_token %}
                         <input type="submit" value="remover" class="fashion float-right" id="fixmedia" />
                         <input type="hidden" value="{{ media.id }}" name="{{ media.datatype }}" />
-                        {% csrf_token %}
                     </form>
                 </li>
                 {% endfor %}

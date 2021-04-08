@@ -1,5 +1,5 @@
 wheel
-django==2.2.13
+django==2.2.20
 django-mptt
 django-rosetta
 django-modeltranslation

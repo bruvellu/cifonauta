@@ -1,9 +1,9 @@
 wheel
-django==2.2.20
+django==2.2.24
 django-mptt
 django-rosetta
 django-modeltranslation
-psycopg2
+psycopg2==2.8.6
 requests
 sorl-thumbnail
 suds-jurko

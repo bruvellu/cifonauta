@@ -1,13 +1,12 @@
 wheel
-django==2.2.24
+django==2.2.28
+psycopg2==2.8.6
 django-mptt
 django-rosetta
 django-modeltranslation
-psycopg2==2.8.6
-requests
 sorl-thumbnail
-suds-jurko
-fabric
+requests
 pillow
 django-debug-toolbar
+fabric
 patchwork

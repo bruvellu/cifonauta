@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps import views
 from django.contrib.sitemaps import GenericSitemap
+from django.contrib.flatpages.sitemaps import FlatPageSitemap
 from django.urls import include, path
 from meta.models import Media, Person, Tag, Category, Taxon, Location, City, State, Country, Tour
 import debug_toolbar
@@ -44,7 +45,7 @@ sitemaps = {
     'states': GenericSitemap(state_dict, priority=0.4, changefreq='monthly'),
     'countries': GenericSitemap(country_dict, priority=0.4, changefreq='monthly'),
     'tours': GenericSitemap(tour_dict, priority=0.8, changefreq='monthly'),
-    # 'flatpages': FlatPageSitemap,
+    'flatpages': FlatPageSitemap,
     # 'references': GenericSitemap(reference_dict, priority=0.5, changefreq='monthly'),
 }
 

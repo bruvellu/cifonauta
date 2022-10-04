@@ -6,7 +6,7 @@ from django.contrib import admin
 from django.contrib.sitemaps import views
 from django.contrib.sitemaps import GenericSitemap
 from django.urls import include, path
-from meta.models import Media
+from meta.models import Media, Person, Tag, Category, Taxon, Location, City, State, Country, Tour
 import debug_toolbar
 
 #admin.autodiscover()
@@ -22,34 +22,29 @@ import debug_toolbar
 
 # Sitemaps
 media_dict = {'queryset': Media.objects.filter(is_public=True), 'date_field': 'timestamp'}
-# photo_dict = {'queryset': Image.objects.filter(is_public=True), 'date_field': 'timestamp'}
-# video_dict = {'queryset': Video.objects.filter(is_public=True), 'date_field': 'timestamp'}
-# tour_dict = {'queryset': Tour.objects.filter(is_public=True), 'date_field': 'timestamp'}
-# taxon_dict = {'queryset': Taxon.objects.all()}
-# tag_dict = {'queryset': Tag.objects.all()}
-# place_dict = {'queryset': Sublocation.objects.all()}
-# city_dict = {'queryset': City.objects.all()}
-# state_dict = {'queryset': State.objects.all()}
-# country_dict = {'queryset': Country.objects.all()}
-# author_dict = {'queryset': Author.objects.all()}
-# source_dict = {'queryset': Source.objects.all()}
+person_dict = {'queryset': Person.objects.all()}
+tag_dict = {'queryset': Tag.objects.all()}
+category_dict = {'queryset': Category.objects.all()}
+taxon_dict = {'queryset': Taxon.objects.all()}
+location_dict = {'queryset': Location.objects.all()}
+city_dict = {'queryset': City.objects.all()}
+state_dict = {'queryset': State.objects.all()}
+country_dict = {'queryset': Country.objects.all()}
+tour_dict = {'queryset': Tour.objects.filter(is_public=True), 'date_field': 'timestamp'}
 # reference_dict = {'queryset': Reference.objects.all()}
 
 sitemaps = {
     'media': GenericSitemap(media_dict, priority=0.7, changefreq='weekly'),
+    'persons': GenericSitemap(person_dict, priority=0.9, changefreq='weekly'),
+    'tags': GenericSitemap(tag_dict, priority=0.8, changefreq='weekly'),
+    'categories': GenericSitemap(category_dict, priority=0.8, changefreq='weekly'),
+    'taxa': GenericSitemap(taxon_dict, priority=1.0, changefreq='weekly'),
+    'locations': GenericSitemap(location_dict, priority=0.8, changefreq='weekly'),
+    'cities': GenericSitemap(city_dict, priority=0.6, changefreq='monthly'),
+    'states': GenericSitemap(state_dict, priority=0.4, changefreq='monthly'),
+    'countries': GenericSitemap(country_dict, priority=0.4, changefreq='monthly'),
+    'tours': GenericSitemap(tour_dict, priority=0.8, changefreq='monthly'),
     # 'flatpages': FlatPageSitemap,
-    # 'blog': GenericSitemap(blog_dict, priority=0.4, changefreq='monthly'),
-    # 'photos': GenericSitemap(photo_dict, priority=0.7, changefreq='weekly'),
-    # 'videos': GenericSitemap(video_dict, priority=0.7, changefreq='weekly'),
-    # 'tours': GenericSitemap(tour_dict, priority=0.8, changefreq='monthly'),
-    # 'taxa': GenericSitemap(taxon_dict, priority=1.0, changefreq='weekly'),
-    # 'tags': GenericSitemap(tag_dict, priority=0.8, changefreq='weekly'),
-    # 'places': GenericSitemap(place_dict, priority=0.8, changefreq='weekly'),
-    # 'cities': GenericSitemap(city_dict, priority=0.6, changefreq='monthly'),
-    # 'states': GenericSitemap(state_dict, priority=0.4, changefreq='monthly'),
-    # 'countries': GenericSitemap(country_dict, priority=0.4, changefreq='monthly'),
-    # 'authors': GenericSitemap(author_dict, priority=0.8, changefreq='weekly'),
-    # 'sources': GenericSitemap(source_dict, priority=0.7, changefreq='weekly'),
     # 'references': GenericSitemap(reference_dict, priority=0.5, changefreq='monthly'),
 }
 

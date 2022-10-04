@@ -3,7 +3,10 @@ import os
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
+from django.contrib.sitemaps import GenericSitemap
 from django.urls import include, path
+from meta.models import Media
 import debug_toolbar
 
 #admin.autodiscover()
@@ -18,6 +21,7 @@ import debug_toolbar
 #ONE_YEAR = 60 * 60 * 24 * 30 * 12   # 31104000
 
 # Sitemaps
+media_dict = {'queryset': Media.objects.filter(is_public=True), 'date_field': 'timestamp'}
 # photo_dict = {'queryset': Image.objects.filter(is_public=True), 'date_field': 'timestamp'}
 # video_dict = {'queryset': Video.objects.filter(is_public=True), 'date_field': 'timestamp'}
 # tour_dict = {'queryset': Tour.objects.filter(is_public=True), 'date_field': 'timestamp'}
@@ -31,7 +35,8 @@ import debug_toolbar
 # source_dict = {'queryset': Source.objects.all()}
 # reference_dict = {'queryset': Reference.objects.all()}
 
-# sitemaps = {
+sitemaps = {
+    'media': GenericSitemap(media_dict, priority=0.7, changefreq='weekly'),
     # 'flatpages': FlatPageSitemap,
     # 'blog': GenericSitemap(blog_dict, priority=0.4, changefreq='monthly'),
     # 'photos': GenericSitemap(photo_dict, priority=0.7, changefreq='weekly'),
@@ -46,7 +51,7 @@ import debug_toolbar
     # 'authors': GenericSitemap(author_dict, priority=0.8, changefreq='weekly'),
     # 'sources': GenericSitemap(source_dict, priority=0.7, changefreq='weekly'),
     # 'references': GenericSitemap(reference_dict, priority=0.5, changefreq='monthly'),
-# }
+}
 
 
 urlpatterns = [
@@ -56,6 +61,8 @@ urlpatterns = [
         path('', include('meta.urls')),
         path('rosetta/', include('rosetta.urls')),
         path('i18n/', include('django.conf.urls.i18n')),
+        path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
+            name='django.contrib.sitemaps.views.sitemap')
 
         # Sitemaps
         #url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),

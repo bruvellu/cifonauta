@@ -3,7 +3,7 @@ import os
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.sitemaps.views import sitemap
+from django.contrib.sitemaps import views
 from django.contrib.sitemaps import GenericSitemap
 from django.urls import include, path
 from meta.models import Media
@@ -61,11 +61,9 @@ urlpatterns = [
         path('', include('meta.urls')),
         path('rosetta/', include('rosetta.urls')),
         path('i18n/', include('django.conf.urls.i18n')),
-        path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
-            name='django.contrib.sitemaps.views.sitemap')
-
-        # Sitemaps
-        #url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
+        path('sitemap.xml', views.index, {'sitemaps': sitemaps}),
+        path('sitemap-<section>.xml', views.sitemap, {'sitemaps': sitemaps},
+            name='django.contrib.sitemaps.views.sitemap'),
 
         # Site media
         ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

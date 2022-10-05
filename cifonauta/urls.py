@@ -7,7 +7,7 @@ from django.contrib.sitemaps import views
 from django.contrib.sitemaps import GenericSitemap
 from django.contrib.flatpages.sitemaps import FlatPageSitemap
 from django.urls import include, path
-from meta.models import Media, Person, Tag, Category, Taxon, Location, City, State, Country, Tour
+from meta.models import Media, Person, Tag, Taxon, Location, City, State, Country, Tour
 import debug_toolbar
 
 #admin.autodiscover()
@@ -25,7 +25,6 @@ import debug_toolbar
 media_dict = {'queryset': Media.objects.filter(is_public=True), 'date_field': 'timestamp'}
 person_dict = {'queryset': Person.objects.all()}
 tag_dict = {'queryset': Tag.objects.all()}
-category_dict = {'queryset': Category.objects.all()}
 taxon_dict = {'queryset': Taxon.objects.all()}
 location_dict = {'queryset': Location.objects.all()}
 city_dict = {'queryset': City.objects.all()}
@@ -38,7 +37,6 @@ sitemaps = {
     'media': GenericSitemap(media_dict, priority=0.7, changefreq='weekly'),
     'persons': GenericSitemap(person_dict, priority=0.9, changefreq='weekly'),
     'tags': GenericSitemap(tag_dict, priority=0.8, changefreq='weekly'),
-    'categories': GenericSitemap(category_dict, priority=0.8, changefreq='weekly'),
     'taxa': GenericSitemap(taxon_dict, priority=1.0, changefreq='weekly'),
     'locations': GenericSitemap(location_dict, priority=0.8, changefreq='weekly'),
     'cities': GenericSitemap(city_dict, priority=0.6, changefreq='monthly'),

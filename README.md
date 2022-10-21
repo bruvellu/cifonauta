@@ -10,14 +10,14 @@ All the content is available under a [Creative Commons license](http://creativec
 
 Visit us at http://cifonauta.cebimar.usp.br/
 
-<a href="http://cifonauta.cebimar.usp.br/media/6692/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_RBkyCp_cover.jpg" height="186px"></a>
-<a href="http://cifonauta.cebimar.usp.br/media/3033/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_fXBYda_cover.jpg" height="186px"></a>
-<a href="http://cifonauta.cebimar.usp.br/media/4924/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_TkKZgx_cover.jpg" height="186px"></a>
-<a href="http://cifonauta.cebimar.usp.br/media/1882/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_r33pVK_cover.jpg" height="186px"></a>
-<a href="http://cifonauta.cebimar.usp.br/media/9362/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_SO5w7N_cover.jpg" height="170px"></a>
-<a href="http://cifonauta.cebimar.usp.br/media/9972/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_yUcBzx_cover.jpg" height="170px"></a>
-<a href="http://cifonauta.cebimar.usp.br/media/2425/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_dIPsvR_cover.jpg" height="170px"></a>
-<a href="http://cifonauta.cebimar.usp.br/media/5683/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_jYEPs1_cover.jpg" height="170px"></a>
+<a href="http://cifonauta.cebimar.usp.br/media/6692/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_RBkyCp_cover.jpg" height="150px"></a>
+<a href="http://cifonauta.cebimar.usp.br/media/3033/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_fXBYda_cover.jpg" height="150px"></a>
+<a href="http://cifonauta.cebimar.usp.br/media/4924/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_TkKZgx_cover.jpg" height="150px"></a>
+<a href="http://cifonauta.cebimar.usp.br/media/1882/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_r33pVK_cover.jpg" height="150px"></a>
+<a href="http://cifonauta.cebimar.usp.br/media/9362/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_SO5w7N_cover.jpg" height="137px"></a>
+<a href="http://cifonauta.cebimar.usp.br/media/9972/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_yUcBzx_cover.jpg" height="137px"></a>
+<a href="http://cifonauta.cebimar.usp.br/media/2425/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_dIPsvR_cover.jpg" height="137px"></a>
+<a href="http://cifonauta.cebimar.usp.br/media/5683/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_jYEPs1_cover.jpg" height="137px"></a>
 
 ## Credits
 

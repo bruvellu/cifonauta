@@ -2,17 +2,14 @@
 
 ## Requirements
 
+- [Ubuntu](https://ubuntu.com/) (or other Linux machine)
 - [Python](http://www.python.org/)
 - [Django](http://www.djangoproject.com/)
 - [PostgreSQL](http://www.postgresql.org/)
 
-Full list in the [`requirements.txt`](https://github.com/bruvellu/cifonauta/blob/master/requirements.txt).
+## Local installation
 
-## Installation
-
-Only tested on Linux machines running [Ubuntu](https://ubuntu.com/) or a Debian-based distribution.
-
-## Local
+### Install system packages
 
 First, open a terminal and install the required system packages (requires admin privileges):
 
@@ -20,11 +17,15 @@ First, open a terminal and install the required system packages (requires admin 
 sudo apt install git python3 python3-dev python3-pip python3-venv python3-gi postgresql postgresql-server-dev-all libpq-dev yui-compressor ffmpeg imagemagick gettext language-pack-pt gir1.2-gexiv2-0.10 libjpeg-dev zlib1g-dev
 ```
 
+### Clone the repository
+
 Then, change to a directory where you want to install the Cifonauta (can be any) and clone the repository using [`git`](https://git-scm.com/):
 
 ```
 git clone https://github.com/bruvellu/cifonauta.git
 ```
+
+### Create Python virtual environment
 
 To install the remaining packages, we need to create a self-contained virtual environment.
 Go into the repository directory you just cloned and run the python commands below to create and activate the virtual environment.
@@ -36,6 +37,8 @@ source virtual/bin/activate
 ```
 
 If this worked, you should see `(virtual)` on your command prompt.
+
+### Install Django packages
 
 Now, we install the remaining packages using [`pip`](https://pypi.org/project/pip/):
 
@@ -65,6 +68,8 @@ Starting development server at http://127.0.0.1:8000/
 
 Press CTRL+C to kill it, for now.
 
+### Create PostgreSQL database
+
 Next, we create the PostgreSQL user and an empty database:
 
 ```
@@ -77,14 +82,10 @@ createdb -E UTF8 -T template0 -l pt_BR.UTF8 cebimar
 If you have a database dump, now is the time to load it:
 
 ```
-psql cebimar < database_dump.sql
+gunzip < cebimar_2019-09-21_1234.sql.gz | psql cebimar
 ```
 
-If the dump is `.gz` run this instead:
-
-```
-gunzip < backups/cebimar_2019-09-21_1234.sql.gz | psql cebimar
-```
+### Run local server
 
 With that, we can run the Cifonauta database using Django’s built-in local server:
 
@@ -92,7 +93,21 @@ With that, we can run the Cifonauta database using Django’s built-in local ser
 python manage.py runserver
 ```
 
+That’s it, you can access the local Cifonauta at http://127.0.0.1:8000/
+
+**Note:** if you close the terminal, you’ll first need to activate the virtual environment to be able to run the local server again (for example, after a system restart).
+For that, just go the repository directory and run:
+
+```
+source virtual/bin/activate
+```
+
 ---
+
+All the documentation below is outdated and will be updated soon.
+
+## Server installation (outdated)
+
 
 Or create tables from scratch and load initial data (still incomplete):
 

@@ -1,50 +1,71 @@
 # Cifonauta documentation
 
-[Cifonauta](http://cifonauta.cebimar.usp.br/) database is built from the metadata embedded in the multimedia files (photos and videos). Using the desktop app [[Véliger]], we store information about the species, stage of life, habitat, geolocation, and other data about the depicted organisms. These files are read, processed, and uploaded (or updated) on the website.
-
 ## Requirements
 
 - [Python](http://www.python.org/)
 - [Django](http://www.djangoproject.com/)
 - [PostgreSQL](http://www.postgresql.org/)
 
+Full list in the [`requirements.txt`](https://github.com/bruvellu/cifonauta/blob/master/requirements.txt).
+
 ## Installation
 
-Tested on Ubuntu only. Known to work in Debian and potentially any Linux server
-if package names are adjusted to match the distribution.
+Only tested on Linux machines running [Ubuntu](https://ubuntu.com/) or a Debian-based distribution.
 
-## Local install
+## Local
 
-Install system packages:
-
-```
-sudo apt update && sudo apt upgrade
-
-sudo apt install git python3 python3-dev python3-pip python3-venv python3-gi postgresql postgresql-server-dev-all libpq-dev yui-compressor ffmpeg imagemagick gettext language-pack-pt gir1.2-gexiv2-0.10 libjpeg62 libjpeg62-dev zlib1g-dev
-```
-
-Clone repository:
+First, open a terminal and install the required system packages (requires admin privileges):
 
 ```
-git clone git@github.com:nelas/cifonauta.git
+sudo apt install git python3 python3-dev python3-pip python3-venv python3-gi postgresql postgresql-server-dev-all libpq-dev yui-compressor ffmpeg imagemagick gettext language-pack-pt gir1.2-gexiv2-0.10 libjpeg-dev zlib1g-dev
+```
+
+Then, change to a directory where you want to install the Cifonauta (can be any) and clone the repository using [`git`](https://git-scm.com/):
+
+```
+git clone https://github.com/bruvellu/cifonauta.git
+```
+
+To install the remaining packages, we need to create a self-contained virtual environment.
+Go into the repository directory you just cloned and run the python commands below to create and activate the virtual environment.
+
+```
 cd cifonauta
-```
-
-Create virtual environment:
-
-```
 python3 -m venv virtual
 source virtual/bin/activate
 ```
 
-Install Python packages using pip:
+If this worked, you should see `(virtual)` on your command prompt.
+
+Now, we install the remaining packages using [`pip`](https://pypi.org/project/pip/):
 
 ```
 pip install --upgrade -r requirements.txt
-ln -s /usr/lib/python3/dist-packages/gi virtual/lib/python3.7/site-packages/
 ```
 
-Create PostgreSQL database:
+This will install all the Django-specific and other Python-packages needed to run the database.
+Test if the installation worked by running:
+
+```
+python manage runserver
+```
+
+You should this message:
+
+```
+(virtual) nelas@pilidium:~/CEBIMar/cifonauta$ python manage.py runserver 
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+January 08, 2023 - 16:16:46
+Django version 2.2.28, using settings 'cifonauta.settings'
+Starting development server at http://127.0.0.1:8000/
+```
+
+Press CTRL+C to kill it, for now.
+
+Next, we create the PostgreSQL user and an empty database:
 
 ```
 sudo -s -u postgres
@@ -53,11 +74,25 @@ service postgresql restart
 createdb -E UTF8 -T template0 -l pt_BR.UTF8 cebimar
 ```
 
-Load a database backup:
+If you have a database dump, now is the time to load it:
 
 ```
 psql cebimar < database_dump.sql
 ```
+
+If the dump is `.gz` run this instead:
+
+```
+gunzip < backups/cebimar_2019-09-21_1234.sql.gz | psql cebimar
+```
+
+With that, we can run the Cifonauta database using Django’s built-in local server:
+
+```
+python manage.py runserver
+```
+
+---
 
 Or create tables from scratch and load initial data (still incomplete):
 

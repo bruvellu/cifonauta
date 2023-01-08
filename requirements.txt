@@ -4,9 +4,9 @@ psycopg2==2.8.6
 django-mptt
 django-rosetta
 django-modeltranslation==0.17.3
+django-debug-toolbar
 sorl-thumbnail
 requests
 pillow
-django-debug-toolbar
 fabric
 patchwork

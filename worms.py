@@ -1,15 +1,42 @@
 #!/usr/bin/env python
 
-'''Client to access the web services of WoRMS database (http://www.marinespecies.org/).
+'''Client to access the web services of the WoRMS database (http://www.marinespecies.org/).
 
-For a full description refer to: http://marinespecies.org/aphia.php?p=soap#
+For a full description refer to: http://marinespecies.org/aphia.php?p=soap
 
 Usage:
 
     from worms import Aphia
     aphia = Aphia()
-    results = aphia.search_by_scientific_name('Priapulus caudatus')
+    results = aphia.get_aphia_records('Priapulus caudatus')
     print(results)
+
+Services:
+
+    [y] getAphiaID
+    [y] getAphiaRecords
+    [y] getAphiaNameByID
+    [y] getAphiaRecordByID
+    [ ] getAphiaRecordsByIDs
+    [y] getAphiaRecordByExtID
+    [y] getExtIDbyAphiaID
+    [y] getAphiaRecordsByNames
+    [y] getAphiaRecordsByVernacular
+    [y] getAphiaRecordsByDate
+    [y] getAphiaClassificationByID
+    [y] getSourcesByAphiaID
+    [y] getAphiaSynonymsByID
+    [y] getAphiaVernacularsByID
+    [y] getAphiaChildrenByID
+    [y] matchAphiaRecordsByNames
+    [y] getAphiaDistributionsByID
+    [ ] getAphiaTaxonRanksByID
+    [ ] getAphiaTaxonRanksByName
+    [ ] getAphiaRecordsByTaxonRankID
+    [ ] getAphiaAttributeKeysByID
+    [ ] getAphiaAttributeValuesByCategoryID
+    [ ] getAphiaIDsByAttributeKeyID
+    [ ] getAphiaAttributesByAphiaID
 
 '''
 
@@ -54,19 +81,6 @@ class Aphia:
             logger.critical('Closing up the connection. I failed.')
             results = None
         return results
-
-    def get_best_match(self, query):
-        '''Searches and finds best-matching valid WoRMS record.'''
-        records = self.get_aphia_records(query)
-        if not records:
-            # TODO Elaborate search with fuzzy match_aphia_records_by_names.
-            return None
-        for record in records:
-            if record['status'] == 'accepted':
-                return record
-            elif record['status'] == 'unaccepted' or record['status'] == 'alternate representation':
-                valid = self.get_best_match(record['valid_name'])
-        return valid
 
     def get_aphia_id(self, query):
         '''Get the AphiaID for a given name.'''

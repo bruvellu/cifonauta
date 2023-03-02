@@ -10,3 +10,4 @@ requests
 pillow
 fabric
 patchwork
+suds

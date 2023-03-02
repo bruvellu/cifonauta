@@ -2,7 +2,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django.template.defaultfilters import slugify
-from meta.models import Image, Video, Taxon
+from meta.models import Media, Taxon
 from worms import Aphia
 
 '''
@@ -152,6 +152,21 @@ def search_worms(taxon_name):
         elif record['status'] == 'unaccepted' or record['status'] == 'alternate representation':
             valid = search_worms(record['valid_name'])
     return valid
+
+
+def get_best_match(query):
+    '''Searches and finds best-matching valid WoRMS record.'''
+    records = self.get_aphia_records(query)
+    if not records:
+        # TODO Elaborate search with fuzzy match_aphia_records_by_names.
+        return None
+    for record in records:
+        if record['status'] == 'accepted':
+            return record
+        elif record['status'] == 'unaccepted' or record['status'] == 'alternate representation':
+            valid = self.get_best_match(record['valid_name'])
+    return valid
+
 
 def translate_rank(rank):
    '''Translate ranks intelligently.'''

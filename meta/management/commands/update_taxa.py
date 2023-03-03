@@ -6,9 +6,6 @@ from django.template.defaultfilters import slugify
 from meta.models import Media, Taxon
 from worms import Aphia
 
-# TODO: taxa_update.py: Fetch data and status from WoRMS
-# TODO: taxa_update.py: Fetch data and status from WoRMS
-
 '''
 Example Aphia record:
 
@@ -58,6 +55,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        # TODO: taxa_update: fetch taxon infos
+        # TODO: taxa_get_parent: fetch parent taxa
+        # TODO: taxa_get_valid: find and replace by valid
+
+        # TODO: Also fetch non-marine species
+
         # Set language to Portuguese by default
         translation.activate('pt-br')
 
@@ -67,20 +70,11 @@ class Command(BaseCommand):
         rank = options['rank']
         print(options)
 
-        # TODO: Outline
-        # 1. Fetch taxa filtering by timestamp, rank, and number
-        # 2. Search taxon name in WoRMS
-        # 3. Parse search results (one or more matches)
-        # 4. Update taxon record and status
-        # 5. Add/update higher ranks from taxon
-        # 6. Fetch whole hierarchical tree
-
         # Get all taxa
         taxa = Taxon.objects.all()
         # Ignore recently updated taxa
         if days:
-            today = timezone.now()
-            datelimit = today - timezone.timedelta(days=days)
+            datelimit = timezone.now() - timezone.timedelta(days=days)
             taxa = taxa.filter(timestamp__lt=datelimit)
         # Only update taxa of a specific rank
         if rank:
@@ -96,14 +90,11 @@ class Command(BaseCommand):
         for taxon in taxa:
             records = self.search_worms(taxon.name)
             if not records:
+                taxon.save()
                 continue
             # Trust first best hit from WoRMS
             record = records[0]
             self.update_taxon(taxon, record)
-
-            #record = self.get_valid_taxon(records)
-
-            #TODO: Continue from here
 
     def search_worms(self, taxon_name):
         '''Search WoRMS for taxon name.'''
@@ -114,7 +105,6 @@ class Command(BaseCommand):
 
     def update_taxon(self, taxon, record):
         '''Update taxon entry in the database.'''
-        print(taxon.__dict__)
         if record['status'] == 'accepted':
             is_valid = True
         else:
@@ -138,16 +128,6 @@ class Command(BaseCommand):
             valid = self.aphia.get_aphia_record_by_id(record['valid_AphiaID'])
             # valid = search_worms(record['valid_name'])
             return valid
-
-
-    # def print_record(self, record):
-        # '''Print string with taxon information.'''
-        # self.stdout.write('{0}: {1} {2} ({3}) > {4}'.format(
-            # record['AphiaID'],
-            # record['scientificname'],
-            # record['authority'],
-            # record['rank'],
-            # record['status']))
 
 
         # All media taxa.

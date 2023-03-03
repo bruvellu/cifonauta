@@ -44,15 +44,19 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         # TODO: Option: limit the number of taxa to retrieve
-        parser.add_argument('-n', '--number', action='store', dest='number',
-                default=10, help='Limit the number of taxa to update.')
+        parser.add_argument('-n', '--number', type=int, default=10,
+                help='Limit the number of taxa to update.')
         # TODO: Option: filter by rank (eg Species)
+        parser.add_argument('-r', '--rank', default='',
+                help='Limit the rank of taxa to update.')
         # TODO: Option: ignore timestamp (force update)
 
     def handle(self, *args, **options):
 
         # Parse options
-        n = int(options['number'])
+        n = options['number']
+        rank = options['rank']
+        print(options)
 
         # TODO: Outline
         # 1. Fetch taxa filtering by timestamp, rank, and number
@@ -62,15 +66,52 @@ class Command(BaseCommand):
         # 5. Add/update higher ranks from taxon
         # 6. Fetch whole hierarchical tree
 
-        # Get taxa
-        taxa = Taxon.objects.all()[:n]
+        # Get all taxa
+        taxa = Taxon.objects.all()
+        # Filter by rank
+        if rank:
+            taxa = taxa.filter(rank=rank)
+        # Limit the number
+        taxa = taxa[:n]
 
         # Loop over taxa
         for taxon in taxa:
-            records = search_worms(taxon.name)
-            # self.stdout.write('\nFound: {} record(s)'.format(len(records)))
-            # for record in records:
-                # self.print_record(record)
+            if not self.needs_update(taxon):
+                continue
+            records = self.search_worms(taxon.name)
+            #TODO: Continue from here
+
+    def search_worms(self, taxon_name):
+        '''Search WoRMS for taxon name.'''
+        aphia = Aphia()
+        records = aphia.get_aphia_records(taxon_name)
+        if not records:
+            return None
+        return records
+
+    def needs_update(self, taxon):
+        '''Calculate delta days before querying WoRMS.'''
+        if not taxon.timestamp:
+            return True
+        today = timezone.now()
+        delta_timezone = today - taxon.timestamp
+        delta_days = delta_timezone.days
+        if delta_days >= 30:
+            return True
+        else:
+            return False
+
+    def get_valid_taxon(self, records):
+        '''Get a valid taxon.'''
+
+        for record in records:
+            print_record(record)
+            if record['status'] == 'accepted':
+                return record
+            else:
+                valid = search_worms(record['valid_name'])
+        return valid
+
 
     # def print_record(self, record):
         # '''Print string with taxon information.'''
@@ -117,25 +158,6 @@ class Command(BaseCommand):
 #        self.stdout.write('Finished translation.')
 
 
-def search_worms(taxon_name):
-    '''Search WoRMS for taxon name.'''
-    aphia = Aphia()
-    records = aphia.get_aphia_records(taxon_name)
-    if not records:
-        return None
-    return records
-
-
-def get_valid_taxon(records):
-    '''Get a valid taxon.'''
-
-    for record in records:
-        print_record(record)
-        if record['status'] == 'accepted':
-            return record
-        else:
-            valid = search_worms(record['valid_name'])
-    return valid
 
 
 

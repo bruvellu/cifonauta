@@ -201,7 +201,8 @@ class Aphia:
 
     def print_record(self, record):
         '''Print taxon information.'''
-        logger.info('ID: {0}, Name: {1}, Authority: {2}, Rank: {3}, Status: {4}'.format(
+        # logger.info('ID: {0}, Name: {1}, Authority: {2}, Rank: {3}, Status: {4}'.format(
+        logger.info('{0} / {1} / {2} / {3} / {4}'.format(
             record['AphiaID'],
             record['scientificname'],
             record['authority'],

@@ -14,8 +14,10 @@ class MediaAdmin(TranslationAdmin):
 
 
 class TagAdmin(TranslationAdmin):
-    filter_horizontal = ('media',)
     list_display = ('name', 'description', 'category')
+    list_filter = ('category',)
+    filter_horizontal = ('media',)
+    search_fields = ['name', 'description']
 
 
 class CatAdmin(TranslationAdmin):

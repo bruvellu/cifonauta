@@ -95,11 +95,16 @@ class Command(BaseCommand):
         # Loop over taxa
         for taxon in taxa:
             records = self.search_worms(taxon.name)
+            # Skip taxon without record (but update timestamp)
             if not records:
                 taxon.save()
                 continue
             # Trust first best hit from WoRMS
             record = records[0]
+            # Skip taxon without proper name (but update timestamp)
+            if taxon.name != record['scientificname']:
+                taxon.save()
+                continue
             self.update_taxon(taxon, record)
 
     def search_worms(self, taxon_name):

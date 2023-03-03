@@ -115,8 +115,13 @@ class Command(BaseCommand):
     def update_taxon(self, taxon, record):
         '''Update taxon entry in the database.'''
         print(taxon.__dict__)
+        if record['status'] == 'accepted':
+            is_valid = True
+        else:
+            is_valid = False
         taxon.name = record['scientificname']
         taxon.authority = record['authority']
+        taxon.is_valid = is_valid
         taxon.slug = slugify(record['scientificname'])
         taxon.rank_en = record['rank']
         taxon.rank_pt_br = EN2PT[record['rank']]

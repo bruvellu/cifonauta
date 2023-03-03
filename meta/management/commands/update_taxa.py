@@ -115,17 +115,14 @@ class Command(BaseCommand):
     def update_taxon(self, taxon, record):
         '''Update taxon entry in the database.'''
         print(taxon.__dict__)
-        fields = {
-                'name': record['scientificname'],
-                'slug': slugify(record['scientificname']),
-                'rank_en': record['rank'],
-                'rank_pt_br': EN2PT[record['rank']],
-                'aphia': record['AphiaID'],
-                'timestamp': timezone.now(),
-                }
-        taxon.update(**fields)
+        taxon.name = record['scientificname']
+        taxon.slug = slugify(record['scientificname'])
+        taxon.rank_en = record['rank']
+        taxon.rank_pt_br = EN2PT[record['rank']]
+        taxon.aphia = record['AphiaID']
+        taxon.timestamp = timezone.now()
+        taxon.save()
         print(taxon.__dict__)
-        #taxon.save()
 
     def get_valid_taxon(self, records):
         '''Get a single valid taxon from records.'''

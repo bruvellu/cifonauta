@@ -40,6 +40,9 @@ Services:
 
 '''
 
+# TODO: Migrate to REST
+# TODO: Allow passing additional arguments
+
 from suds import null, WebFault
 from suds.client import Client
 import logging

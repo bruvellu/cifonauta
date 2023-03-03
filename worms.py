@@ -202,10 +202,11 @@ class Aphia:
         else:
             logger.info('Found no records.')
 
-    def print_record(self, record):
+    def print_record(self, record, pre=''):
         '''Print taxon information.'''
         # logger.info('ID: {0}, Name: {1}, Authority: {2}, Rank: {3}, Status: {4}'.format(
-        logger.info('{0} / {1} / {2} / {3} / {4}'.format(
+        logger.info('{0}{1} / {2} / {3} / {4} / {5}'.format(
+            pre,
             record['AphiaID'],
             record['scientificname'],
             record['authority'],

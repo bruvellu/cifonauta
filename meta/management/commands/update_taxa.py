@@ -52,6 +52,8 @@ class Command(BaseCommand):
                 help='Only update taxa not updated for this number of days.')
         parser.add_argument('-r', '--rank', default='',
                 help='Limit the updates to taxa of a specific rank (English).')
+        parser.add_argument('--no-aphia', action='store_true', dest='no_aphia',
+                help='Only search for taxa without AphiaID.')
 
     def handle(self, *args, **options):
 
@@ -68,6 +70,7 @@ class Command(BaseCommand):
         n = options['number']
         days = options['days']
         rank = options['rank']
+        no_aphia = options['no_aphia']
         print(options)
 
         # Get all taxa
@@ -79,6 +82,9 @@ class Command(BaseCommand):
         # Only update taxa of a specific rank
         if rank:
             taxa = taxa.filter(rank_en=rank)
+        # Filter only taxa without AphiaID
+        if no_aphia:
+            taxa = taxa.filter(aphia=None)
         # Limit the total number of taxa
         taxa = taxa[:n]
 
@@ -118,7 +124,8 @@ class Command(BaseCommand):
         taxon.aphia = record['AphiaID']
         taxon.parent_aphia = record['parentNameUsageID']
         taxon.save()
-        print(taxon.__dict__)
+        # print_record(taxon.__dict__)
+        self.aphia.print_record(record,  pre='Saved: ')
 
     def get_valid_taxon(self, records):
         '''Get a single valid taxon from records.'''
@@ -349,6 +356,7 @@ EN2PT = {
         'Infraclass': 'Infraclasse',
         'Subfamily': 'Subfamília',
         'Class': 'Classe',
+        'Gigaclass': 'Gigaclasse',
         'Superfamily': 'Superfamília',
         'Subdivision': 'Subdivisão',
         'Morph': 'Morfotipo',
@@ -365,6 +373,7 @@ EN2PT = {
         'Subphylum': 'Subfilo',
         'Stirp': 'Estirpe',
         'Phylum': 'Filo',
+        'Parvphylum': 'Parvfilo',
         'Superclass': 'Superclasse',
         'Subspecies': 'Subespécie',
         'Species': 'Espécie',

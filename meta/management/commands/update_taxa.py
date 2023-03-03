@@ -43,10 +43,8 @@ class Command(BaseCommand):
     help = 'Update taxonomic records in batch.'
 
     def add_arguments(self, parser):
-        # TODO: Option: limit the number of taxa to retrieve
         parser.add_argument('-n', '--number', type=int, default=10,
                 help='Limit the number of taxa to update.')
-        # TODO: Option: filter by rank (eg Species)
         parser.add_argument('-r', '--rank', default='',
                 help='Limit the rank of taxa to update.')
         # TODO: Option: ignore timestamp (force update)
@@ -90,19 +88,23 @@ class Command(BaseCommand):
         return records
 
     def needs_update(self, taxon):
-        '''Calculate delta days before querying WoRMS.'''
+        '''Calculate days from last update before querying WoRMS.'''
         if not taxon.timestamp:
+            self.stdout.write(f'{taxon.name} has no timestamp.')
             return True
         today = timezone.now()
         delta_timezone = today - taxon.timestamp
         delta_days = delta_timezone.days
         if delta_days >= 30:
+            self.stdout.write(f'Last updated {delta_days} ago. Updating...')
             return True
         else:
+            self.stdout.write(f'Recently updated {delta_days} ago. Ignoring...')
             return False
 
     def get_valid_taxon(self, records):
-        '''Get a valid taxon.'''
+        '''Get a single valid taxon from records.'''
+        record = records[0]
 
         for record in records:
             print_record(record)

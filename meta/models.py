@@ -152,21 +152,24 @@ class Category(models.Model):
 
 
 class Taxon(MPTTModel):
+    # TODO: Add valid = True or False
+    # TODO: Add authority = string
+    # TODO: 
     name = models.CharField(_('nome'), max_length=256, unique=True,
             help_text=_('Nome do táxon.'))
     slug = models.SlugField(_('slug'), max_length=256, blank=True,
             help_text=_('Slug do nome do táxon.'))
-    rank = models.CharField(_(u'rank'), max_length=256, blank=True, help_text=_(u'Ranking taxonômico do táxon.'))
+    rank = models.CharField(_('rank'), max_length=256, blank=True, help_text=_('Ranking taxonômico do táxon.'))
     aphia = models.PositiveIntegerField(null=True, blank=True,
-            help_text=_('APHIA, o identificador do táxon no WoRMS.'))
+            help_text=_('AphiaID, o identificador do táxon no WoRMS.'))
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,
             null=True, related_name='children', verbose_name=_('pai'),
             help_text=_('Táxon pai deste táxon.'))
-    media = models.ManyToManyField( 'Media', blank=True,
+    media = models.ManyToManyField('Media', blank=True,
             verbose_name=_('arquivos'),
             help_text=_('Arquivos associados a este táxon.'))
-    timestamp = models.DateTimeField( _('data de modificação'), blank=True,
-            null=True, help_text=_('Data da última modificação do arquivo.'))
+    timestamp = models.DateTimeField(_('data de modificação'), auto_now=True,
+            blank=True, null=True, help_text=_('Data da última modificação do arquivo.'))
 
     def __str__(self):
         return self.name

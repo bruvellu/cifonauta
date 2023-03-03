@@ -126,6 +126,7 @@ class Command(BaseCommand):
         taxon.rank_en = record['rank']
         taxon.rank_pt_br = EN2PT[record['rank']]
         taxon.aphia = record['AphiaID']
+        taxon.parent_aphia = record['parentNameUsageID']
         taxon.save()
         print(taxon.__dict__)
 

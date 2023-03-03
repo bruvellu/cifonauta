@@ -166,6 +166,8 @@ class Taxon(MPTTModel):
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,
             null=True, related_name='children', verbose_name=_('pai'),
             help_text=_('Táxon pai deste táxon.'))
+    parent_aphia = models.PositiveIntegerField(null=True, blank=True,
+            help_text=_('AphiaID do táxon pai.'))
     media = models.ManyToManyField('Media', blank=True,
             verbose_name=_('arquivos'),
             help_text=_('Arquivos associados a este táxon.'))

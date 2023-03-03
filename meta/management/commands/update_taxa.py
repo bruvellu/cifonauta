@@ -39,36 +39,71 @@ Example Aphia record:
 
 
 class Command(BaseCommand):
-    help = 'Translate rank names in batch.'
+    args = ''
+    help = 'Update taxonomic records in batch.'
+
+    def add_arguments(self, parser):
+        # TODO: Option: limit the number of taxa to retrieve
+        parser.add_argument('-n', '--number', action='store', dest='number',
+                default=10, help='Limit the number of taxa to update.')
+        # TODO: Option: filter by rank (eg Species)
+        # TODO: Option: ignore timestamp (force update)
 
     def handle(self, *args, **options):
 
-        # Get all taxa.
-        media = Media.objects.all()
-        taxa = Taxon.objects.all()
+        # Parse options
+        n = int(options['number'])
+
+        # TODO: Outline
+        # 1. Fetch taxa filtering by timestamp, rank, and number
+        # 2. Search taxon name in WoRMS
+        # 3. Parse search results (one or more matches)
+        # 4. Update taxon record and status
+        # 5. Add/update higher ranks from taxon
+        # 6. Fetch whole hierarchical tree
+
+        # Get taxa
+        taxa = Taxon.objects.all()[:n]
+
+        # Loop over taxa
+        for taxon in taxa:
+            records = search_worms(taxon.name)
+            # self.stdout.write('\nFound: {} record(s)'.format(len(records)))
+            # for record in records:
+                # self.print_record(record)
+
+    # def print_record(self, record):
+        # '''Print string with taxon information.'''
+        # self.stdout.write('{0}: {1} {2} ({3}) > {4}'.format(
+            # record['AphiaID'],
+            # record['scientificname'],
+            # record['authority'],
+            # record['rank'],
+            # record['status']))
+
 
         # All media taxa.
-        all_taxa = list(media.values_list('taxon__name', flat=True))
-        print(all_taxa)
+        # all_taxa = list(media.values_list('taxon__name', flat=True))
+        # print(all_taxa)
 
-        for taxon_name in all_taxa:
-            if taxon_name:
-                self.stdout.write('\nInitiating search on: {}'.format(taxon_name))
-                # Get valid record.
-                record = search_worms(taxon_name)
-                if record:
-                    self.stdout.write('\nBest match record: {0} ({1}) -- {2}'.format(
-                        record['scientificname'],
-                        record['rank'],
-                        record['status'])
-                        )
-                    # Get model.
-                    taxon = Taxon.objects.get(name=taxon_name)
-                    # Update it with the new information.
-                    update_model(taxon, record)
-                    self.stdout.write('Saved!')
-                else:
-                    self.stdout.write('No record in WoRMS: {}'.format(taxon_name))
+        # for taxon_name in all_taxa:
+            # if taxon_name:
+                # self.stdout.write('\nInitiating search on: {}'.format(taxon_name))
+                # # Get valid record.
+                # record = search_worms(taxon_name)
+                # if record:
+                    # self.stdout.write('\nBest match record: {0} ({1}) -- {2}'.format(
+                        # record['scientificname'],
+                        # record['rank'],
+                        # record['status'])
+                        # )
+                    # # Get model.
+                    # taxon = Taxon.objects.get(name=taxon_name)
+                    # # Update it with the new information.
+                    # update_model(taxon, record)
+                    # self.stdout.write('Saved!')
+                # else:
+                    # self.stdout.write('No record in WoRMS: {}'.format(taxon_name))
 
 #            if taxon.rank_pt_br and taxon.rank_en:
 #                continue
@@ -80,8 +115,30 @@ class Command(BaseCommand):
 #                continue
 #
 #        self.stdout.write('Finished translation.')
-#
-#
+
+
+def search_worms(taxon_name):
+    '''Search WoRMS for taxon name.'''
+    aphia = Aphia()
+    records = aphia.get_aphia_records(taxon_name)
+    if not records:
+        return None
+    return records
+
+
+def get_valid_taxon(records):
+    '''Get a valid taxon.'''
+
+    for record in records:
+        print_record(record)
+        if record['status'] == 'accepted':
+            return record
+        else:
+            valid = search_worms(record['valid_name'])
+    return valid
+
+
+
 def update_model(taxon, record):
     '''Updates database entry.'''
     today = timezone.now()
@@ -136,22 +193,6 @@ def update_model(taxon, record):
                 instance.name, instance.rank_en,
                 ))
         previous = instance
-
-
-def search_worms(taxon_name):
-    '''Use worms.py to find valid taxonomic records.'''
-    aphia = Aphia()
-    records = aphia.get_aphia_records(taxon_name)
-    if not records:
-        # TODO Elaborate search with fuzzy match_aphia_records_by_names.
-        return None
-    for record in records:
-        print(record)
-        if record['status'] == 'accepted':
-            return record
-        elif record['status'] == 'unaccepted' or record['status'] == 'alternate representation':
-            valid = search_worms(record['valid_name'])
-    return valid
 
 
 def get_best_match(query):

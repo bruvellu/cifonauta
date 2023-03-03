@@ -116,6 +116,7 @@ class Command(BaseCommand):
         '''Update taxon entry in the database.'''
         print(taxon.__dict__)
         taxon.name = record['scientificname']
+        taxon.authority = record['authority']
         taxon.slug = slugify(record['scientificname'])
         taxon.rank_en = record['rank']
         taxon.rank_pt_br = EN2PT[record['rank']]

@@ -153,8 +153,6 @@ class Category(models.Model):
 
 class Taxon(MPTTModel):
     # TODO: Add valid = True or False
-    # TODO: Add authority = string
-    # TODO: 
     name = models.CharField(_('nome'), max_length=256, unique=True,
             help_text=_('Nome do táxon.'))
     slug = models.SlugField(_('slug'), max_length=256, blank=True,
@@ -162,6 +160,8 @@ class Taxon(MPTTModel):
     rank = models.CharField(_('rank'), max_length=256, blank=True, help_text=_('Ranking taxonômico do táxon.'))
     aphia = models.PositiveIntegerField(null=True, blank=True,
             help_text=_('AphiaID, o identificador do táxon no WoRMS.'))
+    authority = models.CharField(_('autoridade'), max_length=256, blank=True, null=True,
+            help_text=_('Autoridade do táxon.'))
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,
             null=True, related_name='children', verbose_name=_('pai'),
             help_text=_('Táxon pai deste táxon.'))

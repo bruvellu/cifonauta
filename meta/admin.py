@@ -42,7 +42,7 @@ class PersonAdmin(admin.ModelAdmin):
 
 class TaxonAdmin(admin.ModelAdmin):
     list_display = ('name', 'rank', 'aphia', 'authority', 'is_valid', 'parent', 'parent_aphia', 'timestamp')
-    list_filter = ('rank', 'is_valid', 'timestamp')
+    list_filter = ('is_valid', 'timestamp', 'rank')
     filter_horizontal = ('media',)
     search_fields = ['name']
 

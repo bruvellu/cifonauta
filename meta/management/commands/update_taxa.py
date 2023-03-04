@@ -382,4 +382,6 @@ EN2PT = {
         'Species': 'Espécie',
         'Parvphylum': 'Parvfilo',
         'Subterclass': 'Subterclasse',
+        'Infraphylum': 'Infrafilo',
+        'Phylum (Division)': 'Filo (Divisão)',
         }

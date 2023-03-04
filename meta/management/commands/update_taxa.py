@@ -71,7 +71,6 @@ class Command(BaseCommand):
         days = options['days']
         rank = options['rank']
         no_aphia = options['no_aphia']
-        print(options)
 
         # Get all taxa
         taxa = Taxon.objects.all()
@@ -378,8 +377,9 @@ EN2PT = {
         'Subphylum': 'Subfilo',
         'Stirp': 'Estirpe',
         'Phylum': 'Filo',
-        'Parvphylum': 'Parvfilo',
         'Superclass': 'Superclasse',
         'Subspecies': 'Subespécie',
         'Species': 'Espécie',
+        'Parvphylum': 'Parvfilo',
+        'Subterclass': 'Subterclasse',
         }

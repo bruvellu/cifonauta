@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django.utils import translation
@@ -141,44 +140,7 @@ class Command(BaseCommand):
             return valid
 
 
-        # All media taxa.
-        # all_taxa = list(media.values_list('taxon__name', flat=True))
-        # print(all_taxa)
-
-        # for taxon_name in all_taxa:
-            # if taxon_name:
-                # self.stdout.write('\nInitiating search on: {}'.format(taxon_name))
-                # # Get valid record.
-                # record = search_worms(taxon_name)
-                # if record:
-                    # self.stdout.write('\nBest match record: {0} ({1}) -- {2}'.format(
-                        # record['scientificname'],
-                        # record['rank'],
-                        # record['status'])
-                        # )
-                    # # Get model.
-                    # taxon = Taxon.objects.get(name=taxon_name)
-                    # # Update it with the new information.
-                    # update_model(taxon, record)
-                    # self.stdout.write('Saved!')
-                # else:
-                    # self.stdout.write('No record in WoRMS: {}'.format(taxon_name))
-
-#            if taxon.rank_pt_br and taxon.rank_en:
-#                continue
-#            elif not taxon.rank_pt_br or not taxon.rank_en:
-#                taxon.rank_en = translate_rank(taxon.rank_pt_br)
-#                taxon.rank_pt_br = translate_rank(taxon.rank_en)
-#                taxon.save()
-#            else:
-#                continue
-#
-#        self.stdout.write('Finished translation.')
-
-
-
-
-
+# DEPRECATED
 def update_model(taxon, record):
     '''Updates database entry.'''
     today = timezone.now()
@@ -235,113 +197,7 @@ def update_model(taxon, record):
         previous = instance
 
 
-def get_best_match(query):
-    '''Searches and finds best-matching valid WoRMS record.'''
-    records = self.get_aphia_records(query)
-    if not records:
-        # TODO Elaborate search with fuzzy match_aphia_records_by_names.
-        return None
-    for record in records:
-        if record['status'] == 'accepted':
-            return record
-        elif record['status'] == 'unaccepted' or record['status'] == 'alternate representation':
-            valid = self.get_best_match(record['valid_name'])
-    return valid
-
-
-def translate_rank(rank):
-   '''Translate ranks intelligently.'''
-
-   pt2en = {
-           'Subforma': 'Subform',
-           'Superordem': 'Superorder',
-           'Variedade': 'Variety',
-           'Infraordem': 'Infraorder',
-           'Seção': 'Section',
-           'Subclasse': 'Subclass',
-           'Subseção': 'Subsection',
-           'Reino': 'Kingdom',
-           'Infrareino': 'Infrakingdom',
-           'Divisão': 'Division',
-           'Subtribo': 'Subtribe',
-           'Aberração': 'Aberration',
-           'Infraordem': 'InfraOrder',
-           'Subreino': 'Subkingdom',
-           'Infraclasse': 'Infraclass',
-           'Subfamília': 'Subfamily',
-           'Classe': 'Class',
-           'Superfamília': 'Superfamily',
-           'Subdivisão': 'Subdivision',
-           'Morfotipo': 'Morph',
-           'Raça': 'Race',
-           'Não especificado': 'Unspecified',
-           'Subordem': 'Suborder',
-           'Gênero': 'Genus',
-           'Ordem': 'Order',
-           'Subvariedade': 'Subvariety',
-           'Tribo': 'Tribe',
-           'Subgênero': 'Subgenus',
-           'Forma': 'Form',
-           'Família': 'Family',
-           'Subfilo': 'Subphylum',
-           'Estirpe': 'Stirp',
-           'Filo': 'Phylum',
-           'Superclasse': 'Superclass',
-           'Subespécie': 'Subspecies',
-           'Espécie': 'Species',
-           }
-
-   en2pt = {
-           'Subform': 'Subforma',
-           'Superorder': 'Superordem',
-           'Variety': 'Variedade',
-           'Infraorder': 'Infraordem',
-           'Section': 'Seção',
-           'Subclass': 'Subclasse',
-           'Subsection': 'Subseção',
-           'Kingdom': 'Reino',
-           'Infrakingdom': 'Infrareino',
-           'Division': 'Divisão',
-           'Subtribe': 'Subtribo',
-           'Aberration': 'Aberração',
-           'InfraOrder': 'Infraordem',
-           'Subkingdom': 'Subreino',
-           'Infraclass': 'Infraclasse',
-           'Subfamily': 'Subfamília',
-           'Class': 'Classe',
-           'Superfamily': 'Superfamília',
-           'Subdivision': 'Subdivisão',
-           'Morph': 'Morfotipo',
-           'Race': 'Raça',
-           'Unspecified': 'Não especificado',
-           'Suborder': 'Subordem',
-           'Genus': 'Gênero',
-           'Order': 'Ordem',
-           'Subvariety': 'Subvariedade',
-           'Tribe': 'Tribo',
-           'Subgenus': 'Subgênero',
-           'Form': 'Forma',
-           'Family': 'Família',
-           'Subphylum': 'Subfilo',
-           'Stirp': 'Estirpe',
-           'Phylum': 'Filo',
-           'Superclass': 'Superclasse',
-           'Subspecies': 'Subespécie',
-           'Species': 'Espécie',
-           }
-
-   try:
-       rank_translation = en2pt[rank]
-       return rank_translation
-   except:
-       try:
-           rank_translation = pt2en[rank]
-           return rank_translation
-       except:
-           return rank
-   else:
-       return rank
-
+# Dictionary of taxonomic ranks for translations
 EN2PT = {
         'Subform': 'Subforma',
         'Superorder': 'Superordem',

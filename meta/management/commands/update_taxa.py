@@ -5,6 +5,18 @@ from django.template.defaultfilters import slugify
 from meta.models import Media, Taxon
 from worms import Aphia
 
+
+# TODO: Taxonomic names are not unique
+# Cidaroida
+# [INFO] 2023-03-04 23:12:17,919 @ worms get_aphia_record_by_id (l107): Searching for the ID "510498"
+# [INFO] 2023-03-04 23:12:18,655 @ worms print_record (l208): Found: 510498 / Cidaroidea / Smith, 1984 / Subclass / accepted
+# [INFO] 2023-03-04 23:12:18,667 @ worms print_record (l208): Saved: 510498 / Cidaroidea / Smith, 1984 / Subclass / accepted
+# Cidaridae
+# [INFO] 2023-03-04 23:12:18,672 @ worms get_aphia_record_by_id (l107): Searching for the ID "852318"
+# [INFO] 2023-03-04 23:12:19,397 @ worms print_record (l208): Found: 852318 / Cidaroidea / Gray, 1825 / Superfamily / accepted
+
+#TODO: Maybe just simplify and use the canonical ranks
+
 '''
 Example Aphia record:
 
@@ -37,6 +49,74 @@ Example Aphia record:
   match_type = "like"
   modified = "2013-08-26T18:24:18.240Z"
 }
+
+Salariinae
+Parablennius
+Steenstrupiella steenstrupii
+Codonellidae
+Tintinnopsis
+Dictyocysta
+Dictyocysta reticulata
+Epiplocylis
+Epiplocylididae
+Ascampbelliella aperta
+Gobiesocoidei
+Canthigaster figueiredoi
+Stephanolepis hispidus
+Balistes vetula
+Scorpaena plumieri
+Janolidae
+Janolus
+Janolus mucloc
+Chromodoris paulomarcioi
+Anomalocardia brasiliana
+Nephasoma pellucidum
+Themiste alutacea
+Muraenidae
+Muraeninae
+Dactylopteroidei
+Dactylopteridae
+Dactylopterus
+Blennioidei
+Labrisomidae
+Parablennius marmoreus
+Halichoeres poeyi
+Chromis
+Chromis multilineata
+Halichoeres
+Haemulon plumieri
+Sparidae
+Diplodus
+Stephanolepis
+Balistidae
+Balistes
+Ogcocephalidae
+Ogcocephalus
+Ogcocephalus vespertilio
+
+for id in taxa.values('id'):
+ t = Taxon.objects.get(id=id['id'])
+ t.parent = None
+ try:
+  t.save()
+ except:
+  print(t)
+
+for id in taxa.values('id'):
+ t = Taxon.objects.get(id=id['id'])
+ t.level = 0
+ try:
+  t.save()
+ except:
+  print(t)
+
+for id in taxa.values('id'):
+ t = Taxon.objects.get(id=id['id'])
+ t.move_to(None)
+ try:
+  t.save()
+ except:
+  print(t)
 '''
 
 
@@ -53,6 +133,10 @@ class Command(BaseCommand):
                 help='Limit the updates to taxa of a specific rank (English).')
         parser.add_argument('--no-aphia', action='store_true', dest='no_aphia',
                 help='Only search for taxa without AphiaID.')
+        parser.add_argument('--only-aphia', action='store_true', dest='only_aphia',
+                help='Only search for taxa with AphiaID.')
+        parser.add_argument('-p', '--parent', action='store_true', dest='parent_get',
+                help='Also fetch parent taxon.')
 
     def handle(self, *args, **options):
 
@@ -70,19 +154,27 @@ class Command(BaseCommand):
         days = options['days']
         rank = options['rank']
         no_aphia = options['no_aphia']
+        only_aphia = options['only_aphia']
+        parent_get = options['parent_get']
 
         # Get all taxa
         taxa = Taxon.objects.all()
+
         # Ignore recently updated taxa
         if days:
             datelimit = timezone.now() - timezone.timedelta(days=days)
             taxa = taxa.filter(timestamp__lt=datelimit)
+
         # Only update taxa of a specific rank
         if rank:
             taxa = taxa.filter(rank_en=rank)
+
         # Filter only taxa without AphiaID
         if no_aphia:
             taxa = taxa.filter(aphia=None)
+        elif only_aphia:
+            taxa = taxa.filter(aphia__isnull=False)
+
         # Limit the total number of taxa
         taxa = taxa[:n]
 
@@ -90,20 +182,37 @@ class Command(BaseCommand):
         if taxa:
             self.aphia = Aphia()
 
-        # Loop over taxa
+        # Loop over taxon queryset
         for taxon in taxa:
-            records = self.search_worms(taxon.name)
-            # Skip taxon without record (but update timestamp)
-            if not records:
+            print(taxon.name)
+
+            # Skip over taxa already with an AphiaID
+            if not taxon.aphia:
+
+                # Search taxon name in WoRMS
+                records = self.search_worms(taxon.name)
+
+                # Skip taxon without record (but update timestamp)
+                if not records:
+                    taxon.save()
+                    continue
+
+                # Trust first best hit from WoRMS (seems good)
+                record = records[0]
+
+                # Skip match without proper name (but update timestamp)
+                if taxon.name != record['scientificname']:
+                    taxon.save()
+                    continue
+
+                # Update database entry with new informations
+                taxon = self.update_taxon(taxon, record)
+
+            # Get parent of the taxon
+            if parent_get and taxon.parent_aphia:
+                parent = self.get_parent(taxon)
+                taxon.parent = parent
                 taxon.save()
-                continue
-            # Trust first best hit from WoRMS
-            record = records[0]
-            # Skip taxon without proper name (but update timestamp)
-            if taxon.name != record['scientificname']:
-                taxon.save()
-                continue
-            self.update_taxon(taxon, record)
 
     def search_worms(self, taxon_name):
         '''Search WoRMS for taxon name.'''
@@ -114,21 +223,42 @@ class Command(BaseCommand):
 
     def update_taxon(self, taxon, record):
         '''Update taxon entry in the database.'''
+        # Convert status string to boolean
         if record['status'] == 'accepted':
             is_valid = True
         else:
             is_valid = False
+        # Handle Biota None rank
+        if not record['rank']:
+            rank_en = ''
+            rank_pt_br = ''
+        else:
+            rank_en = record['rank']
+            rank_pt_br = EN2PT[record['rank']]
+
+        # Set new data for individual fields
         taxon.name = record['scientificname']
         taxon.authority = record['authority']
         taxon.is_valid = is_valid
         taxon.slug = slugify(record['scientificname'])
-        taxon.rank_en = record['rank']
-        taxon.rank_pt_br = EN2PT[record['rank']]
+        taxon.rank_en = rank_en
+        taxon.rank_pt_br = rank_pt_br
         taxon.aphia = record['AphiaID']
         taxon.parent_aphia = record['parentNameUsageID']
         taxon.save()
-        # print_record(taxon.__dict__)
-        self.aphia.print_record(record,  pre='Saved: ')
+        self.aphia.print_record(record, pre='Saved: ')
+        return taxon
+
+    def get_parent(self, taxon):
+        '''Get or create the parent of a taxon.'''
+        try:
+            parent = Taxon.objects.get(aphia=taxon.parent_aphia)
+        except Taxon.DoesNotExist:
+            record = self.aphia.get_aphia_record_by_id(taxon.parent_aphia)
+            self.aphia.print_record(record, pre='Found: ')
+            parent, new = Taxon.objects.get_or_create(name=record['scientificname'])
+            parent = self.update_taxon(parent, record)
+        return parent
 
     def get_valid_taxon(self, records):
         '''Get a single valid taxon from records.'''
@@ -240,4 +370,8 @@ EN2PT = {
         'Subterclass': 'Subterclasse',
         'Infraphylum': 'Infrafilo',
         'Phylum (Division)': 'Filo (Divisão)',
+        'Subphylum (Subdivision)': 'Subfilo (Subdivisão)',
+        'Parvorder': 'Parvordem',
+        'Megaclass': 'Megaclasse',
+
         }

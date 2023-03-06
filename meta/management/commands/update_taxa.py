@@ -181,18 +181,16 @@ class Command(BaseCommand):
             if not taxon.aphia:
 
                 # Search taxon name in WoRMS
-                records = self.search_worms(taxon.name)
+                record = self.search_worms(taxon.name)
 
                 # Skip taxon without record (but update timestamp)
-                if not records:
+                if not record:
                     taxon.save()
                     continue
 
-                # Trust first best hit from WoRMS (seems good)
-                record = records[0]
-
                 # Skip match without proper name (but update timestamp)
                 if taxon.name != record['scientificname']:
+                    print(f"{taxon.name} != {record['scientificname']}")
                     taxon.save()
                     continue
 
@@ -207,7 +205,11 @@ class Command(BaseCommand):
         records = self.aphia.get_aphia_records(taxon_name)
         if not records:
             return None
-        return records
+        for record in records:
+            if record['scientificname']:
+                return record
+        else:
+            return None
 
     def update_taxon(self, taxon, record):
         '''Update taxon entry in the database.'''
@@ -281,8 +283,7 @@ class Command(BaseCommand):
         '''Get one parent of a taxon.'''
         taxon, new = Taxon.objects.get_or_create(name=name)
         if new or not taxon.aphia:
-            records = self.search_worms(name)
-            record = records[0]
+            record = self.search_worms(name)
             taxon = self.update_taxon(taxon, record)
         return taxon
 

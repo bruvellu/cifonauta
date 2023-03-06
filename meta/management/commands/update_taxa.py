@@ -73,20 +73,16 @@ class Command(BaseCommand):
 
         # Get all taxa
         taxa = Taxon.objects.all()
-
         # Ignore recently updated taxa
         if days:
             datelimit = timezone.now() - timezone.timedelta(days=days)
             taxa = taxa.filter(timestamp__lt=datelimit)
-
         # Only update taxa of a specific rank
         if rank:
             taxa = taxa.filter(rank_en=rank)
-
         # Filter only taxa without AphiaID
         if only_aphia:
             taxa = taxa.filter(aphia__isnull=False)
-
         # Limit the total number of taxa
         taxa = taxa[:n]
 
@@ -96,27 +92,21 @@ class Command(BaseCommand):
 
         # Loop over taxon queryset
         for taxon in taxa:
-
             # Skip over taxa already with an AphiaID
             if not taxon.aphia:
-
                 # Search taxon name in WoRMS
                 record = self.search_worms(taxon.name)
-
                 # Skip taxon without record (but update timestamp)
                 if not record:
                     taxon.save()
                     continue
-
                 # Skip match without proper name (but update timestamp)
                 if taxon.name != record['scientificname']:
                     print(f"{taxon.name} != {record['scientificname']}")
                     taxon.save()
                     continue
-
                 # Update database entry with new informations
                 taxon = self.update_taxon(taxon, record)
-
                 # Add/get and link parent taxa
                 taxon = self.get_ancestors(taxon, record)
 
@@ -138,21 +128,15 @@ class Command(BaseCommand):
             is_valid = True
         else:
             is_valid = False
-        # Handle Biota None rank
-        if not record['rank']:
-            rank_en = ''
-            rank_pt_br = ''
-        else:
-            rank_en = record['rank']
-            rank_pt_br = EN2PT[record['rank']]
 
         # Set new data for individual fields
         taxon.name = record['scientificname']
         taxon.authority = record['authority']
+        taxon.status = record['status']
         taxon.is_valid = is_valid
         taxon.slug = slugify(record['scientificname'])
-        taxon.rank_en = rank_en
-        taxon.rank_pt_br = rank_pt_br
+        rank_en = record['rank']
+        rank_pt_br = EN2PT[record['rank']]
         taxon.aphia = record['AphiaID']
         taxon.save()
         self.aphia.print_record(record, pre='Saved: ')

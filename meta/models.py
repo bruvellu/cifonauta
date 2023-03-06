@@ -161,6 +161,8 @@ class Taxon(MPTTModel):
             help_text=_('AphiaID, o identificador do táxon no WoRMS.'))
     authority = models.CharField(_('autoridade'), max_length=256, blank=True, null=True,
             help_text=_('Autoridade do táxon.'))
+    status = models.CharField(_('status'), max_length=256, blank=True, null=True,
+            help_text=_('Status do táxon.'))
     is_valid = models.BooleanField(_('válido'), default=False,
             help_text=_('Status do táxon.'))
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,

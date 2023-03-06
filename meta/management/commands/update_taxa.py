@@ -53,6 +53,8 @@ class Command(BaseCommand):
                 help='Limit the updates to taxa of a specific rank (English).')
         parser.add_argument('--only-aphia', action='store_true', dest='only_aphia',
                 help='Only search for taxa with AphiaID.')
+        parser.add_argument('--force', action='store_true', dest='force',
+                help='Force taxon search and update.')
 
     def handle(self, *args, **options):
 
@@ -70,6 +72,7 @@ class Command(BaseCommand):
         days = options['days']
         rank = options['rank']
         only_aphia = options['only_aphia']
+        force = options['force']
 
         # Get all taxa
         taxa = Taxon.objects.all()
@@ -93,7 +96,7 @@ class Command(BaseCommand):
         # Loop over taxon queryset
         for taxon in taxa:
             # Skip over taxa already with an AphiaID
-            if not taxon.aphia:
+            if not taxon.aphia or force:
                 # Search taxon name in WoRMS
                 record = self.search_worms(taxon.name)
                 # Skip taxon without record (but update timestamp)
@@ -105,10 +108,21 @@ class Command(BaseCommand):
                     print(f"{taxon.name} != {record['scientificname']}")
                     taxon.save()
                     continue
+
                 # Update database entry with new informations
                 taxon = self.update_taxon(taxon, record)
                 # Add/get and link parent taxa
-                taxon = self.get_ancestors(taxon, record)
+                self.save_ancestors(taxon, record)
+                # Get valid taxon
+                if not taxon.is_valid:
+                    # import pdb; pdb.set_trace()
+                    valid_record = self.aphia.get_aphia_record_by_id(record['valid_AphiaID'])
+                    valid_taxon, new = Taxon.objects.get_or_create(name=valid_record['scientificname'])
+                    valid_taxon = self.update_taxon(valid_taxon, valid_record)
+                    self.save_ancestors(valid_taxon, valid_record)
+                    taxon.valid_taxon = valid_taxon
+                    taxon.save()
+
 
     def search_worms(self, taxon_name):
         '''Search WoRMS for taxon name.'''
@@ -128,21 +142,20 @@ class Command(BaseCommand):
             is_valid = True
         else:
             is_valid = False
-
         # Set new data for individual fields
         taxon.name = record['scientificname']
         taxon.authority = record['authority']
         taxon.status = record['status']
         taxon.is_valid = is_valid
         taxon.slug = slugify(record['scientificname'])
-        rank_en = record['rank']
-        rank_pt_br = EN2PT[record['rank']]
+        taxon.rank_en = record['rank']
+        taxon.rank_pt_br = EN2PT[record['rank']]
         taxon.aphia = record['AphiaID']
         taxon.save()
         self.aphia.print_record(record, pre='Saved: ')
         return taxon
 
-    def get_ancestors(self, taxon, record):
+    def save_ancestors(self, taxon, record):
         '''Get and link all parents of a taxon.'''
         lineage = [taxon]
         ancestor_names = [
@@ -178,16 +191,6 @@ class Command(BaseCommand):
             record = self.search_worms(name)
             taxon = self.update_taxon(taxon, record)
         return taxon
-
-    def get_valid_taxon(self, records):
-        '''Get a single valid taxon from records.'''
-        if record['status'] == 'accepted':
-            return record
-        else:
-            valid = self.aphia.get_aphia_record_by_id(record['valid_AphiaID'])
-            # valid = search_worms(record['valid_name'])
-            return valid
-
 
 # Dictionary of taxonomic ranks for translations
 EN2PT = {

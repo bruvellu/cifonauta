@@ -199,6 +199,9 @@ class Taxon(MPTTModel):
             query |= Q(id=node.id)
         return Taxon.objects.filter(query)
 
+    class MPTTMeta:
+            order_insertion_by = ['name']
+
     class Meta:
         verbose_name = _('táxon')
         verbose_name_plural = _('táxons')

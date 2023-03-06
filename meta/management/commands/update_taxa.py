@@ -115,13 +115,18 @@ class Command(BaseCommand):
                 self.save_ancestors(taxon, record)
                 # Get valid taxon
                 if not taxon.is_valid:
-                    # import pdb; pdb.set_trace()
+                    # Get valid record and taxon and save instance
                     valid_record = self.aphia.get_aphia_record_by_id(record['valid_AphiaID'])
                     valid_taxon, new = Taxon.objects.get_or_create(name=valid_record['scientificname'])
                     valid_taxon = self.update_taxon(valid_taxon, valid_record)
+                    # Save ancestors for valid taxon
                     self.save_ancestors(valid_taxon, valid_record)
+                    # Add valid_taxon reference to invalid taxon
                     taxon.valid_taxon = valid_taxon
                     taxon.save()
+                    # Mirror associated images
+                    valid_taxon.media.add(*taxon.media.all())
+                    valid_taxon.save()
 
 
     def search_worms(self, taxon_name):

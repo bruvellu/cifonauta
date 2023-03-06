@@ -156,7 +156,8 @@ class Taxon(MPTTModel):
             help_text=_('Nome do táxon.'))
     slug = models.SlugField(_('slug'), max_length=256, blank=True,
             help_text=_('Slug do nome do táxon.'))
-    rank = models.CharField(_('rank'), max_length=256, blank=True, help_text=_('Ranking taxonômico do táxon.'))
+    rank = models.CharField(_('rank'), max_length=256, blank=True,
+            help_text=_('Ranking taxonômico do táxon.'))
     aphia = models.PositiveIntegerField(null=True, blank=True,
             help_text=_('AphiaID, o identificador do táxon no WoRMS.'))
     authority = models.CharField(_('autoridade'), max_length=256, blank=True, null=True,
@@ -168,6 +169,9 @@ class Taxon(MPTTModel):
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,
             null=True, related_name='children', verbose_name=_('pai'),
             help_text=_('Táxon pai deste táxon.'))
+    valid_taxon = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,
+            null=True, related_name='synonyms', verbose_name=_('válido'),
+            help_text=_('Sinônimo válido deste táxon.'))
     media = models.ManyToManyField('Media', blank=True,
             verbose_name=_('arquivos'),
             help_text=_('Arquivos associados a este táxon.'))

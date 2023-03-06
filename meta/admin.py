@@ -40,8 +40,8 @@ class PersonAdmin(admin.ModelAdmin):
     filter_horizontal = ('media',)
 
 
-class TaxonAdmin(admin.ModelAdmin):
-    list_display = ('name', 'rank', 'aphia', 'authority', 'is_valid', 'parent', 'timestamp')
+class TaxonAdmin(TranslationAdmin):
+    list_display = ('name', 'aphia', 'rank', 'authority', 'status', 'is_valid', 'parent', 'timestamp')
     list_filter = ('is_valid', 'timestamp', 'rank')
     filter_horizontal = ('media',)
     search_fields = ['name', 'authority']

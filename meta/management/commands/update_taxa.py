@@ -131,12 +131,8 @@ class Command(BaseCommand):
                 help='Only update taxa not updated for this number of days.')
         parser.add_argument('-r', '--rank', default='',
                 help='Limit the updates to taxa of a specific rank (English).')
-        parser.add_argument('--no-aphia', action='store_true', dest='no_aphia',
-                help='Only search for taxa without AphiaID.')
         parser.add_argument('--only-aphia', action='store_true', dest='only_aphia',
                 help='Only search for taxa with AphiaID.')
-        parser.add_argument('-p', '--parent', action='store_true', dest='parent_get',
-                help='Also fetch parent taxon.')
 
     def handle(self, *args, **options):
 
@@ -153,9 +149,7 @@ class Command(BaseCommand):
         n = options['number']
         days = options['days']
         rank = options['rank']
-        no_aphia = options['no_aphia']
         only_aphia = options['only_aphia']
-        parent_get = options['parent_get']
 
         # Get all taxa
         taxa = Taxon.objects.all()
@@ -170,9 +164,7 @@ class Command(BaseCommand):
             taxa = taxa.filter(rank_en=rank)
 
         # Filter only taxa without AphiaID
-        if no_aphia:
-            taxa = taxa.filter(aphia=None)
-        elif only_aphia:
+        if only_aphia:
             taxa = taxa.filter(aphia__isnull=False)
 
         # Limit the total number of taxa
@@ -184,7 +176,6 @@ class Command(BaseCommand):
 
         # Loop over taxon queryset
         for taxon in taxa:
-            print(taxon.name)
 
             # Skip over taxa already with an AphiaID
             if not taxon.aphia:
@@ -208,11 +199,8 @@ class Command(BaseCommand):
                 # Update database entry with new informations
                 taxon = self.update_taxon(taxon, record)
 
-            # Get parent of the taxon
-            if parent_get and taxon.parent_aphia:
-                parent = self.get_parent(taxon)
-                taxon.parent = parent
-                taxon.save()
+                # Add/get and link parent taxa
+                taxon = self.get_ancestors(taxon, record)
 
     def search_worms(self, taxon_name):
         '''Search WoRMS for taxon name.'''
@@ -249,16 +237,54 @@ class Command(BaseCommand):
         self.aphia.print_record(record, pre='Saved: ')
         return taxon
 
-    def get_parent(self, taxon):
-        '''Get or create the parent of a taxon.'''
-        try:
-            parent = Taxon.objects.get(aphia=taxon.parent_aphia)
-        except Taxon.DoesNotExist:
-            record = self.aphia.get_aphia_record_by_id(taxon.parent_aphia)
-            self.aphia.print_record(record, pre='Found: ')
-            parent, new = Taxon.objects.get_or_create(name=record['scientificname'])
-            parent = self.update_taxon(parent, record)
-        return parent
+    # def get_parent(self, taxon):
+        # '''Get or create the parent of a taxon.'''
+        # try:
+            # parent = Taxon.objects.get(aphia=taxon.parent_aphia)
+        # except Taxon.DoesNotExist:
+            # record = self.aphia.get_aphia_record_by_id(taxon.parent_aphia)
+            # self.aphia.print_record(record, pre='Found: ')
+            # parent, new = Taxon.objects.get_or_create(name=record['scientificname'])
+            # parent = self.update_taxon(parent, record)
+        # return parent
+
+    def get_ancestors(self, taxon, record):
+        '''Get and link all parents of a taxon.'''
+        lineage = [taxon]
+        ancestor_names = [
+                record['genus'],
+                record['family'],
+                record['order'],
+                record['cls'],
+                record['phylum'],
+                record['kingdom'],
+                ]
+        for name in ancestor_names:
+            if name:
+                name = name.replace('[unassigned] ', '')
+                ancestor = self.get_ancestor(name)
+                lineage.append(ancestor)
+        lineage.reverse()
+        for count, parent in enumerate(lineage):
+            # Last node has no parent, break the loop
+            if count == len(lineage)-1:
+                break
+            child = lineage[count+1]
+            # When not species, skip setting itself as parent
+            if parent.name == child.name:
+                continue
+            print(f'{parent}::{child}')
+            child.parent = parent
+            child.save()
+
+    def get_ancestor(self, name):
+        '''Get one parent of a taxon.'''
+        taxon, new = Taxon.objects.get_or_create(name=name)
+        if new or not taxon.aphia:
+            records = self.search_worms(name)
+            record = records[0]
+            taxon = self.update_taxon(taxon, record)
+        return taxon
 
     def get_valid_taxon(self, records):
         '''Get a single valid taxon from records.'''

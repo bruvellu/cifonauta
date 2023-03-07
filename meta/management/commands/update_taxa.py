@@ -58,10 +58,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        # TODO: taxa_update: fetch taxon infos
-        # TODO: taxa_get_parent: fetch parent taxa
-        # TODO: taxa_get_valid: find and replace by valid
-
         # TODO: Also fetch non-marine species
 
         # Set language to Portuguese by default
@@ -97,6 +93,9 @@ class Command(BaseCommand):
         for taxon in taxa:
             # Skip over taxa already with an AphiaID
             if not taxon.aphia or force:
+                # Temporary skip
+                # if taxon.status:
+                    # continue
                 # Search taxon name in WoRMS
                 record = self.search_worms(taxon.name)
                 # Skip taxon without record (but update timestamp)
@@ -245,3 +244,4 @@ EN2PT = {
         'Parvorder': 'Parvordem',
         'Megaclass': 'Megaclasse',
         }
+

@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django.utils import translation
 from django.template.defaultfilters import slugify
-from meta.models import Media, Taxon
+from meta.models import Taxon
 from worms import Aphia
 
 '''

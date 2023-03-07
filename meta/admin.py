@@ -41,7 +41,7 @@ class PersonAdmin(admin.ModelAdmin):
 
 
 class TaxonAdmin(TranslationAdmin):
-    list_display = ('name', 'aphia', 'rank', 'authority', 'status', 'is_valid', 'parent', 'timestamp')
+    list_display = ('name', 'aphia', 'rank', 'authority', 'status', 'is_valid', 'valid_taxon', 'parent', 'timestamp')
     list_filter = ('is_valid', 'timestamp', 'rank')
     filter_horizontal = ('media',)
     search_fields = ['name', 'authority']

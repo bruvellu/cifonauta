@@ -13,7 +13,7 @@ class MediaTranslation(TranslationOptions):
 
 @register(Taxon)
 class TaxonTranslation(TranslationOptions):
-    fields = ('rank',)
+    fields = ('rank', 'status')
 
 @register(Tag)
 class TagTranslation(TranslationOptions):

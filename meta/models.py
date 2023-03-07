@@ -170,7 +170,7 @@ class Taxon(MPTTModel):
             null=True, related_name='children', verbose_name=_('pai'),
             help_text=_('Táxon pai deste táxon.'))
     valid_taxon = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,
-            null=True, related_name='synonyms', verbose_name=_('válido'),
+            null=True, related_name='synonyms', verbose_name=_('táxon válido'),
             help_text=_('Sinônimo válido deste táxon.'))
     media = models.ManyToManyField('Media', blank=True,
             verbose_name=_('arquivos'),

@@ -114,7 +114,7 @@ class Command(BaseCommand):
                 # Add/get and link parent taxa
                 self.save_ancestors(taxon, record)
                 # Get valid taxon
-                if not taxon.is_valid:
+                if not taxon.is_valid and record['valid_AphiaID']:
                     # Get valid record and taxon and save instance
                     valid_record = self.aphia.get_aphia_record_by_id(record['valid_AphiaID'])
                     valid_taxon, new = Taxon.objects.get_or_create(name=valid_record['scientificname'])
@@ -194,7 +194,8 @@ class Command(BaseCommand):
         taxon, new = Taxon.objects.get_or_create(name=name)
         if new or not taxon.aphia:
             record = self.search_worms(name)
-            taxon = self.update_taxon(taxon, record)
+            if record:
+                taxon = self.update_taxon(taxon, record)
         return taxon
 
 # Dictionary of taxonomic ranks for translations

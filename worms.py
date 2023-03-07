@@ -40,6 +40,9 @@ Services:
 
 '''
 
+# TODO: Migrate to REST
+# TODO: Allow passing additional arguments
+
 from suds import null, WebFault
 from suds.client import Client
 import logging
@@ -57,12 +60,10 @@ console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 
 class Aphia:
-    '''Main WoRMS interactor.'''
+    '''WoRMS interactor.'''
     def __init__(self):
         self.url = 'http://www.marinespecies.org/aphia.php?p=soap&wsdl=1'
-
         logger.info('Initiating contact with WoRMS...')
-
         try:
             self.client = Client(self.url)
             logger.info('Connected to WoRMS web services.')
@@ -70,7 +71,7 @@ class Aphia:
             print('Could not connect to client!')
 
     def wire(self, service, query, attempt=0):
-        '''Manage re-connections between client and WorMS.'''
+        '''Manage re-connections between client and WoRMS.'''
         try:
             results = service(query)
         except:
@@ -85,63 +86,39 @@ class Aphia:
     def get_aphia_id(self, query):
         '''Get the AphiaID for a given name.'''
         logger.info('Searching for the name "%s"', query)
-
-        results = self.wire(
-            self.client.service.getAphiaID,
-            query
-            )
+        results = self.wire(self.client.service.getAphiaID, query)
         return results
 
     def get_aphia_records(self, query):
         '''Get one or more matching AphiaRecords for a given name.'''
         logger.info('Searching for the name "%s"', query)
-
-        results = self.wire(
-            self.client.service.getAphiaRecords,
-            query
-            )
+        results = self.wire(self.client.service.getAphiaRecords, query)
+        self.show_results(results)
         return results
 
     def get_aphia_name_by_id(self, query):
         '''Get the correct name for a given AphiaID.'''
         logger.info('Searching for the ID "%s"', query)
-
-        results = self.wire(
-            self.client.service.getAphiaNameByID,
-            query
-            )
+        results = self.wire(self.client.service.getAphiaNameByID, query)
         return results
 
     def get_aphia_record_by_id(self, query):
         '''Get the complete AphiaRecord for a given AphiaID.'''
         logger.info('Searching for the ID "%s"', query)
-
-        results = self.wire(
-            self.client.service.getAphiaRecordByID,
-            query
-            )
+        results = self.wire(self.client.service.getAphiaRecordByID, query)
         return results
 
     def get_aphia_record_by_external_id(self, query, dbtype=''):
         '''Get the Aphia Record for a given external identifier.'''
         #TODO define type parameter.
         logger.info('Searching for the ID "%s"', query)
-
-        results = self.wire(
-            self.client.service.getAphiaRecordByExtID,
-            query
-            )
+        results = self.wire(self.client.service.getAphiaRecordByExtID, query)
         return results
 
     def get_external_id_by_aphia_id(self, query):
         '''Get any external identifier(s) for a given AphiaID.'''
-        #TODO define type parameter.
         logger.info('Searching for the ID "%s"', query)
-
-        results = self.wire(
-            self.client.service.getExtIDbyAphiaID,
-            query
-            )
+        results = self.wire(self.client.service.getExtIDbyAphiaID, query)
         return results
 
     def get_aphia_records_by_names(self, query):
@@ -151,32 +128,20 @@ class Aphia:
         names at once for performance reasons.
         '''
         logger.info('Searching for the name(s) "%s"', query)
-
-        results = self.wire(
-            self.client.service.getAphiaRecordsByNames,
-            query
-            )
+        results = self.wire(self.client.service.getAphiaRecordsByNames, query)
         return results
 
     def get_aphia_records_by_vernacular(self, query):
         '''Get one or more Aphia Records for a given vernacular.'''
         logger.info('Searching for the name "%s"', query)
-
-        results = self.wire(
-            self.client.service.getAphiaRecordsByVernacular,
-            query
-            )
+        results = self.wire(self.client.service.getAphiaRecordsByVernacular, query)
         return results
 
     def get_aphia_records_by_date(self, query):
         '''Lists all AphiaRecords (taxa) modified or added between a specific time interval.'''
         #TODO Define startdate parameters.
         logger.info('Searching between dates "%s"', query)
-
-        results = self.wire(
-            self.client.service.getAphiaRecordsByDate,
-            query
-            )
+        results = self.wire(self.client.service.getAphiaRecordsByDate, query)
         return results
 
     def get_aphia_classification_by_id(self, query):
@@ -185,51 +150,31 @@ class Aphia:
         This also includes any sub or super ranks.
         '''
         logger.info('Searching for the ID "%s"', query)
-
-        results = self.wire(
-            self.client.service.getAphiaClassificationByID,
-            query
-            )
+        results = self.wire(self.client.service.getAphiaClassificationByID, query)
         return results
 
     def get_sources_by_aphia_id(self, query):
         '''Get one or more sources/references including links, for one AphiaID.'''
         logger.info('Searching for the ID "%s"', query)
-
-        results = self.wire(
-            self.client.service.getSourcesByAphiaID,
-            query
-            )
+        results = self.wire(self.client.service.getSourcesByAphiaID, query)
         return results
 
     def get_aphia_synonyms_by_id(self, query):
         '''Get all synonyms for a given AphiaID.'''
         logger.info('Searching for the ID "%s"', query)
-
-        results = self.wire(
-            self.client.service.getAphiaSynonymsByID,
-            query
-            )
+        results = self.wire(self.client.service.getAphiaSynonymsByID, query)
         return results
 
     def get_aphia_vernaculars_by_id(self, query):
         '''Get all vernaculars for a given AphiaID.'''
         logger.info('Searching for the ID "%s"', query)
-
-        results = self.wire(
-            self.client.service.getAphiaVernacularsByID,
-            query
-            )
+        results = self.wire(self.client.service.getAphiaVernacularsByID, query)
         return results
 
     def get_aphia_children_by_id(self, query):
         '''Get the direct children for a given AphiaID.'''
         logger.info('Searching for the ID "%s"', query)
-
-        results = self.wire(
-            self.client.service.getAphiaChildrenByID,
-            query
-            )
+        results = self.wire(self.client.service.getAphiaChildrenByID, query)
         return results
 
     def match_aphia_records_by_names(self, query):
@@ -239,22 +184,35 @@ class Aphia:
         50 names at once for performance reasons.
         '''
         logger.info('Searching for the name(s) "%s"', query)
-
-        results = self.wire(
-            self.client.service.matchAphiaRecordsByNames,
-            query
-            )
+        results = self.wire(self.client.service.matchAphiaRecordsByNames, query)
         return results
 
     def get_aphia_distributions_by_id(self, query):
         '''Get all distributions for a given AphiaID.'''
         logger.info('Searching for the ID "%s"', query)
-
-        results = self.wire(
-            self.client.service.getAphiaDistributionsByID,
-            query
-            )
+        results = self.wire(self.client.service.getAphiaDistributionsByID, query)
         return results
 
+    def show_results(self, results):
+        '''Print relevant information about the results.'''
+        if results:
+            logger.info('Found {} record(s)'.format(len(results)))
+            for result in results:
+                self.print_record(result)
+        else:
+            logger.info('Found no records.')
+
+    def print_record(self, record, pre=''):
+        '''Print taxon information.'''
+        # logger.info('ID: {0}, Name: {1}, Authority: {2}, Rank: {3}, Status: {4}'.format(
+        logger.info('{0}{1} / {2} / {3} / {4} / {5}'.format(
+            pre,
+            record['AphiaID'],
+            record['scientificname'],
+            record['authority'],
+            record['rank'],
+            record['status'])
+            )
+
 if __name__ == '__main__':
-    print('Command line not yet implemented.')
+    print('Command line not implemented yet.')

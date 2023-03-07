@@ -156,17 +156,27 @@ class Taxon(MPTTModel):
             help_text=_('Nome do táxon.'))
     slug = models.SlugField(_('slug'), max_length=256, blank=True,
             help_text=_('Slug do nome do táxon.'))
-    rank = models.CharField(_(u'rank'), max_length=256, blank=True, help_text=_(u'Ranking taxonômico do táxon.'))
+    rank = models.CharField(_('rank'), max_length=256, blank=True,
+            help_text=_('Ranking taxonômico do táxon.'))
     aphia = models.PositiveIntegerField(null=True, blank=True,
-            help_text=_('APHIA, o identificador do táxon no WoRMS.'))
+            help_text=_('AphiaID, o identificador do táxon no WoRMS.'))
+    authority = models.CharField(_('autoridade'), max_length=256, blank=True, null=True,
+            help_text=_('Autoridade do táxon.'))
+    status = models.CharField(_('status'), max_length=256, blank=True, null=True,
+            help_text=_('Status do táxon.'))
+    is_valid = models.BooleanField(_('válido'), default=False,
+            help_text=_('Status do táxon.'))
     parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,
             null=True, related_name='children', verbose_name=_('pai'),
             help_text=_('Táxon pai deste táxon.'))
-    media = models.ManyToManyField( 'Media', blank=True,
+    valid_taxon = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,
+            null=True, related_name='synonyms', verbose_name=_('táxon válido'),
+            help_text=_('Sinônimo válido deste táxon.'))
+    media = models.ManyToManyField('Media', blank=True,
             verbose_name=_('arquivos'),
             help_text=_('Arquivos associados a este táxon.'))
-    timestamp = models.DateTimeField( _('data de modificação'), blank=True,
-            null=True, help_text=_('Data da última modificação do arquivo.'))
+    timestamp = models.DateTimeField(_('data de modificação'), auto_now=True,
+            blank=True, null=True, help_text=_('Data da última modificação do arquivo.'))
 
     def __str__(self):
         return self.name
@@ -192,6 +202,9 @@ class Taxon(MPTTModel):
                 query |= Q(lft__lt=node.lft, rght__gt=node.rght, tree_id=node.tree_id)
             query |= Q(id=node.id)
         return Taxon.objects.filter(query)
+
+    class MPTTMeta:
+            order_insertion_by = ['name']
 
     class Meta:
         verbose_name = _('táxon')

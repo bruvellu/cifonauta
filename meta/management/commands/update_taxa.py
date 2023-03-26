@@ -104,7 +104,8 @@ class Command(BaseCommand):
                     continue
                 # Skip match without proper name (but update timestamp)
                 if taxon.name != record['scientificname']:
-                    print(f"{taxon.name} != {record['scientificname']}")
+                    # print("{taxon.name} != {record['scientificname']}")
+                    print('{} != {}'.format(taxon.name, record['scientificname']))
                     taxon.save()
                     continue
 
@@ -184,7 +185,8 @@ class Command(BaseCommand):
             # When not species, skip setting itself as parent
             if parent.name == child.name:
                 continue
-            print(f'{parent}::{child}')
+            #print(f'{parent}::{child}')
+            print('{}::{}'.format(parent, child))
             child.parent = parent
             child.save()
 

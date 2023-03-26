@@ -55,6 +55,8 @@ class Command(BaseCommand):
                 help='Only search for taxa with AphiaID.')
         parser.add_argument('--only-orphans', action='store_true', dest='only_orphans',
                 help='Only update taxa without parents.')
+        parser.add_argument('--only-new', action='store_true', dest='only_new',
+                help='Only update new taxa (without timestamp).')
         parser.add_argument('--force', action='store_true', dest='force',
                 help='Force taxon search and update.')
 
@@ -71,6 +73,7 @@ class Command(BaseCommand):
         rank = options['rank']
         only_aphia = options['only_aphia']
         only_orphans = options['only_orphans']
+        only_new = options['only_new']
         force = options['force']
 
         # Get all taxa
@@ -88,6 +91,9 @@ class Command(BaseCommand):
         # Filter only taxa without parents
         if only_orphans:
             taxa = taxa.filter(parent__isnull=True)
+        # Filter only taxa without timestamp
+        if only_new:
+            taxa = taxa.filter(timestamp__isnull=True)
         # Limit the total number of taxa
         taxa = taxa[:n]
 

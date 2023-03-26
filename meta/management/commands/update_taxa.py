@@ -53,6 +53,8 @@ class Command(BaseCommand):
                 help='Limit the updates to taxa of a specific rank (English).')
         parser.add_argument('--only-aphia', action='store_true', dest='only_aphia',
                 help='Only search for taxa with AphiaID.')
+        parser.add_argument('--only-orphans', action='store_true', dest='only_orphans',
+                help='Only update taxa without parents.')
         parser.add_argument('--force', action='store_true', dest='force',
                 help='Force taxon search and update.')
 
@@ -68,6 +70,7 @@ class Command(BaseCommand):
         days = options['days']
         rank = options['rank']
         only_aphia = options['only_aphia']
+        only_orphans = options['only_orphans']
         force = options['force']
 
         # Get all taxa
@@ -82,6 +85,9 @@ class Command(BaseCommand):
         # Filter only taxa without AphiaID
         if only_aphia:
             taxa = taxa.filter(aphia__isnull=False)
+        # Filter only taxa without parents
+        if only_orphans:
+            taxa = taxa.filter(parent__isnull=True)
         # Limit the total number of taxa
         taxa = taxa[:n]
 

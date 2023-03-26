@@ -46,7 +46,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('-n', '--number', type=int, default=10,
-                help='Set the number of taxa to update.')
+                help='Set number of taxa to update (default=10).')
         parser.add_argument('-d', '--days', type=int, default=None,
                 help='Only update taxa not updated for this number of days.')
         parser.add_argument('-r', '--rank', default='',

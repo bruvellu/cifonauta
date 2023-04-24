@@ -9,5 +9,4 @@ sorl-thumbnail
 requests
 pillow
 fabric
-patchwork
 suds

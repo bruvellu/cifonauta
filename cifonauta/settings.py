@@ -143,6 +143,9 @@ MODELTRANSLATION_DEFAULT_LANGUAGE = 'pt-br'
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('pt-br', 'en')
 MODELTRANSLATION_AUTO_POPULATE = True
 
+# Set default value for AutoField
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 # Needed for Django sites framework. Keep it active.
 SITE_ID = 1
 

@@ -28,7 +28,7 @@ class Command(BaseCommand):
         self.stdout.write('\nDUMP FILE: {}'.format(filepath))
         # Open file and begin.
         trans_file = open(filepath, 'w')
-        trans_file.write('from django.utils.translation import ugettext_lazy as _\n\n')
+        trans_file.write('from django.utils.translation import gettext_lazy as _\n\n')
 
         # Loop through models.
         for translator in all_fields:

@@ -383,7 +383,7 @@ def media_page(request, media_id):
         'references': references,
         }
 
-    if request.is_ajax():
+    if is_ajax(request):
         return render(request, 'media_page_ajax.html', context)
     else:
         return render(request, 'media_page.html', context)
@@ -724,4 +724,9 @@ def build_url(meta, field, queries, remove=False, append=None):
         else:
             queries[field] = [q for q in queries[field] if not q['slug'] == meta['slug']]
     return url
+
+
+def is_ajax(request):
+    '''Handler function after deprecation of HttpRequest.is_ajax.'''
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 

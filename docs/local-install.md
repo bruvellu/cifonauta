@@ -1,8 +1,8 @@
-# Local installation
+# Local installation on Linux (Ubuntu)
 
 ## Install system packages
 
-First, open a terminal and install the required system packages (requires admin privileges):
+First, open a terminal and install the required system packages (needs admin privileges):
 
 ```
 sudo apt install git python3 python3-dev python3-pip python3-venv python3-gi postgresql postgresql-server-dev-all libpq-dev yui-compressor ffmpeg imagemagick gettext language-pack-pt gir1.2-gexiv2-0.10 libjpeg-dev zlib1g-dev
@@ -10,10 +10,16 @@ sudo apt install git python3 python3-dev python3-pip python3-venv python3-gi pos
 
 ## Clone the repository
 
-Then, change to a directory where you want to install the Cifonauta (can be any) and clone the repository using [`git`](https://git-scm.com/):
+Then, change to a directory where you want to install the Cifonauta and clone the repository using [`git`](https://git-scm.com/):
 
 ```
 git clone https://github.com/bruvellu/cifonauta.git
+```
+
+If you only want to clone a specific branch, execute:
+
+```
+git clone --branch <branchname> https://github.com/bruvellu/cifonauta.git
 ```
 
 ## Create Python virtual environment
@@ -27,7 +33,11 @@ python3 -m venv virtual
 source virtual/bin/activate
 ```
 
-If this worked, you should see `(virtual)` on your command prompt.
+If this worked, you should see `(virtual)` on your command prompt:
+
+```
+(virtual) user@device:~/your/dir$
+```
 
 ## Install Django packages
 
@@ -41,23 +51,24 @@ This will install all the Django-specific and other Python-packages needed to ru
 Test if the installation worked by running:
 
 ```
-python manage runserver
+python manage.py runserver
 ```
 
 You should this message:
 
 ```
-(virtual) nelas@pilidium:~/CEBIMar/cifonauta$ python manage.py runserver 
+(virtual) user@device:~/your/dir$ python manage.py runserver
 Watching for file changes with StatReloader
 Performing system checks...
 
 System check identified no issues (0 silenced).
-January 08, 2023 - 16:16:46
-Django version 2.2.28, using settings 'cifonauta.settings'
+May 09, 2023 - 16:59:36
+Django version 4.2.1, using settings 'cifonauta.settings'
 Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
 ```
 
-Press CTRL+C to kill it, for now.
+Press CTRL+C to kill the local server, for now.
 
 ## Create PostgreSQL database
 
@@ -70,26 +81,29 @@ service postgresql restart
 createdb -E UTF8 -T template0 -l pt_BR.UTF8 cebimar
 ```
 
-If you have a database dump, now is the time to load it:
+## Load database
+
+To populate the empty database with the latest dump:
 
 ```
 gunzip < cebimar_2019-09-21_1234.sql.gz | psql cebimar
 ```
 
+## Add media files
+
+Unzip the media files into the `site_media` directory:
+
+```
+unzip -uv site_media.zip
+```
+
 ## Run local server
 
-With that, we can run the Cifonauta database using Django’s built-in local server:
+Once the database and media files are ready, we can run the local server again:
 
 ```
 python manage.py runserver
 ```
 
 That’s it, you can access the local Cifonauta at http://127.0.0.1:8000/
-
-**Note:** if you close the terminal, you’ll first need to activate the virtual environment to be able to run the local server again (for example, after a system restart).
-For that, just go the repository directory and run:
-
-```
-source virtual/bin/activate
-```
 

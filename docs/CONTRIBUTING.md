@@ -1,14 +1,22 @@
 # How to contribute to the Cifonauta database
 
-Cifonauta is an open platform and welcomes suggestions and contributions from all.
+Cifonauta is an open platform and welcomes suggestions and contributions from everyone.
 
 ## Report an issue
 
-Create a new issue in the [issue tracker](https://github.com/bruvellu/cifonauta/issues) describing the problem and, if possible, with a link to the page where the issue is happening.
+Create a new issue in the [issue tracker](https://github.com/bruvellu/cifonauta/issues).
+Describe the problem in detail and remember to add a link to the page where the issue is happening.
+Follow the available template, it allow us to identify and solve the issue quicker.
+Thanks for reporting!
+
+## Suggest a feature
+
+Open a [new issue](https://github.com/bruvellu/cifonauta/issues) and describe your idea.
+We’re looking forward to hearing your thoughts!
 
 ## Contribute code
 
-If you want to fix a bug or create a new feature yourself, you can do so by submitting a pull request.
+You can also fix a bug or create a new feature yourself, you can do so by submitting a pull request.
 We recommend that you:
 
 1. Fork [Cifonauta’s repository](https://github.com/bruvellu/cifonauta/fork).

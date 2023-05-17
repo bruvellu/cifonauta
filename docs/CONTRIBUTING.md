@@ -25,9 +25,10 @@ Use a descriptive name such as `new-map-visualization` or `fix-navigation-ux`.
 Features and bug fixes should branch off `develop` and be merged back via pull requests.
 Make your features as concise as possible to avoid merging large chunks of code at once.
 If you are a collaborator, first push your local feature/bugfix branch to remote for automated testing, code review and discussion.
-This is just a precaution step and a way to see the features in development; no approval is needed to push to `develop` (it’s ok if it breaks occasionally).
+This is just a precaution step and a way to see the features in development; no approval is needed to push to `develop`—*it’s ok if it breaks occasionally*.
 In case everything seems fine, merge locally back to `develop` and push to remote.
-- **`production`**: Production branch. This branch holds the current code for the live website in production. The branch is protected (pushing to it directly is not possible). Features from `develop` are merged to `production` via pull requests.
+- **`staging`**: Staging branch. That’s where the mature features are first merged for testing. Merge must be done via pull requests. The `staging` branch has integrated tests and deploys to a test server to check for potential issues.
+- **`production`**: Production branch. This branch holds the current code for the live website in production. Once features have been thoroughly tested on `staging`, they are ready for `production`. The branch is protected and merging from staging must be done via pull requests (never push to `production` directly).
 - **`legacy`**: Previous production branch, now a legacy branch. It’s also protected and should not be changed.
 
 ### Commit messages

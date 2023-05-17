@@ -41,7 +41,7 @@ To develop new features, create a new feature branch from `develop` using a desc
 After doing some coding, push this local branch to remote.
 The earlier the better but, importantly, do it before merging with `develop`.
 This allows others to get an overview of the features in development, and allows for some automated testing, code review, and discussion.
-If all looks good, merge your feature branch into `develop` and push to remote.
+If all looks good, create a pull request, or locally merge your feature branch into `develop` and push it to remote.
 Make your features as concise as possible to avoid merging large chunks of code at once.
 - **`staging`**:
 This is a (more) stable branch.

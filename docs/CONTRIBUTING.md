@@ -27,17 +27,37 @@ This will create a copy of the entire repository in your account.
 Use a descriptive name such as `new-map-visualization` or `fix-navigation-ux`.
 5. Create a pull request to the `develop` branch in the main Cifonauta repository.
 
+If you are a collaborator, you don’t need to create a pull request for `develop`, but before merging you should push your local feature branch to remote for testing, review and discussion (see below).
+
 ### Branching strategy
 
-- **`develop`**: Default branch.
-Features and bug fixes should branch off `develop` and be merged back via pull requests.
+We are using a simplified flow based on environment branches (see [GitLab Flow](https://docs.gitlab.com/ee/topics/gitlab_flow.html#environment-branches-with-gitlab-flow)).
+It goes from `develop` -> `staging` -> `production` with new features branching off and being merged back into `develop` (default branch).
+
+- **`develop`** (default):
+This is where code development happens.
+We aim to keep it as stable as possible, but it’s ok if it breaks occasionally.
+To develop new features, create a new feature branch from `develop` using a descriptive name (see above).
+After doing some coding, push this local branch to remote.
+The earlier the better but, importantly, do it before merging with `develop`.
+This allows others to get an overview of the features in development, and allows for some automated testing, code review, and discussion.
+If all looks good, merge your feature branch into `develop` and push to remote.
 Make your features as concise as possible to avoid merging large chunks of code at once.
-If you are a collaborator, first push your local feature/bugfix branch to remote for automated testing, code review and discussion.
-This is just a precaution step and a way to see the features in development; no approval is needed to push to `develop`—*it’s ok if it breaks occasionally*.
-In case everything seems fine, merge locally back to `develop` and push to remote.
-- **`staging`**: Staging branch. That’s where the mature features are first merged for testing. Merge must be done via pull requests. The `staging` branch has integrated tests and deploys to a test server to check for potential issues.
-- **`production`**: Production branch. This branch holds the current code for the live website in production. Once features have been thoroughly tested on `staging`, they are ready for `production`. The branch is protected and merging from staging must be done via pull requests (never push to `production` directly).
-- **`legacy`**: Previous production branch, now a legacy branch. It’s also protected and should not be changed.
+- **`staging`**:
+This is a (more) stable branch.
+Mature features in `develop` get merged into `staging` for testing.
+Here, merges must be done via pull requests.
+The `staging` branch has integrated tests and deploys to a test server for identifying unforseen issues.
+- **`production`**:
+This is the stable branch.
+It holds the code for the live website in production.
+Only features thoroughly tested in `staging` are ready for being merged into `production`.
+The branch is protected.
+Merging from `staging` must be done via pull requests, never push to `production` directly.
+- **`legacy`**:
+This is the previous production branch.
+It’s now a legacy branch that will be phased out.
+It’s protected and should not be changed.
 
 ### Commit messages
 

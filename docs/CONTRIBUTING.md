@@ -1,14 +1,22 @@
 # How to contribute to the Cifonauta database
 
-Cifonauta is an open platform and welcomes suggestions and contributions from all.
+Cifonauta is an open platform and welcomes suggestions and contributions from everyone.
 
 ## Report an issue
 
-Create a new issue in the [issue tracker](https://github.com/bruvellu/cifonauta/issues) describing the problem and, if possible, with a link to the page where the issue is happening.
+Create a new issue in the [issue tracker](https://github.com/bruvellu/cifonauta/issues).
+Describe the problem in detail and remember to add a link to the page where the issue is happening.
+Follow the available template, it allow us to identify and solve the issue quicker.
+Thanks for reporting!
+
+## Suggest a feature
+
+Open a [new issue](https://github.com/bruvellu/cifonauta/issues) and describe your idea.
+We’re looking forward to hearing your thoughts!
 
 ## Contribute code
 
-If you want to fix a bug or create a new feature yourself, you can do so by submitting a pull request.
+You can also fix a bug or create a new feature yourself, you can do so by submitting a pull request.
 We recommend that you:
 
 1. Fork [Cifonauta’s repository](https://github.com/bruvellu/cifonauta/fork).
@@ -25,9 +33,10 @@ Use a descriptive name such as `new-map-visualization` or `fix-navigation-ux`.
 Features and bug fixes should branch off `develop` and be merged back via pull requests.
 Make your features as concise as possible to avoid merging large chunks of code at once.
 If you are a collaborator, first push your local feature/bugfix branch to remote for automated testing, code review and discussion.
-This is just a precaution step and a way to see the features in development; no approval is needed to push to `develop` (it’s ok if it breaks occasionally).
+This is just a precaution step and a way to see the features in development; no approval is needed to push to `develop`—*it’s ok if it breaks occasionally*.
 In case everything seems fine, merge locally back to `develop` and push to remote.
-- **`production`**: Production branch. This branch holds the current code for the live website in production. The branch is protected (pushing to it directly is not possible). Features from `develop` are merged to `production` via pull requests.
+- **`staging`**: Staging branch. That’s where the mature features are first merged for testing. Merge must be done via pull requests. The `staging` branch has integrated tests and deploys to a test server to check for potential issues.
+- **`production`**: Production branch. This branch holds the current code for the live website in production. Once features have been thoroughly tested on `staging`, they are ready for `production`. The branch is protected and merging from staging must be done via pull requests (never push to `production` directly).
 - **`legacy`**: Previous production branch, now a legacy branch. It’s also protected and should not be changed.
 
 ### Commit messages

@@ -1,6 +1,6 @@
 wheel
 django==4.2.1
-psycopg2==2.8.6
+psycopg2==2.9.6
 django-mptt
 django-rosetta
 django-modeltranslation==0.17.3

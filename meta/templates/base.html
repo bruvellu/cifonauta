@@ -43,7 +43,7 @@
 
     <!-- Estilos -->
     <!-- CSS: implied media="all" -->
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
 
     <!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
 
@@ -89,8 +89,8 @@
     <div id="deferedjs"> </div>
 
     <!-- scripts concatenated and minified via ant build script-->
-    <script defer src="{{ STATIC_URL }}js/plugins.min.js"></script>
-    <script defer src="{{ STATIC_URL }}js/script.min.js"></script>
+    <script defer src="{{ STATIC_URL }}js/plugins.js"></script>
+    <script defer src="{{ STATIC_URL }}js/script.js"></script>
     <!-- end scripts-->
 
     {% block extra-foot %}{% endblock %}

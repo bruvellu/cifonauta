@@ -72,13 +72,28 @@ Press CTRL+C to kill the local server, for now.
 
 ## Create PostgreSQL database
 
-Next, we create the PostgreSQL user and an empty database:
+Next, we create a PostgreSQL <user> (replace it with your username), and an empty database:
 
 ```
 sudo -s -u postgres
-createuser -s nelas
+createuser -s <user>
 service postgresql restart
 createdb -E UTF8 -T template0 -l pt_BR.UTF8 cebimar
+exit
+```
+
+## Set environment variables for database
+
+Storing the database name and user is cleaner in environment variables.
+To set, we recommend adding them to the `virtual/bin/activate` script using the commands below.
+They will get loaded when you start the virtual environment.
+
+```
+deactivate
+echo -e "\n# Cifonauta database environment variables" >> virtual/bin/activate
+echo -e "export CIFO_DB_NAME=\"cebimar\"" >> virtual/bin/activate
+echo -e "export CIFO_DB_USER=\"${USER}\"" >> virtual/bin/activate
+source virtual/bin/activate
 ```
 
 ## Load database

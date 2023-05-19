@@ -96,6 +96,14 @@ echo -e "export CIFO_DB_USER=\"${USER}\"" >> virtual/bin/activate
 source virtual/bin/activate
 ```
 
+Or manually edit and add the variables to the end of `virtual/bin/activate`:
+
+```
+# Cifonauta database environment variables
+export CIFO_DB_NAME="cebimar"
+export CIFO_DB_USER="<user>"
+```
+
 ## Load database
 
 To populate the empty database with the latest dump:

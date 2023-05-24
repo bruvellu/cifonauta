@@ -1,0 +1,27 @@
+#tags-container {
+    display: flex;
+    width: 100%;
+}
+
+#tags-content {
+    display: flex;
+    width: 100%;
+}
+
+#tags-categories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.tags-category {
+    width: 45%;
+}
+
+.tags-category-name {
+    width: 100%;
+}
+
+.tags-category-description {
+    width: 100%;
+}

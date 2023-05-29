@@ -1,0 +1,159 @@
+#nav-header {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: .3rem;
+    margin-bottom: .3rem;
+    text-align: initial; /*Mudando CSS nav.main*/
+    font-size: .99rem; /*Mudando CSS nav.main*/
+}
+
+#lang-nav-div {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.menu { /*class do #media e #about*/
+    float: none; /*Mudando CSS .menu*/
+    font-size: .89rem; /*Mudando CSS .menu*/
+    /*tirar display: inline e background que são inúteis */
+}
+
+#media {
+    min-width: 560px;
+    height: 25px;
+    padding: 0.2rem .625rem 0.08rem !important; /*Mudando CSS #media.menu*/
+    border-width: 0 !important; /*Mudando CSS #media.menu*/
+}
+
+#about {
+    height: 25px;
+    padding: 0.2rem 0.625rem 0.08rem 1.25rem !important; /*Mudando CSS #about.menu*/
+    border-width: 0 !important; /*Mudando CSS #about.menu*/
+}
+
+#hamburger-button {
+    background: transparent; /*Mudando CSS já existente*/
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 3.2rem;
+    height: 2rem;
+    padding: 0;
+    border: none;
+}
+
+#hamburger-button div {
+    background-color: #222;
+    height: 0.42rem;
+    width: 100%;
+    padding: 0;
+    border-radius: 15px;
+}
+
+#hamburger-menu-container {
+    background-color: /* #475D6F */#4d7494; 
+    display: none;
+    flex-direction: column;
+    gap: .5rem;
+    /* padding: 1.2rem 0.5rem 1rem .5rem; */
+    width: 11rem;
+    position: fixed;
+    top: 0;
+    right: 0;
+    margin-right: 2.5rem;
+}
+
+.show-hamburger-menu {
+    display: flex !important;
+}
+
+#close-hamburger-menu {
+    background-color: transparent;
+    width: 2.2rem;
+    height: 2.2rem;
+    position: absolute;
+    top: 0.7rem;
+    right: 1.3rem;
+    border: none;
+}
+
+#close-hamburger-menu div {
+    background-color: white;
+    height: .35rem;
+    width: 3rem;
+    border-radius: 15px;
+}
+
+#close-hamburger-menu div:first-child {
+    transform: rotate(43deg) translate(-7px, 11px);
+}
+
+#close-hamburger-menu div:last-child {
+    transform: rotate(138deg) translate(7px, 10px);
+}
+
+#media-hamburger {
+    /* background: #4d7494; */ /*Mudando CSS já existente*/
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    text-align: left; /*Mudando CSS já existente*/
+    padding: 1.2rem .5rem .25rem .5rem; /*Mudando CSS já existente*/
+}
+
+#about-hamburger {
+    background-color: #6B92B2; 
+    display: flex; /*Mudando CSS já existente*/
+    flex-direction: column;
+    padding: .25rem .5rem 1rem .5rem; /*Mudando CSS já existente*/
+    text-align: left; /*Mudando CSS já existente*/
+    gap: .5rem;
+}
+
+@media (max-width: 920px) {
+    #media {
+        display: flex;
+        justify-content: space-around;
+    }
+}
+
+@media (max-width: 850px) {
+    #nav-header {
+        flex-direction: column;
+        gap: .3rem;
+    }
+
+    #lang-nav-div {
+        justify-content: flex-end;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 680px) {
+    #media {
+        min-width: 300px;
+    }
+}
+
+/*Menu hamburger aqui */
+@media (max-width: 590px) {
+    #nav-header {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 3rem;
+        margin-top: .5rem;
+    }
+
+    #lang-nav-div {
+        justify-content: flex-start;
+    }
+
+    #media, #about {
+        display: none;
+    }
+
+    #hamburger-button {
+        display: flex;
+    }
+}

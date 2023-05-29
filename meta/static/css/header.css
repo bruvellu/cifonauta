@@ -1,0 +1,107 @@
+#mainheader {
+    display: flex;
+    justify-content: space-between;
+}
+
+#logo-container {
+    display: flex;
+    align-self: center;
+}
+
+#logo {
+    float: none; /*Mudando CSS já existente*/
+    width: initial; /*Mudando CSS já existente*/
+    margin: 0; /*Mudando CSS já existente*/
+    height: 4.3rem;
+    align-self: center;
+    margin-bottom: -1.1rem;
+}
+
+#logo-container > div {
+    display: flex;
+    flex-direction: column;
+}
+
+#maintitle {
+    margin: 0; /*Mudando CSS já existente*/
+}
+
+#tagline {
+    padding: 0 0 0 9px; /*Mudando CSS já existente*/
+    text-align: initial; /*Mudando CSS já existente*/
+}
+
+#stats-search {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+}
+
+#home-search {
+    margin-top: 0;
+    align-self: flex-end;
+    padding-right: 0.8rem;
+}
+
+#header-search {
+    margin-top: 0;
+    display: flex;
+    align-self: flex-end;
+    gap: .4rem;
+    padding-right: 0.8rem;
+}
+
+@media (max-width: 850px) {
+    #stats-search {
+        padding: 1rem 0;
+    }
+
+    #home-search, #stats, #header-search {
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 800px) {
+    #mainheader {
+        flex-direction: column;
+        gap: .8rem;
+    }
+
+    #stats-search {
+        gap: .4rem;
+        align-items: flex-start;
+        width: 100%;
+    }
+    
+    #stats {
+        text-align: left;
+    }
+
+    #home-search {
+        align-self: flex-start;
+    }
+}
+
+@media (max-width: 326px) {
+    #logo {
+        height: 3.5rem;
+    }
+
+    #logo-container > div {
+        gap: .1rem;
+    }
+
+    #maintitle {
+        font-size: 3.8em;
+    }
+
+    #tagline {
+        padding: 0 0 0 7px;
+        font-size: .85em;
+    }
+
+    input[type=text] {
+        width: 100%;
+    }
+}

@@ -19,9 +19,9 @@ Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o re
 <meta property="og:type" content="article" />
 {% endblock %}
 {% block content %}
-<header id="tags-section-title"><h1>{% trans 'Marcadores' %}</h1></header>
-<section id="tags-content">
-    <div id="tags-categories">
+<header class="tags-section-title"><h1>{% trans 'Marcadores' %}</h1></header>
+<section class="tags-content">
+    <div class="tags-categories">
         {% for cat in cats %}
         <div class="metagroup tags-category">
             <h2 class="tags-category-name">{{ cat.name }}</h2>

@@ -1,0 +1,20 @@
+#taxa-page-section {
+    display: flex;
+    flex-direction: column;
+}
+
+#taxa-page-section > div {
+    display: flex;
+    justify-content: space-between;
+}
+
+#species {
+    width: 14rem;
+}
+
+@media (max-width: 450px) {
+    #taxa-page-section > div {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+}

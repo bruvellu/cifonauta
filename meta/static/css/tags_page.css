@@ -1,27 +1,53 @@
-#tags-container {
+/* 
+  Style to "Marcadores" page
+
+  *Each Category is a card
+*/
+
+#tags-section-title {
+    width: fit-content;
+    margin: 0 6%;
+    font-size: 1.5em;
+  }
+  
+  #tags-content {
     display: flex;
     width: 100%;
-}
-
-#tags-content {
-    display: flex;
-    width: 100%;
-}
-
-#tags-categories {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #tags-categories {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
-}
-
-.tags-category {
-    width: 45%;
-}
-
-.tags-category-name {
+    justify-content: space-evenly;
+    padding: 0 3%;
+  }
+  
+  .tags-category {
+    width: 42%;
+  }
+  
+  .tags-category-name {
     width: 100%;
-}
-
-.tags-category-description {
+  }
+  
+  .tags-category-description {
     width: 100%;
-}
+  }
+  
+  /*
+    MEDIA
+  */
+  @media (max-width: 916px) {
+    .tags-category {
+        width: 90%;
+    }
+  }
+  
+  @media (max-width: 635px) {
+    #tags-section-title {
+        margin: 0 5%;
+    }
+  }
+  

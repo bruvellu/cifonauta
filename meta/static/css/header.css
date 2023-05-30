@@ -9,9 +9,9 @@
 }
 
 #logo {
-    float: none; /*Mudando CSS já existente*/
-    width: initial; /*Mudando CSS já existente*/
-    margin: 0; /*Mudando CSS já existente*/
+    float: none; 
+    width: initial; 
+    margin: 0; 
     height: 4.3rem;
     align-self: center;
     margin-bottom: -1.1rem;
@@ -23,12 +23,12 @@
 }
 
 #maintitle {
-    margin: 0; /*Mudando CSS já existente*/
+    margin: 0; 
 }
 
 #tagline {
-    padding: 0 0 0 9px; /*Mudando CSS já existente*/
-    text-align: initial; /*Mudando CSS já existente*/
+    padding: 0 0 0 9px; 
+    text-align: initial; 
 }
 
 #stats-search {

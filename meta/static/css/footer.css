@@ -1,10 +1,10 @@
 #mainfooter {
-    border-style: none; /*Mudando CSS já existente*/
-    border-color: initial; /*Mudando CSS já existente*/
-    border-width: 0; /*Mudando CSS já existente*/
+    border-style: none; 
+    border-color: initial; 
+    border-width: 0; 
     border-top: 5px #EEEEEE solid;
-    padding: .8rem 0; /*Mudando CSS já existente*/
-    margin: 0; /*Mudando CSS já existente*/
+    padding: .8rem 0; 
+    margin: 0; 
 }
 
 #footerbase {
@@ -12,11 +12,11 @@
     justify-content: space-between;
     gap: .5rem 2rem;
     padding-right: 1rem;
-    padding-bottom: .5rem; /*Mudando CSS já existente*/
+    padding-bottom: .5rem; 
 }
 
 #footerbase > div p:first-child {
-    padding: 0; /*Mudando CSS já existente*/
+    padding: 0; 
 }
 
 #footerbase > div:last-child {
@@ -33,21 +33,21 @@
 }
 
 #footerbase > div p:last-child {
-    text-indent: 0; /*Mudando CSS já existente*/
-    margin-top: 0; /*Mudando CSS já existente*/
+    text-indent: 0; 
+    margin-top: 0; 
 }
 
 #sitelinks {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
 
-    width: 100%; /*Mudando CSS já existente*/
+    width: 100%; 
     /* display: flex;
     justify-content: space-between; */
     gap: .3rem 2rem;
     flex-wrap: wrap;
     box-sizing: border-box;
-    padding: 0.3rem 0.7rem 0 0.7rem; /*Mudando CSS já existente*/
+    padding: 0.3rem 0.7rem 0 0.7rem; 
 }
 
 @media (max-width: 660px) {

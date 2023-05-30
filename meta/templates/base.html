@@ -44,6 +44,10 @@
     <!-- Estilos -->
     <!-- CSS: implied media="all" -->
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/base.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/nav.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/header.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/footer.css">
 
     <!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
 
@@ -56,28 +60,29 @@
 
     {% block extra-head %}{% endblock %}
 
+    <script defer src="{{ STATIC_URL }}js/nav.js"></script>
     <script src="{{ STATIC_URL }}js/libs/jquery-1.7.2.min.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/libs/jquery-ui-1.8.21.custom.min.js" type="text/javascript"></script>
     <script src="{{ STATIC_URL }}js/libs/jquery.history.js" type="text/javascript"></script>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/ui-lightness/jquery-ui-1.8.21.custom.css">
   </head>
   <body>
-    <div class="container prepend-1 append-1">
+    <div id='div-container' class="container">
 
-      <nav class="main span-24 last">
+      <nav id="nav-header" class="main">
       {% include 'nav.html' %}
       </nav>
 
-      <header class="main span-24 last" id="mainheader">
+      <header class="main" id="mainheader">
       {% include 'header.html' %}
       </header>
 
-      <section class="main span-24 last" id="content">
+      <section class="main" id="content">
       {% block content %}{% endblock %}
       {% block sidebar %}{% endblock %}
       </section>
 
-      <footer class="main span-24 last quiet">
+      <footer id="mainfooter" class="main quiet">
       {% include 'footer.html' %}
       </footer>
 

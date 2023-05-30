@@ -1,23 +1,34 @@
 {% load i18n %}
 
-<div class="span-24 last" id="footerbase">
+<div  id="footerbase">
 
-  <div class="span-13">
-    <div class="span-13 last">
+  <div>
+    <p >
       &nbsp; &copy;{% now "Y" %} {% trans 'Centro de Biologia Marinha da Universidade de São Paulo' %}
-    </div>
-    <div class="span-13 last">&nbsp; <a href="http://cebimar.usp.br/">cebimar.usp.br</a></div>
+    </p>
+    <p >&nbsp; <a href="http://cebimar.usp.br/">cebimar.usp.br</a></p>
   </div>
 
-  <div class="span-6 cnpq">{% trans 'Licença de uso' %}:
-    <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img alt="{% trans 'Licença Creative Commons' %}" style="border-width:0" title="{% trans 'O conteúdo deste website está sob uma licença Creative Commons Atribuição-Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional' %}" src="{{ STATIC_URL }}cc.png" /></a></a>.</div>
-
-<div class="span-5 last cnpq">{% trans 'Apoio' %}: <a href="http://www.cnpq.br/" title="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}"><img width="90" alt="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}" src="{{ STATIC_URL }}cnpq.png" /></a></div>
-
+  <div>
+    <div>
+      <p>{% trans 'Licença de uso' %}:</p> 
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+        <img alt="{% trans 'Licença Creative Commons' %}" style="border-width:0" title="{% trans 'O conteúdo deste website está sob uma licença Creative Commons Atribuição-Não_Comercial-Compartilhamento_Pela_Mesma_Licença 3.0 internacional' %}" src="{{ STATIC_URL }}cc.png" />
+      </a>
+    </div>
+  
+    <div class="cnpq">
+      <p>{% trans 'Apoio' %}:</p>
+      <a href="http://www.cnpq.br/" title="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}">
+        <img width="90" alt="{% trans 'CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico' %}" src="{{ STATIC_URL }}cnpq.png" />
+      </a>
+    </div>
+  </div>
+  
 </div>
 
-<div class="span-24 last" id="sitelinks">
-  <div class="span-6">
+<div id="sitelinks">
+  <div>
     <h4>{% trans 'Informações básicas' %}</h4>
     <ul class="padlist">
       <li><a href="/about/">{% trans 'Sobre' %}</a></li>
@@ -26,7 +37,7 @@
       <li><a href="/about/#credits">{% trans 'Créditos e apoio' %}</a></li>
     </ul>
   </div>
-  <div class="span-4">
+  <div>
     <h4>{% trans 'Explorar' %}</h4>
     <ul class="padlist">
       <li><a href="/search/">{% trans 'Buscador' %}</a></li>
@@ -35,7 +46,7 @@
       <li><a href="/search/?datatype=video">{% trans 'Vídeos' %}</a></li>
     </ul>
   </div>
-  <div class="span-4">
+  <div>
     <h4>{% trans 'Metadados' %}</h4>
     <ul class="padlist">
       <li><a href="/tags/">{% trans 'Marcadores' %}</a></li>
@@ -45,7 +56,7 @@
       <li><a href="/literature/">{% trans 'Referências' %}</a></li>
     </ul>
   </div>
-  <div class="span-4">
+  <div>
     <h4>{% trans 'Novidades' %}</h4>
     <ul class="padlist">
       <li><a rel="me" href="https://mastodon.social/@cifonauta">Mastodon</a></li>
@@ -54,7 +65,7 @@
       <li><a rel="me" href="https://twitter.com/cifonauta">Twitter</a></li>
     </ul>
   </div>
-  <div class="span-4 last">
+  <div>
     <h4>{% trans 'Contato' %}</h4>
     <ul class="padlist">
       <li><a href="/terms/">{% trans 'Termos de uso' %}</a></li>

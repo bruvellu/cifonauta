@@ -7,6 +7,7 @@
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/taxa_page.css">
 <meta property="og:title" content="{% trans 'Táxons' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:description" content="{% trans 'Lista de táxons incluídos no banco de imagens Cifonauta.' %}" />
@@ -15,14 +16,14 @@
 {% endblock %}
 
 {% block content %}
-<section id='taxa-page-section' class="">
+<section id='taxa-page-section'>
 <header><h1>{% trans 'Táxons' %}</h1></header>
 <div>
-  <div id="taxa" class="">
+  <div id="taxa">
     {% show_tree %}
   </div>
 
-  <div id="species" class="">
+  <div id="species">
     {% include 'splist.html' %}
   </div>
 </div>

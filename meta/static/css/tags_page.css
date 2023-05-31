@@ -5,10 +5,9 @@
 */
 
 .tags-section-title {
-    width: fit-content;
-    margin: 0 6%;
-    font-size: 1.5em;
-  }
+  width: fit-content;
+  font-size: 1.5em;
+}
   
 .tags-content {
   display: flex;
@@ -20,8 +19,7 @@
 .tags-categories {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
-  padding: 0 3%;
+  justify-content: space-between;
 }
 
 .tags-category {
@@ -42,12 +40,6 @@
 @media (max-width: 916px) {
   .tags-category {
       width: 90%;
-  }
-}
-
-@media (max-width: 635px) {
-  #tags-section-title {
-      margin: 0 5%;
   }
 }
   

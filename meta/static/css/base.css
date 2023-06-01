@@ -1,8 +1,18 @@
+body {
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+}
+
 #div-container {
     display: flex;
     flex-direction: column;
-    margin: 0 auto;
-    width: 100%; 
-    max-width: 950px;
-    padding: 0 2.5rem;
+    margin: 0;
+    width: 100%;
+}
+
+@media (max-width: 350px) {
+    body {
+        padding: 0 1rem;
+    }
 }

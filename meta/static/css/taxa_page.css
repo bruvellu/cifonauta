@@ -12,7 +12,7 @@
     width: 14rem;
 }
 
-@media (max-width: 450px) {
+@media (max-width: 575px) {
     #taxa-page-section > div {
         flex-direction: column;
         gap: 1.5rem;

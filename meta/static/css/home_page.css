@@ -1,0 +1,9 @@
+#intro {
+    width: 96%;
+}
+
+.main-content {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+}

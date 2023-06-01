@@ -1,0 +1,32 @@
+#intro {
+    width: 95%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+#intro > #destaque {
+    display: flex;
+    justify-content: center;
+}
+
+#intro > .last {
+    width: 60%;
+}
+
+.main-content {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+@media (max-width: 874px) {
+    #intro > .last {
+        width: 100%;
+    }
+    #intro > #destaque {
+        margin: 0px;
+    }
+}

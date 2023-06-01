@@ -116,7 +116,7 @@
     }
 }
 
-@media (max-width: 850px) {
+@media (max-width: 910px) {
     #nav-header {
         flex-direction: column;
         gap: .3rem;
@@ -128,14 +128,8 @@
     }
 }
 
-@media (max-width: 680px) {
-    #media {
-        min-width: 300px;
-    }
-}
-
 /*Hamburger menu here*/
-@media (max-width: 590px) {
+@media (max-width: 680px) {
     #nav-header {
         flex-direction: row;
         justify-content: space-between;
@@ -153,5 +147,11 @@
 
     #hamburger-button {
         display: flex;
+    }
+}
+
+@media (max-width: 350px) {
+    #hamburger-menu-container {
+        margin-right: 1rem;
     }
 }

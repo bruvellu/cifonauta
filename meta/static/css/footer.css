@@ -50,16 +50,6 @@
     padding: 0.3rem 0.7rem 0 0.7rem; 
 }
 
-/* @media (max-width: 760px) {
-    #footerbase {
-        padding-bottom: 1rem;
-    }
-
-    #footerbase > div:last-child {
-        flex-direction: column;
-    }
-} */
-
 @media (max-width: 780px) {
     #footerbase {
         flex-direction: column;

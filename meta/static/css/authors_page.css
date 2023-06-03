@@ -11,7 +11,7 @@ Style to Authors Page
 }
 
 .authors-card {
-    width: 44.5%;
+    width: 43.5%;
 }
 
 .authors-card > h2 {
@@ -25,4 +25,15 @@ Style to Authors Page
 
 .authors-card > ul {
     font-size: 0.8rem;
+}
+
+
+/*
+    MEDIA
+*/
+
+@media (max-width: 767px) {
+    .authors-card {
+        width: 100%;
+    }
 }

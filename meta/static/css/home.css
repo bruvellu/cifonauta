@@ -4,23 +4,42 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    margin-bottom:1rem;
+    background:#fafafa;
+    border-radius: 10px;
+    padding:12px 10px 8px;
+    border-color:#eee #fafafa;
+    border-style:solid;
+    border-width:5px;
 }
 
 #intro > #cover-image {
     display: flex;
     justify-content: center;
-    margin-right: 1rem;
+    margin-right: 2rem;
 }
 
 #intro > #cover-text {
     width: 60%;
 }
 
-#intro-more {
-  margin-bottom:1em;
+#intro h1 {
+  text-transform:uppercase;
+  color:#333;
+  text-align:center;
+  font-weight:bold;
+  font-size:1.5rem;
 }
 
-.main-content {
+#intro p {
+  font-size:1rem;
+}
+
+#intro-more {
+  margin-bottom:1rem;
+}
+
+#main-content {
     width: 100%;
     display: flex;
     flex-wrap: wrap;

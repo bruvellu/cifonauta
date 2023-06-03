@@ -16,6 +16,10 @@
     width: 60%;
 }
 
+#intro-more {
+  margin-bottom:1em;
+}
+
 .main-content {
     width: 100%;
     display: flex;

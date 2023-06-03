@@ -39,7 +39,7 @@
 
 <section id="main-content">
 
-<div class="main span-8" id="photos">
+<div id="photos">
   <h2><a href="/search/?datatype=photo">{% trans 'Fotos' %}</a></h2>
   <a href="{{ photo.get_absolute_url }}">
     {% thumbnail photo.coverpath "300x200" crop="center" as im %}
@@ -52,7 +52,7 @@
   </p>
 </div>
 
-<div class="main span-8" id="videos">
+<div id="videos">
   <h2><a href="/search/?datatype=video">{% trans 'Vídeos' %}</a></h2>
   <a href="{{ video.get_absolute_url }}">
     {% thumbnail video.coverpath "300x200" crop="center" as im %}
@@ -65,7 +65,7 @@
   </p>
 </div>
 
-<div class="main span-8 last" id="tours">
+<div id="tours">
   <h2><a href="/tours/">{% trans 'Tours' %}</a></h2>
   <a href="{{ tour.get_absolute_url }}">
     {% thumbnail tour_image.coverpath "300x200" crop="center" as im %}

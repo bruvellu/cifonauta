@@ -38,9 +38,15 @@
 
 #main-content {
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 0rem 1rem;
     justify-content: center;
+}
+
+#photos p, #videos p, #tours p {
+  font-size:.8rem;
+  width:300px;
 }
 
 @media (max-width: 874px) {

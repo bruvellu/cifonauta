@@ -18,15 +18,15 @@
 
 {% block content %}
 
-<section class="main shadow span-23 last" id="intro">
-<div class="span-8" id="destaque">
+<section class="shadow" id="intro">
+<div id="cover-image">
   <a href="{{ main_image.get_absolute_url }}">
     {% thumbnail main_image.coverpath "300x200" crop="center" as im %}
     <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ main_image.title }}">
     {% endthumbnail %}
   </a>
 </div>
-<div class="last">
+<div id="cover-text">
   <h1>{% trans 'Explore a biodiversidade marinha' %}</h1>
   <p>
   {% blocktrans %}O banco de imagens <em>Cifonauta</em> contém uma grande variedade de fotos e vídeos provenientes de atividades científicas em biologia marinha. As imagens possuem classificação taxonômica, estágio de vida, habitat e outras informações que permitem navegar de maneira intuitiva e didática.{% endblocktrans %}

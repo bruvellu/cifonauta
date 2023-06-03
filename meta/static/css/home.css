@@ -6,12 +6,13 @@
     align-items: center;
 }
 
-#intro > #destaque {
+#intro > #cover-image {
     display: flex;
     justify-content: center;
+    margin-right: 1rem;
 }
 
-#intro > .last {
+#intro > #cover-text {
     width: 60%;
 }
 
@@ -23,10 +24,10 @@
 }
 
 @media (max-width: 874px) {
-    #intro > .last {
+    #intro > #cover-text {
         width: 100%;
     }
-    #intro > #destaque {
+    #intro > #cover-image {
         margin: 0px;
     }
 }

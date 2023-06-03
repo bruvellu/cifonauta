@@ -67,22 +67,22 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/ui-lightness/jquery-ui-1.8.21.custom.css">
   </head>
   <body>
-    <div id='div-container' class="container">
+    <div id="div-container">
 
-      <nav id="nav-header" class="main">
+      <nav id="nav-header">
       {% include 'nav.html' %}
       </nav>
 
-      <header class="main" id="mainheader">
+      <header id="mainheader">
       {% include 'header.html' %}
       </header>
 
-      <section class="main" id="content">
+      <section id="content">
       {% block content %}{% endblock %}
       {% block sidebar %}{% endblock %}
       </section>
 
-      <footer id="mainfooter" class="main quiet">
+      <footer id="mainfooter" class="quiet">
       {% include 'footer.html' %}
       </footer>
 

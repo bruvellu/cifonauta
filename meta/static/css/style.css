@@ -694,11 +694,6 @@ Based on work by Jørgen Arnor Gårdsø Lom [http://twistedintellect.com/] */
   float:left;
 }
 
-nav.main {
-  text-align:right;
-  font-size: 1.3em;
-}
-
 .menu {
   float: right;
   display: inline;
@@ -787,20 +782,6 @@ nav.main {
 }
 
 /* FOOTER */
-footer.main {
-  font-size:0.9em;
-  letter-spacing: 2px;
-  padding: 1em 0 0.6em;
-  background: #fafafa;
-  border-style:solid;
-  border-color:#EEEEEE #FAFAFA #FFFFFF #FAFAFA;
-  border-width:5px 5px 0 5px;
-  margin:0 -5px;
-  -moz-border-radius: 10px 10px 0 0;
-  -webkit-border-radius: 10px 10px 0 0;
-  border-radius: 10px 10px 0 0;
-}
-
 .cnpq img {
   vertical-align:top;
 }
@@ -1080,9 +1061,6 @@ div#notes {
 }
 
 /* HOME PAGE */
-div.main {
-  margin-bottom:2em;
-}
 
 #intro {
   margin-bottom:1em;

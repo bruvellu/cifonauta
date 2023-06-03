@@ -21,6 +21,7 @@
 
 #intro > #cover-text {
     width: 60%;
+    font-size:1rem;
 }
 
 #intro h1 {
@@ -29,10 +30,6 @@
   text-align:center;
   font-weight:bold;
   font-size:1.5rem;
-}
-
-#intro p {
-  font-size:1rem;
 }
 
 #intro-more {

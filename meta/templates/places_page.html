@@ -7,6 +7,7 @@
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/places_page.css">
 <meta property="og:title" content="{% trans 'Localidades' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:description" content="{% trans 'Localidades incluídas no banco de imagens Cifonauta.' %}" />
@@ -14,26 +15,27 @@
 <meta property="og:type" content="article" />
 {% endblock %}
 {% block content %}
-<section class="span-24 last">
-<header><h1>{% trans 'Localidades' %}</h1></header>
-
-    <div id="locations" class="span-5 metagroup">
-        <h2>{% trans 'Locais' %}</h2>
-        {% print_metalist locations 'location' %}
-    </div>
-    <div id="cities" class="span-5 metagroup">
-        <h2>{% trans 'Cidades' %}</h2>
-        {% print_metalist cities 'city' %}
-    </div>
-    <div id="states" class="span-5 metagroup">
-        <h2>{% trans 'Estados' %}</h2>
-        <ul class="metalist">
-        {% print_metalist states 'state' %}
-    </div>
-    <div id="countries" class="span-5 last metagroup">
-        <h2>{% trans 'Países' %}</h2>
-        {% print_metalist countries 'country' %}
-    </div>
+<section class="span-24 last " style="width: 100%;">
+    <header><h1>{% trans 'Localidades' %}</h1></header>
+    <section class="main-places">
+        <div id="locations" class="span-5 metagroup">
+            <h2>{% trans 'Locais' %}</h2>
+            {% print_metalist locations 'location' %}
+        </div>
+        <div id="cities" class="span-5 metagroup">
+            <h2>{% trans 'Cidades' %}</h2>
+            {% print_metalist cities 'city' %}
+        </div>
+        <div id="states" class="span-5 metagroup">
+            <h2>{% trans 'Estados' %}</h2>
+            <ul class="metalist">
+            {% print_metalist states 'state' %}
+        </div>
+        <div id="countries" class="span-5 last metagroup">
+            <h2>{% trans 'Países' %}</h2>
+            {% print_metalist countries 'country' %}
+        </div>
+    </section>
 </section>
 {% endblock %}
 

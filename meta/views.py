@@ -234,11 +234,16 @@ def search_page(request, model_name='', field='', slug=''):
     # Return paginated list.
     entries = get_paginated(query_dict, media_list, n_page)
 
+    content_block = True
+    content_sidebar = True
+
     context = {
         'entries': entries,
         'display_form': display_form,
         'meta': instance,
         'field': field,
+        'content_block': content_block,
+        'content_sidebar': content_sidebar,
         }
     return render(request, 'search.html', context)
 

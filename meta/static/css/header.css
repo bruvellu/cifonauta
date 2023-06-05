@@ -47,9 +47,15 @@
 #header-search {
     margin-top: 0;
     display: flex;
+    align-items: center;
     align-self: flex-end;
     gap: .4rem;
     padding-right: 0.8rem;
+}
+
+#header-search > input:first-child {
+    margin: 0;
+    height: .8rem;
 }
 
 @media (max-width: 850px) {

@@ -7,71 +7,60 @@
 {% include 'messages.html' %}
 
 {% if entries.paginator.count %}
+  <section id="photo-gallery">
+    <header>
+      {% if meta %}
+        <div class="quiet" id="metafield">
+          {% trans field %}{% if field == 'tag' %} ({{ meta.category|lower }}){% else %}{% if field == 'taxon' %} ({% if meta.rank %}{{ meta.rank|lower }}{% else %}{% trans 'sem ranking' %}{% endif %}){% endif %}{% endif %}:
+        </div>
+        
+        {% if meta.citation %}
+          <div id="citation">
+            <p>
+            {% autoescape off %}
+            {{ meta.citation }}
+            {% endautoescape %}
+            </p>
+          </div>
+        {% else %}
+          <h1>{{ meta|sp_em }}</h1>
+        {% endif %}
+      {% endif %}
 
-<section id="photo-gallery">
+      <h2>{{ entries.paginator.count }} {% trans 'arquivo' %}{{ entries.paginator.count|pluralize }}</h2>
+    </header>
 
-<header class="span-16 last">
-
-{% if meta %}
-
-<div class="quiet" id="metafield">
-  {% trans field %}{% if field == 'tag' %} ({{ meta.category|lower }}){% else %}{% if field == 'taxon' %} ({% if meta.rank %}{{ meta.rank|lower }}{% else %}{% trans 'sem ranking' %}{% endif %}){% endif %}{% endif %}:
-</div>
-
-{% if meta.citation %}
-<div id="citation">
-  <p>
-  {% autoescape off %}
-  {{ meta.citation }}
-  {% endautoescape %}
-  </p>
-</div>
-
-{% else %}
-
-<h1>{{ meta|sp_em }}</h1>
-
-{% endif %}
-
-{% endif %}
-
-  <h2 class="span-10">{{ entries.paginator.count }} {% trans 'arquivo' %}{{ entries.paginator.count|pluralize }}</h2>
-
-</header>
-
-{% if entries.paginator.num_pages > 1 %}
-{% include 'pagination.html' %}
-{% endif %}
-
-<ul class="thumbs">
-
-  {% for media in entries.object_list %}
-    {% if media.is_public %}
-      <li class="shadow size-{{ media.size }}">
-      {% include 'thumb.html' %}
-      </li>
+    {% if entries.paginator.num_pages > 1 %}
+    {% include 'pagination.html' %}
     {% endif %}
-  {% endfor %}
 
-</ul>
+    <ul class="thumbs">
 
-{% if entries.paginator.num_pages > 1 %}
-{% include 'pagination.html' %}
-{% endif %}
+      {% for media in entries.object_list %}
+        {% if media.is_public %}
+          <li class="shadow size-{{ media.size }}">
+          {% include 'thumb.html' %}
+          </li>
+        {% endif %}
+      {% endfor %}
 
-</section>
+    </ul>
 
-<hr class="space">
+    {% if entries.paginator.num_pages > 1 %}
+    {% include 'pagination.html' %}
+    {% endif %}
+  </section>
+
+  <hr class="space">
 
 {% else %}
-
-<section id="photo-gallery">
-<header class="span-16 last">
-<h2 class="span-10">
-{% trans 'Nenhum arquivo encontrado :(' %}
-</h2>
-</header>
-</section>
+  <section id="photo-gallery">
+    <header class="span-16 last">
+      <h2 class="span-10">
+        {% trans 'Nenhum arquivo encontrado :(' %}
+      </h2>
+    </header>
+  </section>
 
 {% endif %}
 

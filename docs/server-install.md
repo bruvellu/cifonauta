@@ -1,4 +1,18 @@
-# Server installation (outdated!)
+# Server installation
+
+## Current server
+
+### Requirements
+
+- [Ubuntu](https://ubuntu.com/): Linux server
+- [Gunicorn](https://gunicorn.org/): HTTP server
+- [Nginx](https://www.nginx.com/): Proxy server
+- [PostgreSQL](https://www.postgresql.org/): Relational database
+- [Memcached](https://www.memcached.org/): Caching system
+
+## Legacy server
+
+Apache, Nginx, PostgreSQL, mod_wsgi (daemon mode), Memcached.
 
 ```
 su -l

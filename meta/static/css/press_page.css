@@ -13,7 +13,14 @@
     padding: 0;
 }
 
-.press-photos > a > img {
+#press-photos > a > img {
     width: 94%;
     height: 25.75rem;
+    object-fit: cover;
+}
+
+@media (max-width: 1029px) {
+    .main-press-page > div.span-9 {
+        width: 100%;
+    }
 }

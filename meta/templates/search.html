@@ -6,6 +6,9 @@
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/search.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/pagination.css">
 <meta property="og:title" content="{% trans 'Buscador' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:type" content="article" />
@@ -13,25 +16,28 @@
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 {% endblock %}
 
-{% block content %}
-<section class="span-16">
-  <div id="search-results">
-    {% include 'gallery.html' %}
+<div class="photo-and-search-container">
+  {% block content %}
+  <section class="search-results-section">
+    <div id="search-results">
+      {% include 'gallery.html' %}
+    </div>
+  </section>
+  {% endblock %}
+  
+  {% block sidebar %}
+  <aside class="aside-search-form">
+  
+  <div class="block shadow">
+    <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
+      <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-top" />
+      {{ display_form.as_p }}
+      <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-bottom" />
+    </form>
   </div>
-</section>
-{% endblock %}
-
-{% block sidebar %}
-<aside class="span-8 last">
-
-<div class="block shadow">
-  <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
-    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-top" />
-    {{ display_form.as_p}}
-    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-bottom" />
-  </form>
+  
+  </aside>
+  
+  {% endblock %}
 </div>
 
-</aside>
-
-{% endblock %}

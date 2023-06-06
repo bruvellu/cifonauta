@@ -1,0 +1,9 @@
+footer.paginator {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 .5rem;
+}
+
+footer.paginator > div:not(div:nth-child(2)) {
+    width: 3.8rem;
+}

@@ -11,6 +11,18 @@ body {
     width: 100%;
 }
 
+.content-and-sidebar {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+@media (max-width: 595px) {
+    .content-and-sidebar {
+        flex-direction: column;
+    }
+} 
+
 @media (max-width: 350px) {
     body {
         padding: 0 1rem;

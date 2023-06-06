@@ -239,6 +239,8 @@ def search_page(request, model_name='', field='', slug=''):
         'display_form': display_form,
         'meta': instance,
         'field': field,
+        'content_block': True,
+        'content_sidebar': True,
         }
     return render(request, 'search.html', context)
 

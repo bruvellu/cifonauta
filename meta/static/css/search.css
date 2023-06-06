@@ -1,0 +1,28 @@
+.search-results-section {
+    max-width: 36.5rem;
+}
+
+.aside-search-form {
+    min-width: 19.375rem;
+}
+
+@media (max-width: 1003px) {
+    .aside-search-form {
+        min-width: 13.3rem;
+        width: 100%;
+        max-width: 19.375rem;
+    }
+}
+
+@media (max-width: 622px) {
+    .aside-search-form {
+        width: 14rem;
+    }
+}
+
+@media (max-width: 595px) {
+    .aside-search-form {
+        width: 100%;
+        max-width: 19.375rem;
+    }
+}

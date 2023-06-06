@@ -78,8 +78,11 @@
       </header>
 
       <section id="content">
-      {% block content %}{% endblock %}
-      {% block sidebar %}{% endblock %}
+        <div class="{% if content_block and content_sidebar %}content-and-sidebar{% else %}content-only{% endif %}">
+          {% block content %}{% endblock %}
+          {% block sidebar %}{% endblock %}
+        </div>
+
       </section>
 
       <footer id="mainfooter" class="quiet">

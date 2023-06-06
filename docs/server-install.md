@@ -10,21 +10,21 @@
 - [PostgreSQL](https://www.postgresql.org/): Relational database
 - [Memcached](https://www.memcached.org/): Caching system
 
-### Install system packages
+### Configure and install system packages (as root)
 
-Become root:
+Become root to have the permissions to install system packages:
 
 ```
 su -l
 ```
 
-Make sure packages are up-to-date:
+Make sure the package repositories are up-to-date:
 
 ```
 apt update && apt upgrade
 ```
 
-Set the desired timezone:
+Check the server timezone setting:
 
 ```
 timedatectl status
@@ -35,7 +35,11 @@ timedatectl status
 System clock synchronized: yes
               NTP service: active
           RTC in local TZ: no
+```
 
+Set the server’s desired timezone (`America/Sao_Paulo`):
+
+```
 timedatectl set-timezone America/Sao_Paulo
 timedatectl status
                Local time: Mon 2023-06-05 17:53:39 -03
@@ -47,7 +51,8 @@ System clock synchronized: yes
           RTC in local TZ: no
 ```
 
-Add the Brazilian Portuguese locale:
+For the database, it’s important to enable the proper system locale.
+Check the enabled locales:
 
 ```
 locale -a
@@ -55,7 +60,11 @@ C
 C.utf8
 POSIX
 en_US.utf8
+```
 
+Add the Brazilian Portuguese locale (`pt_BR.UTF-8`):
+
+```
 locale-gen pt_BR.UTF-8
 
 locale -a
@@ -66,31 +75,31 @@ POSIX
 pt_BR.utf8
 ```
 
-Install Python pip and virtual env:
+Install Python pip and env for installing packages and creating virtual environments:
 
 ```
 apt install python3-pip python3-venv
 ```
 
-Install Git:
+Install Git to clone and manage the repository:
 
 ```
 apt install git
 ```
 
-Install unzip:
+Install unzip to unzip media files:
 
 ```
 apt install unzip
 ```
 
-Install PostgreSQL and a psycopg2 required library:
+Install PostgreSQL, the relational database, and a required psycopg2 library:
 
 ```
 apt install postgresql libpq-dev
 ```
 
-Create a PostgreSQL user as root:
+Create a PostgreSQL user using the same user name as your user:
 
 ```
 su - postgres
@@ -98,7 +107,7 @@ createuser -s user
 exit
 ```
 
-Create directory in partition and give the rights to the proper user:
+Create a directory in the main partition, and give its ownership to the proper user:
 
 ```
 cd /mnt/partition
@@ -106,51 +115,52 @@ mkdir cifonauta
 chown user:user cifonauta
 ```
 
-Now as the user (not root) clone the repository:
+### Configure and install Cifonauta packages (as user)
+
+Now as user (not root), clone the Cifonauta’s repository:
 
 ```
 cd /mnt/partition
 git clone https://github.com/bruvellu/cifonauta.git cifonauta/
 ```
 
-Create a home symlink for easier access:
+Create a symlink to the repository in your home for easier access:
 
 ```
 cd
 ln -s /mnt/partition/cifonauta ~/
 ```
 
-Copy the database and images to server:
-
-```
-scp -v cebimar_2023-05-09_2117.sql.gz cifonauta-server:/mnt/partition/cifonauta/
-scp -v site_media.zip cifonauta-server:/mnt/partition/cifonauta/
-```
-
-Create a virtual environment:
+Create a virtual environment and activate it:
 
 ```
 python3 -m venv virtual
 source virtual/bin/activate
 ```
 
-Install Django and other required packages:
+Install Django and other required packages using pip:
 
 ```
 pip install --upgrade -r requirements.txt
 ```
 
-Create empty cebimar database as user:
+Create an empty `cebimar` database:
 
 ```
 createdb -E UTF8 -T template0 -l pt_BR.UTF-8 cebimar
-
 ```
 
 If you get an error, restart PostgreSQL and try again:
 
 ```
 service postgresql restart
+```
+
+Copy the database dump and image files from your computer to the server:
+
+```
+scp -v cebimar_2023-05-09_2117.sql.gz cifonauta-server:/mnt/partition/cifonauta/
+scp -v site_media.zip cifonauta-server:/mnt/partition/cifonauta/
 ```
 
 Load a database backup:

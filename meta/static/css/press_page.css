@@ -1,0 +1,26 @@
+.main-press-page {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+
+.press-thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+#press-photos > a > img {
+    width: 94%;
+    height: 25.75rem;
+    object-fit: cover;
+}
+
+@media (max-width: 1029px) {
+    .main-press-page > div.span-9 {
+        width: 100%;
+    }
+}

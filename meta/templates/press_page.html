@@ -7,6 +7,7 @@
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/press_page.css">
 <meta property="og:title" content="{% trans 'Imprensa' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:description" content="{% trans 'Kit imprensa do banco de imagens Cifonauta.' %}" />
@@ -15,10 +16,10 @@
 {% endblock %}
 
 {% block content %}
-<section class="span-24 last">
-<header><h1>{% trans 'Imprensa' %}</h1></header>
+<section class="main-press-page last">
 
 <div class="span-9">
+  <h1>{% trans 'Imprensa' %}</h1>
   <p>
   {% blocktrans %}
   Para mais detalhes visite a página <a href="/about/">Sobre</a> ou entre em <a href="/feedback/">contato</a>.
@@ -91,11 +92,11 @@
 
 <div id="press-photos" class="span-15 last">
   {% thumbnail cover_photo.sitepath "550x412" crop="center" as im %}
-  <a href="{{ cover_photo.get_absolute_url }}"><img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }} alt="{{ cover_photo.title }}"></a>
+  <a href="{{ cover_photo.get_absolute_url }}"><img class="shadow" src="{{ im.url }}" alt="{{ cover_photo.title }}"></a>
   {% endthumbnail %}
 
   <h2>{% trans 'Fotos em destaque' %}</h2>
-  <ul class="thumbs">
+  <ul class="thumbs press-thumbs">
     {% for media in photos %}
     <li class="shadow size-{{ media.size }}">
     {% include 'thumb.html' %}
@@ -104,7 +105,7 @@
   </ul>
 
   <h2>{% trans 'Vídeos em destaque' %}</h2>
-  <ul class="thumbs">
+  <ul class="thumbs press-thumbs">
     {% for media in videos %}
     <li class="shadow size-{{ media.size }}">
     {% include 'thumb.html' %}

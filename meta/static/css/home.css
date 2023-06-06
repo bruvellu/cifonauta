@@ -4,29 +4,56 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    margin-bottom:1rem;
+    background:#fafafa;
+    border-radius: 10px;
+    padding:12px 10px 8px;
+    border-color:#eee #fafafa;
+    border-style:solid;
+    border-width:5px;
 }
 
-#intro > #destaque {
+#intro > #cover-image {
     display: flex;
     justify-content: center;
+    margin-right: 2rem;
 }
 
-#intro > .last {
+#intro > #cover-text {
     width: 60%;
+    font-size:1rem;
 }
 
-.main-content {
+#intro h1 {
+  text-transform:uppercase;
+  color:#333;
+  text-align:center;
+  font-weight:bold;
+  font-size:1.5rem;
+}
+
+#intro-more {
+  margin-bottom:1rem;
+}
+
+#main-content {
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 0rem 1rem;
     justify-content: center;
+}
+
+#photos p, #videos p, #tours p {
+  font-size:.8rem;
+  width:300px;
 }
 
 @media (max-width: 874px) {
-    #intro > .last {
+    #intro > #cover-text {
         width: 100%;
     }
-    #intro > #destaque {
+    #intro > #cover-image {
         margin: 0px;
     }
 }

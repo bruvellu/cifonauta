@@ -18,31 +18,28 @@
 
 {% block content %}
 
-<section class="main shadow span-23 last" id="intro">
-<div class="span-8" id="destaque">
+<section class="shadow" id="intro">
+<div id="cover-image">
   <a href="{{ main_image.get_absolute_url }}">
     {% thumbnail main_image.coverpath "300x200" crop="center" as im %}
     <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ main_image.title }}">
     {% endthumbnail %}
   </a>
 </div>
-<div class="last">
+<div id="cover-text">
   <h1>{% trans 'Explore a biodiversidade marinha' %}</h1>
   <p>
   {% blocktrans %}O banco de imagens <em>Cifonauta</em> contém uma grande variedade de fotos e vídeos provenientes de atividades científicas em biologia marinha. As imagens possuem classificação taxonômica, estágio de vida, habitat e outras informações que permitem navegar de maneira intuitiva e didática.{% endblocktrans %}
   </p>
-  <div class="align-center" id="main-more">
+  <div class="align-center" id="intro-more">
     <a href="/about/">{% trans 'saiba mais' %}</a> | <a href="/organization/">{% trans 'organização do conteúdo' %}</a> | <a href="/terms/">{% trans 'termos de uso' %}</a> | <a href="/press/">{% trans 'imprensa' %}</a>
-  </div>
-  <div class="quiet align-center" id="main-message">
-    <!--Contribua com o desenvolvimento do banco enviando <a href="/feedback/">sugestões</a>.-->
   </div>
 </div>
 </section>
 
-<section class="main span-24 last main-content">
+<section id="main-content">
 
-<div class="main span-8" id="photos">
+<div id="photos">
   <h2><a href="/search/?datatype=photo">{% trans 'Fotos' %}</a></h2>
   <a href="{{ photo.get_absolute_url }}">
     {% thumbnail photo.coverpath "300x200" crop="center" as im %}
@@ -55,7 +52,7 @@
   </p>
 </div>
 
-<div class="main span-8" id="videos">
+<div id="videos">
   <h2><a href="/search/?datatype=video">{% trans 'Vídeos' %}</a></h2>
   <a href="{{ video.get_absolute_url }}">
     {% thumbnail video.coverpath "300x200" crop="center" as im %}
@@ -68,7 +65,7 @@
   </p>
 </div>
 
-<div class="main span-8 last" id="tours">
+<div id="tours">
   <h2><a href="/tours/">{% trans 'Tours' %}</a></h2>
   <a href="{{ tour.get_absolute_url }}">
     {% thumbnail tour_image.coverpath "300x200" crop="center" as im %}

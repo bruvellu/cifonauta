@@ -1,10 +1,13 @@
 #mainfooter {
+    font-size:.65rem;
+    letter-spacing: 2px;
     border-style: none; 
     border-color: initial; 
     border-width: 0; 
     border-top: 5px #EEEEEE solid;
     padding: .8rem 0; 
     margin: 0; 
+    background: #fafafa;
 }
 
 #footerbase {

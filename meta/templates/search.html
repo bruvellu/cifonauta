@@ -16,28 +16,25 @@
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 {% endblock %}
 
-<div class="photo-and-search-container">
-  {% block content %}
-  <section class="search-results-section">
-    <div id="search-results">
-      {% include 'gallery.html' %}
-    </div>
-  </section>
-  {% endblock %}
-  
-  {% block sidebar %}
-  <aside class="aside-search-form">
-  
-  <div class="block shadow">
-    <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
-      <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-top" />
-      {{ display_form.as_p }}
-      <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-bottom" />
-    </form>
+{% block content %}
+<section class="search-results-section">
+  <div id="search-results">
+    {% include 'gallery.html' %}
   </div>
-  
-  </aside>
-  
-  {% endblock %}
+</section>
+{% endblock %}
+
+{% block sidebar %}
+<aside class="aside-search-form">
+
+<div class="block shadow">
+  <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
+    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-top" />
+    {{ display_form.as_p }}
+    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-bottom" />
+  </form>
 </div>
+
+</aside>
+{% endblock %}
 

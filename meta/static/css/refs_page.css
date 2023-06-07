@@ -24,7 +24,7 @@
 }
 
 .refs-subtitle-example, .refs-citation-thumb {
-    width: 16%;
+    width: 130px;
 }
 
 .refs-subtitle-citation, .refs-citation-info {
@@ -38,4 +38,57 @@
 .refs-citation-info > *{
     width: 100%;
     overflow-wrap: break-word;
+}
+
+
+/*
+    MEDIA
+*/
+
+@media (max-width: 830px) {
+    .refs-subtitle-citation, .refs-citation-info {
+        width: 53%;
+    }
+    
+    .refs-subtitle-more, .refs-citation-link {
+        width: 16%;
+    }
+}
+
+@media (max-width: 664px) {
+    .refs-subtitle-citation, .refs-citation-info {
+        width: 50%;
+    }
+    
+    .refs-subtitle-more, .refs-citation-link {
+        width: 20%;
+    }
+}
+
+@media (max-width: 585px) {
+    .refs-subtitles, .refs-citation {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        margin: 0px 0px 40px 0px;
+    }
+    
+    .refs-subtitles {
+        font-size: 0.7em;
+        gap: 0px;
+        margin: 0px 0px 15px 0px;
+    }
+
+    .refs-subtitle-example, .refs-citation-thumb {
+        width: 130px;
+    }
+    
+    .refs-subtitle-citation, .refs-citation-info {
+        width: 100%;
+    }
+    
+    .refs-subtitle-more, .refs-citation-link {
+        width: 100%;
+    }
 }

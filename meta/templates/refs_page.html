@@ -7,6 +7,7 @@
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/refs_page.css">
 <meta property="og:title" content="{% trans 'Referências' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:description" content="{% trans 'Referências bibliográficas citadas no banco de imagens Cifonauta.' %}" />

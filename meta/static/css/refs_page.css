@@ -1,0 +1,37 @@
+/*
+
+    Style to References Page
+
+*/
+
+.refs-main {
+    width: 100%;
+}
+
+.refs-title {
+    width: 100%;
+}
+
+.refs-subtitles, .refs-citation {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.refs-subtitle-example, .refs-citation-thumb {
+    width: 16%;
+}
+
+.refs-subtitle-citation, .refs-citation-info {
+    width: 60%;
+}
+
+.refs-subtitle-more, .refs-citation-link {
+    width: 20%;
+}
+
+.refs-citation-info > *{
+    width: 100%;
+    overflow-wrap: break-word;
+}

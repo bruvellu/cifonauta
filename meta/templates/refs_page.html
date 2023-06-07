@@ -17,26 +17,28 @@
 
 {% block content %}
 
-<section class="span-24 last">
+<section class="refs-main">
 
-<header><h1>{% trans 'Referências' %}</h1></header>
+<header "refs-title"><h1>{% trans 'Referências' %}</h1></header>
 
-<div class="span-4"><h2>{% trans 'Exemplo' %}</h2></div>
-<div class="span-15"><h2>{% trans 'Citação' %}</h2></div>
-<div class="span-5 last"><h2>{% trans 'Veja mais' %}</h2></div>
+<div class="refs-subtitles">
+  <div class="refs-subtitle-example"><h2>{% trans 'Exemplo' %}</h2></div>
+  <div class="refs-subtitle-citation"><h2>{% trans 'Citação' %}</h2></div>
+  <div class="refs-subtitle-more"><h2>{% trans 'Veja mais' %}</h2></div>
+</div>
 
 {% for ref in references %}
 {% if ref.media.all %}
-<div class="span-24 last citation">
-  <div class="span-4">
+<div class="refs-citation citation">
+  <div class="refs-citation-thumb">
     {% print_thumb 'reference' ref %}
   </div>
-  <div class="span-15">
+  <div class="refs-citation-info">
     {% autoescape off %}
     {{ ref.citation }}
     {% endautoescape %}
   </div>
-  <div class="span-5 last">
+  <div class="refs-citation-link">
     <a href="{{ ref.get_absolute_url }}">{% blocktrans count ref.media.count as counter %}{{ counter }} imagem ligada à este trabalho.{% plural %}{{ counter }} imagens ligadas à este trabalho.{% endblocktrans %}</a>
   </div>
 </div>

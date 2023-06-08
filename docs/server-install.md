@@ -272,7 +272,7 @@ gunicorn cifonauta.wsgi
 [2023-06-07 17:42:41 -0300] [70105] [INFO] Booting worker with pid: 70105
 ```
 
-Create systemd service for gunicorn (number of workers = cores*2+1:
+Create systemd service for gunicorn (number of workers = cores*2+1):
 
 ```
 [Unit]
@@ -321,7 +321,7 @@ Create nginx configuration:
 ```
 server {
         listen 80;
-        server_name localhost;
+        server_name IPADDRESS;
 
         location /site_media/ {
                 root /home/user/cifonauta/;
@@ -363,6 +363,25 @@ If Nginx can’t access static or media and returns 403 forbidden error, add www
 
 ```
 sudo gpasswd -a www-data user
+```
+
+To password protect the entire site first install:
+
+```
+apt install apache2-utils
+```
+
+Then, create a user/pass combination:
+
+```
+htpasswd -c /etc/nginx/htpasswd user
+```
+
+And add to /etc/nginx/sites-available/cifonauta:
+
+```
+auth_basic "Cifonauta staging";
+auth_basic_user_file /etc/nginx/htpasswd;
 ```
 
 

@@ -115,6 +115,41 @@ mkdir cifonauta
 chown user:user cifonauta
 ```
 
+Install Nginx:
+
+```
+apt install nginx
+```
+
+Install memcached:
+
+```
+apt install memcached
+```
+
+Check if memcached is running by using telnet:
+
+```
+telnet localhost 11211
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+stats
+STAT pid 68841
+STAT uptime 1156
+STAT time 1686170212
+STAT version 1.6.14
+...
+```
+
+If not, start memcached:
+
+```
+service memcached start
+```
+
+Another memcached package needs to be installed via pip, see below.
+
 ### Configure and install Cifonauta packages (as user)
 
 Now as user (not root), clone the Cifonauta’s repository:
@@ -175,7 +210,160 @@ Unzip media files into the `site_media` directory:
 unzip site_media.zip
 ```
 
-Next steps soon...
+Create a `cifonauta/server_settings.py` with:
+
+```
+# Django settings for cifonauta production server.
+
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
+THUMBNAIL_DEBUG = DEBUG
+
+ADMINS = (
+    ('Nome Sobrenome', 'email@email.com'),
+)
+
+MANAGERS = ADMINS
+
+DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'dbname',
+            'USER': 'dbuser',
+            }
+        }
+
+CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': '127.0.0.1:PORT',
+            }
+        }
+
+CACHE_MIDDLEWARE_ALIAS = 'default'
+CACHE_MIDDLEWARE_SECONDS = 2592000
+CACHE_MIDDLEWARE_KEY_PREFIX = 'prefix'
+CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = 'your-secret-key'
+
+ALLOWED_HOSTS = [
+    'SERVER DOMAIN NAME',
+    'SERVER IP ADDRESS',
+    '127.0.0.1',
+    '[::1]',
+    ]
+```
+
+Install Gunicorn:
+
+```
+pip install gunicorn
+```
+
+Test Gunicorn:
+
+```
+gunicorn cifonauta.wsgi
+[2023-06-07 17:42:41 -0300] [70104] [INFO] Starting gunicorn 20.1.0
+[2023-06-07 17:42:41 -0300] [70104] [INFO] Listening at: http://127.0.0.1:8000 (70104)
+[2023-06-07 17:42:41 -0300] [70104] [INFO] Using worker: sync
+[2023-06-07 17:42:41 -0300] [70105] [INFO] Booting worker with pid: 70105
+```
+
+Create systemd service for gunicorn (number of workers = cores*2+1:
+
+```
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+Type=notify
+User=user
+Group=www-data
+RuntimeDirectory=gunicorn
+WorkingDirectory=/home/user/cifonauta
+ExecStart=/home/user/cifonauta/virtual/bin/gunicorn --access-logfile - --workers 17 --bind unix:/run/gunicorn.sock cifonauta.wsgi:application
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Create socket file:
+
+```
+[Unit]
+Description=gunicorn socket
+
+[Socket]
+ListenStream=/run/gunicorn.sock
+SocketUser=www-data
+
+[Install]
+WantedBy=sockets.target
+```
+
+Enable and start daemon:
+
+```
+systemctl enable --now gunicorn.socket
+```
+
+Create nginx configuration:
+
+```
+server {
+        listen 80;
+        server_name localhost;
+
+        location /site_media/ {
+                root /home/user/cifonauta/;
+        }
+
+        location /static/ {
+                root /home/user/cifonauta/;
+        }
+
+        location / {
+                include proxy_params;
+                proxy_pass http://unix:/run/gunicorn.sock;
+        }
+}
+```
+
+Test everything with:
+
+
+```
+sudo -u www-data curl --unix-socket /run/gunicorn.sock http
+```
+
+
+Install memcached binding library:
+
+
+```
+pip install pymemcache
+```
+
+Generate static directory for serving:
+
+```
+./manage.py collectstatic --noinput
+```
+
+If Nginx can’t access static or media and returns 403 forbidden error, add www-data to user group:
+
+```
+sudo gpasswd -a www-data user
+```
 
 
 ## Legacy server

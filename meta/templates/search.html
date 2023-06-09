@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}css/search.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/pagination.css">
+<script src="{{ STATIC_URL }}js/search.js" defer></script>
 <meta property="og:title" content="{% trans 'Buscador' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:type" content="article" />
@@ -24,20 +25,109 @@
     </div>
   </section>
   {% endblock %}
-  
+
+
   {% block sidebar %}
   <aside class="aside-search-form">
-  
   <div class="block shadow">
     <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
       <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-top" />
-      {{ display_form.as_p }}
+      
+      <div>
+        <label for="id_{{ display_form.query.name }}">{{ display_form.query.label }}:</label>
+        {{ display_form.query }}
+      </div>
+      
+      <button class="more-filters-button" onClick="showCheckboxOptions(this, event)">
+        <p>Mais filtros</p>
+        <img class="first-dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg" alt="">
+      </button>
+      
+      <div class="more-filters">
+        <div>
+          <label for="id_{{ display_form.datatype.name }}">{{ display_form.datatype.label }}:</label>
+          {{ display_form.datatype }}
+        </div>
+        
+        <div>
+          <label for="id_{{ display_form.n.name }}">{{ display_form.n.label }}:</label>
+          {{ display_form.n }}
+        </div>
+        
+        <div>
+          <label for="id_{{ display_form.orderby.name }}">{{ display_form.orderby.label }}:</label>
+          {{ display_form.orderby }}
+        </div>
+        
+        <div>
+          <label for="id_{{ display_form.order.name }}">{{ display_form.order.label }}:</label>
+          {{ display_form.order }}
+        </div>
+        
+        <div>
+          <label for="id_{{ display_form.highlight.name }}">{{ display_form.highlight.label }}:</label>
+          {{ display_form.highlight }}
+        </div>
+        
+        <div>
+          <label for="id_{{ display_form.operator.name }}">{{ display_form.operator.label }}:</label>
+          {{ display_form.operator }}
+        </div>
+
+        <div>
+          <div class="checkbox-div">
+            <button onClick="showCheckboxOptions(this, event)">
+              <label>{{ display_form.author.label }}</label>
+              <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
+            </button>
+            {{ display_form.author }}
+          </div>
+
+          <div class="checkbox-div">
+            <button onClick="showCheckboxOptions(this, event)">
+              <label>{{ display_form.tag.label }}</label>
+              <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
+            </button>
+            {{ display_form.tag }}
+          </div>
+
+          <div class="checkbox-div">
+            <button onClick="showCheckboxOptions(this, event)">
+              <label>{{ display_form.location.label }}</label>
+              <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
+            </button>
+            {{ display_form.location }}
+          </div>
+
+          <div class="checkbox-div">
+            <button onClick="showCheckboxOptions(this, event)">
+              <label>{{ display_form.city.label }}</label>
+              <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
+            </button>
+            {{ display_form.city }}
+          </div>
+
+          <div class="checkbox-div">
+            <button onClick="showCheckboxOptions(this, event)">
+              <label>{{ display_form.state.label }}</label>
+              <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
+            </button>
+            {{ display_form.state }}
+          </div>
+
+          <div class="checkbox-div">
+            <button onClick="showCheckboxOptions(this, event)">
+              <label>{{ display_form.country.label }}</label>
+              <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
+            </button>
+            {{ display_form.country }}
+          </div>
+        </div>
+
+      </div>
+
       <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-bottom" />
     </form>
   </div>
-  
-  </aside>
-  
+  </section>
   {% endblock %}
-</div>
-

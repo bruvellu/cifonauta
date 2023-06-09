@@ -28,7 +28,6 @@
 }
 
 .more-filters {
-    /* display: none; */
     padding-bottom: 1.5rem;
 }
 
@@ -55,10 +54,6 @@
     padding-left: .8rem;
     display: none;
 }
-
-/* #display-bottom {
-    display: none;
-} */
 
 
 @media (max-width: 1003px) {

@@ -32,7 +32,7 @@
   <div class="block shadow">
     <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
       <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-top" />
-      
+
       <div>
         <label for="id_{{ display_form.query.name }}">{{ display_form.query.label }}:</label>
         {{ display_form.query }}
@@ -44,84 +44,27 @@
       </button>
       
       <div class="more-filters">
-        <div>
-          <label for="id_{{ display_form.datatype.name }}">{{ display_form.datatype.label }}:</label>
-          {{ display_form.datatype }}
-        </div>
-        
-        <div>
-          <label for="id_{{ display_form.n.name }}">{{ display_form.n.label }}:</label>
-          {{ display_form.n }}
-        </div>
-        
-        <div>
-          <label for="id_{{ display_form.orderby.name }}">{{ display_form.orderby.label }}:</label>
-          {{ display_form.orderby }}
-        </div>
-        
-        <div>
-          <label for="id_{{ display_form.order.name }}">{{ display_form.order.label }}:</label>
-          {{ display_form.order }}
-        </div>
-        
-        <div>
-          <label for="id_{{ display_form.highlight.name }}">{{ display_form.highlight.label }}:</label>
-          {{ display_form.highlight }}
-        </div>
-        
-        <div>
-          <label for="id_{{ display_form.operator.name }}">{{ display_form.operator.label }}:</label>
-          {{ display_form.operator }}
-        </div>
+        {% for field in display_form %}
+          {% if field.field.widget.attrs.fields %}
+            <div>
+              <label for="{{ field.auto_id }}">{{ field.label }}:</label>
+              {{ field}}
+            </div>
+          {% endif %}
+        {% endfor %}
 
         <div>
-          <div class="checkbox-div">
-            <button onClick="showCheckboxOptions(this, event)">
-              <label>{{ display_form.author.label }}</label>
-              <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
-            </button>
-            {{ display_form.author }}
-          </div>
-
-          <div class="checkbox-div">
-            <button onClick="showCheckboxOptions(this, event)">
-              <label>{{ display_form.tag.label }}</label>
-              <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
-            </button>
-            {{ display_form.tag }}
-          </div>
-
-          <div class="checkbox-div">
-            <button onClick="showCheckboxOptions(this, event)">
-              <label>{{ display_form.location.label }}</label>
-              <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
-            </button>
-            {{ display_form.location }}
-          </div>
-
-          <div class="checkbox-div">
-            <button onClick="showCheckboxOptions(this, event)">
-              <label>{{ display_form.city.label }}</label>
-              <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
-            </button>
-            {{ display_form.city }}
-          </div>
-
-          <div class="checkbox-div">
-            <button onClick="showCheckboxOptions(this, event)">
-              <label>{{ display_form.state.label }}</label>
-              <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
-            </button>
-            {{ display_form.state }}
-          </div>
-
-          <div class="checkbox-div">
-            <button onClick="showCheckboxOptions(this, event)">
-              <label>{{ display_form.country.label }}</label>
-              <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
-            </button>
-            {{ display_form.country }}
-          </div>
+          {% for field in display_form %}
+            {% if field.field.widget.attrs.dropdowns %}
+              <div class="checkbox-div">
+                <button onClick="showCheckboxOptions(this, event)">
+                  <label>{{ field.label }}</label>
+                  <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
+                </button>
+                {{ field }}
+              </div>
+            {% endif %}
+          {% endfor %}
         </div>
 
       </div>

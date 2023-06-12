@@ -23,6 +23,10 @@
     margin:0 0 1em;
 }
 
+.refs-subtitle-label {
+    display: none;
+}
+
 .refs-subtitle-example, .refs-citation-thumb {
     width: 130px;
 }
@@ -40,6 +44,9 @@
     overflow-wrap: break-word;
 }
 
+.thumb-duration {
+    position: relative;
+}
 
 /*
     MEDIA
@@ -66,7 +73,7 @@
 }
 
 @media (max-width: 585px) {
-    .refs-subtitles, .refs-citation {
+    .refs-citation {
         width: 100%;
         display: flex;
         flex-direction: column;
@@ -75,20 +82,18 @@
     }
     
     .refs-subtitles {
-        font-size: 0.7em;
-        gap: 0px;
-        margin: 0px 0px 15px 0px;
+        display: none;
     }
 
-    .refs-subtitle-example, .refs-citation-thumb {
+    .refs-citation-thumb {
         width: 130px;
     }
     
-    .refs-subtitle-citation, .refs-citation-info {
+    .refs-citation-info {
         width: 100%;
     }
     
-    .refs-subtitle-more, .refs-citation-link {
+    .refs-citation-link {
         width: 100%;
     }
 }

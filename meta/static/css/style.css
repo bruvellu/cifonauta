@@ -625,38 +625,6 @@ Based on work by Jørgen Arnor Gårdsø Lom [http://twistedintellect.com/] */
 
 
 /* HEADER */
-#mainheader {
-  margin:0 0 2em 0;
-}
-
-#maintitle, #tagline {
-  padding:0;
-  font-weight:normal;
-  color:#222222;
-}
-
-#maintitle {
-  font-weight:bold;
-  font-size:4.5em;
-  margin:0 20px 0 0;
-}
-
-#tagline {
-  color:#666666;
-  font-size:1em;
-  text-transform:uppercase;
-  font-weight:lighter;
-  display:block;
-  margin:-15px 0 0 0;
-  padding: 0 24px 0 82px;
-  text-align:center;
-}
-
-#logo {
-  float:left;
-  width:75px;
-  margin:17px 0 0 0;
-}
 
 #admin {
   padding:0 4px;

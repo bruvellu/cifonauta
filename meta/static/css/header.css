@@ -1,6 +1,7 @@
 #mainheader {
     display: flex;
     justify-content: space-between;
+    margin:0 0 2em 0;
 }
 
 #logo-container {
@@ -23,12 +24,21 @@
 }
 
 #maintitle {
-    margin: 0; 
+    margin: 0;
+    font-weight:bold;
+    font-size:4.5em;
+    padding:0;
 }
 
 #tagline {
     padding: 0 0 0 9px; 
     text-align: initial; 
+    color:#666666;
+    font-size:1em;
+    text-transform:uppercase;
+    font-weight:lighter;
+    display:block;
+    margin:-15px 0 0 0;
 }
 
 #stats-search {

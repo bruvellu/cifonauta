@@ -7,7 +7,6 @@
     margin-right: 0.5rem;
 }
 
-
 @media (max-width: 990px) {
     .section_organization {
         width: 100%;
@@ -23,6 +22,7 @@
         box-sizing: border-box;
         width: 100%;
     }
+    
     th {
         font-size: 10px;
     }
@@ -30,6 +30,7 @@
     .table-responsiveness {
         overflow-x: auto;
     }
+
     .thumbs-org > a >  img {
         width: 4rem;
     }

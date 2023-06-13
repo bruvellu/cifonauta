@@ -41,6 +41,14 @@
     margin:-15px 0 0 0;
 }
 
+#stats {
+  font-size: 0.9em;
+  font-family:Georgia;
+  letter-spacing:2px;
+  text-align:right;
+  padding-right:1em;
+}
+
 #stats-search {
     display: flex;
     flex-direction: column;

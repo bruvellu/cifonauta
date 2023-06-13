@@ -655,20 +655,6 @@ Based on work by Jørgen Arnor Gårdsø Lom [http://twistedintellect.com/] */
   float:left;
 }
 
-#stats {
-  font-size: 0.9em;
-  font-family:Georgia;
-  letter-spacing:2px;
-  text-align:right;
-  padding-right:1em;
-}
-
-#home-search {
-  text-align:right;
-  margin-top:2em;
-  padding-right:1em;
-}
-
 #itis {
   color:#aaaaaa;
   padding-top:1em;

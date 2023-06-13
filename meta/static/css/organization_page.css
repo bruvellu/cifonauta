@@ -20,10 +20,7 @@
 
 /* Mobile table layout */
 @media (max-width: 672px) {
-    th {
-        font-size: 10px;
-    }
-
+    
     /*Remove the title of second column */
     table > tbody > tr > th:nth-child(2){
         display: none;

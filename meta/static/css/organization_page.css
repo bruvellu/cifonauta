@@ -1,0 +1,9 @@
+.content-only {
+    display: flex;
+    flex-wrap: wrap-reverse;
+}
+
+.section_organization {
+    width: 66%;
+    margin-right: 0.5rem;
+}

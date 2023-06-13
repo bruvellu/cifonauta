@@ -10,6 +10,7 @@
 {% block extra-head %}
 <link rel="stylesheet" href="{{ STATIC_URL }}css/media_page_ajax.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/related.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/photo.css">
 <meta property="og:title" content="{{ media.title }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.sitepath }}" />
@@ -82,7 +83,7 @@ $(document).ready( function(){
 
 <!-- RESOLVER ISSO -->
 {% block sidebar %}
-<aside class="main span-8 last">
+<aside class="main aside-sidebar">
 
 	<div class="borders block shadow">
 	  {% show_tree taxa %}

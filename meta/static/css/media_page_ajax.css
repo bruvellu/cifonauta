@@ -7,8 +7,8 @@
     display: flex;
 }
 
-#media-subcontainer {
-    width: 33.3rem;
+#media-subcontainer > div:first-child {
+    max-width: 32rem;
 }
 
 #meta {
@@ -18,7 +18,13 @@
 #meta > div:first-child {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .5rem;
     padding-bottom: .9rem;
+}
+
+.taxonomy {
+    margin-right: 1.5rem;
 }
 
 .location {
@@ -48,4 +54,10 @@
     display: flex;
     flex-direction: column;
     gap: .7rem;
+}
+
+@media (max-width: 440px) {
+    #media-sideinfo {
+        display: none;
+    }
 }

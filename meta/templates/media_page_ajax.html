@@ -38,7 +38,7 @@
           {% else %}
           <div id="author">{% show_set authors '' '' ', ' '' %}{% if media.datatype == 'video' %}<span class="quiet" id="media-duration">{{ media.duration|slice:'3:' }}</span>{% endif %}</div>
           {% endif %}
-          </figure>
+        </figure>
 
           <div id="meta">
             <div>
@@ -92,25 +92,25 @@
           {% show_related media form related %}
       </div>
       
-        <div id="media-sideinfo">
-          {% if taxa %}
-          {% include 'biodb.html' %}
-          {% endif %}
+      <div id="media-sideinfo">
+        {% if taxa %}
+        {% include 'biodb.html' %}
+        {% endif %}
 
-          {% if media.size %}
-          {% spaceless %}
-          <div id="size">
-            <div class="size-{{ media.size }}" id="size-string">{% trans 'Tamanho' %}</div>
-              <div class="size-legend">
-                <div class="size-micro" title="<0,1 mm"></div>
-                <div class="size-tiny" title="0,1 - 1,0 mm"></div>
-                <div class="size-visible" title="1,0 - 10 mm"></div>
-                <div class="size-large" title="10 - 100 mm"></div>
-                <div class="size-huge" title=">100 mm"></div>
-              </div>
+        {% if media.size %}
+        {% spaceless %}
+        <div id="size">
+          <div class="size-{{ media.size }}" id="size-string">{% trans 'Tamanho' %}</div>
+            <div class="size-legend">
+              <div class="size-micro" title="<0,1 mm"></div>
+              <div class="size-tiny" title="0,1 - 1,0 mm"></div>
+              <div class="size-visible" title="1,0 - 10 mm"></div>
+              <div class="size-large" title="10 - 100 mm"></div>
+              <div class="size-huge" title=">100 mm"></div>
             </div>
-          {% endspaceless %}
-          {% endif %}
+          </div>
+        {% endspaceless %}
+        {% endif %}
         </div>
       </div>
     </div>
@@ -137,7 +137,7 @@
     </div>
     {% endif %}
 
-    <div id="comments" class="span-16 last">
+    <div id="comments">
       {% comment %}
       <h2>{% trans 'Comentários' %}</h2>
       {% include 'disqus.html' %}
@@ -147,18 +147,18 @@
     {% else %}
     <div class="private span-16 last">{% trans 'Esta imagem não está disponível.' %}</div>
     {% endif %}
-    </article>
+  </article>
   {% else %}
   <div class="nomatch span-16 last">{% trans 'Nenhuma imagem encontrada.' %}</div>
   {% endif %}
 
-<script type="text/javascript" charset="utf-8">
-  var current_title = {{media.title}} | {% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %} | CEBIMar USP';
-$(document).ready( function(){
-  try{
-     open_tree('{{media.get_taxon_name_list_no_parents}}');
-  } catch(err){} ;
-});
-</script>
+{% comment %} <script type="text/javascript" charset="utf-8">
+  var current_title = {{media.title}} | {% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %} | CEBIMar USP;
+  $(document).ready( function(){
+    try{
+      open_tree('{{media.get_taxon_name_list_no_parents}}');
+    } catch(err){} ;
+  });
+</script> {% endcomment %}
 
 </div>

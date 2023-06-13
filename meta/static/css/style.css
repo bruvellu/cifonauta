@@ -866,7 +866,6 @@ figure.photo, figure.video {
   -moz-border-radius: .625rem 0 0;
   -webkit-border-radius: .625rem 0 0;
   border-radius: .625rem 0 0;
-  min-height: 18.75rem;
   border: 1px solid #eee;
 }
 
@@ -1277,7 +1276,7 @@ ul.rel-thumbs img {
 }
 
 ul.rel-thumbs img {
-  width:88px;
+  width: 5.2rem;
 }
 
 ul.thumbs li.size-micro,
@@ -1323,6 +1322,7 @@ ul.rel-thumbs li.size-huge {
 /* SIDEBAR */
 aside.main {
   min-height:20em;
+  max-width: 19.5rem;
 }
 
 aside div.block {

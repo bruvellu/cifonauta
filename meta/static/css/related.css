@@ -5,10 +5,13 @@
 #related-form > form {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .3rem;
 }
 
 #crumbs {
     align-self: flex-end;
+    margin-right: 2rem;
 }
 
 #navbox {
@@ -26,7 +29,7 @@
     -moz-border-radius: .313rem;
     -webkit-border-radius: .313rem;
     border-radius: .313rem;
-    border: 0.313rem solid #eee;
+    border: .313rem solid #eee;
     position: relative;
 }
 

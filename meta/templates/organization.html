@@ -31,119 +31,108 @@
 
 <p>{% blocktrans %}Para dar uma ideia das dimensões dos organismos, criamos 5 classes de tamanho arbitrariamente. A fauna bentônica recebeu uma classificação adicional de tamanho: macrofauna, meiofauna e microfauna (ver item Modo de Vida, abaixo). Fotos dos ambientes não contêm informações de tamanho, mas caso estejam ilustrando algum organismo (por exemplo, cracas no costão), podem vir acompanhadas da escala relativa a esse organismo. As classes de tamanho são:{% endblocktrans %}</p>
 
-<div class="table-responsiveness">
-    <table>
-        <tr>
-            <th>{% trans 'Tamanho' %}</th>
-            <th>{% trans 'Descrição' %}</th>
-            <th>{% trans 'Exemplo' %}</th>
-        </tr>
-        {% for tag in sizes.tags.all %}
-        <tr>
-            <td class="bold">{{ tag }}</td>
-            <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
-            <td>{% print_thumb 'tag' tag %}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
+<table>
+    <tr>
+        <th>{% trans 'Tamanho' %}</th>
+        <th>{% trans 'Descrição' %}</th>
+        <th>{% trans 'Exemplo' %}</th>
+    </tr>
+    {% for tag in sizes.tags.all %}
+    <tr>
+        <td class="bold">{{ tag }}</td>
+        <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
+        <td>{% print_thumb 'tag' tag %}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 <h2>{% trans 'Técnicas fotográficas' %}</h2>
-
 <p>{% blocktrans %}As diferentes técnicas utilizadas para capturar as imagens do banco foram divididas em 4 categorias: <strong>submersa</strong>, <strong>macrofotografia</strong>, <strong>paisagem</strong> e <strong>microscopia</strong>. Para abarcar a variedade de técnicas de microscopia este último foi subdividido. Segue então a lista dos marcadores referentes às técnicas fotográficas:{% endblocktrans %}</p>
 
-<div class="table-responsiveness">
-    <table>
-        <tr>
-            <th>{% trans 'Técnica' %}</th>
-            <th>{% trans 'Descrição' %}</th>
-            <th>{% trans 'Exemplo' %}</th>
-        </tr>
-        {% for tag in technique.tags.all %}
-        <tr>
-            <td class="bold">{{ tag }}</td>
-            <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
-            <td>{% print_thumb 'tag' tag %}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
+<table>
+    <tr>
+        <th>{% trans 'Técnica' %}</th>
+        <th>{% trans 'Descrição' %}</th>
+        <th>{% trans 'Exemplo' %}</th>
+    </tr>
+    {% for tag in technique.tags.all %}
+    <tr>
+        <td class="bold">{{ tag }}</td>
+        <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
+        <td>{% print_thumb 'tag' tag %}</td>
+    </tr>
+    {% endfor %}
+</table>
 
-<div class="table-responsiveness">
-    <table>
-        <tr>
-            <th>{% trans 'microscopia' %}</th>
-            <th></th>
-            <th></th>
-        </tr>
-        {% for tag in microscopy.tags.all %}
-        <tr>
-            <td class="bold">{{ tag }}</td>
-            <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
-            <td>{% print_thumb 'tag' tag %}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
+<table>
+    <tr>
+        <th>{% trans 'microscopia' %}</th>
+        <th></th>
+        <th></th>
+    </tr>
+    {% for tag in microscopy.tags.all %}
+    <tr>
+        <td class="bold">{{ tag }}</td>
+        <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
+        <td>{% print_thumb 'tag' tag %}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 <h2>{{ stage.name }}</h2>
 <p>{{ stage.description }}</p>
 
-<div class="table-responsiveness">
-    <table>
-        <tr>
-            <th>{% trans 'Estágio' %}</th>
-            <th>{% trans 'Descrição' %}</th>
-            <th>{% trans  'Exemplo' %}</th>
-        </tr>
-        {% for tag in stages %}
-        <tr>
-            <td class="bold">{{ tag }}</td>
-            <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
-            <td>{% print_thumb 'tag' tag %}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
+<table>
+    <tr>
+        <th>{% trans 'Estágio' %}</th>
+        <th>{% trans 'Descrição' %}</th>
+        <th>{% trans  'Exemplo' %}</th>
+    </tr>
+    {% for tag in stages %}
+    <tr>
+        <td class="bold">{{ tag }}</td>
+        <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
+        <td>{% print_thumb 'tag' tag %}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 <h2>{{ habitat.name }}</h2>
 <p>{{ habitat.description }}</p>
 
-<div class="table-responsiveness">
-    <table>
-        <tr>
-            <th>{% trans 'Habitat' %}</th>
-            <th>{% trans 'Descrição' %}</th>
-            <th>{% trans 'Exemplo' %}</th>
-        </tr>
-        {% for tag in habitat.tags.all %}
-        <tr>
-            <td class="bold">{{ tag }}</td>
-            <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
-            <td>{% print_thumb 'tag' tag %}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
+<table>
+    <tr>
+        <th>{% trans 'Habitat' %}</th>
+        <th>{% trans 'Descrição' %}</th>
+        <th>{% trans 'Exemplo' %}</th>
+    </tr>
+    {% for tag in habitat.tags.all %}
+    <tr>
+        <td class="bold">{{ tag }}</td>
+        <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
+        <td>{% print_thumb 'tag' tag %}</td>
+    </tr>
+    {% endfor %}
+</table>
+
 <h2>{{ assorted.name }}</h2>
 <p>{{ assorted.description }}</p>
 
-<div class="table-responsiveness">
-    <table>
-        <tr>
-            <th>{% trans 'Outros' %}</th>
-            <th>{% trans 'Descrição' %}</th>
-            <th>{% trans 'Exemplo' %}</th>
-        </tr>
-        {% for tag in assorted.tags.all %}
-        <tr>
-            <td class="bold">{{ tag }}</td>
-            <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
-            <td>{% print_thumb 'tag' tag %}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
+<table>
+    <tr>
+        <th>{% trans 'Outros' %}</th>
+        <th>{% trans 'Descrição' %}</th>
+        <th>{% trans 'Exemplo' %}</th>
+    </tr>
+    {% for tag in assorted.tags.all %}
+    <tr>
+        <td class="bold">{{ tag }}</td>
+        <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
+        <td>{% print_thumb 'tag' tag %}</td>
+    </tr>
+    {% endfor %}
+</table>
+
 </section>
 {% endblock %}
 {% block sidebar %}

@@ -17,3 +17,20 @@
         flex-wrap: wrap-reverse;
     }
 }
+
+@media (max-width: 672px) {
+    .section_organization > table {
+        box-sizing: border-box;
+        width: 100%;
+    }
+    th {
+        font-size: 10px;
+    }
+
+    .table-responsiveness {
+        overflow-x: auto;
+    }
+    .thumbs-org > a >  img {
+        width: 4rem;
+    }
+}

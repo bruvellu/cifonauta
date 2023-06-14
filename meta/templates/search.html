@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}css/search.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/pagination.css">
+<script src="{{ STATIC_URL }}js/search.js" defer></script>
 <meta property="og:title" content="{% trans 'Buscador' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:type" content="article" />
@@ -24,20 +25,52 @@
     </div>
   </section>
   {% endblock %}
-  
+
+
   {% block sidebar %}
   <aside class="aside-search-form">
-  
   <div class="block shadow">
     <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
       <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-top" />
-      {{ display_form.as_p }}
+
+      <div>
+        <label for="id_{{ display_form.query.name }}">{{ display_form.query.label }}:</label>
+        {{ display_form.query }}
+      </div>
+      
+      <button class="more-filters-button" onClick="showCheckboxOptions(this, event)">
+        <p>Mais filtros</p>
+        <img class="first-dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg" alt="">
+      </button>
+      
+      <div class="more-filters">
+        {% for field in display_form %}
+          {% if field.field.widget.attrs.fields %}
+            <div>
+              <label for="{{ field.auto_id }}">{{ field.label }}:</label>
+              {{ field}}
+            </div>
+          {% endif %}
+        {% endfor %}
+
+        <div>
+          {% for field in display_form %}
+            {% if field.field.widget.attrs.dropdowns %}
+              <div class="checkbox-div">
+                <button onClick="showCheckboxOptions(this, event)">
+                  <label>{{ field.label }}</label>
+                  <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
+                </button>
+                {{ field }}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+      </div>
+
       <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-bottom" />
     </form>
   </div>
-  
-  </aside>
-  
+  </section>
   {% endblock %}
-</div>
-

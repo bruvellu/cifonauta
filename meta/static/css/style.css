@@ -1199,7 +1199,7 @@ aside div.block {
   border-width:5px;
   border-color:#94b1ca #eee #fafafa;
   margin: 0 0 1em 0;
-  padding: 1em 1em;
+  padding: .9rem .9rem 0 .9rem;
   background:#fafafa;
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;

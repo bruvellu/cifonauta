@@ -19,7 +19,8 @@ body {
 
 @media (max-width: 595px) {
     .content-and-sidebar {
-        flex-direction: column;
+        flex-direction: column-reverse;
+        gap: 1rem;
     }
 } 
 

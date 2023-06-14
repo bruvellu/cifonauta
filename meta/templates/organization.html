@@ -8,6 +8,7 @@
 
 {% block extra-head %}
 
+<link rel="stylesheet" href="{{ STATIC_URL }}css/organization_page.css">
 <meta property="og:title" content="{% trans 'Organização do banco' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:type" content="article" />
@@ -17,8 +18,8 @@
 {% endblock %}
 
 {% block content %}
-<section class="span-16">
-<header class="span-16 last"><h1>{% trans 'Organização do banco' %}</h1></header>
+<section class="section_organization">
+<header class="last"><h1>{% trans 'Organização do banco' %}</h1></header>
 
 <p>{% blocktrans %}As fotos e vídeos do <strong>Cifonauta</strong> podem ser pesquisadas por meio de informações básicas (metadados), como espécie, localidade, autor, tamanho, etc. Estes marcadores organizados em categorias como técnica fotográfica, estágio de vida, habitat, etc, deixam a navegação mais informativa e interessante. Por exemplo, você pode querer procurar <a href="/search/?tag=campo-escuro,larva&taxon=crustacea">fotos de larvas de crustáceos tiradas em campo escuro</a>, ou apenas navegar pelos <a href="/search/?tag=adulto,planctonico">estágios adultos de organismos planctônicos</a>. A categorização das imagens e a descrição de cada marcador (com um exemplo aleatório) encontra-se abaixo.{% endblocktrans %}</p>
 
@@ -46,7 +47,6 @@
 </table>
 
 <h2>{% trans 'Técnicas fotográficas' %}</h2>
-
 <p>{% blocktrans %}As diferentes técnicas utilizadas para capturar as imagens do banco foram divididas em 4 categorias: <strong>submersa</strong>, <strong>macrofotografia</strong>, <strong>paisagem</strong> e <strong>microscopia</strong>. Para abarcar a variedade de técnicas de microscopia este último foi subdividido. Segue então a lista dos marcadores referentes às técnicas fotográficas:{% endblocktrans %}</p>
 
 <table>

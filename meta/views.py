@@ -383,8 +383,6 @@ def media_page(request, media_id):
         'taxa': taxa,
         'sources': sources,
         'references': references,
-        'content_block': True,
-        'content_sidebar': True,
         }
 
     if is_ajax(request):

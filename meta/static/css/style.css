@@ -128,6 +128,8 @@ iframe {
 a {
   color:#4d7494;
   text-decoration:none;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 a:focus, a:hover {
@@ -877,6 +879,8 @@ figcation {
   font-size: 1.1em;
   font-weight: bold;
   position: relative;
+  padding-top: .3rem;
+  padding-right: 3rem;
 }
 
 #size {
@@ -1323,6 +1327,13 @@ ul.rel-thumbs li.size-huge {
 aside.main {
   min-height:20em;
   max-width: 19.5rem;
+  min-width: 18rem;
+}
+
+@media (max-width: 840px) {
+  aside.main {
+    min-width: 0;
+  }
 }
 
 aside div.block {

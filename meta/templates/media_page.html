@@ -36,6 +36,20 @@
 	<div id="ajaxcontent">
 		{% include "media_page_ajax.html" %}
 	</div>
+	
+	<aside class="main aside-sidebar">
+
+		<div class="borders block shadow">
+		  {% show_tree taxa %}
+		</div>
+	
+		{% if user.is_authenticated %}
+		<div class="borders block shadow" id="admin-controls">
+		  {% include 'admin_tools.html' %}
+		</div>
+		{% endif %}
+	
+	</aside>
 </section>
 
 <script>
@@ -81,8 +95,7 @@ $(document).ready( function(){
 
 {% endblock %}
 
-<!-- RESOLVER ISSO -->
-{% block sidebar %}
+{% comment %} {% block sidebar %}
 <aside class="main aside-sidebar">
 
 	<div class="borders block shadow">
@@ -96,4 +109,4 @@ $(document).ready( function(){
 	{% endif %}
 
 </aside>
-{% endblock %}
+{% endblock %} {% endcomment %}

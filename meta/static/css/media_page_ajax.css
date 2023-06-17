@@ -1,6 +1,12 @@
+#media-page {
+    display: flex;
+    gap: 2rem;
+}
+
 #single {
     display: flex;
     flex-direction: column;
+    max-width: 38rem;
 }
 
 #media-subcontainer {
@@ -9,6 +15,10 @@
 
 #media-subcontainer > div:first-child {
     max-width: 32rem;
+}
+
+#author {
+    padding-right: 3rem;
 }
 
 #meta {
@@ -56,7 +66,23 @@
     gap: .7rem;
 }
 
-@media (max-width: 440px) {
+@media (max-width: 940px) {
+    #media-sideinfo {
+        display: none;
+    }
+}
+
+@media (max-width: 840px) {
+    #media-page {
+        flex-direction: column;
+    }
+
+    #media-sideinfo {
+        display: flex;
+    }
+}
+
+@media (max-width: 580px) {
     #media-sideinfo {
         display: none;
     }

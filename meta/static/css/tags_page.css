@@ -3,11 +3,6 @@
 
   *Each Category is a card
 */
-
-.tags-section-title {
-  width: fit-content;
-  font-size: 1.5em;
-}
   
 .tags-content {
   display: flex;

@@ -8,7 +8,9 @@
 {% block meta-author %}{% show_set authors '' '' ', ' '' %}{% endblock %}
 
 {% block extra-head %}
-
+<link rel="stylesheet" href="{{ STATIC_URL }}css/media_page_ajax.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/related.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/photo.css">
 <meta property="og:title" content="{{ media.title }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.sitepath }}" />
@@ -30,10 +32,24 @@
 {% endblock %}
 
 {% block content %}
-<section id="media-page" class="span-16">
+<section id="media-page">
 	<div id="ajaxcontent">
 		{% include "media_page_ajax.html" %}
 	</div>
+	
+	<aside class="main aside-sidebar">
+
+		<div class="borders block shadow">
+		  {% show_tree taxa %}
+		</div>
+	
+		{% if user.is_authenticated %}
+		<div class="borders block shadow" id="admin-controls">
+		  {% include 'admin_tools.html' %}
+		</div>
+		{% endif %}
+	
+	</aside>
 </section>
 
 <script>
@@ -79,8 +95,8 @@ $(document).ready( function(){
 
 {% endblock %}
 
-{% block sidebar %}
-<aside class="main span-8 last">
+{% comment %} {% block sidebar %}
+<aside class="main aside-sidebar">
 
 	<div class="borders block shadow">
 	  {% show_tree taxa %}
@@ -93,4 +109,4 @@ $(document).ready( function(){
 	{% endif %}
 
 </aside>
-{% endblock %}
+{% endblock %} {% endcomment %}

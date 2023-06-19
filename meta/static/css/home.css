@@ -66,11 +66,24 @@
   width: 100%;
 }
 
-@media (max-width: 874px) {
+/* Tablet */
+@media (max-width: 984px) {
+    #intro {
+        width: 75%;
+    }
+
     #intro > #cover-text {
         width: 100%;
     }
+    
     #intro > #cover-image {
         margin: 0px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    #intro {
+        width: 95%;
     }
 }

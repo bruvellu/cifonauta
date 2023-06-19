@@ -17,6 +17,7 @@
     border: 0.3rem solid #eee;
     border-radius: .313rem;
     width: 8rem;
+    position: relative;
 }
 
 .thumbs img {

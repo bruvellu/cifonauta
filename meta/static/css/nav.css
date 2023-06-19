@@ -42,7 +42,7 @@
 }
 
 #media.menu {
-    min-width: 560px;
+    min-width: 36rem;
     height: 25px;
     padding: 0.2rem .625rem 0.08rem !important; 
     border-width: 0 !important; 

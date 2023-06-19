@@ -3,6 +3,11 @@
     gap: 2rem;
 }
 
+#media-page a {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
 #single {
     display: flex;
     flex-direction: column;

@@ -19,6 +19,11 @@
     width: 93.3%;
 }
 
+#press-photos .thumb-duration {
+    left: 5px !important;
+    bottom: 5px !important;
+}
+
 ul.thumbs li, ul.rel-thumbs li {
     display: inline;
     float: left;
@@ -32,8 +37,24 @@ ul.thumbs li, ul.rel-thumbs li {
     position: relative;
 }
 
+/* Tablet */
 @media (max-width: 1029px) {
     .main-press-page > div.span-9 {
         width: 100%;
+    }
+
+    .main-press-page {
+        justify-content: center;
+    }
+}
+
+/* Mobile */
+@media (max-width: 639px) {
+    #press-photos {
+        margin-top: 1rem;
+    }
+
+    .press-thumbs {
+        justify-content: center;
     }
 }

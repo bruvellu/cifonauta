@@ -4,19 +4,32 @@
     flex-wrap: wrap;
 }
 
-
 .press-thumbs {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     margin: 0;
     padding: 0;
 }
 
+#press-photos {
+    margin-top: 3rem;
+}
+
 #press-photos > a > img {
-    width: 94%;
-    height: 25.75rem;
-    object-fit: cover;
+    width: 93.3%;
+}
+
+ul.thumbs li, ul.rel-thumbs li {
+    display: inline;
+    float: left;
+    margin: 0 10px 10px 0;
+    padding: 5px;
+    background: #eee;
+    list-style: none;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    position: relative;
 }
 
 @media (max-width: 1029px) {

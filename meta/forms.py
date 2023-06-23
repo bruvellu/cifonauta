@@ -51,6 +51,7 @@ OPERATORS = (
         )
 
 
+
 class SearchForm(forms.Form):
     query = forms.CharField(label=_('Buscar por'),
                 widget=forms.TextInput(attrs={'size': 32}),
@@ -72,6 +73,10 @@ class DisplayForm(forms.Form):
     Country = apps.get_model('meta', 'Country')
     # Taxon = apps.get_model('meta', 'Taxon')
 
+    AUTHORS = [(person.id, person.name) for person in Person.objects.all()]
+    TAGS = [(tag.id, tag.name) for tag in Tag.objects.all()]
+    LOCATIONS = [(location.id, location.name) for location in Location.objects.all()]
+
     query = forms.CharField(required=False, label=_('Buscar por'),
             widget=forms.TextInput(attrs={"query": "query"}),)
     datatype = forms.ChoiceField(required=False, choices=DATATYPES,
@@ -86,15 +91,10 @@ class DisplayForm(forms.Form):
             label=_('Somente destaques'), widget=forms.CheckboxInput(attrs={"fields": "fields"}))
     operator = forms.ChoiceField(required=False, choices=OPERATORS,
             initial='and', label=_('Operador'), widget=forms.Select(attrs={"fields": "fields"}))
-    author = forms.ModelMultipleChoiceField(queryset=Person.objects.all(),
-            widget=forms.CheckboxSelectMultiple(attrs={"dropdowns": "dropdowns"}), required=False,
-            label=_('Autores'))
-    tag = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(),
-            widget=forms.CheckboxSelectMultiple(attrs={"dropdowns": "dropdowns"}), required=False,
-            label=_('Marcadores'))
-    location = forms.ModelMultipleChoiceField(queryset=Location.objects.all(),
-            widget=forms.CheckboxSelectMultiple(attrs={"dropdowns": "dropdowns"}), required=False,
-            label=_('Localidades'))
+    author = forms.MultipleChoiceField(widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False, choices=AUTHORS, label=_('Autores'),)
+    tag = forms.MultipleChoiceField(widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False, label=_('Marcadores'),  choices=TAGS)
+    location = forms.MultipleChoiceField(widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False, label=_('Localidades'), choices=LOCATIONS)
+
     city = forms.ModelMultipleChoiceField(queryset=City.objects.all(),
             widget=forms.CheckboxSelectMultiple(attrs={"dropdowns": "dropdowns"}), required=False,
             label=_('Cidades'))

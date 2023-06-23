@@ -55,6 +55,15 @@
     display: none;
 }
 
+.checkbox-div > label {
+    vertical-align: top;
+}
+
+/*Styling JQuery*/
+.select2-container--default .select2-selection--multiple .select2-selection__choice__display {
+    font-size: .625rem;
+}
+
 
 @media (max-width: 1003px) {
     .aside-search-form {

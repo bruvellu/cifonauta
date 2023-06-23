@@ -938,6 +938,7 @@ div#search-status {
 .displayform ul {
   list-style-type: none;
   padding-left: 1em;
+  margin: 0;
 }
 
 #display-top {

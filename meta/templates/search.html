@@ -9,7 +9,10 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}css/search.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/pagination.css">
+
 <script src="{{ STATIC_URL }}js/search.js" defer></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 <meta property="og:title" content="{% trans 'Buscador' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:type" content="article" />
@@ -37,7 +40,7 @@
         <label for="id_{{ display_form.query.name }}">{{ display_form.query.label }}:</label>
         {{ display_form.query }}
       </div>
-      
+
       <button class="more-filters-button" onClick="showCheckboxOptions(this, event)">
         <p>Mais filtros</p>
         <img class="first-dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg" alt="">
@@ -54,6 +57,20 @@
         {% endfor %}
 
         <div>
+          {% comment %} <div class="checkbox-div">
+            <label>{{ display_form.author.label }}:</label>
+            {{ display_form.author }}
+          </div> {% endcomment %}
+
+          {% for field in display_form %}
+            {% if field.field.widget.attrs.multiple %}
+              <div class="checkbox-div">
+                  <label>{{ field.label }}</label>
+                  {{ field }}
+              </div>
+            {% endif %}
+          {% endfor %}
+
           {% for field in display_form %}
             {% if field.field.widget.attrs.dropdowns %}
               <div class="checkbox-div">
@@ -73,4 +90,16 @@
     </form>
   </div>
   </section>
+
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('.select2-options').select2({
+        width: "100%",
+        placeholder: "Escolha os filtros"
+      });
+    });
+  </script>
   {% endblock %}
+

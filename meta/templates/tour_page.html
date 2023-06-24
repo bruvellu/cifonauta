@@ -18,6 +18,7 @@
 {% endblock %}
 
 {% block extra-head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/tour_page.css">
 <meta property="og:title" content="{{ tour.name }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ thumb }}" />

@@ -1,0 +1,10 @@
+.main-tours-page{
+    width: 100%;
+}
+
+Article #tour{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+

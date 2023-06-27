@@ -21,10 +21,6 @@ article #tour-description {
     flex: 1;
 }
 
-.slides_control {
-    width: 100% !important;
-}
-
 .slides_container div.eachslide {
     width: 100vw !important;
 }
@@ -88,8 +84,12 @@ article #tour-description {
     .content-slider > .span-8 {
         width: 50vw;
     }
-    
+
     .slides_container {
         padding: 0px;
+    }
+    
+    .align-right {
+        text-align: left;
     }
 }

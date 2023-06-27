@@ -4,6 +4,7 @@
 
 .aside-search-form {
     min-width: 19.375rem;
+    max-width: 19.375rem;
 }
 
 .more-filters-button {
@@ -69,7 +70,6 @@
     .aside-search-form {
         min-width: 13.3rem;
         width: 100%;
-        max-width: 19.375rem;
     }
 }
 

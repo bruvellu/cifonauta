@@ -22,6 +22,10 @@
     padding: 0; 
 }
 
+#footerbase > div:first-child {
+    padding-left: .6rem;
+}
+
 #footerbase > div:last-child {
     display: flex;
     gap: .5rem 2rem;
@@ -44,9 +48,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
 
-    width: 100%; 
-    /* display: flex;
-    justify-content: space-between; */
+    width: 100%;
     gap: .3rem 2rem;
     flex-wrap: wrap;
     box-sizing: border-box;

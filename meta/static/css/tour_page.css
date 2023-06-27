@@ -47,4 +47,20 @@ article #tour-description {
     width: 310px;
 }
 
+/* Tablet */
+@media (max-width: 980px) {
+    .content-slider {
+        flex-direction: column;
+    }
+    #tour {
+        justify-content: center;
+    }
+    #slides .prev {
+        left: 10px;
+    }
+    article #tour-description {
+        width: 90%;
+        text-align: center;
+    }
+}
 

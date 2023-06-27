@@ -26,3 +26,4 @@ function showCheckboxOptions(htmlTag, event) {
         }
     }  
 }
+

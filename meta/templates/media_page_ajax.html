@@ -45,49 +45,70 @@
           {% endif %}
         </figure>
 
-          <div id="meta">
-            <div>
-              <div class="taxonomy">
-                {% if taxa %}
-                <strong>{% blocktrans count counter=taxa.count %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set taxa '' '' ', ' '' %}</span>
-                <br>
-                {% endif %}
-      
-                {% if sources %}
-                <strong>{% blocktrans count counter=sources.count %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set sources '' '' ', ' '' %}</span>
-                {% endif %}
-              </div>
-      
-              <div class="location">
-                {% if media.date and media.date|date:"Y" > "1910" %} 
-                <strong>{% trans 'Data' %}: </strong> <span id="date"><datetime>{{ media.date|date:"DATETIME_FORMAT" }}</datetime></span>
-                <br>
-                {% endif %}
-                {% comment %} Retirar o "name" desnecessário... {% endcomment %}
-                {% if media.location.name or media.city.name or media.state.name or media.country.name %}
-                <strong>{% trans 'Local' %}:</strong> 
-                {% if media.location.name %}<span id="location">{{ media.location }},</span>{% endif %}
-                {% if media.city.name %}<span id="city">{{ media.city }},</span>{% endif %}
-                {% if media.state.name %}<span id="state">{{ media.state }},</span>{% endif %}
-                {% if media.country.name %}<span id="country">{{ media.country }}</span>{% endif %}
-                <br>
-                {% endif %}
-      
-                {% if media.geolocation %}
-                <strong>{% trans 'Geolocalização' %}:</strong> <a href="http://maps.google.com/maps?q={{ media.latitude }},{{ media.longitude }}" title="{{ media.geolocation }} no Google Maps">{{ media.geolocation }}</a>
-                {% endif %}
-              </div>
+        <div id="meta">
+          <div>
+            <div class="taxonomy">
+              {% if taxa %}
+              <strong>{% blocktrans count counter=taxa.count %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set taxa '' '' ', ' '' %}</span>
+              <br>
+              {% endif %}
+    
+              {% if sources %}
+              <strong>{% blocktrans count counter=sources.count %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set sources '' '' ', ' '' %}</span>
+              {% endif %}
             </div>
-
-            <div id="citethis">
-              <div>
-                {% show_set authors '' '' ', ' '' '' '.' %} <strong>{{ media.title }}</strong>. {% blocktrans with media_url=media.get_absolute_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a id="cifonauta-link" href="{{ media_url }}">http://cifonauta.cebimar.usp.br{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
-              </div>
-              <div class="align-right quiet">
-                {% blocktrans %}Conheça os <a href="/terms/">termos de uso</a>.{% endblocktrans %}
-              </div>
+    
+            <div class="location">
+              {% if media.date and media.date|date:"Y" > "1910" %} 
+              <strong>{% trans 'Data' %}: </strong> <span id="date"><datetime>{{ media.date|date:"DATETIME_FORMAT" }}</datetime></span>
+              <br>
+              {% endif %}
+              {% comment %} Retirar o "name" desnecessário... {% endcomment %}
+              {% if media.location.name or media.city.name or media.state.name or media.country.name %}
+              <strong>{% trans 'Local' %}:</strong> 
+              {% if media.location.name %}<span id="location">{{ media.location }},</span>{% endif %}
+              {% if media.city.name %}<span id="city">{{ media.city }},</span>{% endif %}
+              {% if media.state.name %}<span id="state">{{ media.state }},</span>{% endif %}
+              {% if media.country.name %}<span id="country">{{ media.country }}</span>{% endif %}
+              <br>
+              {% endif %}
+    
+              {% if media.geolocation %}
+              <strong>{% trans 'Geolocalização' %}:</strong> <a href="http://maps.google.com/maps?q={{ media.latitude }},{{ media.longitude }}" title="{{ media.geolocation }} no Google Maps">{{ media.geolocation }}</a>
+              {% endif %}
             </div>
           </div>
+
+          <div id="media-sideinfo2">
+            {% if taxa %}
+            {% include 'biodb.html' %}
+            {% endif %}
+    
+            {% if media.size %}
+            {% spaceless %}
+            <div id="size">
+              <div class="size-{{ media.size }}" id="size-string">{% trans 'Tamanho' %}</div>
+              <div class="size-legend">
+                <div class="size-micro" title="<0,1 mm"></div>
+                <div class="size-tiny" title="0,1 - 1,0 mm"></div>
+                <div class="size-visible" title="1,0 - 10 mm"></div>
+                <div class="size-large" title="10 - 100 mm"></div>
+                <div class="size-huge" title=">100 mm"></div>
+              </div>
+            </div>
+            {% endspaceless %}
+            {% endif %}
+          </div>
+
+          <div id="citethis">
+            <div>
+              {% show_set authors '' '' ', ' '' '' '.' %} <strong>{{ media.title }}</strong>. {% blocktrans with media_url=media.get_absolute_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a id="cifonauta-link" href="{{ media_url }}">http://cifonauta.cebimar.usp.br{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
+            </div>
+            <div class="align-right quiet">
+              {% blocktrans %}Conheça os <a href="/terms/">termos de uso</a>.{% endblocktrans %}
+            </div>
+          </div>
+        </div>
     
           {% if media.notes %}
           <div id="notes">

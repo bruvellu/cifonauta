@@ -4,6 +4,7 @@
 
 .aside-search-form {
     min-width: 19.375rem;
+    max-width: 19.375rem;
 }
 
 .more-filters-button {
@@ -55,12 +56,20 @@
     display: none;
 }
 
+.checkbox-div > label {
+    vertical-align: top;
+}
+
+/*Styling JQuery*/
+.select2-container--default .select2-selection--multiple .select2-selection__choice__display {
+    font-size: .625rem;
+}
+
 
 @media (max-width: 1003px) {
     .aside-search-form {
         min-width: 13.3rem;
         width: 100%;
-        max-width: 19.375rem;
     }
 }
 

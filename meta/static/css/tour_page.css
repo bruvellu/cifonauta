@@ -52,15 +52,26 @@ article #tour-description {
     .content-slider {
         flex-direction: column;
     }
+
     #tour {
         justify-content: center;
     }
+
     #slides .prev {
         left: 10px;
     }
+
     article #tour-description {
         width: 90%;
-        text-align: center;
+        text-align: left;
+    }
+
+    .span-8 {
+        width: 90%;
+    }
+
+    .citation a{
+        word-break: break-all;
     }
 }
 
@@ -71,7 +82,7 @@ article #tour-description {
     }
 
     .content-slider > .span-13 {
-        width: 50vw;
+        width: 70vw;
     }
 
     .content-slider > .span-8 {

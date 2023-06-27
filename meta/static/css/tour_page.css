@@ -61,6 +61,10 @@ article #tour-description {
         left: 10px;
     }
 
+    .content-slider > .span-13 {
+        width: 80vw;
+    }
+
     article #tour-description {
         width: 90%;
         text-align: left;
@@ -81,11 +85,11 @@ article #tour-description {
         flex-direction: column;
     }
 
-    .content-slider > .span-13 {
-        width: 70vw;
-    }
-
     .content-slider > .span-8 {
         width: 50vw;
+    }
+    
+    .slides_container {
+        padding: 0px;
     }
 }

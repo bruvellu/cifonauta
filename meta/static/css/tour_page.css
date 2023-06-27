@@ -64,3 +64,17 @@ article #tour-description {
     }
 }
 
+/* Mobile */
+@media (max-width: 642px) {
+    .content-slider {
+        flex-direction: column;
+    }
+
+    .content-slider > .span-13 {
+        width: 50vw;
+    }
+
+    .content-slider > .span-8 {
+        width: 50vw;
+    }
+}

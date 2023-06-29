@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'debug_toolbar',
 
+    'user',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -98,6 +100,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'cebimar',
         'USER': 'nelas',
+        'PASSWORD': '123',
     }
 }
 
@@ -129,6 +132,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 LANGUAGE_CODE = 'pt-br'
 ADMIN_LANGUAGE_CODE = 'pt-br'
+
 
 # Rosetta settings.
 ROSETTA_MESSAGES_SOURCE_LANGUAGE_CODE = 'pt-br'
@@ -202,3 +206,10 @@ ROLEPERMISSIONS_MODULE = 'cifonauta.roles'
 hostname = socket.gethostname()
 if hostname == 'cifonauta':
     from .server_settings import *
+
+
+AUTH_USER_MODEL = 'user.UserCifonauta'
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_CREDENTIALS = True

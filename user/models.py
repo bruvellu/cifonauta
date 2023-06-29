@@ -2,10 +2,14 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 class UserCinonautaManager(BaseUserManager):
-    def create_user(self, email, username, password):
+    def create_user(self, email, first_name, last_name, username, password, idlattes, orcid):
         user = self.model(
             email = UserCinonautaManager.normalize_email(email),
             username = username,
+            idlattes = idlattes,
+            orcid = orcid,
+            first_name = first_name,
+            last_name = last_name,
         )
         user.set_password(password)
         user.is_staff = False
@@ -13,12 +17,12 @@ class UserCinonautaManager(BaseUserManager):
         user.save(using=self._db)
         return user
     
-    def create_superuser(self,email, username, password):
+    def create_superuser(self, first_name, last_name, email, username, idlattes, orcid, password):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
         """
-        u = self.create_user(email, username, password
+        u = self.create_user(email, first_name, last_name, username, password, idlattes, orcid
                     )
         u.is_admin = True
         u.is_superuser = True
@@ -28,20 +32,25 @@ class UserCinonautaManager(BaseUserManager):
 
 
 class UserCifonauta(AbstractUser):
+
+    first_name = models.CharField('Primeiro Nome', null=True, blank=True, max_length=50)
+    last_name = models.CharField('Último Nome', null=True, blank=True, max_length=50)
     email = models.EmailField(verbose_name='Email', unique=True)
     username = models.CharField('Usuário', unique=True)
-    orcid = models.CharField('Orcid', unique=True, default=None, null=True, blank=True)
+
+    orcid = models.CharField('Orcid', null=True, blank=True, max_length=16)
+    idlattes = models.CharField('IDLattes', null=True, blank=True, max_length=16)
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = ['email', 'orcid', 'idlattes', 'first_name', 'last_name']
 
     def get_full_name(self):
         # The user is identified by their email address
-        return self.username
+        return f'{self.first_name} {self.last_name}'
 
     def get_short_name(self):
         # The user is identified by their email address
-        return self.email
+        return self.first_name
 
     def __unicode__(self):
         return self.email

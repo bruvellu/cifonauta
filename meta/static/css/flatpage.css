@@ -11,9 +11,7 @@
 }
 
 #license-item {
-	/*display: flex;*/
-	/*flex-wrap: wrap;*/
-	/*gap: 1rem;*/
-	float: left;
-	padding-right: 1rem;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
 }

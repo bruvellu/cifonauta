@@ -51,6 +51,7 @@ sitemaps = {
 urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls)),
         path('admin/', admin.site.urls),
+        path('user/', include('user.urls')),
         path('', include('django.contrib.auth.urls')),
         path('', include('meta.urls')),
         path('rosetta/', include('rosetta.urls')),

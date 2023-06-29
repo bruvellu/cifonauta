@@ -3,3 +3,17 @@
         width: 100%;
     }
 }
+
+#license-details {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+#license-item {
+	/*display: flex;*/
+	/*flex-wrap: wrap;*/
+	/*gap: 1rem;*/
+	float: left;
+	padding-right: 1rem;
+}

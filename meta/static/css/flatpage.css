@@ -12,6 +12,7 @@
 
 #license-item {
 	display: flex;
-	flex-wrap: wrap;
+	/*flex-wrap: wrap;*/
 	gap: 1rem;
+	align-items: center;
 }

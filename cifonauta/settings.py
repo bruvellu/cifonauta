@@ -184,6 +184,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'meta/static'),
+    os.path.join(BASE_DIR, 'user/static'),
+    # Add other app directories if necessary
+]
+
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
 ADMIN_MEDIA_PREFIX = '/static/admin/'

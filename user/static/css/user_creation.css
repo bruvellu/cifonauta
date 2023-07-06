@@ -48,10 +48,6 @@
     width: 96%;
 }
 
-#signup-form > div > div input[type="password"] {
-    padding-right: 
-}
-
 #signup-form button[type="submit"] {
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#51bb47), color-stop(100%,    #1c7524));
     /* background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#82b0d7), color-stop(100%,#456b8b)); */

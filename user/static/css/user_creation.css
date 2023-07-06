@@ -27,19 +27,19 @@
     gap: .7rem;
 }
 
-#signup-form > div > div {
+.label-div {
     display: flex;
     flex-direction: column;
 }
 
-#signup-form > div > div label {
+.label-div label {
     font-size: 1rem;
     display: flex;
     align-items: center;
     gap: 0.25rem;
 }
 
-#signup-form > div > div input {
+.label-div input {
     height: 1.5rem;
     margin: 0;
     box-shadow: none;
@@ -121,7 +121,7 @@
 .password-div button {
     background-color: transparent;
     position: absolute;
-    right: 4px; /*botar pra ficar no meio sempre */
+    right: 4px; 
     top: 3px;
     border: none;
 }

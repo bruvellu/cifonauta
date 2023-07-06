@@ -14,7 +14,7 @@
     <div>
         {% for field in form %}
         {% if field.id_for_label != 'id_password2' %}
-        <div>
+        <div class="label-div">
             <label for="{{field.id_for_label}}">
                 {{field.label}}
 
@@ -46,7 +46,7 @@
 
         </div>
         {% else %}
-        <div>
+        <div class="label-div">
             <label for="{{field.id_for_label}}">
                 {{field.label}}
                 <span class='required'>*</span>

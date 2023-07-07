@@ -10,7 +10,7 @@ class UserCifonautaAdmin(UserAdmin):
     list_display = ("email", "is_staff", "is_active", "username", 'orcid', "first_name", "last_name", "idlattes")
     list_filter = ("email", "is_staff", "is_active", "username", 'orcid', "first_name", "last_name", "idlattes")
     fieldsets = (
-        (None, {"fields": ("email", "password")}),
+        (None, {"fields": ("email", "password", "username", 'orcid', "first_name", "last_name", "idlattes")}),
         ("Permissions", {"fields": ("is_staff", "is_active", "groups", "user_permissions")}),
     )
     add_fieldsets = (
@@ -18,7 +18,7 @@ class UserCifonautaAdmin(UserAdmin):
             "classes": ("wide",),
             "fields": (
                 "email", "password1", "password2", "is_staff",
-                "is_active", "groups", "user_permissions"
+                "is_active", "groups", "user_permissions", "username", 'orcid', "first_name", "last_name", "idlattes"
             )}
         ),
     )

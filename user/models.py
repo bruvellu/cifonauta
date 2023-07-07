@@ -33,16 +33,16 @@ class UserCinonautaManager(BaseUserManager):
 
 class UserCifonauta(AbstractUser):
 
-    first_name = models.CharField('Primeiro Nome', null=True, blank=True, max_length=50)
-    last_name = models.CharField('Último Nome', null=True, blank=True, max_length=50)
+    first_name = models.CharField('Primeiro Nome', null=True, max_length=50)
+    last_name = models.CharField('Último Nome', null=True, max_length=50)
     email = models.EmailField(verbose_name='Email', unique=True)
     username = models.CharField('Usuário', unique=True)
 
-    orcid = models.CharField('Orcid', null=True, blank=True, max_length=16)
-    idlattes = models.CharField('IDLattes', null=True, blank=True, max_length=16)
+    orcid = models.CharField('Orcid', null=True, max_length=16)
+    idlattes = models.CharField('IDLattes', null=True, max_length=16)
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email', 'orcid', 'idlattes', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['orcid', 'idlattes', 'first_name', 'last_name']
 
     def get_full_name(self):
         # The user is identified by their email address

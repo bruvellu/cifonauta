@@ -209,6 +209,12 @@ ROLEPERMISSIONS_MODULE = 'cifonauta.roles'
 #handler.setLevel(logging.ERROR)
 #logging.getLogger('sorl.thumbnail').addHandler(handler)
 
+AUTH_USER_MODEL = 'user.UserCifonauta'
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_CREDENTIALS = True
+
 # Import server settings.
 hostname = socket.gethostname()
 if hostname == 'cifonauta':

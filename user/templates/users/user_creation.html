@@ -10,6 +10,7 @@
 
 <form id='signup-form' action="" method="POST">
     {% csrf_token %}
+
     <h1>Cadastre-se</h1>
     <div>
         {% for field in form %}
@@ -40,9 +41,12 @@
                         <img class="not-visible-icon" src="{{ STATIC_URL }}img/not-visible.svg">
                     </button>
                 </div>
+                
             {% else %}
                 {{field}}
             {% endif %}
+
+            
 
         </div>
         {% else %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="post">
+{% csrf_token %}
+<h1>Entrar</h1>
+{% for field in form %}
+<div class="label-div">
+    <label for="{{field.id_for_label}}">
+        {{field.label}}
+        {% if field.field.help_text %}
+                <div class="help-text-container">
+                    <span class="help-icon">?</span>
+                    <div class="help-text-div">
+                        {{ field.help_text }}
+                    </div>
+                </div>
+        {% endif %}
+    </label>
+    {{field}}
+    <p class="help-text-visible">{{ field.help_text }}</p>
+</div>
+{% endfor %}
+<button type="submit">Entrar</button>
+</form>
+{% endblock content %}

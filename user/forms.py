@@ -15,6 +15,7 @@ class UserCifonautaCreationForm(UserCreationForm):
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
+    captcha = CaptchaField()
 
     def clean(self):
         cleaned_data = super().clean()

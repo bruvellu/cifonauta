@@ -101,7 +101,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'cebimar',
         'USER': 'nelas',
-        'PASSWORD' : 'batman',
     }
 }
 

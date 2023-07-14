@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block extra-head %}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/user_creation.css">
-<script src="{{ STATIC_URL }}js/user_creation.js" defer></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/user_style.css">
+<script src="{{ STATIC_URL }}js/user_script.js" defer></script>
 {% endblock%}
 
 {% block content %}
 <div class='wrapper'>
 
-<form id='signup-form' action="" method="POST">
+<form class='signup-signin-form' action="" method="POST">
     {% csrf_token %}
 
     <h1>Cadastre-se</h1>
@@ -62,7 +62,7 @@
         {% endfor %}
     </div>
 
-    <button type="submit">Cadastrar</button>
+    <button id="signup-submit" type="submit">Cadastrar</button>
 
 </form>
 </div>

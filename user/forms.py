@@ -7,6 +7,12 @@ from django import forms
 
 class UserCifonautaCreationForm(UserCreationForm):
     captcha = CaptchaField()
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['password1'].widget.attrs['class'] = 'get-password'
+
     class Meta:
         model = UserCifonauta
         fields = ('first_name','last_name' ,'username', 'email', 'orcid', 'idlattes')
@@ -14,7 +20,7 @@ class UserCifonautaCreationForm(UserCreationForm):
 
 class LoginForm(forms.Form):
     username = forms.CharField()
-    password = forms.CharField(widget=forms.PasswordInput)
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'get-password'}))
     captcha = CaptchaField()
 
     def clean(self):

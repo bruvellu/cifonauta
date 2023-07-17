@@ -8,17 +8,17 @@
 <div class="label-div">
     <label for="{{field.id_for_label}}">
         {{field.label}}
-        {% if field.field.help_text %}
+        {% if field.label.errors%}
                 <div class="help-text-container">
                     <span class="help-icon">?</span>
                     <div class="help-text-div">
-                        {{ field.help_text }}
+                        {{ field.label.errors}}
                     </div>
                 </div>
         {% endif %}
     </label>
     {{field}}
-    <p class="help-text-visible">{{ field.help_text }}</p>
+    <p class="help-text-visible">{{ field.label.errors }}</p>
 </div>
 {% endfor %}
 <button type="submit">Entrar</button>

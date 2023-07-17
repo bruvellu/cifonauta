@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     'rolepermissions',
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -218,3 +219,11 @@ hostname = socket.gethostname()
 if hostname == 'cifonauta':
     from .server_settings import *
 
+
+AUTH_USER_MODEL = 'user.UserCifonauta'
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_CREDENTIALS = True
+
+CAPTCHA_STORE = 'captcha.store.database.DatabaseStore'

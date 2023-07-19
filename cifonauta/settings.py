@@ -208,17 +208,6 @@ ROLEPERMISSIONS_MODULE = 'cifonauta.roles'
 #handler.setLevel(logging.ERROR)
 #logging.getLogger('sorl.thumbnail').addHandler(handler)
 
-AUTH_USER_MODEL = 'user.UserCifonauta'
-
-CORS_ORIGIN_ALLOW_ALL = True
-
-CORS_ALLOW_CREDENTIALS = True
-
-# Import server settings.
-hostname = socket.gethostname()
-if hostname == 'cifonauta':
-    from .server_settings import *
-
 
 AUTH_USER_MODEL = 'user.UserCifonauta'
 
@@ -227,3 +216,17 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
 CAPTCHA_STORE = 'captcha.store.database.DatabaseStore'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'email'
+EMAIL_HOST_PASSWORD = 'senha'
+EMAIL_USE_TLS = True
+
+# Import server settings.
+hostname = socket.gethostname()
+if hostname == 'cifonauta':
+    from .server_settings import *
+
+

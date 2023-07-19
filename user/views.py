@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
-from .forms import UserCifonautaCreationForm, LoginForm
+from .forms import UserCifonautaCreationForm, LoginForm, PasswordResetForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.views import PasswordResetView
+from django.contrib.auth.views import PasswordResetConfirmView
+from django.urls import reverse_lazy
 # Create your views here.
 
 def user_creation(request):
@@ -30,3 +33,13 @@ def login_view(request):
         form = LoginForm()
 
     return render(request, 'users/login.html', {'form': form})
+
+class PasswordResetView(PasswordResetView):
+    form_class = PasswordResetForm
+    template_name = 'users/password_reset.html'
+    email_template_name = 'users/password_reset_email.html'
+    success_url = '/user/login'
+
+class PasswordResetConfirmView(PasswordResetConfirmView):
+    success_url = '/user/login'
+    template_name = 'users/password_reset_confirm.html'

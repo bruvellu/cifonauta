@@ -1,13 +1,13 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.forms import PasswordResetForm
-#from captcha.fields import CaptchaField
+from captcha.fields import CaptchaField
 
 from .models import UserCifonauta
 from django import forms
 
 
 class UserCifonautaCreationForm(UserCreationForm):
-    #captcha = CaptchaField()
+    captcha = CaptchaField()
     class Meta:
         model = UserCifonauta
         fields = ('first_name','last_name' ,'username', 'email', 'orcid', 'idlattes')
@@ -16,7 +16,7 @@ class UserCifonautaCreationForm(UserCreationForm):
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
-    #captcha = CaptchaField()
+    captcha = CaptchaField()
 
     def clean(self):
         cleaned_data = super().clean()

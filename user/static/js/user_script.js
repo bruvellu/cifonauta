@@ -1,5 +1,5 @@
 function showPassword() {
-    passwordInput = document.querySelector("#id_password1")
+    passwordInput = document.querySelector(".get-password")
     visibleIcon = document.querySelector(".visible-icon")
     notVisibleIcon = document.querySelector(".not-visible-icon")
     if (isPasswordHidden) {

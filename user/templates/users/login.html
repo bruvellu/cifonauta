@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block extra-head %}
-<link rel="stylesheet" href="{{ STATIC_URL }}cgitss/user_style.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/user_style.css">
 <script src="{{ STATIC_URL }}js/user_script.js" defer></script>
 {% endblock%}
 
@@ -22,12 +22,6 @@
                         {{ field.label.errors}}
                     </div>
                 </div>
-<<<<<<< HEAD
-        {% endif %}
-    </label>
-    {{field}}
-    <p class="help-text-visible">{{ field.label.errors }}</p>
-=======
                 {% endif %}
             </label>
 
@@ -50,6 +44,5 @@
         <a id="forgot-password" href="">Esqueci minha senha</a>
         <button id="signin-submit" type="submit">Entrar</button>
     </form>
->>>>>>> feat/styling-login-page
 </div>
 {% endblock content %}

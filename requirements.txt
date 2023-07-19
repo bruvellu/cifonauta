@@ -11,4 +11,4 @@ pillow
 fabric
 suds
 django-role-permissions
-captcha
+django-simple-captcha

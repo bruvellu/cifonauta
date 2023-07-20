@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block extra-head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/user_style.css">
+<script src="{{ STATIC_URL }}js/user_script.js" defer></script>
+{% endblock%}
+
+{% block content %}
+<div class="wrapper">
+    <form class="signup-signin-form signin-form" method="post">
+    {% csrf_token %}
+        <h1>Entrar</h1>
+        <div>
+        {% for field in form %}
+        <div class="label-div">
+            <label for="{{field.id_for_label}}">
+                {{field.label}}
+                {% if field.field.help_text %}
+                <div class="help-text-container">
+                    <span class="help-icon">?</span>
+                    <div class="help-text-div">
+                        {{ field.label.errors}}
+                    </div>
+                </div>
+                {% endif %}
+            </label>
+
+            {% if field.field.widget.input_type == 'password' %}
+                <div class="password-div">
+                    {{ field }}
+                    <button onclick="showPassword()" type="button">
+                        <img class="visible-icon hidden-icon" src="{{ STATIC_URL }}img/visible.png">
+                        <img class="not-visible-icon" src="{{ STATIC_URL }}img/not-visible.svg">
+                    </button>
+                </div>
+            {% else %}
+                {{field}}
+            {% endif %}
+
+            <p class="help-text-visible">{{ field.help_text }}</p>
+        </div>
+        {% endfor %}
+        </div>
+        <a id="forgot-password" href="">Esqueci minha senha</a>
+        <button id="signin-submit" type="submit">Entrar</button>
+    </form>
+</div>
+{% endblock content %}

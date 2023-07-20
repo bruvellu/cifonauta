@@ -9,6 +9,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.urls import reverse
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.contrib.postgres.aggregates import StringAgg
@@ -731,4 +732,15 @@ def build_url(meta, field, queries, remove=False, append=None):
 def is_ajax(request):
     '''Handler function after deprecation of HttpRequest.is_ajax.'''
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+def image_upload(request):
+    if request.method == 'GET':
+        form = UploadImageForm()  
+        return render(request, 'image_upload.html', {'form': form})
+    else:
+        form = UploadImageForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Sua imagem foi salva')
+            return redirect('image_upload_url')
 

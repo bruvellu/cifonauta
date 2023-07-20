@@ -17,6 +17,7 @@ urlpatterns = [
         path('literature/', views.refs_page, name='refs_url'),
         path('tours/', views.tours_page, name='tours_url'),
         path('press/', views.press_page, name='press_url'),
+        path('image-upload/', views.image_upload, name='image_upload_url'),
 
         # Media pages
         path('tour/<slug:slug>/', views.tour_page, name='tour_url'),

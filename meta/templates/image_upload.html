@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% csrf_token %}
+<form action="" method="POST" enctype="multipart/form-data">
+    {% for field in form %}
+    <div>
+        <label for="{{id_for_label}}">{{field.label}}</label>
+        {{field}}
+    </div>
+    {% endfor %}
+    
+    <input type="file" name="my-files">
+    
+    <input type="submit" value="Enviar">
+</form>
+
+{% if messages %}
+    {% for message in messages %}
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}

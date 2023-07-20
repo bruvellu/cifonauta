@@ -4,6 +4,7 @@ from django import forms
 from django.apps import apps
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+from .models import Media
 
 
 METAS = (
@@ -117,3 +118,11 @@ class AdminForm(forms.Form):
     tours = forms.ModelMultipleChoiceField(queryset=Tour.objects.all(),
             widget=forms.CheckboxSelectMultiple(attrs={'class':'check-taxon'}),
             required=False, label=_('Escolher tour(s)'))
+
+
+class UploadImageForm(forms.ModelForm):
+    class Meta:
+        model = Media
+        fields = ('title', 'state', 'city', 'geolocation',)
+        #authors - está faltando!
+        #'title_pt', 'title_en', 'caption_pt', 'caption_en',  'taken_at', 'copyright', 'country'

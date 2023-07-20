@@ -8,7 +8,6 @@ from meta.signals import *
 
 from django.db.models import Q
 
-
 class Media(models.Model):
     '''Table containing both image and video files.'''
 

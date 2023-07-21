@@ -7,7 +7,7 @@ from .models import UserCifonauta
 class UserCifonautaAdmin(UserAdmin):
     add_form = UserCifonautaCreationForm
     model = UserCifonauta
-    list_display = ("email", "is_staff", "is_active", "username", 'orcid', "first_name", "last_name", "idlattes")
+    list_display = ("email", "is_staff", "is_active", "username", 'orcid', "first_name", "last_name", "idlattes", "category")
     list_filter = ("email", "is_staff", "is_active", "username", 'orcid', "first_name", "last_name", "idlattes")
     fieldsets = (
         (None, {"fields": ("email", "password", "username", 'orcid', "first_name", "last_name", "idlattes")}),
@@ -26,5 +26,5 @@ class UserCifonautaAdmin(UserAdmin):
     ordering = ("email",)
 
 
-admin.site.register(UserCifonauta, UserCifonautaAdmin)
+admin.site.register(UserCifonauta)
 

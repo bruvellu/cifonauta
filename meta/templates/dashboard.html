@@ -2,6 +2,15 @@
 
 {% block content %}
 
+{% if messages %}
+    {% for message in messages %}
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    {% endfor %}
+{% endif %}
+
+{% if user_permissions %}
+
+{% if "meta.add_media" in user_permissions %}
 <form action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {% for field in form %}
@@ -15,11 +24,16 @@
     
     <input type="submit" value="Enviar">
 </form>
+{% endif %}
 
-{% if messages %}
-    {% for message in messages %}
-    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
-    {% endfor %}
+{% if "meta.change_media" in user_permissions %}
+{% for media in medias_with_category %}
+    {{media.title}}
+{% endfor %}
+{% endif %}
+
+{% else %}
+<p>Você não tem permissão!</p>
 {% endif %}
 
 {% endblock %}

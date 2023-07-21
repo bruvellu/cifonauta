@@ -7,7 +7,15 @@ from mptt.models import MPTTModel
 from meta.signals import *
 
 from django.db.models import Q
+from django.conf import settings
 
+class Categoria(models.Model):
+    nome = models.CharField(max_length=100)
+    usuarios = models.ManyToManyField(settings.AUTH_USER_MODEL, null=True, blank=True)
+
+    def __str__(self):
+        return self.nome
+    
 class Media(models.Model):
     '''Table containing both image and video files.'''
 
@@ -69,8 +77,10 @@ class Media(models.Model):
             help_text=_('Estado mostrado na imagem (ou estado de coleta).'))
     country = models.ForeignKey('Country', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('país'),
-            help_text=_('País mostrado na imagem (ou país de coleta).'))
+            help_text=_('País mostrado na imagem (ou país de coleta).')),
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
 
+        
     def __str__(self):
         return 'ID={} {} ({})'.format(self.id, self.title, self.datatype)
 

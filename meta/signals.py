@@ -2,6 +2,44 @@
 
 from django.template.defaultfilters import slugify
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+#from .models import Categoria, Media
+from django.apps import apps
+
+@receiver(post_save, sender='meta.Categoria')
+def criar_grupos_para_categoria(sender, instance, created, **kwargs):
+    if created:
+        Categoria = apps.get_model('meta', 'Categoria')
+        Media = apps.get_model('meta', 'Media')
+
+        group_author = Group.objects.create(name=f'{instance.nome} - Autor')
+        group_curator = Group.objects.create(name=f'{instance.nome} - Curador')
+        group_specialist = Group.objects.create(name=f'{instance.nome} - Especialista')
+        
+        content_type = ContentType.objects.get_for_model(Media)  
+
+        can_add_media_permission = Permission.objects.get(
+            codename='add_media',
+            content_type=content_type
+        )
+        can_change_media_permission = Permission.objects.get(
+            codename='change_media',
+            content_type=content_type
+        )
+        can_view_media_permission = Permission.objects.get(
+            codename='view_media',
+            content_type=content_type
+        )
+        
+
+        group_author.permissions.add(can_add_media_permission)
+        group_curator.permissions.add(can_add_media_permission, can_change_media_permission)
+        group_specialist.permissions.add(can_view_media_permission)
+
+
 # Não é signal, apenas função acessória.
 # FIXME Trocar de lugar, eventualmente.
 def citation_html(reference):

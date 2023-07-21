@@ -72,4 +72,4 @@ admin.site.register(Tour, TourAdmin)
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Taxon, TaxonAdmin)
 admin.site.register(Reference, ReferenceAdmin)
-
+admin.site.register(Categoria)

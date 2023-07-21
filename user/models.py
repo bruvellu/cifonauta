@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from meta.models import Categoria
 
 class UserCinonautaManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, username, password, idlattes, orcid):
@@ -22,8 +23,8 @@ class UserCinonautaManager(BaseUserManager):
         Creates and saves a superuser with the given email, date of
         birth and password.
         """
-        u = self.create_user(email, first_name, last_name, username, password, idlattes, orcid
-                    )
+        u = self.create_user(email, first_name, last_name, username, password, idlattes, orcid)
+        
         u.is_admin = True
         u.is_superuser = True
         u.is_staff = True
@@ -40,6 +41,8 @@ class UserCifonauta(AbstractUser):
 
     orcid = models.CharField('Orcid', null=True, max_length=16)
     idlattes = models.CharField('IDLattes', null=True, max_length=16)
+    
+    category = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['orcid', 'idlattes', 'first_name', 'last_name']

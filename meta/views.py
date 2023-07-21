@@ -733,14 +733,27 @@ def is_ajax(request):
     '''Handler function after deprecation of HttpRequest.is_ajax.'''
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
-def image_upload(request):
-    if request.method == 'GET':
-        form = UploadImageForm()  
-        return render(request, 'image_upload.html', {'form': form})
+def dashboard(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = UploadImageForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Sua imagem foi salva')
+                return redirect('dashboard')  
+        else:
+            form = UploadImageForm()
+            user_permissions = request.user.get_all_permissions()
+            #user_category = request.user.categoria
+            # Realizar a consulta dos objetos Media com a mesma categoria do usuário
+            #medias_with_category = Media.objects.filter(categoria=user_category)
+
+            context = {
+                'form': form,
+                'user_permissions': user_permissions,
+                #'medias_with_category': medias_with_category,
+            }
+            return render(request, 'dashboard.html', context)
     else:
-        form = UploadImageForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Sua imagem foi salva')
-            return redirect('image_upload_url')
+        return redirect('home')
 

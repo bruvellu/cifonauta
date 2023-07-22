@@ -26,5 +26,5 @@ class UserCifonautaAdmin(UserAdmin):
     ordering = ("email",)
 
 
-admin.site.register(UserCifonauta)
+admin.site.register(UserCifonauta, UserCifonautaAdmin)
 

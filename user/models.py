@@ -1,6 +1,22 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.core.exceptions import ValidationError
+
 from meta.models import Categoria
+
+import re
+
+def orcid_validator(orcid):
+    regex = re.compile(r'^(\d{4}.\d{4}-\d{4}.\d{4})|(\d{16})$')
+    
+    if not regex.match(orcid):
+        raise ValidationError("Orcid inválido", code='Invalid')
+
+def idlattes_validator(idlattes):
+    regex = re.compile(r'^\d{16}$')
+
+    if not regex.match(idlattes):
+        raise ValidationError("IdLattes inválido", code='Invalid')
 
 class UserCinonautaManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, username, password, idlattes, orcid):
@@ -39,8 +55,8 @@ class UserCifonauta(AbstractUser):
     email = models.EmailField(verbose_name='Email', unique=True)
     username = models.CharField('Usuário', unique=True)
 
-    orcid = models.CharField('Orcid', null=True, max_length=16)
-    idlattes = models.CharField('IDLattes', null=True, max_length=16)
+    orcid = models.CharField('Orcid', null=True, max_length=19, validators=[orcid_validator])
+    idlattes = models.CharField('IDLattes', null=True, max_length=19, validators=[idlattes_validator])
     
     category = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
 

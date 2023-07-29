@@ -7,10 +7,45 @@ from mptt.models import MPTTModel
 from meta.signals import *
 
 from django.db.models import Q
+from django.contrib.auth.models import Group
+import uuid
+import os
+from django.conf import settings
+from django.utils import timezone
+
+
+class Curadoria(models.Model):
+    name = models.CharField(max_length=50)
+    groups = models.ManyToManyField(Group, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+def upload_to(instance, filename):
+    ext = filename.split('.')[-1]
+    random_filename = f"{uuid.uuid4()}.{ext}"
+    
+    return os.path.join('uploads', random_filename)
 
 
 class Media(models.Model):
     '''Table containing both image and video files.'''
+
+    # New fields
+    file = models.FileField(upload_to=upload_to, default=None, null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
+            verbose_name=_('autor'), help_text=_('Autor da mídia.'))
+    STATUS_CHOICES = (
+        ('not_edited', 'Não Editado'),
+        ('to_review', 'Para Revisão'),
+        ('published', 'Publicado'),
+    )
+    status = models.CharField(_('status'), blank=True, max_length=13, choices=STATUS_CHOICES, 
+            default='not_edited', help_text=_('Status da mídia.'))
+    curadoria = models.ForeignKey('Curadoria', on_delete=models.SET_NULL, 
+            null=True, verbose_name=_('curadoria'),
+            help_text=_('Curadoria à qual a imagem pertence.'))
 
     # File
     filepath = models.CharField(_('arquivo original.'), max_length=200,
@@ -71,6 +106,7 @@ class Media(models.Model):
     country = models.ForeignKey('Country', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('país'),
             help_text=_('País mostrado na imagem (ou país de coleta).'))
+    
 
     def __str__(self):
         return 'ID={} {} ({})'.format(self.id, self.title, self.datatype)

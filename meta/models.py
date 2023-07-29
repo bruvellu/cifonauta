@@ -411,3 +411,10 @@ models.signals.pre_save.connect(slug_pre_save, sender=Tour)
 
 # Create citation with bibkey.
 models.signals.pre_save.connect(citation_pre_save, sender=Reference)
+
+# Create groups after creating curadoria
+models.signals.post_save.connect(create_groups_for_curadoria, sender=Curadoria)
+# Delete groups that were created by the curadoria
+models.signals.pre_delete.connect(delete_groups_of_curadoria, sender=Curadoria)
+# Delete file from folder when the media is deleted on website
+models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)

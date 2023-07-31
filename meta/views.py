@@ -18,6 +18,46 @@ from operator import or_, and_
 from .models import *
 from .forms import *
 
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .models import Media
+from django.utils.decorators import method_decorator
+from .decorators import custom_login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+@custom_login_required
+def dashboard(request):
+    return render(request, 'dashboard.html')
+
+@method_decorator(custom_login_required, name='dispatch')
+class UploadMedia(CreateView): #Have acss to user.id
+    model = Media
+    template_name = 'upload_media.html'
+    form_class = UploadMediaForm
+
+class MediaList(ListView):
+    model = Media
+    template_name = 'media_list.html'
+
+class MediaDetail(DetailView):
+    model = Media
+    template_name = 'media_detail.html'
+
+class UpdateMedia(UpdateView):
+    model = Media
+    template_name = "update_media.html"
+    fields = '__all__'
+
+class DeleteMedia(DeleteView):
+    model = Media
+
+class MyMedias(LoginRequiredMixin, ListView):
+    model = Media
+    template_name = 'my_medias.html'
+
+    def get_queryset(self):
+        queryset = Media.objects.filter(author=self.request.user)
+        return queryset
+    
 
 # Home
 def home_page(request):

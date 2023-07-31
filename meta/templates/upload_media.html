@@ -1,0 +1,22 @@
+{% extends 'dashboard.html' %}
+
+{% block title %}Enviar Mídia{% endblock %}
+
+{% block dashboard_content %}
+
+{% if messages %}
+{% for message in messages %}
+<span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+{% endfor %}
+{% endif %}
+
+<div class="form-container">
+    <h2>Adicionar nova mídia</h2>
+    <form class="images-upload-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Adicionar</button>
+    </form>
+</div>
+
+{% endblock %}

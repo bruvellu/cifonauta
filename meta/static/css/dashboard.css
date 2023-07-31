@@ -1,0 +1,133 @@
+body {
+    font-size: 1rem;
+}
+
+ul {
+    margin: 0;
+    padding-left: 0;
+}
+
+a:active, a:visited {
+    color: #ffffff;
+}
+
+.dashboard-aside {
+    background: -webkit-linear-gradient(top, #3a4e5f 16%, #4d7494 100%);
+    background: -moz-linear-gradient(top, #3a4e5f 16%, #4d7494 100%);
+    background: -o-linear-gradient(top, #3a4e5f 16%, #4d7494 100%);
+    background: linear-gradient(to bottom, #3a4e5f 16%, #4d7494 100%);
+    width: 16rem;
+    height: 100vh;
+    position: fixed;
+    font-weight: bold;
+}
+
+.dashboard-aside ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+    margin-top: 1.5rem;
+    list-style: none;
+}
+
+.dashboard-aside a {
+    color: white;
+    padding: 0.3rem 1.5rem;
+}
+
+.dashboard-aside li:hover a {
+    background: #fafafa;
+    -moz-border-radius: 0 0.625rem 0.625rem 0;
+    -webkit-border-radius: 0 0.625rem 0.625rem 0;
+    border-radius: 0 0.625rem 0.625rem 0;
+    color: #4d7494 !important;
+} 
+
+
+.dashboard-view {
+    margin-left: 16rem;
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+h2 {
+    margin: 1rem 0 2rem 0;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.form {
+    background-color: #dedeff;
+    max-width: 32rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.images-upload-form textarea {
+    resize: none;
+    height: 3rem;
+}
+
+.field-div {
+    display: flex;
+    flex-direction: column;
+}
+
+.table-head th {
+    height: 1.7rem;
+}
+
+.title-column, .status-column {
+    width: 13rem;
+}
+
+.edit-column {
+    width: 10rem;
+}
+
+.image-column {
+    width: 25rem;
+}
+
+.table {
+    color: white;
+    border-collapse: collapse;
+}
+
+.table-body tr:nth-child(odd) {
+    background-color: #e2e2e2;
+    color: black;
+}
+
+.table-body tr:nth-child(even), .table-head tr {
+    background-color: #6b92b2;
+}
+
+.text-cedule {
+    vertical-align: top;
+    text-align: center;
+    padding: 1rem;
+}
+
+.image-cedule {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.button-cedule {
+    text-align: center;
+}
+
+.button-cedule a {
+    padding: 0.5rem 1.7rem;
+    background-color: #f0f860;
+    text-decoration: none;
+    color: #353400;
+    font-weight: bold;
+}

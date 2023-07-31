@@ -1,11 +1,20 @@
 from django.urls import path
 from . import views
+from .views import MediaList, MediaDetail, UploadMedia, UpdateMedia, MyMedias
 
 def extra(model, field):
     return {'model_name': model, 'field': field}
 
 urlpatterns = [
         path('', views.home_page, name='home'),
+
+        # Módulo administrativo
+        path('administrative-module/', views.dashboard, name='dashboard'),
+        path('administrative-module/list/', MediaList.as_view(), name='media_list'),
+        path('administrative-module/add/', UploadMedia.as_view(), name='upload_media'),
+        path('administrative-module/details/<int:pk>/', MediaDetail.as_view(), name='media_detail'),
+        path('administrative-module/update/<int:pk>', UpdateMedia.as_view(), name='update_media'),
+        path('administrative-module/my-medias/', MyMedias.as_view(), name='my_medias'),
 
         # Menu
         path('search/', views.search_page, name='search_url'),

@@ -1,5 +1,9 @@
 {% extends 'dashboard.html' %}
+{% load static %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="upload_media.css">
+{% endblock %}
 {% block title %}Enviar Mídia{% endblock %}
 
 {% block dashboard_content %}
@@ -12,10 +16,20 @@
 
 <div class="form-container">
     <h2>Adicionar nova mídia</h2>
-    <form class="images-upload-form" method="post" enctype="multipart/form-data">
+    <form class="upload-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Adicionar</button>
+        {% for field in form %}
+        <div class="field-container">
+            {{ field.label_tag }}
+            <div class="field-div">
+                {{ field }}
+                {% if field.help_text %}
+                <span class="help-text">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        <button class="submit-button" type="submit">Adicionar</button>
     </form>
 </div>
 

@@ -50,9 +50,9 @@ class Media(models.Model):
     # File
     filepath = models.CharField(_('arquivo original.'), max_length=200,
             unique=True, help_text=_('Caminho único para arquivo original.'))
-    sitepath = models.FileField(_('arquivo web.'), unique=True,
+    sitepath = models.FileField(_('arquivo web.'),
             help_text=_('Arquivo processado para a web.'))
-    coverpath = models.ImageField(_('amostra do arquivo.'), unique=True,
+    coverpath = models.ImageField(_('amostra do arquivo.'),
             help_text=_('Imagem de amostra do arquivo processado.'))
     datatype = models.CharField(_('tipo de mídia'), max_length=15,
             help_text=_('Tipo de mídia.'))

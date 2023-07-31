@@ -12,24 +12,92 @@
             <th class="title-column">Título</th>
             <th class="image-column">Imagem</th>
             <th class="status-column">Status</th>
-            <th class="edit-column">Atualizar</th>
+        </tr>
+    </thead>
+    <tbody class="table-body">
+        <tr>
+            <td class="text-cedule">
+                <a href="">Imagem teste</a>
+            </td>
+            <td class="image-cedule">
+                <a href="" target="_blank">
+                    <img src="{{ BASE_DIR }}/site_media/ac-aem_2qTX9p_cover.jpg" width="250px">
+                </a>
+            </td>
+            <td class="text-cedule">Não Editado</td>
+        </tr>
+        <tr>
+            <td class="text-cedule">
+                <a href="">Imagem teste</a>
+            </td>
+            <td class="image-cedule">
+                <a href="" target="_blank">
+                    <img src="{{ BASE_DIR }}/site_media/aem_6lymVa_cover.jpg" width="250px">
+                </a>
+            </td>
+            <td class="text-cedule">Não Editado</td>
+        </tr>
+        <tr>
+            <td class="text-cedule">
+                <a href="">Imagem teste</a>
+            </td>
+            <td class="image-cedule">
+                <a href="" target="_blank">
+                    <img src="{{ BASE_DIR }}/site_media/aem_6lymVa.jpg" width="250px">
+                </a>
+            </td>
+            <td class="text-cedule">Não Editado</td>
+        </tr>
+        <tr>
+            <td class="text-cedule">
+                <a href="">Imagem teste</a>
+            </td>
+            <td class="image-cedule">
+                <a href="" target="_blank">
+                    <img src="{{ BASE_DIR }}/site_media/aem_6kYg4L_cover.jpg" width="250px">
+                </a>
+            </td>
+            <td class="text-cedule">Não Editado</td>
+        </tr>
+        <tr>
+            <td class="text-cedule">
+                <a href="">Imagem teste</a>
+            </td>
+            <td class="image-cedule">
+                <a href="" target="_blank">
+                    <img src="{{ BASE_DIR }}/site_media/aem_6kYg4L.jpg" width="250px">
+                </a>
+            </td>
+            <td class="text-cedule">Não Editado</td>
+        </tr>
+    </tbody>
+</table>
+
+{% comment %} <h2>Lista de todas as mídias</h2>
+<table class="table">
+    <thead class="table-head">
+        <tr>
+            <th class="title-column">Título</th>
+            <th class="image-column">Imagem</th>
+            <th class="status-column">Status</th>
         </tr>
     </thead>
     <tbody class="table-body">
         {% for media in object_list %}
         <tr>
-            <td class="text-cedule">{{ media.title_pt_br }}</td>
+            <td class="text-cedule">
+                <a href="{% url 'update_media' media.id %}">{{ media.title_pt_br }}</a>
+            </td>
             <td class="image-cedule">
                 <a href="{{ media.file.url }}" target="_blank">
                     <img src="{{ media.file.url }}" width="250px">
                 </a>
             </td>
             <td class="text-cedule">{{ media.get_status_display }}</td>
-            <td class="button-cedule"><a href="{% url 'update_media' media.id %}">Atualizar</a></td>
         </tr>
         {% endfor %}
     </tbody>
-</table>
+</table> {% endcomment %}
 
 {% else %}
     <p>Não há imagens</p>

@@ -7,7 +7,7 @@ from .models import UserCifonauta
 class UserCifonautaAdmin(UserAdmin):
     add_form = UserCifonautaCreationForm
     model = UserCifonauta
-    list_display = ("email", "is_staff", "is_active", "username", 'orcid', "first_name", "last_name", "idlattes")
+    list_display = ("username", "email", "is_staff", "is_active", 'orcid', "first_name", "last_name", "idlattes")
     list_filter = ("email", "curadoria", "is_staff", "is_active", "username", 'orcid', "first_name", "last_name", "idlattes")
     fieldsets = (
         (None, {"fields": ("email", "password", "username", 'orcid', "first_name", "last_name", "idlattes")}),

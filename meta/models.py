@@ -56,7 +56,7 @@ class Media(models.Model):
             help_text=_('Imagem de amostra do arquivo processado.'))
     datatype = models.CharField(_('tipo de mídia'), max_length=15,
             help_text=_('Tipo de mídia.'))
-    timestamp = models.DateTimeField(_('data de modificação'),
+    timestamp = models.DateTimeField(_('data de modificação'), blank=True, default=timezone.now,
             help_text=_('Data da última modificação do arquivo.'))
 
     # Website
@@ -68,7 +68,7 @@ class Media(models.Model):
             help_text=_('Imagem que merece destaque.'))
     is_public = models.BooleanField(_('público'), default=False,
             help_text=_('Visível para visitantes.'))
-    pub_date = models.DateTimeField(_('data de publicação'), auto_now_add=True,
+    pub_date = models.DateTimeField(_('data de publicação'), blank=True, default=timezone.now,
             help_text=_('Data de publicação da imagem no Cifonauta.'))
 
     # Metadata
@@ -107,6 +107,11 @@ class Media(models.Model):
             null=True, blank=True, verbose_name=_('país'),
             help_text=_('País mostrado na imagem (ou país de coleta).'))
     
+
+    def save(self, *args, **kwargs):
+        self.timestamp = timezone.now()
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return 'ID={} {} ({})'.format(self.id, self.title, self.datatype)

@@ -4,7 +4,6 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 import os
-#from user.models import UserCifonauta
 
 
 def create_groups_for_curadoria(sender, instance, created, **kwargs):
@@ -26,17 +25,19 @@ def create_groups_for_curadoria(sender, instance, created, **kwargs):
             content_type=content_type
         )
 
-        """ content_type_user = ContentType.objects.get_for_model(User)
-        print('Query:', content_type_user)
+        from user.models import UserCifonauta
+
+        content_type_user = ContentType.objects.get_for_model(UserCifonauta)
+        
         can_change_user_permission = Permission.objects.get(
-            codename='change_user',
+            codename='change_usercifonauta',
             content_type=content_type_user
-        ) """
+        )
         
 
         group_author.permissions.add(can_add_media_permission)
         group_specialist.permissions.add(can_change_media_permission)
-        #group_curator.permissions.add(can_change_user_permission)
+        group_curator.permissions.add(can_change_user_permission)
         
         instance.groups.add(group_author, group_specialist, group_curator)
 

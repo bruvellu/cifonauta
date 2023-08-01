@@ -18,7 +18,7 @@ class FlatPageAdmin(TranslationAdmin):
 
 
 class MediaAdmin(TranslationAdmin):
-    list_display = ('title', 'filepath', 'is_public', 'highlight', 'title', 'caption', 'timestamp')
+    list_display = ('title', 'filepath', 'is_public', 'highlight', 'title', 'caption', 'timestamp', 'author')
     list_filter = ('is_public', 'highlight', 'timestamp', 'person', 'tag', 'taxon')
 
 

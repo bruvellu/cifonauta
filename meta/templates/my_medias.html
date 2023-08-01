@@ -12,6 +12,46 @@
             <th class="title-column">Título</th>
             <th class="image-column">Imagem</th>
             <th class="status-column">Status</th>
+            <th class="modification-date">Data de Modificação</th>
+            <th class="file">Caminho</th>
+        </tr>
+    </thead>
+    <tbody class="table-body">
+        {% for media in object_list %}
+        <tr>
+            <td class="text-cedule">
+                <a href="{% url 'update_media' media.id %}">{{ media.title_pt_br }}</a>
+            </td>
+            <td class="image-cedule">
+                <a href="{{ media.file.url }}" target="_blank">
+                    <img src="{{ media.file.url }}" width="250px">
+                </a>
+            </td>
+            <td 
+                class="text-cedule {% if media.status == 'not_edited' %}not-edited{% elif media.status == 'to_review' %}to-review{% else %}published{% endif %}"
+            >
+                {{ media.get_status_display }}
+            </td>
+            <td>{{ media.timestamp }}</td>
+            <td>{{ media.file }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+    <p>Não há imagens</p>
+{% endif %}
+
+{% endblock %}
+
+{% comment %} <h2>Lista de todas as mídias</h2>
+<table class="table">
+    <thead class="table-head">
+        <tr>
+            <th class="title-column">Título</th>
+            <th class="image-column">Imagem</th>
+            <th class="status-column">Status</th>
         </tr>
     </thead>
     <tbody class="table-body">
@@ -71,36 +111,4 @@
             <td class="text-cedule">Não Editado</td>
         </tr>
     </tbody>
-</table>
-
-{% comment %} <h2>Lista de todas as mídias</h2>
-<table class="table">
-    <thead class="table-head">
-        <tr>
-            <th class="title-column">Título</th>
-            <th class="image-column">Imagem</th>
-            <th class="status-column">Status</th>
-        </tr>
-    </thead>
-    <tbody class="table-body">
-        {% for media in object_list %}
-        <tr>
-            <td class="text-cedule">
-                <a href="{% url 'update_media' media.id %}">{{ media.title_pt_br }}</a>
-            </td>
-            <td class="image-cedule">
-                <a href="{{ media.file.url }}" target="_blank">
-                    <img src="{{ media.file.url }}" width="250px">
-                </a>
-            </td>
-            <td class="text-cedule">{{ media.get_status_display }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
 </table> {% endcomment %}
-
-{% else %}
-    <p>Não há imagens</p>
-{% endif %}
-
-{% endblock %}

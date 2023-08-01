@@ -12,6 +12,7 @@ import uuid
 import os
 from django.conf import settings
 from django.utils import timezone
+import shutil
 
 
 class Curadoria(models.Model):
@@ -48,8 +49,7 @@ class Media(models.Model):
             help_text=_('Curadoria à qual a imagem pertence.'))
 
     # File
-    filepath = models.CharField(_('arquivo original.'), max_length=200,
-            unique=True, help_text=_('Caminho único para arquivo original.'))
+    filepath = models.CharField(_('arquivo original.'), max_length=200, help_text=_('Caminho único para arquivo original.'))
     sitepath = models.FileField(_('arquivo web.'),
             help_text=_('Arquivo processado para a web.'))
     coverpath = models.ImageField(_('amostra do arquivo.'),
@@ -108,7 +108,35 @@ class Media(models.Model):
             help_text=_('País mostrado na imagem (ou país de coleta).'))
     
 
+    def rename_and_move_file(self):
+        if self.file and self.status == 'published':
+            current_file_path = self.file.path
+            new_filename = f"{self.title_pt_br}.{self.file.name.split('.')[-1]}"
+            new_file_path = os.path.join('site_media', new_filename)
+
+            shutil.move(current_file_path, new_file_path)
+
+            # Refresh the field "file" to be updated in the database
+            self.file.name = new_filename
+
+        elif self.file and self.status != 'published':
+            current_file_path = self.file.path
+            new_filename = f"uploads/{uuid.uuid4()}.{self.file.name.split('.')[-1]}"
+            new_file_path = os.path.join('site_media', new_filename)
+
+            shutil.move(current_file_path, new_file_path)
+
+            # Refresh the field "file" to be updated in the database
+            self.file.name = new_filename
+
+
     def save(self, *args, **kwargs):
+        if self.pk:
+            original = Media.objects.get(pk=self.pk)
+            # Only if status changed related to the published one
+            if self.status != original.status and ("published" in [self.status, original.status]):
+                self.rename_and_move_file()
+        
         self.timestamp = timezone.now()
 
         super().save(*args, **kwargs)

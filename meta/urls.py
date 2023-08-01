@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import MediaList, MediaDetail, UploadMedia, UpdateMedia, MyMedias
+from .views import CuradoriaMediaList, MediaDetail, UploadMedia, UpdateMedia, MyMedias
 
 def extra(model, field):
     return {'model_name': model, 'field': field}
@@ -10,7 +10,7 @@ urlpatterns = [
 
         # Módulo administrativo
         path('administrative-module/', views.dashboard, name='dashboard'),
-        path('administrative-module/list/', MediaList.as_view(), name='media_list'),
+        path('administrative-module/list/', CuradoriaMediaList.as_view(), name='media_list'),
         path('administrative-module/add/', UploadMedia.as_view(), name='upload_media'),
         path('administrative-module/details/<int:pk>/', MediaDetail.as_view(), name='media_detail'),
         path('administrative-module/update/<int:pk>', UpdateMedia.as_view(), name='update_media'),

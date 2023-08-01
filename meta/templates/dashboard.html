@@ -22,19 +22,23 @@
                 <a href="{% url 'home' %}">Voltar para à Página Inicial</a>
             </li>
             <li>
-                <a href="{% url 'media_list' %}">Ver todas as mídias</a>
-            </li>
-            <li>
                 <a href="{% url 'upload_media' %}">Adicionar mídia</a>
             </li>
+            {% if 'meta.change_media' in user_permissions %}
             <li>
                 <a href="">Edição de metadados</a>
             </li>
+            {% endif %}
+            {% if 'user.change_usercifonauta' in user_permissions %}
             <li>
                 <a href="">Revisão de mídias</a>
             </li>
             <li>
-                <a href="{% url 'my_medias' %}">Minhas imagens</a>
+                <a href="{% url 'media_list' %}">Mídias da minha curadoria</a>
+            </li>
+            {% endif %}
+            <li>
+                <a href="{% url 'my_medias' %}">Minhas mídias</a>
             </li>
         </ul>
     </aside>

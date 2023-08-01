@@ -11,7 +11,7 @@
 {% endif %}
 
 <div class="form-container">
-    <h2>Atualizar {{ media.title_pt_br }}</h2>
+    <h2>Detalhes</h2>
     <form class="images-upload-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}

@@ -19,44 +19,120 @@ from .models import *
 from .forms import *
 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Media
 from django.utils.decorators import method_decorator
 from .decorators import custom_login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from user.models import UserCifonauta
 
 @custom_login_required
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    user_permissions = request.user.get_all_permissions()
+    return render(request, 'dashboard.html', {'user_permissions': user_permissions,})
+
 
 @method_decorator(custom_login_required, name='dispatch')
-class UploadMedia(CreateView): #Have acss to user.id
+class UploadMedia(LoginRequiredMixin, CreateView): #Have access to user.id
     model = Media
     template_name = 'upload_media.html'
     form_class = UploadMediaForm
 
-class MediaList(ListView):
-    model = Media
-    template_name = 'media_list.html'
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        user = self.request.user
+        form.fields['curadoria'].queryset = user.curadoria.all()
+        form.fields['author'].initial = user.id
+        form.fields['author'].queryset = UserCifonauta.objects.filter(id=user.id)
 
+        return form
+
+    def form_valid(self, form): #Temporary
+        media_instance = form.save(commit=False)
+
+        if 'file' in self.request.FILES:
+            media_instance.sitepath = self.request.FILES['file']
+            media_instance.coverpath = self.request.FILES['file']
+
+        media_instance.save()
+
+        messages.success(self.request, 'Sua imagem foi salva') 
+        return redirect('upload_media')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_permissions = self.request.user.get_all_permissions()
+        context['user_permissions'] = user_permissions
+        return context
+
+
+@method_decorator(custom_login_required, name='dispatch')
+class CuradoriaMediaList(LoginRequiredMixin, ListView):
+    model = Media
+    template_name = 'curadoria_media_list.html'
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Media.objects.filter(curadoria__in=user.curadoria.all())
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_permissions = self.request.user.get_all_permissions()
+        context['user_permissions'] = user_permissions
+        return context
+    
+
+@method_decorator(custom_login_required, name='dispatch')
 class MediaDetail(DetailView):
     model = Media
     template_name = 'media_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_permissions = self.request.user.get_all_permissions()
+        context['user_permissions'] = user_permissions
+        return context
+    
+
+@method_decorator(custom_login_required, name='dispatch')
 class UpdateMedia(UpdateView):
     model = Media
     template_name = "update_media.html"
     fields = '__all__'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_permissions = self.request.user.get_all_permissions()
+        context['user_permissions'] = user_permissions
+        return context
+    
+
+@method_decorator(custom_login_required, name='dispatch')
 class DeleteMedia(DeleteView):
     model = Media
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_permissions = self.request.user.get_all_permissions()
+        context['user_permissions'] = user_permissions
+        return context
+    
+
+@method_decorator(custom_login_required, name='dispatch')
 class MyMedias(LoginRequiredMixin, ListView):
     model = Media
     template_name = 'my_medias.html'
 
     def get_queryset(self):
-        queryset = Media.objects.filter(author=self.request.user)
+        user = self.request.user
+        queryset = super().get_queryset().filter(author=user)
         return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_permissions = self.request.user.get_all_permissions()
+        context['user_permissions'] = user_permissions
+        return context
     
 
 # Home

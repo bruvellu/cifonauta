@@ -3,13 +3,22 @@ from django.contrib.flatpages.models import FlatPage
 from meta.models import *
 from modeltranslation.admin import TranslationAdmin
 
+class CuradoriaAdmin(admin.ModelAdmin):
+    model = Curadoria
+    fieldsets = (
+        (None, {
+            "fields": ("name",)
+        }),
+    )
+        
+
 # Translation admin.
 class FlatPageAdmin(TranslationAdmin):
     pass
 
 
 class MediaAdmin(TranslationAdmin):
-    list_display = ('filepath', 'is_public', 'highlight', 'title', 'caption', 'timestamp')
+    list_display = ('title', 'filepath', 'is_public', 'highlight', 'title', 'caption', 'timestamp', 'author')
     list_filter = ('is_public', 'highlight', 'timestamp', 'person', 'tag', 'taxon')
 
 
@@ -72,4 +81,4 @@ admin.site.register(Tour, TourAdmin)
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Taxon, TaxonAdmin)
 admin.site.register(Reference, ReferenceAdmin)
-
+admin.site.register(Curadoria, CuradoriaAdmin)

@@ -7,21 +7,56 @@ from mptt.models import MPTTModel
 from meta.signals import *
 
 from django.db.models import Q
+from django.contrib.auth.models import Group
+import uuid
+import os
+from django.conf import settings
+from django.utils import timezone
+import shutil
+
+
+class Curadoria(models.Model):
+    name = models.CharField(max_length=50)
+    groups = models.ManyToManyField(Group, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+def upload_to(instance, filename):
+    ext = filename.split('.')[-1]
+    random_filename = f"{uuid.uuid4()}.{ext}"
+    
+    return os.path.join('uploads', random_filename)
 
 
 class Media(models.Model):
     '''Table containing both image and video files.'''
 
+    # New fields
+    file = models.FileField(upload_to=upload_to, default=None, null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
+            verbose_name=_('autor'), help_text=_('Autor da mídia.'))
+    STATUS_CHOICES = (
+        ('not_edited', 'Não Editado'),
+        ('to_review', 'Para Revisão'),
+        ('published', 'Publicado'),
+    )
+    status = models.CharField(_('status'), blank=True, max_length=13, choices=STATUS_CHOICES, 
+            default='not_edited', help_text=_('Status da mídia.'))
+    curadoria = models.ForeignKey('Curadoria', on_delete=models.SET_NULL, 
+            null=True, verbose_name=_('curadoria'),
+            help_text=_('Curadoria à qual a imagem pertence.'))
+
     # File
-    filepath = models.CharField(_('arquivo original.'), max_length=200,
-            unique=True, help_text=_('Caminho único para arquivo original.'))
-    sitepath = models.FileField(_('arquivo web.'), unique=True,
+    filepath = models.CharField(_('arquivo original.'), max_length=200, help_text=_('Caminho único para arquivo original.'))
+    sitepath = models.FileField(_('arquivo web.'),
             help_text=_('Arquivo processado para a web.'))
-    coverpath = models.ImageField(_('amostra do arquivo.'), unique=True,
+    coverpath = models.ImageField(_('amostra do arquivo.'),
             help_text=_('Imagem de amostra do arquivo processado.'))
     datatype = models.CharField(_('tipo de mídia'), max_length=15,
             help_text=_('Tipo de mídia.'))
-    timestamp = models.DateTimeField(_('data de modificação'),
+    timestamp = models.DateTimeField(_('data de modificação'), blank=True, default=timezone.now,
             help_text=_('Data da última modificação do arquivo.'))
 
     # Website
@@ -33,7 +68,7 @@ class Media(models.Model):
             help_text=_('Imagem que merece destaque.'))
     is_public = models.BooleanField(_('público'), default=False,
             help_text=_('Visível para visitantes.'))
-    pub_date = models.DateTimeField(_('data de publicação'), auto_now_add=True,
+    pub_date = models.DateTimeField(_('data de publicação'), blank=True, default=timezone.now,
             help_text=_('Data de publicação da imagem no Cifonauta.'))
 
     # Metadata
@@ -71,6 +106,40 @@ class Media(models.Model):
     country = models.ForeignKey('Country', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('país'),
             help_text=_('País mostrado na imagem (ou país de coleta).'))
+    
+
+    def rename_and_move_file(self):
+        if self.file and self.status == 'published':
+            current_file_path = self.file.path
+            new_filename = f"{self.title_pt_br}.{self.file.name.split('.')[-1]}"
+            new_file_path = os.path.join('site_media', new_filename)
+
+            shutil.move(current_file_path, new_file_path)
+
+            # Refresh the field "file" to be updated in the database
+            self.file.name = new_filename
+
+        elif self.file and self.status != 'published':
+            current_file_path = self.file.path
+            new_filename = f"uploads/{uuid.uuid4()}.{self.file.name.split('.')[-1]}"
+            new_file_path = os.path.join('site_media', new_filename)
+
+            shutil.move(current_file_path, new_file_path)
+
+            # Refresh the field "file" to be updated in the database
+            self.file.name = new_filename
+
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            original = Media.objects.get(pk=self.pk)
+            # Only if status changed related to the published one
+            if self.status != original.status and ("published" in [self.status, original.status]):
+                self.rename_and_move_file()
+        
+        self.timestamp = timezone.now()
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return 'ID={} {} ({})'.format(self.id, self.title, self.datatype)
@@ -375,3 +444,10 @@ models.signals.pre_save.connect(slug_pre_save, sender=Tour)
 
 # Create citation with bibkey.
 models.signals.pre_save.connect(citation_pre_save, sender=Reference)
+
+# Create groups after creating curadoria
+models.signals.post_save.connect(create_groups_for_curadoria, sender=Curadoria)
+# Delete groups that were created by the curadoria
+models.signals.pre_delete.connect(delete_groups_of_curadoria, sender=Curadoria)
+# Delete file from folder when the media is deleted on website
+models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from meta.models import Curadoria
 
 class UserCinonautaManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, username, password, idlattes, orcid):
@@ -40,6 +41,8 @@ class UserCifonauta(AbstractUser):
 
     orcid = models.CharField('Orcid', null=True, max_length=16)
     idlattes = models.CharField('IDLattes', null=True, max_length=16)
+
+    curadoria = models.ManyToManyField(Curadoria, blank=True)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['orcid', 'idlattes', 'first_name', 'last_name']

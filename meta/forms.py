@@ -4,6 +4,8 @@ from django import forms
 from django.apps import apps
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+from .models import Media
+from django.contrib.auth import get_user_model
 
 
 METAS = (
@@ -50,6 +52,11 @@ OPERATORS = (
         ('and', _('E')),
         )
 
+class UploadMediaForm(forms.ModelForm):
+    class Meta:
+        model = Media
+        fields = ('file', 'title', 'caption', 'curadoria', 'date', 'author', 'country', 'state', 'city', 'location', 'geolocation',)
+        #Faltando coautores e direito autoral
 
 
 class SearchForm(forms.Form):

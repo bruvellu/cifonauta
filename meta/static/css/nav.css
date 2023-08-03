@@ -161,12 +161,12 @@
 
 @media (max-width: 910px) {
     #nav-header {
-        flex-direction: column;
+        flex-direction: column-reverse;
         gap: .3rem;
     }
 
     #lang-nav-div {
-        justify-content: flex-end;
+        justify-content: flex-start;
         gap: 1rem;
     }
 }

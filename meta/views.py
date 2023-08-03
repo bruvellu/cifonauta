@@ -133,7 +133,22 @@ class MyMedias(LoginRequiredMixin, ListView):
         user_permissions = self.request.user.get_all_permissions()
         context['user_permissions'] = user_permissions
         return context
+
+@method_decorator(custom_login_required, name='dispatch')
+class RevisionMedia(LoginRequiredMixin, ListView):
+    model = Media
+    template_name = 'media_revision.html'
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Media.objects.filter(curadoria__in=user.curadoria.all(), status='to_review')
+        return queryset
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_permissions = self.request.user.get_all_permissions()
+        context['user_permissions'] = user_permissions
+        return context
 
 # Home
 def home_page(request):

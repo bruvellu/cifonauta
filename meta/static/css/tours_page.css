@@ -12,3 +12,9 @@
     }
    
 }
+
+@media (max-width: 989px){
+    .metagroup > .span-6 {
+        display: none;
+    }
+}

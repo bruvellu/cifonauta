@@ -148,15 +148,31 @@ class RevisionMedia(LoginRequiredMixin, ListView):
 
     # Gets the images selected in the checkboxes and publish them
     def post(self, request):
-        selected_images = request.POST.getlist('selected_images')
+        selected_images_ids = request.POST.getlist('selected_images_ids')
         is_public = True
         # Gets the images selected by their id
-        Media.objects.filter(id__in=selected_images).update(is_public=is_public)
+        Media.objects.filter(id__in=selected_images_ids).update(is_public=is_public, status='published')
 
-        for image_id in selected_images:
+        # Gets the paths to the folders "site_media" and "uploads"
+        site_media_path = settings.MEDIA_ROOT
+        uploads_path = os.path.join(site_media_path, 'uploads')
+
+        # Iterates the selected_images_ids, gets the images 
+        for image_id in selected_images_ids:
             try:
                 media = Media.objects.get(id=image_id)
-                print(media.is_public)
+                # Joins the uploads_path with the file name
+                old_path = os.path.join(uploads_path, os.path.basename(media.filepath))
+                # Joins the site_media_path with the file name
+                new_path = os.path.join(site_media_path, os.path.basename(media.filepath))
+
+                """
+                  Technically, makedirs creates the folder,
+                  but because of the "exist_ok=True", it does not
+                  send an exception if it already exists
+                """
+                os.makedirs(os.path.dirname(new_path), exist_ok=True)
+                os.rename(old_path, new_path)
             except Media.DoesNotExist:
                 print("Imagem não encontrada!")
         return redirect('my_medias')

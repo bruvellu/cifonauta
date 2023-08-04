@@ -103,13 +103,13 @@ class DisplayForm(forms.Form):
     location = forms.MultipleChoiceField(widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False, label=_('Localidades'), choices=LOCATIONS)
 
     city = forms.ModelMultipleChoiceField(queryset=City.objects.all(),
-            widget=forms.CheckboxSelectMultiple(attrs={"dropdowns": "dropdowns"}), required=False,
+            widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False,
             label=_('Cidades'))
     state = forms.ModelMultipleChoiceField(queryset=State.objects.all(),
-            widget=forms.CheckboxSelectMultiple(attrs={"dropdowns": "dropdowns"}), required=False,
+            widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False,
             label=_('Estados'))
     country = forms.ModelMultipleChoiceField(queryset=Country.objects.all(),
-            widget=forms.CheckboxSelectMultiple(attrs={"dropdowns": "dropdowns"}), required=False,
+            widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False,
             label=_('Países'))
     # taxon = forms.ModelMultipleChoiceField(queryset=Taxon.objects.all(),
             # widget=forms.CheckboxSelectMultiple(), required=False,

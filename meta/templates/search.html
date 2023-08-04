@@ -57,11 +57,6 @@
         {% endfor %}
 
         <div>
-          {% comment %} <div class="checkbox-div">
-            <label>{{ display_form.author.label }}:</label>
-            {{ display_form.author }}
-          </div> {% endcomment %}
-
           {% for field in display_form %}
             {% if field.field.widget.attrs.multiple %}
               <div class="checkbox-div">
@@ -71,7 +66,7 @@
             {% endif %}
           {% endfor %}
 
-          {% for field in display_form %}
+          {% comment %} {% for field in display_form %}
             {% if field.field.widget.attrs.dropdowns %}
               <div class="checkbox-div">
                 <button onClick="showCheckboxOptions(this, event)">
@@ -81,7 +76,7 @@
                 {{ field }}
               </div>
             {% endif %}
-          {% endfor %}
+          {% endfor %} {% endcomment %}
         </div>
 
       </div>

@@ -139,11 +139,29 @@ class RevisionMedia(LoginRequiredMixin, ListView):
     model = Media
     template_name = 'media_revision.html'
 
+    # Filters the images to get only the ones that are in the user's curation
     def get_queryset(self):
         user = self.request.user
         queryset = Media.objects.filter(curadoria__in=user.curadoria.all(), status='to_review')
+        # This "queryset" appears in the template as "object_list"
         return queryset
+
+    # Gets the images selected in the checkboxes and publish them
+    def post(self, request):
+        selected_images = request.POST.getlist('selected_images')
+        is_public = True
+        # Gets the images selected by their id
+        Media.objects.filter(id__in=selected_images).update(is_public=is_public)
+
+        for image_id in selected_images:
+            try:
+                media = Media.objects.get(id=image_id)
+                print(media.is_public)
+            except Media.DoesNotExist:
+                print("Imagem não encontrada!")
+        return redirect('my_medias')
     
+    # Gets the user's permissions
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user_permissions = self.request.user.get_all_permissions()

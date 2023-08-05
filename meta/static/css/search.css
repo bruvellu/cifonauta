@@ -32,6 +32,12 @@
     padding-bottom: 1.5rem;
 }
 
+.p-divider {
+    margin-top: 1rem;
+    padding: 0.2rem 0 0.4rem 0;
+    border-top: 1px solid #b1b1b1;
+}
+
 .checkbox-div {
     margin: .4rem 0;
 }

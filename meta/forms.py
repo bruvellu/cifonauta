@@ -97,7 +97,7 @@ class DisplayForm(forms.Form):
     highlight = forms.BooleanField(required=False, initial=False,
             label=_('Somente destaques'), widget=forms.CheckboxInput(attrs={"fields": "fields"}))
     operator = forms.ChoiceField(required=False, choices=OPERATORS,
-            initial='and', label=_('Operador'), widget=forms.Select(attrs={"fields": "fields"}))
+            initial='and', label=_('Operador'))
     author = forms.MultipleChoiceField(widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False, choices=AUTHORS, label=_('Autores'),)
     tag = forms.MultipleChoiceField(widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False, label=_('Marcadores'),  choices=TAGS)
     location = forms.MultipleChoiceField(widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False, label=_('Localidades'), choices=LOCATIONS)

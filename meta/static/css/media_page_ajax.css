@@ -52,7 +52,9 @@
 }
 
 #media-sideinfo2 > ul {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    flex: 1;
     gap: 0 1.5rem;
     flex-wrap: wrap;
     border-radius: 0;
@@ -115,5 +117,12 @@
 @media (max-width: 840px) {
     #media-page {
         flex-direction: column;
+    }
+}
+
+@media (max-width: 300px) {
+    .size-legend > div {
+        width: .8rem;
+        height: 1rem;
     }
 }

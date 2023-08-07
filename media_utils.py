@@ -16,6 +16,8 @@ from django.utils import timezone
 from shutil import copy2, move
 from PIL import Image
 import piexif
+from iptcinfo3 import IPTCInfo
+
 
 """import gi
 gi.require_version('GExiv2', '0.10')
@@ -414,3 +416,18 @@ def insert_metadata_exif(file: str, software):
     exif_bytes = piexif.dump(exif_dict)
 
     image.save(file, exif=exif_bytes)
+
+def insert_metadata_iptc(file: str, metadata: dict):
+    info = IPTCInfo(file, force=True)
+
+    for k1, v1 in metadata.items():
+        if k1 != 'keywords':
+            if v1 != '':
+                info[k1] = v1
+    if len(metadata['keywords']) > 0:
+        info['keywords'].clear()
+        for k2, v2 in metadata['keywords'].items():
+            info['keywords'].append(f'{k2}: {v2}'.encode())
+
+    info.save_as(file)
+    os.remove(f'{file}~')

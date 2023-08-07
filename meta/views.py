@@ -222,7 +222,7 @@ def search_page(request, model_name='', field='', slug=''):
             media_list = media_list.annotate(search=vector).filter(search=search_query)
 
         # Operator
-        operator = query_dict.get('operator', 'or')
+        operator = query_dict.get('operator', 'and')
 
         # Author
         if 'author' in query_dict:

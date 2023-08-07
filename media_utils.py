@@ -14,10 +14,12 @@ import subprocess
 from datetime import datetime
 from django.utils import timezone
 from shutil import copy2, move
+from PIL import Image
+import piexif
 
-import gi
+"""import gi
 gi.require_version('GExiv2', '0.10')
-from gi.repository import GExiv2
+from gi.repository import GExiv2"""
 
 # Get logger.
 logger = logging.getLogger('cifonauta.utils')
@@ -403,3 +405,12 @@ def fix_filename(root, filename):
     else:
         filepath = os.path.join(root, filename)
     return filepath
+
+def insert_metadata_exif(file: str, software):
+    image = Image.open(file)
+
+    exif_dict = piexif.load(image.info['exif'])
+    exif_dict['0th'][piexif.ImageIFD.Software] = software
+    exif_bytes = piexif.dump(exif_dict)
+
+    image.save(file, exif=exif_bytes)

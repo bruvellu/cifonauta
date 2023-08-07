@@ -6,47 +6,6 @@ from django.contrib.contenttypes.models import ContentType
 import os
 
 
-def create_groups_for_curadoria(sender, instance, created, **kwargs):
-    if created:
-        group_author = Group.objects.create(name=f'{instance.name} AUTOR')
-        group_specialist = Group.objects.create(name=f'{instance.name} ESPECIALISTA')
-        group_curator = Group.objects.create(name=f'{instance.name} CURADOR')
-        
-        from .models import Media
-
-        content_type = ContentType.objects.get_for_model(Media)  
-
-        can_add_media_permission = Permission.objects.get(
-            codename='add_media',
-            content_type=content_type
-        )
-        can_change_media_permission = Permission.objects.get(
-            codename='change_media',
-            content_type=content_type
-        )
-
-        from user.models import UserCifonauta
-
-        content_type_user = ContentType.objects.get_for_model(UserCifonauta)
-        
-        can_change_user_permission = Permission.objects.get(
-            codename='change_usercifonauta',
-            content_type=content_type_user
-        )
-        
-
-        group_author.permissions.add(can_add_media_permission)
-        group_specialist.permissions.add(can_change_media_permission)
-        group_curator.permissions.add(can_change_user_permission)
-        
-        instance.groups.add(group_author, group_specialist, group_curator)
-
-
-def delete_groups_of_curadoria(sender, instance, **kwargs):
-    groups_to_delete = instance.groups.all()
-    groups_to_delete.delete()
-
-
 def delete_file_from_folder(sender, instance, **kwargs):
     # Check if the object has a file associated with it before deleting
     if instance.file:

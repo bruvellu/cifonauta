@@ -42,6 +42,8 @@ class UserCifonauta(AbstractUser):
     orcid = models.CharField('Orcid', null=True, max_length=16)
     idlattes = models.CharField('IDLattes', null=True, max_length=16)
 
+    is_author = models.BooleanField('Autor', default=False,
+            help_text='Informa se o usuário é autor.')
     curadoria = models.ManyToManyField(Curadoria, blank=True)
 
     USERNAME_FIELD = 'username'

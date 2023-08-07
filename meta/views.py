@@ -20,17 +20,26 @@ from .forms import *
 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
-from .decorators import custom_login_required
+from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
 
+@custom_author_required
 @custom_login_required
 def dashboard(request):
-    user_permissions = request.user.get_all_permissions()
-    return render(request, 'dashboard.html', {'user_permissions': user_permissions,})
+    is_specialist = Curadoria.objects.filter(Q(specialists=request.user)).exists()
+    is_curator = Curadoria.objects.filter(Q(curators=request.user)).exists()
+
+    context = {
+        'is_specialist': is_specialist,
+        'is_curator': is_curator
+    }
+
+    return render(request, 'dashboard.html', context)
 
 
+@method_decorator(custom_author_required, name='dispatch')
 @method_decorator(custom_login_required, name='dispatch')
 class UploadMedia(LoginRequiredMixin, CreateView): #Have access to user.id
     model = Media
@@ -40,7 +49,6 @@ class UploadMedia(LoginRequiredMixin, CreateView): #Have access to user.id
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         user = self.request.user
-        form.fields['curadoria'].queryset = user.curadoria.all()
         form.fields['author'].initial = user.id
         form.fields['author'].queryset = UserCifonauta.objects.filter(id=user.id)
 
@@ -60,11 +68,13 @@ class UploadMedia(LoginRequiredMixin, CreateView): #Have access to user.id
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
+        user = self.request.user
+        context['is_specialist'] = Curadoria.objects.filter(Q(specialists=user)).exists()
+        context['is_curator'] = Curadoria.objects.filter(Q(curators=user)).exists()
         return context
 
 
+@method_decorator(custom_curator_required, name='dispatch')
 @method_decorator(custom_login_required, name='dispatch')
 class CuradoriaMediaList(LoginRequiredMixin, ListView):
     model = Media
@@ -77,11 +87,13 @@ class CuradoriaMediaList(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
+        user = self.request.user
+        context['is_specialist'] = Curadoria.objects.filter(Q(specialists=user)).exists()
+        context['is_curator'] = Curadoria.objects.filter(Q(curators=user)).exists()
         return context
     
 
+#Missing
 @method_decorator(custom_login_required, name='dispatch')
 class MediaDetail(DetailView):
     model = Media
@@ -89,11 +101,13 @@ class MediaDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
+        user = self.request.user
+        context['is_specialist'] = Curadoria.objects.filter(Q(specialists=user)).exists()
+        context['is_curator'] = Curadoria.objects.filter(Q(curators=user)).exists()
         return context
     
 
+@method_decorator(media_owner_required, name='dispatch')
 @method_decorator(custom_login_required, name='dispatch')
 class UpdateMedia(UpdateView):
     model = Media
@@ -102,22 +116,26 @@ class UpdateMedia(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
+        user = self.request.user
+        context['is_specialist'] = Curadoria.objects.filter(Q(specialists=user)).exists()
+        context['is_curator'] = Curadoria.objects.filter(Q(curators=user)).exists()
         return context
     
 
+#Missing
 @method_decorator(custom_login_required, name='dispatch')
 class DeleteMedia(DeleteView):
     model = Media
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
+        user = self.request.user
+        context['is_specialist'] = Curadoria.objects.filter(Q(specialists=user)).exists()
+        context['is_curator'] = Curadoria.objects.filter(Q(curators=user)).exists()
         return context
     
 
+@method_decorator(custom_author_required, name='dispatch')
 @method_decorator(custom_login_required, name='dispatch')
 class MyMedias(LoginRequiredMixin, ListView):
     model = Media
@@ -130,8 +148,9 @@ class MyMedias(LoginRequiredMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
+        user = self.request.user
+        context['is_specialist'] = Curadoria.objects.filter(Q(specialists=user)).exists()
+        context['is_curator'] = Curadoria.objects.filter(Q(curators=user)).exists()
         return context
     
 

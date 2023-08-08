@@ -11,13 +11,12 @@ def custom_login_required(view_func):
             login_url = reverse('Login')  
             return redirect(f'{login_url}?next={request.path}')
         
-        # Original view
         return view_func(request, *args, **kwargs)
 
     return _wrapped_view
 
 
-def custom_author_required(view_func):
+def author_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
@@ -30,12 +29,12 @@ def custom_author_required(view_func):
     return _wrapped_view
 
 
-def custom_specialist_required(view_func):
+def specialist_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
 
-        is_specialist = Curadoria.objects.filter(specialists=user).exists()
+        is_specialist = user.specialist_of.exists()
 
         if is_specialist:
             return view_func(request, *args, **kwargs)
@@ -45,12 +44,12 @@ def custom_specialist_required(view_func):
     return _wrapped_view
 
 
-def custom_curator_required(view_func):
+def curator_required(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
 
-        is_curator = Curadoria.objects.filter(curators=user).exists()
+        is_curator = user.curator_of.exists()
 
         if is_curator:
             return view_func(request, *args, **kwargs)

@@ -446,6 +446,9 @@ models.signals.pre_save.connect(slug_pre_save, sender=Tour)
 # Create citation with bibkey.
 models.signals.pre_save.connect(citation_pre_save, sender=Reference)
 
-
 # Delete file from folder when the media is deleted on website
 models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
+# Update the user's curatorships as specialist
+models.signals.m2m_changed.connect(update_specialist_of, sender=Curadoria.specialists.through)
+# Update the user's curatorships as curator
+models.signals.m2m_changed.connect(update_curator_of, sender=Curadoria.curators.through)

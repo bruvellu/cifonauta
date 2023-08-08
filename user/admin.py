@@ -20,16 +20,16 @@ class UserCifonautaAdmin(UserAdmin):
     add_form = UserCifonautaCreationForm
     model = UserCifonauta
     list_display = ("username", "email", "is_author", "is_staff", "is_active", 'orcid', "first_name", "last_name", "idlattes")
-    list_filter = ("email", "curadoria", "is_author", "is_staff", "is_active", "username", 'orcid', "first_name", "last_name", "idlattes")
+    list_filter = ("email", "is_author", "is_staff", "is_active", "username", 'orcid', "first_name", "last_name", "idlattes")
     fieldsets = (
         (None, {"fields": ("email", "password", "username", 'orcid', "first_name", "last_name", "idlattes")}),
-        ("Permissions", {"fields": ("is_author", "is_staff", "is_active", "curadoria")}),
+        ("Permissions", {"fields": ("is_author", "is_staff", "is_active", "specialist_of", "curator_of")}),
     )
     add_fieldsets = (
         (None, {
             "classes": ("wide",),
             "fields": (
-                "email", "password1", "password2", "is_staff",
+                "email", "password1", "password2", "is_staff", 
                 "is_active", "username", 'orcid', "first_name", "last_name", "idlattes"
             )}
         ),
@@ -38,6 +38,14 @@ class UserCifonautaAdmin(UserAdmin):
     ordering = ("email",)
     actions = [make_author_action, remove_author_action]
 
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = super().get_fieldsets(request, obj)
+        if obj and obj.is_author:
+            print(fieldsets)
+            fieldsets[1][1]['fields'] = ("is_author", "is_staff", "is_active", "specialist_of", "curator_of")
+        else:
+            fieldsets[1][1]['fields'] = ("is_author", "is_staff", "is_active")
+        return fieldsets
+
 
 admin.site.register(UserCifonauta, UserCifonautaAdmin)
-

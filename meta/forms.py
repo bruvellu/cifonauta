@@ -4,7 +4,7 @@ from django import forms
 from django.apps import apps
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
-from .models import Media
+from .models import Media, Curadoria
 from django.contrib.auth import get_user_model
 
 
@@ -55,7 +55,7 @@ OPERATORS = (
 class UploadMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('file', 'title', 'caption', 'curadoria', 'date', 'author', 'country', 'state', 'city', 'location', 'geolocation',)
+        fields = ('file', 'title', 'caption', 'date', 'author', 'country', 'state', 'city', 'location', 'geolocation',)
         #Faltando coautores e direito autoral
 
 
@@ -124,3 +124,14 @@ class AdminForm(forms.Form):
     tours = forms.ModelMultipleChoiceField(queryset=Tour.objects.all(),
             widget=forms.CheckboxSelectMultiple(attrs={'class':'check-taxon'}),
             required=False, label=_('Escolher tour(s)'))
+    
+
+class CuradoriaAdminForm(forms.ModelForm):
+    class Meta:
+        model = Curadoria
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['curators'].queryset = self.fields['curators'].queryset.filter(is_author=True)
+        self.fields['specialists'].queryset = self.fields['specialists'].queryset.filter(is_author=True)

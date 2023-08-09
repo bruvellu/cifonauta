@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from meta.models import Curadoria
+from django.utils.translation import gettext_lazy as _
 
 class UserCinonautaManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, username, password, idlattes, orcid):
@@ -42,7 +43,13 @@ class UserCifonauta(AbstractUser):
     orcid = models.CharField('Orcid', null=True, max_length=16)
     idlattes = models.CharField('IDLattes', null=True, max_length=16)
 
-    curadoria = models.ManyToManyField(Curadoria, blank=True)
+    is_author = models.BooleanField('Autor', default=False,
+            help_text='Informa se o usuário é autor.')
+
+    specialist_of = models.ManyToManyField(Curadoria, related_name='specialist_of', blank=True,
+            verbose_name=_('especialista de'), help_text='Mostra de quais curadorias o usuário é especialista.')
+    curator_of = models.ManyToManyField(Curadoria, related_name='curator_of', blank=True,
+            verbose_name=_('curador de'), help_text='Mostra de quais curadorias o usuário é curador.')
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['orcid', 'idlattes', 'first_name', 'last_name']

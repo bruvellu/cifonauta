@@ -17,7 +17,11 @@ import shutil
 
 class Curadoria(models.Model):
     name = models.CharField(max_length=50)
-    groups = models.ManyToManyField(Group, blank=True)
+    taxons = models.ManyToManyField('Taxon', blank=True)
+    specialists = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='curatorship_specialist', 
+            blank=True, verbose_name=_('especialistas'), help_text=_('Especialistas da curadoria.'))
+    curators = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='curatorship_curator',
+            blank=True, verbose_name=_('curadores'), help_text=_('Curadores da curadoria.'))
 
     def __str__(self):
         return self.name
@@ -44,9 +48,6 @@ class Media(models.Model):
     )
     status = models.CharField(_('status'), blank=True, max_length=13, choices=STATUS_CHOICES, 
             default='not_edited', help_text=_('Status da mídia.'))
-    curadoria = models.ForeignKey('Curadoria', on_delete=models.SET_NULL, 
-            null=True, verbose_name=_('curadoria'),
-            help_text=_('Curadoria à qual a imagem pertence.'))
 
     # File
     filepath = models.CharField(_('arquivo original.'), max_length=200, help_text=_('Caminho único para arquivo original.'))
@@ -445,9 +446,9 @@ models.signals.pre_save.connect(slug_pre_save, sender=Tour)
 # Create citation with bibkey.
 models.signals.pre_save.connect(citation_pre_save, sender=Reference)
 
-# Create groups after creating curadoria
-models.signals.post_save.connect(create_groups_for_curadoria, sender=Curadoria)
-# Delete groups that were created by the curadoria
-models.signals.pre_delete.connect(delete_groups_of_curadoria, sender=Curadoria)
 # Delete file from folder when the media is deleted on website
 models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
+# Update the user's curatorships as specialist
+models.signals.m2m_changed.connect(update_specialist_of, sender=Curadoria.specialists.through)
+# Update the user's curatorships as curator
+models.signals.m2m_changed.connect(update_curator_of, sender=Curadoria.curators.through)

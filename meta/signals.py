@@ -4,47 +4,37 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 import os
+from django.db.models import Q
 
 
-def create_groups_for_curadoria(sender, instance, created, **kwargs):
-    if created:
-        group_author = Group.objects.create(name=f'{instance.name} AUTOR')
-        group_specialist = Group.objects.create(name=f'{instance.name} ESPECIALISTA')
-        group_curator = Group.objects.create(name=f'{instance.name} CURADOR')
-        
-        from .models import Media
 
-        content_type = ContentType.objects.get_for_model(Media)  
+def update_specialist_of(sender, instance, action, model, pk_set, **kwargs):
+    from user.models import UserCifonauta
+    
+    print(instance)
+    if action == "post_add":
+        if model == UserCifonauta and pk_set:
+            specialists = UserCifonauta.objects.filter(Q(id__in=pk_set) | Q(specialist_of=instance))
+            instance.specialist_of.add(*specialists)
+    
+    elif action == "post_remove":
+        if model == UserCifonauta and pk_set:
+            specialists = UserCifonauta.objects.filter(Q(id__in=pk_set) | Q(specialist_of=instance))
+            instance.specialist_of.remove(*specialists)
+    
 
-        can_add_media_permission = Permission.objects.get(
-            codename='add_media',
-            content_type=content_type
-        )
-        can_change_media_permission = Permission.objects.get(
-            codename='change_media',
-            content_type=content_type
-        )
+def update_curator_of(sender, instance, action, model, pk_set, **kwargs):
+    from user.models import UserCifonauta
 
-        from user.models import UserCifonauta
-
-        content_type_user = ContentType.objects.get_for_model(UserCifonauta)
-        
-        can_change_user_permission = Permission.objects.get(
-            codename='change_usercifonauta',
-            content_type=content_type_user
-        )
-        
-
-        group_author.permissions.add(can_add_media_permission)
-        group_specialist.permissions.add(can_change_media_permission)
-        group_curator.permissions.add(can_change_user_permission)
-        
-        instance.groups.add(group_author, group_specialist, group_curator)
-
-
-def delete_groups_of_curadoria(sender, instance, **kwargs):
-    groups_to_delete = instance.groups.all()
-    groups_to_delete.delete()
+    if action == "post_add":
+        if model == UserCifonauta and pk_set:
+            curators = UserCifonauta.objects.filter(Q(id__in=pk_set) | Q(curator_of=instance))
+            instance.curator_of.add(*curators)
+    
+    elif action == "post_remove":
+        if model == UserCifonauta and pk_set:
+            specialists = UserCifonauta.objects.filter(Q(id__in=pk_set) | Q(curator_of=instance))
+            instance.curator_of.remove(*specialists)
 
 
 def delete_file_from_folder(sender, instance, **kwargs):

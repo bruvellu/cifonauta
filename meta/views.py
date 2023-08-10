@@ -151,8 +151,7 @@ class RevisionMedia(LoginRequiredMixin, ListView):
         selected_images_ids = request.POST.getlist('selected_images_ids')
         is_public = True
         # Gets the images selected by their id
-        Media.objects.filter(id__in=selected_images_ids).update(is_public=is_public, status='published')
-
+        Media.objects.filter(id__in=selected_images_ids).update(is_public=is_public, status='published') 
         # Gets the paths to the folders "site_media" and "uploads"
         site_media_path = settings.MEDIA_ROOT
         uploads_path = os.path.join(site_media_path, 'uploads')
@@ -165,7 +164,8 @@ class RevisionMedia(LoginRequiredMixin, ListView):
                 old_path = os.path.join(uploads_path, os.path.basename(media.filepath))
                 # Joins the site_media_path with the file name
                 new_path = os.path.join(site_media_path, os.path.basename(media.filepath))
-
+                print(f"is_public = {media.is_public}")
+                print(f"status = {media.status}")
                 """
                   Technically, makedirs creates the folder,
                   but because of the "exist_ok=True", it does not

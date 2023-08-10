@@ -15,6 +15,15 @@ from django.utils import timezone
 import shutil
 
 
+class UserPreRegistration(models.Model):
+    first_name = models.CharField('Primeiro Nome', null=True, max_length=50)
+    last_name = models.CharField('Último Nome', null=True, max_length=50)
+    orcid = models.CharField('Orcid', null=True, max_length=16)
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+
+
 class Curadoria(models.Model):
     name = models.CharField(max_length=50)
     taxons = models.ManyToManyField('Taxon', blank=True)
@@ -40,7 +49,9 @@ class Media(models.Model):
     # New fields
     file = models.FileField(upload_to=upload_to, default=None, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
-            verbose_name=_('autor'), help_text=_('Autor da mídia.'))
+            verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
+    co_author = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, 
+            verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='co_author')
     STATUS_CHOICES = (
         ('not_edited', 'Não Editado'),
         ('to_review', 'Para Revisão'),

@@ -7,6 +7,27 @@
 {% block title %}Enviar Mídia{% endblock %}
 
 {% block dashboard_content %}
+<dialog class="dialog">
+    <div>
+        <button class="close-registration-button">Fechar</button>
+        <form class="pre-registration-form" method="post">
+            {% csrf_token %}
+            <p>Pré-cadastro de autor</p>
+            {% for field2 in registration_form %}
+            <div class="field2-container">
+                {{ field2.label_tag }}
+                <div class="field-div field2-div">
+                    {{ field2 }}
+                    {% if field2.help_text %}
+                    <span class="help-text">{{ field2.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            <button class="pre-registration-submit" type="submit">Pré-cadastrar</button>
+        </form>
+    </div>
+</dialog>
 
 <div class="form-container">
     <h2>Adicionar nova mídia</h2>
@@ -15,24 +36,38 @@
     <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
     {% endfor %}
     {% endif %}
-    
     <form class="upload-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% for field in form %}
-        {% if field == form.has_taxons %}
+        {% if field == form.co_author %}
+        <div class="field-container">
+            {{ field.label_tag }}
+            <div class="field-div co_author-div">
+                {{ field }}
+                {% if field.help_text %}
+                <span class="help-text">{{ field.help_text }}</span>
+                {% endif %}
+                <div>
+                    <p>Coautor não está na lista?</p>
+                    <button class="pre-registration-button" type="button">Registrar coautor</button>
+                </div>
+                
+            </div>
+        </div>
+        {% elif field == form.has_taxons %}
         <div class="field-container">
             <label>Taxons:</label>
             <div class="wrapper-field-div">
                 <p>A mídia tem táxons?</p>
                 <div class="yes_no_div">
-                    <button class="has-taxons-button" type="button">
+                    <button class="has-taxons has-taxons-button" type="button">
                         {{ field.subwidgets.0 }}
                     </button>
-                    <button class="has-taxons-button" type="button">
+                    <button class="no-taxons has-taxons-button" type="button">
                         {{ field.subwidgets.1 }}
                     </button>
                 </div>
-                <div class="field-div taxons-div hide-div">
+                <div class="field-div m2m-field taxons-div hide-div">
                     {{ form.taxons }}
                 </div>
                 {{ field.errors }}

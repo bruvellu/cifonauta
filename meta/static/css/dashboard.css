@@ -67,6 +67,68 @@ h2 {
 }
 
 
+/* PRE REGISTRATION FORM */
+.dialog::backdrop {
+    display: revert;
+}
+
+.dialog {
+    display: revert;
+    border: 0;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #94b1ca /* #7cc682 */ #eee #fafafa;
+    border-radius: 10px;
+    background: #fafafa;
+    box-shadow: 2px 2px 5px #aaa;
+}
+
+.dialog > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.close-registration-button {
+    align-self: flex-end;
+}
+
+.pre-registration-form {
+    margin-top: .5rem;
+}
+
+.field2-container + .field2-container {
+    margin-top: 1rem;
+}
+
+.field2-div {
+    margin-top: .1rem;
+    width: 17.5rem;
+}
+
+.field2-div input {
+    box-shadow: none;
+}
+
+.pre-registration-submit {
+    /* background: linear-gradient(to bottom, #51bb47 0%, #1c7524 100%); */
+    background: linear-gradient(to bottom, #5ea3dd 0%, #456b8b 100%);
+    font-weight: bold;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #fff;
+    padding: 6px 20px;
+    border: none;
+    box-shadow: 2px 2px 5px #ddd;
+    width: 65%;
+    margin-top: 1rem
+}
+ 
+.pre-registration-submit:hover {
+    /* background: linear-gradient(to bottom, #7edc75 0%, #46bf51 100%); */
+    background: linear-gradient(to bottom, #c5d87a 0%, #aac153 100%);
+}
+
+
 /* UPLOAD MEDIA */
 .upload-form {
     display: flex;
@@ -93,13 +155,49 @@ h2 {
     flex-direction: column;
 }
 
+.m2m-field {
+    height: 15rem;
+    overflow-y: scroll;
+}
+
+.co_author-div > div:first-of-type {
+    overflow-y: scroll;
+}
+
+.co_author-div > div:last-of-type {
+    display: flex;
+    gap: 0.7rem;
+    margin-top: 1.5rem;
+}
+
+.co_author-div > div:last-of-type p {
+    padding: 0;
+}
+
 .wrapper-field-div > p {
     font-weight: bold;
     padding-bottom: 0.5rem;
 }
 
+.has-taxons-button {
+    color: cornsilk;
+    border: none;
+    padding: 0.2rem 0.7rem;
+    border-radius: 5px;
+    opacity: .8;
+}
+
+.has-taxons {
+    background-color: #46a346;
+}
+
+.no-taxons {
+    background-color: #e65454;
+}
+
 .taxons-button-checked {
     border: 2px solid black;
+    opacity: 1;
 }
 
 .has-taxons-button > label {
@@ -110,10 +208,7 @@ h2 {
     display: none;
 }
 
-.taxons-div {
-    height: 15rem;
-    overflow-y: scroll;
-}
+
 
 
 
@@ -133,7 +228,8 @@ textarea {
 }
 
 .submit-button {
-    background-color: #44c544;
+    /* background-color: #44c544; */
+    background: linear-gradient(to bottom, #51bb47 0%, #1c7524 100%);
     color: white;
     font-size: 1.2rem;
     width: fit-content;
@@ -145,7 +241,8 @@ textarea {
 }
 
 .submit-button:hover {
-    background-color: rgb(57, 168, 57)
+    /* background-color: rgb(57, 168, 57); */
+    background: linear-gradient(to bottom, #7edc75 0%, #46bf51 100%);
 }
 
 .hide-div {

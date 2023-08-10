@@ -48,6 +48,9 @@ class Media(models.Model):
     )
     status = models.CharField(_('status'), blank=True, max_length=13, choices=STATUS_CHOICES, 
             default='not_edited', help_text=_('Status da mídia.'))
+    has_taxons = models.CharField(_('tem táxons'), help_text=_('Mídia tem táxons.'),
+            choices=(('True', 'Sim'), ('False', 'Não')), default='False')
+    taxons = models.ManyToManyField('Taxon', related_name="taxons", verbose_name=_('táxons'), blank=True)
 
     # File
     filepath = models.CharField(_('arquivo original.'), max_length=200, help_text=_('Caminho único para arquivo original.'))
@@ -137,6 +140,11 @@ class Media(models.Model):
             # Only if status changed related to the published one
             if self.status != original.status and ("published" in [self.status, original.status]):
                 self.rename_and_move_file()
+            
+            if not self.taxons.exists():
+                self.has_taxons = 'True'
+            else:
+                self.has_taxons = 'False'
         
         self.timestamp = timezone.now()
 

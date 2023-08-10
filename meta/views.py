@@ -55,14 +55,18 @@ class UploadMedia(LoginRequiredMixin, CreateView): #Have access to user.id
 
         return form
 
-    def form_valid(self, form): #Temporary
+    def form_valid(self, form):
         media_instance = form.save(commit=False)
 
-        if 'file' in self.request.FILES:
+        if 'file' in self.request.FILES: #Temporary
             media_instance.sitepath = self.request.FILES['file']
             media_instance.coverpath = self.request.FILES['file']
-
-        media_instance.save()
+        
+        if form.cleaned_data['has_taxons'] == 'True':
+            media_instance.save()
+            form.save_m2m()  
+        else:
+            media_instance.save()
 
         messages.success(self.request, 'Sua imagem foi salva') 
         return redirect('upload_media')
@@ -136,6 +140,7 @@ class DeleteMedia(DeleteView):
 class MyMedias(LoginRequiredMixin, ListView):
     model = Media
     template_name = 'my_medias.html'
+    form_class = MyMediaForm
 
     def get_queryset(self):
         user = self.request.user

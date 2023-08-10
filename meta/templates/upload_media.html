@@ -19,6 +19,27 @@
     <form class="upload-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% for field in form %}
+        {% if field == form.has_taxons %}
+        <div class="field-container">
+            <label>Taxons:</label>
+            <div class="wrapper-field-div">
+                <p>A mídia tem táxons?</p>
+                <div class="yes_no_div">
+                    <button class="has-taxons-button" type="button">
+                        {{ field.subwidgets.0 }}
+                    </button>
+                    <button class="has-taxons-button" type="button">
+                        {{ field.subwidgets.1 }}
+                    </button>
+                </div>
+                <div class="field-div taxons-div hide-div">
+                    {{ form.taxons }}
+                </div>
+                {{ field.errors }}
+            </div>
+        </div>
+        {% elif field == form.taxons %}
+        {% else %}
         <div class="field-container">
             {{ field.label_tag }}
             <div class="field-div">

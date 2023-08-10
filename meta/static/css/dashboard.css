@@ -93,6 +93,30 @@ h2 {
     flex-direction: column;
 }
 
+.wrapper-field-div > p {
+    font-weight: bold;
+    padding-bottom: 0.5rem;
+}
+
+.taxons-button-checked {
+    border: 2px solid black;
+}
+
+.has-taxons-button > label {
+    font-weight: normal;
+}
+
+#id_has_taxons_0, #id_has_taxons_1 {
+    display: none;
+}
+
+.taxons-div {
+    height: 15rem;
+    overflow-y: scroll;
+}
+
+
+
 .field-div select, .field-div input {
     height: 1.6rem;
     margin: 0;
@@ -122,6 +146,10 @@ textarea {
 
 .submit-button:hover {
     background-color: rgb(57, 168, 57)
+}
+
+.hide-div {
+    display: none;
 }
 
 

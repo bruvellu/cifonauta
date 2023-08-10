@@ -8,6 +8,11 @@ from django import forms
 
 class UserCifonautaCreationForm(UserCreationForm):
     captcha = CaptchaField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password1'].widget.attrs['class'] = 'get-password'
+
     class Meta:
         model = UserCifonauta
         fields = ('first_name','last_name' ,'username', 'email', 'orcid', 'idlattes')
@@ -17,6 +22,10 @@ class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
     captcha = CaptchaField()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password'].widget.attrs['class'] = 'get-password'
 
     def clean(self):
         cleaned_data = super().clean()

@@ -24,12 +24,12 @@
             <li>
                 <a href="{% url 'upload_media' %}">Adicionar mídia</a>
             </li>
-            {% if 'meta.change_media' in user_permissions %}
+            {% if is_specialist %}
             <li>
                 <a href="">Edição de metadados</a>
             </li>
             {% endif %}
-            {% if 'user.change_usercifonauta' in user_permissions %}
+            {% if is_curator %}
             <li>
                 <a href="{% url 'media_revision' %}">Revisão de mídias</a>
             </li>

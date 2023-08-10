@@ -3,9 +3,13 @@
 {% if user.is_authenticated %}
 <span id="admin">
   <ul>
+    {% if user.is_superuser %}
     <li><a href="/admin/">admin</a></li>
+    {% endif %}
     <li><a href="/rosetta/">traduzir</a></li>
+    {% if user.is_author %}
     <li><a href="{% url 'dashboard' %}">módulo administrativo</a></li>
+    {% endif %}
     <li><a href="{% url 'logout' %}">logout</a></li>
   </ul>
 </span>

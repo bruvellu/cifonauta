@@ -90,6 +90,7 @@
     width: 100%;
     padding: 0;
     border-radius: 15px;
+    outline: 0.05rem solid #e4e4e4;
 }
 
 #hamburger-menu-container {
@@ -161,12 +162,12 @@
 
 @media (max-width: 910px) {
     #nav-header {
-        flex-direction: column;
+        flex-direction: column-reverse;
         gap: .3rem;
     }
 
     #lang-nav-div {
-        justify-content: flex-end;
+        justify-content: flex-start;
         gap: 1rem;
     }
 }

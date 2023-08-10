@@ -4,7 +4,7 @@ from django import forms
 from django.apps import apps
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
-from .models import Media
+from .models import Media, Curadoria
 from django.contrib.auth import get_user_model
 
 
@@ -55,7 +55,7 @@ OPERATORS = (
 class UploadMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('file', 'title', 'caption', 'curadoria', 'date', 'author', 'country', 'state', 'city', 'location', 'geolocation',)
+        fields = ('file', 'title', 'caption', 'date', 'author', 'country', 'state', 'city', 'location', 'geolocation',)
         #Faltando coautores e direito autoral
 
 
@@ -97,19 +97,19 @@ class DisplayForm(forms.Form):
     highlight = forms.BooleanField(required=False, initial=False,
             label=_('Somente destaques'), widget=forms.CheckboxInput(attrs={"fields": "fields"}))
     operator = forms.ChoiceField(required=False, choices=OPERATORS,
-            initial='and', label=_('Operador'), widget=forms.Select(attrs={"fields": "fields"}))
+            initial='and', label=_('Operador'))
     author = forms.MultipleChoiceField(widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False, choices=AUTHORS, label=_('Autores'),)
     tag = forms.MultipleChoiceField(widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False, label=_('Marcadores'),  choices=TAGS)
     location = forms.MultipleChoiceField(widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False, label=_('Localidades'), choices=LOCATIONS)
 
     city = forms.ModelMultipleChoiceField(queryset=City.objects.all(),
-            widget=forms.CheckboxSelectMultiple(attrs={"dropdowns": "dropdowns"}), required=False,
+            widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False,
             label=_('Cidades'))
     state = forms.ModelMultipleChoiceField(queryset=State.objects.all(),
-            widget=forms.CheckboxSelectMultiple(attrs={"dropdowns": "dropdowns"}), required=False,
+            widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False,
             label=_('Estados'))
     country = forms.ModelMultipleChoiceField(queryset=Country.objects.all(),
-            widget=forms.CheckboxSelectMultiple(attrs={"dropdowns": "dropdowns"}), required=False,
+            widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False,
             label=_('Países'))
     # taxon = forms.ModelMultipleChoiceField(queryset=Taxon.objects.all(),
             # widget=forms.CheckboxSelectMultiple(), required=False,
@@ -124,3 +124,14 @@ class AdminForm(forms.Form):
     tours = forms.ModelMultipleChoiceField(queryset=Tour.objects.all(),
             widget=forms.CheckboxSelectMultiple(attrs={'class':'check-taxon'}),
             required=False, label=_('Escolher tour(s)'))
+    
+
+class CuradoriaAdminForm(forms.ModelForm):
+    class Meta:
+        model = Curadoria
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['curators'].queryset = self.fields['curators'].queryset.filter(is_author=True)
+        self.fields['specialists'].queryset = self.fields['specialists'].queryset.filter(is_author=True)

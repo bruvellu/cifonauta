@@ -2,14 +2,10 @@ from django.contrib import admin
 from django.contrib.flatpages.models import FlatPage
 from meta.models import *
 from modeltranslation.admin import TranslationAdmin
+from .forms import CuradoriaAdminForm
 
 class CuradoriaAdmin(admin.ModelAdmin):
-    model = Curadoria
-    fieldsets = (
-        (None, {
-            "fields": ("name",)
-        }),
-    )
+    form = CuradoriaAdminForm
         
 
 # Translation admin.

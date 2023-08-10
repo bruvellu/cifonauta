@@ -14,6 +14,7 @@ from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
 from operator import or_, and_
+from PIL import Image
 
 from .models import *
 from .forms import *
@@ -150,6 +151,7 @@ class MyMedias(LoginRequiredMixin, ListView):
         return context
 
 @method_decorator(custom_login_required, name='dispatch')
+@method_decorator(curator_required, name='dispatch')
 class RevisionMedia(LoginRequiredMixin, ListView):
     model = Media
     template_name = 'media_revision.html'
@@ -157,7 +159,7 @@ class RevisionMedia(LoginRequiredMixin, ListView):
     # Filters the images to get only the ones that are in the user's curation
     def get_queryset(self):
         user = self.request.user
-        queryset = Media.objects.filter(curadoria__in=user.curadoria.all(), status='to_review')
+        queryset = Media.objects.filter(curadoria__in=user.curator_of.all(), status='to_review')
         # This "queryset" appears in the template as "object_list"
         return queryset
 
@@ -181,13 +183,11 @@ class RevisionMedia(LoginRequiredMixin, ListView):
                 new_path = os.path.join(site_media_path, os.path.basename(media.filepath))
                 print(f"is_public = {media.is_public}")
                 print(f"status = {media.status}")
-                """
-                  Technically, makedirs creates the folder,
-                  but because of the "exist_ok=True", it does not
-                  send an exception if it already exists
-                """
-                os.makedirs(os.path.dirname(new_path), exist_ok=True)
-                os.rename(old_path, new_path)
+                 # Opens the image using Pillow
+                image = Image.open(old_path)
+                # Resizes the image and save it with reduced quality
+                image = image.resize((300, 300)) 
+                image.save(new_path, quality=50)  
             except Media.DoesNotExist:
                 print("Imagem não encontrada!")
         return redirect('my_medias')

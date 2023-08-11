@@ -50,8 +50,9 @@ class Media(models.Model):
     file = models.FileField(upload_to=upload_to, default=None, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
             verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
-    co_author = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, 
-            verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='co_author')
+    co_author = models.CharField(max_length=256, default='', verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'))
+    """ co_author = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, 
+            verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='co_author') """
     STATUS_CHOICES = (
         ('not_edited', 'Não Editado'),
         ('to_review', 'Para Revisão'),

@@ -13,7 +13,6 @@ def update_specialists(sender, instance, action, model, pk_set, **kwargs):
 
     elif action == "post_remove":
         if model == Curadoria and pk_set:
-            
             curadorias = Curadoria.objects.filter(id__in=pk_set)
             for curadoria in curadorias:
                 curadoria.specialists.remove(instance)

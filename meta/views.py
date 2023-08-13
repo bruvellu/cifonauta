@@ -39,40 +39,51 @@ def dashboard(request):
 
     return render(request, 'dashboard.html', context)
 
+@custom_login_required
+@author_required
+def upload_media(request):
+    if request.method == 'POST':
+        if 'orcid' in request.POST:
+            form = UserPreRegistrationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Pré-cadastro realizado com sucesso')
+                return redirect('upload_media')
+        else:
+            form = UploadMediaForm(request.POST, request.FILES)
 
-@method_decorator(custom_login_required, name='dispatch')
-@method_decorator(author_required, name='dispatch')
-class UploadMedia(LoginRequiredMixin, CreateView): #Have access to user.id
-    model = Media
-    template_name = 'upload_media.html'
-    form_class = UploadMediaForm
+            if form.is_valid():
+                media_instance = form.save(commit=False)
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        user = self.request.user
-        form.fields['author'].initial = user.id
-        form.fields['author'].queryset = UserCifonauta.objects.filter(id=user.id)
+                if 'file' in request.FILES: #Temporary
+                    media_instance.sitepath = request.FILES['file']
+                    media_instance.coverpath = request.FILES['file']
 
-        return form
+                if form.cleaned_data['has_taxons'] == 'True':
+                    media_instance.save()
+                    form.save_m2m()
+                else:
+                    media_instance.save()
 
-    def form_valid(self, form): #Temporary
-        media_instance = form.save(commit=False)
+                messages.success(request, 'Sua imagem foi salva')
+                return redirect('upload_media')
+    else:
+        form = UploadMediaForm(initial={'author': request.user.id})
+        registration_form = UserPreRegistrationForm()
+        form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
-        if 'file' in self.request.FILES:
-            media_instance.sitepath = self.request.FILES['file']
-            media_instance.coverpath = self.request.FILES['file']
-
-        media_instance.save()
-
-        messages.success(self.request, 'Sua imagem foi salva') 
-        return redirect('upload_media')
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.specialist_of.exists()
-        context['is_curator'] = user.curator_of.exists()
-        return context
+    is_specialist = request.user.specialist_of.exists()
+    is_curator = request.user.curator_of.exists()
+
+    context = {
+        'form': form,
+        'registration_form': registration_form,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator,
+    }
+
+    return render(request, 'upload_media.html', context)
 
 
 @method_decorator(custom_login_required, name='dispatch')
@@ -136,6 +147,7 @@ class DeleteMedia(DeleteView):
 class MyMedias(LoginRequiredMixin, ListView):
     model = Media
     template_name = 'my_medias.html'
+    form_class = MyMediaForm
 
     def get_queryset(self):
         user = self.request.user

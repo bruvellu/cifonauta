@@ -63,6 +63,17 @@ class Media(models.Model):
     has_taxons = models.CharField(_('tem táxons'), help_text=_('Mídia tem táxons.'),
             choices=(('True', 'Sim'), ('False', 'Não')), default='False')
     taxons = models.ManyToManyField('Taxon', related_name="taxons", verbose_name=_('táxons'), blank=True)
+    LICENSE_CHOICES = (
+        ('cc0', 'CC0 (Domínio Público)'),
+        ('cc_by', 'CC BY (Atribuição)'),
+        ('cc_by_sa', 'CC BY-SA (Atribuição-CompartilhaIgual)'),
+        ('cc_by_nd', 'CC BY-ND (Atribuição-SemDerivações)'),
+        ('cc_by_nc', 'CC BY-NC (Atribuição-NãoComercial)'),
+        ('cc_by_nc_sa', 'CC BY-NC-SA (AtribuiçãoNãoComercial-CompartilhaIgual)'),
+        ('cc_by_nc_nd', ' CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')
+    )
+    license = models.CharField(_('Licença'), max_length=60, choices=LICENSE_CHOICES, default='cc0',
+        help_text=_('Tipo de licença que a mídia terá'))
 
     # File
     filepath = models.CharField(_('arquivo original.'), max_length=200, help_text=_('Caminho único para arquivo original.'))

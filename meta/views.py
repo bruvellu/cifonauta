@@ -59,7 +59,7 @@ def upload_media(request):
                         form = UploadMediaForm(request.POST)
                         media_instance = form.save(commit=False)
                         media_instance.file = media
-
+                        
                         if 'file' in request.FILES:
                             media_instance.sitepath = media
                             media_instance.coverpath = media
@@ -75,6 +75,7 @@ def upload_media(request):
                     messages.error(request, 'Por favor, selecione as mídias')
             else:
                 messages.error(request, 'Erro ao tentar salvar mídias')
+            
             return redirect('upload_media')
             
     else:

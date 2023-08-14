@@ -11,7 +11,6 @@ from django.db.models import Q
 def update_specialist_of(sender, instance, action, model, pk_set, **kwargs):
     from user.models import UserCifonauta
     
-    print(instance)
     if action == "post_add":
         if model == UserCifonauta and pk_set:
             specialists = UserCifonauta.objects.filter(Q(id__in=pk_set) | Q(specialist_of=instance))

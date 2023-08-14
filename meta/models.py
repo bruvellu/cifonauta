@@ -15,6 +15,15 @@ from django.utils import timezone
 import shutil
 
 
+class UserPreRegistration(models.Model):
+    first_name = models.CharField('Primeiro Nome', null=True, max_length=50)
+    last_name = models.CharField('Último Nome', null=True, max_length=50)
+    orcid = models.CharField('Orcid', null=True, max_length=16)
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+
+
 class Curadoria(models.Model):
     name = models.CharField(max_length=50)
     taxons = models.ManyToManyField('Taxon', blank=True)
@@ -40,7 +49,10 @@ class Media(models.Model):
     # New fields
     file = models.FileField(upload_to=upload_to, default=None, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
-            verbose_name=_('autor'), help_text=_('Autor da mídia.'))
+            verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
+    co_author = models.CharField(max_length=256, default='', verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'))
+    """ co_author = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, 
+            verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='co_author') """
     STATUS_CHOICES = (
         ('not_edited', 'Não Editado'),
         ('to_review', 'Para Revisão'),
@@ -48,6 +60,9 @@ class Media(models.Model):
     )
     status = models.CharField(_('status'), blank=True, max_length=13, choices=STATUS_CHOICES, 
             default='not_edited', help_text=_('Status da mídia.'))
+    has_taxons = models.CharField(_('tem táxons'), help_text=_('Mídia tem táxons.'),
+            choices=(('True', 'Sim'), ('False', 'Não')), default='False')
+    taxons = models.ManyToManyField('Taxon', related_name="taxons", verbose_name=_('táxons'), blank=True)
 
     # File
     filepath = models.CharField(_('arquivo original.'), max_length=200, help_text=_('Caminho único para arquivo original.'))
@@ -137,6 +152,11 @@ class Media(models.Model):
             # Only if status changed related to the published one
             if self.status != original.status and ("published" in [self.status, original.status]):
                 self.rename_and_move_file()
+            
+            if not self.taxons.exists():
+                self.has_taxons = 'True'
+            else:
+                self.has_taxons = 'False'
         
         self.timestamp = timezone.now()
 

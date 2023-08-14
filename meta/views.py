@@ -50,23 +50,33 @@ def upload_media(request):
                 messages.success(request, 'Pré-cadastro realizado com sucesso')
                 return redirect('upload_media')
         else:
-            form = UploadMediaForm(request.POST, request.FILES)
+            medias = request.FILES.getlist('medias')
+            form = UploadMediaForm(request.POST)
 
             if form.is_valid():
-                media_instance = form.save(commit=False)
+                if (medias):
+                    for media in medias:
+                        form = UploadMediaForm(request.POST)
+                        media_instance = form.save(commit=False)
+                        media_instance.file = media
 
-                if 'file' in request.FILES: #Temporary
-                    media_instance.sitepath = request.FILES['file']
-                    media_instance.coverpath = request.FILES['file']
+                        if 'file' in request.FILES:
+                            media_instance.sitepath = media
+                            media_instance.coverpath = media
 
-                if form.cleaned_data['has_taxons'] == 'True':
-                    media_instance.save()
-                    form.save_m2m()
+                        if form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
+                            media_instance.save()
+                            form.save_m2m()
+                        else:
+                            media_instance.save()
+
+                    messages.success(request, 'Suas mídias foram salvas')
                 else:
-                    media_instance.save()
-
-                messages.success(request, 'Sua imagem foi salva')
-                return redirect('upload_media')
+                    messages.error(request, 'Por favor, selecione as mídias')
+            else:
+                messages.error(request, 'Erro ao tentar salvar mídias')
+            return redirect('upload_media')
+            
     else:
         form = UploadMediaForm(initial={'author': request.user.id})
         registration_form = UserPreRegistrationForm()

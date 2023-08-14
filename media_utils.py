@@ -17,6 +17,7 @@ from shutil import copy2, move
 from PIL import Image
 import piexif
 from iptcinfo3 import IPTCInfo
+from libxmp import XMPFiles, consts
 
 
 """import gi
@@ -408,26 +409,87 @@ def fix_filename(root, filename):
         filepath = os.path.join(root, filename)
     return filepath
 
-def insert_metadata_exif(file: str, software):
-    image = Image.open(file)
+class Metadata():
 
-    exif_dict = piexif.load(image.info['exif'])
-    exif_dict['0th'][piexif.ImageIFD.Software] = software
-    exif_bytes = piexif.dump(exif_dict)
+    def __init__(self, file, metadata:dict):
 
-    image.save(file, exif=exif_bytes)
+        self.file = file
 
-def insert_metadata_iptc(file: str, metadata: dict):
-    info = IPTCInfo(file, force=True)
+        if metadata['Exif']['software'] != '':
+            self.insert_metadata_exif(metadata['Exif']['software'])
+        self.insert_metadata_iptc(metadata['IPTC'])
+        self.insert_metadata_xmp(metadata['XMP'])
 
-    for k1, v1 in metadata.items():
-        if k1 != 'keywords':
-            if v1 != '':
-                info[k1] = v1
-    if len(metadata['keywords']) > 0:
-        info['keywords'].clear()
-        for k2, v2 in metadata['keywords'].items():
-            info['keywords'].append(f'{k2}: {v2}'.encode())
+    def insert_metadata_exif(self, software):
+        image = Image.open(self.file)
 
-    info.save_as(file)
-    os.remove(f'{file}~')
+        exif_dict = piexif.load(image.info['exif'])
+        exif_dict['0th'][piexif.ImageIFD.Software] = software
+        exif_bytes = piexif.dump(exif_dict)
+
+        image.save(self.file, exif=exif_bytes)
+
+    def insert_metadata_iptc(self, metadata: dict):
+        self.info = IPTCInfo(self.file, force=True)
+        for k1, v1 in metadata.items():
+            if k1 != 'keywords':
+                if v1 != '':
+                    self.info[k1] = v1
+        if len(metadata['keywords']) > 0:
+            self.info['keywords'].clear()
+            for k2, v2 in metadata['keywords'].items():
+                self.info['keywords'].append(f'{k2}: {v2}'.encode())
+
+        self.info.save_as(self.file)
+        os.remove(f'{self.file}~')
+
+    def insert_metadata_xmp(self, metadata:dict):
+        self.xmpfile = XMPFiles( file_path=self.file, open_forupdate=True)
+        xmp = self.xmpfile.get_xmp()
+        subject = ''
+        for sub in metadata['subject']:
+            subject = subject + f'{sub}\n'
+        xmp.set_property(consts.XMP_NS_DC, u'subject', subject)
+        for k, v in metadata.items():
+            if v != '' and k != 'subject':
+                xmp.set_property(consts.XMP_NS_DC, k, v)
+        if self.xmpfile.can_put_xmp(xmp):
+            self.xmpfile.put_xmp(xmp)
+        self.xmpfile.close_file()
+    
+
+if __name__ == "__main__":
+    file = r'image_test.jpeg'
+    metadata =  {
+        'Exif': {
+            'software': 'programa usado para criar, editar ou processar a imagem'
+            },
+        'XMP': {
+            'headline': 'nome do grupo ou categoria de organismos que compartilham características semelhantes',
+            'subject': {
+                'Estágio de vida': 'fase particular do ciclo de vida de um organismo, durante a qual ele exibe características e comportamentos específicos',
+                'Habitat': 'ambiente em que um organismo ou espécie vive, cresce, se reproduz e interage com outros organismos e com os fatores do ambiente',
+                'Microscopia': 'técnica científica que envolve o uso de instrumentos chamados microscópios para visualizar objetos ou detalhes que são muito pequenos',
+                'Modo de vida': 'conjunto de padrões, comportamentos, atividades e práticas que caracterizam a forma como um indivíduo ou um grupo de pessoas vive e interage com seu ambiente',
+                'Técnica fotográfica': 'conjunto de conhecimentos e habilidades necessários para produzir fotografias de alta qualidade e expressivas',
+                'Diversos': 'informações adicionais que são relevantes para a imagem'
+                },
+            'instructions': 'tamanho da imagem',
+            'credit': 'referência(s) bibliográfica(s)'
+                },
+        'IPTC': {
+            'headline': 'nome do grupo ou categoria de organismos que compartilham características semelhantes',
+            'keywords': {
+                'Estágio de vida': 'fase particular do ciclo de vida de um organismo, durante a qual ele exibe características e comportamentos específicos',
+                'Habitat': 'ambiente em que um organismo ou espécie vive, cresce, se reproduz e interage com outros organismos e com os fatores do ambiente',
+                'Microscopia': 'técnica científica que envolve o uso de instrumentos chamados microscópios para visualizar objetos ou detalhes que são muito pequenos',
+                'Modo de vida': 'conjunto de padrões, comportamentos, atividades e práticas que caracterizam a forma como um indivíduo ou um grupo de pessoas vive e interage com seu ambiente',
+                'Técnica fotográfica': 'conjunto de conhecimentos e habilidades necessários para produzir fotografias de alta qualidade e expressivas',
+                'Diversos': 'informações adicionais que são relevantes para a imagem'
+                },
+            'special instructions': 'tamanho da imagem',
+            'source': 'nome do(s) especialista(s)',
+            'credit': 'referência(s) bibliográfica(s)'
+                }
+                }
+    meta = Metadata(file, metadata)

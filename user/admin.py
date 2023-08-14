@@ -41,11 +41,18 @@ class UserCifonautaAdmin(UserAdmin):
     def get_fieldsets(self, request, obj=None):
         fieldsets = super().get_fieldsets(request, obj)
         if obj and obj.is_author:
-            print(fieldsets)
             fieldsets[1][1]['fields'] = ("is_author", "is_staff", "is_active", "specialist_of", "curator_of")
         else:
             fieldsets[1][1]['fields'] = ("is_author", "is_staff", "is_active")
         return fieldsets
+    
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = list(self.readonly_fields)
+        
+        if obj and (obj.specialist_of.exists() or obj.curator_of.exists()):
+            readonly_fields.append('is_author')
+        
+        return readonly_fields
 
 
 admin.site.register(UserCifonauta, UserCifonautaAdmin)

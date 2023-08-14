@@ -94,20 +94,6 @@ def upload_media(request):
     }
 
     return render(request, 'upload_media.html', context)
-
-
-@method_decorator(custom_login_required, name='dispatch')
-@method_decorator(curator_required, name='dispatch')
-class CuradoriaMediaList(LoginRequiredMixin, ListView):
-    model = Media
-    template_name = 'curadoria_media_list.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.specialist_of.exists()
-        context['is_curator'] = user.curator_of.exists()
-        return context
     
 
 #Missing

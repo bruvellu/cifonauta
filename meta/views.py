@@ -68,6 +68,7 @@ def upload_media(request):
                             media_instance.save()
                             form.save_m2m()
                         else:
+                            media_instance.has_taxons = False
                             media_instance.save()
 
                     messages.success(request, 'Suas mídias foram salvas')

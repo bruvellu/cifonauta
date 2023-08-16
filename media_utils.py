@@ -423,43 +423,80 @@ class Metadata():
     def insert_metadata_exif(self, software):
         image = Image.open(self.file)
 
+        #Software
         exif_dict = piexif.load(image.info['exif'])
         exif_dict['0th'][piexif.ImageIFD.Software] = software
         exif_bytes = piexif.dump(exif_dict)
 
+        #Saving EXIF
         image.save(self.file, exif=exif_bytes)
 
     def insert_metadata_iptc(self, metadata: dict):
+
         self.info = IPTCInfo(self.file, force=True)
-        for k1, v1 in metadata.items():
-            if k1 != 'keywords':
-                if v1 != '':
-                    self.info[k1] = v1
+
+        #Keywords
         if len(metadata['keywords']) > 0:
             self.info['keywords'].clear()
-            for k2, v2 in metadata['keywords'].items():
-                self.info['keywords'].append(f'{k2}: {v2}'.encode())
+            for k, v in metadata['keywords'].items():
+                self.info['keywords'].append(f'{k}: {v}'.encode())
+        del metadata['keywords']
 
+        #Other Fields
+        for k, v in metadata.items():
+            if v != '':
+                self.info[k] = v
+
+        #Saving IPTC
         self.info.save_as(self.file)
         os.remove(f'{self.file}~')
 
     def insert_metadata_xmp(self, metadata:dict):
+        
+        #XMP Config
         self.xmpfile = XMPFiles( file_path=self.file, open_forupdate=True)
         xmp = self.xmpfile.get_xmp()
         subject = ''
+
+        #Subject
         for sub in metadata['subject']:
             subject = subject + f'{sub}\n'
         xmp.set_property(consts.XMP_NS_DC, u'subject', subject)
+        del metadata['subject']
+
+        #License
+        license = metadata['license']
+        RIGHTS = f"\u00A9 {license['Year']}, {'; '.join(license['Creators'])}. Todos os direitos reservados"
+        LINKS = {
+            "CC0 (Domínio Público)": ["https://creativecommons.org/publicdomain/zero/1.0/deed.pt_BR", "CC0"],
+            "CC BY (Atribuição)": ["https://creativecommons.org/licenses/by/4.0/", "CC BY"],
+            "CC BY-SA (Atribuição-CompartilhaIgual)": ["https://creativecommons.org/licenses/by-sa/4.0/", "CC BY-SA"],
+            "CC BY-ND (Atribuição-SemDerivações)": ["https://creativecommons.org/licenses/by-nd/4.0/", "CC BY-ND"],
+            "CC BY-NC (Atribuição-NãoComercial)": ["https://creativecommons.org/licenses/by-nc/4.0/", "CC BY-NC"],
+            "CC BY-NC-SA (Atribuição-NãoComercial-CompartilhaIgual)": ["https://creativecommons.org/licenses/by-nc-sa/4.0/", "CC BY-NC-SA"],
+            "CC BY-NC-ND (Atribuição-NãoComercial-SemDerivações)": ["https://creativecommons.org/licenses/by-nc-nd/4.0/", "CC BY-NC-ND"]
+            }
+
+        xmp.register_namespace('http://creativecommons.org/ns#', 'cc')
+        xmp.set_property(consts.XMP_NS_CC, 'License', LINKS[license['License_Type']][1])
+        xmp.set_property(consts.XMP_NS_CC, 'AttributionURL', LINKS[license['License_Type']][0])
+        xmp.set_property(consts.XMP_NS_DC, 'Rights', RIGHTS)
+        xmp.set_property(consts.XMP_NS_DC, 'Creators', '; '.join(license['Creators']))
+
+        del metadata['license']
+
+        #Other Fields
         for k, v in metadata.items():
-            if v != '' and k != 'subject':
+            if v != '':
                 xmp.set_property(consts.XMP_NS_DC, k, v)
+
+        #Saving metadata
         if self.xmpfile.can_put_xmp(xmp):
             self.xmpfile.put_xmp(xmp)
         self.xmpfile.close_file()
     
 
 if __name__ == "__main__":
-    file = r'image_test.jpeg'
     metadata =  {
         'Exif': {
             'software': 'programa usado para criar, editar ou processar a imagem'
@@ -475,7 +512,11 @@ if __name__ == "__main__":
                 'Diversos': 'informações adicionais que são relevantes para a imagem'
                 },
             'instructions': 'tamanho da imagem',
-            'credit': 'referência(s) bibliográfica(s)'
+            'license': {
+                'License_Type': 'CC BY (Atribuição)',
+                'Creators': ['Luiz Felyppe', 'Vitória de Oliveira', 'João Guilherme'],
+                'Year': '2023'
+            }
                 },
         'IPTC': {
             'headline': 'nome do grupo ou categoria de organismos que compartilham características semelhantes',
@@ -492,4 +533,4 @@ if __name__ == "__main__":
             'credit': 'referência(s) bibliográfica(s)'
                 }
                 }
-    meta = Metadata(file, metadata)
+    

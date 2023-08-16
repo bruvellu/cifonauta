@@ -139,12 +139,13 @@
     </ul>
   </div>
 </div>
-
+{% if tour.description|safe %}
 <div id="tour-description">
   {{ tour.description|safe }}
 </div>
+{% endif %}
 
-<div class="span-8 last metagroup">
+<div class="last metagroup">
   <h2>{% trans 'Ficha Técnica' %}</h2>
   <ul class="metalist">
     <li>

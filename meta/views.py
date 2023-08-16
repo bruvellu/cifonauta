@@ -53,27 +53,33 @@ def upload_media(request):
             medias = request.FILES.getlist('medias')
             form = UploadMediaForm(request.POST)
 
+            if medias:
+                for media in medias:
+                    if media.size > 3000000:
+                        messages.error(request, 'Mídia maior que 3MB')
+                        return redirect('upload_media')
+            else:
+                messages.error(request, 'Por favor, selecione as mídias')
+                return redirect('upload_media')
+                
             if form.is_valid():
-                if (medias):
-                    for media in medias:
-                        form = UploadMediaForm(request.POST)
-                        media_instance = form.save(commit=False)
-                        media_instance.file = media
-                        
-                        if 'file' in request.FILES:
-                            media_instance.sitepath = media
-                            media_instance.coverpath = media
+                for media in medias:
+                    form = UploadMediaForm(request.POST)
+                    media_instance = form.save(commit=False)
+                    media_instance.file = media
+                    
+                    media_instance.sitepath = media
+                    media_instance.coverpath = media
 
-                        if form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
-                            media_instance.save()
-                            form.save_m2m()
-                        else:
-                            media_instance.has_taxons = False
-                            media_instance.save()
+                    if form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
+                        media_instance.save()
+                        form.save_m2m()
+                    else:
+                        media_instance.has_taxons = False
+                        media_instance.save()
 
-                    messages.success(request, 'Suas mídias foram salvas')
-                else:
-                    messages.error(request, 'Por favor, selecione as mídias')
+                messages.success(request, 'Suas mídias foram salvas')
+                
             else:
                 messages.error(request, 'Erro ao tentar salvar mídias')
             

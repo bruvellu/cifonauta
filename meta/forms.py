@@ -59,7 +59,8 @@ class UploadMediaForm(forms.ModelForm):
         fields = ( 'title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'license', 'country', 'state', 'city', 'location', 'geolocation',) #Faltando direito autoral
         widgets = {
             'taxons': forms.CheckboxSelectMultiple(),
-            'has_taxons': forms.RadioSelect()
+            'has_taxons': forms.RadioSelect(),
+            'co_author': forms.CheckboxSelectMultiple()
         }
 
 

@@ -177,6 +177,7 @@ h2 {
 
 .co_author-div > div:first-of-type {
     overflow-y: scroll;
+    height: 15rem;
 }
 
 .co_author-div > div:last-of-type {

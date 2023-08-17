@@ -49,16 +49,14 @@
         <div class="field-container">
             {{ field.label_tag }}
             <div class="field-div co_author-div">
-                
                 {{ field }}
                 {% if field.help_text %}
                 <span class="help-text">{{ field.help_text }}</span>
                 {% endif %}
-                <p>Para mais de um coautor, separe-os por vírgulas</p>
-                {% comment %} <div>
+                <div>
                     <p>Coautor não está na lista?</p>
                     <button class="pre-registration-button" type="button">Registrar coautor</button>
-                </div> {% endcomment %}
+                </div>
             </div>
         </div>
         {% elif field == form.has_taxons %}

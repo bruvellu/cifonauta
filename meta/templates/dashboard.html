@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script src="{% static 'js/dashboard.js' %}" defer></script>
     
     <title>
         {% block title %}{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %} | CEBIMar USP{% endblock %}
@@ -24,17 +25,14 @@
             <li>
                 <a href="{% url 'upload_media' %}">Adicionar mídia</a>
             </li>
-            {% if 'meta.change_media' in user_permissions %}
+            {% if is_specialist %}
             <li>
                 <a href="">Edição de metadados</a>
             </li>
             {% endif %}
-            {% if 'user.change_usercifonauta' in user_permissions %}
+            {% if is_curator %}
             <li>
                 <a href="">Revisão de mídias</a>
-            </li>
-            <li>
-                <a href="{% url 'media_list' %}">Mídias da minha curadoria</a>
             </li>
             {% endif %}
             <li>

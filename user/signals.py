@@ -2,12 +2,33 @@ from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from .models import Curadoria, UserCifonauta
 
-@receiver(m2m_changed, sender=UserCifonauta.groups.through)
-def add_curadoria_to_user(sender, instance, action, reverse, model, pk_set, **kwargs):
-    if action == 'post_add' and not reverse:
-        # Check if a new group was added to the user
-        if pk_set:
+
+@receiver(m2m_changed, sender=UserCifonauta.specialist_of.through)
+def update_specialists(sender, instance, action, model, pk_set, **kwargs):
+    if action == 'post_add':
+        if model == Curadoria and pk_set:
+            curadorias = Curadoria.objects.filter(id__in=pk_set)
+            for curadoria in curadorias:
+                curadoria.specialists.add(instance)
+
+    elif action == "post_remove":
+        if model == Curadoria and pk_set:
+            curadorias = Curadoria.objects.filter(id__in=pk_set)
+            for curadoria in curadorias:
+                curadoria.specialists.remove(instance)
+                
+
+@receiver(m2m_changed, sender=UserCifonauta.curator_of.through)
+def update_curators(sender, instance, action, model, pk_set, **kwargs):
+    if action == 'post_add':
+        if model == Curadoria and pk_set:
+            curadorias = Curadoria.objects.filter(id__in=pk_set)
+            for curadoria in curadorias:
+                curadoria.curators.add(instance)
+
+    elif action == "post_remove":
+        if model == Curadoria and pk_set:
             
-            group_curadoria = Curadoria.objects.filter(groups__in=pk_set)
-            instance.curadoria.add(*group_curadoria)
-            print(group_curadoria)
+            curadorias = Curadoria.objects.filter(id__in=pk_set)
+            for curadoria in curadorias:
+                curadoria.curators.remove(instance)

@@ -33,14 +33,15 @@
 
 <table>
     <tr>
-        <th>{% trans 'Tamanho' %}</th>
         <th>{% trans 'Descrição' %}</th>
         <th>{% trans 'Exemplo' %}</th>
     </tr>
     {% for tag in sizes.tags.all %}
     <tr>
-        <td class="bold">{{ tag }}</td>
-        <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
+        <td class="bold">
+            {{ tag }}
+            <p class="description-text">{% if tag.description %}{{ tag.description }}{% endif %}</p>
+        </td>
         <td>{% print_thumb 'tag' tag %}</td>
     </tr>
     {% endfor %}
@@ -51,14 +52,14 @@
 
 <table>
     <tr>
-        <th>{% trans 'Técnica' %}</th>
         <th>{% trans 'Descrição' %}</th>
         <th>{% trans 'Exemplo' %}</th>
     </tr>
     {% for tag in technique.tags.all %}
     <tr>
-        <td class="bold">{{ tag }}</td>
-        <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
+        <td class="bold">{{ tag }}
+            <p class="description-text">{% if tag.description %}{{ tag.description }}{% endif %}</p>
+        </td>
         <td>{% print_thumb 'tag' tag %}</td>
     </tr>
     {% endfor %}
@@ -68,12 +69,13 @@
     <tr>
         <th>{% trans 'microscopia' %}</th>
         <th></th>
-        <th></th>
     </tr>
     {% for tag in microscopy.tags.all %}
     <tr>
-        <td class="bold">{{ tag }}</td>
-        <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
+        <td class="bold">
+            {{ tag }}
+            <p class="description-text">{% if tag.description %}{{ tag.description }}{% endif %}</p>
+        </td>
         <td>{% print_thumb 'tag' tag %}</td>
     </tr>
     {% endfor %}
@@ -84,14 +86,15 @@
 
 <table>
     <tr>
-        <th>{% trans 'Estágio' %}</th>
         <th>{% trans 'Descrição' %}</th>
         <th>{% trans  'Exemplo' %}</th>
     </tr>
     {% for tag in stages %}
     <tr>
-        <td class="bold">{{ tag }}</td>
-        <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
+        <td class="bold">
+            {{ tag }}
+            <p class="description-text">{% if tag.description %}{{ tag.description }}{% endif %}</p>
+        </td>
         <td>{% print_thumb 'tag' tag %}</td>
     </tr>
     {% endfor %}
@@ -102,14 +105,15 @@
 
 <table>
     <tr>
-        <th>{% trans 'Habitat' %}</th>
         <th>{% trans 'Descrição' %}</th>
         <th>{% trans 'Exemplo' %}</th>
     </tr>
     {% for tag in habitat.tags.all %}
     <tr>
-        <td class="bold">{{ tag }}</td>
-        <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
+        <td class="bold">
+            {{ tag }}
+            <p class="description-text">{% if tag.description %}{{ tag.description }}{% endif %}</p>
+        </td>
         <td>{% print_thumb 'tag' tag %}</td>
     </tr>
     {% endfor %}
@@ -120,14 +124,15 @@
 
 <table>
     <tr>
-        <th>{% trans 'Outros' %}</th>
         <th>{% trans 'Descrição' %}</th>
         <th>{% trans 'Exemplo' %}</th>
     </tr>
     {% for tag in assorted.tags.all %}
     <tr>
-        <td class="bold">{{ tag }}</td>
-        <td>{% if tag.description %}{{ tag.description }}{% endif %}</td>
+        <td class="bold">
+            {{ tag }}
+            <p class="description-text">{% if tag.description %}{{ tag.description }}{% endif %}</p>
+        </td>
         <td>{% print_thumb 'tag' tag %}</td>
     </tr>
     {% endfor %}

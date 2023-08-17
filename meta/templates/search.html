@@ -56,29 +56,20 @@
           {% endif %}
         {% endfor %}
 
-        <div>
-          {% comment %} <div class="checkbox-div">
-            <label>{{ display_form.author.label }}:</label>
-            {{ display_form.author }}
-          </div> {% endcomment %}
+        <p class="p-divider">Escolha a forma de combinar os campos abaixo</p>
 
+        <div class="operator-div">
+          <label for="{{ display_form.operator.auto_id }}">{{ display_form.operator.label }}:</label>
+          {{ display_form.operator }}
+        </div>
+        
+
+        <div>
           {% for field in display_form %}
             {% if field.field.widget.attrs.multiple %}
               <div class="checkbox-div">
                   <label>{{ field.label }}</label>
                   {{ field }}
-              </div>
-            {% endif %}
-          {% endfor %}
-
-          {% for field in display_form %}
-            {% if field.field.widget.attrs.dropdowns %}
-              <div class="checkbox-div">
-                <button onClick="showCheckboxOptions(this, event)">
-                  <label>{{ field.label }}</label>
-                  <img class="dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg">
-                </button>
-                {{ field }}
               </div>
             {% endif %}
           {% endfor %}

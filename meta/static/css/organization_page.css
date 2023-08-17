@@ -7,6 +7,10 @@
     margin-right: 0.5rem;
 }
 
+.description-text{
+    font-weight: normal;
+}
+
 /* Tablet layout */
 @media (max-width: 990px) {
     .section_organization {
@@ -18,25 +22,9 @@
     }
 }
 
-/* Mobile table layout */
-@media (max-width: 672px) {
-    
-    /*Remove the title of second column */
-    table > tbody > tr > th:nth-child(2){
-        display: none;
-    }
-
-    /*Remove the description*/
-    table > tbody:nth-child(1n) > tr > td:nth-child(2){
-        display: none;
-    }
-
-    /*align images of the tables */
-    table > tbody:nth-child(1n) > tr > td:nth-child(3){
-        width: 20vw;
-    }
-      
+@media (max-width: 280px) {
     .thumbs-org > a >  img {
-        width: 4rem;
+        width: 35vw;
     }
 }
+

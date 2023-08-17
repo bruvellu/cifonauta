@@ -20,68 +20,85 @@ from .forms import *
 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
-from .decorators import custom_login_required
+from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
 
+
 @custom_login_required
+@author_required
 def dashboard(request):
-    user_permissions = request.user.get_all_permissions()
-    return render(request, 'dashboard.html', {'user_permissions': user_permissions,})
+    is_specialist = Curadoria.objects.filter(Q(specialists=request.user)).exists()
+    is_curator = Curadoria.objects.filter(Q(curators=request.user)).exists()
 
+    context = {
+        'is_specialist': is_specialist,
+        'is_curator': is_curator
+    }
 
-@method_decorator(custom_login_required, name='dispatch')
-class UploadMedia(LoginRequiredMixin, CreateView): #Have access to user.id
-    model = Media
-    template_name = 'upload_media.html'
-    form_class = UploadMediaForm
+    return render(request, 'dashboard.html', context)
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        user = self.request.user
-        form.fields['curadoria'].queryset = user.curadoria.all()
-        form.fields['author'].initial = user.id
-        form.fields['author'].queryset = UserCifonauta.objects.filter(id=user.id)
+@custom_login_required
+@author_required
+def upload_media(request):
+    if request.method == 'POST':
+        if 'orcid' in request.POST:
+            form = UserPreRegistrationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Pré-cadastro realizado com sucesso')
+                return redirect('upload_media')
+        else:
+            medias = request.FILES.getlist('medias')
+            form = UploadMediaForm(request.POST)
 
-        return form
+            if form.is_valid():
+                if (medias):
+                    for media in medias:
+                        form = UploadMediaForm(request.POST)
+                        media_instance = form.save(commit=False)
+                        media_instance.file = media
+                        
+                        if 'file' in request.FILES:
+                            media_instance.sitepath = media
+                            media_instance.coverpath = media
 
-    def form_valid(self, form): #Temporary
-        media_instance = form.save(commit=False)
+                        if form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
+                            media_instance.save()
+                            form.save_m2m()
+                        else:
+                            media_instance.has_taxons = False
+                            media_instance.save()
 
-        if 'file' in self.request.FILES:
-            media_instance.sitepath = self.request.FILES['file']
-            media_instance.coverpath = self.request.FILES['file']
+                    messages.success(request, 'Suas mídias foram salvas')
+                else:
+                    messages.error(request, 'Por favor, selecione as mídias')
+            else:
+                messages.error(request, 'Erro ao tentar salvar mídias')
+            
+            return redirect('upload_media')
+            
+    else:
+        form = UploadMediaForm(initial={'author': request.user.id})
+        registration_form = UserPreRegistrationForm()
+        form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
-        media_instance.save()
-
-        messages.success(self.request, 'Sua imagem foi salva') 
-        return redirect('upload_media')
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
-        return context
+    is_specialist = request.user.specialist_of.exists()
+    is_curator = request.user.curator_of.exists()
 
+    context = {
+        'form': form,
+        'registration_form': registration_form,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator,
+    }
 
-@method_decorator(custom_login_required, name='dispatch')
-class CuradoriaMediaList(LoginRequiredMixin, ListView):
-    model = Media
-    template_name = 'curadoria_media_list.html'
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = Media.objects.filter(curadoria__in=user.curadoria.all())
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
-        return context
+    return render(request, 'upload_media.html', context)
     
 
+#Missing
 @method_decorator(custom_login_required, name='dispatch')
 class MediaDetail(DetailView):
     model = Media
@@ -89,12 +106,14 @@ class MediaDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
+        user = self.request.user
+        context['is_specialist'] = user.specialist_of.exists()
+        context['is_curator'] = user.curator_of.exists()
         return context
     
 
 @method_decorator(custom_login_required, name='dispatch')
+@method_decorator(media_owner_required, name='dispatch')
 class UpdateMedia(UpdateView):
     model = Media
     template_name = "update_media.html"
@@ -102,26 +121,31 @@ class UpdateMedia(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
+        user = self.request.user
+        context['is_specialist'] = user.specialist_of.exists()
+        context['is_curator'] = user.curator_of.exists()
         return context
     
 
+#Missing
 @method_decorator(custom_login_required, name='dispatch')
 class DeleteMedia(DeleteView):
     model = Media
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
+        user = self.request.user
+        context['is_specialist'] = user.specialist_of.exists()
+        context['is_curator'] = user.curator_of.exists()
         return context
     
 
 @method_decorator(custom_login_required, name='dispatch')
+@method_decorator(author_required, name='dispatch')
 class MyMedias(LoginRequiredMixin, ListView):
     model = Media
     template_name = 'my_medias.html'
+    form_class = MyMediaForm
 
     def get_queryset(self):
         user = self.request.user
@@ -130,8 +154,9 @@ class MyMedias(LoginRequiredMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
+        user = self.request.user
+        context['is_specialist'] = user.specialist_of.exists()
+        context['is_curator'] = user.curator_of.exists()
         return context
     
 
@@ -222,7 +247,7 @@ def search_page(request, model_name='', field='', slug=''):
             media_list = media_list.annotate(search=vector).filter(search=search_query)
 
         # Operator
-        operator = query_dict.get('operator', 'or')
+        operator = query_dict.get('operator', 'and')
 
         # Author
         if 'author' in query_dict:

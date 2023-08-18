@@ -120,7 +120,7 @@
 }
 
 @media (max-width: 840px) {
-    #media-page {
+    .content-only {
         flex-direction: column;
     }
 }

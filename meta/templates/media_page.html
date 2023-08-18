@@ -38,7 +38,25 @@
 	</div>
 	
 </section>
+{% endblock %}
 
+{% block sidebar %}
+<aside class="main aside-sidebar">
+
+	<div class="borders block shadow">
+	  {% show_tree taxa %}
+	</div>
+
+	{% if user.is_authenticated %}
+	<div class="borders block shadow" id="admin-controls">
+	  {% include 'admin_tools.html' %}
+	</div>
+	{% endif %}
+
+</aside>
+{% endblock %}
+
+{% block extra-foot %}
 <script>
 
 $(document).ready( function(){
@@ -74,27 +92,7 @@ $(document).ready( function(){
 	        $('body').css('cursor', 'default');
       	});
       };
-      
-      
-      
 });
+
 </script>
-
 {% endblock %}
-
-{% block sidebar %}
-<aside class="main aside-sidebar">
-
-	<div class="borders block shadow">
-	  {% show_tree taxa %}
-	</div>
-
-	{% if user.is_authenticated %}
-	<div class="borders block shadow" id="admin-controls">
-	  {% include 'admin_tools.html' %}
-	</div>
-	{% endif %}
-
-</aside>
-{% endblock %}
-

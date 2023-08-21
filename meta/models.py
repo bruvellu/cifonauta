@@ -121,6 +121,18 @@ class Media(models.Model):
     longitude = models.CharField(_('longitude'), default='', max_length=25,
             blank=True, help_text=_('Longitude onde a imagem foi criada.'))
 
+    taxon = models.CharField(_('táxon'), default='', blank=True,
+        help_text=_('Táxon da imagem'))
+    tag_life_stage = models.CharField(_('Estágio de Vida'), default='',
+        blank=True, help_text=_('Estágio de Vida'))
+    tag_habitat = models.CharField(_('Habitat'), default='', blank=True, help_text=_('Habitat da imagem'))
+    tag_microscopy = models.CharField(_('Microscopia'), default='', blank=True, help_text=_('Microscópio utilizado'))
+    tag_lifestyle = models.CharField(_('Estilo de Vida'), default='', blank=True, help_text=_('Estilo de vida'))
+    tag_photographic_technique = models.CharField(_('Técnica de fotografia'), default='', blank=True, help_text=_('Técnica de fotografia utilizada'))
+    tag_several = models.CharField(_('Diversos'), default='', blank=True, help_text=_('Informações diversas'))
+
+    software = models.CharField(_('Software'), default='', blank=True, help_text=_('Software utilizado na Imagem'))
+    
     # Foreign metadata
     location = models.ForeignKey('Location', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('local'),

@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import CuradoriaMediaList, MediaDetail, UpdateMedia, MyMedias
+from .views import CuradoriaMediaList, MediaDetail, UpdateMedia, MyMedias, RevisionMedia
 
 def extra(model, field):
     return {'model_name': model, 'field': field}

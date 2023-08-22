@@ -93,6 +93,21 @@ class CuradoriaMediaList(LoginRequiredMixin, ListView):
     model = Media
     template_name = 'curadoria_media_list.html'
 
+    def get_queryset(self):
+        user = self.request.user
+
+        curadorias = user.curator_of.all()
+        curation_taxons=[]
+        for curadoria in curadorias:
+            taxon = curadoria.taxons.all()
+            curation_taxons.append(taxon)
+        queryset = Media.objects.none()
+        for curadoria in curation_taxons:
+            queryset |= Media.objects.filter(taxons__in=curadoria) 
+        # This "queryset" appears in the template as "object_list"
+        queryset = Media.objects.filter(status='to_review')
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
@@ -171,8 +186,17 @@ class RevisionMedia(LoginRequiredMixin, ListView):
     # Filters the images to get only the ones that are in the user's curation
     def get_queryset(self):
         user = self.request.user
-        queryset = Media.objects.filter(curadoria__in=user.curator_of.all(), status='to_review')
+        
+        curadorias = user.curator_of.all()
+        curation_taxons=[]
+        for curadoria in curadorias:
+            taxon = curadoria.taxons.all()
+            curation_taxons.append(taxon)
+        queryset = Media.objects.none()
+        for curadoria in curation_taxons:
+            queryset |= Media.objects.filter(taxons__in=curadoria) 
         # This "queryset" appears in the template as "object_list"
+        queryset = Media.objects.filter(status='to_review')
         return queryset
 
     # Gets the images selected in the checkboxes and publish them

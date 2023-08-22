@@ -21,9 +21,9 @@
             <td class="text-cedule">{{ media.title_pt_br }}</td>
             <td class="image-cedule">
                 {% comment %} Comentado porque imagens do site não tem file.url {% endcomment %}
-                {% comment %} <a href="{{ media.file.url }}" target="_blank">
+                 <a href="{{ media.file.url }}" target="_blank">
                     <img src="{{ media.file.url }}" width="250px">
-                </a> {% endcomment %}
+                </a> 
             </td>
             <td class="text-cedule">{{ media.get_status_display }}</td>
             <td class="button-cedule"><a href="{% url 'update_media' media.id %}">Atualizar</a></td>

@@ -47,11 +47,13 @@ def upload_to(instance, filename):
 class Media(models.Model):
     '''Table containing both image and video files.'''
 
+    id = models.AutoField(primary_key=True)
+
     # New fields
     file = models.FileField(upload_to=upload_to, default=None, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
             verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
-    co_author = models.CharField(max_length=256, blank=True, verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'))
+    co_author = models.CharField(max_length=256, blank=True, verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia separados por ";"'))
     """ co_author = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, 
             verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='co_author') """
     STATUS_CHOICES = (
@@ -64,6 +66,8 @@ class Media(models.Model):
     has_taxons = models.CharField(_('tem táxons'), help_text=_('Mídia tem táxons.'),
             choices=(('True', 'Sim'), ('False', 'Não')), default='False')
     taxons = models.ManyToManyField('Taxon', related_name="taxons", verbose_name=_('táxons'), blank=True)
+    
+    #License
     LICENSE_CHOICES = (
         ('cc0', 'CC0 (Domínio Público)'),
         ('cc_by', 'CC BY (Atribuição)'),
@@ -75,6 +79,9 @@ class Media(models.Model):
     )
     license = models.CharField(_('Licença'), max_length=60, choices=LICENSE_CHOICES, default='cc0',
         help_text=_('Tipo de licença que a mídia terá'))
+    
+    license_year = models.CharField(_('Ano da Licença'), max_length=4, default='0000', blank=True, help_text=_('Ano da licença escolhida'))
+    credit = models.CharField(_('Referências Bibliográficas'), blank=True, help_text=_('Referências bibliográficas relacionadas com a imagem.'))
 
     # File
     filepath = models.CharField(_('arquivo original.'), max_length=200, help_text=_('Caminho único para arquivo original.'))
@@ -115,14 +122,13 @@ class Media(models.Model):
             blank=True, help_text=_('Classe de tamanho.'))
     geolocation = models.CharField(_('geolocalização'), default='',
             max_length=25, blank=True,
-            help_text=_('Geolocalização da imagem no formato decimal.'))
+        help_text=_('Geolocalização da imagem no formato decimal.'))
     latitude = models.CharField(_('latitude'), default='', max_length=25,
             blank=True, help_text=_('Latitude onde a imagem foi criada.'))
     longitude = models.CharField(_('longitude'), default='', max_length=25,
             blank=True, help_text=_('Longitude onde a imagem foi criada.'))
 
-    taxon = models.CharField(_('táxon'), default='', blank=True,
-        help_text=_('Táxon da imagem'))
+
     tag_life_stage = models.CharField(_('Estágio de Vida'), default='',
         blank=True, help_text=_('Estágio de Vida'))
     tag_habitat = models.CharField(_('Habitat'), default='', blank=True, help_text=_('Habitat da imagem'))
@@ -132,7 +138,8 @@ class Media(models.Model):
     tag_several = models.CharField(_('Diversos'), default='', blank=True, help_text=_('Informações diversas'))
 
     software = models.CharField(_('Software'), default='', blank=True, help_text=_('Software utilizado na Imagem'))
-    
+
+    specialist = models.ManyToManyField('Person',  related_name="pessoas", verbose_name=_('Especialista'), blank=True)
     # Foreign metadata
     location = models.ForeignKey('Location', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('local'),

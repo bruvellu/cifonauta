@@ -424,7 +424,10 @@ class Metadata():
         image = Image.open(self.file)
 
         #Software
-        exif_dict = piexif.load(image.info['exif'])
+        try:
+            exif_dict = piexif.load(image.info['exif'])
+        except KeyError:
+            exif_dict = {'0th': {}}
         exif_dict['0th'][piexif.ImageIFD.Software] = software
         exif_bytes = piexif.dump(exif_dict)
 
@@ -460,21 +463,21 @@ class Metadata():
 
         #Subject
         for sub in metadata['subject']:
-            subject = subject + f'{sub}\n'
-        xmp.set_property(consts.XMP_NS_DC, u'subject', subject)
+            subject = subject + f'{sub}'
+        xmp.set_property(consts.XMP_NS_DC, 'Subject', subject)
         del metadata['subject']
 
         #License
         license = metadata['license']
         RIGHTS = f"\u00A9 {license['Year']}, {'; '.join(license['Creators'])}. Todos os direitos reservados"
         LINKS = {
-            "CC0 (Domínio Público)": ["https://creativecommons.org/publicdomain/zero/1.0/deed.pt_BR", "CC0"],
-            "CC BY (Atribuição)": ["https://creativecommons.org/licenses/by/4.0/", "CC BY"],
-            "CC BY-SA (Atribuição-CompartilhaIgual)": ["https://creativecommons.org/licenses/by-sa/4.0/", "CC BY-SA"],
-            "CC BY-ND (Atribuição-SemDerivações)": ["https://creativecommons.org/licenses/by-nd/4.0/", "CC BY-ND"],
-            "CC BY-NC (Atribuição-NãoComercial)": ["https://creativecommons.org/licenses/by-nc/4.0/", "CC BY-NC"],
-            "CC BY-NC-SA (Atribuição-NãoComercial-CompartilhaIgual)": ["https://creativecommons.org/licenses/by-nc-sa/4.0/", "CC BY-NC-SA"],
-            "CC BY-NC-ND (Atribuição-NãoComercial-SemDerivações)": ["https://creativecommons.org/licenses/by-nc-nd/4.0/", "CC BY-NC-ND"]
+            "cc0": ["https://creativecommons.org/publicdomain/zero/1.0/deed.pt_BR", "CC0"],
+            "cc_by": ["https://creativecommons.org/licenses/by/4.0/", "CC BY"],
+            "cc_by_nd": ["https://creativecommons.org/licenses/by-nd/4.0/", "CC BY-ND"],
+            "cc_by_sa": ["https://creativecommons.org/licenses/by-sa/4.0/", "CC BY-SA"],
+            "cc_by_nc": ["https://creativecommons.org/licenses/by-nc/4.0/", "CC BY-NC"],
+            "cc_by_nc_sa": ["https://creativecommons.org/licenses/by-nc-sa/4.0/", "CC BY-NC-SA"],
+            "cc_by_nc_nd": ["https://creativecommons.org/licenses/by-nc-nd/4.0/", "CC BY-NC-ND"]
             }
 
         xmp.register_namespace('http://creativecommons.org/ns#', 'cc')
@@ -502,7 +505,7 @@ if __name__ == "__main__":
             'software': 'programa usado para criar, editar ou processar a imagem'
             },
         'XMP': {
-            'headline': 'nome do grupo ou categoria de organismos que compartilham características semelhantes',
+            'headline': 'Título',
             'subject': {
                 'Estágio de vida': 'fase particular do ciclo de vida de um organismo, durante a qual ele exibe características e comportamentos específicos',
                 'Habitat': 'ambiente em que um organismo ou espécie vive, cresce, se reproduz e interage com outros organismos e com os fatores do ambiente',
@@ -513,7 +516,7 @@ if __name__ == "__main__":
                 },
             'instructions': 'tamanho da imagem',
             'license': {
-                'License_Type': 'CC BY (Atribuição)',
+                'License_Type': 'cc_by_nd',
                 'Creators': ['Luiz Felyppe', 'Vitória de Oliveira', 'João Guilherme'],
                 'Year': '2023'
             }
@@ -534,3 +537,7 @@ if __name__ == "__main__":
                 }
                 }
     
+    file = r"/home/joao/Documentos/projetos/cifona_vi/cifonauta/site_media/uploads/bcb2912d-0732-44f8-9e61-b1b16393513d.png"
+    
+    meta = Metadata(file, metadata)
+

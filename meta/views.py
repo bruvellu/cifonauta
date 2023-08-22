@@ -4,6 +4,7 @@ import json
 import logging
 import os
 
+from media_utils import Metadata
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
@@ -54,6 +55,7 @@ def upload_media(request):
             form = UploadMediaForm(request.POST)
 
             if form.is_valid():
+                print(form.cleaned_data['title'])
                 if (medias):
                     for media in medias:
                         form = UploadMediaForm(request.POST)
@@ -96,7 +98,64 @@ def upload_media(request):
     }
 
     return render(request, 'upload_media.html', context)
-    
+
+def edit_metadata(request, media_id):
+    media = get_object_or_404(Media, id=media_id)
+    if request.method == 'POST':
+        form = EditMetadataForm(request.POST, instance=media)
+    else:
+        form = EditMetadataForm(instance=media)
+    if form.is_valid():
+        creators = str(form.cleaned_data['co_author']).split(';')
+        creators.append(str(form.cleaned_data['author']))
+        metadata =  {
+    'Exif': {
+        'software': str(form.cleaned_data['software'])
+        },
+    'XMP': {
+        'headline': str(form.cleaned_data['title']),
+        'subject': {
+            'Estágio de vida': str(form.cleaned_data['tag_life_stage']),
+            'Habitat': str(form.cleaned_data['tag_habitat']),
+            'Microscopia': str(form.cleaned_data['tag_microscopy']),
+            'Modo de vida': str(form.cleaned_data['tag_lifestyle']),
+            'Técnica fotográfica': str(form.cleaned_data['tag_photographic_technique']),
+            'Diversos': str(form.cleaned_data['tag_several'])
+            },
+        'instructions': str(form.cleaned_data['size']),
+        'license': {
+            'License_Type': str(form.cleaned_data['license']),
+            'Creators': creators,
+            'Year': str(form.cleaned_data['license_year'])
+        }
+            },
+    'IPTC': {
+        'headline': str(form.cleaned_data['title']),
+        'keywords': {
+            'Estágio de vida': str(form.cleaned_data['tag_life_stage']),
+            'Habitat': str(form.cleaned_data['tag_habitat']),
+            'Microscopia': str(form.cleaned_data['tag_microscopy']),
+            'Modo de vida': str(form.cleaned_data['tag_lifestyle']),
+            'Técnica fotográfica': str(form.cleaned_data['tag_photographic_technique']),
+            'Diversos': str(form.cleaned_data['tag_several'])
+            },
+        'special instructions': str(form.cleaned_data['size']),
+        'source': str(form.cleaned_data['specialist']),
+        'credit': str(form.cleaned_data['credit'])
+            }
+            }
+        meta = Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
+        form.save()
+    is_specialist = request.user.specialist_of.exists()
+    is_curator = request.user.curator_of.exists()
+
+    context = {
+        'form': form,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator,
+    }
+
+    return render(request, 'update_media.html', context) 
 
 #Missing
 @method_decorator(custom_login_required, name='dispatch')
@@ -118,6 +177,7 @@ class UpdateMedia(UpdateView):
     model = Media
     template_name = "update_media.html"
     fields = '__all__'
+    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

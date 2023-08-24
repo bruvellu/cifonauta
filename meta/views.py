@@ -109,28 +109,14 @@ def edit_metadata(request, media_id):
         creators = str(form.cleaned_data['co_author']).split(';')
         creators.append(str(form.cleaned_data['author']))
         metadata =  {
-    'Exif': {
-        'software': str(form.cleaned_data['software'])
-        },
-    'XMP': {
+        'software': str(form.cleaned_data['software']),
         'headline': str(form.cleaned_data['title']),
-        'subject': {
-            'Estágio de vida': str(form.cleaned_data['tag_life_stage']),
-            'Habitat': str(form.cleaned_data['tag_habitat']),
-            'Microscopia': str(form.cleaned_data['tag_microscopy']),
-            'Modo de vida': str(form.cleaned_data['tag_lifestyle']),
-            'Técnica fotográfica': str(form.cleaned_data['tag_photographic_technique']),
-            'Diversos': str(form.cleaned_data['tag_several'])
-            },
         'instructions': str(form.cleaned_data['size']),
         'license': {
             'License_Type': str(form.cleaned_data['license']),
             'Creators': creators,
             'Year': str(form.cleaned_data['license_year'])
-        }
             },
-    'IPTC': {
-        'headline': str(form.cleaned_data['title']),
         'keywords': {
             'Estágio de vida': str(form.cleaned_data['tag_life_stage']),
             'Habitat': str(form.cleaned_data['tag_habitat']),
@@ -138,11 +124,19 @@ def edit_metadata(request, media_id):
             'Modo de vida': str(form.cleaned_data['tag_lifestyle']),
             'Técnica fotográfica': str(form.cleaned_data['tag_photographic_technique']),
             'Diversos': str(form.cleaned_data['tag_several'])
-            },
-        'special instructions': str(form.cleaned_data['size']),
+        },
         'source': str(form.cleaned_data['specialist']),
-        'credit': str(form.cleaned_data['credit'])
-            }
+        'credit': str(form.cleaned_data['credit']),
+        'description_pt': str(form.cleaned_data['caption']),
+        'description_en': '',
+        'gps': str(form.cleaned_data['geolocation']),
+        'datetime': str(form.cleaned_data['date']),
+        'title_pt': str(form.cleaned_data['title']),
+        'title_en': '',
+        'country': str(form.cleaned_data['country']),
+        'state': str(form.cleaned_data['state']),
+        'city': str(form.cleaned_data['city']),
+        'sublocation': str(form.cleaned_data['location'])
             }
         meta = Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
         form.save()

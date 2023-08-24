@@ -103,9 +103,9 @@ class CuradoriaMediaList(LoginRequiredMixin, ListView):
             curation_taxons.append(taxon)
         queryset = Media.objects.none()
         for curadoria in curation_taxons:
-            queryset |= Media.objects.filter(taxons__in=curadoria) 
+            queryset |= Media.objects.filter(taxons__in=curadoria)
         # This "queryset" appears in the template as "object_list"
-        queryset = Media.objects.filter(status='to_review')
+       
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -192,6 +192,7 @@ class RevisionMedia(LoginRequiredMixin, ListView):
         for curadoria in curadorias:
             taxon = curadoria.taxons.all()
             curation_taxons.append(taxon)
+        print(curadorias, curation_taxons)
         queryset = Media.objects.none()
         for curadoria in curation_taxons:
             queryset |= Media.objects.filter(taxons__in=curadoria) 

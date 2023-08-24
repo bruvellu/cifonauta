@@ -85,12 +85,12 @@
 }
 
 #hamburger-button div {
-    background-color: #4b7393;
+    background-color: #6B92B2;
     height: 0.42rem;
     width: 100%;
     padding: 0;
     border-radius: 15px;
-    outline: 0.05rem solid #e4e4e4;
+    outline: 0.1rem solid #e4e4e4;
 }
 
 #hamburger-menu-container {
@@ -116,15 +116,15 @@
     width: 2.2rem;
     height: 2.2rem;
     position: absolute;
-    top: 0.7rem;
-    right: 1.3rem;
+    top: 0.3rem;
+    right: 0rem;
     border: none;
 }
 
 #close-hamburger-menu div {
     background-color: white;
     height: .35rem;
-    width: 3rem;
+    width: 2.6rem;
     border-radius: 15px;
 }
 

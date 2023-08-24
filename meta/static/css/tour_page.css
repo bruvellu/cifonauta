@@ -14,6 +14,14 @@ article #tour-description {
     margin-right: 0.625rem;
 }
 
+#tour-description + .metagroup{
+    width: 310px;
+}
+
+.metagroup {
+    width: 100%;
+}
+
 /* Slide */
 #slides {
     width: 100%;
@@ -63,17 +71,21 @@ article #tour-description {
         text-align: left;
     }
 
-    .span-8 {
-        width: 30vw;
+    div.metagroup{
+        width: 90% !important;
     }
 
+    .content-slider > .span-8{
+        width: 30vw;
+    }
+    
     .citation a{
         word-break: break-all;
     }
 }
 
 /* Mobile */
-@media (max-width: 642px) {
+@media (max-width: 694px) {
     .content-slider {
         flex-direction: column;
     }

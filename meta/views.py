@@ -113,9 +113,9 @@ def edit_metadata(request, media_id):
         'headline': str(form.cleaned_data['title']),
         'instructions': str(form.cleaned_data['size']),
         'license': {
-            'License_Type': str(form.cleaned_data['license']),
-            'Creators': creators,
-            'Year': str(form.cleaned_data['license_year'])
+            'license_type': str(form.cleaned_data['license']),
+            'creators': creators,
+            'year': str(form.cleaned_data['license_year'])
             },
         'keywords': {
             'Estágio de vida': str(form.cleaned_data['tag_life_stage']),

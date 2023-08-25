@@ -994,6 +994,7 @@ ul.refine-inactive li a.meta-inactive {
   top:1em;
   left:10px;
   text-align:center;
+  z-index: 2;
 }
 
 #messages div {
@@ -1013,6 +1014,7 @@ ul.refine-inactive li a.meta-inactive {
   transform: scale(1);
   transform-origin: 0 0;
   position:relative;
+  width: fit-content;
 }
 
 /* THUMBS */

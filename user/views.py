@@ -1,22 +1,30 @@
 from django.shortcuts import render, redirect
 from .forms import UserCifonautaCreationForm, LoginForm, PasswordResetForm
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.auth.views import PasswordResetConfirmView
 from django.urls import reverse_lazy
-# Create your views here.
 
 def user_creation(request):
     if request.method == 'POST':
         form = UserCifonautaCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Your user is created, please log in.')
+            messages.success(request, 'Usuário criado com sucesso')
             return redirect('Login')
+        else:
+            messages.error(request, 'Dados inválidos')
+            
     else:
         form = UserCifonautaCreationForm()
-    return render(request, 'users/user_creation.html', {'form': form})
+
+    errors = {}
+    for field in form:
+        if field.errors:
+            errors[field.name] = field.errors[0]
+
+    return render(request, 'users/user_creation.html', {'form': form, 'errors': errors})
 
 
 def login_view(request):
@@ -28,11 +36,23 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
+                messages.success(request, 'Login realizado com sucesso')
                 return redirect('home')
+        else:
+            if not form['captcha'].errors:
+                messages.error(request, 'Usuário ou senha incorretos')  
+            else:
+                messages.error(request, 'Captcha incorreto')  
+        
     else:
         form = LoginForm()
 
     return render(request, 'users/login.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'Você se desconectou')
+    return redirect('home')
 
 class PasswordResetView(PasswordResetView):
     form_class = PasswordResetForm

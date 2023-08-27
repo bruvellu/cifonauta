@@ -714,10 +714,48 @@ def add_meta(meta, field, query):
 def filter_request(media_list, objects, field, operator):
     '''Filter media based on fields and operator.'''
 
+    import pdb; pdb.set_trace()
+
+    # List for storing queries
+    queries = []
+
+    # Loop over objects
+    for obj in objects:
+        #TODO: If taxon, create a reduced or query for all descendants
+        queries.append(Q(**{field: obj}))
+
+    # Apply operator for queries
+    # if operator == 'and':
+        # reduced_queries = reduce(and_, queries)
+    # elif operator == 'or':
+    if operator == 'or':
+        queries = reduce(or_, queries)
+
+    # Loop over queries to filter media list
+    for query in queries:
+        media_list = media_list.filter(query)
+    
+    # Only keep distinct media
+    media_list = media_list.distinct()
+
+    return media_list
+
+    # for obj in objects:
+        # media_list = media_list.filter(**{field: obj})
+
     #TODO: Taxon descendants are not shown with AND operator.
     if operator == 'and':
+        # for obj in objects:
+            # media_list = media_list.filter(**{field: obj})
+        queries = []
         for obj in objects:
-            media_list = media_list.filter(**{field: obj})
+            queries.append(Q(**{field: obj}))
+            if field == 'taxon':
+                children = obj.get_descendants()
+                for child in children:
+                    queries.append(Q(**{field: child}))
+
+        media_list = media_list.filter(reduce(and_, queries)).distinct()
 
     elif operator == 'or':
         queries = []

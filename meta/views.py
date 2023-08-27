@@ -721,15 +721,23 @@ def filter_request(media_list, objects, field, operator):
 
     # Loop over objects
     for obj in objects:
-        #TODO: If taxon, create a reduced or query for all descendants
-        queries.append(Q(**{field: obj}))
+        # Make sure to get descendants
+        if field == 'taxon':
+            # List for storing taxon queries
+            taxa = [Q(**{field: obj})]
+            children = obj.get_descendants()
+            for child in children:
+                taxa.append(Q(**{field: child}))
+            # Store all taxon queries as single Q with OR
+            taxa_query = reduce(or_, taxa)
+            # Append single Q object with OR
+            queries.append(taxa_query)
+        else:
+            queries.append(Q(**{field: obj}))
 
     # Apply operator for queries
-    # if operator == 'and':
-        # reduced_queries = reduce(and_, queries)
-    # elif operator == 'or':
     if operator == 'or':
-        queries = reduce(or_, queries)
+        queries = [reduce(or_, queries)]
 
     # Loop over queries to filter media list
     for query in queries:

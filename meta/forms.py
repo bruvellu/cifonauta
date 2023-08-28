@@ -89,7 +89,7 @@ class RelatedForm(forms.Form):
 
 
 class DisplayForm(forms.Form):
-    '''Parameters to alter search results.'''
+    '''Parameters to filter search results.'''
 
     Person = apps.get_model('meta', 'Person')
     Tag = apps.get_model('meta', 'Tag')
@@ -99,40 +99,78 @@ class DisplayForm(forms.Form):
     Country = apps.get_model('meta', 'Country')
     Taxon = apps.get_model('meta', 'Taxon')
 
-    AUTHORS = [(person.id, person.name) for person in Person.objects.all()]
-    TAGS = [(tag.id, tag.name) for tag in Tag.objects.all()]
-    LOCATIONS = [(location.id, location.name) for location in Location.objects.all()]
+    query = forms.CharField(required=False,
+                            label=_('Buscar por'),
+                            widget=forms.TextInput(attrs={"query": "query"}),)
+    datatype = forms.ChoiceField(required=False,
+                                 choices=DATATYPES,
+                                 initial='all',
+                                 label=_('Tipo de arquivo'),
+                                 widget=forms.Select(attrs={"fields": "fields"}))
+    n = forms.ChoiceField(required=False,
+                          choices=ITEMS,
+                          initial='40',
+                          label=_('Arquivos por página'))
+    orderby = forms.ChoiceField(required=False,
+                                choices=ORDER_BY,
+                                initial='random',
+                                label=_('Ordenar por'),
+                                widget=forms.Select(attrs={"fields": "fields"}))
+    order = forms.ChoiceField(required=False,
+                              choices=ORDER,
+                              initial='desc',
+                              label=_('Ordem'))
+    highlight = forms.BooleanField(required=False,
+                                   initial=False,
+                                   label=_('Somente destaques'),
+                                   widget=forms.CheckboxInput(attrs={"fields": "fields"}))
+    operator = forms.ChoiceField(required=False,
+                                 choices=OPERATORS,
+                                 initial='and',
+                                 label=_('Operador'))
 
-    query = forms.CharField(required=False, label=_('Buscar por'),
-            widget=forms.TextInput(attrs={"query": "query"}),)
-    datatype = forms.ChoiceField(required=False, choices=DATATYPES,
-            initial='all', label=_('Tipo de arquivo'), widget=forms.Select(attrs={"fields": "fields"}))
-    n = forms.ChoiceField(required=False, choices=ITEMS, initial='40',
-            label=_('Arquivos por página'))
-    orderby = forms.ChoiceField(required=False, choices=ORDER_BY,
-            initial='random', label=_('Ordenar por'), widget=forms.Select(attrs={"fields": "fields"}))
-    order = forms.ChoiceField(required=False, choices=ORDER, initial='desc',
-            label=_('Ordem'))
-    highlight = forms.BooleanField(required=False, initial=False,
-            label=_('Somente destaques'), widget=forms.CheckboxInput(attrs={"fields": "fields"}))
-    operator = forms.ChoiceField(required=False, choices=OPERATORS,
-            initial='and', label=_('Operador'))
-    author = forms.MultipleChoiceField(widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False, choices=AUTHORS, label=_('Autores'),)
-    tag = forms.MultipleChoiceField(widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False, label=_('Marcadores'),  choices=TAGS)
-    location = forms.MultipleChoiceField(widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False, label=_('Localidades'), choices=LOCATIONS)
-
-    city = forms.ModelMultipleChoiceField(queryset=City.objects.all(),
-            widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False,
-            label=_('Cidades'))
-    state = forms.ModelMultipleChoiceField(queryset=State.objects.all(),
-            widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False,
-            label=_('Estados'))
-    country = forms.ModelMultipleChoiceField(queryset=Country.objects.all(),
-            widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False,
-            label=_('Países'))
-    taxon = forms.ModelMultipleChoiceField(queryset=Taxon.objects.all(),
-            widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False,
-            label=_('Táxons'))
+    author = forms.ModelMultipleChoiceField(required=False,
+                                            queryset=Person.objects.all(),
+                                            widget=forms.SelectMultiple(
+                                                attrs={"class": "select2-options",
+                                                       "multiple": "multiple"}),
+                                            label=_('Autores'),)
+    tag = forms.ModelMultipleChoiceField(required=False,
+                                         queryset=Tag.objects.all(),
+                                         widget=forms.SelectMultiple(
+                                             attrs={"class": "select2-options",
+                                                    "multiple": "multiple"}),
+                                         label=_('Marcadores'))
+    location = forms.ModelMultipleChoiceField(required=False,
+                                         queryset=Location.objects.all(),
+                                         widget=forms.SelectMultiple(
+                                             attrs={"class": "select2-options",
+                                                    "multiple": "multiple"}),
+                                         label=_('Localidades'))
+    city = forms.ModelMultipleChoiceField(required=False,
+                                          queryset=City.objects.all(),
+                                          widget=forms.SelectMultiple(
+                                              attrs={"class": "select2-options",
+                                                     "multiple": "multiple"}),
+                                          label=_('Cidades'))
+    state = forms.ModelMultipleChoiceField(required=False,
+                                           queryset=State.objects.all(),
+                                           widget=forms.SelectMultiple(
+                                               attrs={"class": "select2-options",
+                                                      "multiple": "multiple"}),
+                                           label=_('Estados'))
+    country = forms.ModelMultipleChoiceField(required=False,
+                                             queryset=Country.objects.all(),
+                                             widget=forms.SelectMultiple(
+                                                 attrs={"class": "select2-options",
+                                                        "multiple": "multiple"}),
+                                             label=_('Países'))
+    taxon = forms.ModelMultipleChoiceField(required=False,
+                                           queryset=Taxon.objects.all(),
+                                           widget=forms.SelectMultiple(
+                                               attrs={"class": "select2-options",
+                                                      "multiple": "multiple"}),
+                                           label=_('Táxons'))
 
 
 class AdminForm(forms.Form):

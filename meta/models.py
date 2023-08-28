@@ -193,7 +193,7 @@ class Media(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return 'ID={} {} ({})'.format(self.id, self.title, self.datatype)
+        return 'ID={} {} ({}) {}'.format(self.id, self.title, self.datatype, self.status)
 
     def get_absolute_url(self):
         return reverse('media_url', args=[str(self.id)])

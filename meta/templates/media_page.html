@@ -8,7 +8,7 @@
 {% block meta-author %}{% show_set authors '' '' ', ' '' %}{% endblock %}
 
 {% block extra-head %}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/media_page_ajax.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/media_page.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/related.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}css/photo.css">
 <meta property="og:title" content="{{ media.title }}" />
@@ -37,21 +37,26 @@
 		{% include "media_page_ajax.html" %}
 	</div>
 	
-	<aside class="main aside-sidebar">
-
-		<div class="borders block shadow">
-		  {% show_tree taxa %}
-		</div>
-	
-		{% if user.is_authenticated %}
-		<div class="borders block shadow" id="admin-controls">
-		  {% include 'admin_tools.html' %}
-		</div>
-		{% endif %}
-	
-	</aside>
 </section>
+{% endblock %}
 
+{% block sidebar %}
+<aside class="main aside-sidebar">
+
+	<div class="borders block shadow">
+	  {% show_tree taxa %}
+	</div>
+
+	{% if user.is_authenticated %}
+	<div class="borders block shadow" id="admin-controls">
+	  {% include 'admin_tools.html' %}
+	</div>
+	{% endif %}
+
+</aside>
+{% endblock %}
+
+{% block extra-foot %}
 <script>
 
 $(document).ready( function(){
@@ -87,26 +92,7 @@ $(document).ready( function(){
 	        $('body').css('cursor', 'default');
       	});
       };
-      
-      
-      
 });
+
 </script>
-
 {% endblock %}
-
-{% comment %} {% block sidebar %}
-<aside class="main aside-sidebar">
-
-	<div class="borders block shadow">
-	  {% show_tree taxa %}
-	</div>
-
-	{% if user.is_authenticated %}
-	<div class="borders block shadow" id="admin-controls">
-	  {% include 'admin_tools.html' %}
-	</div>
-	{% endif %}
-
-</aside>
-{% endblock %} {% endcomment %}

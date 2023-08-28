@@ -180,7 +180,7 @@
   {% endif %}
 
 <script type="text/javascript" charset="utf-8">
-  var current_title = {{media.title}} | {% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %} | CEBIMar USP;
+  var current_title = "{{media.title}} | {% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %} | CEBIMar USP";
   $(document).ready( function(){
     try{
       open_tree('{{media.get_taxon_name_list_no_parents}}');

@@ -91,13 +91,13 @@ class RelatedForm(forms.Form):
 class DisplayForm(forms.Form):
     '''Parameters to filter search results.'''
 
-    Person = apps.get_model('meta', 'Person')
+    Taxon = apps.get_model('meta', 'Taxon')
     Tag = apps.get_model('meta', 'Tag')
+    Person = apps.get_model('meta', 'Person')
     Location = apps.get_model('meta', 'Location')
     City = apps.get_model('meta', 'City')
     State = apps.get_model('meta', 'State')
     Country = apps.get_model('meta', 'Country')
-    Taxon = apps.get_model('meta', 'Taxon')
 
     query = forms.CharField(required=False,
                             label=_('Buscar por'),
@@ -129,18 +129,24 @@ class DisplayForm(forms.Form):
                                  initial='and',
                                  label=_('Operador'))
 
-    author = forms.ModelMultipleChoiceField(required=False,
-                                            queryset=Person.objects.all(),
-                                            widget=forms.SelectMultiple(
-                                                attrs={"class": "select2-options",
-                                                       "multiple": "multiple"}),
-                                            label=_('Autores'),)
+    taxon = forms.ModelMultipleChoiceField(required=False,
+                                           queryset=Taxon.objects.all(),
+                                           widget=forms.SelectMultiple(
+                                               attrs={"class": "select2-options",
+                                                      "multiple": "multiple"}),
+                                           label=_('Táxons'))
     tag = forms.ModelMultipleChoiceField(required=False,
                                          queryset=Tag.objects.all(),
                                          widget=forms.SelectMultiple(
                                              attrs={"class": "select2-options",
                                                     "multiple": "multiple"}),
                                          label=_('Marcadores'))
+    author = forms.ModelMultipleChoiceField(required=False,
+                                            queryset=Person.objects.all(),
+                                            widget=forms.SelectMultiple(
+                                                attrs={"class": "select2-options",
+                                                       "multiple": "multiple"}),
+                                            label=_('Autores'),)
     location = forms.ModelMultipleChoiceField(required=False,
                                          queryset=Location.objects.all(),
                                          widget=forms.SelectMultiple(
@@ -165,12 +171,6 @@ class DisplayForm(forms.Form):
                                                  attrs={"class": "select2-options",
                                                         "multiple": "multiple"}),
                                              label=_('Países'))
-    taxon = forms.ModelMultipleChoiceField(required=False,
-                                           queryset=Taxon.objects.all(),
-                                           widget=forms.SelectMultiple(
-                                               attrs={"class": "select2-options",
-                                                      "multiple": "multiple"}),
-                                           label=_('Táxons'))
 
 
 class AdminForm(forms.Form):

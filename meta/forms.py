@@ -97,7 +97,7 @@ class DisplayForm(forms.Form):
     City = apps.get_model('meta', 'City')
     State = apps.get_model('meta', 'State')
     Country = apps.get_model('meta', 'Country')
-    # Taxon = apps.get_model('meta', 'Taxon')
+    Taxon = apps.get_model('meta', 'Taxon')
 
     AUTHORS = [(person.id, person.name) for person in Person.objects.all()]
     TAGS = [(tag.id, tag.name) for tag in Tag.objects.all()]
@@ -130,9 +130,9 @@ class DisplayForm(forms.Form):
     country = forms.ModelMultipleChoiceField(queryset=Country.objects.all(),
             widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False,
             label=_('Países'))
-    # taxon = forms.ModelMultipleChoiceField(queryset=Taxon.objects.all(),
-            # widget=forms.CheckboxSelectMultiple(), required=False,
-            # label=_('Táxons'))
+    taxon = forms.ModelMultipleChoiceField(queryset=Taxon.objects.all(),
+            widget=forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"}), required=False,
+            label=_('Táxons'))
 
 
 class AdminForm(forms.Form):

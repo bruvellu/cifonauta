@@ -60,6 +60,16 @@ h2 {
 .error, .notice, .success {
     transform: translateY(-2rem);
     width: fit-content;
+    font-size: 1.1rem;
+}
+
+.warning {
+    transform: translateY(-1.5rem);
+    background-color: #ffffb3;
+    color: #565600;
+    font-size: 1.1rem;
+    /* background-color: #e8edff;
+    color: #000b43de; */
 }
 
 .form-container {
@@ -246,6 +256,7 @@ textarea {
 
 .field-div span {
     font-size: .75rem;
+    color: #5b5b5b;
 }
 
 .submit-button {

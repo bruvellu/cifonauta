@@ -714,28 +714,26 @@ def add_meta(meta, field, query):
 def filter_request(media_list, objects, field, operator):
     '''Filter media based on fields and operator.'''
 
-    import pdb; pdb.set_trace()
-
     # List for storing queries
     queries = []
 
     # Loop over objects
     for obj in objects:
-        # Make sure to get descendants
+        # If taxon, also get queries for descendants
         if field == 'taxon':
-            # List for storing taxon queries
+            # Store taxon queries separately (include current obj)
             taxa = [Q(**{field: obj})]
             children = obj.get_descendants()
             for child in children:
                 taxa.append(Q(**{field: child}))
-            # Store all taxon queries as single Q with OR
+            # Reduce taxa queries to single Q with OR operator
             taxa_query = reduce(or_, taxa)
-            # Append single Q object with OR
+            # Append to main queries
             queries.append(taxa_query)
         else:
             queries.append(Q(**{field: obj}))
 
-    # Apply operator for queries
+    # If OR, reduce queries to single Q with OR operator
     if operator == 'or':
         queries = [reduce(or_, queries)]
 
@@ -743,39 +741,9 @@ def filter_request(media_list, objects, field, operator):
     for query in queries:
         media_list = media_list.filter(query)
     
-    # Only keep distinct media
+    # Only keep unique media entries
     media_list = media_list.distinct()
 
-    return media_list
-
-    # for obj in objects:
-        # media_list = media_list.filter(**{field: obj})
-
-    #TODO: Taxon descendants are not shown with AND operator.
-    if operator == 'and':
-        # for obj in objects:
-            # media_list = media_list.filter(**{field: obj})
-        queries = []
-        for obj in objects:
-            queries.append(Q(**{field: obj}))
-            if field == 'taxon':
-                children = obj.get_descendants()
-                for child in children:
-                    queries.append(Q(**{field: child}))
-
-        media_list = media_list.filter(reduce(and_, queries)).distinct()
-
-    elif operator == 'or':
-        queries = []
-        for obj in objects:
-            queries.append(Q(**{field: obj}))
-            if field == 'taxon':
-                children = obj.get_descendants()
-                for child in children:
-                    queries.append(Q(**{field: child}))
-
-        media_list = media_list.filter(reduce(or_, queries)).distinct()
-    
     return media_list
 
 

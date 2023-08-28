@@ -714,22 +714,36 @@ def add_meta(meta, field, query):
 def filter_request(media_list, objects, field, operator):
     '''Filter media based on fields and operator.'''
 
-    #TODO: Taxon descendants are not shown with AND operator.
-    if operator == 'and':
-        for obj in objects:
-            media_list = media_list.filter(**{field: obj})
+    # List for storing queries
+    queries = []
 
-    elif operator == 'or':
-        queries = []
-        for obj in objects:
+    # Loop over objects
+    for obj in objects:
+        # If taxon, also get queries for descendants
+        if field == 'taxon':
+            # Store taxon queries separately (include current obj)
+            taxa = [Q(**{field: obj})]
+            children = obj.get_descendants()
+            for child in children:
+                taxa.append(Q(**{field: child}))
+            # Reduce taxa queries to single Q with OR operator
+            taxa_query = reduce(or_, taxa)
+            # Append to main queries
+            queries.append(taxa_query)
+        else:
             queries.append(Q(**{field: obj}))
-            if field == 'taxon':
-                children = obj.get_descendants()
-                for child in children:
-                    queries.append(Q(**{field: child}))
 
-        media_list = media_list.filter(reduce(or_, queries)).distinct()
+    # If OR, reduce queries to single Q with OR operator
+    if operator == 'or':
+        queries = [reduce(or_, queries)]
+
+    # Loop over queries to filter media list
+    for query in queries:
+        media_list = media_list.filter(query)
     
+    # Only keep unique media entries
+    media_list = media_list.distinct()
+
     return media_list
 
 

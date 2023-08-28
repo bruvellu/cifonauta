@@ -497,25 +497,12 @@ class Metadata():
                     self.insert_metadata_xmp('Subject', subject)
             elif k == 'description_pt':
                 self.insert_metadata_exif('image_description', v)
-                self.insert_metadata_xmp('Description (pt)', v)
+                self.insert_metadata_xmp('DescriptionPT', v)
                 self.insert_metadata_iptc('caption/abstract', v)
-            elif k == 'description_en':
-                if v == '':
-                    translate = Translator()
-                    description_en = translate.translate(self.metadata['description_pt'], src='pt', dest='en')
-                else:
-                    description_en = v
-                self.insert_metadata_xmp('Description (en)', description_en)
+                
             elif k == 'title_pt':
-                self.insert_metadata_xmp('Title (pt)', v)
+                self.insert_metadata_xmp('TitlePT', v)
                 self.insert_metadata_iptc('object name', v)
-            elif k == 'title_en':
-                if v == '':
-                    translate = Translator()
-                    title_en = translate.translate(self.metadata['title_pt'], src='pt', dest='en')
-                else:
-                    title_en = v
-                self.insert_metadata_xmp('Title (en)', title_en)
             elif k == 'gps':
                 self.insert_metadata_exif('gps', v)
                 self.insert_metadata_iptc('content location name', f'GPScoordinates: {v}')

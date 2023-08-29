@@ -53,7 +53,7 @@ OPERATORS = (
 class UploadMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ( 'title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'license', 'country', 'state', 'city', 'location', 'geolocation', 'terms') #Faltando direito autoral
+        fields = ( 'title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms') #Faltando direito autoral
         widgets = {
             'taxons': forms.CheckboxSelectMultiple(),
             'has_taxons': forms.RadioSelect(),

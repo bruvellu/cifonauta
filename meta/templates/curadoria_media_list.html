@@ -26,7 +26,7 @@
                 </a> 
             </td>
             <td class="text-cedule">{{ media.get_status_display }}</td>
-            <td class="button-cedule"><a href="{% url 'update_media' media.id %}">Atualizar</a></td>
+            <td class="button-cedule"><a href="{% url 'edit_metadata' media.id %}">Atualizar</a></td>
         </tr>
         {% endfor %}
     </tbody>

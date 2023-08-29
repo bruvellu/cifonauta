@@ -140,6 +140,7 @@ def edit_metadata(request, media_id):
         'city': str(form.cleaned_data['city']),
         'sublocation': str(form.cleaned_data['location'])
             }
+        media.status = 'to_review'
         meta = Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
         form.save()
     is_specialist = request.user.specialist_of.exists()

@@ -15,15 +15,6 @@ from django.utils import timezone
 import shutil
 
 
-class UserPreRegistration(models.Model):
-    first_name = models.CharField('Primeiro Nome', null=True, max_length=50)
-    last_name = models.CharField('Último Nome', null=True, max_length=50)
-    orcid = models.CharField('Orcid', null=True, max_length=16)
-
-    def __str__(self):
-        return f'{self.first_name} {self.last_name}'
-
-
 class Curadoria(models.Model):
     name = models.CharField(max_length=50)
     taxons = models.ManyToManyField('Taxon', blank=True)
@@ -37,7 +28,6 @@ class Curadoria(models.Model):
 
 
 def upload_to(instance, filename):
-    print("UPLOAD")
     ext = filename.split('.')[-1]
     random_filename = f"{uuid.uuid4()}.{ext}"
     
@@ -51,7 +41,7 @@ class Media(models.Model):
     file = models.FileField(upload_to=upload_to, default=None, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
             verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
-    co_author = models.OneToOneField('Person', null=True, on_delete=models.SET_NULL,
+    co_author = models.ManyToManyField('Person', blank=True,
             verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='co_author')
     STATUS_CHOICES = (
         ('not_edited', 'Não Editado'),
@@ -74,6 +64,7 @@ class Media(models.Model):
     )
     license = models.CharField(_('Licença'), max_length=60, choices=LICENSE_CHOICES, default='cc0',
         help_text=_('Tipo de licença que a mídia terá'))
+    terms = models.BooleanField(_('termos'), default=False)
 
     # File
     filepath = models.CharField(_('arquivo original.'), max_length=200, help_text=_('Caminho único para arquivo original.'))
@@ -194,6 +185,8 @@ class Person(models.Model):
     media = models.ManyToManyField('Media', blank=True,
             verbose_name=_('arquivos'),
             help_text=_('Arquivos associados a este autor.'))
+    orcid = models.CharField('Orcid', null=True, max_length=16)
+    email = models.EmailField(verbose_name='Email', null=True)
 
     def __str__(self):
         return self.name

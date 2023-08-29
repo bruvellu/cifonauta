@@ -9,10 +9,13 @@
 {% block dashboard_content %}
 <dialog class="dialog">
     <div>
-        <button class="close-registration-button">Fechar</button>
+        <button class="close-registration-button">
+            <div class='line1'></div>
+            <div class='line2'></div>
+        </button>
         <form class="pre-registration-form" method="post">
             {% csrf_token %}
-            <p>Pré-cadastro de autor</p>
+            <p>Registre o coautor</p>
             {% for field2 in registration_form %}
             <div class="field2-container">
                 {{ field2.label_tag }}
@@ -24,7 +27,7 @@
                 </div>
             </div>
             {% endfor %}
-            <button class="pre-registration-submit" type="submit">Pré-cadastrar</button>
+            <button class="pre-registration-submit" type="submit">Cadastrar</button>
         </form>
     </div>
 </dialog>
@@ -80,6 +83,19 @@
             </div>
         </div>
         {% elif field == form.taxons %}
+        {% elif field == form.terms %}
+        <div class="field-container">
+            {{ field.label_tag }}
+            <div class="field-div">
+                <div class="term-wrapper">
+                    {{ field }}
+                    Declaro...
+                </div>
+                {% if field.help_text %}
+                <span class="help-text">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
         {% else %}
         <div class="field-container">
             {{ field.label_tag }}

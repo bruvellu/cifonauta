@@ -43,10 +43,19 @@ def dashboard(request):
 @author_required
 def upload_media(request):
     if request.method == 'POST':
-        if 'orcid' in request.POST:
-            form = UserPreRegistrationForm(request.POST)
+        if 'name' in request.POST:
+            form = CoauthorRegistrationForm(request.POST)
             if form.is_valid():
-                form.save()
+                registration_instance = form.save(commit=False)
+
+                name = form.cleaned_data['name'].split(' ')
+                name_capitalized = []
+                for word in name:
+                    name_capitalized.append(word.capitalize())
+                    
+                registration_instance.name = ' '.join(name_capitalized)
+                registration_instance.save()
+
                 messages.success(request, 'Pré-cadastro realizado com sucesso')
                 return redirect('upload_media')
         else:
@@ -56,7 +65,7 @@ def upload_media(request):
             if medias:
                 for media in medias:
                     if media.size > 3000000:
-                        messages.error(request, 'Mídia maior que 3MB')
+                        messages.error(request, 'Arquivo maior que 3MB')
                         return redirect('upload_media')
             else:
                 messages.error(request, 'Por favor, selecione as mídias')
@@ -70,6 +79,10 @@ def upload_media(request):
                     
                     media_instance.sitepath = media
                     media_instance.coverpath = media
+
+                    if form.cleaned_data['terms'] == False:
+                        messages.error(request, 'Você precisa aceitar os termos')
+                        return redirect('upload_media')
 
                     if form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
                         media_instance.save()
@@ -87,7 +100,7 @@ def upload_media(request):
             
     else:
         form = UploadMediaForm(initial={'author': request.user.id})
-        registration_form = UserPreRegistrationForm()
+        registration_form = CoauthorRegistrationForm()
         form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
     

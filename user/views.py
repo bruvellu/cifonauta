@@ -5,12 +5,25 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.auth.views import PasswordResetConfirmView
 from django.urls import reverse_lazy
+from meta.models import Person
 
 def user_creation(request):
     if request.method == 'POST':
         form = UserCifonautaCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user_instance = form.save(commit=False)
+
+            user_instance.first_name = form.cleaned_data['first_name'].capitalize()
+            user_instance.last_name = form.cleaned_data['last_name'].capitalize()
+            
+            name = user_instance.first_name + ' ' + user_instance.last_name
+            email = form.cleaned_data['email']
+            orcid = form.cleaned_data['orcid']
+
+            Person.objects.create(name=name, email=email, orcid=orcid)
+
+            user_instance.save()
+
             messages.success(request, 'Usuário criado com sucesso')
             return redirect('Login')
         else:

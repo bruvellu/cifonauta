@@ -1,3 +1,11 @@
+.success {
+    position: fixed;
+    font-size: 1.3rem;
+    left: 1rem;
+    top: 7rem;
+    z-index: 5;
+}
+
 #intro {
     width: 95%;
     display: flex;
@@ -86,5 +94,12 @@
 @media (max-width: 480px) {
     #intro {
         width: 95%;
+    }
+}
+
+@media (max-width: 350px) {
+    .success {
+        font-size: 1.1rem;
+        left: .5rem;
     }
 }

@@ -2,11 +2,8 @@
 
 from django import forms
 from django.apps import apps
-from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
-from .models import Media, Curadoria, UserPreRegistration
-from django.contrib.auth import get_user_model
-from user.models import UserCifonauta
+from .models import Media, Curadoria, Person
 
 
 METAS = (
@@ -56,17 +53,17 @@ OPERATORS = (
 class UploadMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('file', 'author', 'co_author', 'title', 'caption', 'date',  'has_taxons', 'taxons', 'country', 'state', 'city', 'location', 'geolocation',) #Faltando direito autoral
+        fields = ( 'title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'license', 'country', 'state', 'city', 'location', 'geolocation', 'terms') #Faltando direito autoral
         widgets = {
             'taxons': forms.CheckboxSelectMultiple(),
-            'has_taxons': forms.RadioSelect()
+            'has_taxons': forms.RadioSelect(),
+            'co_author': forms.CheckboxSelectMultiple()
         }
 
-
-class UserPreRegistrationForm(forms.ModelForm):
+class CoauthorRegistrationForm(forms.ModelForm):
     class Meta:
-        model = UserPreRegistration
-        fields = ('first_name', 'last_name', 'orcid')
+        model = Person
+        fields = ('name',)
 
 
 class MyMediaForm(forms.ModelForm):

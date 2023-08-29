@@ -36,6 +36,11 @@
     flex-direction: column;
 }
 
+.field-error {
+    color: #f60000;
+    font-size: .72rem;
+}
+
 .label-div label {
     font-size: 1rem;
     display: flex;

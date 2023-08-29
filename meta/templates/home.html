@@ -17,7 +17,11 @@
 {% endblock %}
 
 {% block content %}
-
+{% if messages %}
+{% for message in messages %}
+<span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+{% endfor %}
+{% endif %}
 <section class="shadow" id="intro">
 <div id="cover-image">
   <a href="{{ main_image.get_absolute_url }}">

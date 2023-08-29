@@ -44,33 +44,64 @@ def dashboard(request):
 @author_required
 def upload_media(request):
     if request.method == 'POST':
-        if 'orcid' in request.POST:
-            form = UserPreRegistrationForm(request.POST)
+        if 'name' in request.POST:
+            form = CoauthorRegistrationForm(request.POST)
             if form.is_valid():
-                form.save()
+                registration_instance = form.save(commit=False)
+
+                name = form.cleaned_data['name'].split(' ')
+                name_capitalized = []
+                for word in name:
+                    name_capitalized.append(word.capitalize())
+                    
+                registration_instance.name = ' '.join(name_capitalized)
+                registration_instance.save()
+
                 messages.success(request, 'Pré-cadastro realizado com sucesso')
                 return redirect('upload_media')
         else:
-            form = UploadMediaForm(request.POST, request.FILES)
+            medias = request.FILES.getlist('medias')
+            form = UploadMediaForm(request.POST)
 
-            if form.is_valid():
-                media_instance = form.save(commit=False)
-
-                if 'file' in request.FILES: #Temporary
-                    media_instance.sitepath = request.FILES['file']
-                    media_instance.coverpath = request.FILES['file']
-
-                if form.cleaned_data['has_taxons'] == 'True':
-                    media_instance.save()
-                    form.save_m2m()
-                else:
-                    media_instance.save()
-
-                messages.success(request, 'Sua imagem foi salva')
+            if medias:
+                for media in medias:
+                    if media.size > 3000000:
+                        messages.error(request, 'Arquivo maior que 3MB')
+                        return redirect('upload_media')
+            else:
+                messages.error(request, 'Por favor, selecione as mídias')
                 return redirect('upload_media')
+                
+            if form.is_valid():
+                for media in medias:
+                    form = UploadMediaForm(request.POST)
+                    media_instance = form.save(commit=False)
+                    media_instance.file = media
+                    
+                    media_instance.sitepath = media
+                    media_instance.coverpath = media
+
+                    if form.cleaned_data['terms'] == False:
+                        messages.error(request, 'Você precisa aceitar os termos')
+                        return redirect('upload_media')
+
+                    if form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
+                        media_instance.save()
+                        form.save_m2m()
+                    else:
+                        media_instance.has_taxons = False
+                        media_instance.save()
+
+                messages.success(request, 'Suas mídias foram salvas')
+                
+            else:
+                messages.error(request, 'Erro ao tentar salvar mídias')
+            
+            return redirect('upload_media')
+            
     else:
         form = UploadMediaForm(initial={'author': request.user.id})
-        registration_form = UserPreRegistrationForm()
+        registration_form = CoauthorRegistrationForm()
         form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
     
@@ -85,35 +116,6 @@ def upload_media(request):
     }
 
     return render(request, 'upload_media.html', context)
-
-
-@method_decorator(custom_login_required, name='dispatch')
-@method_decorator(curator_required, name='dispatch')
-class CuradoriaMediaList(LoginRequiredMixin, ListView):
-    model = Media
-    template_name = 'curadoria_media_list.html'
-
-    def get_queryset(self):
-        user = self.request.user
-
-        curadorias = user.curator_of.all()
-        curation_taxons=[]
-        for curadoria in curadorias:
-            taxon = curadoria.taxons.all()
-            curation_taxons.append(taxon)
-        queryset = Media.objects.none()
-        for curadoria in curation_taxons:
-            queryset |= Media.objects.filter(taxons__in=curadoria)
-        # This "queryset" appears in the template as "object_list"
-       
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.specialist_of.exists()
-        context['is_curator'] = user.curator_of.exists()
-        return context
     
 
 #Missing

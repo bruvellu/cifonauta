@@ -326,6 +326,10 @@ textarea {
     background: linear-gradient(to bottom, #7edc75 0%, #46bf51 100%);
 }
 
+.field-error {
+    color: #f60000 !important;
+}
+
 .hide-div {
     display: none;
 }

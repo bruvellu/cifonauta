@@ -52,7 +52,7 @@ class Media(models.Model):
             default='not_edited', help_text=_('Status da mídia.'))
     has_taxons = models.CharField(_('tem táxons'), help_text=_('Mídia tem táxons.'),
             choices=(('True', 'Sim'), ('False', 'Não')), default='False')
-    taxons = models.ManyToManyField('Taxon', related_name="taxons", verbose_name=_('táxons'), blank=True)
+    taxons = models.ManyToManyField('Taxon', related_name="taxons", verbose_name=_('táxons'), help_text=_('Táxons pertencentes à mídia.'), blank=True)
     LICENSE_CHOICES = (
         ('cc0', 'CC0 (Domínio Público)'),
         ('cc_by', 'CC BY (Atribuição)'),

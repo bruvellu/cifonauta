@@ -78,6 +78,9 @@
                 </div>
                 <div class="field-div m2m-field taxons-div hide-div">
                     {{ form.taxons }}
+                    {% if form.taxons.help_text %}
+                    <span class="help-text">{{ form.taxons.help_text }}</span>
+                    {% endif %}
                 </div>
                 {{ field.errors }}
             </div>

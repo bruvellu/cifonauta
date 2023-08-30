@@ -185,7 +185,7 @@ class RevisionMedia(LoginRequiredMixin, ListView):
     model = Media
     template_name = 'media_revision.html'
 
-    # Shows the images that have taxons that are in one of the user's curations
+    # Shows the images and videos that have taxons that are in one of the user's curations
     def get_queryset(self):
         user = self.request.user
 
@@ -208,7 +208,7 @@ class RevisionMedia(LoginRequiredMixin, ListView):
 
         return queryset
 
-    # Gets the images selected in the checkboxes and publish them
+    # Gets the images and videos selected in the checkboxes and publish them
     def post(self, request):
         selected_images_ids = request.POST.getlist('selected_images_ids')
         # Gets the images selected by their id and updates their status

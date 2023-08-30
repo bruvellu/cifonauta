@@ -9,8 +9,8 @@ import shutil
 from django.conf import settings
 from PIL import Image
 
-def create_site_media_copy(sender, instance, **kwargs):
-    if instance.file and instance.file.path:
+def create_site_media_copy(sender, instance, created, **kwargs):
+    if created and instance.file and instance.file.path:
         source_file_path = instance.file.path
         new_filename = os.path.basename(instance.file.name)
         dest_file_path = os.path.join(settings.MEDIA_ROOT, new_filename)
@@ -18,9 +18,14 @@ def create_site_media_copy(sender, instance, **kwargs):
         if instance.file.name.lower().endswith(('jpg', 'jpeg', 'png', 'gif')):
             image = Image.open(source_file_path)
             
+            instance.datatype = 'photo'
+            
             image.save(dest_file_path, quality=50) #turn into a format?
         else:
             shutil.copy(source_file_path, dest_file_path)
+
+        instance.coverpath = new_filename
+        instance.save()
 
 
 def update_specialist_of(sender, instance, action, model, pk_set, **kwargs):

@@ -17,7 +17,7 @@ from shutil import copy2, move
 from PIL import Image
 import piexif
 from iptcinfo3 import IPTCInfo
-from libxmp import XMPFiles, consts
+from libxmp import XMPFiles, consts, XMPError
 from googletrans import Translator
 
 
@@ -454,6 +454,8 @@ class Metadata():
                 }
             }
         
+        self.xmp_erro = False
+        
         self.metadata = metadata
 
         self.filter_metadata()
@@ -475,7 +477,7 @@ class Metadata():
                 self.insert_metadata_iptc(k, v)
             elif k == 'license':
                 license_type = v['license_type']
-                creators = ';'.join(v['creators'])
+                creators = f'Author: {v["author"]}, Co-authors: {";".join(v["co-authors"])}'
                 self.insert_metadata_xmp('License', self._RIGHTS[license_type]["license_name"], license=True)
                 self.insert_metadata_xmp('AttributionURL', self._RIGHTS[license_type]["license_link"], license=True)
                 self.insert_metadata_xmp('Rights', self._RIGHTS[license_type]["license_text"], license=True)
@@ -565,20 +567,24 @@ class Metadata():
     def insert_metadata_xmp(self, field, val, license=False):
         
         #XMP Config
-        self.xmpfile = XMPFiles( file_path=self.file, open_forupdate=True)
-        xmp = self.xmpfile.get_xmp()
-
-        if license:
-            xmp.register_namespace('http://creativecommons.org/ns#', 'cc')
-            xmp.set_property(consts.XMP_NS_CC, field, val)
+        try:
+            self.xmpfile = XMPFiles( file_path=self.file, open_forupdate=True)
+        except XMPError:
+            self.xmp_erro = True
         else:
-            xmp.set_property(consts.XMP_NS_DC, field, val)
+            xmp = self.xmpfile.get_xmp()
 
-        #Saving metadata
-        if self.xmpfile.can_put_xmp(xmp):
-            self.xmpfile.put_xmp(xmp)
-        self.xmpfile.close_file()
-    
+            if license:
+                xmp.register_namespace('http://creativecommons.org/ns#', 'cc')
+                xmp.set_property(consts.XMP_NS_CC, field, val)
+            else:
+                xmp.set_property(consts.XMP_NS_DC, field, val)
+
+            #Saving metadata
+            if self.xmpfile.can_put_xmp(xmp):
+                self.xmpfile.put_xmp(xmp)
+            self.xmpfile.close_file()
+        
 
 if __name__ == "__main__":
     metadata =  {

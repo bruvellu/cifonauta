@@ -63,11 +63,11 @@ def upload_media(request):
                         form = UploadMediaForm(request.POST)
                         media_instance = form.save(commit=False)
                         media_instance.file = media
-                        
+
                         if 'file' in request.FILES:
                             media_instance.sitepath = media
                             media_instance.coverpath = media
-
+                            
                         if form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
                             media_instance.save()
                             form.save_m2m()
@@ -101,6 +101,9 @@ def upload_media(request):
 
     return render(request, 'upload_media.html', context)
 
+
+@custom_login_required
+@curator_required
 def edit_metadata(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     if request.method == 'POST':
@@ -108,16 +111,16 @@ def edit_metadata(request, media_id):
     else:
         form = EditMetadataForm(instance=media)
     if form.is_valid():
-        creators = str(form.cleaned_data['co_author']).split(';')
-        creators.append(str(form.cleaned_data['author']))
+        author = str(form.cleaned_data['author'])
+        co_authors = str(form.cleaned_data['co_author']).split(';')
         metadata =  {
         'software': str(form.cleaned_data['software']),
         'headline': str(form.cleaned_data['title']),
         'instructions': str(form.cleaned_data['size']),
         'license': {
             'license_type': str(form.cleaned_data['license']),
-            'creators': creators,
-            'year': str(form.cleaned_data['license_year'])
+            'author': author,
+            'co-authors': co_authors,
             },
         'keywords': {
             'Estágio de vida': str(form.cleaned_data['tag_life_stage']),
@@ -141,7 +144,7 @@ def edit_metadata(request, media_id):
         'sublocation': str(form.cleaned_data['location'])
             }
         media.status = 'to_review'
-        meta = Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
+        Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
         form.save()
     is_specialist = request.user.specialist_of.exists()
     is_curator = request.user.curator_of.exists()

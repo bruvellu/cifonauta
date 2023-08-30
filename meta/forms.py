@@ -55,9 +55,9 @@ class UploadMediaForm(forms.ModelForm):
         model = Media
         fields = ( 'title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms') #Faltando direito autoral
         widgets = {
-            'taxons': forms.CheckboxSelectMultiple(),
+            'taxons': forms.SelectMultiple(attrs={'class': 'select2-options', 'multiple': 'multiple'}),
             'has_taxons': forms.RadioSelect(),
-            'co_author': forms.CheckboxSelectMultiple()
+            'co_author': forms.SelectMultiple(attrs={"class": "select2-options", "multiple": "multiple"})
         }
 
 class CoauthorRegistrationForm(forms.ModelForm):

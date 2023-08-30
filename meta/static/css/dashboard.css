@@ -81,6 +81,7 @@ h2 {
 /* REGISTRATION FORM */
 .dialog::backdrop {
     display: revert;
+    background: rgba(0,0,0,0.3);
 }
 
 .dialog {
@@ -185,6 +186,16 @@ h2 {
     width: 10rem;
 }
 
+.field-div,
+.wrapper-field-div {
+    width: 100%;
+}
+
+input[type='text'], select {
+    max-width: 18rem;
+    width: 100%;
+}
+
 .field-div {
     display: flex;
     flex-direction: column;
@@ -195,8 +206,8 @@ h2 {
 }
 
 .m2m-field {
-    height: 15rem;
-    overflow-y: scroll;
+    /* height: 15rem;
+    overflow-y: scroll; */
     margin-top: 1rem;
 }
 
@@ -209,10 +220,10 @@ h2 {
     font-style: italic;
 }
 
-.co_author-div > div:first-of-type {
+/* .co_author-div > div:first-of-type {
     overflow-y: scroll;
     height: 15rem;
-}
+} */
 
 .co_author-div > div:last-of-type {
     display: flex;
@@ -263,6 +274,10 @@ h2 {
     display: none;
 }
 
+/* SELECT2 STYLES */
+.select2-container {
+    max-width: 18rem;
+}
 
 
 

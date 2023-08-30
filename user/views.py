@@ -65,7 +65,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.success(request, 'Você se desconectou')
-    return redirect('home')
+    return redirect('Login')
 
 class PasswordResetView(PasswordResetView):
     form_class = PasswordResetForm

@@ -80,7 +80,6 @@ class Media(models.Model):
     license = models.CharField(_('Licença'), max_length=60, choices=LICENSE_CHOICES, default='cc0',
         help_text=_('Tipo de licença que a mídia terá'))
     
-    license_year = models.CharField(_('Ano da Licença'), max_length=4, default='0000', blank=True, help_text=_('Ano da licença escolhida'))
     credit = models.CharField(_('Referências Bibliográficas'), blank=True, help_text=_('Referências bibliográficas relacionadas com a imagem.'))
 
     # File

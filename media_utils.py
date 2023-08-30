@@ -588,7 +588,6 @@ if __name__ == "__main__":
             'license': {
                 'license_type': 'cc_by_nd',
                 'creators': ['Luiz Felyppe', 'Vitória de Oliveira', 'João Guilherme'],
-                'year': '2023'
             },
             'keywords': {
                 'Estágio de vida': 'fase particular do ciclo de vida de um organismo, durante a qual ele exibe características e comportamentos específicos',

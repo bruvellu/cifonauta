@@ -24,7 +24,10 @@ from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
+import re
+from dotenv import load_dotenv
 
+load_dotenv()
 
 @custom_login_required
 @author_required
@@ -66,6 +69,27 @@ def upload_media(request):
                 for media in medias:
                     if media.size > 3000000:
                         messages.error(request, 'Arquivo maior que 3MB')
+                        return redirect('upload_media')
+                    
+                    extension_regex = fr"{os.getenv('EXTENSION_REGEX')}"
+                    filename_regex = fr"{os.getenv('FILENAME_REGEX')}"
+
+                    ext_index = media.name.lower().rfind('.')
+                    if ext_index != -1:
+                        filename = media.name.lower()[:ext_index]
+                        extension = media.name.lower()[ext_index:]
+
+                        if not re.match(filename_regex, filename):
+                            messages.error(request, f'Nome de arquivo inválido:  {media.name}')
+                            messages.warning(request, 'Caracteres especiais aceitos: - _ ( )')
+                            return redirect('upload_media')
+                        
+                        if not re.match(extension_regex, extension):
+                            messages.error(request, f'Formato de arquivo não aceito:  {media.name}')
+                            messages.warning(request, 'Verifique os tipos de arquivos aceitos')
+                            return redirect('upload_media')
+                    else:
+                        messages.error(request, f'Arquivo inválido:  {media.name}')
                         return redirect('upload_media')
             else:
                 messages.error(request, 'Por favor, selecione as mídias')

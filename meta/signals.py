@@ -3,6 +3,7 @@
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from media_utils import Metadata
 import os
 from django.db.models import Q
 import shutil
@@ -22,6 +23,16 @@ def create_site_media_copy(sender, instance, **kwargs):
         else:
             shutil.copy(source_file_path, dest_file_path)
 
+        author = str(instance.author)
+        metadata = {
+            'license': {
+                'license_type': str(instance.license),
+                'author': author,
+                'co_authors': ''
+            }
+        }
+
+        Metadata(instance.file.path, metadata)
 
 def update_specialist_of(sender, instance, action, model, pk_set, **kwargs):
     from user.models import UserCifonauta

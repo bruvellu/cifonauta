@@ -4,6 +4,7 @@ import json
 import logging
 import os
 
+from media_utils import Metadata
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
@@ -14,6 +15,8 @@ from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
 from operator import or_, and_
+from PIL import Image
+from PIL import Image
 
 from .models import *
 from .forms import *
@@ -50,23 +53,36 @@ def upload_media(request):
                 messages.success(request, 'Pré-cadastro realizado com sucesso')
                 return redirect('upload_media')
         else:
-            form = UploadMediaForm(request.POST, request.FILES)
+            medias = request.FILES.getlist('medias')
+            form = UploadMediaForm(request.POST)
 
             if form.is_valid():
-                media_instance = form.save(commit=False)
+                print(form.cleaned_data['title'])
+                if (medias):
+                    for media in medias:
+                        form = UploadMediaForm(request.POST)
+                        media_instance = form.save(commit=False)
+                        media_instance.file = media
 
-                if 'file' in request.FILES: #Temporary
-                    media_instance.sitepath = request.FILES['file']
-                    media_instance.coverpath = request.FILES['file']
+                        if 'file' in request.FILES:
+                            media_instance.sitepath = media
+                            media_instance.coverpath = media
+                            
+                        if form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
+                            media_instance.save()
+                            form.save_m2m()
+                        else:
+                            media_instance.has_taxons = False
+                            media_instance.save()
 
-                if form.cleaned_data['has_taxons'] == 'True':
-                    media_instance.save()
-                    form.save_m2m()
+                    messages.success(request, 'Suas mídias foram salvas')
                 else:
-                    media_instance.save()
-
-                messages.success(request, 'Sua imagem foi salva')
-                return redirect('upload_media')
+                    messages.error(request, 'Por favor, selecione as mídias')
+            else:
+                messages.error(request, 'Erro ao tentar salvar mídias')
+            
+            return redirect('upload_media')
+            
     else:
         form = UploadMediaForm(initial={'author': request.user.id})
         registration_form = UserPreRegistrationForm()
@@ -86,19 +102,81 @@ def upload_media(request):
     return render(request, 'upload_media.html', context)
 
 
+@custom_login_required
+@curator_required
+def edit_metadata(request, media_id):
+    media = get_object_or_404(Media, id=media_id)
+    if request.method == 'POST':
+        form = EditMetadataForm(request.POST, instance=media)
+    else:
+        form = EditMetadataForm(instance=media)
+    if form.is_valid():
+        author = str(form.cleaned_data['author'])
+        co_authors = str(form.cleaned_data['co_author']).split(';')
+        metadata =  {
+        'software': str(form.cleaned_data['software']),
+        'headline': str(form.cleaned_data['title']),
+        'instructions': str(form.cleaned_data['size']),
+        'license': {
+            'license_type': str(form.cleaned_data['license']),
+            'author': author,
+            'co-authors': co_authors,
+            },
+        'keywords': {
+            'Estágio de vida': str(form.cleaned_data['tag_life_stage']),
+            'Habitat': str(form.cleaned_data['tag_habitat']),
+            'Microscopia': str(form.cleaned_data['tag_microscopy']),
+            'Modo de vida': str(form.cleaned_data['tag_lifestyle']),
+            'Técnica fotográfica': str(form.cleaned_data['tag_photographic_technique']),
+            'Diversos': str(form.cleaned_data['tag_several'])
+        },
+        'source': str(form.cleaned_data['specialist']),
+        'credit': str(form.cleaned_data['credit']),
+        'description_pt': str(form.cleaned_data['caption']),
+        'description_en': '',
+        'gps': str(form.cleaned_data['geolocation']),
+        'datetime': str(form.cleaned_data['date']),
+        'title_pt': str(form.cleaned_data['title']),
+        'title_en': '',
+        'country': str(form.cleaned_data['country']),
+        'state': str(form.cleaned_data['state']),
+        'city': str(form.cleaned_data['city']),
+        'sublocation': str(form.cleaned_data['location'])
+            }
+        media.status = 'to_review'
+        Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
+        form.save()
+    is_specialist = request.user.specialist_of.exists()
+    is_curator = request.user.curator_of.exists()
+
+    context = {
+        'form': form,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator,
+    }
+
+    return render(request, 'update_media.html', context) 
+
 @method_decorator(custom_login_required, name='dispatch')
 @method_decorator(curator_required, name='dispatch')
 class CuradoriaMediaList(LoginRequiredMixin, ListView):
     model = Media
     template_name = 'curadoria_media_list.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_queryset(self):
         user = self.request.user
-        context['is_specialist'] = user.specialist_of.exists()
-        context['is_curator'] = user.curator_of.exists()
-        return context
-    
+
+        curadorias = user.curator_of.all()
+        curation_taxons=[]
+        for curadoria in curadorias:
+            taxon = curadoria.taxons.all()
+            curation_taxons.append(taxon)
+        queryset = Media.objects.none()
+        for curadoria in curation_taxons:
+            queryset |= Media.objects.filter(taxons__in=curadoria)
+        # This "queryset" appears in the template as "object_list"
+       
+        return queryset
 
 #Missing
 @method_decorator(custom_login_required, name='dispatch')
@@ -120,6 +198,7 @@ class UpdateMedia(UpdateView):
     model = Media
     template_name = "update_media.html"
     fields = '__all__'
+    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -160,7 +239,65 @@ class MyMedias(LoginRequiredMixin, ListView):
         context['is_specialist'] = user.specialist_of.exists()
         context['is_curator'] = user.curator_of.exists()
         return context
+
+@method_decorator(custom_login_required, name='dispatch')
+@method_decorator(curator_required, name='dispatch')
+class RevisionMedia(LoginRequiredMixin, ListView):
+    model = Media
+    template_name = 'media_revision.html'
+
+    # Filters the images to get only the ones that are in the user's curation
+    def get_queryset(self):
+        user = self.request.user
+        
+        curadorias = user.curator_of.all()
+        curation_taxons=[]
+        for curadoria in curadorias:
+            taxon = curadoria.taxons.all()
+            curation_taxons.append(taxon)
+        print(curadorias, curation_taxons)
+        queryset = Media.objects.none()
+        for curadoria in curation_taxons:
+            queryset |= Media.objects.filter(taxons__in=curadoria) 
+        # This "queryset" appears in the template as "object_list"
+        queryset = Media.objects.filter(status='to_review')
+        return queryset
+
+    # Gets the images selected in the checkboxes and publish them
+    def post(self, request):
+        selected_images_ids = request.POST.getlist('selected_images_ids')
+        is_public = True
+        # Gets the images selected by their id
+        Media.objects.filter(id__in=selected_images_ids).update(is_public=is_public, status='published') 
+        # Gets the paths to the folders "site_media" and "uploads"
+        site_media_path = settings.MEDIA_ROOT
+        uploads_path = os.path.join(site_media_path, 'uploads')
+
+        # Iterates the selected_images_ids, gets the images 
+        for image_id in selected_images_ids:
+            try:
+                media = Media.objects.get(id=image_id)
+                # Joins the uploads_path with the file name
+                old_path = os.path.join(uploads_path, os.path.basename(media.filepath))
+                # Joins the site_media_path with the file name
+                new_path = os.path.join(site_media_path, os.path.basename(media.filepath))
+                print(f"is_public = {media.is_public}")
+                print(f"status = {media.status}")
+                 # Opens the image using Pillow
+                image = Image.open(old_path)
+                # Resizes the image and save it with reduced quality
+                image = image.resize((300, 300)) 
+                image.save(new_path, quality=50)  
+            except Media.DoesNotExist:
+                print("Imagem não encontrada!")
+        return redirect('my_medias')
     
+    # Gets the user's permissions
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_permissions = self.request.user.get_all_permissions()
+        context['user_permissions'] = user_permissions
+        return context
 
 # Home
 def home_page(request):

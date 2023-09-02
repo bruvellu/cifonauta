@@ -56,12 +56,16 @@ OPERATORS = (
 class UploadMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('file', 'author', 'co_author', 'title', 'caption', 'date',  'has_taxons', 'taxons', 'country', 'state', 'city', 'location', 'geolocation',) #Faltando direito autoral
+        fields = ( 'title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'license', 'credit', 'country', 'state', 'city', 'location', 'geolocation',) #Faltando direito autoral
         widgets = {
             'taxons': forms.CheckboxSelectMultiple(),
             'has_taxons': forms.RadioSelect()
         }
 
+class EditMetadataForm(forms.ModelForm):
+    class Meta:
+        model = Media
+        fields = ( 'title', 'author', 'co_author', 'specialist', 'caption', 'size', 'date',  'has_taxons', 'taxons', 'license', 'credit', 'country', 'state', 'city', 'location', 'geolocation', 'tag_life_stage', 'tag_habitat', 'tag_microscopy', 'tag_lifestyle', 'tag_photographic_technique', 'tag_several', 'software', 'file')
 
 class UserPreRegistrationForm(forms.ModelForm):
     class Meta:

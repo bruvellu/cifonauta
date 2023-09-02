@@ -38,6 +38,12 @@
     {% endif %}
     <form class="upload-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
+        <div class="field-container">
+            <label for="">Arquivos:</label>
+            <div class="field-div file-div">
+                <input type="file" name="medias" id="medias" multiple>
+            </div>
+        </div>
         {% for field in form %}
         {% if field == form.co_author %}
         <div class="field-container">

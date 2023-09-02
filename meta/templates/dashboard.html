@@ -27,15 +27,12 @@
             </li>
             {% if is_specialist %}
             <li>
-                <a href="">Edição de metadados</a>
+                <a href="{% url 'curadory_medias' %}">Edição de metadados</a>
             </li>
             {% endif %}
             {% if is_curator %}
             <li>
-                <a href="">Revisão de mídias</a>
-            </li>
-            <li>
-                <a href="{% url 'media_list' %}">Mídias da minha curadoria</a>
+                <a href="{% url 'media_revision' %}">Revisão de mídias</a>
             </li>
             {% endif %}
             <li>

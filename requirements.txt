@@ -10,5 +10,4 @@ requests
 pillow
 fabric
 suds
-django-role-permissions
 django-simple-captcha

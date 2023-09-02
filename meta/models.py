@@ -37,6 +37,7 @@ class Curadoria(models.Model):
 
 
 def upload_to(instance, filename):
+    print("UPLOAD")
     ext = filename.split('.')[-1]
     random_filename = f"{uuid.uuid4()}.{ext}"
     
@@ -46,11 +47,13 @@ def upload_to(instance, filename):
 class Media(models.Model):
     '''Table containing both image and video files.'''
 
+    id = models.AutoField(primary_key=True)
+
     # New fields
     file = models.FileField(upload_to=upload_to, default=None, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
             verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
-    co_author = models.CharField(max_length=256, default='', verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'))
+    co_author = models.CharField(max_length=256, blank=True, verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia separados por ";"'))
     """ co_author = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, 
             verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='co_author') """
     STATUS_CHOICES = (
@@ -63,6 +66,21 @@ class Media(models.Model):
     has_taxons = models.CharField(_('tem táxons'), help_text=_('Mídia tem táxons.'),
             choices=(('True', 'Sim'), ('False', 'Não')), default='False')
     taxons = models.ManyToManyField('Taxon', related_name="taxons", verbose_name=_('táxons'), blank=True)
+    
+    #License
+    LICENSE_CHOICES = (
+        ('cc0', 'CC0 (Domínio Público)'),
+        ('cc_by', 'CC BY (Atribuição)'),
+        ('cc_by_sa', 'CC BY-SA (Atribuição-CompartilhaIgual)'),
+        ('cc_by_nd', 'CC BY-ND (Atribuição-SemDerivações)'),
+        ('cc_by_nc', 'CC BY-NC (Atribuição-NãoComercial)'),
+        ('cc_by_nc_sa', 'CC BY-NC-SA (AtribuiçãoNãoComercial-CompartilhaIgual)'),
+        ('cc_by_nc_nd', ' CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')
+    )
+    license = models.CharField(_('Licença'), max_length=60, choices=LICENSE_CHOICES, default='cc0',
+        help_text=_('Tipo de licença que a mídia terá'))
+    
+    credit = models.CharField(_('Referências Bibliográficas'), blank=True, help_text=_('Referências bibliográficas relacionadas com a imagem.'))
 
     # File
     filepath = models.CharField(_('arquivo original.'), max_length=200, help_text=_('Caminho único para arquivo original.'))
@@ -103,12 +121,24 @@ class Media(models.Model):
             blank=True, help_text=_('Classe de tamanho.'))
     geolocation = models.CharField(_('geolocalização'), default='',
             max_length=25, blank=True,
-            help_text=_('Geolocalização da imagem no formato decimal.'))
+        help_text=_('Geolocalização da imagem no formato decimal.'))
     latitude = models.CharField(_('latitude'), default='', max_length=25,
             blank=True, help_text=_('Latitude onde a imagem foi criada.'))
     longitude = models.CharField(_('longitude'), default='', max_length=25,
             blank=True, help_text=_('Longitude onde a imagem foi criada.'))
 
+
+    tag_life_stage = models.CharField(_('Estágio de Vida'), default='',
+        blank=True, help_text=_('Estágio de Vida'))
+    tag_habitat = models.CharField(_('Habitat'), default='', blank=True, help_text=_('Habitat da imagem'))
+    tag_microscopy = models.CharField(_('Microscopia'), default='', blank=True, help_text=_('Microscópio utilizado'))
+    tag_lifestyle = models.CharField(_('Estilo de Vida'), default='', blank=True, help_text=_('Estilo de vida'))
+    tag_photographic_technique = models.CharField(_('Técnica de fotografia'), default='', blank=True, help_text=_('Técnica de fotografia utilizada'))
+    tag_several = models.CharField(_('Diversos'), default='', blank=True, help_text=_('Informações diversas'))
+
+    software = models.CharField(_('Software'), default='', blank=True, help_text=_('Software utilizado na Imagem'))
+
+    specialist = models.ManyToManyField('Person',  related_name="pessoas", verbose_name=_('Especialista'), blank=True)
     # Foreign metadata
     location = models.ForeignKey('Location', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('local'),
@@ -124,34 +154,33 @@ class Media(models.Model):
             help_text=_('País mostrado na imagem (ou país de coleta).'))
     
 
-    def rename_and_move_file(self):
-        if self.file and self.status == 'published':
-            current_file_path = self.file.path
-            new_filename = f"{self.title_pt_br}.{self.file.name.split('.')[-1]}"
-            new_file_path = os.path.join('site_media', new_filename)
+#     def rename_and_move_file(self):
+#         if self.file and self.status == 'published':
+#             current_file_path = self.file.path
+#             new_filename = f"{self.title_pt_br}.{self.file.name.split('.')[-1]}"
+#             new_file_path = os.path.join('site_media', new_filename)
 
-            shutil.move(current_file_path, new_file_path)
+#             shutil.move(current_file_path, new_file_path)
 
-            # Refresh the field "file" to be updated in the database
-            self.file.name = new_filename
+#             # Refresh the field "file" to be updated in the database
+#             self.file.name = new_filename
 
-        elif self.file and self.status != 'published':
-            current_file_path = self.file.path
-            new_filename = f"uploads/{uuid.uuid4()}.{self.file.name.split('.')[-1]}"
-            new_file_path = os.path.join('site_media', new_filename)
+#         elif self.file and self.status != 'published':
+#             current_file_path = self.file.path
+#             new_filename = f"uploads/{uuid.uuid4()}.{self.file.name.split('.')[-1]}"
+#             new_file_path = os.path.join('site_media', new_filename)
 
-            shutil.move(current_file_path, new_file_path)
+#             shutil.move(current_file_path, new_file_path)
 
-            # Refresh the field "file" to be updated in the database
-            self.file.name = new_filename
+#             # Refresh the field "file" to be updated in the database
+#             self.file.name = new_filename
 
 
     def save(self, *args, **kwargs):
         if self.pk:
-            original = Media.objects.get(pk=self.pk)
-            # Only if status changed related to the published one
-            if self.status != original.status and ("published" in [self.status, original.status]):
-                self.rename_and_move_file()
+        #     original = Media.objects.get(pk=self.pk)
+        #     if self.status != original.status and ("published" in [self.status, original.status]):
+        #         self.rename_and_move_file()
             
             if not self.taxons.exists():
                 self.has_taxons = 'True'
@@ -163,7 +192,7 @@ class Media(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return 'ID={} {} ({})'.format(self.id, self.title, self.datatype)
+        return 'ID={} {} ({}) {}'.format(self.id, self.title, self.datatype, self.status)
 
     def get_absolute_url(self):
         return reverse('media_url', args=[str(self.id)])
@@ -466,6 +495,8 @@ models.signals.pre_save.connect(slug_pre_save, sender=Tour)
 # Create citation with bibkey.
 models.signals.pre_save.connect(citation_pre_save, sender=Reference)
 
+# Create copy of the media
+models.signals.post_save.connect(create_site_media_copy, sender=Media)
 # Delete file from folder when the media is deleted on website
 models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
 # Update the user's curatorships as specialist

@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='media',
             name='file',
-            field=models.FileField(default=None, null=True, upload_to=meta.models.upload_to),
+            field=models.FileField(default=None, null=True),
         ),
         migrations.AlterField(
             model_name='media',

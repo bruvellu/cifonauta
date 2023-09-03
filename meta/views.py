@@ -61,9 +61,10 @@ def upload_media(request):
 
                 messages.success(request, 'Pré-cadastro realizado com sucesso')
                 return redirect('upload_media')
+        
         else:
             medias = request.FILES.getlist('medias')
-            form = UploadMediaForm(request.POST)
+            form = UploadMediaForm(request.POST, request.FILES)
 
             if medias:
                 for media in medias:
@@ -97,23 +98,32 @@ def upload_media(request):
                 
             if form.is_valid():
                 for media in medias:
-                    form = UploadMediaForm(request.POST)
+                    form = UploadMediaForm(request.POST, request.FILES)
                     media_instance = form.save(commit=False)
-                    media_instance.file = media
-                    
-                    media_instance.sitepath = media
-                    media_instance.coverpath = media
 
                     if form.cleaned_data['terms'] == False:
                         messages.error(request, 'Você precisa aceitar os termos')
                         return redirect('upload_media')
+                    
+                    ext = media.name.split('.')[-1]
+                    new_filename = uuid.uuid4()
 
-                    if form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
-                        media_instance.save()
-                        form.save_m2m()
-                    else:
+                    media_instance.file = media
+                    media_instance.sitepath = media
+                    media_instance.coverpath = media
+
+                    media_instance.file.name = f"{new_filename}.{ext}"
+                    media_instance.sitepath.name = f"{new_filename}.{ext}"
+                    media_instance.coverpath.name = f"{new_filename}_cover.{ext}"
+
+                    if not form.cleaned_data['has_taxons'] == 'True': 
                         media_instance.has_taxons = False
-                        media_instance.save()
+
+                    media_instance.save()
+                    form.save_m2m()
+
+                    if not form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
+                        media_instance.taxons.clear() #Can only be called after form.save_m2m()
 
                 messages.success(request, 'Suas mídias foram salvas')
                 

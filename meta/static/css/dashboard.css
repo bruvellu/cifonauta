@@ -93,6 +93,8 @@ h2 {
     border-radius: 10px;
     background: #fafafa;
     box-shadow: 2px 2px 5px #aaa;
+    width: 100%;
+    max-width: 18rem;
 }
 
 .dialog > div {

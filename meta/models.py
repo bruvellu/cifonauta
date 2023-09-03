@@ -27,18 +27,12 @@ class Curadoria(models.Model):
         return self.name
 
 
-def upload_to(instance, filename):
-    ext = filename.split('.')[-1]
-    random_filename = f"{uuid.uuid4()}.{ext}"
-    
-    return os.path.join('uploads', random_filename)
-
 
 class Media(models.Model):
     '''Table containing both image and video files.'''
 
     # New fields
-    file = models.FileField(upload_to=upload_to, default=None, null=True)
+    file = models.FileField(upload_to='uploads/', default=None, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
             verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
     co_author = models.ManyToManyField('Person', blank=True,
@@ -69,9 +63,9 @@ class Media(models.Model):
     # File
     filepath = models.CharField(_('arquivo original.'), max_length=200, help_text=_('Caminho único para arquivo original.'))
     sitepath = models.FileField(_('arquivo web.'),
-            help_text=_('Arquivo processado para a web.'))
+            help_text=_('Arquivo processado para a web.'), default=None)
     coverpath = models.ImageField(_('amostra do arquivo.'),
-            help_text=_('Imagem de amostra do arquivo processado.'))
+            help_text=_('Imagem de amostra do arquivo processado.'), default=None)
     datatype = models.CharField(_('tipo de mídia'), max_length=15,
             help_text=_('Tipo de mídia.'))
     timestamp = models.DateTimeField(_('data de modificação'), blank=True, default=timezone.now,
@@ -124,36 +118,10 @@ class Media(models.Model):
     country = models.ForeignKey('Country', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('país'),
             help_text=_('País mostrado na imagem (ou país de coleta).'))
-    
-
-#     def rename_and_move_file(self):
-#         if self.file and self.status == 'published':
-#             current_file_path = self.file.path
-#             new_filename = f"{self.title_pt_br}.{self.file.name.split('.')[-1]}"
-#             new_file_path = os.path.join('site_media', new_filename)
-
-#             shutil.move(current_file_path, new_file_path)
-
-#             # Refresh the field "file" to be updated in the database
-#             self.file.name = new_filename
-
-#         elif self.file and self.status != 'published':
-#             current_file_path = self.file.path
-#             new_filename = f"uploads/{uuid.uuid4()}.{self.file.name.split('.')[-1]}"
-#             new_file_path = os.path.join('site_media', new_filename)
-
-#             shutil.move(current_file_path, new_file_path)
-
-#             # Refresh the field "file" to be updated in the database
-#             self.file.name = new_filename
 
 
     def save(self, *args, **kwargs):
         if self.pk:
-        #     original = Media.objects.get(pk=self.pk)
-        #     if self.status != original.status and ("published" in [self.status, original.status]):
-        #         self.rename_and_move_file()
-            
             if not self.taxons.exists():
                 self.has_taxons = 'True'
             else:
@@ -469,8 +437,6 @@ models.signals.pre_save.connect(slug_pre_save, sender=Tour)
 # Create citation with bibkey.
 models.signals.pre_save.connect(citation_pre_save, sender=Reference)
 
-# Create copy of the media
-models.signals.post_save.connect(create_site_media_copy, sender=Media)
 # Delete file from folder when the media is deleted on website
 models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
 # Update the user's curatorships as specialist

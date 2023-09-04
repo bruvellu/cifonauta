@@ -154,6 +154,7 @@ class Person(models.Model):
             verbose_name=_('arquivos'),
             help_text=_('Arquivos associados a este autor.'))
     orcid = models.CharField('Orcid', null=True, max_length=16)
+    idlattes = models.CharField('IDLattes', blank=True, null=True, max_length=16)
     email = models.EmailField(verbose_name='Email', null=True)
 
     def __str__(self):

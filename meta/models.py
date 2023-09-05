@@ -153,9 +153,9 @@ class Person(models.Model):
     media = models.ManyToManyField('Media', blank=True,
             verbose_name=_('arquivos'),
             help_text=_('Arquivos associados a este autor.'))
-    orcid = models.CharField('Orcid', null=True, max_length=16)
+    orcid = models.CharField('Orcid', blank=True, null=True, max_length=16)
     idlattes = models.CharField('IDLattes', blank=True, null=True, max_length=16)
-    email = models.EmailField(verbose_name='Email', null=True)
+    email = models.EmailField(verbose_name='Email', blank=True, null=True)
 
     def __str__(self):
         return self.name

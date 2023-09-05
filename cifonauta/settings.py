@@ -168,8 +168,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'site_media')
 SOURCE_ROOT = os.path.join(BASE_DIR, 'source_media')
 
 # List of accepted file extensions.
-PHOTO_EXTENSIONS = ('tif', 'tiff', 'jpg', 'jpeg', 'png', 'gif')
-VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogv', 'dv', 'mpg', 'mpeg', 'flv', 'm2ts', 'wmv')
+# PHOTO_EXTENSIONS = ('tif', 'tiff', 'jpg', 'jpeg', 'png', 'gif')
+# VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogv', 'dv', 'mpg', 'mpeg', 'flv', 'm2ts', 'wmv')
+PHOTO_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.gif')
+VIDEO_EXTENSIONS = ('.mp4',)
 MEDIA_EXTENSIONS = PHOTO_EXTENSIONS + VIDEO_EXTENSIONS
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a

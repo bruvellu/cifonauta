@@ -26,6 +26,7 @@ from django.contrib import messages
 from user.models import UserCifonauta
 import re
 from dotenv import load_dotenv
+from django.conf import settings
 
 load_dotenv()
 
@@ -72,20 +73,16 @@ def upload_media(request):
                         messages.error(request, 'Arquivo maior que 3MB')
                         return redirect('upload_media')
                     
-                    extension_regex = fr"{os.getenv('EXTENSION_REGEX')}"
                     filename_regex = fr"{os.getenv('FILENAME_REGEX')}"
+                    filename, extension = os.path.splitext(media.name.lower())
 
-                    ext_index = media.name.lower().rfind('.')
-                    if ext_index != -1:
-                        filename = media.name.lower()[:ext_index]
-                        extension = media.name.lower()[ext_index:]
-
+                    if extension:
                         if not re.match(filename_regex, filename):
                             messages.error(request, f'Nome de arquivo inválido:  {media.name}')
                             messages.warning(request, 'Caracteres especiais aceitos: - _ ( )')
                             return redirect('upload_media')
                         
-                        if not re.match(extension_regex, extension):
+                        if not extension.endswith(settings.MEDIA_EXTENSIONS):
                             messages.error(request, f'Formato de arquivo não aceito:  {media.name}')
                             messages.warning(request, 'Verifique os tipos de arquivos aceitos')
                             return redirect('upload_media')

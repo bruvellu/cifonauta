@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.flatpages.models import FlatPage
 from meta.models import *
 from modeltranslation.admin import TranslationAdmin
@@ -14,7 +14,7 @@ class FlatPageAdmin(TranslationAdmin):
 
 
 class MediaAdmin(TranslationAdmin):
-    list_display = ('title', 'filepath', 'is_public', 'highlight', 'title', 'caption', 'timestamp', 'author')
+    list_display = ('title', 'status', 'highlight', 'file', 'author', 'pub_date')
     list_filter = ('is_public', 'highlight', 'timestamp', 'person', 'tag', 'taxon')
 
 
@@ -43,6 +43,24 @@ class CountryAdmin(TranslationAdmin):
 
 class PersonAdmin(admin.ModelAdmin):
     filter_horizontal = ('media',)
+
+    def delete_queryset(self, request, queryset):
+        for person in queryset:
+            if Media.objects.filter(co_author=person).exists():
+                message = f"Não foi possível efetuar a exclusão porque a pessoa {person} está relacionada a uma mídia."
+                messages.error(request, message)
+                return 
+        
+        super().delete_queryset(request, queryset)
+
+
+    def delete_model(self, request, obj):
+        if Media.objects.filter(co_author=obj).exists():
+            message = "Não foi possível efetuar a exclusão porque esta pessoa está relacionada a uma mídia."
+            self.message_user(request, message, messages.ERROR)
+            return 
+        
+        obj.delete()
 
 
 class TaxonAdmin(TranslationAdmin):

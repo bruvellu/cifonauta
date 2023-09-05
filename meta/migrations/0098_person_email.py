@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('meta', '0097_alter_media_terms'),
+        ('meta', '0096_alter_media_terms'),
     ]
 
     operations = [

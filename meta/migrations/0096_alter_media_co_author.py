@@ -10,7 +10,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='media',
+            name='co_author'
+        ),
+        migrations.AddField(
             model_name='media',
             name='co_author',
             field=models.CharField(blank=True, help_text='Coautor(es) da mídia separados por ";"', max_length=256, verbose_name='coautor'),

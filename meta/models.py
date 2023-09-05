@@ -31,6 +31,8 @@ class Curadoria(models.Model):
 class Media(models.Model):
     '''Table containing both image and video files.'''
 
+    id = models.AutoField(primary_key=True)
+
     # New fields
     file = models.FileField(upload_to='uploads/', default=None, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
@@ -59,6 +61,8 @@ class Media(models.Model):
     license = models.CharField(_('Licença'), max_length=60, choices=LICENSE_CHOICES, default='cc0',
         help_text=_('Tipo de licença que a mídia terá'))
     terms = models.BooleanField(_('termos'), default=False)
+    
+    credit = models.CharField(_('Referências Bibliográficas'), blank=True, help_text=_('Referências bibliográficas relacionadas com a imagem.'))
 
     # File
     filepath = models.CharField(_('arquivo original.'), max_length=200, help_text=_('Caminho único para arquivo original.'))
@@ -99,12 +103,24 @@ class Media(models.Model):
             blank=True, help_text=_('Classe de tamanho.'))
     geolocation = models.CharField(_('geolocalização'), default='',
             max_length=25, blank=True,
-            help_text=_('Geolocalização da imagem no formato decimal.'))
+        help_text=_('Geolocalização da imagem no formato decimal.'))
     latitude = models.CharField(_('latitude'), default='', max_length=25,
             blank=True, help_text=_('Latitude onde a imagem foi criada.'))
     longitude = models.CharField(_('longitude'), default='', max_length=25,
             blank=True, help_text=_('Longitude onde a imagem foi criada.'))
 
+
+    tag_life_stage = models.CharField(_('Estágio de Vida'), default='',
+        blank=True, help_text=_('Estágio de Vida'))
+    tag_habitat = models.CharField(_('Habitat'), default='', blank=True, help_text=_('Habitat da imagem'))
+    tag_microscopy = models.CharField(_('Microscopia'), default='', blank=True, help_text=_('Microscópio utilizado'))
+    tag_lifestyle = models.CharField(_('Estilo de Vida'), default='', blank=True, help_text=_('Estilo de vida'))
+    tag_photographic_technique = models.CharField(_('Técnica de fotografia'), default='', blank=True, help_text=_('Técnica de fotografia utilizada'))
+    tag_several = models.CharField(_('Diversos'), default='', blank=True, help_text=_('Informações diversas'))
+
+    software = models.CharField(_('Software'), default='', blank=True, help_text=_('Software utilizado na Imagem'))
+
+    specialist = models.ManyToManyField('Person',  related_name="pessoas", verbose_name=_('Especialista'), blank=True)
     # Foreign metadata
     location = models.ForeignKey('Location', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('local'),
@@ -130,7 +146,7 @@ class Media(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return 'ID={} {} ({})'.format(self.id, self.title, self.datatype)
+        return 'ID={} {} ({}) {}'.format(self.id, self.title, self.datatype, self.status)
 
     def get_absolute_url(self):
         return reverse('media_url', args=[str(self.id)])

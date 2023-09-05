@@ -42,7 +42,7 @@
       </div>
 
       <button class="more-filters-button" onClick="showCheckboxOptions(this, event)">
-        <p>Mais filtros</p>
+	      <p>{% trans 'Mais filtros' %}</p>
         <img class="first-dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg" alt="">
       </button>
       
@@ -51,18 +51,17 @@
           {% if field.field.widget.attrs.fields %}
             <div>
               <label for="{{ field.auto_id }}">{{ field.label }}:</label>
-              {{ field}}
+              {{ field }}
             </div>
           {% endif %}
         {% endfor %}
 
-        <p class="p-divider">Escolha a forma de combinar os campos abaixo</p>
+	<p class="p-divider">{% trans 'Escolha como combinar os campos abaixo' %}</p>
 
         <div class="operator-div">
           <label for="{{ display_form.operator.auto_id }}">{{ display_form.operator.label }}:</label>
           {{ display_form.operator }}
         </div>
-        
 
         <div>
           {% for field in display_form %}

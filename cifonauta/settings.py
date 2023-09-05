@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.humanize',
 
-    'rolepermissions',
     'captcha',
 ]
 
@@ -203,7 +202,6 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 15000
 # Required for debug_toolbar
 INTERNAL_IPS = ['127.0.0.1']
 
-ROLEPERMISSIONS_MODULE = 'cifonauta.roles'
 #import logging
 #from sorl.thumbnail.log import ThumbnailLogHandler
 #handler = ThumbnailLogHandler()

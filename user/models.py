@@ -52,7 +52,7 @@ class UserCifonauta(AbstractUser):
             verbose_name=_('curador de'), help_text='Mostra de quais curadorias o usuário é curador.')
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['orcid', 'idlattes', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['orcid', 'idlattes', 'first_name', 'last_name', 'email']
 
     def get_full_name(self):
         # The user is identified by their email address

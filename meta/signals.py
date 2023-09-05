@@ -1,10 +1,22 @@
 # -*- coding: utf-8 -*-
 
 from django.template.defaultfilters import slugify
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
 import os
 from django.db.models import Q
+from PIL import Image
+
+from django.conf import settings
+
+def compress_files(sender, instance, created, **kwargs):
+    if created and instance.file.name.lower().endswith(settings.PHOTO_EXTENSIONS):
+        coverpath = Image.open(instance.coverpath.path)
+        coverpath.thumbnail((1280, 720))
+        coverpath.save(instance.coverpath.path, quality=50)
+
+        sitepath = Image.open(instance.sitepath.path)
+        sitepath.thumbnail((1280, 720))
+        sitepath.save(instance.sitepath.path)
+
 
 def update_specialist_of(sender, instance, action, model, pk_set, **kwargs):
     from user.models import UserCifonauta

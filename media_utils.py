@@ -477,7 +477,7 @@ class Metadata():
                 self.insert_metadata_iptc(k, v)
             elif k == 'license':
                 license_type = v['license_type']
-                creators = f'Author: {v["author"]}, Co-authors: {";".join(v["co-authors"])}'
+                creators = f'Author: {v["author"]}, Co-authors: {";".join(v["co_authors"])}'
                 self.insert_metadata_xmp('License', self._RIGHTS[license_type]["license_name"], license=True)
                 self.insert_metadata_xmp('AttributionURL', self._RIGHTS[license_type]["license_link"], license=True)
                 self.insert_metadata_xmp('Rights', self._RIGHTS[license_type]["license_text"], license=True)

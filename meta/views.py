@@ -169,7 +169,7 @@ def edit_metadata(request, media_id):
         'license': {
             'license_type': str(form.cleaned_data['license']),
             'author': author,
-            'co-authors': co_authors,
+            'co_authors': co_authors,
             },
         'keywords': {
             'Estágio de vida': str(form.cleaned_data['tag_life_stage']),

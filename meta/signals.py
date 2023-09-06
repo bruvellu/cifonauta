@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from django.template.defaultfilters import slugify
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from media_utils import Metadata
 import os
 from django.db.models import Q
 from PIL import Image
@@ -17,6 +20,16 @@ def compress_files(sender, instance, created, **kwargs):
         sitepath.thumbnail((1280, 720))
         sitepath.save(instance.sitepath.path)
 
+        author = str(instance.author)
+        metadata = {
+            'license': {
+                'license_type': str(instance.license),
+                'author': author,
+                'co_authors': ''
+            }
+        }
+
+        Metadata(instance.file.path, metadata)
 
 def update_specialist_of(sender, instance, action, model, pk_set, **kwargs):
     from user.models import UserCifonauta

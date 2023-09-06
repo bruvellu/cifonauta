@@ -62,3 +62,28 @@ preRegistrationButton.addEventListener('click', () => {
 closeRegistrationButton.addEventListener('click', () => {
     modal.close()
 })
+
+
+let idTerms = document.querySelector('#id_terms')
+idTerms.addEventListener('click', () => {
+    let errorMessage = document.querySelector('.field-error')
+    if (idTerms.checked && errorMessage) {
+        errorMessage.remove()
+    }
+})
+
+let uploadForm = document.querySelector('.upload-form')
+uploadForm.addEventListener('submit', (event) => {
+
+    if (!idTerms.checked) {
+        event.preventDefault()
+        
+        let termsDiv = document.querySelector('.terms-div')
+        if (!termsDiv.contains(document.querySelector('.field-error'))) {
+            let errorMessage = document.createElement('span')
+            errorMessage.innerText = 'Você deve aceitar os termos'
+            errorMessage.classList.add('field-error')
+            termsDiv.prepend(errorMessage)
+        }
+    }
+})

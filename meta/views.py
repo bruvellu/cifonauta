@@ -27,7 +27,11 @@ from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
+import re
+from dotenv import load_dotenv
+from django.conf import settings
 
+load_dotenv()
 
 @custom_login_required
 @author_required
@@ -46,38 +50,83 @@ def dashboard(request):
 @author_required
 def upload_media(request):
     if request.method == 'POST':
-        if 'orcid' in request.POST:
-            form = UserPreRegistrationForm(request.POST)
+        if 'name' in request.POST:
+            form = CoauthorRegistrationForm(request.POST)
             if form.is_valid():
-                form.save()
+                registration_instance = form.save(commit=False)
+
+                name = form.cleaned_data['name'].split(' ')
+                name_capitalized = []
+                for word in name:
+                    name_capitalized.append(word.capitalize())
+                    
+                registration_instance.name = ' '.join(name_capitalized)
+                registration_instance.save()
+
                 messages.success(request, 'Pré-cadastro realizado com sucesso')
                 return redirect('upload_media')
+        
         else:
             medias = request.FILES.getlist('medias')
-            form = UploadMediaForm(request.POST)
+            form = UploadMediaForm(request.POST, request.FILES)
 
+            if medias:
+                for media in medias:
+                    if media.size > 3000000:
+                        messages.error(request, 'Arquivo maior que 3MB')
+                        return redirect('upload_media')
+                    
+                    filename_regex = fr"{os.getenv('FILENAME_REGEX')}"
+                    filename, extension = os.path.splitext(media.name.lower())
+
+                    if extension:
+                        if not re.match(filename_regex, filename):
+                            messages.error(request, f'Nome de arquivo inválido:  {media.name}')
+                            messages.warning(request, 'Caracteres especiais aceitos: - _ ( )')
+                            return redirect('upload_media')
+                        
+                        if not extension.endswith(settings.MEDIA_EXTENSIONS):
+                            messages.error(request, f'Formato de arquivo não aceito:  {media.name}')
+                            messages.warning(request, 'Verifique os tipos de arquivos aceitos')
+                            return redirect('upload_media')
+                    else:
+                        messages.error(request, f'Arquivo inválido:  {media.name}')
+                        return redirect('upload_media')
+            else:
+                messages.error(request, 'Por favor, selecione as mídias')
+                return redirect('upload_media')
+                
             if form.is_valid():
-                print(form.cleaned_data['title'])
-                if (medias):
-                    for media in medias:
-                        form = UploadMediaForm(request.POST)
-                        media_instance = form.save(commit=False)
-                        media_instance.file = media
+                for media in medias:
+                    form = UploadMediaForm(request.POST, request.FILES)
+                    media_instance = form.save(commit=False)
 
-                        if 'file' in request.FILES:
-                            media_instance.sitepath = media
-                            media_instance.coverpath = media
-                            
-                        if form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
-                            media_instance.save()
-                            form.save_m2m()
-                        else:
-                            media_instance.has_taxons = False
-                            media_instance.save()
+                    if form.cleaned_data['terms'] == False:
+                        messages.error(request, 'Você precisa aceitar os termos')
+                        return redirect('upload_media')
+                    
+                    ext = media.name.split('.')[-1]
+                    new_filename = uuid.uuid4()
 
-                    messages.success(request, 'Suas mídias foram salvas')
-                else:
-                    messages.error(request, 'Por favor, selecione as mídias')
+                    media_instance.file = media
+                    media_instance.sitepath = media
+                    media_instance.coverpath = media
+
+                    media_instance.file.name = f"{new_filename}.{ext}"
+                    media_instance.sitepath.name = f"{new_filename}.{ext}"
+                    media_instance.coverpath.name = f"{new_filename}_cover.{ext}"
+
+                    if not form.cleaned_data['has_taxons'] == 'True': 
+                        media_instance.has_taxons = False
+
+                    media_instance.save()
+                    form.save_m2m()
+
+                    if not form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
+                        media_instance.taxons.clear() #Can only be called after form.save_m2m()
+
+                messages.success(request, 'Suas mídias foram salvas')
+                
             else:
                 messages.error(request, 'Erro ao tentar salvar mídias')
             
@@ -85,7 +134,7 @@ def upload_media(request):
             
     else:
         form = UploadMediaForm(initial={'author': request.user.id})
-        registration_form = UserPreRegistrationForm()
+        registration_form = CoauthorRegistrationForm()
         form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
     

@@ -994,13 +994,14 @@ ul.refine-inactive li a.meta-inactive {
   top:1em;
   left:10px;
   text-align:center;
+  z-index: 2;
 }
 
 #messages div {
   margin:0 0 0.5em 0;
 }
 
-.error, .notice, .success {
+.error, .notice, .success, .warning {
   padding:.2em 1em;
   border:2px solid #ddd;
   -moz-border-radius:5px;
@@ -1013,6 +1014,7 @@ ul.refine-inactive li a.meta-inactive {
   transform: scale(1);
   transform-origin: 0 0;
   position:relative;
+  width: fit-content;
 }
 
 /* THUMBS */

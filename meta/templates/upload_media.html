@@ -9,10 +9,13 @@
 {% block dashboard_content %}
 <dialog class="dialog">
     <div>
-        <button class="close-registration-button">Fechar</button>
+        <button class="close-registration-button">
+            <div class='line1'></div>
+            <div class='line2'></div>
+        </button>
         <form class="pre-registration-form" method="post">
             {% csrf_token %}
-            <p>Pré-cadastro de autor</p>
+            <p>Registre o coautor</p>
             {% for field2 in registration_form %}
             <div class="field2-container">
                 {{ field2.label_tag }}
@@ -24,7 +27,7 @@
                 </div>
             </div>
             {% endfor %}
-            <button class="pre-registration-submit" type="submit">Pré-cadastrar</button>
+            <button class="pre-registration-submit" type="submit">Cadastrar</button>
         </form>
     </div>
 </dialog>
@@ -42,6 +45,8 @@
             <label for="">Arquivos:</label>
             <div class="field-div file-div">
                 <input type="file" name="medias" id="medias" multiple>
+                <span class="help-text">Arquivos aceitos: PNG JPG JPEG GIF MP4</span>
+                <span class="help-text">Tamanho máximo: 3MB</span>
             </div>
         </div>
         {% for field in form %}
@@ -49,16 +54,14 @@
         <div class="field-container">
             {{ field.label_tag }}
             <div class="field-div co_author-div">
-                
                 {{ field }}
                 {% if field.help_text %}
                 <span class="help-text">{{ field.help_text }}</span>
                 {% endif %}
-                <p>Para mais de um coautor, separe-os por vírgulas</p>
-                {% comment %} <div>
+                <div>
                     <p>Coautor não está na lista?</p>
                     <button class="pre-registration-button" type="button">Registrar coautor</button>
-                </div> {% endcomment %}
+                </div>
             </div>
         </div>
         {% elif field == form.has_taxons %}
@@ -76,11 +79,27 @@
                 </div>
                 <div class="field-div m2m-field taxons-div hide-div">
                     {{ form.taxons }}
+                    {% if form.taxons.help_text %}
+                    <span class="help-text">{{ form.taxons.help_text }}</span>
+                    {% endif %}
                 </div>
                 {{ field.errors }}
             </div>
         </div>
         {% elif field == form.taxons %}
+        {% elif field == form.terms %}
+        <div class="field-container">
+            {{ field.label_tag }}
+            <div class="field-div terms-div">
+                <div class="term-wrapper">
+                    {{ field }}
+                    Declaro...
+                </div>
+                {% if field.help_text %}
+                <span class="help-text">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
         {% else %}
         <div class="field-container">
             {{ field.label_tag }}

@@ -15,15 +15,6 @@ from django.utils import timezone
 import shutil
 
 
-class UserPreRegistration(models.Model):
-    first_name = models.CharField('Primeiro Nome', null=True, max_length=50)
-    last_name = models.CharField('Último Nome', null=True, max_length=50)
-    orcid = models.CharField('Orcid', null=True, max_length=16)
-
-    def __str__(self):
-        return f'{self.first_name} {self.last_name}'
-
-
 class Curadoria(models.Model):
     name = models.CharField(max_length=50)
     taxons = models.ManyToManyField('Taxon', blank=True)
@@ -36,13 +27,6 @@ class Curadoria(models.Model):
         return self.name
 
 
-def upload_to(instance, filename):
-    print("UPLOAD")
-    ext = filename.split('.')[-1]
-    random_filename = f"{uuid.uuid4()}.{ext}"
-    
-    return os.path.join('uploads', random_filename)
-
 
 class Media(models.Model):
     '''Table containing both image and video files.'''
@@ -50,12 +34,11 @@ class Media(models.Model):
     id = models.AutoField(primary_key=True)
 
     # New fields
-    file = models.FileField(upload_to=upload_to, default=None, null=True)
+    file = models.FileField(upload_to='uploads/', default=None, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
             verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
-    co_author = models.CharField(max_length=256, blank=True, verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia separados por ";"'))
-    """ co_author = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, 
-            verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='co_author') """
+    co_author = models.ManyToManyField('Person', blank=True,
+            verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='co_author')
     STATUS_CHOICES = (
         ('not_edited', 'Não Editado'),
         ('to_review', 'Para Revisão'),
@@ -65,9 +48,7 @@ class Media(models.Model):
             default='not_edited', help_text=_('Status da mídia.'))
     has_taxons = models.CharField(_('tem táxons'), help_text=_('Mídia tem táxons.'),
             choices=(('True', 'Sim'), ('False', 'Não')), default='False')
-    taxons = models.ManyToManyField('Taxon', related_name="taxons", verbose_name=_('táxons'), blank=True)
-    
-    #License
+    taxons = models.ManyToManyField('Taxon', related_name="taxons", verbose_name=_('táxons'), help_text=_('Táxons pertencentes à mídia.'), blank=True)
     LICENSE_CHOICES = (
         ('cc0', 'CC0 (Domínio Público)'),
         ('cc_by', 'CC BY (Atribuição)'),
@@ -79,15 +60,16 @@ class Media(models.Model):
     )
     license = models.CharField(_('Licença'), max_length=60, choices=LICENSE_CHOICES, default='cc0',
         help_text=_('Tipo de licença que a mídia terá'))
+    terms = models.BooleanField(_('termos'), default=False)
     
     credit = models.CharField(_('Referências Bibliográficas'), blank=True, help_text=_('Referências bibliográficas relacionadas com a imagem.'))
 
     # File
     filepath = models.CharField(_('arquivo original.'), max_length=200, help_text=_('Caminho único para arquivo original.'))
     sitepath = models.FileField(_('arquivo web.'),
-            help_text=_('Arquivo processado para a web.'))
+            help_text=_('Arquivo processado para a web.'), default=None)
     coverpath = models.ImageField(_('amostra do arquivo.'),
-            help_text=_('Imagem de amostra do arquivo processado.'))
+            help_text=_('Imagem de amostra do arquivo processado.'), default=None)
     datatype = models.CharField(_('tipo de mídia'), max_length=15,
             help_text=_('Tipo de mídia.'))
     timestamp = models.DateTimeField(_('data de modificação'), blank=True, default=timezone.now,
@@ -110,7 +92,7 @@ class Media(models.Model):
             blank=True, help_text=_('Título da imagem.'))
     caption = models.TextField(_('legenda'), default='', blank=True,
             help_text=_('Legenda da imagem.'))
-    date = models.DateTimeField(_('data'), null=True, blank=True,
+    date = models.DateTimeField(_('data'), null=True,
             help_text=_('Data de criação da imagem.'))
     duration = models.CharField(_('duração'), max_length=20,
             default='00:00:00', blank=True,
@@ -143,45 +125,17 @@ class Media(models.Model):
     location = models.ForeignKey('Location', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('local'),
             help_text=_('Localidade mostrada na imagem (ou local de coleta).'))
-    city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True,
-            blank=True, verbose_name=_('cidade'),
+    city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True, verbose_name=_('cidade'),
             help_text=_('Cidade mostrada na imagem (ou cidade de coleta).'))
-    state = models.ForeignKey('State', on_delete=models.SET_NULL, null=True,
-            blank=True, verbose_name=_('estado'),
+    state = models.ForeignKey('State', on_delete=models.SET_NULL, null=True, verbose_name=_('estado'),
             help_text=_('Estado mostrado na imagem (ou estado de coleta).'))
     country = models.ForeignKey('Country', on_delete=models.SET_NULL,
-            null=True, blank=True, verbose_name=_('país'),
+            null=True, verbose_name=_('país'),
             help_text=_('País mostrado na imagem (ou país de coleta).'))
-    
-
-#     def rename_and_move_file(self):
-#         if self.file and self.status == 'published':
-#             current_file_path = self.file.path
-#             new_filename = f"{self.title_pt_br}.{self.file.name.split('.')[-1]}"
-#             new_file_path = os.path.join('site_media', new_filename)
-
-#             shutil.move(current_file_path, new_file_path)
-
-#             # Refresh the field "file" to be updated in the database
-#             self.file.name = new_filename
-
-#         elif self.file and self.status != 'published':
-#             current_file_path = self.file.path
-#             new_filename = f"uploads/{uuid.uuid4()}.{self.file.name.split('.')[-1]}"
-#             new_file_path = os.path.join('site_media', new_filename)
-
-#             shutil.move(current_file_path, new_file_path)
-
-#             # Refresh the field "file" to be updated in the database
-#             self.file.name = new_filename
 
 
     def save(self, *args, **kwargs):
         if self.pk:
-        #     original = Media.objects.get(pk=self.pk)
-        #     if self.status != original.status and ("published" in [self.status, original.status]):
-        #         self.rename_and_move_file()
-            
             if not self.taxons.exists():
                 self.has_taxons = 'True'
             else:
@@ -213,6 +167,9 @@ class Person(models.Model):
     media = models.ManyToManyField('Media', blank=True,
             verbose_name=_('arquivos'),
             help_text=_('Arquivos associados a este autor.'))
+    orcid = models.CharField('Orcid', blank=True, null=True, max_length=16)
+    idlattes = models.CharField('IDLattes', blank=True, null=True, max_length=16)
+    email = models.EmailField(verbose_name='Email', blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -495,8 +452,8 @@ models.signals.pre_save.connect(slug_pre_save, sender=Tour)
 # Create citation with bibkey.
 models.signals.pre_save.connect(citation_pre_save, sender=Reference)
 
-# Create copy of the media
-models.signals.post_save.connect(create_site_media_copy, sender=Media)
+# Compress files when uploaded
+models.signals.post_save.connect(compress_files, sender=Media)
 # Delete file from folder when the media is deleted on website
 models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
 # Update the user's curatorships as specialist

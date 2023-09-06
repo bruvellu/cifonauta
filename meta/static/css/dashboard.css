@@ -60,6 +60,16 @@ h2 {
 .error, .notice, .success {
     transform: translateY(-2rem);
     width: fit-content;
+    font-size: 1.1rem;
+}
+
+.warning {
+    transform: translateY(-1.5rem);
+    background-color: #ffffb3;
+    color: #565600;
+    font-size: 1.1rem;
+    /* background-color: #e8edff;
+    color: #000b43de; */
 }
 
 .form-container {
@@ -68,9 +78,10 @@ h2 {
 }
 
 
-/* PRE REGISTRATION FORM */
+/* REGISTRATION FORM */
 .dialog::backdrop {
     display: revert;
+    background: rgba(0,0,0,0.3);
 }
 
 .dialog {
@@ -82,6 +93,8 @@ h2 {
     border-radius: 10px;
     background: #fafafa;
     box-shadow: 2px 2px 5px #aaa;
+    width: 100%;
+    max-width: 18rem;
 }
 
 .dialog > div {
@@ -91,10 +104,34 @@ h2 {
 
 .close-registration-button {
     align-self: flex-end;
+    width: 1.8rem;
+    height: 1.8rem;
+    padding: 0;
+    position: relative;
+    background-color: transparent;
+    border: none;
 }
 
-.pre-registration-form {
-    margin-top: .5rem;
+.close-registration-button:hover div {
+    background-color: #ff2d2d;
+}
+
+.close-registration-button > div {
+    background-color: #0d0d0d;
+    width: 2.2rem;
+    height: 0.24rem;
+    border-radius: 0.2rem;
+    position: absolute;
+    translate: -0.3rem -0.1rem;
+    transition: background-color .2s;
+}
+
+.line1 {
+    rotate: 43deg;
+}
+
+.line2 {
+    rotate: -43deg;
 }
 
 .field2-container + .field2-container {
@@ -121,7 +158,7 @@ h2 {
     border: none;
     box-shadow: 2px 2px 5px #ddd;
     width: 65%;
-    margin-top: 1rem
+    margin-top: 1rem;
 }
  
 .pre-registration-submit:hover {
@@ -151,6 +188,16 @@ h2 {
     width: 10rem;
 }
 
+.field-div,
+.wrapper-field-div {
+    width: 100%;
+}
+
+input[type='text'], select {
+    max-width: 18rem;
+    width: 100%;
+}
+
 .field-div {
     display: flex;
     flex-direction: column;
@@ -161,8 +208,8 @@ h2 {
 }
 
 .m2m-field {
-    height: 15rem;
-    overflow-y: scroll;
+    /* height: 15rem;
+    overflow-y: scroll; */
     margin-top: 1rem;
 }
 
@@ -175,9 +222,10 @@ h2 {
     font-style: italic;
 }
 
-.co_author-div > div:first-of-type {
+/* .co_author-div > div:first-of-type {
     overflow-y: scroll;
-}
+    height: 15rem;
+} */
 
 .co_author-div > div:last-of-type {
     display: flex;
@@ -228,6 +276,10 @@ h2 {
     display: none;
 }
 
+/* SELECT2 STYLES */
+.select2-container {
+    max-width: 18rem;
+}
 
 
 
@@ -245,6 +297,17 @@ textarea {
 
 .field-div span {
     font-size: .75rem;
+    color: #5b5b5b;
+}
+
+.term-wrapper {
+    display: flex;
+    gap: .4rem;
+}
+
+.term-wrapper > input {
+    height: fit-content;
+    margin-top: .1rem;
 }
 
 .submit-button {
@@ -254,7 +317,7 @@ textarea {
     font-size: 1.2rem;
     width: fit-content;
     padding: .5rem .8rem;
-    margin-top: 1rem;
+    margin-top: 3rem;
     border-radius: 0.4rem;
     border: none;
     transition: background-color .1s;
@@ -265,9 +328,16 @@ textarea {
     background: linear-gradient(to bottom, #7edc75 0%, #46bf51 100%);
 }
 
+.field-error {
+    color: #f60000 !important;
+}
+
 .hide-div {
     display: none;
 }
+
+
+
 
 
 /* MY MEDIAS */

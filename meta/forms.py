@@ -2,11 +2,8 @@
 
 from django import forms
 from django.apps import apps
-from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
-from .models import Media, Curadoria, UserPreRegistration
-from django.contrib.auth import get_user_model
-from user.models import UserCifonauta
+from .models import Media, Curadoria, Person
 
 
 METAS = (
@@ -56,21 +53,21 @@ OPERATORS = (
 class UploadMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ( 'title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'license', 'credit', 'country', 'state', 'city', 'location', 'geolocation',) #Faltando direito autoral
+        fields = ( 'title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'credit', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms') #Faltando direito autoral
         widgets = {
-            'taxons': forms.CheckboxSelectMultiple(),
-            'has_taxons': forms.RadioSelect()
+            'taxons': forms.SelectMultiple(attrs={'class': 'select2-taxons', 'multiple': 'multiple'}),
+            'has_taxons': forms.RadioSelect(),
+            'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"})
         }
 
 class EditMetadataForm(forms.ModelForm):
     class Meta:
         model = Media
         fields = ( 'title', 'author', 'co_author', 'specialist', 'caption', 'size', 'date',  'has_taxons', 'taxons', 'license', 'credit', 'country', 'state', 'city', 'location', 'geolocation', 'tag_life_stage', 'tag_habitat', 'tag_microscopy', 'tag_lifestyle', 'tag_photographic_technique', 'tag_several', 'software', 'file')
-
-class UserPreRegistrationForm(forms.ModelForm):
+class CoauthorRegistrationForm(forms.ModelForm):
     class Meta:
-        model = UserPreRegistration
-        fields = ('first_name', 'last_name', 'orcid')
+        model = Person
+        fields = ('name',)
 
 
 class MyMediaForm(forms.ModelForm):

@@ -95,7 +95,7 @@ def upload_media(request):
             else:
                 messages.error(request, 'Por favor, selecione as mídias')
                 return redirect('upload_media')
-                
+
             if form.is_valid():
                 for media in medias:
                     form = UploadMediaForm(request.POST, request.FILES)
@@ -116,13 +116,13 @@ def upload_media(request):
                     media_instance.sitepath.name = f"{new_filename}.{ext}"
                     media_instance.coverpath.name = f"{new_filename}_cover.{ext}"
 
-                    if not form.cleaned_data['has_taxons'] == 'True': 
+                    if form.cleaned_data['has_taxons'] == 'True' and not form.cleaned_data['taxons']: 
                         media_instance.has_taxons = False
 
                     media_instance.save()
                     form.save_m2m()
 
-                    if not form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
+                    if form.cleaned_data['has_taxons'] == 'False' and form.cleaned_data['taxons']:
                         media_instance.taxons.clear() #Can only be called after form.save_m2m()
 
                 messages.success(request, 'Suas mídias foram salvas')

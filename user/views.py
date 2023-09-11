@@ -19,8 +19,9 @@ def user_creation(request):
             name = user_instance.first_name + ' ' + user_instance.last_name
             email = form.cleaned_data['email']
             orcid = form.cleaned_data['orcid']
+            idlattes = form.cleaned_data['idlattes']
 
-            Person.objects.create(name=name, email=email, orcid=orcid)
+            Person.objects.create(name=name, email=email, orcid=orcid, idlattes=idlattes)
 
             user_instance.save()
 
@@ -65,7 +66,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.success(request, 'Você se desconectou')
-    return redirect('home')
+    return redirect('Login')
 
 class PasswordResetView(PasswordResetView):
     form_class = PasswordResetForm

@@ -4,6 +4,7 @@ import json
 import logging
 import os
 
+from media_utils import Metadata
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
@@ -25,7 +26,11 @@ from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
+import re
+from dotenv import load_dotenv
+from django.conf import settings
 
+load_dotenv()
 
 @custom_login_required
 @author_required
@@ -59,14 +64,32 @@ def upload_media(request):
 
                 messages.success(request, 'Pré-cadastro realizado com sucesso')
                 return redirect('upload_media')
+        
         else:
             medias = request.FILES.getlist('medias')
-            form = UploadMediaForm(request.POST)
+            form = UploadMediaForm(request.POST, request.FILES)
 
             if medias:
                 for media in medias:
                     if media.size > 3000000:
                         messages.error(request, 'Arquivo maior que 3MB')
+                        return redirect('upload_media')
+                    
+                    filename_regex = fr"{os.getenv('FILENAME_REGEX')}"
+                    filename, extension = os.path.splitext(media.name.lower())
+
+                    if extension:
+                        if not re.match(filename_regex, filename):
+                            messages.error(request, f'Nome de arquivo inválido:  {media.name}')
+                            messages.warning(request, 'Caracteres especiais aceitos: - _ ( )')
+                            return redirect('upload_media')
+                        
+                        if not extension.endswith(settings.MEDIA_EXTENSIONS):
+                            messages.error(request, f'Formato de arquivo não aceito:  {media.name}')
+                            messages.warning(request, 'Verifique os tipos de arquivos aceitos')
+                            return redirect('upload_media')
+                    else:
+                        messages.error(request, f'Arquivo inválido:  {media.name}')
                         return redirect('upload_media')
             else:
                 messages.error(request, 'Por favor, selecione as mídias')
@@ -74,23 +97,32 @@ def upload_media(request):
                 
             if form.is_valid():
                 for media in medias:
-                    form = UploadMediaForm(request.POST)
+                    form = UploadMediaForm(request.POST, request.FILES)
                     media_instance = form.save(commit=False)
-                    media_instance.file = media
-                    
-                    media_instance.sitepath = media
-                    media_instance.coverpath = media
 
                     if form.cleaned_data['terms'] == False:
                         messages.error(request, 'Você precisa aceitar os termos')
                         return redirect('upload_media')
+                    
+                    ext = media.name.split('.')[-1]
+                    new_filename = uuid.uuid4()
 
-                    if form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
-                        media_instance.save()
-                        form.save_m2m()
-                    else:
+                    media_instance.file = media
+                    media_instance.sitepath = media
+                    media_instance.coverpath = media
+
+                    media_instance.file.name = f"{new_filename}.{ext}"
+                    media_instance.sitepath.name = f"{new_filename}.{ext}"
+                    media_instance.coverpath.name = f"{new_filename}_cover.{ext}"
+
+                    if not form.cleaned_data['has_taxons'] == 'True': 
                         media_instance.has_taxons = False
-                        media_instance.save()
+
+                    media_instance.save()
+                    form.save_m2m()
+
+                    if not form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
+                        media_instance.taxons.clear() #Can only be called after form.save_m2m()
 
                 messages.success(request, 'Suas mídias foram salvas')
                 
@@ -116,7 +148,83 @@ def upload_media(request):
     }
 
     return render(request, 'upload_media.html', context)
-    
+
+
+@custom_login_required
+@curator_required
+def edit_metadata(request, media_id):
+    media = get_object_or_404(Media, id=media_id)
+    if request.method == 'POST':
+        form = EditMetadataForm(request.POST, instance=media)
+    else:
+        form = EditMetadataForm(instance=media)
+    if form.is_valid():
+        author = str(form.cleaned_data['author'])
+        co_authors = str(form.cleaned_data['co_author']).split(';')
+        metadata =  {
+        'software': str(form.cleaned_data['software']),
+        'headline': str(form.cleaned_data['title']),
+        'instructions': str(form.cleaned_data['size']),
+        'license': {
+            'license_type': str(form.cleaned_data['license']),
+            'author': author,
+            'co_authors': co_authors,
+            },
+        'keywords': {
+            'Estágio de vida': str(form.cleaned_data['tag_life_stage']),
+            'Habitat': str(form.cleaned_data['tag_habitat']),
+            'Microscopia': str(form.cleaned_data['tag_microscopy']),
+            'Modo de vida': str(form.cleaned_data['tag_lifestyle']),
+            'Técnica fotográfica': str(form.cleaned_data['tag_photographic_technique']),
+            'Diversos': str(form.cleaned_data['tag_several'])
+        },
+        'source': str(form.cleaned_data['specialist']),
+        'credit': str(form.cleaned_data['credit']),
+        'description_pt': str(form.cleaned_data['caption']),
+        'description_en': '',
+        'gps': str(form.cleaned_data['geolocation']),
+        'datetime': str(form.cleaned_data['date']),
+        'title_pt': str(form.cleaned_data['title']),
+        'title_en': '',
+        'country': str(form.cleaned_data['country']),
+        'state': str(form.cleaned_data['state']),
+        'city': str(form.cleaned_data['city']),
+        'sublocation': str(form.cleaned_data['location'])
+            }
+        media.status = 'to_review'
+        Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
+        form.save()
+    is_specialist = request.user.specialist_of.exists()
+    is_curator = request.user.curator_of.exists()
+
+    context = {
+        'form': form,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator,
+    }
+
+    return render(request, 'update_media.html', context) 
+
+@method_decorator(custom_login_required, name='dispatch')
+@method_decorator(curator_required, name='dispatch')
+class CuradoriaMediaList(LoginRequiredMixin, ListView):
+    model = Media
+    template_name = 'curadoria_media_list.html'
+
+    def get_queryset(self):
+        user = self.request.user
+
+        curadorias = user.curator_of.all()
+        curation_taxons=[]
+        for curadoria in curadorias:
+            taxon = curadoria.taxons.all()
+            curation_taxons.append(taxon)
+        queryset = Media.objects.none()
+        for curadoria in curation_taxons:
+            queryset |= Media.objects.filter(taxons__in=curadoria)
+        # This "queryset" appears in the template as "object_list"
+       
+        return queryset
 
 #Missing
 @method_decorator(custom_login_required, name='dispatch')
@@ -138,6 +246,7 @@ class UpdateMedia(UpdateView):
     model = Media
     template_name = "update_media.html"
     fields = '__all__'
+    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -774,22 +883,36 @@ def add_meta(meta, field, query):
 def filter_request(media_list, objects, field, operator):
     '''Filter media based on fields and operator.'''
 
-    #TODO: Taxon descendants are not shown with AND operator.
-    if operator == 'and':
-        for obj in objects:
-            media_list = media_list.filter(**{field: obj})
+    # List for storing queries
+    queries = []
 
-    elif operator == 'or':
-        queries = []
-        for obj in objects:
+    # Loop over objects
+    for obj in objects:
+        # If taxon, also get queries for descendants
+        if field == 'taxon':
+            # Store taxon queries separately (include current obj)
+            taxa = [Q(**{field: obj})]
+            children = obj.get_descendants()
+            for child in children:
+                taxa.append(Q(**{field: child}))
+            # Reduce taxa queries to single Q with OR operator
+            taxa_query = reduce(or_, taxa)
+            # Append to main queries
+            queries.append(taxa_query)
+        else:
             queries.append(Q(**{field: obj}))
-            if field == 'taxon':
-                children = obj.get_descendants()
-                for child in children:
-                    queries.append(Q(**{field: child}))
 
-        media_list = media_list.filter(reduce(or_, queries)).distinct()
+    # If OR, reduce queries to single Q with OR operator
+    if operator == 'or':
+        queries = [reduce(or_, queries)]
+
+    # Loop over queries to filter media list
+    for query in queries:
+        media_list = media_list.filter(query)
     
+    # Only keep unique media entries
+    media_list = media_list.distinct()
+
     return media_list
 
 

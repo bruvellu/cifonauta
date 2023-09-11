@@ -14,10 +14,16 @@ import subprocess
 from datetime import datetime
 from django.utils import timezone
 from shutil import copy2, move
+from PIL import Image
+import piexif
+from iptcinfo3 import IPTCInfo
+from libxmp import XMPFiles, consts, XMPError
+from googletrans import Translator
 
-import gi
+
+"""import gi
 gi.require_version('GExiv2', '0.10')
-from gi.repository import GExiv2
+from gi.repository import GExiv2"""
 
 # Get logger.
 logger = logging.getLogger('cifonauta.utils')
@@ -403,3 +409,219 @@ def fix_filename(root, filename):
     else:
         filepath = os.path.join(root, filename)
     return filepath
+
+class Metadata():
+
+    def __init__(self, file, metadata:dict):
+
+        self.file = file
+
+        self._RIGHTS = {
+            "cc0": {
+                "license_link": "https://creativecommons.org/publicdomain/zero/1.0/deed.pt_BR",
+                "license_name": "CC0",
+                "license_text": "Sem Direito de Autor nem Direitos Conexos, onde a pessoa que associou um trabalho a este resumo dedicou o trabalho ao domínio público, renunciando a todos os seus direitos sob as leis de direito de autor e/ou de direitos conexos referentes ao trabalho, em todo o mundo, na medida permitida por lei. Você pode copiar, modificar, distribuir e executar o trabalho, mesmo para fins comerciais, tudo sem pedir autorização. A CC0 não afeta, de forma alguma, os direitos de patente ou de marca de qualquer pessoa, nem os direitos que outras pessoas possam ter no trabalho ou no modo como o trabalho é utilizado, tais como direitos de imagem ou de privacidade. Desde que nada seja expressamente afirmado em contrário, a pessoa que associou este resumo a um trabalho não fornece quaisquer garantias sobre o mesmo e exonera-se de responsabilidade por quaisquer usos do trabalho, na máxima medida permitida pela lei aplicável. Ao utilizar ou citar o trabalho, não deve deixar implícito que existe apoio do autor ou do declarante."
+                },
+            "cc_by": {
+                "license_link": "https://creativecommons.org/licenses/by/4.0/",
+                "license_name": "CC BY",
+                "license_text": "Você é livre para compartilhar e adaptar o conteúdo para qualquer finalidade, até mesmo comercial. Esta licença é aceitável para Trabalhos Culturais Gratuitos. O licenciante não pode revogar essas liberdades enquanto você seguir os termos da licença. Você deve dar o devido crédito , fornecer um link para a licença e indicar se foram feitas alterações . Você pode fazê-lo de qualquer maneira razoável, mas não de forma que sugira que o licenciante endossa você ou seu uso. Sem restrições adicionais, logo, você não pode aplicar termos legais ou medidas tecnológicas que restrinjam legalmente outras pessoas de fazer qualquer coisa que a licença permita."
+                },
+            "cc_by_nd": {
+                "license_link": "https://creativecommons.org/licenses/by-nd/4.0/",
+                "license_name": "CC BY-ND",
+                "license_text": "Você é livre para: Compartilhar – copie e redistribua o material em qualquer meio ou formato para qualquer finalidade, até mesmo comercial. Você deve dar o devido crédito , fornecer um link para a licença e indicar se foram feitas alterações , pode fazê-lo de qualquer maneira razoável, mas não de forma que sugira que o licenciante endossa você ou seu uso. Se você remixar, transformar ou desenvolver o material, não poderá distribuir o material modificado. Sem restrições adicionais, logo, não pode aplicar termos legais ou medidas tecnológicas que restrinjam legalmente outras pessoas de fazer qualquer coisa que a licença permita."
+                },
+            "cc_by_sa": {
+                "license_link": "https://creativecommons.org/licenses/by-sa/4.0/",
+                "license_name": "CC BY-SA",
+                "license_text": "Você é livre para: compartilhar e adaptar. Você deve dar o devido crédito , fornecer um link para a licença e indicar se foram feitas alterações, pode fazê-lo de qualquer maneira razoável, mas não de forma que sugira que o licenciante endossa você ou seu uso. Se você remixar, transformar ou desenvolver o material, deverá distribuir suas contribuições sob a mesma licença do original. Sem restrições adicionais, logo, não pode aplicar termos legais ou medidas tecnológicas que restrinjam legalmente outras pessoas de fazer qualquer coisa que a licença permita."
+                },
+            "cc_by_nc": {
+                "license_link": "https://creativecommons.org/licenses/by-nc/4.0/",
+                "license_name": "CC BY-NC",
+                "license_text": "Você é livre para: compartilhar e adaptar.  Você deve dar o devido crédito , fornecer um link para a licença e indicar se foram feitas alterações . Você pode fazê-lo de qualquer maneira razoável, mas não de forma que sugira que o licenciante endossa você ou seu uso, e não é permitido usar o material para fins comerciais. Sem restrições adicionais, logo, não pode aplicar termos legais ou medidas tecnológicas que restrinjam legalmente outras pessoas de fazer qualquer coisa que a licença permita."
+                },
+            "cc_by_nc_sa": {
+                "license_link": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+                "license_name": "CC BY-NC-SA",
+                "license_text": "Você é livre para: compartilhar. Deve-se dar o devido crédito, fornecer um link para a licença e indicar se foram feitas alterações. Você pode fazê-lo de qualquer maneira razoável, mas não de forma que sugira que o licenciante endossa você ou seu uso. Não pode usar o material para fins comerciais e se remixar, transformar ou desenvolver o material, não poderá distribuir o material modificado. No geral, não pode aplicar termos legais ou medidas tecnológicas que restrinjam legalmente outras pessoas de fazer qualquer coisa que a licença permita."
+                },
+            "cc_by_nc_nd": {
+                "license_link": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+                "license_name": "CC BY-NC-ND",
+                "license_text": "Você é livre para: compartilhar e editar. Devendo-se dar o devido crédito, fornecer um link para a licença e indicar se foram feitas alterações. Você pode fazê-lo de qualquer maneira razoável, mas não de forma que sugira que o licenciante endossa você ou seu uso, além de não poder usar o material para fins comerciais. Se você remixar, transformar ou desenvolver o material, deverá distribuir suas contribuições sob a mesma licença do original. Sem restrições adicionais, logo, não pode aplicar termos legais ou medidas tecnológicas que restrinjam legalmente outras pessoas de fazer qualquer coisa que a licença permita."
+                }
+            }
+        
+        self.xmp_erro = False
+        
+        self.metadata = metadata
+
+        self.filter_metadata()
+
+    def filter_metadata(self):
+
+        for k, v in self.metadata.items():
+            if k == "software":
+                self.insert_metadata_exif(k, v)
+            elif k == "headline":
+                self.insert_metadata_xmp(k.capitalize(), v)
+                self.insert_metadata_iptc(k, v)
+            elif k == "instructions":
+                self.insert_metadata_iptc('special instructions', v)
+                self.insert_metadata_xmp('Instructions', v)
+            elif k == "source":
+                self.insert_metadata_iptc(k, v)
+            elif k == "credit":
+                self.insert_metadata_iptc(k, v)
+            elif k == 'license':
+                license_type = v['license_type']
+                creators = f'Author: {v["author"]}, Co-authors: {";".join(v["co_authors"])}'
+                self.insert_metadata_xmp('License', self._RIGHTS[license_type]["license_name"], license=True)
+                self.insert_metadata_xmp('AttributionURL', self._RIGHTS[license_type]["license_link"], license=True)
+                self.insert_metadata_xmp('Rights', self._RIGHTS[license_type]["license_text"], license=True)
+                self.insert_metadata_xmp('Creators', creators)
+                license_exif = f'{self._RIGHTS[license_type]["license_name"]}: {self._RIGHTS[license_type]["license_text"]}. {self._RIGHTS[license_type]["license_link"]}'
+                self.insert_metadata_exif('copyright', license_exif)
+                self.insert_metadata_exif('creators', creators)
+
+            elif k == 'keywords':
+                if len(v) > 0:
+                    self.insert_metadata_iptc(k, clear=True)
+                    keywords = []
+                    subject = []
+                    for k1, v2 in v.items():
+                        keywords.append(f'{k}: {v}'.encode())
+                        subject.append(f'{k}: {v}')
+                    self.insert_metadata_iptc(k, keywords)
+                    subject = ';'.join(subject)
+                    self.insert_metadata_xmp('Subject', subject)
+            elif k == 'description_pt':
+                self.insert_metadata_exif('image_description', v)
+                self.insert_metadata_xmp('DescriptionPT', v)
+                self.insert_metadata_iptc('caption/abstract', v)
+                
+            elif k == 'title_pt':
+                self.insert_metadata_xmp('TitlePT', v)
+                self.insert_metadata_iptc('object name', v)
+            elif k == 'gps':
+                self.insert_metadata_exif('gps', v)
+                self.insert_metadata_iptc('content location name', f'GPScoordinates: {v}')
+            elif k == 'datetime':
+                self.insert_metadata_iptc('date created', v)
+                self.insert_metadata_xmp('DateCreated', v)
+                self.insert_metadata_exif('datetime', v)
+            elif k == 'country':
+                self.insert_metadata_xmp('Country', v)
+                self.insert_metadata_iptc('country/primary location name', v)
+            elif k == 'state':
+                self.insert_metadata_xmp('State', v)
+                self.insert_metadata_iptc('province/state', v)
+            elif k == 'city':
+                self.insert_metadata_xmp('City', v)
+                self.insert_metadata_iptc('city', v)
+            elif k == 'sublocation':
+                self.insert_metadata_iptc('sub-location', v)
+
+
+    def insert_metadata_exif(self, field, val):
+        image = Image.open(self.file)
+
+        #Software
+        try:
+            exif_dict = piexif.load(image.info['exif'])
+        except KeyError:
+            exif_dict = {'0th': {}}
+        
+        if field == 'software':
+            exif_dict['0th'][piexif.ImageIFD.Software] = val
+        elif field == 'image_description':
+            exif_dict['0th'][piexif.ImageIFD.ImageDescription] = val
+        elif field == 'gps':
+            exif_dict['0th'][piexif.ImageIFD.GPSTag] = val
+        elif field == 'datetime':
+            exif_dict['0th'][piexif.ImageIFD.DateTime] = val
+        elif field == 'copyright':
+            exif_dict['0th'][piexif.ImageIFD.Copyright] = val
+        elif field == 'creators':
+            exif_dict['0th'][piexif.ImageIFD.Artist] = val
+        exif_bytes = piexif.dump(exif_dict)
+
+        #Saving EXIF
+        image.save(self.file, exif=exif_bytes)
+
+    def insert_metadata_iptc(self, field, val=None, clear=False):
+
+        info = IPTCInfo(self.file, force=True)
+
+        if clear:
+            info[field].clear()
+        else:
+            info[field] = val
+
+        #Saving IPTC
+        info.save_as(self.file)
+        os.remove(f'{self.file}~')
+
+    def insert_metadata_xmp(self, field, val, license=False):
+        
+        #XMP Config
+        try:
+            self.xmpfile = XMPFiles( file_path=self.file, open_forupdate=True)
+        except XMPError:
+            self.xmp_erro = True
+        else:
+            xmp = self.xmpfile.get_xmp()
+
+            if license:
+                xmp.register_namespace('http://creativecommons.org/ns#', 'cc')
+                xmp.set_property(consts.XMP_NS_CC, field, val)
+            else:
+                xmp.set_property(consts.XMP_NS_DC, field, val)
+
+            #Saving metadata
+            if self.xmpfile.can_put_xmp(xmp):
+                self.xmpfile.put_xmp(xmp)
+            self.xmpfile.close_file()
+        
+
+if __name__ == "__main__":
+    metadata =  {
+            'software': 'programa usado para criar, editar ou processar a imagem',
+            'headline': 'Título',
+            'instructions': 'tamanho da imagem',
+            'license': {
+                'license_type': 'cc_by_nd',
+                'creators': ['Luiz Felyppe', 'Vitória de Oliveira', 'João Guilherme'],
+            },
+            'keywords': {
+                'Estágio de vida': 'fase particular do ciclo de vida de um organismo, durante a qual ele exibe características e comportamentos específicos',
+                'Habitat': 'ambiente em que um organismo ou espécie vive, cresce, se reproduz e interage com outros organismos e com os fatores do ambiente',
+                'Microscopia': 'técnica científica que envolve o uso de instrumentos chamados microscópios para visualizar objetos ou detalhes que são muito pequenos',
+                'Modo de vida': 'conjunto de padrões, comportamentos, atividades e práticas que caracterizam a forma como um indivíduo ou um grupo de pessoas vive e interage com seu ambiente',
+                'Técnica fotográfica': 'conjunto de conhecimentos e habilidades necessários para produzir fotografias de alta qualidade e expressivas',
+                'Diversos': 'informações adicionais que são relevantes para a imagem'
+                },
+            'source': 'nome do(s) especialista(s)',
+            'credit': 'referência(s) bibliográfica(s)',
+
+            'description_pt': 'Legenda em Português',
+            'description_en': 'Legenda em Inglês',
+            'gps': 'Informações do GPS',
+            'datetime': 'horário da fotografia',
+            'title_pt': 'Título em português',
+            'title_en': 'Título em inglês',
+            'country': 'País',
+            'state': 'Estado',
+            'city': 'Cidade',
+            'sublocation': 'local'
+                }
+    
+    file = r"/home/joao/Documentos/projetos/cifona_vi/cifonauta/site_media/ac-aem_2qTX9p.jpg"
+    
+    #meta = Metadata(file, metadata)
+
+    iptc = ['object name', 'edit status', 'editorial update', 'urgency', 'subject reference', 'category', 'supplemental category', 'fixture identifier', 'keywords', 'content location code', 'content location name', 'release date', 'release time', 'expiration date', 'expiration time', 'special instructions', 'action advised', 'reference service', 'reference date', 'reference number', 'date created', 'time created', 'digital creation date', 'digital creation time', 'originating program', 'program version', 'object cycle', 'by-line', 'by-line title', 'city', 'sub-location', 'province/state', 'country/primary location code', 'country/primary location name', 'original transmission reference', 'headline', 'credit', 'source', 'copyright notice', 'contact', 'caption/abstract', 'local caption', 'writer/editor', 'image type', 'image orientation', 'language identifier', 'custom1', 'custom2', 'custom3', 'custom4', 'custom5', 'custom6', 'custom7', 'custom8', 'custom9', 'custom10', 'custom11', 'custom12', 'custom13', 'custom14', 'custom15', 'custom16', 'custom17', 'custom18', 'custom19', 'custom20']
+    
+    print('title' in iptc)

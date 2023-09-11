@@ -41,7 +41,7 @@ class UserCifonauta(AbstractUser):
     username = models.CharField('Usuário', unique=True)
 
     orcid = models.CharField('Orcid', null=True, max_length=16)
-    idlattes = models.CharField('IDLattes', null=True, max_length=16)
+    idlattes = models.CharField('IDLattes', blank=True, null=True, max_length=16)
 
     is_author = models.BooleanField('Autor', default=False,
             help_text='Informa se o usuário é autor.')

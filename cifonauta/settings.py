@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.humanize',
 
-    'rolepermissions',
     'captcha',
 ]
 
@@ -168,8 +167,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'site_media')
 SOURCE_ROOT = os.path.join(BASE_DIR, 'source_media')
 
 # List of accepted file extensions.
-PHOTO_EXTENSIONS = ('tif', 'tiff', 'jpg', 'jpeg', 'png', 'gif')
-VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogv', 'dv', 'mpg', 'mpeg', 'flv', 'm2ts', 'wmv')
+# PHOTO_EXTENSIONS = ('tif', 'tiff', 'jpg', 'jpeg', 'png', 'gif')
+# VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogv', 'dv', 'mpg', 'mpeg', 'flv', 'm2ts', 'wmv')
+PHOTO_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.gif')
+VIDEO_EXTENSIONS = ('.mp4',)
 MEDIA_EXTENSIONS = PHOTO_EXTENSIONS + VIDEO_EXTENSIONS
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
@@ -201,7 +202,6 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 15000
 # Required for debug_toolbar
 INTERNAL_IPS = ['127.0.0.1']
 
-ROLEPERMISSIONS_MODULE = 'cifonauta.roles'
 #import logging
 #from sorl.thumbnail.log import ThumbnailLogHandler
 #handler = ThumbnailLogHandler()

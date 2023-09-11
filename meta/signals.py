@@ -3,30 +3,35 @@
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from media_utils import Metadata
 import os
 from django.db.models import Q
-import shutil
-from django.conf import settings
 from PIL import Image
 
-def create_site_media_copy(sender, instance, created, **kwargs):
-    if created and instance.file and instance.file.path:
-        source_file_path = instance.file.path
-        new_filename = os.path.basename(instance.file.name)
-        dest_file_path = os.path.join(settings.MEDIA_ROOT, new_filename)
+from django.conf import settings
 
-        if instance.file.name.lower().endswith(('jpg', 'jpeg', 'png', 'gif')):
-            image = Image.open(source_file_path)
+def compress_files(sender, instance, created, **kwargs):
+    if created and instance.file.name.lower().endswith(settings.PHOTO_EXTENSIONS):
+        coverpath = Image.open(instance.coverpath.path)
+        coverpath.thumbnail((1280, 720))
+        coverpath.save(instance.coverpath.path, quality=50)
+
+        sitepath = Image.open(instance.sitepath.path)
+        sitepath.thumbnail((1280, 720))
+        sitepath.save(instance.sitepath.path)
             
-            instance.datatype = 'photo'
-            
-            image.save(dest_file_path, quality=50) #turn into a format?
-        else:
-            shutil.copy(source_file_path, dest_file_path)
+        instance.datatype = 'photo'
 
-        instance.coverpath = new_filename
-        instance.save()
+        author = str(instance.author)
+        metadata = {
+            'license': {
+                'license_type': str(instance.license),
+                'author': author,
+                'co_authors': ''
+            }
+        }
 
+        Metadata(instance.file.path, metadata)
 
 def update_specialist_of(sender, instance, action, model, pk_set, **kwargs):
     from user.models import UserCifonauta
@@ -58,14 +63,14 @@ def update_curator_of(sender, instance, action, model, pk_set, **kwargs):
 
 def delete_file_from_folder(sender, instance, **kwargs):
     if instance.file:
-        file_path = instance.file.path
-    
-        if os.path.isfile(file_path):
-            os.remove(file_path)
-
-            media_copy_path = os.path.join(settings.MEDIA_ROOT, os.path.basename(file_path))
-            if os.path.isfile(media_copy_path):
-                os.remove(media_copy_path)
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
+    if instance.coverpath:
+        if os.path.isfile(instance.coverpath.path):
+            os.remove(instance.coverpath.path)
+    if instance.sitepath:
+        if os.path.isfile(instance.sitepath.path):
+            os.remove(instance.sitepath.path)    
 
 
 # Não é signal, apenas função acessória.

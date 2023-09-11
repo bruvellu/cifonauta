@@ -46,6 +46,7 @@
             <div class="field-div file-div">
                 <input type="file" name="medias" id="medias" multiple>
                 <span class="help-text">Arquivos aceitos: PNG JPG JPEG GIF MP4</span>
+                <span class="help-text">Tamanho máximo: 3MB</span>
             </div>
         </div>
         {% for field in form %}
@@ -78,6 +79,9 @@
                 </div>
                 <div class="field-div m2m-field taxons-div hide-div">
                     {{ form.taxons }}
+                    {% if form.taxons.help_text %}
+                    <span class="help-text">{{ form.taxons.help_text }}</span>
+                    {% endif %}
                 </div>
                 {{ field.errors }}
             </div>
@@ -86,7 +90,7 @@
         {% elif field == form.terms %}
         <div class="field-container">
             {{ field.label_tag }}
-            <div class="field-div">
+            <div class="field-div terms-div">
                 <div class="term-wrapper">
                     {{ field }}
                     Declaro...

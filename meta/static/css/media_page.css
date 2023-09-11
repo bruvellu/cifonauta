@@ -14,6 +14,11 @@
     max-width: 38rem;
 }
 
+.content-only {
+    display: flex;
+    gap: 2rem;
+}
+
 #media-subcontainer {
     display: flex;
 }
@@ -115,7 +120,7 @@
 }
 
 @media (max-width: 840px) {
-    #media-page {
+    .content-only {
         flex-direction: column;
     }
 }

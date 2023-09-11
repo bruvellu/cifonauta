@@ -167,8 +167,8 @@ h2 {
 }
 
 
-/* UPLOAD MEDIA */
-.upload-form {
+/* UPLOAD AND UPDATE MEDIA */
+.upload-form, .update-form {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -212,13 +212,16 @@ input[type='text'], select {
     flex-direction: column;
 }
 
+.media-div img {
+    max-width: 25rem;
+    width: 100%;
+}
+
 #medias {
     background-color: transparent;
 }
 
 .m2m-field {
-    /* height: 15rem;
-    overflow-y: scroll; */
     margin-top: 1rem;
 }
 
@@ -230,11 +233,6 @@ input[type='text'], select {
     padding: 0.6rem 0 0 0;
     font-style: italic;
 }
-
-/* .co_author-div > div:first-of-type {
-    overflow-y: scroll;
-    height: 15rem;
-} */
 
 .co_author-div > div:last-of-type {
     display: flex;
@@ -393,6 +391,10 @@ tr, th {
 
 .published {
     color: #13ad13;
+}
+
+.image-cedule img {
+    width: 15rem;
 }
 
 

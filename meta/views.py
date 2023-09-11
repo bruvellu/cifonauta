@@ -240,34 +240,29 @@ class MediaDetail(DetailView):
         context['is_curator'] = user.curator_of.exists()
         return context
     
+@custom_login_required
+@media_owner_required
+def update_my_medias(request, pk):
+    media = get_object_or_404(Media, pk=pk)
 
-@method_decorator(custom_login_required, name='dispatch')
-@method_decorator(media_owner_required, name='dispatch')
-class UpdateMedia(UpdateView):
-    model = Media
-    template_name = "update_media.html"
-    fields = '__all__'
-    
+    if media.taxons.exists():
+        form = UpdateMyMediaForm(instance=media, initial={'has_taxons': 'True'})
+    else:
+        form = UpdateMyMediaForm(instance=media)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.specialist_of.exists()
-        context['is_curator'] = user.curator_of.exists()
-        return context
-    
+    form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
-#Missing
-@method_decorator(custom_login_required, name='dispatch')
-class DeleteMedia(DeleteView):
-    model = Media
+    is_specialist = request.user.specialist_of.exists()
+    is_curator = request.user.curator_of.exists()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.specialist_of.exists()
-        context['is_curator'] = user.curator_of.exists()
-        return context
+    context = {
+        'media': media,
+        'form': form,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator,
+    }
+
+    return render(request, 'update_media.html', context)
     
 
 @method_decorator(custom_login_required, name='dispatch')

@@ -9,6 +9,10 @@
 
 {% block dashboard_content %}
 
+{% load static %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'js/update_is_public.js' %}"></script>
+
 {% if messages %}
 {% for message in messages %}
 <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
@@ -106,5 +110,7 @@
         <button class='submit-button' type="submit">Atualizar</button>
     </form>
 </div>
+
+
 
 {% endblock %}

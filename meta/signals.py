@@ -19,6 +19,8 @@ def compress_files(sender, instance, created, **kwargs):
         sitepath = Image.open(instance.sitepath.path)
         sitepath.thumbnail((1280, 720))
         sitepath.save(instance.sitepath.path)
+            
+        instance.datatype = 'photo'
 
         author = str(instance.author)
         metadata = {

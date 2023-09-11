@@ -16,7 +16,6 @@ from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
 from operator import or_, and_
 from PIL import Image
-from PIL import Image
 
 from .models import *
 from .forms import *
@@ -295,50 +294,34 @@ class RevisionMedia(LoginRequiredMixin, ListView):
     model = Media
     template_name = 'media_revision.html'
 
-    # Filters the images to get only the ones that are in the user's curation
+    # Shows the images and videos that have taxons that are in one of the user's curations
     def get_queryset(self):
         user = self.request.user
-        
-        curadorias = user.curator_of.all()
-        curation_taxons=[]
-        for curadoria in curadorias:
-            taxon = curadoria.taxons.all()
-            curation_taxons.append(taxon)
-        print(curadorias, curation_taxons)
-        queryset = Media.objects.none()
-        for curadoria in curation_taxons:
-            queryset |= Media.objects.filter(taxons__in=curadoria) 
-        # This "queryset" appears in the template as "object_list"
+
+        curations = user.curator_of.all()
+        curations_taxons = []
+
+        # Collects all the taxons from user's curations
+        for curadoria in curations:
+            taxons = curadoria.taxons.all()
+            curations_taxons.extend(taxons)
+
+        # Starts the queryset with all the images that are in review
         queryset = Media.objects.filter(status='to_review')
+
+        # Filters the images to get only the ones that are in one of the user's curations
+        queryset = queryset.filter(taxons__in=curations_taxons)
+
+        # Aplies distinct() to eliminate duplicates
+        queryset = queryset.distinct()
+
         return queryset
 
-    # Gets the images selected in the checkboxes and publish them
+    # Gets the images and videos selected in the checkboxes and publish them
     def post(self, request):
         selected_images_ids = request.POST.getlist('selected_images_ids')
-        is_public = True
-        # Gets the images selected by their id
-        Media.objects.filter(id__in=selected_images_ids).update(is_public=is_public, status='published') 
-        # Gets the paths to the folders "site_media" and "uploads"
-        site_media_path = settings.MEDIA_ROOT
-        uploads_path = os.path.join(site_media_path, 'uploads')
-
-        # Iterates the selected_images_ids, gets the images 
-        for image_id in selected_images_ids:
-            try:
-                media = Media.objects.get(id=image_id)
-                # Joins the uploads_path with the file name
-                old_path = os.path.join(uploads_path, os.path.basename(media.filepath))
-                # Joins the site_media_path with the file name
-                new_path = os.path.join(site_media_path, os.path.basename(media.filepath))
-                print(f"is_public = {media.is_public}")
-                print(f"status = {media.status}")
-                 # Opens the image using Pillow
-                image = Image.open(old_path)
-                # Resizes the image and save it with reduced quality
-                image = image.resize((300, 300)) 
-                image.save(new_path, quality=50)  
-            except Media.DoesNotExist:
-                print("Imagem não encontrada!")
+        # Gets the images selected by their id and updates their status
+        Media.objects.filter(id__in=selected_images_ids).update(is_public=True, status='published') 
         return redirect('my_medias')
     
     # Gets the user's permissions
@@ -699,7 +682,7 @@ def media_page(request, media_id):
     tags = media.tag_set.all()
     authors = media.person_set.filter(is_author=True)
     sources = media.person_set.filter(is_author=False)
-    taxa = media.taxon_set.all()
+    taxa = media.taxons.all()
     references = media.reference_set.all()
 
     context = {

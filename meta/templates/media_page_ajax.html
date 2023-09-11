@@ -143,9 +143,9 @@
     </div>
 
     {% if taxa %}
+    <h2>{% trans 'Classificações' %}</h2>
     {% for taxon in taxa %}
     <div id="breadcrumbs">
-      <h2>{% trans 'Classificação' %}</h2>
       {% taxon_paths taxon %}
     </div>
     {% endfor %}

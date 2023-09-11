@@ -271,7 +271,7 @@ input[type='text'], select {
     border-color: #8a1f11;
 }
 
-.taxons-button-checked {
+.has-taxons-button:has(input:checked) {
     border-width: 2px;
     border-style: solid;
     opacity: 1;

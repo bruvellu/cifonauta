@@ -184,8 +184,17 @@ h2 {
     padding-top: 0.5rem;
 }
 
-.field-container label {
+.label-div {
+    display: flex;
+    gap: .25rem;
     width: 10rem;
+}
+
+.required {
+    color: red;
+    font-weight: initial;
+    font-size: 1.2rem;
+    vertical-align: top;
 }
 
 .field-div,

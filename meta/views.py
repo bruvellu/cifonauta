@@ -244,6 +244,67 @@ class MediaDetail(DetailView):
 def update_my_medias(request, pk):
     media = get_object_or_404(Media, pk=pk)
 
+    if request.method == 'POST':
+        form = UpdateMyMediaForm(request.POST)
+        if form.is_valid():
+            messages.success(request, 'Informações alteradas com sucesso')
+
+            if media.status == 'published':
+                modified_media = ModifiedMedia.objects.filter(media=media)
+                if modified_media:
+                    modified_media.title = form.cleaned_data['title']
+                    modified_media.co_author.set(form.cleaned_data['co_author'])
+                    modified_media.has_taxons = form.cleaned_data['has_taxons']
+                    modified_media.taxons.set(form.cleaned_data['taxons'])
+                    modified_media.date = form.cleaned_data['date']
+                    modified_media.location = form.cleaned_data['location']
+                    modified_media.city = form.cleaned_data['city']
+                    modified_media.state = form.cleaned_data['state']
+                    modified_media.country = form.cleaned_data['country']
+                    modified_media.geolocation = form.cleaned_data['geolocation']
+
+                    modified_media.save()
+                else:
+                    new_modified_media = ModifiedMedia(media=media)
+                    new_modified_media.title = form.cleaned_data['title']
+                    if form.cleaned_data['has_taxons'] == 'True' and not form.cleaned_data['taxons']:
+                        new_modified_media.has_taxons = "False"
+                    new_modified_media.date = form.cleaned_data['date']
+                    new_modified_media.location = form.cleaned_data['location']
+                    new_modified_media.city = form.cleaned_data['city']
+                    new_modified_media.state = form.cleaned_data['state']
+                    new_modified_media.country = form.cleaned_data['country']
+                    new_modified_media.geolocation = form.cleaned_data['geolocation']
+
+                    new_modified_media.save()
+
+                    new_modified_media.co_author.set(form.cleaned_data['co_author'])
+                    if form.cleaned_data['has_taxons'] == 'True':
+                        new_modified_media.taxons.set(form.cleaned_data['taxons'])
+
+                messages.warning(request, 'As alterações serão avaliadas e podem ou não serem aceitas')
+            else:
+                if media.status == "to_review":
+                    media.status = "not_edited"
+
+                media.title = form.cleaned_data['title']
+                media.co_author.set(form.cleaned_data['co_author'])
+                media.has_taxons = form.cleaned_data['has_taxons']
+                media.taxons.set(form.cleaned_data['taxons'])
+                media.date = form.cleaned_data['date']
+                media.location = form.cleaned_data['location']
+                media.city = form.cleaned_data['city']
+                media.state = form.cleaned_data['state']
+                media.country = form.cleaned_data['country']
+                media.geolocation = form.cleaned_data['geolocation']
+
+                media.save()
+            
+            return redirect('update_media', media.pk)
+
+        messages.error(request, 'Houve um erro com as alterações feitas')
+        return redirect('update_media', media.pk)
+
     if media.taxons.exists():
         form = UpdateMyMediaForm(instance=media, initial={'has_taxons': 'True'})
     else:

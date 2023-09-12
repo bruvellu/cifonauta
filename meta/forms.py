@@ -53,7 +53,7 @@ OPERATORS = (
 class UploadMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'credit', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
+        fields = ('title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
         widgets = {
             'taxons': forms.SelectMultiple(attrs={'class': 'select2-taxons', 'multiple': 'multiple'}),
             'has_taxons': forms.RadioSelect(),
@@ -63,7 +63,7 @@ class UploadMediaForm(forms.ModelForm):
 class UpdateMyMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'credit', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'country', 'state', 'city', 'location', 'geolocation', 'license')
         widgets = {
             'taxons': forms.SelectMultiple(attrs={'class': 'select2-taxons', 'multiple': 'multiple'}),
             'has_taxons': forms.RadioSelect(),

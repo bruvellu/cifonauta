@@ -17,6 +17,8 @@ class MediaAdmin(TranslationAdmin):
     list_display = ('title', 'status', 'highlight', 'file', 'author', 'pub_date')
     list_filter = ('is_public', 'highlight', 'timestamp', 'person', 'tag', 'taxon')
 
+class ModifiedMediaAdmin(admin.ModelAdmin):
+    list_display = ('title',)
 
 class TagAdmin(TranslationAdmin):
     list_display = ('name', 'description', 'category')
@@ -96,3 +98,4 @@ admin.site.register(Person, PersonAdmin)
 admin.site.register(Taxon, TaxonAdmin)
 admin.site.register(Reference, ReferenceAdmin)
 admin.site.register(Curadoria, CuradoriaAdmin)
+admin.site.register(ModifiedMedia, ModifiedMediaAdmin)

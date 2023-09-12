@@ -18,7 +18,7 @@ from PIL import Image
 import piexif
 from iptcinfo3 import IPTCInfo
 from libxmp import XMPFiles, consts, XMPError
-from googletrans import Translator
+# from googletrans import Translator
 
 
 """import gi

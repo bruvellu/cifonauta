@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extra_head %}
-<link rel="stylesheet" href="upload_media.css">
+<script src="{% static 'js/upload_media.js' %}" defer></script>
 {% endblock %}
 {% block title %}Enviar Mídia{% endblock %}
 
@@ -42,7 +42,10 @@
     <form class="upload-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="field-container">
-            <label for="">Arquivos:</label>
+            <div class="label-div">
+                <label for="">Arquivos:</label>
+                <span class='required'>*</span>
+            </div>
             <div class="field-div file-div">
                 <input type="file" name="medias" id="medias" multiple>
                 <span class="help-text">Arquivos aceitos: PNG JPG JPEG GIF MP4</span>
@@ -52,7 +55,9 @@
         {% for field in form %}
         {% if field == form.co_author %}
         <div class="field-container">
-            {{ field.label_tag }}
+            <div class="label-div">
+                {{ field.label_tag }}
+            </div>
             <div class="field-div co_author-div">
                 {{ field }}
                 {% if field.help_text %}
@@ -66,7 +71,9 @@
         </div>
         {% elif field == form.has_taxons %}
         <div class="field-container">
-            <label>Taxons:</label>
+            <div class="label-div">
+                <label>Taxons:</label>
+            </div>
             <div class="wrapper-field-div">
                 <p>A mídia tem táxons?</p>
                 <div class="yes_no_div">
@@ -89,7 +96,10 @@
         {% elif field == form.taxons %}
         {% elif field == form.terms %}
         <div class="field-container">
-            {{ field.label_tag }}
+            <div class='label-div'>
+                {{ field.label_tag }}
+                <span class='required'>*</span>
+            </div>
             <div class="field-div terms-div">
                 <div class="term-wrapper">
                     {{ field }}
@@ -102,7 +112,12 @@
         </div>
         {% else %}
         <div class="field-container">
-            {{ field.label_tag }}
+            <div class="label-div">
+                {{ field.label_tag }}
+                {% if field.field.required %}
+                <span class='required'>*</span>
+                {% endif %}
+            </div>
             <div class="field-div">
                 {{ field }}
                 {% if field.help_text %}

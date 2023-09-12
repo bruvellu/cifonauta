@@ -1,4 +1,9 @@
 {% extends 'dashboard.html' %}
+{% load static %}
+
+{% block extra_head %}
+<script src="{% static 'js/update_media.js' %}" defer></script>
+{% endblock %}
 
 {% block title %}Atualizar Mídia{% endblock %}
 
@@ -8,18 +13,101 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="{% static 'js/update_is_public.js' %}"></script>
 
-{% if messages %}
-{% for message in messages %}
-<span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
-{% endfor %}
-{% endif %}
 
 <div class="form-container">
-    <h2>Detalhes</h2>
-    <form class="images-upload-form" method="post" enctype="multipart/form-data">
+    <h2>Alterar informações da mídia</h2>
+    {% if messages %}
+    {% for message in messages %}
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    {% endfor %}
+    {% endif %}
+    <form class="update-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Atualizar</button>
+        <div class="field-container">
+            <div class="label-div">
+                <label>
+                    Mídia:
+                </label>
+            </div>
+            <div class="field-div media-div">
+                <a href="{{ media.file.url }}" target="_blank">
+                    <img src="{{ media.sitepath.url }}">
+                </a>
+                <span class="help-text">{{ media.sitepath.help_text }}</span>
+            </div>
+        </div>
+        {% for field in form %}
+        {% if field == form.co_author %}
+        <div class="field-container">
+            <div class="label-div">
+                {{ field.label_tag }}
+            </div>
+            <div class="field-div co_author-div">
+                {{ field }}
+                {% if field.help_text %}
+                <span class="help-text">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% elif field == form.has_taxons %}
+        <div class="field-container">
+            <div class="label-div">
+                <label>Taxons:</label>
+            </div>
+            <div class="wrapper-field-div">
+                <p>A mídia tem táxons?</p>
+                <div class="yes_no_div">
+                    <button class="has-taxons has-taxons-button" type="button">
+                        {{ field.subwidgets.0 }}
+                    </button>
+                    <button class="no-taxons has-taxons-button" type="button">
+                        {{ field.subwidgets.1 }}
+                    </button>
+                </div>
+                <div class="field-div m2m-field taxons-div {% if field.value == 'False' %}hide-div{% endif %}">
+                    {{ form.taxons }}
+                    {% if form.taxons.help_text %}
+                    <span class="help-text">{{ form.taxons.help_text }}</span>
+                    {% endif %}
+                </div>
+                {{ field.errors }}
+            </div>
+        </div>
+        {% elif field == form.taxons %}
+        {% elif field == form.terms %}
+        <div class="field-container">
+            <div class='label-div'>
+                {{ field.label_tag }}
+                <span class='required'>*</span>
+            </div>
+            <div class="field-div terms-div">
+                <div class="term-wrapper">
+                    {{ field }}
+                    Declaro...
+                </div>
+                {% if field.help_text %}
+                <span class="help-text">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="field-container">
+            <div class="label-div">
+                {{ field.label_tag }}
+                {% if field.field.required %}
+                <span class='required'>*</span>
+                {% endif %}
+            </div>
+            <div class="field-div">
+                {{ field }}
+                {% if field.help_text %}
+                <span class="help-text">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        <button class='submit-button' type="submit">Atualizar</button>
     </form>
 </div>
 

@@ -94,7 +94,7 @@ def upload_media(request):
             else:
                 messages.error(request, 'Por favor, selecione as mídias')
                 return redirect('upload_media')
-                
+
             if form.is_valid():
                 for media in medias:
                     form = UploadMediaForm(request.POST, request.FILES)
@@ -115,13 +115,13 @@ def upload_media(request):
                     media_instance.sitepath.name = f"{new_filename}.{ext}"
                     media_instance.coverpath.name = f"{new_filename}_cover.{ext}"
 
-                    if not form.cleaned_data['has_taxons'] == 'True': 
+                    if form.cleaned_data['has_taxons'] == 'True' and not form.cleaned_data['taxons']: 
                         media_instance.has_taxons = False
 
                     media_instance.save()
                     form.save_m2m()
 
-                    if not form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
+                    if form.cleaned_data['has_taxons'] == 'False' and form.cleaned_data['taxons']:
                         media_instance.taxons.clear() #Can only be called after form.save_m2m()
 
                 messages.success(request, 'Suas mídias foram salvas')
@@ -239,34 +239,90 @@ class MediaDetail(DetailView):
         context['is_curator'] = user.curator_of.exists()
         return context
     
+@custom_login_required
+@media_owner_required
+def update_my_medias(request, pk):
+    media = get_object_or_404(Media, pk=pk)
 
-@method_decorator(custom_login_required, name='dispatch')
-@method_decorator(media_owner_required, name='dispatch')
-class UpdateMedia(UpdateView):
-    model = Media
-    template_name = "update_media.html"
-    fields = '__all__'
-    
+    if request.method == 'POST':
+        form = UpdateMyMediaForm(request.POST)
+        if form.is_valid():
+            messages.success(request, 'Informações alteradas com sucesso')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.specialist_of.exists()
-        context['is_curator'] = user.curator_of.exists()
-        return context
-    
+            if media.status == 'published':
+                modified_media = ModifiedMedia.objects.filter(media=media)
+                if modified_media:
+                    modified_media.title = form.cleaned_data['title']
+                    modified_media.co_author.set(form.cleaned_data['co_author'])
+                    modified_media.has_taxons = form.cleaned_data['has_taxons']
+                    modified_media.taxons.set(form.cleaned_data['taxons'])
+                    modified_media.date = form.cleaned_data['date']
+                    modified_media.location = form.cleaned_data['location']
+                    modified_media.city = form.cleaned_data['city']
+                    modified_media.state = form.cleaned_data['state']
+                    modified_media.country = form.cleaned_data['country']
+                    modified_media.geolocation = form.cleaned_data['geolocation']
 
-#Missing
-@method_decorator(custom_login_required, name='dispatch')
-class DeleteMedia(DeleteView):
-    model = Media
+                    modified_media.save()
+                else:
+                    new_modified_media = ModifiedMedia(media=media)
+                    new_modified_media.title = form.cleaned_data['title']
+                    if form.cleaned_data['has_taxons'] == 'True' and not form.cleaned_data['taxons']:
+                        new_modified_media.has_taxons = "False"
+                    new_modified_media.date = form.cleaned_data['date']
+                    new_modified_media.location = form.cleaned_data['location']
+                    new_modified_media.city = form.cleaned_data['city']
+                    new_modified_media.state = form.cleaned_data['state']
+                    new_modified_media.country = form.cleaned_data['country']
+                    new_modified_media.geolocation = form.cleaned_data['geolocation']
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.specialist_of.exists()
-        context['is_curator'] = user.curator_of.exists()
-        return context
+                    new_modified_media.save()
+
+                    new_modified_media.co_author.set(form.cleaned_data['co_author'])
+                    if form.cleaned_data['has_taxons'] == 'True':
+                        new_modified_media.taxons.set(form.cleaned_data['taxons'])
+
+                messages.warning(request, 'As alterações serão avaliadas e podem ou não serem aceitas')
+            else:
+                if media.status == "to_review":
+                    media.status = "not_edited"
+
+                media.title = form.cleaned_data['title']
+                media.co_author.set(form.cleaned_data['co_author'])
+                media.has_taxons = form.cleaned_data['has_taxons']
+                media.taxons.set(form.cleaned_data['taxons'])
+                media.date = form.cleaned_data['date']
+                media.location = form.cleaned_data['location']
+                media.city = form.cleaned_data['city']
+                media.state = form.cleaned_data['state']
+                media.country = form.cleaned_data['country']
+                media.geolocation = form.cleaned_data['geolocation']
+
+                media.save()
+            
+            return redirect('update_media', media.pk)
+
+        messages.error(request, 'Houve um erro com as alterações feitas')
+        return redirect('update_media', media.pk)
+
+    if media.taxons.exists():
+        form = UpdateMyMediaForm(instance=media, initial={'has_taxons': 'True'})
+    else:
+        form = UpdateMyMediaForm(instance=media)
+
+    form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+
+    is_specialist = request.user.specialist_of.exists()
+    is_curator = request.user.curator_of.exists()
+
+    context = {
+        'media': media,
+        'form': form,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator,
+    }
+
+    return render(request, 'update_media.html', context)
     
 
 @method_decorator(custom_login_required, name='dispatch')

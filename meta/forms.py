@@ -53,7 +53,17 @@ OPERATORS = (
 class UploadMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ( 'title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'credit', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms') #Faltando direito autoral
+        fields = ('title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
+        widgets = {
+            'taxons': forms.SelectMultiple(attrs={'class': 'select2-taxons', 'multiple': 'multiple'}),
+            'has_taxons': forms.RadioSelect(),
+            'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"})
+        }
+
+class UpdateMyMediaForm(forms.ModelForm):
+    class Meta:
+        model = Media
+        fields = ('title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'country', 'state', 'city', 'location', 'geolocation', 'license')
         widgets = {
             'taxons': forms.SelectMultiple(attrs={'class': 'select2-taxons', 'multiple': 'multiple'}),
             'has_taxons': forms.RadioSelect(),
@@ -73,7 +83,7 @@ class CoauthorRegistrationForm(forms.ModelForm):
 class MyMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = '__all__'
+        fields = ('title', 'coverpath', 'file', 'status', 'timestamp')
         widgets = {
             'taxons': forms.CheckboxSelectMultiple()
         }

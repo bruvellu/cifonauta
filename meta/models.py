@@ -26,7 +26,35 @@ class Curadoria(models.Model):
     def __str__(self):
         return self.name
 
-
+class ModifiedMedia(models.Model):
+    title = models.CharField(_('título'), max_length=200, default='',
+            blank=True, help_text=_('Título da imagem.'))
+    media = models.OneToOneField('Media', on_delete=models.CASCADE, related_name='modified_media',
+            verbose_name=_('mídia modificada'))
+    co_author = models.ManyToManyField('Person', blank=True,
+            verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='modified_co_author')
+    has_taxons = models.CharField(_('tem táxons'), help_text=_('Mídia tem táxons.'),
+            choices=(('True', 'Sim'), ('False', 'Não')), default='False')
+    taxons = models.ManyToManyField('Taxon', related_name="modified_taxons", verbose_name=_('táxons'), help_text=_('Táxons pertencentes à mídia.'), blank=True)
+    date = models.DateTimeField(_('data'), null=True,
+            help_text=_('Data de criação da imagem.'))
+    location = models.ForeignKey('Location', on_delete=models.SET_NULL,
+            null=True, blank=True, verbose_name=_('local'),
+            help_text=_('Localidade mostrada na imagem (ou local de coleta).'))
+    city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True, verbose_name=_('cidade'),
+            help_text=_('Cidade mostrada na imagem (ou cidade de coleta).'))
+    state = models.ForeignKey('State', on_delete=models.SET_NULL, null=True, verbose_name=_('estado'),
+            help_text=_('Estado mostrado na imagem (ou estado de coleta).'))
+    country = models.ForeignKey('Country', on_delete=models.SET_NULL,
+            null=True, verbose_name=_('país'),
+            help_text=_('País mostrado na imagem (ou país de coleta).'))
+    geolocation = models.CharField(_('geolocalização'), default='',
+            max_length=25, blank=True,
+        help_text=_('Geolocalização da imagem no formato decimal.'))
+    
+    def __str__(self):
+        return self.title
+    
 
 class Media(models.Model):
     '''Table containing both image and video files.'''
@@ -136,8 +164,11 @@ class Media(models.Model):
 
     def save(self, *args, **kwargs):
         if self.pk:
-            if not self.taxons.exists():
-                self.has_taxons = 'True'
+            if self.taxons.exists():
+                if self.has_taxons == 'False':
+                    self.taxons.clear()
+                else:
+                    self.has_taxons = 'True'
             else:
                 self.has_taxons = 'False'
         

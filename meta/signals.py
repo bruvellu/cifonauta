@@ -33,7 +33,6 @@ def compress_files(sender, instance, created, **kwargs):
         try:
             Metadata(instance.file.path, metadata)
         except:
-            print('deu ruiiiiim')
             instance.metadata_error = True
 
 def update_specialist_of(sender, instance, action, model, pk_set, **kwargs):

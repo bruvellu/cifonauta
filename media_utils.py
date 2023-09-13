@@ -580,8 +580,6 @@ class Metadata():
         try:
             self.xmpfile = XMPFiles( file_path=self.file, open_forupdate=True)
         except XMPError:
-            print('Deu erro')
-            self.xmpfile = XMPFiles( file_path=self.file)
             self.xmp_erro = True
         else:
             xmp = self.xmpfile.get_xmp()

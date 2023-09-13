@@ -553,10 +553,13 @@ class Metadata():
             exif_dict['0th'][piexif.ImageIFD.Copyright] = val
         elif field == 'creators':
             exif_dict['0th'][piexif.ImageIFD.Artist] = val
+
+        exif_dict.pop('thumbnail', None)
         exif_bytes = piexif.dump(exif_dict)
 
         #Saving EXIF
         image.save(self.file, exif=exif_bytes)
+        raise ValueError()
 
     def insert_metadata_iptc(self, field, val=None, clear=False):
 
@@ -577,6 +580,8 @@ class Metadata():
         try:
             self.xmpfile = XMPFiles( file_path=self.file, open_forupdate=True)
         except XMPError:
+            print('Deu erro')
+            self.xmpfile = XMPFiles( file_path=self.file)
             self.xmp_erro = True
         else:
             xmp = self.xmpfile.get_xmp()

@@ -30,8 +30,11 @@ def compress_files(sender, instance, created, **kwargs):
                 'co_authors': ''
             }
         }
-
-        Metadata(instance.file.path, metadata)
+        try:
+            Metadata(instance.file.path, metadata)
+        except:
+            print('deu ruiiiiim')
+            instance.metadata_error = True
 
 def update_specialist_of(sender, instance, action, model, pk_set, **kwargs):
     from user.models import UserCifonauta

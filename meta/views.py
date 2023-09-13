@@ -223,6 +223,9 @@ class CuradoriaMediaList(LoginRequiredMixin, ListView):
         for curadoria in curation_taxons:
             queryset |= Media.objects.filter(taxons__in=curadoria)
         # This "queryset" appears in the template as "object_list"
+
+        # Aplies distinct() to eliminate duplicates
+        queryset = queryset.distinct()
        
         return queryset
 

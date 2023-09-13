@@ -360,15 +360,12 @@ class RevisionMedia(LoginRequiredMixin, ListView):
         curations = user.curator_of.all()
         curations_taxons = []
 
-        # Collects all the taxons from user's curations
         for curadoria in curations:
             taxons = curadoria.taxons.all()
             curations_taxons.extend(taxons)
 
-        # Starts the queryset with all the images that are in review
         queryset = Media.objects.filter(status='to_review')
 
-        # Filters the images to get only the ones that are in one of the user's curations
         queryset = queryset.filter(taxons__in=curations_taxons)
 
         # Aplies distinct() to eliminate duplicates

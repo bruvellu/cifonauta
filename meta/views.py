@@ -114,6 +114,7 @@ def upload_media(request):
                     media_instance.file.name = f"{new_filename}.{ext}"
                     media_instance.sitepath.name = f"{new_filename}.{ext}"
                     media_instance.coverpath.name = f"{new_filename}_cover.{ext}"
+                    
 
                     if form.cleaned_data['has_taxons'] == 'True' and not form.cleaned_data['taxons']: 
                         media_instance.has_taxons = False
@@ -386,6 +387,67 @@ class RevisionMedia(LoginRequiredMixin, ListView):
         user_permissions = self.request.user.get_all_permissions()
         context['user_permissions'] = user_permissions
         return context
+
+
+@custom_login_required
+@curator_required
+def revision_media_detail(request, media_id):
+    media = get_object_or_404(Media, id=media_id)
+    if request.method == 'POST':
+        form = EditMetadataForm(request.POST, instance=media)
+    else:
+        form = EditMetadataForm(instance=media)
+    if form.is_valid():
+        author = str(form.cleaned_data['author'])
+        co_authors = str(form.cleaned_data['co_author']).split(';')
+        metadata =  {
+        'software': str(form.cleaned_data['software']),
+        'headline': str(form.cleaned_data['title']),
+        'instructions': str(form.cleaned_data['size']),
+        'license': {
+            'license_type': str(form.cleaned_data['license']),
+            'author': author,
+            'co_authors': co_authors,
+            },
+        'keywords': {
+            'Estágio de vida': str(form.cleaned_data['tag_life_stage']),
+            'Habitat': str(form.cleaned_data['tag_habitat']),
+            'Microscopia': str(form.cleaned_data['tag_microscopy']),
+            'Modo de vida': str(form.cleaned_data['tag_lifestyle']),
+            'Técnica fotográfica': str(form.cleaned_data['tag_photographic_technique']),
+            'Diversos': str(form.cleaned_data['tag_several'])
+        },
+        'source': str(form.cleaned_data['specialist']),
+        'credit': str(form.cleaned_data['credit']),
+        'description_pt': str(form.cleaned_data['caption']),
+        'description_en': '',
+        'gps': str(form.cleaned_data['geolocation']),
+        'datetime': str(form.cleaned_data['date']),
+        'title_pt': str(form.cleaned_data['title']),
+        'title_en': '',
+        'country': str(form.cleaned_data['country']),
+        'state': str(form.cleaned_data['state']),
+        'city': str(form.cleaned_data['city']),
+        'sublocation': str(form.cleaned_data['location'])
+            }
+        media.status = 'published'
+        media.is_public = True
+        print(media.coverpath)
+        Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
+        form.save()
+        messages.success(request, 'Sua mídia foi publicada')
+        return redirect('media_url', media_id=media_id)
+    is_specialist = request.user.specialist_of.exists()
+    is_curator = request.user.curator_of.exists()
+
+    context = {
+        'form': form,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator,
+    }
+
+    return render(request, 'media_revision_detail.html', context) 
+
 
 # Home
 def home_page(request):

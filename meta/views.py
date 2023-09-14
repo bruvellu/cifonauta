@@ -802,6 +802,7 @@ def media_page(request, media_id):
     sources = media.person_set.filter(is_author=False)
     taxa = media.taxons.all()
     references = media.reference_set.all()
+    filename, file_extension = os.path.splitext(str(media.coverpath))
 
     context = {
         'media': media,
@@ -813,6 +814,7 @@ def media_page(request, media_id):
         'taxa': taxa,
         'sources': sources,
         'references': references,
+        'file_extension': file_extension
         }
 
     if is_ajax(request):

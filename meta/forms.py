@@ -74,6 +74,13 @@ class EditMetadataForm(forms.ModelForm):
     class Meta:
         model = Media
         fields = ( 'title', 'author', 'co_author', 'specialist', 'caption', 'size', 'date',  'has_taxons', 'taxons', 'license', 'credit', 'country', 'state', 'city', 'location', 'geolocation', 'tag_life_stage', 'tag_habitat', 'tag_microscopy', 'tag_lifestyle', 'tag_photographic_technique', 'tag_several', 'software', 'file')
+        widgets = {
+            'taxons': forms.SelectMultiple(attrs={'class': 'select2-taxons', 'multiple': 'multiple'}),
+            'has_taxons': forms.RadioSelect(),
+            'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"}),
+            'specialist': forms.SelectMultiple(attrs={"class": "select2-specialist", "multiple": "multiple"})
+        }
+
 class CoauthorRegistrationForm(forms.ModelForm):
     class Meta:
         model = Person

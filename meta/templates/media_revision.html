@@ -23,7 +23,7 @@
                 {% for media in object_list %}
                 <tr>
                     <td class="text-cedule">
-                        <a href="{% url 'update_media' media.id %}">{{ media.title_pt_br }}</a>
+                        <a href="{% url 'media_revision_detail' media.id %}">{{ media.title_pt_br }}</a>
                     </td>
                     <td class="image-cedule">
                         <a href="{{ media.file.url }}" target="_blank">

@@ -58,7 +58,7 @@ class ModifiedMedia(models.Model):
 
 class Media(models.Model):
     '''Table containing both image and video files.'''
-
+    metadata_error = models.BooleanField(verbose_name=_('Erro nos metadados'), default=False)
     id = models.AutoField(primary_key=True)
 
     # New fields

@@ -192,7 +192,12 @@ def edit_metadata(request, media_id):
         'sublocation': str(form.cleaned_data['location'])
             }
         media.status = 'to_review'
-        Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
+        try:
+            Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
+        except:
+            messages.error(request, 'Ocorreu um erro ao salvar os metadados.')
+        else:
+            messages.success(request, 'Metadados salvos com sucesso.')
         form.save()
     is_specialist = request.user.specialist_of.exists()
     is_curator = request.user.curator_of.exists()

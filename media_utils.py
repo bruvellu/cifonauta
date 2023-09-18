@@ -17,8 +17,15 @@ from shutil import copy2, move
 from PIL import Image
 import piexif
 from iptcinfo3 import IPTCInfo
-from libxmp import XMPFiles, consts, XMPError
-# from googletrans import Translator
+"""
+The "python-xmp-toolkit" library can cause problems if the "Exempi" tool cannot be found.
+In this case the metadata will not be saved in XMP format
+"""
+try:
+    from libxmp import XMPFiles, consts, XMPError
+except:
+    print('Warning: python-xmp-toolkit not imported')
+    pass
 
 
 """import gi
@@ -546,10 +553,13 @@ class Metadata():
             exif_dict['0th'][piexif.ImageIFD.Copyright] = val
         elif field == 'creators':
             exif_dict['0th'][piexif.ImageIFD.Artist] = val
+
+        exif_dict.pop('thumbnail', None)
         exif_bytes = piexif.dump(exif_dict)
 
         #Saving EXIF
         image.save(self.file, exif=exif_bytes)
+        raise ValueError()
 
     def insert_metadata_iptc(self, field, val=None, clear=False):
 
@@ -584,44 +594,3 @@ class Metadata():
             if self.xmpfile.can_put_xmp(xmp):
                 self.xmpfile.put_xmp(xmp)
             self.xmpfile.close_file()
-        
-
-if __name__ == "__main__":
-    metadata =  {
-            'software': 'programa usado para criar, editar ou processar a imagem',
-            'headline': 'Título',
-            'instructions': 'tamanho da imagem',
-            'license': {
-                'license_type': 'cc_by_nd',
-                'creators': ['Luiz Felyppe', 'Vitória de Oliveira', 'João Guilherme'],
-            },
-            'keywords': {
-                'Estágio de vida': 'fase particular do ciclo de vida de um organismo, durante a qual ele exibe características e comportamentos específicos',
-                'Habitat': 'ambiente em que um organismo ou espécie vive, cresce, se reproduz e interage com outros organismos e com os fatores do ambiente',
-                'Microscopia': 'técnica científica que envolve o uso de instrumentos chamados microscópios para visualizar objetos ou detalhes que são muito pequenos',
-                'Modo de vida': 'conjunto de padrões, comportamentos, atividades e práticas que caracterizam a forma como um indivíduo ou um grupo de pessoas vive e interage com seu ambiente',
-                'Técnica fotográfica': 'conjunto de conhecimentos e habilidades necessários para produzir fotografias de alta qualidade e expressivas',
-                'Diversos': 'informações adicionais que são relevantes para a imagem'
-                },
-            'source': 'nome do(s) especialista(s)',
-            'credit': 'referência(s) bibliográfica(s)',
-
-            'description_pt': 'Legenda em Português',
-            'description_en': 'Legenda em Inglês',
-            'gps': 'Informações do GPS',
-            'datetime': 'horário da fotografia',
-            'title_pt': 'Título em português',
-            'title_en': 'Título em inglês',
-            'country': 'País',
-            'state': 'Estado',
-            'city': 'Cidade',
-            'sublocation': 'local'
-                }
-    
-    file = r"/home/joao/Documentos/projetos/cifona_vi/cifonauta/site_media/ac-aem_2qTX9p.jpg"
-    
-    #meta = Metadata(file, metadata)
-
-    iptc = ['object name', 'edit status', 'editorial update', 'urgency', 'subject reference', 'category', 'supplemental category', 'fixture identifier', 'keywords', 'content location code', 'content location name', 'release date', 'release time', 'expiration date', 'expiration time', 'special instructions', 'action advised', 'reference service', 'reference date', 'reference number', 'date created', 'time created', 'digital creation date', 'digital creation time', 'originating program', 'program version', 'object cycle', 'by-line', 'by-line title', 'city', 'sub-location', 'province/state', 'country/primary location code', 'country/primary location name', 'original transmission reference', 'headline', 'credit', 'source', 'copyright notice', 'contact', 'caption/abstract', 'local caption', 'writer/editor', 'image type', 'image orientation', 'language identifier', 'custom1', 'custom2', 'custom3', 'custom4', 'custom5', 'custom6', 'custom7', 'custom8', 'custom9', 'custom10', 'custom11', 'custom12', 'custom13', 'custom14', 'custom15', 'custom16', 'custom17', 'custom18', 'custom19', 'custom20']
-    
-    print('title' in iptc)

@@ -54,6 +54,13 @@ class ModifiedMedia(models.Model):
     
     def __str__(self):
         return self.title
+
+class LoadedMedia(models.Model):
+    media = models.FileField(upload_to='loaded_media')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
+
+    def __str__(self):
+        return self.media.name
     
 
 class Media(models.Model):
@@ -487,6 +494,7 @@ models.signals.pre_save.connect(citation_pre_save, sender=Reference)
 models.signals.post_save.connect(compress_files, sender=Media)
 # Delete file from folder when the media is deleted on website
 models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
+models.signals.pre_delete.connect(delete_file_from_folder, sender=LoadedMedia)
 # Update the user's curatorships as specialist
 models.signals.m2m_changed.connect(update_specialist_of, sender=Curadoria.specialists.through)
 # Update the user's curatorships as curator

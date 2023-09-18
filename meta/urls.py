@@ -10,7 +10,8 @@ urlpatterns = [
 
         # Módulo administrativo
         path('administrative-module/', views.dashboard, name='dashboard'),
-        path('administrative-module/add/', views.upload_media, name='upload_media'),
+        path('administrative-module/add/load-media', views.upload_media_step1, name='upload_media_step1'),
+        path('administrative-module/add/fulfill-metadata', views.upload_media_step2, name='upload_media_step2'),
         path('administrative-module/edit-metadata/<int:media_id>', views.edit_metadata, name='edit_metadata'),
         path('administrative-module/details/<int:pk>/', MediaDetail.as_view(), name='media_detail'),
         path('administrative-module/update/<int:pk>', views.update_my_medias, name='update_media'),

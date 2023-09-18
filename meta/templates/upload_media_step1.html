@@ -1,0 +1,37 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block extra_head %}
+<script src="{% static 'js/upload_media_step1.js' %}" defer></script>
+{% endblock %}
+{% block title %}Enviar Mídia{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="form-container">
+    <h2>Adicionar nova mídia</h2>
+    {% if messages %}
+    {% for message in messages %}
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    {% endfor %}
+    {% endif %}
+    <form class="upload-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="field-container">
+            <div class="label-div">
+                <label for="">Arquivos:</label>
+                <span class='required'>*</span>
+            </div>
+            <div class="field-div">
+                <input type="file" name="medias" id="medias" multiple>
+                <div class="file-div"></div>
+                <span class="help-text">Arquivos aceitos: {{ media_extensions }}</span>
+                <span class="help-text">Tamanho máximo: 3MB</span>
+            </div>
+        </div>
+        
+        <button class="submit-button" type="submit">Carregar mídia</button>
+    </form>
+</div>
+
+{% endblock %}

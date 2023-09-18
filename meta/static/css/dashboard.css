@@ -168,6 +168,17 @@ h2 {
 
 
 /* UPLOAD AND UPDATE MEDIA */
+.medias-div {
+    display: flex;
+    gap: .5rem;
+}
+
+.loaded-media {
+    width: 8rem;
+    object-fit: cover;
+    height: 5rem;
+}
+
 .upload-form, .update-form {
     display: flex;
     flex-direction: column;
@@ -210,6 +221,10 @@ input[type='text'], select {
 .field-div {
     display: flex;
     flex-direction: column;
+}
+
+.files-names:has(li) {
+    margin-bottom: .5rem;
 }
 
 .media-div img {

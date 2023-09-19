@@ -332,9 +332,12 @@ textarea {
     margin-top: .1rem;
 }
 
-.submit-button {
-    /* background-color: #44c544; */
-    background: linear-gradient(to bottom, #51bb47 0%, #1c7524 100%);
+.buttons-div {
+    display: flex;
+    gap: 1rem;
+}
+
+.submit-button, .delete-button {
     color: white;
     font-size: 1.2rem;
     width: fit-content;
@@ -345,9 +348,22 @@ textarea {
     transition: background-color .1s;
 }
 
+.submit-button {
+    /* background-color: #44c544; */
+    background: linear-gradient(to bottom, #51bb47 0%, #1c7524 100%);
+}
+
 .submit-button:hover {
     /* background-color: rgb(57, 168, 57); */
     background: linear-gradient(to bottom, #7edc75 0%, #46bf51 100%);
+}
+
+.delete-button {
+    background: linear-gradient(to bottom, #ee3737 0%, #751c1c 100%);
+}
+
+.delete-button:hover {
+    background: linear-gradient(to bottom, #ea7070 0%, #ab3b3b 100%);
 }
 
 .field-error {

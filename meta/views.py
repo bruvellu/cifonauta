@@ -85,6 +85,10 @@ def upload_media_step1(request):
 
         messages.error(request, 'Por favor, selecione as mídias')
         return redirect('upload_media_step1')
+
+    if LoadedMedia.objects.filter(author=request.user).exists():
+        messages.warning(request, 'Você tem mídias carregadas.')
+        return redirect('upload_media_step2')
     
     media_extensions = ''
     for media_extension in settings.MEDIA_EXTENSIONS:
@@ -106,7 +110,14 @@ def upload_media_step1(request):
 @author_required
 def upload_media_step2(request):
     medias = LoadedMedia.objects.filter(author=request.user)
-
+    
+    action = request.GET.get('action')
+    if action == 'delete':
+        if action == 'delete':
+            medias.delete()
+            messages.success(request, 'Upload de mídias descartado com sucesso')
+            return redirect('upload_media_step1')
+    
     if request.method == 'POST':
         form = UploadMediaForm(request.POST, request.FILES)
         

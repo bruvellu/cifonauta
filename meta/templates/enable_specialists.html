@@ -1,0 +1,35 @@
+{% extends 'dashboard.html' %}
+
+{% block title %}Habilitar Especialistas{% endblock %}
+
+{% block dashboard_content %}
+
+{% if object_list %}
+    <h2>Lista de Usuários</h2>
+    <form method="post" action="">
+        {% csrf_token %}
+        <table class="table">
+            <thead class="table-head">
+                <tr>
+                    <th class="title-column">Nome</th>
+                    <th class="checkbox-column">Selecionar</th>
+                </tr>
+            </thead>
+            <tbody class="table-body">
+                {% for user in object_list %}
+                <tr>
+                    <td class="text-cedule">{{ user }}</td>
+                    <td>
+                        <input type="checkbox" name="selected_users_ids" value="{{ user.id }}">
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Habilitar</button>
+    </form>
+{% else %}
+    <p>Não há imagens</p>
+{% endif %}
+
+{% endblock %}

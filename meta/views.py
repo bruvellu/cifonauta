@@ -454,6 +454,40 @@ def revision_media_detail(request, media_id):
     return render(request, 'media_revision_detail.html', context) 
 
 
+@method_decorator(custom_login_required, name='dispatch')
+@method_decorator(curator_required, name='dispatch')
+class EnableSpecialists(LoginRequiredMixin, ListView):
+    model = UserCifonauta
+    template_name = 'enable_specialists.html'
+
+    def get_queryset(self):
+        user = self.request.user
+
+        curations = user.curator_of.all()
+        curations_taxons = []
+
+        for curadoria in curations:
+            taxons = curadoria.taxons.all()
+            curations_taxons.extend(taxons)
+
+        queryset = UserCifonauta.objects.all()
+
+        return queryset
+
+    def post(self, request):
+        selected_users_ids = request.POST.getlist('selected_users_ids')
+        users = UserCifonauta.objects.filter(id__in=selected_users_ids)
+        print(users)
+        return redirect('my_medias')
+    
+    # Gets the user's permissions
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_permissions = self.request.user.get_all_permissions()
+        context['user_permissions'] = user_permissions
+        return context
+
+
 # Home
 def home_page(request):
     '''Home page showing image highlights.'''

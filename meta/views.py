@@ -456,9 +456,9 @@ def revision_media_detail(request, media_id):
 
 @method_decorator(custom_login_required, name='dispatch')
 @method_decorator(curator_required, name='dispatch')
-class EnableSpecialists(LoginRequiredMixin, ListView):
+class ManageSpecialists(LoginRequiredMixin, ListView):
     model = UserCifonauta
-    template_name = 'enable_specialists.html'
+    template_name = 'manage_specialists.html'
 
     def get_queryset(self):
         user = self.request.user

@@ -4,7 +4,7 @@
 
 {% block dashboard_content %}
 
-{% if object_list %}
+{% if users %}
     <h2>Lista de Usuários</h2>
     <form method="post" action="">
         {% csrf_token %}
@@ -16,7 +16,7 @@
                 </tr>
             </thead>
             <tbody class="table-body">
-                {% for user in object_list %}
+                {% for user in users %}
                 <tr>
                     <td class="text-cedule">{{ user }}</td>
                     <td>
@@ -29,7 +29,7 @@
         <button type="submit">Habilitar</button>
     </form>
 {% else %}
-    <p>Não há imagens</p>
+    <p>Não há usuários</p>
 {% endif %}
 
 {% endblock %}

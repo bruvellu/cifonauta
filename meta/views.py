@@ -277,6 +277,7 @@ class MediaDetail(DetailView):
 @media_owner_required
 def update_my_medias(request, pk):
     media = get_object_or_404(Media, pk=pk)
+    modified_media = ModifiedMedia.objects.filter(media=media).first()
 
     if request.method == 'POST':
         form = UpdateMyMediaForm(request.POST)
@@ -284,7 +285,6 @@ def update_my_medias(request, pk):
             messages.success(request, 'Informações alteradas com sucesso')
 
             if media.status == 'published':
-                modified_media = ModifiedMedia.objects.filter(media=media)
                 if modified_media:
                     modified_media.title = form.cleaned_data['title']
                     modified_media.co_author.set(form.cleaned_data['co_author'])
@@ -343,6 +343,9 @@ def update_my_medias(request, pk):
         form = UpdateMyMediaForm(instance=media, initial={'has_taxons': 'True'})
     else:
         form = UpdateMyMediaForm(instance=media)
+
+    if modified_media and not messages.get_messages(request):
+        messages.warning(request, "Esta mídia tem alterações pendentes")
 
     form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 

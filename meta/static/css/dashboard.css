@@ -249,9 +249,11 @@ input[type='text'], select {
     margin-bottom: .5rem;
 }
 
-.media-div img {
-    max-width: 25rem;
+.media-div img, .media-div video {
+    max-width: 20rem;
     width: 100%;
+    height: 12rem;
+    object-fit: cover;
 }
 
 #medias {
@@ -429,6 +431,7 @@ tr, th {
 .table-body a {
     font-weight: bold;
     color: #333;
+    font-size: 1.1rem;
 }
 
 .table-body a:hover {
@@ -447,8 +450,10 @@ tr, th {
     color: #13ad13;
 }
 
-.image-cedule img {
-    width: 15rem;
+.image-cedule img, .image-cedule video {
+    width: 11rem;
+    height: 6rem;
+    object-fit: cover;
 }
 
 

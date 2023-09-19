@@ -64,7 +64,6 @@ class LoadedMedia(models.Model):
 
     def is_video(self):
         name, extension = os.path.splitext(self.media.name)
-        print(self.media.name)
         return True if extension in settings.VIDEO_EXTENSIONS else False
     
 
@@ -193,6 +192,10 @@ class Media(models.Model):
 
     def get_absolute_url(self):
         return reverse('media_url', args=[str(self.id)])
+
+    def is_video(self):
+        name, extension = os.path.splitext(self.file.name)
+        return True if extension in settings.VIDEO_EXTENSIONS else False
 
     class Meta:
         verbose_name = _('arquivo')

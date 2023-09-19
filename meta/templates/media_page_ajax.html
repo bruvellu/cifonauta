@@ -18,10 +18,10 @@
     <div id="media-subcontainer">
       <div>
         <figure class="{{ media.datatype }}">
-          {% if media.datatype == 'photo' %}
+          {% if file_extension == '.jpg' or file_extension == '.png' %}
           {% include 'photo.html' %}
           {% else %}
-          {% if media.datatype == 'video' %}
+          {% if file_extension == '.mp4' %}
           {% include 'video.html' %}
           {% endif %}
           {% endif %}

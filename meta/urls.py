@@ -18,6 +18,7 @@ urlpatterns = [
         path('administrative-module/curadory-medias/', CuradoriaMediaList.as_view(), name='curadory_medias'),
         path('administrative-module/my-medias/', MyMedias.as_view(), name='my_medias'),
         path('administrative-module/revision', RevisionMedia.as_view(), name='media_revision'),
+        path('administrative-module/revision/detail/<int:media_id>', views.revision_media_detail, name='media_revision_detail'),
 
         # Menu
         path('search/', views.search_page, name='search_url'),

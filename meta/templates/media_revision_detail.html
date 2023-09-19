@@ -5,12 +5,12 @@
 <script src="{% static 'js/update_media.js' %}" defer></script>
 {% endblock %}
 
-{% block title %}Atualizar Mídia{% endblock %}
+{% block title %}Revisar Mídia{% endblock %}
 
 {% block dashboard_content %}
 
 <div class="form-container">
-    <h2>Alterar informações da mídia</h2>
+    <h2>Revisar informações da mídia</h2>
     {% if messages %}
     {% for message in messages %}
     <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
@@ -102,7 +102,7 @@
         </div>
         {% endif %}
         {% endfor %}
-        <button class='submit-button' type="submit">Atualizar</button>
+        <button class='submit-button' type="submit">Publicar</button>
     </form>
 </div>
 

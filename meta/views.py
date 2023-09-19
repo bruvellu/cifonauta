@@ -461,30 +461,33 @@ class ManageSpecialists(LoginRequiredMixin, ListView):
     template_name = 'manage_specialists.html'
 
     def get_queryset(self):
-        user = self.request.user
-
-        curations = user.curator_of.all()
-        curations_taxons = []
-
-        for curadoria in curations:
-            taxons = curadoria.taxons.all()
-            curations_taxons.extend(taxons)
-
         queryset = UserCifonauta.objects.all()
 
         return queryset
 
     def post(self, request):
         selected_users_ids = request.POST.getlist('selected_users_ids')
+        selected_curation_id = request.POST.get('selected_curation_id')
         users = UserCifonauta.objects.filter(id__in=selected_users_ids)
+        curations = Curadoria.objects.filter(id__in=selected_curation_id)
         print(users)
+        print(curations)
         return redirect('my_medias')
     
-    # Gets the user's permissions
+    # Gets the user's permissions and curations
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user_permissions = self.request.user.get_all_permissions()
         context['user_permissions'] = user_permissions
+
+        user = self.request.user
+        curations = user.curator_of.all()
+        curations_taxons = []
+        for curadoria in curations:
+            taxons = curadoria.taxons.all()
+            curations_taxons.extend(taxons)
+        context['curations'] = curations
+        context['curations_taxons'] = curations_taxons
         return context
 
 

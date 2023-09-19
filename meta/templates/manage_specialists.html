@@ -4,10 +4,11 @@
 
 {% block dashboard_content %}
 
-{% if users %}
+{% if object_list and curations %}
     <h2>Lista de Usuários</h2>
     <form method="post" action="">
         {% csrf_token %}
+
         <table class="table">
             <thead class="table-head">
                 <tr>
@@ -16,7 +17,7 @@
                 </tr>
             </thead>
             <tbody class="table-body">
-                {% for user in users %}
+                {% for user in object_list %}
                 <tr>
                     <td class="text-cedule">{{ user }}</td>
                     <td>
@@ -26,6 +27,14 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        <h2>Escolha uma Curadoria</h2>
+        <select name="selected_curation_id">
+            {% for curation in curations %}
+                <option value="{{ curation.id }}">{{ curation }}</option>
+            {% endfor %}
+        </select>
+        
         <button type="submit">Habilitar</button>
     </form>
 {% else %}

@@ -81,13 +81,16 @@ def upload_media_step1(request):
                 media.name = f"{new_filename}.{ext}"
                 LoadedMedia.objects.create(media=media, author=request.user)
             
+            messages.success(request, 'Mídias carregadas com sucesso')
+            messages.info(request, 'Preencha os dados para completar o upload')
             return redirect('upload_media_step2')
 
         messages.error(request, 'Por favor, selecione as mídias')
         return redirect('upload_media_step1')
 
     if LoadedMedia.objects.filter(author=request.user).exists():
-        messages.warning(request, 'Você tem mídias carregadas.')
+        messages.warning(request, 'Você tem mídias carregadas')
+        messages.info(request, 'Complete ou cancele o upload para adicionar outras mídias')
         return redirect('upload_media_step2')
     
     media_extensions = ''
@@ -113,10 +116,9 @@ def upload_media_step2(request):
     
     action = request.GET.get('action')
     if action == 'delete':
-        if action == 'delete':
-            medias.delete()
-            messages.success(request, 'Upload de mídias descartado com sucesso')
-            return redirect('upload_media_step1')
+        medias.delete()
+        messages.success(request, 'Upload de mídias cancelado com sucesso')
+        return redirect('upload_media_step1')
     
     if request.method == 'POST':
         form = UploadMediaForm(request.POST, request.FILES)
@@ -149,18 +151,16 @@ def upload_media_step2(request):
                     media_instance.taxons.clear() #Can only be called after form.save_m2m()
             
             medias.delete()
-            messages.success(request, 'Suas mídias foram salvas')
-            
-        else:
-            messages.error(request, 'Erro ao tentar salvar mídias')
-        
-        return redirect('upload_media_step1')
-            
-    else:
-        form = UploadMediaForm(initial={'author': request.user.id})
-        registration_form = CoauthorRegistrationForm()
-        form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+            messages.success(request, 'Suas mídias foram salvas com sucesso')
+            return redirect('upload_media_step1')
 
+        messages.error(request, 'Erro ao tentar salvar mídias')
+        return redirect('upload_media_step2')
+        
+           
+    form = UploadMediaForm(initial={'author': request.user.id})
+    registration_form = CoauthorRegistrationForm()
+    form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
     
     is_specialist = request.user.specialist_of.exists()
     is_curator = request.user.curator_of.exists()

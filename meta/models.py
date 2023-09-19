@@ -61,6 +61,11 @@ class LoadedMedia(models.Model):
 
     def __str__(self):
         return self.media.name
+
+    def is_video(self):
+        name, extension = os.path.splitext(self.media.name)
+        print(self.media.name)
+        return True if extension in settings.VIDEO_EXTENSIONS else False
     
 
 class Media(models.Model):

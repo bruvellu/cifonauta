@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block extra_head %}
-<script src="{% static 'js/upload_media.js' %}" defer></script>
+<script src="{% static 'js/upload_media_step2.js' %}" defer></script>
 {% endblock %}
 {% block title %}Enviar Mídia{% endblock %}
 
@@ -35,9 +35,11 @@
 <div class="form-container">
     <h2>Adicionar nova mídia</h2>
     {% if messages %}
-    {% for message in messages %}
-    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
-    {% endfor %}
+    <div class="messages-div">
+        {% for message in messages %}
+        <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+        {% endfor %}
+    </div>
     {% endif %}
     <form class="upload-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -45,12 +47,19 @@
             <div class="label-div">
                 <label>Mídias:</label>
             </div>
-            <div class="field-div">
-                <div class="medias-div">
+            <div class="medias-div">
+                <div class="medias-wrapper">
                     {% for media in medias %}
+                    {% if media.is_video %}
+                    <video class="loaded-media" src="{{media.media.url}}"></video>
+                    {% else %}
                     <img class="loaded-media" src="{{media.media.url}}" alt="">
+                    {% endif %}
                     {% endfor %}
                 </div>
+            {% if medias|length > 1 %}
+            <span class="info-span">Os metadados serão aplicados a todas as mídias</span>
+            {% endif %}
             </div>
         </div>
         {% for field in form %}
@@ -130,7 +139,7 @@
         {% endfor %}
         <div class="buttons-div">
             <button class="submit-button" type="submit">Adicionar</button>
-            <a class="delete-button" href="{{ upload_media_step2 }}?action=delete">Excluir</a>
+            <a class="cancel-button" href="{{ upload_media_step2 }}?action=delete">Cancelar</a>
         </div>
     </form>
 </div>

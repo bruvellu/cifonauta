@@ -53,23 +53,31 @@ a:active, a:visited {
     min-height: 100vh;
 }
 
-h2 {
-    margin-bottom: 1.5rem;
+.messages-div {
+    display: grid;
+    gap: 0.5rem;
 }
 
-.error, .notice, .success {
-    transform: translateY(-2rem);
+.error, .notice, .success, .info {
     width: fit-content;
     font-size: 1.1rem;
+    animation: disappear 1s 9s forwards;
 }
 
 .warning {
-    transform: translateY(-1.5rem);
     background-color: #ffffb3;
     color: #565600;
     font-size: 1.1rem;
+    animation: disappear 1s 9s forwards;
     /* background-color: #e8edff;
     color: #000b43de; */
+}
+
+@keyframes disappear {
+    100% {
+        opacity: 0;
+        display: none;
+    }
 }
 
 .form-container {
@@ -170,19 +178,33 @@ h2 {
 /* UPLOAD AND UPDATE MEDIA */
 .medias-div {
     display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.medias-wrapper {
+    display: flex;
+    flex-wrap: wrap;
     gap: .5rem;
 }
 
 .loaded-media {
-    width: 8rem;
+    width: 9rem;
     object-fit: cover;
-    height: 5rem;
+    height: 5.5rem;
+    border-radius: 0.25rem;
+}
+
+.info-span {
+    font-weight: bold;
+    margin-top: 1rem;
 }
 
 .upload-form, .update-form {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    margin-top: 2rem;
 }
 
 .field-container {
@@ -337,7 +359,7 @@ textarea {
     gap: 1rem;
 }
 
-.submit-button, .delete-button {
+.submit-button, .cancel-button {
     color: white;
     font-size: 1.2rem;
     width: fit-content;
@@ -358,11 +380,12 @@ textarea {
     background: linear-gradient(to bottom, #7edc75 0%, #46bf51 100%);
 }
 
-.delete-button {
+.cancel-button {
     background: linear-gradient(to bottom, #ee3737 0%, #751c1c 100%);
+    line-height: initial;
 }
 
-.delete-button:hover {
+.cancel-button:hover {
     background: linear-gradient(to bottom, #ea7070 0%, #ab3b3b 100%);
 }
 

@@ -225,11 +225,14 @@ def edit_metadata(request, media_id):
         else:
             messages.success(request, 'Metadados salvos com sucesso.')
         form.save()
+
+    media = get_object_or_404(Media, pk=media_id)
     is_specialist = request.user.specialist_of.exists()
     is_curator = request.user.curator_of.exists()
 
     context = {
         'form': form,
+        'media': media,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }

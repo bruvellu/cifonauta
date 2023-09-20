@@ -260,6 +260,13 @@ class CuradoriaMediaList(LoginRequiredMixin, ListView):
        
         return queryset
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context['is_specialist'] = user.specialist_of.exists()
+        context['is_curator'] = user.curator_of.exists()
+        return context
+
 #Missing
 @method_decorator(custom_login_required, name='dispatch')
 class MediaDetail(DetailView):
@@ -417,8 +424,9 @@ class RevisionMedia(LoginRequiredMixin, ListView):
     # Gets the user's permissions
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
+        user = self.request.user
+        context['is_specialist'] = user.specialist_of.exists()
+        context['is_curator'] = user.curator_of.exists()
         return context
 
 

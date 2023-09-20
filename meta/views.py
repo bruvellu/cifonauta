@@ -248,19 +248,20 @@ class CuradoriaMediaList(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
 
-        curadorias = user.curator_of.all()
-        curation_taxons=[]
-        for curadoria in curadorias:
-            taxon = curadoria.taxons.all()
-            curation_taxons.append(taxon)
-        queryset = Media.objects.none()
-        for curadoria in curation_taxons:
-            queryset |= Media.objects.filter(taxons__in=curadoria)
-        # This "queryset" appears in the template as "object_list"
+        curations = user.specialist_of.all()
+        curations_taxons = []
+
+        for curadoria in curations:
+            taxons = curadoria.taxons.all()
+            curations_taxons.extend(taxons)
+
+        queryset = Media.objects.filter(status='not_edited')
+
+        queryset = queryset.filter(taxons__in=curations_taxons)
 
         # Aplies distinct() to eliminate duplicates
         queryset = queryset.distinct()
-       
+
         return queryset
 
     def get_context_data(self, **kwargs):

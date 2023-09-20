@@ -382,7 +382,7 @@ class MyMedias(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = super().get_queryset().filter(author=user)
+        queryset = super().get_queryset().filter(author=user).order_by('-pk')
         return queryset
     
     def get_context_data(self, **kwargs):
@@ -477,8 +477,8 @@ def revision_media_detail(request, media_id):
             }
         media.status = 'published'
         media.is_public = True
-        print(media.coverpath)
-        Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
+        if not media.is_video:
+            Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
         form.save()
         messages.success(request, 'Sua mídia foi publicada')
         return redirect('media_url', media_id=media_id)
@@ -487,6 +487,7 @@ def revision_media_detail(request, media_id):
 
     context = {
         'form': form,
+        'media': media,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }

@@ -456,9 +456,9 @@ def revision_media_detail(request, media_id):
 
 @method_decorator(custom_login_required, name='dispatch')
 @method_decorator(curator_required, name='dispatch')
-class ManageSpecialists(LoginRequiredMixin, ListView):
+class EnableSpecialists(LoginRequiredMixin, ListView):
     model = UserCifonauta
-    template_name = 'manage_specialists.html'
+    template_name = 'enable_specialists.html'
 
     def get_queryset(self):
         queryset = UserCifonauta.objects.all()
@@ -482,7 +482,7 @@ class ManageSpecialists(LoginRequiredMixin, ListView):
             for user in users:
                 user.is_author = True
                 user.save()
-        return redirect('manage_specialists')
+        return redirect('enable_specialists')
     
     # Gets the user's permissions and curations
     def get_context_data(self, **kwargs):

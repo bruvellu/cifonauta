@@ -34,8 +34,9 @@
                 <option value="{{ curation.id }}">{{ curation }}</option>
             {% endfor %}
         </select>
-        
-        <button type="submit">Habilitar</button>
+
+        <button type="submit" name="enable_specialists">Habilitar como Especialistas</button>
+        <button type="submit" name="enable_authors">Habilitar como Autores</button>
     </form>
 {% else %}
     <p>Não há usuários</p>

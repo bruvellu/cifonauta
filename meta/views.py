@@ -469,16 +469,27 @@ class ManageSpecialists(LoginRequiredMixin, ListView):
         selected_users_ids = request.POST.getlist('selected_users_ids')
         selected_curation_id = request.POST.get('selected_curation_id')
         users = UserCifonauta.objects.filter(id__in=selected_users_ids)
-        curations = Curadoria.objects.filter(id__in=selected_curation_id)
-        print(users)
-        print(curations)
-        return redirect('my_medias')
+        curation = Curadoria.objects.get(id=selected_curation_id)
+        
+        if 'enable_specialists' in request.POST:
+            for user in users:
+                user.specialist_of.add(curation)
+                user.save()
+
+                curation.specialists.add(user)
+                curation.save()
+        elif 'enable_authors' in request.POST:
+            for user in users:
+                user.is_author = True
+                user.save()
+        return redirect('manage_specialists')
     
     # Gets the user's permissions and curations
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
+        user = self.request.user
+        context['is_specialist'] = user.specialist_of.exists()
+        context['is_curator'] = user.curator_of.exists()
 
         user = self.request.user
         curations = user.curator_of.all()

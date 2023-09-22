@@ -451,7 +451,6 @@ class Metadata():
 
         #Saving EXIF
         image.save(self.file, exif=exif_bytes)
-        raise ValueError()
 
     def _insert_metadata_iptc(self, field, val=None, clear=False):
 
@@ -671,7 +670,7 @@ class Metadata():
                         metadata[k] = meta
                     except KeyError:
                         continue
-        print(metadata)
+        return metadata
 
 if __name__ == "__main__":
     file = r"/home/joao/Documentos/projetos/cifona_vi/cifonauta/site_media/ac-aem_AVilt1.jpg"

@@ -29,6 +29,8 @@ class Curadoria(models.Model):
 class ModifiedMedia(models.Model):
     title = models.CharField(_('título'), max_length=200, default='',
             blank=True, help_text=_('Título da imagem.'))
+    caption = models.TextField(_('legenda'), default='', blank=True,
+            help_text=_('Legenda da imagem.'))
     media = models.OneToOneField('Media', on_delete=models.CASCADE, related_name='modified_media',
             verbose_name=_('mídia modificada'))
     co_author = models.ManyToManyField('Person', blank=True,

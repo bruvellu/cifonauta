@@ -156,9 +156,25 @@ def upload_media_step2(request):
 
         messages.error(request, 'Erro ao tentar salvar mídias')
         return redirect('upload_media_step2')
-        
-           
-    form = UploadMediaForm(initial={'author': request.user.id})
+    
+    metadata = None
+    for media in medias:
+        if media.media.url.endswith('jpg'):
+            metadata = Metadata(media.media.path)
+            read_metadata = metadata.read_metadata()
+            break        
+    
+    if metadata:
+        form = UploadMediaForm(initial={
+            'author': request.user.id,
+            'title': read_metadata['headline'],
+            'caption': read_metadata['description_pt'],
+            'date': read_metadata['datetime'],
+            'geolocation': read_metadata['gps']
+        })
+    else:
+        form = UploadMediaForm(initial={'author': request.user.id})
+
     registration_form = CoauthorRegistrationForm()
     form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
     

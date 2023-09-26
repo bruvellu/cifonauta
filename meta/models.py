@@ -29,6 +29,8 @@ class Curadoria(models.Model):
 class ModifiedMedia(models.Model):
     title = models.CharField(_('título'), max_length=200, default='',
             blank=True, help_text=_('Título da imagem.'))
+    caption = models.TextField(_('legenda'), default='', blank=True,
+            help_text=_('Legenda da imagem.'))
     media = models.OneToOneField('Media', on_delete=models.CASCADE, related_name='modified_media',
             verbose_name=_('mídia modificada'))
     co_author = models.ManyToManyField('Person', blank=True,
@@ -54,6 +56,17 @@ class ModifiedMedia(models.Model):
     
     def __str__(self):
         return self.title
+
+class LoadedMedia(models.Model):
+    media = models.FileField(upload_to='loaded_media')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
+
+    def __str__(self):
+        return self.media.name
+
+    def is_video(self):
+        name, extension = os.path.splitext(self.media.name)
+        return True if extension in settings.VIDEO_EXTENSIONS else False
     
 
 class Media(models.Model):
@@ -181,6 +194,10 @@ class Media(models.Model):
 
     def get_absolute_url(self):
         return reverse('media_url', args=[str(self.id)])
+
+    def is_video(self):
+        name, extension = os.path.splitext(self.file.name)
+        return True if extension in settings.VIDEO_EXTENSIONS else False
 
     class Meta:
         verbose_name = _('arquivo')
@@ -487,6 +504,7 @@ models.signals.pre_save.connect(citation_pre_save, sender=Reference)
 models.signals.post_save.connect(compress_files, sender=Media)
 # Delete file from folder when the media is deleted on website
 models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
+models.signals.pre_delete.connect(delete_file_from_folder, sender=LoadedMedia)
 # Update the user's curatorships as specialist
 models.signals.m2m_changed.connect(update_specialist_of, sender=Curadoria.specialists.through)
 # Update the user's curatorships as curator

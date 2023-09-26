@@ -29,6 +29,7 @@ from user.models import UserCifonauta
 import re
 from dotenv import load_dotenv
 from django.conf import settings
+from django.core.files import File
 
 load_dotenv()
 
@@ -47,96 +48,135 @@ def dashboard(request):
 
 @custom_login_required
 @author_required
-def upload_media(request):
+def upload_media_step1(request):
     if request.method == 'POST':
-        if 'name' in request.POST:
-            form = CoauthorRegistrationForm(request.POST)
-            if form.is_valid():
-                registration_instance = form.save(commit=False)
+        medias = request.FILES.getlist('medias')
 
-                name = form.cleaned_data['name'].split(' ')
-                name_capitalized = []
-                for word in name:
-                    name_capitalized.append(word.capitalize())
-                    
-                registration_instance.name = ' '.join(name_capitalized)
-                registration_instance.save()
-
-                messages.success(request, 'Pré-cadastro realizado com sucesso')
-                return redirect('upload_media')
-        
-        else:
-            medias = request.FILES.getlist('medias')
-            form = UploadMediaForm(request.POST, request.FILES)
-
-            if medias:
-                for media in medias:
-                    if media.size > 3000000:
-                        messages.error(request, 'Arquivo maior que 3MB')
-                        return redirect('upload_media')
-                    
-                    filename_regex = fr"{os.getenv('FILENAME_REGEX')}"
-                    filename, extension = os.path.splitext(media.name.lower())
-
-                    if extension:
-                        if not re.match(filename_regex, filename):
-                            messages.error(request, f'Nome de arquivo inválido:  {media.name}')
-                            messages.warning(request, 'Caracteres especiais aceitos: - _ ( )')
-                            return redirect('upload_media')
-                        
-                        if not extension.endswith(settings.MEDIA_EXTENSIONS):
-                            messages.error(request, f'Formato de arquivo não aceito:  {media.name}')
-                            messages.warning(request, 'Verifique os tipos de arquivos aceitos')
-                            return redirect('upload_media')
-                    else:
-                        messages.error(request, f'Arquivo inválido:  {media.name}')
-                        return redirect('upload_media')
-            else:
-                messages.error(request, 'Por favor, selecione as mídias')
-                return redirect('upload_media')
-
-            if form.is_valid():
-                for media in medias:
-                    form = UploadMediaForm(request.POST, request.FILES)
-                    media_instance = form.save(commit=False)
-
-                    if form.cleaned_data['terms'] == False:
-                        messages.error(request, 'Você precisa aceitar os termos')
-                        return redirect('upload_media')
-                    
-                    ext = media.name.split('.')[-1]
-                    new_filename = uuid.uuid4()
-
-                    media_instance.file = media
-                    media_instance.sitepath = media
-                    media_instance.coverpath = media
-
-                    media_instance.file.name = f"{new_filename}.{ext}"
-                    media_instance.sitepath.name = f"{new_filename}.{ext}"
-                    media_instance.coverpath.name = f"{new_filename}_cover.{ext}"
-                    
-
-                    if form.cleaned_data['has_taxons'] == 'True' and not form.cleaned_data['taxons']: 
-                        media_instance.has_taxons = False
-
-                    media_instance.save()
-                    form.save_m2m()
-
-                    if form.cleaned_data['has_taxons'] == 'False' and form.cleaned_data['taxons']:
-                        media_instance.taxons.clear() #Can only be called after form.save_m2m()
-
-                messages.success(request, 'Suas mídias foram salvas')
+        if medias:
+            for media in medias:
+                if media.size > 3000000:
+                    messages.error(request, 'Arquivo maior que 3MB')
+                    return redirect('upload_media_step1')
                 
-            else:
-                messages.error(request, 'Erro ao tentar salvar mídias')
+                filename_regex = fr"{os.getenv('FILENAME_REGEX')}"
+                filename, extension = os.path.splitext(media.name.lower())
+
+                if extension:
+                    if not re.match(filename_regex, filename):
+                        messages.error(request, f'Nome de arquivo inválido:  {media.name}')
+                        messages.warning(request, 'Caracteres especiais aceitos: - _ ( )')
+                        return redirect('upload_media_step1')
+                    
+                    if not extension.endswith(settings.MEDIA_EXTENSIONS):
+                        messages.error(request, f'Formato de arquivo não aceito:  {media.name}')
+                        messages.warning(request, 'Verifique os tipos de arquivos aceitos')
+                        return redirect('upload_media_step1')
+                else:
+                    messages.error(request, f'Arquivo inválido:  {media.name}')
+                    return redirect('upload_media_step1')
+                
+                ext = media.name.split('.')[-1]
+                new_filename = uuid.uuid4()
+
+                media.name = f"{new_filename}.{ext}"
+                LoadedMedia.objects.create(media=media, author=request.user)
             
-            return redirect('upload_media')
+            messages.success(request, 'Mídias carregadas com sucesso')
+            messages.info(request, 'Preencha os dados para completar o upload')
+            return redirect('upload_media_step2')
+
+        messages.error(request, 'Por favor, selecione as mídias')
+        return redirect('upload_media_step1')
+
+    if LoadedMedia.objects.filter(author=request.user).exists():
+        messages.warning(request, 'Você tem mídias carregadas')
+        messages.info(request, 'Complete ou cancele o upload para adicionar outras mídias')
+        return redirect('upload_media_step2')
+    
+    media_extensions = ''
+    for media_extension in settings.MEDIA_EXTENSIONS:
+        media_extensions += f'{media_extension[1:].upper()} '
+
+    is_specialist = request.user.specialist_of.exists()
+    is_curator = request.user.curator_of.exists()
+
+    context = {
+        'media_extensions': media_extensions,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator,
+    }
+
+    return render(request, 'upload_media_step1.html', context)
+
+
+@custom_login_required
+@author_required
+def upload_media_step2(request):
+    medias = LoadedMedia.objects.filter(author=request.user)
+    
+    action = request.GET.get('action')
+    if action == 'delete':
+        medias.delete()
+        messages.success(request, 'Upload de mídias cancelado com sucesso')
+        return redirect('upload_media_step1')
+    
+    if request.method == 'POST':
+        form = UploadMediaForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            for media in medias:
+                form = UploadMediaForm(request.POST, request.FILES)
+                media_instance = form.save(commit=False)
+
+                if form.cleaned_data['terms'] == False:
+                    messages.error(request, 'Você precisa aceitar os termos')
+                    return redirect('upload_media')
+
+                file = media.media.name.split('/')[-1]
+                ext = file.split('.')[-1]
+                filename = file.split('.')[0]
+
+                media_file = File(media.media, name=f'{filename}.{ext}')
+                media_instance.file = media_file
+                media_instance.sitepath = media_file
+                media_file = File(media.media, name=f'{filename}_cover.{ext}')
+                media_instance.coverpath = media_file
+
+                if form.cleaned_data['has_taxons'] == 'True' and not form.cleaned_data['taxons']: 
+                    media_instance.has_taxons = False
+
+                media_instance.save()
+                form.save_m2m()
+                if form.cleaned_data['has_taxons'] == 'False' and form.cleaned_data['taxons']:
+                    media_instance.taxons.clear() #Can only be called after form.save_m2m()
             
+            medias.delete()
+            messages.success(request, 'Suas mídias foram salvas com sucesso')
+            return redirect('upload_media_step1')
+
+        messages.error(request, 'Erro ao tentar salvar mídias')
+        return redirect('upload_media_step2')
+    
+    metadata = None
+    for media in medias:
+        if media.media.url.endswith('jpg'):
+            metadata = Metadata(media.media.path)
+            read_metadata = metadata.read_metadata()
+            break        
+    
+    if metadata:
+        form = UploadMediaForm(initial={
+            'author': request.user.id,
+            'title': read_metadata['headline'],
+            'caption': read_metadata['description_pt'],
+            'date': read_metadata['datetime'],
+            'geolocation': read_metadata['gps']
+        })
     else:
         form = UploadMediaForm(initial={'author': request.user.id})
-        registration_form = CoauthorRegistrationForm()
-        form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
+    registration_form = CoauthorRegistrationForm()
+    form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
     
     is_specialist = request.user.specialist_of.exists()
     is_curator = request.user.curator_of.exists()
@@ -144,11 +184,12 @@ def upload_media(request):
     context = {
         'form': form,
         'registration_form': registration_form,
+        'medias': medias,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }
 
-    return render(request, 'upload_media.html', context)
+    return render(request, 'upload_media_step2.html', context)
 
 
 @custom_login_required
@@ -200,11 +241,14 @@ def edit_metadata(request, media_id):
         else:
             messages.success(request, 'Metadados salvos com sucesso.')
         form.save()
+
+    media = get_object_or_404(Media, pk=media_id)
     is_specialist = request.user.specialist_of.exists()
     is_curator = request.user.curator_of.exists()
 
     context = {
         'form': form,
+        'media': media,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }
@@ -220,20 +264,28 @@ class CuradoriaMediaList(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
 
-        curadorias = user.curator_of.all()
-        curation_taxons=[]
-        for curadoria in curadorias:
-            taxon = curadoria.taxons.all()
-            curation_taxons.append(taxon)
-        queryset = Media.objects.none()
-        for curadoria in curation_taxons:
-            queryset |= Media.objects.filter(taxons__in=curadoria)
-        # This "queryset" appears in the template as "object_list"
+        curations = user.specialist_of.all()
+        curations_taxons = []
+
+        for curadoria in curations:
+            taxons = curadoria.taxons.all()
+            curations_taxons.extend(taxons)
+
+        queryset = Media.objects.filter(status='not_edited')
+
+        queryset = queryset.filter(taxons__in=curations_taxons)
 
         # Aplies distinct() to eliminate duplicates
         queryset = queryset.distinct()
-       
+
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context['is_specialist'] = user.specialist_of.exists()
+        context['is_curator'] = user.curator_of.exists()
+        return context
 
 #Missing
 @method_decorator(custom_login_required, name='dispatch')
@@ -252,6 +304,7 @@ class MediaDetail(DetailView):
 @media_owner_required
 def update_my_medias(request, pk):
     media = get_object_or_404(Media, pk=pk)
+    modified_media = ModifiedMedia.objects.filter(media=media).first()
 
     if request.method == 'POST':
         form = UpdateMyMediaForm(request.POST)
@@ -259,7 +312,6 @@ def update_my_medias(request, pk):
             messages.success(request, 'Informações alteradas com sucesso')
 
             if media.status == 'published':
-                modified_media = ModifiedMedia.objects.filter(media=media)
                 if modified_media:
                     modified_media.title = form.cleaned_data['title']
                     modified_media.co_author.set(form.cleaned_data['co_author'])
@@ -319,6 +371,9 @@ def update_my_medias(request, pk):
     else:
         form = UpdateMyMediaForm(instance=media)
 
+    if modified_media and not messages.get_messages(request):
+        messages.warning(request, "Esta mídia tem alterações pendentes")
+
     form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
     is_specialist = request.user.specialist_of.exists()
@@ -343,7 +398,7 @@ class MyMedias(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = super().get_queryset().filter(author=user)
+        queryset = super().get_queryset().filter(author=user).order_by('-pk')
         return queryset
     
     def get_context_data(self, **kwargs):
@@ -389,8 +444,9 @@ class RevisionMedia(LoginRequiredMixin, ListView):
     # Gets the user's permissions
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_permissions = self.request.user.get_all_permissions()
-        context['user_permissions'] = user_permissions
+        user = self.request.user
+        context['is_specialist'] = user.specialist_of.exists()
+        context['is_curator'] = user.curator_of.exists()
         return context
 
 
@@ -437,8 +493,8 @@ def revision_media_detail(request, media_id):
             }
         media.status = 'published'
         media.is_public = True
-        print(media.coverpath)
-        Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
+        if not media.is_video:
+            Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
         form.save()
         messages.success(request, 'Sua mídia foi publicada')
         return redirect('media_url', media_id=media_id)
@@ -447,6 +503,7 @@ def revision_media_detail(request, media_id):
 
     context = {
         'form': form,
+        'media': media,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }

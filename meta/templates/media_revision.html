@@ -3,9 +3,8 @@
 {% block title %}Revisão de Mídias{% endblock %}
 
 {% block dashboard_content %}
-
-{% if object_list %}
-    <h2>Lista das mídias para revisão</h2>
+    <h2>Lista de mídias para revisão</h2>
+    {% if object_list %}
     <form method="post" action="">
         {% csrf_token %}
         <table class="table">
@@ -13,9 +12,8 @@
                 <tr>
                     <th class="title-column">Título</th>
                     <th class="image-column">Imagem</th>
+                    <th>Autor</th>
                     <th class="status-column">Status</th>
-                    <th class="modification-date">Data de Modificação</th>
-                    <th class="file">Caminho</th>
                     <th class="checkbox-column">Selecionar</th>
                 </tr>
             </thead>
@@ -27,16 +25,19 @@
                     </td>
                     <td class="image-cedule">
                         <a href="{{ media.file.url }}" target="_blank">
-                            <img src="{{ media.file.url }}" width="250px">
+                            {% if media.is_video %}
+                            <video src="{{ media.coverpath.url }}"></video>
+                            {% else %}
+                            <img src="{{ media.coverpath.url }}">
+                            {% endif %}
                         </a>
                     </td>
+                    <td>{{media.author}}</td>
                     <td 
                         class="text-cedule {% if media.status == 'not_edited' %}not-edited{% elif media.status == 'to_review' %}to-review{% else %}published{% endif %}"
                     >
                         {{ media.get_status_display }}
                     </td>
-                    <td>{{ media.timestamp }}</td>
-                    <td>{{ media.file }}</td>
                     <td>
                         <input type="checkbox" name="selected_images_ids" value="{{ media.id }}">
                     </td>
@@ -44,10 +45,10 @@
                 {% endfor %}
             </tbody>
         </table>
-        <button type="submit">Publicar</button>
+        <button class="submit-button" type="submit">Publicar</button>
     </form>
-{% else %}
-    <p>Não há imagens</p>
-{% endif %}
+    {% else %}
+        <p>Não há imagens</p>
+    {% endif %}
 
 {% endblock %}

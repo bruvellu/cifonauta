@@ -23,6 +23,7 @@ In this case the metadata will not be saved in XMP format
 """
 try:
     from libxmp import XMPFiles, consts, XMPError
+    from libxmp.utils import file_to_dict
 except:
     print('Warning: python-xmp-toolkit not imported')
     pass
@@ -419,10 +420,74 @@ def fix_filename(root, filename):
 
 class Metadata():
 
-    def __init__(self, file, metadata:dict):
+    def __init__(self, file):
 
         self.file = file
 
+    def _insert_metadata_exif(self, field, val):
+        image = Image.open(self.file)
+
+        #Software
+        try:
+            exif_dict = piexif.load(image.info['exif'])
+        except KeyError:
+            exif_dict = {'0th': {}}
+        
+        if field == 'software':
+            exif_dict['0th'][piexif.ImageIFD.Software] = val
+        elif field == 'image_description':
+            exif_dict['0th'][piexif.ImageIFD.ImageDescription] = val
+        elif field == 'gps':
+            exif_dict['0th'][piexif.ImageIFD.GPSTag] = val
+        elif field == 'datetime':
+            exif_dict['0th'][piexif.ImageIFD.DateTime] = val
+        elif field == 'copyright':
+            exif_dict['0th'][piexif.ImageIFD.Copyright] = val
+        elif field == 'creators':
+            exif_dict['0th'][piexif.ImageIFD.Artist] = val
+
+        exif_dict.pop('thumbnail', None)
+        exif_bytes = piexif.dump(exif_dict)
+
+        #Saving EXIF
+        image.save(self.file, exif=exif_bytes)
+
+    def _insert_metadata_iptc(self, field, val=None, clear=False):
+
+        info = IPTCInfo(self.file, force=True)
+
+        if clear:
+            info[field].clear()
+        else:
+            info[field] = val
+
+        #Saving IPTC
+        info.save_as(self.file)
+        os.remove(f'{self.file}~')
+
+    def _insert_metadata_xmp(self, field, val, license=False):
+    
+        #XMP Config
+        try:
+            self.xmpfile = XMPFiles( file_path=self.file, open_forupdate=True)
+        except XMPError:
+            self.xmp_erro = True
+        else:
+            xmp = self.xmpfile.get_xmp()
+
+            if license:
+                xmp.register_namespace('http://creativecommons.org/ns#', 'cc')
+                xmp.set_property(consts.XMP_NS_CC, field, val)
+            else:
+                xmp.set_property(consts.XMP_NS_DC, field, val)
+
+            #Saving metadata
+            if self.xmpfile.can_put_xmp(xmp):
+                self.xmpfile.put_xmp(xmp)
+            self.xmpfile.close_file()
+
+    def edit_metadata(self, metadata:dict):
+    
         self._RIGHTS = {
             "cc0": {
                 "license_link": "https://creativecommons.org/publicdomain/zero/1.0/deed.pt_BR",
@@ -465,132 +530,152 @@ class Metadata():
         
         self.metadata = metadata
 
-        self.filter_metadata()
-
-    def filter_metadata(self):
-
         for k, v in self.metadata.items():
             if k == "software":
-                self.insert_metadata_exif(k, v)
+                self._insert_metadata_exif(k, v)
             elif k == "headline":
-                self.insert_metadata_xmp(k.capitalize(), v)
-                self.insert_metadata_iptc(k, v)
+                self._insert_metadata_xmp(k.capitalize(), v)
+                self._insert_metadata_iptc(k, v)
             elif k == "instructions":
-                self.insert_metadata_iptc('special instructions', v)
-                self.insert_metadata_xmp('Instructions', v)
+                self._insert_metadata_iptc('special instructions', v)
+                self._insert_metadata_xmp('Instructions', v)
             elif k == "source":
-                self.insert_metadata_iptc(k, v)
+                self._insert_metadata_iptc(k, v)
             elif k == "credit":
-                self.insert_metadata_iptc(k, v)
+                self._insert_metadata_iptc(k, v)
             elif k == 'license':
                 license_type = v['license_type']
                 creators = f'Author: {v["author"]}, Co-authors: {";".join(v["co_authors"])}'
-                self.insert_metadata_xmp('License', self._RIGHTS[license_type]["license_name"], license=True)
-                self.insert_metadata_xmp('AttributionURL', self._RIGHTS[license_type]["license_link"], license=True)
-                self.insert_metadata_xmp('Rights', self._RIGHTS[license_type]["license_text"], license=True)
-                self.insert_metadata_xmp('Creators', creators)
+                self._insert_metadata_xmp('License', self._RIGHTS[license_type]["license_name"], license=True)
+                self._insert_metadata_xmp('AttributionURL', self._RIGHTS[license_type]["license_link"], license=True)
+                self._insert_metadata_xmp('Rights', self._RIGHTS[license_type]["license_text"], license=True)
+                self._insert_metadata_xmp('Creators', creators)
                 license_exif = f'{self._RIGHTS[license_type]["license_name"]}: {self._RIGHTS[license_type]["license_text"]}. {self._RIGHTS[license_type]["license_link"]}'
-                self.insert_metadata_exif('copyright', license_exif)
-                self.insert_metadata_exif('creators', creators)
+                self._insert_metadata_exif('copyright', license_exif)
+                self._insert_metadata_exif('creators', creators)
 
             elif k == 'keywords':
                 if len(v) > 0:
-                    self.insert_metadata_iptc(k, clear=True)
+                    self._insert_metadata_iptc(k, clear=True)
                     keywords = []
                     subject = []
                     for k1, v2 in v.items():
                         keywords.append(f'{k}: {v}'.encode())
                         subject.append(f'{k}: {v}')
-                    self.insert_metadata_iptc(k, keywords)
+                    self._insert_metadata_iptc(k, keywords)
                     subject = ';'.join(subject)
-                    self.insert_metadata_xmp('Subject', subject)
+                    self._insert_metadata_xmp('Subject', subject)
             elif k == 'description_pt':
-                self.insert_metadata_exif('image_description', v)
-                self.insert_metadata_xmp('DescriptionPT', v)
-                self.insert_metadata_iptc('caption/abstract', v)
+                self._insert_metadata_exif('image_description', v)
+                self._insert_metadata_xmp('DescriptionPT', v)
+                self._insert_metadata_iptc('caption/abstract', v)
                 
             elif k == 'title_pt':
-                self.insert_metadata_xmp('TitlePT', v)
-                self.insert_metadata_iptc('object name', v)
+                self._insert_metadata_xmp('TitlePT', v)
+                self._insert_metadata_iptc('object name', v)
             elif k == 'gps':
-                self.insert_metadata_exif('gps', v)
-                self.insert_metadata_iptc('content location name', f'GPScoordinates: {v}')
+                self._insert_metadata_exif('gps', v)
+                self._insert_metadata_iptc('content location name', f'GPScoordinates: {v}')
             elif k == 'datetime':
-                self.insert_metadata_iptc('date created', v)
-                self.insert_metadata_xmp('DateCreated', v)
-                self.insert_metadata_exif('datetime', v)
+                self._insert_metadata_iptc('date created', v)
+                self._insert_metadata_xmp('DateCreated', v)
+                self._insert_metadata_exif('datetime', v)
             elif k == 'country':
-                self.insert_metadata_xmp('Country', v)
-                self.insert_metadata_iptc('country/primary location name', v)
+                self._insert_metadata_xmp('Country', v)
+                self._insert_metadata_iptc('country/primary location name', v)
             elif k == 'state':
-                self.insert_metadata_xmp('State', v)
-                self.insert_metadata_iptc('province/state', v)
+                self._insert_metadata_xmp('State', v)
+                self._insert_metadata_iptc('province/state', v)
             elif k == 'city':
-                self.insert_metadata_xmp('City', v)
-                self.insert_metadata_iptc('city', v)
+                self._insert_metadata_xmp('City', v)
+                self._insert_metadata_iptc('city', v)
             elif k == 'sublocation':
-                self.insert_metadata_iptc('sub-location', v)
+                self._insert_metadata_iptc('sub-location', v)
 
+    def _read_iptc(self, field):
+        info = IPTCInfo(self.file, force=True)
+        meta = info[field]
+        if meta == None:
+            meta = ''
+        return meta
+    
+    def _read_xmp(self, field):
+        try:
+            xmpfile = XMPFiles( file_path=self.file)
+            xmp = xmpfile.get_xmp()
+            if field in 'License AttributionURL':
+                meta = xmp.get_property(consts.XMP_NS_CC, field)
+            else:
+                meta = xmp.get_property(consts.XMP_NS_DC, field)
+        except:
+            meta = ''
+        return meta
 
-    def insert_metadata_exif(self, field, val):
+    def _read_exif(self, field):
         image = Image.open(self.file)
-
-        #Software
         try:
             exif_dict = piexif.load(image.info['exif'])
-        except KeyError:
-            exif_dict = {'0th': {}}
-        
-        if field == 'software':
-            exif_dict['0th'][piexif.ImageIFD.Software] = val
-        elif field == 'image_description':
-            exif_dict['0th'][piexif.ImageIFD.ImageDescription] = val
-        elif field == 'gps':
-            exif_dict['0th'][piexif.ImageIFD.GPSTag] = val
-        elif field == 'datetime':
-            exif_dict['0th'][piexif.ImageIFD.DateTime] = val
-        elif field == 'copyright':
-            exif_dict['0th'][piexif.ImageIFD.Copyright] = val
-        elif field == 'creators':
-            exif_dict['0th'][piexif.ImageIFD.Artist] = val
-
-        exif_dict.pop('thumbnail', None)
-        exif_bytes = piexif.dump(exif_dict)
-
-        #Saving EXIF
-        image.save(self.file, exif=exif_bytes)
-        raise ValueError()
-
-    def insert_metadata_iptc(self, field, val=None, clear=False):
-
-        info = IPTCInfo(self.file, force=True)
-
-        if clear:
-            info[field].clear()
+        except:
+            return ''
         else:
-            info[field] = val
-
-        #Saving IPTC
-        info.save_as(self.file)
-        os.remove(f'{self.file}~')
-
-    def insert_metadata_xmp(self, field, val, license=False):
+            try:
+                meta = exif_dict[field]
+            except:
+                meta = ''
+            return meta
         
-        #XMP Config
-        try:
-            self.xmpfile = XMPFiles( file_path=self.file, open_forupdate=True)
-        except XMPError:
-            self.xmp_erro = True
-        else:
-            xmp = self.xmpfile.get_xmp()
+    def read_metadata(self):
+        keys_metadata = {
+            'software': {'exif': piexif.ImageIFD.Software},
+            'headline': {'xmp': 'headline', 'iptc': 'headline'},
+            'instructions': {'xmp': 'Instructions', 'iptc': 'special instructions'},
+            'source': {'iptc': 'source'},
+            'credit': {'iptc': 'source'},
+            'license_name': {'xmp': 'License'},
+            'license_link': {'xmp': 'AttributionURL'},
+            'license_text': {'xmp': 'Rights'},
+            'copyright': {'exif': piexif.ImageIFD.Copyright},
+            'keywords': {'xmp': 'subject', 'iptc': 'keywords'},
+            'creator': {'exif': piexif.ImageIFD.Artist, 'xmp': 'Creator', 'iptc': 'Creator'},
+            'title_pt': {'xmp': 'TitlePT', 'iptc': 'object name'},
+            'description_pt': {'exif': piexif.ImageIFD.ImageDescription,'xmp': 'DescriptionPT', 'iptc': 'caption/abstract'},
+            'gps': {'exif': piexif.ImageIFD.GPSTag, 'iptc': 'content location name'},
+            'datetime': {'xmp': 'date_created', 'iptc': 'DateCreated', 'exif': piexif.ImageIFD.DateTime},
+            'country': {'xmp': 'Country', 'iptc': 'country/primary location name'},
+            'state': {'xmp': 'State', 'iptc': 'province/state'},
+            'city': {'xmp': 'City', 'iptc': 'city'},
+            'sublocation': {'iptc': 'sub-location'}
+        }
+        
+        metadata = {k: '' for k in keys_metadata.keys()}
+        for meta_type in ['xmp', 'iptc', 'exif']:
+            for k, v in keys_metadata.items():
+                if metadata[k] == '' or metadata[k] == None:
+                    try:
+                        if meta_type == 'xmp':
+                            meta = self._read_xmp(v[meta_type])
+                        elif meta_type == 'iptc':
+                            meta = self._read_iptc(v[meta_type])
+                        elif meta_type == 'exif':
+                            meta = self._read_exif(v[meta_type])
+                        
+                        try:
+                            if type(meta) == list:
+                                for i, m in enumerate(meta):
+                                    meta[i] = m.decode(errors='ignore')
+                            else:
+                                meta = meta.decode(errors='ignore')
+                        except AttributeError:
+                            pass
+                        metadata[k] = meta
+                    except KeyError:
+                        continue
+        return metadata
 
-            if license:
-                xmp.register_namespace('http://creativecommons.org/ns#', 'cc')
-                xmp.set_property(consts.XMP_NS_CC, field, val)
-            else:
-                xmp.set_property(consts.XMP_NS_DC, field, val)
+if __name__ == "__main__":
+    file = r"/home/joao/Documentos/projetos/cifona_vi/cifonauta/site_media/ac-aem_AVilt1.jpg"
+    meta = Metadata(file)
+    meta.read_metadata()
+    
 
-            #Saving metadata
-            if self.xmpfile.can_put_xmp(xmp):
-                self.xmpfile.put_xmp(xmp)
-            self.xmpfile.close_file()
+        

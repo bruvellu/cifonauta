@@ -2,39 +2,64 @@
 {% load static %}
 
 {% block extra_head %}
-<script src="{% static 'js/update_media.js' %}" defer></script>
+<script src="{% static 'js/upload_media_step2.js' %}" defer></script>
 {% endblock %}
-
-{% block title %}Atualizar Mídia{% endblock %}
+{% block title %}Enviar Mídia{% endblock %}
 
 {% block dashboard_content %}
+<dialog class="dialog">
+    <div>
+        <button class="close-registration-button">
+            <div class='line1'></div>
+            <div class='line2'></div>
+        </button>
+        <form class="pre-registration-form" method="post">
+            {% csrf_token %}
+            <p>Registre o coautor</p>
+            {% for field2 in registration_form %}
+            <div class="field2-container">
+                {{ field2.label_tag }}
+                <div class="field-div field2-div">
+                    {{ field2 }}
+                    {% if field2.help_text %}
+                    <span class="help-text">{{ field2.help_text }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            <button class="pre-registration-submit" type="submit">Cadastrar</button>
+        </form>
+    </div>
+</dialog>
 
 <div class="form-container">
-    <h2>Alterar informações da mídia</h2>
+    <h2>Adicionar nova mídia</h2>
     {% if messages %}
     <div class="messages-div">
-    {% for message in messages %}
-    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
-    {% endfor %}
+        {% for message in messages %}
+        <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+        {% endfor %}
     </div>
     {% endif %}
-    <form class="update-form" method="post" enctype="multipart/form-data">
+    <form class="upload-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="field-container">
             <div class="label-div">
-                <label>
-                    Mídia:
-                </label>
+                <label>Mídias:</label>
             </div>
-            <div class="field-div media-div">
-                <a href="{{ media.file.url }}" target="_blank">
+            <div class="medias-div">
+                <div class="medias-wrapper">
+                    {% for media in medias %}
                     {% if media.is_video %}
-                    <video src="{{ media.coverpath.url }}"></video>
+                    <video class="loaded-media" src="{{media.media.url}}"></video>
                     {% else %}
-                    <img src="{{ media.coverpath.url }}">
+                    <img class="loaded-media" src="{{media.media.url}}" alt="">
                     {% endif %}
-                </a>
-                <span class="help-text">{{ media.sitepath.help_text }}</span>
+                    {% endfor %}
+                </div>
+            {% if medias|length > 1 %}
+            <span class="info-span">Os metadados serão aplicados a todas as mídias</span>
+            {% endif %}
             </div>
         </div>
         {% for field in form %}
@@ -48,6 +73,10 @@
                 {% if field.help_text %}
                 <span class="help-text">{{ field.help_text }}</span>
                 {% endif %}
+                <div>
+                    <p>Coautor não está na lista?</p>
+                    <button class="pre-registration-button" type="button">Registrar coautor</button>
+                </div>
             </div>
         </div>
         {% elif field == form.has_taxons %}
@@ -65,7 +94,7 @@
                         {{ field.subwidgets.1 }}
                     </button>
                 </div>
-                <div class="field-div m2m-field taxons-div {% if field.value == 'False' %}hide-div{% endif %}">
+                <div class="field-div m2m-field taxons-div hide-div">
                     {{ form.taxons }}
                     {% if form.taxons.help_text %}
                     <span class="help-text">{{ form.taxons.help_text }}</span>
@@ -108,10 +137,11 @@
         </div>
         {% endif %}
         {% endfor %}
-        <button class='submit-button' type="submit">Atualizar</button>
+        <div class="buttons-div">
+            <button class="submit-button" type="submit">Adicionar</button>
+            <a class="cancel-button" href="{{ upload_media_step2 }}?action=delete">Cancelar</a>
+        </div>
     </form>
 </div>
-
-
 
 {% endblock %}

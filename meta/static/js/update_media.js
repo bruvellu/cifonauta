@@ -11,3 +11,10 @@ noTaxon.addEventListener('click', () => {
     taxonsDiv.classList.add('hide-div')
     noTaxon.checked = true
 })
+
+let message = document.querySelector('.success')
+if (message) {
+    setInterval(() => {
+        message.remove()
+    }, 10000)
+}

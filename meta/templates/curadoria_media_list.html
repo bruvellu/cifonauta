@@ -4,29 +4,36 @@
 
 {% block dashboard_content %}
 
+<h2>Lista de mídias para edição</h2>
 {% if object_list %}
-<h2>Lista de todas as mídias</h2>
 <table class="table">
     <thead class="table-head">
         <tr>
             <th class="title-column">Título</th>
-            <th class="image-column">Imagem</th>
+            <th class="image-column">Mídia</th>
+            <th>Autor</th>
             <th class="status-column">Status</th>
-            <th class="edit-column">Atualizar</th>
         </tr>
     </thead>
     <tbody class="table-body">
         {% for media in object_list %}
         <tr>
-            <td class="text-cedule">{{ media.title_pt_br }}</td>
+            <td class="text-cedule"><a href="{% url 'edit_metadata' media.id %}">{{ media.title_pt_br }}</a></td>
             <td class="image-cedule">
-                {% comment %} Comentado porque imagens do site não tem file.url {% endcomment %}
-                 <a href="{{ media.file.url }}" target="_blank">
-                    <img src="{{ media.file.url }}" width="250px">
-                </a> 
+                <a href="{{ media.file.url }}" target="_blank">
+                    {% if media.is_video %}
+                    <video src="{{ media.coverpath.url }}"></video>
+                    {% else %}
+                    <img src="{{ media.coverpath.url }}">
+                    {% endif %}
+                </a>
             </td>
-            <td class="text-cedule">{{ media.get_status_display }}</td>
-            <td class="button-cedule"><a href="{% url 'edit_metadata' media.id %}">Atualizar</a></td>
+            <td>{{media.author}}</td>
+            <td 
+                class="text-cedule {% if media.status == 'not_edited' %}not-edited{% elif media.status == 'to_review' %}to-review{% else %}published{% endif %}"
+            >
+                {{ media.get_status_display }}
+            </td>
         </tr>
         {% endfor %}
     </tbody>

@@ -53,23 +53,31 @@ a:active, a:visited {
     min-height: 100vh;
 }
 
-h2 {
-    margin-bottom: 1.5rem;
+.messages-div {
+    display: grid;
+    gap: 0.5rem;
 }
 
-.error, .notice, .success {
-    transform: translateY(-2rem);
+.error, .notice, .success, .info {
     width: fit-content;
     font-size: 1.1rem;
+    animation: disappear 1s 9s forwards;
 }
 
 .warning {
-    transform: translateY(-1.5rem);
     background-color: #ffffb3;
     color: #565600;
     font-size: 1.1rem;
+    animation: disappear 1s 9s forwards;
     /* background-color: #e8edff;
     color: #000b43de; */
+}
+
+@keyframes disappear {
+    100% {
+        opacity: 0;
+        display: none;
+    }
 }
 
 .form-container {
@@ -168,10 +176,35 @@ h2 {
 
 
 /* UPLOAD AND UPDATE MEDIA */
+.medias-div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.medias-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.loaded-media {
+    width: 9rem;
+    object-fit: cover;
+    height: 5.5rem;
+    border-radius: 0.25rem;
+}
+
+.info-span {
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
 .upload-form, .update-form {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    margin-top: 2rem;
 }
 
 .field-container {
@@ -212,9 +245,15 @@ input[type='text'], select {
     flex-direction: column;
 }
 
-.media-div img {
-    max-width: 25rem;
+.files-names:has(li) {
+    margin-bottom: .5rem;
+}
+
+.media-div img, .media-div video {
+    max-width: 20rem;
     width: 100%;
+    height: 12rem;
+    object-fit: cover;
 }
 
 #medias {
@@ -317,9 +356,12 @@ textarea {
     margin-top: .1rem;
 }
 
-.submit-button {
-    /* background-color: #44c544; */
-    background: linear-gradient(to bottom, #51bb47 0%, #1c7524 100%);
+.buttons-div {
+    display: flex;
+    gap: 1rem;
+}
+
+.submit-button, .cancel-button {
     color: white;
     font-size: 1.2rem;
     width: fit-content;
@@ -330,9 +372,23 @@ textarea {
     transition: background-color .1s;
 }
 
+.submit-button {
+    /* background-color: #44c544; */
+    background: linear-gradient(to bottom, #51bb47 0%, #1c7524 100%);
+}
+
 .submit-button:hover {
     /* background-color: rgb(57, 168, 57); */
     background: linear-gradient(to bottom, #7edc75 0%, #46bf51 100%);
+}
+
+.cancel-button {
+    background: linear-gradient(to bottom, #ee3737 0%, #751c1c 100%);
+    line-height: initial;
+}
+
+.cancel-button:hover {
+    background: linear-gradient(to bottom, #ea7070 0%, #ab3b3b 100%);
 }
 
 .field-error {
@@ -375,6 +431,7 @@ tr, th {
 .table-body a {
     font-weight: bold;
     color: #333;
+    font-size: 1.1rem;
 }
 
 .table-body a:hover {
@@ -393,8 +450,10 @@ tr, th {
     color: #13ad13;
 }
 
-.image-cedule img {
-    width: 15rem;
+.image-cedule img, .image-cedule video {
+    width: 11rem;
+    height: 6rem;
+    object-fit: cover;
 }
 
 

@@ -3,10 +3,6 @@
 {% block title %}Habilitar Especialistas e Autores{% endblock %}
 
 {% block dashboard_content %}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    {% load static %}
-    <script src="{% static 'js/enable_disable_buttons.js' %}"></script>
-
     <aside>
         <form method="get" action="">
             <h3>Selecione o que quer administrar</h3>
@@ -31,7 +27,7 @@
             <h3>Pesquise por nome</h3>
             <input type="text" name="search_query" placeholder="Pesquisar por nome">
 
-            <button type="submit">Pesquisar</button>
+            <button type="submit">Filtrar</button>
         </form>    
     </aside>
     
@@ -64,8 +60,7 @@
             </tbody>
         </table>
 
-        <button type="submit" name="enable_specialists" id="enable_button">Habilitar</button>
-        <button type="submit" name="remove_specialists" id="remove_button">Remover</button>
+        <button type="submit" name="enable_specialists">Habilitar</button>
+        <button type="submit" name="remove_specialists">Remover</button>
     </form>
-
 {% endblock %}

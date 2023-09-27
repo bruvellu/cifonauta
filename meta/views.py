@@ -485,7 +485,12 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
                 if selected_curation_id:
                     queryset = queryset.filter(specialist_of__id=selected_curation_id)
         elif users_type == 'authors':
-            queryset = queryset.filter(is_author=False)
+            if action == 'add':
+                queryset = queryset.filter(is_author=False)
+            elif action == 'remove':
+                queryset = queryset.filter(
+                    Q(specialist_of__isnull=True) | Q(curator_of__isnull=True)
+                )
 
 
         return queryset

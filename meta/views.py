@@ -425,7 +425,7 @@ class RevisionMedia(LoginRequiredMixin, ListView):
             taxons = curadoria.taxons.all()
             curations_taxons.extend(taxons)
 
-        queryset = Media.objects.filter(status='to_review')
+        queryset = Media.objects.filter(Q(status='to_review') | Q(status='published') & Q(modified_media__isnull=False))
 
         queryset = queryset.filter(taxons__in=curations_taxons)
 
@@ -449,6 +449,24 @@ class RevisionMedia(LoginRequiredMixin, ListView):
         context['is_curator'] = user.curator_of.exists()
         return context
 
+def published_media_revision(request, pk):
+    media = get_object_or_404(Media, pk=pk)
+    modified_media = ModifiedMedia.objects.filter(media=media).first()
+
+    if request.method == 'POST':
+        action = request.POST['action']
+        if action == 'discard':
+            modified_media.delete()
+            messages.success(request, 'Alteração descartada com sucesso')
+            return redirect('media_revision')
+        
+
+    context = {
+        'media': media,
+        'modified_media': modified_media
+    }
+
+    return render(request, 'published_media_revision.html', context)
 
 @custom_login_required
 @curator_required

@@ -463,6 +463,25 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = UserCifonauta.objects.all()
 
+        search_query = self.request.GET.get('search_query')
+        action = self.request.GET.get('action')
+        selected_curation_id = self.request.GET.get('selected_curation_id')
+
+        if search_query:
+            queryset = queryset.filter(
+                Q(first_name__icontains=search_query) | 
+                Q(last_name__icontains=search_query)
+            )
+
+        if action == 'add':
+            # Exibir apenas usuários que NÃO estão na curadoria selecionada
+            if selected_curation_id:
+                queryset = queryset.exclude(specialist_of__id=selected_curation_id)
+        elif action == 'remove':
+            # Exibir apenas usuários que ESTÃO na curadoria selecionada
+            if selected_curation_id:
+                queryset = queryset.filter(specialist_of__id=selected_curation_id)
+
         return queryset
 
     def post(self, request):
@@ -478,10 +497,13 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
 
                 curation.specialists.add(user)
                 curation.save()
-        elif 'enable_authors' in request.POST:
+        elif 'remove_specialists' in request.POST:
             for user in users:
-                user.is_author = True
+                user.specialist_of.remove(curation)
                 user.save()
+
+                curation.specialists.remove(user)
+                curation.save()
         return redirect('enable_specialists')
     
     # Gets the user's permissions and curations

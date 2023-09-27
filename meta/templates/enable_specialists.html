@@ -6,6 +6,28 @@
 
 {% if object_list and curations %}
     <h2>Lista de Usuários</h2>
+
+    <form method="get" action="">
+
+        <h3>Selecione uma ação</h3>
+        <select name="action">
+            <option value="add">Adicionar</option>
+            <option value="remove">Remover</option>
+        </select>
+
+        <h3>Escolha uma Curadoria</h3>
+        <select name="selected_curation_id">
+            {% for curation in curations %}
+                <option value="{{ curation.id }}">{{ curation }}</option>
+            {% endfor %}
+        </select>
+
+        <h3>Pesquise por nome</h3>
+        <input type="text" name="search_query" placeholder="Pesquisar por nome">
+
+        <button type="submit">Pesquisar</button>
+    </form>    
+
     <form method="post" action="">
         {% csrf_token %}
 
@@ -28,15 +50,8 @@
             </tbody>
         </table>
 
-        <h2>Escolha uma Curadoria</h2>
-        <select name="selected_curation_id">
-            {% for curation in curations %}
-                <option value="{{ curation.id }}">{{ curation }}</option>
-            {% endfor %}
-        </select>
-
-        <button type="submit" name="enable_specialists">Habilitar como Especialistas</button>
-        <button type="submit" name="enable_authors">Habilitar como Autores</button>
+        <button type="submit" name="enable_specialists">Habilitar</button>
+        <button type="submit" name="remove_specialists">Remover</button>
     </form>
 {% else %}
     <p>Não há usuários</p>

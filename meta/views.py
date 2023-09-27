@@ -465,7 +465,7 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
 
         search_query = self.request.GET.get('search_query')
         action = self.request.GET.get('action')
-        selected_curation_id = self.request.GET.get('selected_curation_id')
+        users_type = self.request.GET.get('select_users_type')
 
         if search_query:
             queryset = queryset.filter(
@@ -473,37 +473,50 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
                 Q(last_name__icontains=search_query)
             )
 
-        if action == 'add':
-            # Exibir apenas usuários que NÃO estão na curadoria selecionada
-            if selected_curation_id:
-                queryset = queryset.exclude(specialist_of__id=selected_curation_id)
-        elif action == 'remove':
-            # Exibir apenas usuários que ESTÃO na curadoria selecionada
-            if selected_curation_id:
-                queryset = queryset.filter(specialist_of__id=selected_curation_id)
+        if users_type == 'specialists':
+            selected_curation_id = self.request.GET.get('selected_curation_id')
+            queryset = queryset.filter(is_author=True)
+            if action == 'add':
+                # Exibir apenas usuários que NÃO estão na curadoria selecionada
+                if selected_curation_id:
+                    queryset = queryset.exclude(specialist_of__id=selected_curation_id)
+            elif action == 'remove':
+                # Exibir apenas usuários que ESTÃO na curadoria selecionada
+                if selected_curation_id:
+                    queryset = queryset.filter(specialist_of__id=selected_curation_id)
+        elif users_type == 'authors':
+            queryset = queryset.filter(is_author=False)
+
 
         return queryset
 
     def post(self, request):
         selected_users_ids = request.POST.getlist('selected_users_ids')
-        selected_curation_id = request.POST.get('selected_curation_id')
         users = UserCifonauta.objects.filter(id__in=selected_users_ids)
-        curation = Curadoria.objects.get(id=selected_curation_id)
+
+        users_type = request.GET.get('select_users_type')
+        action = request.GET.get('action')
         
-        if 'enable_specialists' in request.POST:
-            for user in users:
-                user.specialist_of.add(curation)
-                user.save()
-
-                curation.specialists.add(user)
-                curation.save()
-        elif 'remove_specialists' in request.POST:
-            for user in users:
-                user.specialist_of.remove(curation)
-                user.save()
-
-                curation.specialists.remove(user)
-                curation.save()
+        if users_type == 'authors':
+            if action == 'add':
+                users.update(is_author=True)
+            elif action == 'remove':
+                users.update(is_author=False)
+        elif users_type == 'specialists':
+            selected_curation_id = request.POST.get('selected_curation_id')
+            curation = Curadoria.objects.get(id=selected_curation_id)
+            if action == 'add':
+                for user in users:
+                    user.specialist_of.add(curation)
+                    user.save()
+                    curation.specialists.add(user)
+                    curation.save()
+            elif action == 'remove':
+                for user in users:
+                    user.specialist_of.remove(curation)
+                    user.save()
+                    curation.specialists.remove(user)
+                    curation.save()
         return redirect('enable_specialists')
     
     # Gets the user's permissions and curations

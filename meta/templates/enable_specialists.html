@@ -3,30 +3,38 @@
 {% block title %}Habilitar Especialistas e Autores{% endblock %}
 
 {% block dashboard_content %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% load static %}
+    <script src="{% static 'js/enable_disable_buttons.js' %}"></script>
 
-{% if object_list and curations %}
-    <h2>Lista de Usuários</h2>
+    <aside>
+        <form method="get" action="">
+            <h3>Selecione o que quer administrar</h3>
+            <select name="select_users_type">
+                <option value="authors" {% if request.GET.select_users_type == "authors" %}selected{% endif %}>Autores</option>
+                <option value="specialists" {% if request.GET.select_users_type == "specialists" %}selected{% endif %}>Especialistas</option>
+            </select>
 
-    <form method="get" action="">
+            <h3>Selecione uma ação</h3>
+            <select name="action">
+                <option value="add" {% if request.GET.action == "add" %}selected{% endif %}>Adicionar</option>
+                <option value="remove" {% if request.GET.action == "remove" %}selected{% endif %}>Remover</option>
+            </select>
 
-        <h3>Selecione uma ação</h3>
-        <select name="action">
-            <option value="add">Adicionar</option>
-            <option value="remove">Remover</option>
-        </select>
+            <h3>Escolha uma curadoria</h3>
+            <select name="selected_curation_id">
+                {% for curation in curations %}
+                    <option value="{{ curation.id }}">{{ curation }}</option>
+                {% endfor %}
+            </select>
 
-        <h3>Escolha uma Curadoria</h3>
-        <select name="selected_curation_id">
-            {% for curation in curations %}
-                <option value="{{ curation.id }}">{{ curation }}</option>
-            {% endfor %}
-        </select>
+            <h3>Pesquise por nome</h3>
+            <input type="text" name="search_query" placeholder="Pesquisar por nome">
 
-        <h3>Pesquise por nome</h3>
-        <input type="text" name="search_query" placeholder="Pesquisar por nome">
-
-        <button type="submit">Pesquisar</button>
-    </form>    
+            <button type="submit">Pesquisar</button>
+        </form>    
+    </aside>
+    
 
     <form method="post" action="">
         {% csrf_token %}
@@ -39,22 +47,25 @@
                 </tr>
             </thead>
             <tbody class="table-body">
-                {% for user in object_list %}
-                <tr>
-                    <td class="text-cedule">{{ user }}</td>
-                    <td>
-                        <input type="checkbox" name="selected_users_ids" value="{{ user.id }}">
-                    </td>
-                </tr>
-                {% endfor %}
+                {% if object_list %}
+                    {% for user in object_list %}
+                    <tr>
+                        <td class="text-cedule">{{ user }}</td>
+                        <td>
+                            <input type="checkbox" name="selected_users_ids" value="{{ user.id }}">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td class="text-cedule">Não existem usuários com essas especificações</td>
+                    </tr>
+                {% endif %}
             </tbody>
         </table>
 
-        <button type="submit" name="enable_specialists">Habilitar</button>
-        <button type="submit" name="remove_specialists">Remover</button>
+        <button type="submit" name="enable_specialists" id="enable_button">Habilitar</button>
+        <button type="submit" name="remove_specialists" id="remove_button">Remover</button>
     </form>
-{% else %}
-    <p>Não há usuários</p>
-{% endif %}
 
 {% endblock %}

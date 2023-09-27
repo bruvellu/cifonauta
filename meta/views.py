@@ -114,13 +114,13 @@ def upload_media_step1(request):
 def upload_media_step2(request):
     medias = LoadedMedia.objects.filter(author=request.user)
     
-    action = request.GET.get('action')
-    if action == 'delete':
-        medias.delete()
-        messages.success(request, 'Upload de mídias cancelado com sucesso')
-        return redirect('upload_media_step1')
-    
     if request.method == 'POST':
+        action = request.POST['action']
+        if action == 'cancel':
+            medias.delete()
+            messages.success(request, 'Upload de mídias cancelado com sucesso')
+            return redirect('upload_media_step1')
+        
         form = UploadMediaForm(request.POST, request.FILES)
         
         if form.is_valid():
@@ -130,7 +130,7 @@ def upload_media_step2(request):
 
                 if form.cleaned_data['terms'] == False:
                     messages.error(request, 'Você precisa aceitar os termos')
-                    return redirect('upload_media')
+                    return redirect('upload_media_step2')
 
                 file = media.media.name.split('/')[-1]
                 ext = file.split('.')[-1]

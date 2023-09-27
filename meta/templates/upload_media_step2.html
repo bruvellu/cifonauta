@@ -138,8 +138,8 @@
         {% endif %}
         {% endfor %}
         <div class="buttons-div">
-            <button class="submit-button" type="submit">Adicionar</button>
-            <a class="cancel-button" href="{{ upload_media_step2 }}?action=delete">Cancelar</a>
+            <button class="submit-button" type="submit" name="action" value="add">Adicionar</button>
+            <button class="cancel-button" type="submit" name="action" value="cancel" formnovalidate>Cancelar</button>
         </div>
     </form>
 </div>

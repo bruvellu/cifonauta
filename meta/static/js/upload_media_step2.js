@@ -35,8 +35,8 @@ idTerms.addEventListener('click', () => {
 
 let uploadForm = document.querySelector('.upload-form')
 uploadForm.addEventListener('submit', (event) => {
-
-    if (!idTerms.checked) {
+    
+    if (!idTerms.checked && event.submitter.value != 'cancel') {
         event.preventDefault()
         
         let termsDiv = document.querySelector('.terms-div')

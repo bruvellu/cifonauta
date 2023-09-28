@@ -16,9 +16,9 @@
                 <option value="add" {% if request.GET.action == "add" %}selected{% endif %}>Adicionar</option>
                 <option value="remove" {% if request.GET.action == "remove" %}selected{% endif %}>Remover</option>
             </select>
-
+            
             <h3>Escolha uma curadoria</h3>
-            <select name="selected_curation_id">
+            <select name="selected_curation_id" id="selected_curation_id_get">
                 {% for curation in curations %}
                     <option value="{{ curation.id }}">{{ curation }}</option>
                 {% endfor %}
@@ -59,6 +59,9 @@
                 {% endif %}
             </tbody>
         </table>
+
+        <!--This input needs to be hidden, it gets the value from the select "selected_curation_id" in the "GET" form-->
+        <input type="hidden" name="selected_curation_id" id="selected_curation_id_post" value="{{ selected_curation_id }}">
 
         <button type="submit" name="enable_specialists">Habilitar</button>
         <button type="submit" name="remove_specialists">Remover</button>

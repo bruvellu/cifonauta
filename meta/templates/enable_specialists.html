@@ -10,12 +10,6 @@
                 <option value="authors" {% if request.GET.select_users_type == "authors" %}selected{% endif %}>Autores</option>
                 <option value="specialists" {% if request.GET.select_users_type == "specialists" %}selected{% endif %}>Especialistas</option>
             </select>
-
-            <h3>Selecione uma ação</h3>
-            <select name="action">
-                <option value="add" {% if request.GET.action == "add" %}selected{% endif %}>Adicionar</option>
-                <option value="remove" {% if request.GET.action == "remove" %}selected{% endif %}>Remover</option>
-            </select>
             
             <h3>Escolha uma curadoria</h3>
             <select name="selected_curation_id" id="selected_curation_id_get">
@@ -25,9 +19,15 @@
                     {% else %}
                         <option value="{{ curation.id }}">{{ curation }}</option>
                     {% endif %}
-                    
                 {% endfor %}
             </select>
+            
+            <h3>Selecione uma ação</h3>
+            <select name="action">
+                <option value="add" {% if request.GET.action == "add" %}selected{% endif %}>Adicionar</option>
+                <option value="remove" {% if request.GET.action == "remove" %}selected{% endif %}>Remover</option>
+            </select>
+            
 
             <h3>Pesquise por nome</h3>
             <input type="text" name="search_query" placeholder="Pesquisar por nome">

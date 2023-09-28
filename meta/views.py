@@ -477,11 +477,9 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
             selected_curation_id = self.request.GET.get('selected_curation_id')
             queryset = queryset.filter(is_author=True)
             if action == 'add':
-                # Exibir apenas usuários que NÃO estão na curadoria selecionada
                 if selected_curation_id:
                     queryset = queryset.exclude(specialist_of__id=selected_curation_id)
             elif action == 'remove':
-                # Exibir apenas usuários que ESTÃO na curadoria selecionada
                 if selected_curation_id:
                     queryset = queryset.filter(specialist_of__id=selected_curation_id)
         elif users_type == 'authors':

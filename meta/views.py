@@ -488,6 +488,7 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
             if action == 'add':
                 queryset = queryset.filter(is_author=False)
             elif action == 'remove':
+                queryset = queryset.filter(is_author=True)
                 queryset = queryset.filter(
                     Q(specialist_of__isnull=True) | Q(curator_of__isnull=True)
                 )
@@ -520,8 +521,6 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
                 for user in users:
                     user.specialist_of.remove(curation)
                     user.save()
-                    curation.specialists.remove(user)
-                    curation.save()
         return redirect('enable_specialists')
     
     # Gets the user's permissions and curations
@@ -539,6 +538,9 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
             curations_taxons.extend(taxons)
         context['curations'] = curations
         context['curations_taxons'] = curations_taxons
+
+        selected_curation_id = self.request.GET.get('selected_curation_id')
+        context['selected_curation_id'] = selected_curation_id
         return context
 
 

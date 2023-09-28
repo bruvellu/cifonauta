@@ -3,7 +3,7 @@
 from django import forms
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
-from .models import Media, Curadoria, Person
+from .models import Media, Curadoria, Person, ModifiedMedia
 
 
 METAS = (
@@ -86,6 +86,10 @@ class CoauthorRegistrationForm(forms.ModelForm):
         model = Person
         fields = ('name',)
 
+class ModifiedMediaForm(forms.ModelForm):
+    class Meta:
+        model = ModifiedMedia
+        fields = ( 'title', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'country', 'state', 'city', 'location', 'geolocation')
 
 class MyMediaForm(forms.ModelForm):
     class Meta:

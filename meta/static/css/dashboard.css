@@ -227,7 +227,6 @@ a:active, a:visited {
     color: red;
     font-weight: initial;
     font-size: 1.2rem;
-    vertical-align: top;
 }
 
 .field-div,
@@ -399,6 +398,52 @@ textarea {
     display: none;
 }
 
+
+
+
+/* REVISION */
+div + .margin-top {
+    margin-top: 1rem;
+}
+
+.checkbox-column {
+    max-width: 2rem;
+}
+
+
+
+
+
+/* MODIFIED MEDIA REVISION */
+.modified-media-form {
+    margin-top: 2rem;
+}
+
+.comparison-table th, 
+.comparison-table td {
+    background: #FCFCFC;
+}
+
+.comparison-table th {
+    font-size: 1.5rem;
+}
+
+.comparison-label-column {
+    width: 9rem;
+}
+
+.comparison-row {
+    border-bottom: 1px solid #ddd;
+}
+
+.comparison-label-row {
+    color: #444;
+    padding: .5rem .5rem;
+}
+
+.highlight-difference td {
+    background-color: #fff0f0;
+}
 
 
 

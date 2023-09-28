@@ -18,7 +18,7 @@
     {% endfor %}
     </div>
     {% endif %}
-    <form class="update-form" method="post" enctype="multipart/form-data">
+    <form class="modified-media-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="field-container">
             <div class="label-div">
@@ -37,6 +37,36 @@
                 <span class="help-text">{{ media.sitepath.help_text }}</span>
             </div>
         </div>
+        <table class="comparison-table">
+            <thead class="comparison-table-head">
+                <tr>
+                    <th class='comparison-label-column'></th>
+                    <th>Original</th>
+                    <th>Alterações</th>
+                </tr>
+            </thead>
+            <tbody class="comparison-table-body">
+                {% for field in medias_data %}
+                <tr class="comparison-row {% if field.media.value != field.modified_media.value%}highlight-difference{% endif %}">
+                    <td class="comparison-label-row">
+                        {{ field.media.label_tag }}
+                        {% if field.media.field.required %}
+                        <span class='required'>*</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if field.media.value == '' %}
+                        
+                        {% else %}
+                        {{ field.media.value }}
+                        {% endif %}
+                    </td>
+                    <td>{{ field.modified_media.value }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
         <div class='buttons-div'>
             <button class='submit-button' type="submit" name="action" value="accept">Aceitar alterações</button>
             <button class='cancel-button' type="submit" name="action" value="discard" formnovalidate>Descartar alterações</button>

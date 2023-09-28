@@ -314,6 +314,7 @@ def update_my_medias(request, pk):
             if media.status == 'published':
                 if modified_media:
                     modified_media.title = form.cleaned_data['title']
+                    modified_media.caption = form.cleaned_data['caption']
                     modified_media.co_author.set(form.cleaned_data['co_author'])
                     modified_media.has_taxons = form.cleaned_data['has_taxons']
                     modified_media.taxons.set(form.cleaned_data['taxons'])
@@ -328,6 +329,7 @@ def update_my_medias(request, pk):
                 else:
                     new_modified_media = ModifiedMedia(media=media)
                     new_modified_media.title = form.cleaned_data['title']
+                    new_modified_media.caption = form.cleaned_data['caption']
                     if form.cleaned_data['has_taxons'] == 'True' and not form.cleaned_data['taxons']:
                         new_modified_media.has_taxons = "False"
                     new_modified_media.date = form.cleaned_data['date']
@@ -349,6 +351,7 @@ def update_my_medias(request, pk):
                     media.status = "not_edited"
 
                 media.title = form.cleaned_data['title']
+                media.caption = form.cleaned_data['caption']
                 media.co_author.set(form.cleaned_data['co_author'])
                 media.has_taxons = form.cleaned_data['has_taxons']
                 media.taxons.set(form.cleaned_data['taxons'])
@@ -449,7 +452,7 @@ class RevisionMedia(LoginRequiredMixin, ListView):
         context['is_curator'] = user.curator_of.exists()
         return context
 
-def published_media_revision(request, pk):
+def modified_media_revision(request, pk):
     media = get_object_or_404(Media, pk=pk)
     modified_media = ModifiedMedia.objects.filter(media=media).first()
 
@@ -459,14 +462,51 @@ def published_media_revision(request, pk):
             modified_media.delete()
             messages.success(request, 'Alteração descartada com sucesso')
             return redirect('media_revision')
+
+        media.title = modified_media.title
+        media.caption = modified_media.caption
+        media.has_taxons = modified_media.has_taxons
+        media.date = modified_media.date
+        media.location = modified_media.location
+        media.city = modified_media.city
+        media.state = modified_media.state
+        media.country = modified_media.country
+        media.geolocation = modified_media.geolocation
         
+        media.save()
+
+        media.taxons.set(modified_media.taxons.all())
+        media.co_author.set(modified_media.co_author.all())
+
+        modified_media.delete()
+
+        messages.success(request, 'Alterações aceitas com sucesso')
+        return redirect('media_revision')
+
+    is_specialist = request.user.specialist_of.exists()
+    is_curator = request.user.curator_of.exists()
+
+    media_form = ModifiedMediaForm(instance=media)
+    modified_media_form = ModifiedMediaForm(instance=modified_media)
+
+    field_names = media_form.fields.keys()
+    medias_data = []
+    for field_name in field_names:
+        medias_data.append({
+            'media': media_form[field_name],
+            'modified_media': modified_media_form[field_name]
+        })
 
     context = {
         'media': media,
-        'modified_media': modified_media
+        'media_form': media_form,
+        'modified_media_form': modified_media_form,
+        'medias_data': medias_data,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator
     }
 
-    return render(request, 'published_media_revision.html', context)
+    return render(request, 'modified_media_revision.html', context)
 
 @custom_login_required
 @curator_required

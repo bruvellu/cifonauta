@@ -9,7 +9,6 @@ $(document).ready(function () {
     }
     // Função para atualizar a visibilidade dos elementos com base na seleção do usuário
     function updateVisibilityAndButtons() {
-        console.log("entrou");
         var userType = $('select[name="select_users_type"]').val();
 
         // Esconder ou mostrar a seção de curadoria com base na seleção de "especialistas"

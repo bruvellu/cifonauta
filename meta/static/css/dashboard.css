@@ -415,6 +415,16 @@ div + .margin-top {
 
 
 /* MODIFIED MEDIA REVISION */
+.media-container {
+    display: flex;
+    padding-inline: 0.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.media-container label {
+    width: 7rem;
+}
+
 .modified-media-form {
     margin-top: 2rem;
 }
@@ -425,7 +435,7 @@ div + .margin-top {
 }
 
 .comparison-table th {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
 }
 
 .comparison-label-column {

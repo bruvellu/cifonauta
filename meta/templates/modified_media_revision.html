@@ -20,12 +20,8 @@
     {% endif %}
     <form class="modified-media-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="field-container">
-            <div class="label-div">
-                <label>
-                    Mídia:
-                </label>
-            </div>
+        <div class="media-container">
+            <label>Mídia:</label>
             <div class="field-div media-div">
                 <a href="{{ media.file.url }}" target="_blank">
                     {% if media.is_video %}

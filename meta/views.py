@@ -344,6 +344,8 @@ def update_my_medias(request, pk):
                     new_modified_media.co_author.set(form.cleaned_data['co_author'])
                     if form.cleaned_data['has_taxons'] == 'True':
                         new_modified_media.taxons.set(form.cleaned_data['taxons'])
+                    else:
+                        new_modified_media.taxons.clear()
 
                 messages.warning(request, 'As alterações serão avaliadas e podem ou não serem aceitas')
             else:
@@ -452,6 +454,9 @@ class RevisionMedia(LoginRequiredMixin, ListView):
         context['is_curator'] = user.curator_of.exists()
         return context
 
+
+@custom_login_required
+@curator_required
 def modified_media_revision(request, pk):
     media = get_object_or_404(Media, pk=pk)
     modified_media = ModifiedMedia.objects.filter(media=media).first()

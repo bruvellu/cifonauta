@@ -493,7 +493,7 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
                     Q(specialist_of__isnull=True) | Q(curator_of__isnull=True)
                 )
 
-
+        queryset = queryset.distinct()
         return queryset
 
     def post(self, request):

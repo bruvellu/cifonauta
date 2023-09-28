@@ -20,7 +20,12 @@
             <h3>Escolha uma curadoria</h3>
             <select name="selected_curation_id" id="selected_curation_id_get">
                 {% for curation in curations %}
-                    <option value="{{ curation.id }}">{{ curation }}</option>
+                    {% if curation.id == selected_curation_id %}
+                        <option value="{{ curation.id }}" selected>{{ curation }}</option>
+                    {% else %}
+                        <option value="{{ curation.id }}">{{ curation }}</option>
+                    {% endif %}
+                    
                 {% endfor %}
             </select>
 

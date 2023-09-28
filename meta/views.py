@@ -540,6 +540,8 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
         context['curations_taxons'] = curations_taxons
 
         selected_curation_id = self.request.GET.get('selected_curation_id')
+        if selected_curation_id is not None and selected_curation_id != "":
+            selected_curation_id = int(selected_curation_id)
         context['selected_curation_id'] = selected_curation_id
         return context
 

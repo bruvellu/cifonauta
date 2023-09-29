@@ -309,10 +309,44 @@ def update_my_medias(request, pk):
     if request.method == 'POST':
         form = UpdateMyMediaForm(request.POST)
         if form.is_valid():
-            messages.success(request, 'Informações alteradas com sucesso')
-
             if media.status == 'published':
+                media_to_compare = None
                 if modified_media:
+                    media_to_compare = modified_media
+                else:
+                    media_to_compare = media
+                
+                has_difference = False
+                difference_equals_to_original = False
+                for field in form.fields.keys():
+                    if hasattr(media_to_compare, field):
+                        media_value = getattr(media_to_compare, field)
+
+                        if field == "co_author" or field == "taxons":
+                            media_m2m_value = list(getattr(media_to_compare, field).all())
+                            form_m2m_value = list(form.cleaned_data[field])
+
+                            if media_m2m_value != form_m2m_value:
+                                if modified_media and form_m2m_value == list(getattr(media, field).all()):
+                                    difference_equals_to_original = True
+                                else:
+                                    difference_equals_to_original = False
+                                    has_difference = True
+                                    break
+                        elif media_value != form.cleaned_data[field]:
+                            has_difference = True
+                            break
+                
+                if difference_equals_to_original:
+                    messages.error(request, 'Alteração igual à versão publicada no site')
+                    messages.warning(request, 'Descarte ou efetue uma alteração válida')
+                    return redirect('update_media', media.pk)
+
+                if modified_media:
+                    if not has_difference:
+                        messages.error(request, 'As alterações pendente e atual são iguais')
+                        return redirect('update_media', media.pk)
+                    
                     modified_media.title = form.cleaned_data['title']
                     modified_media.caption = form.cleaned_data['caption']
                     modified_media.co_author.set(form.cleaned_data['co_author'])
@@ -335,6 +369,10 @@ def update_my_medias(request, pk):
 
                     modified_media.save()
                 else:
+                    if not has_difference:
+                        messages.error(request, 'Nenhuma alteração identificada')
+                        return redirect('update_media', media.pk)
+
                     new_modified_media = ModifiedMedia(media=media)
                     new_modified_media.title = form.cleaned_data['title']
                     new_modified_media.caption = form.cleaned_data['caption']
@@ -358,7 +396,8 @@ def update_my_medias(request, pk):
                         new_modified_media.taxons.set(form.cleaned_data['taxons'])
                     else:
                         new_modified_media.taxons.clear()
-
+                
+                messages.success(request, 'Informações alteradas com sucesso')
                 messages.warning(request, 'As alterações serão avaliadas e podem ou não serem aceitas')
             else:
                 if media.status == "to_review":
@@ -377,6 +416,8 @@ def update_my_medias(request, pk):
                 media.geolocation = form.cleaned_data['geolocation']
 
                 media.save()
+
+                messages.success(request, 'Informações alteradas com sucesso')
             
             return redirect('update_media', media.pk)
 

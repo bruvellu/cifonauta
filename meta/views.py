@@ -316,8 +316,16 @@ def update_my_medias(request, pk):
                     modified_media.title = form.cleaned_data['title']
                     modified_media.caption = form.cleaned_data['caption']
                     modified_media.co_author.set(form.cleaned_data['co_author'])
-                    modified_media.has_taxons = form.cleaned_data['has_taxons']
-                    modified_media.taxons.set(form.cleaned_data['taxons'])
+                    if form.cleaned_data['has_taxons'] == "True":
+                        if form.cleaned_data['taxons']:
+                            modified_media.has_taxons = "True"
+                            modified_media.taxons.set(form.cleaned_data['taxons'])
+                        else:
+                            modified_media.has_taxons = "False"
+                            modified_media.taxons.clear()
+                    else:
+                        modified_media.has_taxons = "False"
+                        modified_media.taxons.clear()
                     modified_media.date = form.cleaned_data['date']
                     modified_media.location = form.cleaned_data['location']
                     modified_media.city = form.cleaned_data['city']
@@ -330,8 +338,12 @@ def update_my_medias(request, pk):
                     new_modified_media = ModifiedMedia(media=media)
                     new_modified_media.title = form.cleaned_data['title']
                     new_modified_media.caption = form.cleaned_data['caption']
-                    if form.cleaned_data['has_taxons'] == 'True' and not form.cleaned_data['taxons']:
-                        new_modified_media.has_taxons = "False"
+
+                    if form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
+                        new_modified_media.has_taxons = 'True'
+                    else:
+                        new_modified_media.has_taxons = 'False'
+
                     new_modified_media.date = form.cleaned_data['date']
                     new_modified_media.location = form.cleaned_data['location']
                     new_modified_media.city = form.cleaned_data['city']

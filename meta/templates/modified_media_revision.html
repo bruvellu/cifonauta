@@ -1,5 +1,5 @@
 {% extends 'dashboard.html' %}
-{% load static %}
+{% load static custom_filters %}
 
 {% block extra_head %}
 <script src="{% static 'js/update_media.js' %}" defer></script>
@@ -38,7 +38,7 @@
                 <tr>
                     <th class='comparison-label-column'></th>
                     <th>Original</th>
-                    <th>Alterações</th>
+                    <th>Novo</th>
                 </tr>
             </thead>
             <tbody class="comparison-table-body">
@@ -50,14 +50,8 @@
                         <span class='required'>*</span>
                         {% endif %}
                     </td>
-                    <td>
-                        {% if field.media.value == '' %}
-                        
-                        {% else %}
-                        {{ field.media.value }}
-                        {% endif %}
-                    </td>
-                    <td>{{ field.modified_media.value }}</td>
+                    <td>{{ media|get_value:field.media.name }}</td>
+                    <td>{{ modified_media|get_value:field.modified_media.name }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

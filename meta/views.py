@@ -513,11 +513,10 @@ def modified_media_revision(request, pk):
             'media': media_form[field_name],
             'modified_media': modified_media_form[field_name]
         })
-
+    
     context = {
         'media': media,
-        'media_form': media_form,
-        'modified_media_form': modified_media_form,
+        'modified_media': modified_media,
         'medias_data': medias_data,
         'is_specialist': is_specialist,
         'is_curator': is_curator

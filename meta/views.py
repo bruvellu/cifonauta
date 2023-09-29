@@ -326,18 +326,20 @@ def update_my_medias(request, pk):
                             media_m2m_value = list(getattr(media_to_compare, field).all())
                             form_m2m_value = list(form.cleaned_data[field])
 
-                            if media_m2m_value != form_m2m_value:
+                            if media_m2m_value != form_m2m_value or (media_m2m_value == form_m2m_value and difference_equals_to_original):
                                 if modified_media and form_m2m_value == list(getattr(media, field).all()):
                                     difference_equals_to_original = True
                                 else:
-                                    difference_equals_to_original = False
                                     has_difference = True
                                     break
-                        elif media_value != form.cleaned_data[field]:
-                            has_difference = True
-                            break
+                        elif media_value != form.cleaned_data[field] or (media_value == form.cleaned_data[field] and difference_equals_to_original):
+                            if modified_media and form.cleaned_data[field] == getattr(media, field):
+                                difference_equals_to_original = True
+                            else:
+                                has_difference = True
+                                break
                 
-                if difference_equals_to_original:
+                if difference_equals_to_original and not has_difference:
                     messages.error(request, 'Alteração igual à versão publicada no site')
                     messages.warning(request, 'Descarte ou efetue uma alteração válida')
                     return redirect('update_media', media.pk)

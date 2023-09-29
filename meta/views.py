@@ -310,41 +310,37 @@ def update_my_medias(request, pk):
         form = UpdateMyMediaForm(request.POST)
         if form.is_valid():
             if media.status == 'published':
-                media_to_compare = None
                 if modified_media:
-                    media_to_compare = modified_media
-                else:
-                    media_to_compare = media
-                
-                has_difference = False
-                difference_equals_to_original = False
-                for field in form.fields.keys():
-                    if hasattr(media_to_compare, field):
-                        media_value = getattr(media_to_compare, field)
+                    has_difference = False
+                    difference_equals_to_original = False
+                    for field in form.fields.keys():
+                        if not hasattr(modified_media, field):
+                            continue
 
+                        modified_value = getattr(modified_media, field)
+                        
                         if field == "co_author" or field == "taxons":
-                            media_m2m_value = list(getattr(media_to_compare, field).all())
+                            modified_m2m_value = list(getattr(modified_media, field).all())
                             form_m2m_value = list(form.cleaned_data[field])
 
-                            if media_m2m_value != form_m2m_value or (media_m2m_value == form_m2m_value and difference_equals_to_original):
-                                if modified_media and form_m2m_value == list(getattr(media, field).all()):
+                            if modified_m2m_value != form_m2m_value or (modified_m2m_value == form_m2m_value and difference_equals_to_original):
+                                if form_m2m_value == list(getattr(media, field).all()):
                                     difference_equals_to_original = True
                                 else:
                                     has_difference = True
                                     break
-                        elif media_value != form.cleaned_data[field] or (media_value == form.cleaned_data[field] and difference_equals_to_original):
-                            if modified_media and form.cleaned_data[field] == getattr(media, field):
+                        elif modified_value != form.cleaned_data[field] or (modified_value == form.cleaned_data[field] and difference_equals_to_original):
+                            if form.cleaned_data[field] == getattr(media, field):
                                 difference_equals_to_original = True
                             else:
                                 has_difference = True
                                 break
-                
-                if difference_equals_to_original and not has_difference:
-                    messages.error(request, 'Alteração igual à versão publicada no site')
-                    messages.warning(request, 'Descarte ou efetue uma alteração válida')
-                    return redirect('update_media', media.pk)
 
-                if modified_media:
+                    if difference_equals_to_original and not has_difference:
+                        messages.error(request, 'Alteração igual à versão publicada no site')
+                        messages.warning(request, 'Descarte ou efetue uma alteração válida')
+                        return redirect('update_media', media.pk)
+                    
                     if not has_difference:
                         messages.error(request, 'As alterações pendente e atual são iguais')
                         return redirect('update_media', media.pk)
@@ -371,6 +367,21 @@ def update_my_medias(request, pk):
 
                     modified_media.save()
                 else:
+                    has_difference = False
+                    for field in form.fields.keys():
+                        media_value = getattr(media, field)
+
+                        if field == "co_author" or field == "taxons":
+                            media_m2m_value = list(getattr(media, field).all())
+                            form_m2m_value = list(form.cleaned_data[field])
+
+                            if media_m2m_value != form_m2m_value:
+                                has_difference = True
+                                break
+                        elif media_value != form.cleaned_data[field]:
+                            has_difference = True
+                            break
+
                     if not has_difference:
                         messages.error(request, 'Nenhuma alteração identificada')
                         return redirect('update_media', media.pk)

@@ -108,7 +108,12 @@
         </div>
         {% endif %}
         {% endfor %}
-        <button class='submit-button' type="submit">Atualizar</button>
+        <div class="buttons-div">
+            <button class='submit-button' type="submit">Atualizar</button>
+            {% if media.modified_media %}
+            <button class='other-button' type="button">Ver alterações</button>
+            {% endif %}
+        </div>
     </form>
 </div>
 

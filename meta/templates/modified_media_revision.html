@@ -20,17 +20,24 @@
     {% endif %}
     <form class="modified-media-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="media-container">
-            <label>Mídia:</label>
-            <div class="field-div media-div">
+        <div class="media-infos">
+            <div>
+                <p>Mídia:</p>
                 <a href="{{ media.file.url }}" target="_blank">
                     {% if media.is_video %}
-                    <video src="{{ media.coverpath.url }}"></video>
+                    <video class="media-cover" src="{{ media.coverpath.url }}"></video>
                     {% else %}
-                    <img src="{{ media.coverpath.url }}">
+                    <img class="media-cover" src="{{ media.coverpath.url }}">
                     {% endif %}
                 </a>
-                <span class="help-text">{{ media.sitepath.help_text }}</span>
+            </div>
+            <div>
+                <p>Autor:</p>
+                <div>{{media.author}}</div>
+            </div>
+            <div>
+                <p>Data de modificação:</p>
+                <div>{{media.timestamp}}</div>
             </div>
         </div>
         <table class="comparison-table">

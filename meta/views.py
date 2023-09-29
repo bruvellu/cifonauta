@@ -496,9 +496,9 @@ class RevisionMedia(LoginRequiredMixin, ListView):
             taxons = curadoria.taxons.all()
             curations_taxons.extend(taxons)
 
-        queryset = Media.objects.filter(Q(status='to_review') | Q(status='published') & Q(modified_media__isnull=False))
-
-        queryset = queryset.filter(taxons__in=curations_taxons)
+        queryset = Media.objects.filter(
+            Q(status='to_review') & Q(taxons__in=curations_taxons) |
+            Q(modified_media__taxons__in=curations_taxons))
 
         # Aplies distinct() to eliminate duplicates
         queryset = queryset.distinct()

@@ -307,6 +307,13 @@ def update_my_medias(request, pk):
     modified_media = ModifiedMedia.objects.filter(media=media).first()
 
     if request.method == 'POST':
+        action = request.POST['action']
+        if action == 'discard':
+            print("entrei")
+            modified_media.delete()
+            messages.success(request, "Alterações discartadas com sucesso")
+            return redirect('update_media', media.pk)
+
         form = UpdateMyMediaForm(request.POST)
         if form.is_valid():
             if media.status == 'published':
@@ -450,8 +457,17 @@ def update_my_medias(request, pk):
     is_specialist = request.user.specialist_of.exists()
     is_curator = request.user.curator_of.exists()
 
+    modified_media_form = ModifiedMediaForm(instance=media)
+
+    field_names = modified_media_form.fields.keys()
+    modified_media_fields = []
+    for field_name in field_names:
+        modified_media_fields.append(modified_media_form[field_name])
+
     context = {
         'media': media,
+        'modified_media': modified_media,
+        'modified_media_fields': modified_media_fields,
         'form': form,
         'is_specialist': is_specialist,
         'is_curator': is_curator,

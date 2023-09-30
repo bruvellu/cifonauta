@@ -14,13 +14,13 @@ noTaxon.addEventListener('click', () => {
 
 
 let preRegistrationButton = document.querySelector('.pre-registration-button')
-let closeRegistrationButton = document.querySelector('.close-registration-button')
+let closeModalButton = document.querySelector('.close-modal-button')
 let modal = document.querySelector('dialog')
 
 preRegistrationButton.addEventListener('click', () => {
     modal.showModal()
 })
-closeRegistrationButton.addEventListener('click', () => {
+closeModalButton.addEventListener('click', () => {
     modal.close()
 })
 

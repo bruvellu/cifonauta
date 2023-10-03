@@ -1,13 +1,49 @@
 {% extends 'dashboard.html' %}
-{% load static %}
+{% load static custom_filters %}
 
 {% block extra_head %}
 <script src="{% static 'js/update_media.js' %}" defer></script>
 {% endblock %}
 
-{% block title %}Atualizar Mídia{% endblock %}
+{% block title %}Revisar Mídia{% endblock %}
 
 {% block dashboard_content %}
+
+{% if modified_media %}
+<div class="behind-modal-container"></div>
+
+<div class="modal-container">
+    <button class="close-modal-button close-modal-update" onclick="closeModal()">
+        <div class='line1'></div>
+        <div class='line2'></div>
+    </button>
+    <table class="comparison-table update-comparison-table">
+        <thead class="comparison-table-head">
+            <tr>
+                <th class='comparison-label-column'></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="comparison-table-body">
+            {% for field in modified_media_fields %}
+            <tr class="comparison-row {% if media|get_value:field.name != modified_media|get_value:field.name%}highlight-difference{% endif %}">
+                <td class="comparison-label-row">
+                    {{ field.label_tag }}
+                    {% if field.field.required %}
+                    <span class='required'>*</span>
+                    {% endif %}
+                </td>
+                <td>{{ modified_media|get_value:field.name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <form class="discard-pending-changes" method="POST">
+        {% csrf_token %}
+        <button class="cancel-button" type="submit" name="action" value="discard">Descartar alterações</button>
+    </form>
+</div>
+{% endif %}
 
 <div class="form-container">
     <h2>Alterar informações da mídia</h2>
@@ -108,7 +144,12 @@
         </div>
         {% endif %}
         {% endfor %}
-        <button class='submit-button' type="submit">Atualizar</button>
+        <div class="buttons-div">
+            <button class='submit-button' type="submit" name="action" value="update">Atualizar</button>
+            {% if media.modified_media %}
+            <button class='other-button' type="button" onclick="showModal()">Ver alterações</button>
+            {% endif %}
+        </div>
     </form>
 </div>
 

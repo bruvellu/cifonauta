@@ -86,6 +86,8 @@ a:active, a:visited {
 }
 
 
+
+
 /* REGISTRATION FORM */
 .dialog::backdrop {
     display: revert;
@@ -110,7 +112,7 @@ a:active, a:visited {
     flex-direction: column;
 }
 
-.close-registration-button {
+.close-modal-button {
     align-self: flex-end;
     width: 1.8rem;
     height: 1.8rem;
@@ -120,11 +122,11 @@ a:active, a:visited {
     border: none;
 }
 
-.close-registration-button:hover div {
+.close-modal-button:hover div {
     background-color: #ff2d2d;
 }
 
-.close-registration-button > div {
+.close-modal-button > div {
     background-color: #0d0d0d;
     width: 2.2rem;
     height: 0.24rem;
@@ -172,6 +174,82 @@ a:active, a:visited {
 .pre-registration-submit:hover {
     /* background: linear-gradient(to bottom, #7edc75 0%, #46bf51 100%); */
     background: linear-gradient(to bottom, #c5d87a 0%, #aac153 100%);
+}
+
+
+
+
+
+/* UPDATE MEDIA */
+.behind-modal-container {
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    display: none;
+}
+
+.opened-behind-modal {
+    display: block;
+}
+
+.modal-container {
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    z-index: 5;
+    max-width: 38rem;
+    width: 100%;
+    height: 75%;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    scale: 0;
+    border: 0;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #94b1ca #eee #fafafa;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px #aaa;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.opened-modal {
+    scale: 1;
+}
+
+.close-modal-update {
+    top: 3rem;
+    right: 2rem;
+    scale: 1.4;
+    position: sticky;
+}
+
+.update-comparison-table {
+    margin-top: 1rem;
+}
+
+.update-comparison-table .comparison-row td:first-child {
+    padding-left: 1rem;
+}
+
+.update-comparison-table .comparison-row td:last-child,
+.update-comparison-table .comparison-label-column tr:last-child {
+    padding-right: 1rem;
+}
+
+.update-comparison-table .comparison-label-column {
+    width: 11rem;
+}
+
+.discard-pending-changes {
+    margin-block: 0.5rem 2rem;
+    align-self: center;
 }
 
 
@@ -227,7 +305,6 @@ a:active, a:visited {
     color: red;
     font-weight: initial;
     font-size: 1.2rem;
-    vertical-align: top;
 }
 
 .field-div,
@@ -327,6 +404,11 @@ input[type='text'], select {
     max-width: 18rem;
 }
 
+.other-button {
+    background-color: grey;
+}
+
+
 
 
 
@@ -359,14 +441,14 @@ textarea {
 .buttons-div {
     display: flex;
     gap: 1rem;
+    margin-top: 3rem;
 }
 
-.submit-button, .cancel-button {
+.submit-button, .cancel-button, .other-button {
     color: white;
     font-size: 1.2rem;
     width: fit-content;
     padding: .5rem .8rem;
-    margin-top: 3rem;
     border-radius: 0.4rem;
     border: none;
     transition: background-color .1s;
@@ -399,6 +481,78 @@ textarea {
     display: none;
 }
 
+
+
+
+/* REVISION */
+div + .margin-top {
+    margin-top: 1rem;
+}
+
+.checkbox-column {
+    max-width: 2rem;
+}
+
+
+
+
+
+/* MODIFIED MEDIA REVISION */
+.media-infos {
+    display: grid;
+    gap: .5rem;
+    padding-inline: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.media-cover {
+    width: 18rem;
+    object-fit: cover;
+    height: 12rem;
+}
+
+.media-infos > div {
+    display: flex;
+}
+
+.media-infos p {
+    padding: 0;
+}
+
+.media-infos > div > p:first-child {
+    width: 11rem;
+    font-weight: bold;
+}
+
+.modified-media-form {
+    margin-top: 2rem;
+}
+
+.comparison-table th, 
+.comparison-table td {
+    background: #FCFCFC;
+}
+
+.comparison-table th {
+    font-size: 1.8rem;
+}
+
+.comparison-label-column {
+    width: 9rem;
+}
+
+.comparison-row {
+    border-bottom: 1px solid #ddd;
+}
+
+.comparison-label-row {
+    color: #444;
+    padding: .5rem .5rem;
+}
+
+.highlight-difference td {
+    background-color: #fff0f0;
+}
 
 
 

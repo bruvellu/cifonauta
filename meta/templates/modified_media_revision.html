@@ -1,0 +1,76 @@
+{% extends 'dashboard.html' %}
+{% load static custom_filters %}
+
+{% block extra_head %}
+<script src="{% static 'js/update_media.js' %}" defer></script>
+{% endblock %}
+
+{% block title %}Atualizar Mídia{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="form-container">
+    <h2>Alterações feitas pelo autor</h2>
+    {% if messages %}
+    <div class="messages-div">
+    {% for message in messages %}
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <form class="modified-media-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="media-infos">
+            <div>
+                <p>Mídia:</p>
+                <a href="{{ media.file.url }}" target="_blank">
+                    {% if media.is_video %}
+                    <video class="media-cover" src="{{ media.coverpath.url }}"></video>
+                    {% else %}
+                    <img class="media-cover" src="{{ media.coverpath.url }}">
+                    {% endif %}
+                </a>
+            </div>
+            <div>
+                <p>Autor:</p>
+                <div>{{media.author}}</div>
+            </div>
+            <div>
+                <p>Data de modificação:</p>
+                <div>{{media.timestamp}}</div>
+            </div>
+        </div>
+        <table class="comparison-table">
+            <thead class="comparison-table-head">
+                <tr>
+                    <th class='comparison-label-column'></th>
+                    <th>Original</th>
+                    <th>Novo</th>
+                </tr>
+            </thead>
+            <tbody class="comparison-table-body">
+                {% for field in medias_data %}
+                <tr class="comparison-row {% if field.media.value != field.modified_media.value%}highlight-difference{% endif %}">
+                    <td class="comparison-label-row">
+                        {{ field.media.label_tag }}
+                        {% if field.media.field.required %}
+                        <span class='required'>*</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ media|get_value:field.media.name }}</td>
+                    <td>{{ modified_media|get_value:field.modified_media.name }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class='buttons-div'>
+            <button class='submit-button' type="submit" name="action" value="accept">Aceitar alterações</button>
+            <button class='cancel-button' type="submit" name="action" value="discard" formnovalidate>Descartar alterações</button>
+        </div>
+    </form>
+</div>
+
+
+
+{% endblock %}

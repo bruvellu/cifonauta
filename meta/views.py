@@ -114,13 +114,13 @@ def upload_media_step1(request):
 def upload_media_step2(request):
     medias = LoadedMedia.objects.filter(author=request.user)
     
-    action = request.GET.get('action')
-    if action == 'delete':
-        medias.delete()
-        messages.success(request, 'Upload de mídias cancelado com sucesso')
-        return redirect('upload_media_step1')
-    
     if request.method == 'POST':
+        action = request.POST['action']
+        if action == 'cancel':
+            medias.delete()
+            messages.success(request, 'Upload de mídias cancelado com sucesso')
+            return redirect('upload_media_step1')
+        
         form = UploadMediaForm(request.POST, request.FILES)
         
         if form.is_valid():
@@ -130,7 +130,7 @@ def upload_media_step2(request):
 
                 if form.cleaned_data['terms'] == False:
                     messages.error(request, 'Você precisa aceitar os termos')
-                    return redirect('upload_media')
+                    return redirect('upload_media_step2')
 
                 file = media.media.name.split('/')[-1]
                 ext = file.split('.')[-1]
@@ -307,16 +307,64 @@ def update_my_medias(request, pk):
     modified_media = ModifiedMedia.objects.filter(media=media).first()
 
     if request.method == 'POST':
+        action = request.POST['action']
+        if action == 'discard':
+            print("entrei")
+            modified_media.delete()
+            messages.success(request, "Alterações discartadas com sucesso")
+            return redirect('update_media', media.pk)
+
         form = UpdateMyMediaForm(request.POST)
         if form.is_valid():
-            messages.success(request, 'Informações alteradas com sucesso')
-
             if media.status == 'published':
                 if modified_media:
+                    has_difference = False
+                    difference_equals_to_original = False
+                    for field in form.fields.keys():
+                        if not hasattr(modified_media, field):
+                            continue
+
+                        modified_value = getattr(modified_media, field)
+                        
+                        if field == "co_author" or field == "taxons":
+                            modified_m2m_value = list(getattr(modified_media, field).all())
+                            form_m2m_value = list(form.cleaned_data[field])
+
+                            if modified_m2m_value != form_m2m_value or (modified_m2m_value == form_m2m_value and difference_equals_to_original):
+                                if form_m2m_value == list(getattr(media, field).all()):
+                                    difference_equals_to_original = True
+                                else:
+                                    has_difference = True
+                                    break
+                        elif modified_value != form.cleaned_data[field] or (modified_value == form.cleaned_data[field] and difference_equals_to_original):
+                            if form.cleaned_data[field] == getattr(media, field):
+                                difference_equals_to_original = True
+                            else:
+                                has_difference = True
+                                break
+
+                    if difference_equals_to_original and not has_difference:
+                        messages.error(request, 'Alteração igual à versão publicada no site')
+                        messages.warning(request, 'Descarte ou efetue uma alteração válida')
+                        return redirect('update_media', media.pk)
+                    
+                    if not has_difference:
+                        messages.error(request, 'As alterações pendente e atual são iguais')
+                        return redirect('update_media', media.pk)
+                    
                     modified_media.title = form.cleaned_data['title']
+                    modified_media.caption = form.cleaned_data['caption']
                     modified_media.co_author.set(form.cleaned_data['co_author'])
-                    modified_media.has_taxons = form.cleaned_data['has_taxons']
-                    modified_media.taxons.set(form.cleaned_data['taxons'])
+                    if form.cleaned_data['has_taxons'] == "True":
+                        if form.cleaned_data['taxons']:
+                            modified_media.has_taxons = "True"
+                            modified_media.taxons.set(form.cleaned_data['taxons'])
+                        else:
+                            modified_media.has_taxons = "False"
+                            modified_media.taxons.clear()
+                    else:
+                        modified_media.has_taxons = "False"
+                        modified_media.taxons.clear()
                     modified_media.date = form.cleaned_data['date']
                     modified_media.location = form.cleaned_data['location']
                     modified_media.city = form.cleaned_data['city']
@@ -326,10 +374,34 @@ def update_my_medias(request, pk):
 
                     modified_media.save()
                 else:
+                    has_difference = False
+                    for field in form.fields.keys():
+                        media_value = getattr(media, field)
+
+                        if field == "co_author" or field == "taxons":
+                            media_m2m_value = list(getattr(media, field).all())
+                            form_m2m_value = list(form.cleaned_data[field])
+
+                            if media_m2m_value != form_m2m_value:
+                                has_difference = True
+                                break
+                        elif media_value != form.cleaned_data[field]:
+                            has_difference = True
+                            break
+
+                    if not has_difference:
+                        messages.error(request, 'Nenhuma alteração identificada')
+                        return redirect('update_media', media.pk)
+
                     new_modified_media = ModifiedMedia(media=media)
                     new_modified_media.title = form.cleaned_data['title']
-                    if form.cleaned_data['has_taxons'] == 'True' and not form.cleaned_data['taxons']:
-                        new_modified_media.has_taxons = "False"
+                    new_modified_media.caption = form.cleaned_data['caption']
+
+                    if form.cleaned_data['has_taxons'] == 'True' and form.cleaned_data['taxons']:
+                        new_modified_media.has_taxons = 'True'
+                    else:
+                        new_modified_media.has_taxons = 'False'
+
                     new_modified_media.date = form.cleaned_data['date']
                     new_modified_media.location = form.cleaned_data['location']
                     new_modified_media.city = form.cleaned_data['city']
@@ -342,13 +414,17 @@ def update_my_medias(request, pk):
                     new_modified_media.co_author.set(form.cleaned_data['co_author'])
                     if form.cleaned_data['has_taxons'] == 'True':
                         new_modified_media.taxons.set(form.cleaned_data['taxons'])
-
+                    else:
+                        new_modified_media.taxons.clear()
+                
+                messages.success(request, 'Informações alteradas com sucesso')
                 messages.warning(request, 'As alterações serão avaliadas e podem ou não serem aceitas')
             else:
                 if media.status == "to_review":
                     media.status = "not_edited"
 
                 media.title = form.cleaned_data['title']
+                media.caption = form.cleaned_data['caption']
                 media.co_author.set(form.cleaned_data['co_author'])
                 media.has_taxons = form.cleaned_data['has_taxons']
                 media.taxons.set(form.cleaned_data['taxons'])
@@ -360,6 +436,8 @@ def update_my_medias(request, pk):
                 media.geolocation = form.cleaned_data['geolocation']
 
                 media.save()
+
+                messages.success(request, 'Informações alteradas com sucesso')
             
             return redirect('update_media', media.pk)
 
@@ -379,8 +457,17 @@ def update_my_medias(request, pk):
     is_specialist = request.user.specialist_of.exists()
     is_curator = request.user.curator_of.exists()
 
+    modified_media_form = ModifiedMediaForm(instance=media)
+
+    field_names = modified_media_form.fields.keys()
+    modified_media_fields = []
+    for field_name in field_names:
+        modified_media_fields.append(modified_media_form[field_name])
+
     context = {
         'media': media,
+        'modified_media': modified_media,
+        'modified_media_fields': modified_media_fields,
         'form': form,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
@@ -425,9 +512,9 @@ class RevisionMedia(LoginRequiredMixin, ListView):
             taxons = curadoria.taxons.all()
             curations_taxons.extend(taxons)
 
-        queryset = Media.objects.filter(status='to_review')
-
-        queryset = queryset.filter(taxons__in=curations_taxons)
+        queryset = Media.objects.filter(
+            Q(status='to_review') & Q(taxons__in=curations_taxons) |
+            Q(modified_media__taxons__in=curations_taxons))
 
         # Aplies distinct() to eliminate duplicates
         queryset = queryset.distinct()
@@ -449,6 +536,63 @@ class RevisionMedia(LoginRequiredMixin, ListView):
         context['is_curator'] = user.curator_of.exists()
         return context
 
+
+@custom_login_required
+@curator_required
+def modified_media_revision(request, pk):
+    media = get_object_or_404(Media, pk=pk)
+    modified_media = ModifiedMedia.objects.filter(media=media).first()
+
+    if request.method == 'POST':
+        action = request.POST['action']
+        if action == 'discard':
+            modified_media.delete()
+            messages.success(request, 'Alteração descartada com sucesso')
+            return redirect('media_revision')
+
+        media.title = modified_media.title
+        media.caption = modified_media.caption
+        media.has_taxons = modified_media.has_taxons
+        media.date = modified_media.date
+        media.location = modified_media.location
+        media.city = modified_media.city
+        media.state = modified_media.state
+        media.country = modified_media.country
+        media.geolocation = modified_media.geolocation
+        
+        media.save()
+
+        media.taxons.set(modified_media.taxons.all())
+        media.co_author.set(modified_media.co_author.all())
+
+        modified_media.delete()
+
+        messages.success(request, 'Alterações aceitas com sucesso')
+        return redirect('media_revision')
+
+    is_specialist = request.user.specialist_of.exists()
+    is_curator = request.user.curator_of.exists()
+
+    media_form = ModifiedMediaForm(instance=media)
+    modified_media_form = ModifiedMediaForm(instance=modified_media)
+
+    field_names = media_form.fields.keys()
+    medias_data = []
+    for field_name in field_names:
+        medias_data.append({
+            'media': media_form[field_name],
+            'modified_media': modified_media_form[field_name]
+        })
+    
+    context = {
+        'media': media,
+        'modified_media': modified_media,
+        'medias_data': medias_data,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator
+    }
+
+    return render(request, 'modified_media_revision.html', context)
 
 @custom_login_required
 @curator_required

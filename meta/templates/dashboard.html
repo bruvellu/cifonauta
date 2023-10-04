@@ -36,6 +36,9 @@
             <li>
                 <a href="{% url 'media_revision' %}">Revisão de mídias</a>
             </li>
+            <li>
+                <a href="{% url 'enable_specialists' %}">Habilitar Especialistas</a>
+            </li>
             {% endif %}
             <li>
                 <a href="{% url 'my_medias' %}">Minhas mídias</a>
@@ -63,5 +66,7 @@
         });
     });
     </script>
+    <script src="{% static 'js/copy_curation_id.js' %}"></script>
+    <script src="{% static 'js/enable_disable_buttons.js' %}"></script>
 </body>
 </html>

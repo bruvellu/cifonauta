@@ -1,35 +1,3 @@
-let mediasInput = document.querySelector('#medias')
-mediasInput.addEventListener('change', (e) => {
-    let mediasList = Array.from(e.target.files)
-    let filesNames = document.querySelector('.files-names')
-    if (mediasList.length > 1) {
-        if (filesNames) {
-            filesNames.innerHTML = ''
-
-            mediasList.map(media => {
-                let li = document.createElement('li')
-                li.innerText = media.name
-                filesNames.appendChild(li)
-            })
-        } else {
-            let ul = document.createElement('ul')
-            ul.classList.add('files-names')
-
-            mediasList.map(media => {
-                let li = document.createElement('li')
-                li.innerText = media.name
-                ul.appendChild(li)
-            })
-
-            let fileDiv = document.querySelector('.file-div')
-            fileDiv.append(ul)
-        }
-        
-    } else {
-        filesNames.remove()
-    }
-})
-
 let hasTaxon = document.querySelector('#id_has_taxons_0')
 let noTaxon = document.querySelector('#id_has_taxons_1')
 let taxonsDiv = document.querySelector('.taxons-div')
@@ -46,13 +14,13 @@ noTaxon.addEventListener('click', () => {
 
 
 let preRegistrationButton = document.querySelector('.pre-registration-button')
-let closeRegistrationButton = document.querySelector('.close-registration-button')
+let closeModalButton = document.querySelector('.close-modal-button')
 let modal = document.querySelector('dialog')
 
 preRegistrationButton.addEventListener('click', () => {
     modal.showModal()
 })
-closeRegistrationButton.addEventListener('click', () => {
+closeModalButton.addEventListener('click', () => {
     modal.close()
 })
 
@@ -67,8 +35,8 @@ idTerms.addEventListener('click', () => {
 
 let uploadForm = document.querySelector('.upload-form')
 uploadForm.addEventListener('submit', (event) => {
-
-    if (!idTerms.checked) {
+    
+    if (!idTerms.checked && event.submitter.value != 'cancel') {
         event.preventDefault()
         
         let termsDiv = document.querySelector('.terms-div')
@@ -80,3 +48,10 @@ uploadForm.addEventListener('submit', (event) => {
         }
     }
 })
+
+let messagesDiv = document.querySelector('.messages-div')
+if (messagesDiv) {
+    setInterval(() => {
+        messagesDiv.remove()
+    }, 10000)
+}

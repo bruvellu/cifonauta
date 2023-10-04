@@ -10,7 +10,8 @@
     <thead class="table-head">
         <tr>
             <th class="title-column">Título</th>
-            <th class="image-column">Imagem</th>
+            <th class="image-column">Mídia</th>
+            <th class="">Tipo de mídia</th>
             <th class="status-column">Status</th>
             <th class="modification-date">Data de Modificação</th>
         </tr>
@@ -23,8 +24,19 @@
             </td>
             <td class="image-cedule">
                 <a href="{{ media.file.url }}" target="_blank">
+                    {% if media.is_video %}
+                    <video src="{{ media.coverpath.url }}"></video>
+                    {% else %}
                     <img src="{{ media.coverpath.url }}">
+                    {% endif %}
                 </a>
+            </td>
+            <td>
+                {% if media.is_video %}
+                Vídeo
+                {% else %}
+                Imagem
+                {% endif %}
             </td>
             <td 
                 class="text-cedule {% if media.status == 'not_edited' %}not-edited{% elif media.status == 'to_review' %}to-review{% else %}published{% endif %}"

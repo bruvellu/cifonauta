@@ -10,14 +10,17 @@ urlpatterns = [
 
         # Módulo administrativo
         path('administrative-module/', views.dashboard, name='dashboard'),
-        path('administrative-module/add/', views.upload_media, name='upload_media'),
+        path('administrative-module/add/load-media', views.upload_media_step1, name='upload_media_step1'),
+        path('administrative-module/add/fulfill-metadata', views.upload_media_step2, name='upload_media_step2'),
         path('administrative-module/edit-metadata/<int:media_id>', views.edit_metadata, name='edit_metadata'),
         path('administrative-module/details/<int:pk>/', MediaDetail.as_view(), name='media_detail'),
         path('administrative-module/update/<int:pk>', views.update_my_medias, name='update_media'),
         path('administrative-module/curadory-medias/', CuradoriaMediaList.as_view(), name='curadory_medias'),
         path('administrative-module/my-medias/', MyMedias.as_view(), name='my_medias'),
         path('administrative-module/revision', RevisionMedia.as_view(), name='media_revision'),
-        path('administrative-module/revision/detail/<int:media_id>', views.revision_media_detail, name='media_revision_detail'),
+        path('administrative-module/revision/detail/<int:media_id>', views.revision_media_detail, 
+        name='media_revision_detail'),
+        path('administrative-module/revision/changes/<int:pk>', views.modified_media_revision, name='modified_media_revision'),
         path('administrative-module/enable-specialists', EnableSpecialists.as_view(), name='enable_specialists'),
 
         # Menu

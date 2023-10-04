@@ -1001,7 +1001,7 @@ ul.refine-inactive li a.meta-inactive {
   margin:0 0 0.5em 0;
 }
 
-.error, .notice, .success, .warning {
+.error, .notice, .success, .warning, .info {
   padding:.2em 1em;
   border:2px solid #ddd;
   -moz-border-radius:5px;

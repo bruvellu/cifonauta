@@ -64,15 +64,23 @@ def update_curator_of(sender, instance, action, model, pk_set, **kwargs):
 
 
 def delete_file_from_folder(sender, instance, **kwargs):
-    if instance.file:
-        if os.path.isfile(instance.file.path):
-            os.remove(instance.file.path)
-    if instance.coverpath:
-        if os.path.isfile(instance.coverpath.path):
-            os.remove(instance.coverpath.path)
-    if instance.sitepath:
-        if os.path.isfile(instance.sitepath.path):
-            os.remove(instance.sitepath.path)    
+    from meta.models import LoadedMedia
+    if sender == LoadedMedia:
+        if instance.media:
+            if os.path.isfile(instance.media.path):
+                os.remove(instance.media.path)
+    else:
+        if instance.file:
+            if os.path.isfile(instance.file.path):
+                os.remove(instance.file.path)
+        if instance.coverpath:
+            if os.path.isfile(instance.coverpath.path):
+                os.remove(instance.coverpath.path)
+        if instance.sitepath:
+            if os.path.isfile(instance.sitepath.path):
+                os.remove(instance.sitepath.path)  
+
+    
 
 
 # Não é signal, apenas função acessória.

@@ -26,7 +26,11 @@
             </div>
             <div class="field-div media-div">
                 <a href="{{ media.file.url }}" target="_blank">
-                    <img src="{{ media.sitepath.url }}">
+                    {% if media.is_video %}
+                    <video src="{{ media.coverpath.url }}"></video>
+                    {% else %}
+                    <img src="{{ media.coverpath.url }}">
+                    {% endif %}
                 </a>
                 <span class="help-text">{{ media.sitepath.help_text }}</span>
             </div>

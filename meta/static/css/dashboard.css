@@ -53,29 +53,39 @@ a:active, a:visited {
     min-height: 100vh;
 }
 
-h2 {
-    margin-bottom: 1.5rem;
+.messages-div {
+    display: grid;
+    gap: 0.5rem;
 }
 
-.error, .notice, .success {
-    transform: translateY(-2rem);
+.error, .notice, .success, .info {
     width: fit-content;
     font-size: 1.1rem;
+    animation: disappear 1s 9s forwards;
 }
 
 .warning {
-    transform: translateY(-1.5rem);
     background-color: #ffffb3;
     color: #565600;
     font-size: 1.1rem;
+    animation: disappear 1s 9s forwards;
     /* background-color: #e8edff;
     color: #000b43de; */
+}
+
+@keyframes disappear {
+    100% {
+        opacity: 0;
+        display: none;
+    }
 }
 
 .form-container {
     display: flex;
     flex-direction: column;
 }
+
+
 
 
 /* REGISTRATION FORM */
@@ -102,7 +112,7 @@ h2 {
     flex-direction: column;
 }
 
-.close-registration-button {
+.close-modal-button {
     align-self: flex-end;
     width: 1.8rem;
     height: 1.8rem;
@@ -112,11 +122,11 @@ h2 {
     border: none;
 }
 
-.close-registration-button:hover div {
+.close-modal-button:hover div {
     background-color: #ff2d2d;
 }
 
-.close-registration-button > div {
+.close-modal-button > div {
     background-color: #0d0d0d;
     width: 2.2rem;
     height: 0.24rem;
@@ -167,11 +177,112 @@ h2 {
 }
 
 
+
+
+
+/* UPDATE MEDIA */
+.behind-modal-container {
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    display: none;
+}
+
+.opened-behind-modal {
+    display: block;
+}
+
+.modal-container {
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    z-index: 5;
+    max-width: 38rem;
+    width: 100%;
+    height: 75%;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    scale: 0;
+    border: 0;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #94b1ca #eee #fafafa;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px #aaa;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.opened-modal {
+    scale: 1;
+}
+
+.close-modal-update {
+    top: 3rem;
+    right: 2rem;
+    scale: 1.4;
+    position: sticky;
+}
+
+.update-comparison-table {
+    margin-top: 1rem;
+}
+
+.update-comparison-table .comparison-row td:first-child {
+    padding-left: 1rem;
+}
+
+.update-comparison-table .comparison-row td:last-child,
+.update-comparison-table .comparison-label-column tr:last-child {
+    padding-right: 1rem;
+}
+
+.update-comparison-table .comparison-label-column {
+    width: 11rem;
+}
+
+.discard-pending-changes {
+    margin-block: 0.5rem 2rem;
+    align-self: center;
+}
+
+
 /* UPLOAD AND UPDATE MEDIA */
+.medias-div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.medias-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.loaded-media {
+    width: 9rem;
+    object-fit: cover;
+    height: 5.5rem;
+    border-radius: 0.25rem;
+}
+
+.info-span {
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
 .upload-form, .update-form {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    margin-top: 2rem;
 }
 
 .field-container {
@@ -194,7 +305,6 @@ h2 {
     color: red;
     font-weight: initial;
     font-size: 1.2rem;
-    vertical-align: top;
 }
 
 .field-div,
@@ -212,9 +322,15 @@ input[type='text'], select {
     flex-direction: column;
 }
 
-.media-div img {
-    max-width: 25rem;
+.files-names:has(li) {
+    margin-bottom: .5rem;
+}
+
+.media-div img, .media-div video {
+    max-width: 20rem;
     width: 100%;
+    height: 12rem;
+    object-fit: cover;
 }
 
 #medias {
@@ -288,6 +404,11 @@ input[type='text'], select {
     max-width: 18rem;
 }
 
+.other-button {
+    background-color: grey;
+}
+
+
 
 
 
@@ -317,22 +438,39 @@ textarea {
     margin-top: .1rem;
 }
 
-.submit-button {
-    /* background-color: #44c544; */
-    background: linear-gradient(to bottom, #51bb47 0%, #1c7524 100%);
+.buttons-div {
+    display: flex;
+    gap: 1rem;
+    margin-top: 3rem;
+}
+
+.submit-button, .cancel-button, .other-button {
     color: white;
     font-size: 1.2rem;
     width: fit-content;
     padding: .5rem .8rem;
-    margin-top: 3rem;
     border-radius: 0.4rem;
     border: none;
     transition: background-color .1s;
 }
 
+.submit-button {
+    /* background-color: #44c544; */
+    background: linear-gradient(to bottom, #51bb47 0%, #1c7524 100%);
+}
+
 .submit-button:hover {
     /* background-color: rgb(57, 168, 57); */
     background: linear-gradient(to bottom, #7edc75 0%, #46bf51 100%);
+}
+
+.cancel-button {
+    background: linear-gradient(to bottom, #ee3737 0%, #751c1c 100%);
+    line-height: initial;
+}
+
+.cancel-button:hover {
+    background: linear-gradient(to bottom, #ea7070 0%, #ab3b3b 100%);
 }
 
 .field-error {
@@ -343,6 +481,78 @@ textarea {
     display: none;
 }
 
+
+
+
+/* REVISION */
+div + .margin-top {
+    margin-top: 1rem;
+}
+
+.checkbox-column {
+    max-width: 2rem;
+}
+
+
+
+
+
+/* MODIFIED MEDIA REVISION */
+.media-infos {
+    display: grid;
+    gap: .5rem;
+    padding-inline: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.media-cover {
+    width: 18rem;
+    object-fit: cover;
+    height: 12rem;
+}
+
+.media-infos > div {
+    display: flex;
+}
+
+.media-infos p {
+    padding: 0;
+}
+
+.media-infos > div > p:first-child {
+    width: 11rem;
+    font-weight: bold;
+}
+
+.modified-media-form {
+    margin-top: 2rem;
+}
+
+.comparison-table th, 
+.comparison-table td {
+    background: #FCFCFC;
+}
+
+.comparison-table th {
+    font-size: 1.8rem;
+}
+
+.comparison-label-column {
+    width: 9rem;
+}
+
+.comparison-row {
+    border-bottom: 1px solid #ddd;
+}
+
+.comparison-label-row {
+    color: #444;
+    padding: .5rem .5rem;
+}
+
+.highlight-difference td {
+    background-color: #fff0f0;
+}
 
 
 
@@ -375,6 +585,7 @@ tr, th {
 .table-body a {
     font-weight: bold;
     color: #333;
+    font-size: 1.1rem;
 }
 
 .table-body a:hover {
@@ -393,8 +604,10 @@ tr, th {
     color: #13ad13;
 }
 
-.image-cedule img {
-    width: 15rem;
+.image-cedule img, .image-cedule video {
+    width: 11rem;
+    height: 6rem;
+    object-fit: cover;
 }
 
 

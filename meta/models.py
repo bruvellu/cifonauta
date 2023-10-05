@@ -150,15 +150,37 @@ class Media(models.Model):
     longitude = models.CharField(_('longitude'), default='', max_length=25,
             blank=True, help_text=_('Longitude onde a imagem foi criada.'))
 
-
-    tag_life_stage = models.CharField(_('Estágio de Vida'), default='',
-        blank=True, help_text=_('Estágio de Vida'))
-    tag_habitat = models.CharField(_('Habitat'), default='', blank=True, help_text=_('Habitat da imagem'))
-    tag_microscopy = models.CharField(_('Microscopia'), default='', blank=True, help_text=_('Microscópio utilizado'))
-    tag_lifestyle = models.CharField(_('Estilo de Vida'), default='', blank=True, help_text=_('Estilo de vida'))
-    tag_photographic_technique = models.CharField(_('Técnica de fotografia'), default='', blank=True, help_text=_('Técnica de fotografia utilizada'))
-    tag_several = models.CharField(_('Diversos'), default='', blank=True, help_text=_('Informações diversas'))
-
+    life_stage = models.ForeignKey('Tag', 
+                                        on_delete=models.SET_NULL,
+                                        null=True, limit_choices_to={'category': 8},
+                                        related_name='life_stage_test',
+                                        verbose_name=_('Estágio de Vida'))
+    habitat = models.ForeignKey('Tag', 
+                                        on_delete=models.SET_NULL,
+                                        null=True, limit_choices_to={'category': 7},
+                                        related_name='habitat_test',
+                                        verbose_name=_('Habitat'))
+    microscopy = models.ForeignKey('Tag', 
+                                        on_delete=models.SET_NULL,
+                                        null=True, limit_choices_to={'category': 5},
+                                        related_name='microscopy_test',
+                                        verbose_name=_('Microscópia'))
+    life_style = models.ForeignKey('Tag', 
+                                        on_delete=models.SET_NULL,
+                                        null=True, limit_choices_to={'category': 2},
+                                        related_name='life_style_test',
+                                        verbose_name=_('Estilo de Vida'))
+    photographic_technique = models.ForeignKey('Tag', 
+                                        on_delete=models.SET_NULL,
+                                        null=True, limit_choices_to={'category': 1},
+                                        related_name='photographic_technique_test',
+                                        verbose_name=_('Técnica Fotográfica'))
+    several = models.ForeignKey('Tag', 
+                                        on_delete=models.SET_NULL,
+                                        null=True, limit_choices_to={'category': 6},
+                                        related_name='several_test',
+                                        verbose_name=_('Diversos'))
+    
     software = models.CharField(_('Software'), default='', blank=True, help_text=_('Software utilizado na Imagem'))
 
     specialist = models.ManyToManyField('Person',  related_name="pessoas", verbose_name=_('Especialista'), blank=True)

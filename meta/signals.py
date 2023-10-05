@@ -37,15 +37,15 @@ def compress_files(sender, instance, created, **kwargs):
 
 def update_specialist_of(sender, instance, action, model, pk_set, **kwargs):
     from user.models import UserCifonauta
-    
+
     if action == "post_add":
         if model == UserCifonauta and pk_set:
-            specialists = UserCifonauta.objects.filter(Q(id__in=pk_set) | Q(specialist_of=instance))
+            specialists = UserCifonauta.objects.filter(id__in=pk_set)
             instance.specialist_of.add(*specialists)
     
     elif action == "post_remove":
         if model == UserCifonauta and pk_set:
-            specialists = UserCifonauta.objects.filter(Q(id__in=pk_set) | Q(specialist_of=instance))
+            specialists = UserCifonauta.objects.filter(id__in=pk_set)
             instance.specialist_of.remove(*specialists)
     
 
@@ -54,13 +54,13 @@ def update_curator_of(sender, instance, action, model, pk_set, **kwargs):
 
     if action == "post_add":
         if model == UserCifonauta and pk_set:
-            curators = UserCifonauta.objects.filter(Q(id__in=pk_set) | Q(curator_of=instance))
+            curators = UserCifonauta.objects.filter(id__in=pk_set)
             instance.curator_of.add(*curators)
     
     elif action == "post_remove":
         if model == UserCifonauta and pk_set:
-            specialists = UserCifonauta.objects.filter(Q(id__in=pk_set) | Q(curator_of=instance))
-            instance.curator_of.remove(*specialists)
+            curators = UserCifonauta.objects.filter(id__in=pk_set)
+            instance.curator_of.remove(*curators)
 
 
 def delete_file_from_folder(sender, instance, **kwargs):

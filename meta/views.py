@@ -161,8 +161,13 @@ def upload_media_step2(request):
     for media in medias:
         if media.media.url.endswith('jpg'):
             metadata = Metadata(media.media.path)
-            read_metadata = metadata.read_metadata()
-            break        
+            try:
+                read_metadata = metadata.read_metadata()
+            except:
+                messages.error(request, 'Não foi possível ler os metadados da imagem')
+                metadata = None
+            finally:
+                break        
     
     if metadata:
         form = UploadMediaForm(initial={

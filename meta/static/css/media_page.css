@@ -38,18 +38,18 @@
 #meta > div:first-child {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: .5rem;
     padding-bottom: .9rem;
 }
 
-.taxonomy {
-    margin-right: 1.5rem;
-}
+/*.taxonomy {*/
+    /*margin-right: 1.5rem;*/
+/*}*/
 
-.location {
-    width: 14.375rem;
-}
+/*.location {*/
+    /*width: 14.375rem;*/
+/*}*/
 
 #media-sideinfo2 {
     display: none;

@@ -1101,7 +1101,7 @@ def media_page(request, media_id):
     tags = media.tag_set.all()
     authors = media.person_set.filter(is_author=True)
     sources = media.person_set.filter(is_author=False)
-    taxa = media.taxons.all()
+    taxa = media.taxon_set.all()
     references = media.reference_set.all()
     filename, file_extension = os.path.splitext(str(media.coverpath))
 

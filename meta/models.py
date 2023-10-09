@@ -381,6 +381,9 @@ class City(models.Model):
             help_text=_('Nome da cidade.'))
     slug = models.SlugField(_('slug'), max_length=64, blank=True,
             help_text=_('Slug do nome da cidade.'))
+    state = models.ForeignKey('State', on_delete=models.CASCADE, 
+            blank=True, null=True, 
+            verbose_name=_('estado'), help_text=_('Estado na qual a cidade pertence.'))
 
     def __str__(self):
         return self.name
@@ -399,6 +402,9 @@ class State(models.Model):
             help_text=_('Nome do estado.'))
     slug = models.SlugField(_('slug'), max_length=64, blank=True,
             help_text=_('Slug do nome do estado.'))
+    country = models.ForeignKey('Country', on_delete=models.CASCADE, 
+            blank=True, null=True, 
+            verbose_name=_('país'), help_text=_('Pais na qual o estado pertence.'))
 
     def __str__(self):
         return self.name

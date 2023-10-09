@@ -23,6 +23,8 @@ urlpatterns = [
         path('administrative-module/revision/changes/<int:pk>', views.modified_media_revision, name='modified_media_revision'),
         path('administrative-module/enable-specialists', EnableSpecialists.as_view(), name='enable_specialists'),
 
+        path('synchronize-fields', views.synchronize_fields, name='synchronize_fields'),
+
         # Menu
         path('search/', views.search_page, name='search_url'),
         path('organization/', views.org_page, name='org_url'),

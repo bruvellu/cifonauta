@@ -5,7 +5,7 @@ import logging
 import os
 
 from media_utils import Metadata
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -195,6 +195,32 @@ def upload_media_step2(request):
     }
 
     return render(request, 'upload_media_step2.html', context)
+
+
+def synchronize_fields(request):
+    if request.GET.get('country_id'):
+        country_id = request.GET.get('country_id')
+
+        query = State.objects.filter(country_id=country_id)
+
+        data = {
+            'states': list(query.values('id', 'name'))
+        }
+
+        return JsonResponse(data)
+
+    if request.GET.get('state_id'):
+        state_id = request.GET.get('state_id')
+        
+        query = City.objects.filter(state_id=state_id)
+
+        data = {
+            'cities': list(query.values('id', 'name'))
+        }
+
+        return JsonResponse(data)
+    
+    return JsonResponse({})
 
 
 @custom_login_required

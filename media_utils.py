@@ -622,7 +622,11 @@ class Metadata():
                 meta = exif_dict[field]
             except:
                 meta = ''
-            return meta
+            finally:
+                if field == 'GPS':
+                    gps = meta
+                    meta = f"{gps[2][0][0]} deg {gps[2][1][0]}' {gps[2][2][0]:.2f}\u0022 {gps[1].decode()}, {gps[4][0][0]} deg {gps[4][1][0]}' {gps[4][2][0]:.2f}\u0022 {gps[3].decode()}"
+                return meta
         
     def read_metadata(self):
         keys_metadata = {
@@ -639,7 +643,7 @@ class Metadata():
             'creator': {'exif': piexif.ImageIFD.Artist, 'xmp': 'Creator', 'iptc': 'Creator'},
             'title_pt': {'xmp': 'TitlePT', 'iptc': 'object name'},
             'description_pt': {'exif': piexif.ImageIFD.ImageDescription,'xmp': 'DescriptionPT', 'iptc': 'caption/abstract'},
-            'gps': {'exif': piexif.ImageIFD.GPSTag, 'iptc': 'content location name'},
+            'gps': {'exif': 'GPS', 'iptc': 'content location name'},
             'datetime': {'xmp': 'date_created', 'iptc': 'DateCreated', 'exif': piexif.ImageIFD.DateTime},
             'country': {'xmp': 'Country', 'iptc': 'country/primary location name'},
             'state': {'xmp': 'State', 'iptc': 'province/state'},
@@ -671,11 +675,3 @@ class Metadata():
                     except KeyError:
                         continue
         return metadata
-
-if __name__ == "__main__":
-    file = r"/home/joao/Documentos/projetos/cifona_vi/cifonauta/site_media/ac-aem_AVilt1.jpg"
-    meta = Metadata(file)
-    meta.read_metadata()
-    
-
-        

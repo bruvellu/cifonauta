@@ -608,6 +608,12 @@ tr, th {
     width: 11rem;
     height: 6rem;
     object-fit: cover;
+    transition: filter .1s;
+}
+
+.image-cedule img:hover,
+.image-cedule video:hover {
+    filter: brightness(65%);
 }
 
 

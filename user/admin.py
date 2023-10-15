@@ -34,7 +34,7 @@ class UserCifonautaAdmin(UserAdmin):
             )}
         ),
     )
-    search_fields = ("email",)
+    search_fields = ("email", "first_name", "last_name", "idlattes", "orcid")
     ordering = ("email",)
     actions = [make_author_action, remove_author_action]
 
@@ -43,7 +43,8 @@ class UserCifonautaAdmin(UserAdmin):
         if obj and obj.is_author:
             fieldsets[1][1]['fields'] = ("is_author", "is_staff", "is_active", "specialist_of", "curator_of")
         else:
-            fieldsets[1][1]['fields'] = ("is_author", "is_staff", "is_active")
+            if len(fieldsets) > 1:
+                fieldsets[1][1]['fields'] = ("is_author", "is_staff", "is_active")
         return fieldsets
     
     def get_readonly_fields(self, request, obj=None):

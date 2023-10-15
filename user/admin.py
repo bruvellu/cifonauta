@@ -30,7 +30,7 @@ class UserCifonautaAdmin(UserAdmin):
             "classes": ("wide",),
             "fields": (
                 "email", "password1", "password2", "is_staff", 
-                "is_active", "username", 'orcid', "first_name", "last_name", "idlattes"
+                "is_active", "username", 'orcid', "first_name", "last_name", "idlattes", "captcha"
             )}
         ),
     )

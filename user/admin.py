@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .forms import UserCifonautaCreationForm
+from .forms import UserCifonautaCreationForm, UserCifonautaChangeForm
 from .models import UserCifonauta
 
 @admin.action(description="Tornar autor")
@@ -18,7 +18,7 @@ def remove_author_action(modeladmin, request, queryset):
 
 class UserCifonautaAdmin(UserAdmin):
     add_form = UserCifonautaCreationForm
-    model = UserCifonauta
+    form = UserCifonautaChangeForm
     list_display = ("username", "email", "is_author", "is_staff", "is_active", 'orcid', "first_name", "last_name", "idlattes")
     list_filter = ("email", "is_author", "is_staff", "is_active", "username", 'orcid', "first_name", "last_name", "idlattes")
     fieldsets = (
@@ -51,7 +51,7 @@ class UserCifonautaAdmin(UserAdmin):
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = list(self.readonly_fields)
         
-        if obj and (obj.specialist_of.exists() or obj.curator_of.exists()):
+        if obj and (obj.curatorship_specialist.exists() or obj.curatorship_curator.exists()):
             readonly_fields.append('is_author')
         
         return readonly_fields

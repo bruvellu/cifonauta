@@ -46,10 +46,6 @@ class UserCifonauta(AbstractUser):
     is_author = models.BooleanField('Autor', default=False,
             help_text='Informa se o usuário é autor.')
 
-    specialist_of = models.ManyToManyField(Curadoria, related_name='specialist_of', blank=True,
-            verbose_name=_('especialista de'), help_text='Mostra de quais curadorias o usuário é especialista.')
-    curator_of = models.ManyToManyField(Curadoria, related_name='curator_of', blank=True,
-            verbose_name=_('curador de'), help_text='Mostra de quais curadorias o usuário é curador.')
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['orcid', 'idlattes', 'first_name', 'last_name', 'email']

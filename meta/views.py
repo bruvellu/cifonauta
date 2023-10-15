@@ -97,8 +97,8 @@ def upload_media_step1(request):
     for media_extension in settings.MEDIA_EXTENSIONS:
         media_extensions += f'{media_extension[1:].upper()} '
 
-    is_specialist = request.user.specialist_of.exists()
-    is_curator = request.user.curator_of.exists()
+    is_specialist = request.user.curatorship_specialist.exists()
+    is_curator = request.user.curatorship_curator.exists()
 
     context = {
         'media_extensions': media_extensions,
@@ -183,8 +183,8 @@ def upload_media_step2(request):
     registration_form = CoauthorRegistrationForm()
     form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
     
-    is_specialist = request.user.specialist_of.exists()
-    is_curator = request.user.curator_of.exists()
+    is_specialist = request.user.curatorship_specialist.exists()
+    is_curator = request.user.curatorship_curator.exists()
 
     context = {
         'form': form,
@@ -274,8 +274,8 @@ def edit_metadata(request, media_id):
         form.save()
 
     media = get_object_or_404(Media, pk=media_id)
-    is_specialist = request.user.specialist_of.exists()
-    is_curator = request.user.curator_of.exists()
+    is_specialist = request.user.curatorship_specialist.exists()
+    is_curator = request.user.curatorship_curator.exists()
 
     context = {
         'form': form,
@@ -295,7 +295,7 @@ class CuradoriaMediaList(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
 
-        curations = user.specialist_of.all()
+        curations = user.curatorship_specialist.all()
         curations_taxons = []
 
         for curadoria in curations:
@@ -314,8 +314,8 @@ class CuradoriaMediaList(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context['is_specialist'] = user.specialist_of.exists()
-        context['is_curator'] = user.curator_of.exists()
+        context['is_specialist'] = user.curatorship_specialist.exists()
+        context['is_curator'] = user.curatorship_curator.exists()
         return context
 
 #Missing
@@ -327,8 +327,8 @@ class MediaDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context['is_specialist'] = user.specialist_of.exists()
-        context['is_curator'] = user.curator_of.exists()
+        context['is_specialist'] = user.curatorship_specialist.exists()
+        context['is_curator'] = user.curatorship_curator.exists()
         return context
     
 @custom_login_required
@@ -485,8 +485,8 @@ def update_my_medias(request, pk):
 
     form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
-    is_specialist = request.user.specialist_of.exists()
-    is_curator = request.user.curator_of.exists()
+    is_specialist = request.user.curatorship_specialist.exists()
+    is_curator = request.user.curatorship_curator.exists()
 
     modified_media_form = ModifiedMediaForm(instance=media)
 
@@ -522,8 +522,8 @@ class MyMedias(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context['is_specialist'] = user.specialist_of.exists()
-        context['is_curator'] = user.curator_of.exists()
+        context['is_specialist'] = user.curatorship_specialist.exists()
+        context['is_curator'] = user.curatorship_curator.exists()
         return context
 
 @method_decorator(custom_login_required, name='dispatch')
@@ -536,7 +536,7 @@ class RevisionMedia(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
 
-        curations = user.curator_of.all()
+        curations = user.curatorship_curator.all()
         curations_taxons = []
 
         for curadoria in curations:
@@ -563,8 +563,8 @@ class RevisionMedia(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context['is_specialist'] = user.specialist_of.exists()
-        context['is_curator'] = user.curator_of.exists()
+        context['is_specialist'] = user.curatorship_specialist.exists()
+        context['is_curator'] = user.curatorship_curator.exists()
         return context
 
 
@@ -601,8 +601,8 @@ def modified_media_revision(request, pk):
         messages.success(request, 'Alterações aceitas com sucesso')
         return redirect('media_revision')
 
-    is_specialist = request.user.specialist_of.exists()
-    is_curator = request.user.curator_of.exists()
+    is_specialist = request.user.curatorship_specialist.exists()
+    is_curator = request.user.curatorship_curator.exists()
 
     media_form = ModifiedMediaForm(instance=media)
     modified_media_form = ModifiedMediaForm(instance=modified_media)
@@ -673,8 +673,8 @@ def revision_media_detail(request, media_id):
         form.save()
         messages.success(request, 'Sua mídia foi publicada')
         return redirect('media_url', media_id=media_id)
-    is_specialist = request.user.specialist_of.exists()
-    is_curator = request.user.curator_of.exists()
+    is_specialist = request.user.curatorship_specialist.exists()
+    is_curator = request.user.curatorship_curator.exists()
 
     context = {
         'form': form,
@@ -710,17 +710,17 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
             queryset = queryset.filter(is_author=True)
             if action == 'add':
                 if selected_curation_id:
-                    queryset = queryset.exclude(specialist_of__id=selected_curation_id)
+                    queryset = queryset.exclude(curatorship_specialist__id=selected_curation_id)
             elif action == 'remove':
                 if selected_curation_id:
-                    queryset = queryset.filter(specialist_of__id=selected_curation_id)
+                    queryset = queryset.filter(curatorship_specialist__id=selected_curation_id)
         elif users_type == 'authors':
             if action == 'add':
                 queryset = queryset.filter(is_author=False)
             elif action == 'remove':
                 queryset = queryset.filter(is_author=True)
                 queryset = queryset.filter(
-                    Q(specialist_of__isnull=True) | Q(curator_of__isnull=True)
+                    Q(curatorship_specialist__isnull=True) | Q(curatorship_curator__isnull=True)
                 )
 
         queryset = queryset.distinct()
@@ -743,13 +743,13 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
             curation = Curadoria.objects.get(id=selected_curation_id)
             if action == 'add':
                 for user in users:
-                    user.specialist_of.add(curation)
+                    user.curatorship_specialist.add(curation)
                     user.save()
                     curation.specialists.add(user)
                     curation.save()
             elif action == 'remove':
                 for user in users:
-                    user.specialist_of.remove(curation)
+                    user.curatorship_specialist.remove(curation)
                     user.save()
         return redirect('enable_specialists')
     
@@ -757,11 +757,11 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        context['is_specialist'] = user.specialist_of.exists()
-        context['is_curator'] = user.curator_of.exists()
+        context['is_specialist'] = user.curatorship_specialist.exists()
+        context['is_curator'] = user.curatorship_curator.exists()
 
         user = self.request.user
-        curations = user.curator_of.all()
+        curations = user.curatorship_curator.all()
         curations_taxons = []
         for curadoria in curations:
             taxons = curadoria.taxons.all()

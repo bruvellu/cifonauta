@@ -50,33 +50,6 @@ def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
 
     m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)
 
-def update_specialist_of(sender, instance, action, model, pk_set, **kwargs):
-    from user.models import UserCifonauta
-
-    if action == "post_add":
-        if model == UserCifonauta and pk_set:
-            specialists = UserCifonauta.objects.filter(id__in=pk_set)
-            instance.specialist_of.add(*specialists)
-    
-    elif action == "post_remove":
-        if model == UserCifonauta and pk_set:
-            specialists = UserCifonauta.objects.filter(id__in=pk_set)
-            instance.specialist_of.remove(*specialists)
-    
-
-def update_curator_of(sender, instance, action, model, pk_set, **kwargs):
-    from user.models import UserCifonauta
-
-    if action == "post_add":
-        if model == UserCifonauta and pk_set:
-            curators = UserCifonauta.objects.filter(id__in=pk_set)
-            instance.curator_of.add(*curators)
-    
-    elif action == "post_remove":
-        if model == UserCifonauta and pk_set:
-            curators = UserCifonauta.objects.filter(id__in=pk_set)
-            instance.curator_of.remove(*curators)
-
 
 def delete_file_from_folder(sender, instance, **kwargs):
     from meta.models import LoadedMedia

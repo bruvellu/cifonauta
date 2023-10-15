@@ -533,6 +533,8 @@ models.signals.post_save.connect(compress_files, sender=Media)
 # Delete file from folder when the media is deleted on website
 models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
 models.signals.pre_delete.connect(delete_file_from_folder, sender=LoadedMedia)
+# Get taxons descendents when creating a curatorship
+models.signals.m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)
 # Update the user's curatorships as specialist
 models.signals.m2m_changed.connect(update_specialist_of, sender=Curadoria.specialists.through)
 # Update the user's curatorships as curator

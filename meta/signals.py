@@ -7,6 +7,7 @@ from media_utils import Metadata
 import os
 from django.db.models import Q
 from PIL import Image
+from django.db.models.signals import m2m_changed
 
 from django.conf import settings
 
@@ -34,6 +35,20 @@ def compress_files(sender, instance, created, **kwargs):
             Metadata(instance.file.path, metadata)
         except:
             instance.metadata_error = True
+
+def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
+    from meta.models import Taxon, Curadoria
+    m2m_changed.disconnect(get_taxons_descendants, sender=Curadoria.taxons.through)
+    
+    taxon = Taxon.objects.filter(id__in=pk_set)
+    descendants = taxon.get_descendants()
+
+    if action == "pre_add":
+        instance.taxons.add(*descendants)
+    elif action == "pre_remove":
+        instance.taxons.remove(*descendants)
+
+    m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)
 
 def update_specialist_of(sender, instance, action, model, pk_set, **kwargs):
     from user.models import UserCifonauta

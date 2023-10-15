@@ -40,11 +40,12 @@ class UserCifonautaAdmin(UserAdmin):
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = super().get_fieldsets(request, obj)
-        if obj and obj.is_author:
-            fieldsets[1][1]['fields'] = ("is_author", "is_staff", "is_active", "specialist_of", "curator_of")
-        else:
-            if len(fieldsets) > 1:
+        if obj:
+            if obj.is_author:
+                fieldsets[1][1]['fields'] = ("is_author", "is_staff", "is_active", "specialist_of", "curator_of")
+            else:
                 fieldsets[1][1]['fields'] = ("is_author", "is_staff", "is_active")
+        
         return fieldsets
     
     def get_readonly_fields(self, request, obj=None):

@@ -4,6 +4,7 @@ from django import forms
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
 from .models import Media, Curadoria, Person, ModifiedMedia
+from user.models import UserCifonauta
 
 
 METAS = (
@@ -212,5 +213,6 @@ class CuradoriaAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['curators'].queryset = self.fields['curators'].queryset.filter(is_author=True)
-        self.fields['specialists'].queryset = self.fields['specialists'].queryset.filter(is_author=True)
+        
+        self.fields['curators'].queryset = UserCifonauta.objects.filter(is_author=True)
+        self.fields['specialists'].queryset = UserCifonauta.objects.filter(is_author=True)

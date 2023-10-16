@@ -27,11 +27,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
 import re
-from dotenv import load_dotenv
 from django.conf import settings
 from django.core.files import File
-
-load_dotenv()
 
 @custom_login_required
 @author_required
@@ -58,7 +55,7 @@ def upload_media_step1(request):
                     messages.error(request, 'Arquivo maior que 3MB')
                     return redirect('upload_media_step1')
                 
-                filename_regex = fr"{os.getenv('FILENAME_REGEX')}"
+                filename_regex = fr"{os.environ['FILENAME_REGEX']}"
                 filename, extension = os.path.splitext(media.name.lower())
 
                 if extension:

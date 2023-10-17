@@ -3,7 +3,7 @@
 from django import forms
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
-from .models import Media, Curadoria, Person, ModifiedMedia
+from .models import Media, Curadoria, Person, ModifiedMedia, Taxon
 from user.models import UserCifonauta
 
 
@@ -52,35 +52,71 @@ OPERATORS = (
         )
 
 class UploadMediaForm(forms.ModelForm):
+    taxons = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Taxon.objects.all(),
+        widget=forms.SelectMultiple(
+            attrs={"class": "select2-taxons", "multiple": "multiple"}
+        ),
+        label=_('Táxons'),
+        help_text=_('Táxons pertencentes à mídia.')
+    )
+
     class Meta:
         model = Media
-        fields = ('title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
+        fields = ('title', 'caption', 'taxons', 'co_author', 'author', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
         widgets = {
-            'taxons': forms.SelectMultiple(attrs={'class': 'select2-taxons', 'multiple': 'multiple'}),
-            'has_taxons': forms.RadioSelect(),
-            'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"})
+            'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"}),
         }
 
 class UpdateMyMediaForm(forms.ModelForm):
+    taxons = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Taxon.objects.all(),
+        widget=forms.SelectMultiple(
+            attrs={"class": "select2-taxons", "multiple": "multiple"}
+        ),
+        label=_('Táxons'),
+        help_text=_('Táxons pertencentes à mídia.')
+    )
+
     class Meta:
         model = Media
-        fields = ('title', 'author', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title', 'caption', 'taxons', 'co_author', 'author', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
         widgets = {
-            'taxons': forms.SelectMultiple(attrs={'class': 'select2-taxons', 'multiple': 'multiple'}),
-            'has_taxons': forms.RadioSelect(),
             'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"})
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance.pk:
+            self.fields['taxons'].initial = self.instance.taxon_set.all()
+
 class EditMetadataForm(forms.ModelForm):
+    taxons = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Taxon.objects.all(),
+        widget=forms.SelectMultiple(
+            attrs={"class": "select2-taxons", "multiple": "multiple"}
+        ),
+        label=_('Táxons'),
+        help_text=_('Táxons pertencentes à mídia.')
+    )
+
     class Meta:
         model = Media
-        fields = ( 'title', 'author', 'co_author', 'specialist', 'caption', 'size', 'date',  'has_taxons', 'taxons', 'license', 'credit', 'country', 'state', 'city', 'location', 'geolocation', 'life_stage', 'habitat', 'microscopy', 'life_style', 'photographic_technique', 'several', 'software')
+        fields = ( 'title', 'author', 'co_author', 'specialist', 'caption', 'size', 'date', 'taxons', 'license', 'credit', 'country', 'state', 'city', 'location', 'geolocation', 'life_stage', 'habitat', 'microscopy', 'life_style', 'photographic_technique', 'several', 'software')
         widgets = {
-            'taxons': forms.SelectMultiple(attrs={'class': 'select2-taxons', 'multiple': 'multiple'}),
-            'has_taxons': forms.RadioSelect(),
             'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"}),
             'specialist': forms.SelectMultiple(attrs={"class": "select2-specialist", "multiple": "multiple"})
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance.pk:
+            self.fields['taxons'].initial = self.instance.taxon_set.all()
 
 class CoauthorRegistrationForm(forms.ModelForm):
     class Meta:
@@ -90,7 +126,7 @@ class CoauthorRegistrationForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
-        fields = ( 'title', 'co_author', 'caption', 'date',  'has_taxons', 'taxons', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ( 'title', 'caption', 'taxons', 'co_author', 'date', 'country', 'state', 'city', 'location', 'geolocation')
 
 class MyMediaForm(forms.ModelForm):
     class Meta:

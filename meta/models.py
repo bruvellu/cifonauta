@@ -87,9 +87,6 @@ class Media(models.Model):
     )
     status = models.CharField(_('status'), blank=True, max_length=13, choices=STATUS_CHOICES, 
             default='not_edited', help_text=_('Status da mídia.'))
-    has_taxons = models.CharField(_('tem táxons'), help_text=_('Mídia tem táxons.'),
-            choices=(('True', 'Sim'), ('False', 'Não')), default='False')
-    taxons = models.ManyToManyField('Taxon', related_name="taxons", verbose_name=_('táxons'), help_text=_('Táxons pertencentes à mídia.'), blank=True)
     LICENSE_CHOICES = (
         ('cc0', 'CC0 (Domínio Público)'),
         ('cc_by', 'CC BY (Atribuição)'),
@@ -198,15 +195,6 @@ class Media(models.Model):
 
 
     def save(self, *args, **kwargs):
-        if self.pk:
-            if self.taxons.exists():
-                if self.has_taxons == 'False':
-                    self.taxons.clear()
-                else:
-                    self.has_taxons = 'True'
-            else:
-                self.has_taxons = 'False'
-        
         self.timestamp = timezone.now()
 
         super().save(*args, **kwargs)

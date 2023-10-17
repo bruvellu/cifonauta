@@ -1,18 +1,3 @@
-let hasTaxon = document.querySelector('#id_has_taxons_0')
-let noTaxon = document.querySelector('#id_has_taxons_1')
-let taxonsDiv = document.querySelector('.taxons-div')
-
-hasTaxon.addEventListener('click', () => {
-    taxonsDiv.classList.remove('hide-div')
-    hasTaxon.checked = true
-})
-
-noTaxon.addEventListener('click', () => {
-    taxonsDiv.classList.add('hide-div')
-    noTaxon.checked = true
-})
-
-
 let preRegistrationButton = document.querySelector('.pre-registration-button')
 let closeModalButton = document.querySelector('.close-modal-button')
 let modal = document.querySelector('dialog')
@@ -23,7 +8,6 @@ preRegistrationButton.addEventListener('click', () => {
 closeModalButton.addEventListener('click', () => {
     modal.close()
 })
-
 
 let idTerms = document.querySelector('#id_terms')
 idTerms.addEventListener('click', () => {
@@ -58,25 +42,6 @@ if (messagesDiv) {
 
 
 //Synchronize Country, State and City fields
-let stateField = document.querySelector('#id_state')
-
-stateField.innerHTML = ''
-let option = document.createElement('option')
-option.value = ''
-option.selected = ''
-option.innerText = '---------'
-stateField.append(option)
-
-let cityField = document.querySelector('#id_city')
-
-cityField.innerHTML = ''
-option = document.createElement('option')
-option.value = ''
-option.selected = ''
-option.innerText = '---------'
-cityField.append(option)
-
-
 let countryField = document.querySelector('#id_country')
 countryField.addEventListener('change', (e) => {
     const url = window.location.origin
@@ -91,14 +56,17 @@ countryField.addEventListener('change', (e) => {
         }
     })
     .then(data => {
+        function createNullOption() {
+            let option = document.createElement('option')
+            option.value = ''
+            option.selected = ''
+            option.innerText = '---------'
+            return option
+        }
+
         let stateField = document.querySelector('#id_state')
-        
         stateField.innerHTML = ''
-        let option = document.createElement('option')
-        option.value = ''
-        option.selected = ''
-        option.innerText = '---------'
-        stateField.append(option)
+        stateField.append(createNullOption())
 
         const states = data.states
         states?.forEach(state => {
@@ -107,10 +75,14 @@ countryField.addEventListener('change', (e) => {
             option.innerText = state.name
             stateField.append(option)
         })
+
+        let cityField = document.querySelector('#id_city')
+        cityField.innerHTML = ''
+        cityField.append(createNullOption())
     })
 })
 
-stateField = document.querySelector('#id_state')
+let stateField = document.querySelector('#id_state')
 stateField.addEventListener('change', (e) => {
     const url = window.location.origin
     const stateId = e.target.options[e.target.selectedIndex].value

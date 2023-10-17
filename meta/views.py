@@ -174,6 +174,8 @@ def upload_media_step2(request):
         })
     else:
         form = UploadMediaForm(initial={'author': request.user.id})
+    form.fields['state'].queryset = State.objects.none()
+    form.fields['city'].queryset = City.objects.none()
 
     registration_form = CoauthorRegistrationForm()
     form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
@@ -226,6 +228,14 @@ def edit_metadata(request, media_id):
         form = EditMetadataForm(request.POST, instance=media)
     else:
         form = EditMetadataForm(instance=media)
+        if media.state:
+            form.fields['city'].queryset = City.objects.filter(state=media.state.id)
+        else:
+            form.fields['city'].queryset = City.objects.none()
+        if media.country:
+            form.fields['state'].queryset = State.objects.filter(country=media.country.id)
+        else:
+            form.fields['state'].queryset = State.objects.none()
     if form.is_valid():
         media_instance = form.save(commit=False)
 
@@ -465,11 +475,18 @@ def update_my_medias(request, pk):
         messages.error(request, 'Houve um erro com as alterações feitas')
         return redirect('update_media', media.pk)
 
-    form = UpdateMyMediaForm(instance=media)
-
     if modified_media and not messages.get_messages(request):
         messages.warning(request, "Esta mídia tem alterações pendentes")
 
+    form = UpdateMyMediaForm(instance=media)
+    if media.state:
+        form.fields['city'].queryset = City.objects.filter(state=media.state.id)
+    else:
+        form.fields['city'].queryset = City.objects.none()
+    if media.country:
+        form.fields['state'].queryset = State.objects.filter(country=media.country.id)
+    else:
+        form.fields['state'].queryset = State.objects.none()
     form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
     is_specialist = request.user.curatorship_specialist.exists()
@@ -619,6 +636,14 @@ def revision_media_detail(request, media_id):
         form = EditMetadataForm(request.POST, instance=media)
     else:
         form = EditMetadataForm(instance=media)
+        if media.state:
+            form.fields['city'].queryset = City.objects.filter(state=media.state.id)
+        else:
+            form.fields['city'].queryset = City.objects.none()
+        if media.country:
+            form.fields['state'].queryset = State.objects.filter(country=media.country.id)
+        else:
+            form.fields['state'].queryset = State.objects.none()
     if form.is_valid():
         media_instance = form.save(commit=False)
         

@@ -35,8 +35,6 @@ class ModifiedMedia(models.Model):
             verbose_name=_('mídia modificada'))
     co_author = models.ManyToManyField('Person', blank=True,
             verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='modified_co_author')
-    has_taxons = models.CharField(_('tem táxons'), help_text=_('Mídia tem táxons.'),
-            choices=(('True', 'Sim'), ('False', 'Não')), default='False')
     taxons = models.ManyToManyField('Taxon', related_name="modified_taxons", verbose_name=_('táxons'), help_text=_('Táxons pertencentes à mídia.'), blank=True)
     date = models.DateTimeField(_('data'), null=True,
             help_text=_('Data de criação da imagem.'))
@@ -57,6 +55,10 @@ class ModifiedMedia(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = _('mídia modificada')
+        verbose_name_plural = _('mídias modificadas')
+
 class LoadedMedia(models.Model):
     media = models.FileField(upload_to='loaded_media')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
@@ -67,6 +69,10 @@ class LoadedMedia(models.Model):
     def is_video(self):
         name, extension = os.path.splitext(self.media.name)
         return True if extension in settings.VIDEO_EXTENSIONS else False
+    
+    class Meta:
+        verbose_name = _('mídia carregada')
+        verbose_name_plural = _('mídias carregadas')
     
 
 class Media(models.Model):

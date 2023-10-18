@@ -34,7 +34,7 @@ def specialist_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
 
-        is_specialist = user.specialist_of.exists()
+        is_specialist = user.curatorship_specialist.exists()
 
         if is_specialist:
             return view_func(request, *args, **kwargs)
@@ -49,7 +49,7 @@ def curator_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
 
-        is_curator = user.curator_of.exists()
+        is_curator = user.curatorship_curator.exists()
 
         if is_curator:
             return view_func(request, *args, **kwargs)

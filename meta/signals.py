@@ -7,6 +7,7 @@ from media_utils import Metadata
 import os
 from django.db.models import Q
 from PIL import Image
+from django.db.models.signals import m2m_changed
 
 from django.conf import settings
 
@@ -35,32 +36,19 @@ def compress_files(sender, instance, created, **kwargs):
         except:
             instance.metadata_error = True
 
-def update_specialist_of(sender, instance, action, model, pk_set, **kwargs):
-    from user.models import UserCifonauta
-
-    if action == "post_add":
-        if model == UserCifonauta and pk_set:
-            specialists = UserCifonauta.objects.filter(id__in=pk_set)
-            instance.specialist_of.add(*specialists)
+def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
+    from meta.models import Taxon, Curadoria
+    m2m_changed.disconnect(get_taxons_descendants, sender=Curadoria.taxons.through)
     
-    elif action == "post_remove":
-        if model == UserCifonauta and pk_set:
-            specialists = UserCifonauta.objects.filter(id__in=pk_set)
-            instance.specialist_of.remove(*specialists)
-    
+    taxon = Taxon.objects.filter(id__in=pk_set)
+    descendants = taxon.get_descendants()
 
-def update_curator_of(sender, instance, action, model, pk_set, **kwargs):
-    from user.models import UserCifonauta
+    if action == "pre_add":
+        instance.taxons.add(*descendants)
+    elif action == "pre_remove":
+        instance.taxons.remove(*descendants)
 
-    if action == "post_add":
-        if model == UserCifonauta and pk_set:
-            curators = UserCifonauta.objects.filter(id__in=pk_set)
-            instance.curator_of.add(*curators)
-    
-    elif action == "post_remove":
-        if model == UserCifonauta and pk_set:
-            curators = UserCifonauta.objects.filter(id__in=pk_set)
-            instance.curator_of.remove(*curators)
+    m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)
 
 
 def delete_file_from_folder(sender, instance, **kwargs):

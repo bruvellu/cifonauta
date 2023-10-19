@@ -76,7 +76,7 @@ class PasswordResetView(PasswordResetView):
     def post(self, request, *args, **keyargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            messages.success(request, "E-mail enviado com sucesso")
+            messages.success(request, "Foi enviada uma mensagem para seu email com instruções para redefinição da senha.")
             return super().form_valid(form)
 class PasswordResetConfirmView(PasswordResetConfirmView):
     success_url = '/user/login'
@@ -84,5 +84,5 @@ class PasswordResetConfirmView(PasswordResetConfirmView):
     def post(self, request, *args, **keyargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            messages.sucess(request, "Senha alterada com sucesso")
+            messages.sucess(request, "Senha redefinida com sucesso")
             return super().form_valid(form)

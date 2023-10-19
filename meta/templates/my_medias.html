@@ -9,8 +9,8 @@
 <table class="table">
     <thead class="table-head">
         <tr>
+            <th class="title-column">Mídia</th>
             <th class="title-column">Título</th>
-            <th class="image-column">Mídia</th>
             <th class="">Tipo de mídia</th>
             <th class="status-column">Status</th>
             <th class="modification-date">Data de Modificação</th>
@@ -19,17 +19,17 @@
     <tbody class="table-body">
         {% for media in object_list %}
         <tr>
-            <td class="text-cedule">
-                <a href="{% url 'update_media' pk=media.pk %}">{{ media.title_pt_br }}</a>
-            </td>
             <td class="image-cedule">
-                <a href="{{ media.file.url }}" target="_blank">
+                <a href="{% url 'update_media' pk=media.pk %}">
                     {% if media.is_video %}
                     <video src="{{ media.coverpath.url }}"></video>
                     {% else %}
                     <img src="{{ media.coverpath.url }}">
                     {% endif %}
                 </a>
+            </td>
+            <td class="text-cedule">
+                {{ media.title_pt_br }}
             </td>
             <td>
                 {% if media.is_video %}

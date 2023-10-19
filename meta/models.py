@@ -35,8 +35,6 @@ class ModifiedMedia(models.Model):
             verbose_name=_('mídia modificada'))
     co_author = models.ManyToManyField('Person', blank=True,
             verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='modified_co_author')
-    has_taxons = models.CharField(_('tem táxons'), help_text=_('Mídia tem táxons.'),
-            choices=(('True', 'Sim'), ('False', 'Não')), default='False')
     taxons = models.ManyToManyField('Taxon', related_name="modified_taxons", verbose_name=_('táxons'), help_text=_('Táxons pertencentes à mídia.'), blank=True)
     date = models.DateTimeField(_('data'), null=True,
             help_text=_('Data de criação da imagem.'))
@@ -57,6 +55,10 @@ class ModifiedMedia(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = _('mídia modificada')
+        verbose_name_plural = _('mídias modificadas')
+
 class LoadedMedia(models.Model):
     media = models.FileField(upload_to='loaded_media')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
@@ -67,6 +69,10 @@ class LoadedMedia(models.Model):
     def is_video(self):
         name, extension = os.path.splitext(self.media.name)
         return True if extension in settings.VIDEO_EXTENSIONS else False
+    
+    class Meta:
+        verbose_name = _('mídia carregada')
+        verbose_name_plural = _('mídias carregadas')
     
 
 class Media(models.Model):
@@ -87,9 +93,6 @@ class Media(models.Model):
     )
     status = models.CharField(_('status'), blank=True, max_length=13, choices=STATUS_CHOICES, 
             default='not_edited', help_text=_('Status da mídia.'))
-    has_taxons = models.CharField(_('tem táxons'), help_text=_('Mídia tem táxons.'),
-            choices=(('True', 'Sim'), ('False', 'Não')), default='False')
-    taxons = models.ManyToManyField('Taxon', related_name="taxons", verbose_name=_('táxons'), help_text=_('Táxons pertencentes à mídia.'), blank=True)
     LICENSE_CHOICES = (
         ('cc0', 'CC0 (Domínio Público)'),
         ('cc_by', 'CC BY (Atribuição)'),
@@ -188,9 +191,9 @@ class Media(models.Model):
     location = models.ForeignKey('Location', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('local'),
             help_text=_('Localidade mostrada na imagem (ou local de coleta).'))
-    city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True, verbose_name=_('cidade'),
+    city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('cidade'),
             help_text=_('Cidade mostrada na imagem (ou cidade de coleta).'))
-    state = models.ForeignKey('State', on_delete=models.SET_NULL, null=True, verbose_name=_('estado'),
+    state = models.ForeignKey('State', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('estado'),
             help_text=_('Estado mostrado na imagem (ou estado de coleta).'))
     country = models.ForeignKey('Country', on_delete=models.SET_NULL,
             null=True, verbose_name=_('país'),
@@ -198,15 +201,6 @@ class Media(models.Model):
 
 
     def save(self, *args, **kwargs):
-        if self.pk:
-            if self.taxons.exists():
-                if self.has_taxons == 'False':
-                    self.taxons.clear()
-                else:
-                    self.has_taxons = 'True'
-            else:
-                self.has_taxons = 'False'
-        
         self.timestamp = timezone.now()
 
         super().save(*args, **kwargs)
@@ -381,6 +375,9 @@ class City(models.Model):
             help_text=_('Nome da cidade.'))
     slug = models.SlugField(_('slug'), max_length=64, blank=True,
             help_text=_('Slug do nome da cidade.'))
+    state = models.ForeignKey('State', on_delete=models.CASCADE, 
+            blank=True, null=True, 
+            verbose_name=_('estado'), help_text=_('Estado na qual a cidade pertence.'))
 
     def __str__(self):
         return self.name
@@ -399,6 +396,9 @@ class State(models.Model):
             help_text=_('Nome do estado.'))
     slug = models.SlugField(_('slug'), max_length=64, blank=True,
             help_text=_('Slug do nome do estado.'))
+    country = models.ForeignKey('Country', on_delete=models.CASCADE, 
+            blank=True, null=True, 
+            verbose_name=_('país'), help_text=_('Pais na qual o estado pertence.'))
 
     def __str__(self):
         return self.name
@@ -527,7 +527,5 @@ models.signals.post_save.connect(compress_files, sender=Media)
 # Delete file from folder when the media is deleted on website
 models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
 models.signals.pre_delete.connect(delete_file_from_folder, sender=LoadedMedia)
-# Update the user's curatorships as specialist
-models.signals.m2m_changed.connect(update_specialist_of, sender=Curadoria.specialists.through)
-# Update the user's curatorships as curator
-models.signals.m2m_changed.connect(update_curator_of, sender=Curadoria.curators.through)
+# Get taxons descendents when creating a curatorship
+models.signals.m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)

@@ -73,7 +73,16 @@ class PasswordResetView(PasswordResetView):
     template_name = 'users/password_reset.html'
     email_template_name = 'users/password_reset_email.html'
     success_url = '/user/login'
-
+    def post(self, request, *args, **keyargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            messages.success(request, "E-mail enviado com sucesso")
+            return super().form_valid(form)
 class PasswordResetConfirmView(PasswordResetConfirmView):
     success_url = '/user/login'
     template_name = 'users/password_reset_confirm.html'
+    def post(self, request, *args, **keyargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            messages.sucess(request, "Senha alterada com sucesso")
+            return super().form_valid(form)

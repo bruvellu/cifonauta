@@ -159,17 +159,34 @@ def upload_media_step2(request):
             try:
                 read_metadata = metadata.read_metadata()
             except:
-                messages.error(request, 'Não foi possível ler os metadados da imagem')
                 metadata = None
             finally:
                 break        
     
     if metadata:
+        co_authors = []
+        co_authors_meta = read_metadata['source'].split(',')
+        for co_author in co_authors_meta:
+            try:
+                co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
+            except:
+                messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
+        state = State.objects.filter(name=read_metadata['state']).get().id
+        country = Country.objects.filter(name=read_metadata['country']).get().id
+        location = Location.objects.filter(name=read_metadata['sublocation']).get().id
+        city = City.objects.filter(name=read_metadata['city']).get().id
         form = UploadMediaForm(initial={
             'author': request.user.id,
             'title': read_metadata['headline'],
             'caption': read_metadata['description_pt'],
             'date': read_metadata['datetime'],
+            'geolocation': read_metadata['gps'],
+            'country': country,
+            'state': state,
+            'city': city,
+            'location': location,
+            'license': read_metadata['source'],
+            'co_author': co_authors,
             'geolocation': read_metadata['gps']
         })
     else:
@@ -271,18 +288,10 @@ def edit_metadata(request, media_id):
         'city': str(form.cleaned_data['city']),
         'sublocation': str(form.cleaned_data['location'])
             }
-        media_instance.status = 'to_review'
-        try:
-            Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
-        except:
-            messages.error(request, 'Ocorreu um erro ao salvar os metadados.')
-        else:
-            messages.success(request, 'Metadados salvos com sucesso.')
-        media_instance.save()
-
-        media_instance.taxon_set.set(form.cleaned_data['taxons2'])
-        media_instance.co_author.set(form.cleaned_data['co_author'])
-
+        media.status = 'to_review'
+        meta = Metadata(file=f'./site_media/{str(media.file)}')
+        meta.edit_metadata(metadata)
+        form.save()
 
     media = get_object_or_404(Media, pk=media_id)
     is_specialist = request.user.curatorship_specialist.exists()

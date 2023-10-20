@@ -48,31 +48,6 @@
                 {% endif %}
             </div>
         </div>
-        {% elif field == form.has_taxons %}
-        <div class="field-container">
-            <div class="label-div">
-                <label>Taxons:</label>
-            </div>
-            <div class="wrapper-field-div">
-                <p>A mídia tem táxons?</p>
-                <div class="yes_no_div">
-                    <button class="has-taxons has-taxons-button" type="button">
-                        {{ field.subwidgets.0 }}
-                    </button>
-                    <button class="no-taxons has-taxons-button" type="button">
-                        {{ field.subwidgets.1 }}
-                    </button>
-                </div>
-                <div class="field-div m2m-field taxons-div {% if field.value == 'False' %}hide-div{% endif %}">
-                    {{ form.taxons }}
-                    {% if form.taxons.help_text %}
-                    <span class="help-text">{{ form.taxons.help_text }}</span>
-                    {% endif %}
-                </div>
-                {{ field.errors }}
-            </div>
-        </div>
-        {% elif field == form.taxons %}
         {% elif field == form.terms %}
         <div class="field-container">
             <div class='label-div'>

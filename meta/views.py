@@ -288,10 +288,15 @@ def edit_metadata(request, media_id):
         'city': str(form.cleaned_data['city']),
         'sublocation': str(form.cleaned_data['location'])
             }
-        media.status = 'to_review'
+        
         meta = Metadata(file=f'./site_media/{str(media.file)}')
         meta.edit_metadata(metadata)
-        form.save()
+
+        media_instance.status = 'to_review'
+        media_instance.save()
+        
+        media_instance.taxon_set.set(form.cleaned_data['taxons'])
+        media_instance.co_author.set(form.cleaned_data['co_author'])
 
     media = get_object_or_404(Media, pk=media_id)
     is_specialist = request.user.curatorship_specialist.exists()

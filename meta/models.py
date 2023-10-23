@@ -201,6 +201,13 @@ class Media(models.Model):
 
 
     def save(self, *args, **kwargs):
+        if not self.pk:
+            _, extension = os.path.splitext(self.file.name.lower())
+            if extension.endswith(settings.PHOTO_EXTENSIONS):
+                self.datatype = 'photo'
+            else:
+                self.datatype = 'video'
+        
         self.timestamp = timezone.now()
 
         super().save(*args, **kwargs)

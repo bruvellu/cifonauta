@@ -93,6 +93,9 @@ class UpdateMyMediaForm(forms.ModelForm):
         if self.instance.pk:
             self.fields['taxons'].initial = self.instance.taxon_set.all()
 
+        if self.instance.status != 'not_edited':
+            self.fields['title'].required = True
+
 class EditMetadataForm(forms.ModelForm):
     taxons = forms.ModelMultipleChoiceField(
         required=False,
@@ -115,6 +118,7 @@ class EditMetadataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.fields['title'].required = True
         if self.instance.pk:
             self.fields['taxons'].initial = self.instance.taxon_set.all()
 

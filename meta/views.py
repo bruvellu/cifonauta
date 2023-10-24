@@ -128,6 +128,10 @@ def upload_media_step2(request):
                 if form.cleaned_data['terms'] == False:
                     messages.error(request, 'Você precisa aceitar os termos')
                     return redirect('upload_media_step2')
+                
+                if form.cleaned_data['country'].id == 1 and not (form.cleaned_data['state'] and form.cleaned_data['city']):
+                    messages.error(request, 'Você precisa selecionar um estado e uma cidade')
+                    return redirect('upload_media_step2')
 
                 file = media.media.name.split('/')[-1]
                 ext = file.split('.')[-1]
@@ -255,6 +259,10 @@ def edit_metadata(request, media_id):
             form.fields['state'].queryset = State.objects.none()
     if form.is_valid():
         media_instance = form.save(commit=False)
+
+        if form.cleaned_data['country'].id == 1 and not (form.cleaned_data['state'] and form.cleaned_data['city']):
+            messages.error(request, 'Você precisa selecionar um estado e uma cidade')
+            return redirect('edit_metadata', media.pk)
 
         author = str(form.cleaned_data['author'])
         co_authors = str(form.cleaned_data['co_author']).split(';')
@@ -660,6 +668,10 @@ def revision_media_detail(request, media_id):
             form.fields['state'].queryset = State.objects.none()
     if form.is_valid():
         media_instance = form.save(commit=False)
+
+        if form.cleaned_data['country'].id == 1 and not (form.cleaned_data['state'] and form.cleaned_data['city']):
+            messages.error(request, 'Você precisa selecionar um estado e uma cidade')
+            return redirect('media_revision_detail', media.pk)
         
         author = str(form.cleaned_data['author'])
         co_authors = str(form.cleaned_data['co_author']).split(';')

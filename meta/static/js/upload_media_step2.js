@@ -69,14 +69,6 @@ countryField.addEventListener('change', (e) => {
             option.innerText = '---------'
             return option
         }
-        
-        if (e.target.options[e.target.selectedIndex].value == 1) {
-            stateContainer.classList.remove('hide-div')
-            cityContainer.classList.remove('hide-div')
-        } else {
-            stateContainer.classList.add('hide-div')
-            cityContainer.classList.add('hide-div')
-        }
 
         let stateField = document.querySelector('#id_state')
         stateField.innerHTML = ''
@@ -93,6 +85,20 @@ countryField.addEventListener('change', (e) => {
         let cityField = document.querySelector('#id_city')
         cityField.innerHTML = ''
         cityField.append(createNullOption())
+        
+        if (e.target.options[e.target.selectedIndex].value == 1) {
+            stateContainer.classList.remove('hide-div')
+            cityContainer.classList.remove('hide-div')
+
+            stateField.required = true
+            cityField.required = true
+        } else {
+            stateContainer.classList.add('hide-div')
+            cityContainer.classList.add('hide-div')
+
+            stateField.required = false
+            cityField.required = false
+        }
     })
 })
 

@@ -79,13 +79,11 @@
                 </div>
             </div>
         </div>
-        {% elif field == form.country %}
+        {% elif field == form.country or field == form.state or field == form.city %}
         <div class="field-container country-container">
             <div class="label-div">
                 {{ field.label_tag }}
-                {% if field.field.required %}
                 <span class='required'>*</span>
-                {% endif %}
             </div>
             <div class="field-div">
                 {{ field }}

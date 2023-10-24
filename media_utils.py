@@ -531,7 +531,7 @@ class Metadata():
         self.metadata = metadata
 
         for k, v in self.metadata.items():
-            if v != '' and v != ' ':
+            if v != '' and v != ' ' and v != None:
                 if k == "software":
                     self._insert_metadata_exif(k, v)
                 elif k == "headline":

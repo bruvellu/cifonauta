@@ -80,6 +80,11 @@ a:active, a:visited {
     }
 }
 
+.subtitle-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
 .form-container {
     display: flex;
     flex-direction: column;
@@ -320,6 +325,7 @@ input[type='text'], select {
 .field-div {
     display: flex;
     flex-direction: column;
+    align-items: start;
 }
 
 .files-names:has(li) {

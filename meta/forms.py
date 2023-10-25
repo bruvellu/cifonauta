@@ -3,7 +3,7 @@
 from django import forms
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
-from .models import Media, Curadoria, Person, ModifiedMedia, Taxon
+from .models import Media, Curadoria, Person, ModifiedMedia, Taxon, Tour
 from user.models import UserCifonauta
 
 
@@ -140,6 +140,14 @@ class MyMediaForm(forms.ModelForm):
             'taxons': forms.CheckboxSelectMultiple()
         }
 
+class TourForm(forms.ModelForm):
+    class Meta:
+        model = Tour
+        fields = '__all__'
+        widgets = {
+            'media': forms.SelectMultiple(attrs={"class": "select2-media", "multiple": "multiple"}),
+            'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
+        }
 
 class SearchForm(forms.Form):
     query = forms.CharField(label=_('Buscar por'),

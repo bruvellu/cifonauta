@@ -41,6 +41,9 @@
             </li>
             {% endif %}
             <li>
+                <a href="{% url 'tour_list' %}">Tours</a>
+            </li>
+            <li>
                 <a href="{% url 'my_medias' %}">Minhas mídias</a>
             </li>
         </ul>
@@ -63,6 +66,12 @@
         });
         $('.select2-specialist').select2({
             placeholder: 'Selecione os especialistas'
+        });
+        $('.select2-media').select2({
+            placeholder: 'Selecione as mídias'
+        });
+        $('.select2-references').select2({
+            placeholder: 'Selecione as referências'
         });
     });
     </script>

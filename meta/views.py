@@ -746,7 +746,6 @@ def revision_media_detail(request, media_id):
 
     return render(request, 'media_revision_detail.html', context) 
 
-
 @method_decorator(custom_login_required, name='dispatch')
 @method_decorator(curator_required, name='dispatch')
 class EnableSpecialists(LoginRequiredMixin, ListView):
@@ -836,6 +835,72 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
         context['selected_curation_id'] = selected_curation_id
         return context
 
+
+def tour_list(request):
+    tours = Tour.objects.all()
+    is_specialist = request.user.curatorship_specialist.exists()
+    is_curator = request.user.curatorship_curator.exists()
+
+    context = {
+        'tours': tours,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator
+    }
+
+    return render(request, 'tour_list.html', context)
+
+def add_tour(request):
+    if request.method == 'POST':
+        form = TourForm(request.POST)
+        print(form)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Tour temático criado com sucesso')
+            return redirect('tour_list')
+        
+        messages.error(request, 'Houve um erro ao tentar criar o tour temático')
+
+    form = TourForm()
+    is_specialist = request.user.curatorship_specialist.exists()
+    is_curator = request.user.curatorship_curator.exists()
+
+    context = {
+        'form': form,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator
+    }
+
+    return render(request, 'add_tour.html', context)
+
+def edit_tour(request, pk):
+    tour = get_object_or_404(Tour, pk=pk)
+
+    if request.method == 'POST':
+        action = request.POST['action']
+        if action == 'delete':
+            tour.delete()
+            messages.success(request, "Tour excluído com sucesso")
+            return redirect('tour_list')
+
+        form = TourForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Tour {tour.name} editado com sucesso')
+        else:
+            messages.error(request, 'Houve um erro ao tentar editar o tour')
+
+    form = TourForm(instance=tour)
+    is_specialist = request.user.curatorship_specialist.exists()
+    is_curator = request.user.curatorship_curator.exists()
+
+    context = {
+        'form': form,
+        'tour': tour,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator
+    }
+
+    return render(request, 'edit_tour.html', context)
 
 # Home
 def home_page(request):

@@ -171,19 +171,13 @@ def upload_media_step2(request):
                 co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
             except:
                 messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
-        state = State.objects.filter(name=read_metadata['state']).get().id
-        country = Country.objects.filter(name=read_metadata['country']).get().id
         location = Location.objects.filter(name=read_metadata['sublocation']).get().id
-        city = City.objects.filter(name=read_metadata['city']).get().id
         form = UploadMediaForm(initial={
             'author': request.user.id,
             'title': read_metadata['headline'],
             'caption': read_metadata['description_pt'],
             'date': read_metadata['datetime'],
             'geolocation': read_metadata['gps'],
-            'country': country,
-            'state': state,
-            'city': city,
             'location': location,
             'license': read_metadata['source'],
             'co_author': co_authors,

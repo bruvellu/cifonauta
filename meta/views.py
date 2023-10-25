@@ -112,11 +112,29 @@ def upload_media_step2(request):
     medias = LoadedMedia.objects.filter(author=request.user)
     
     if request.method == 'POST':
-        action = request.POST['action']
+        action = request.POST.get('action')
         if action == 'cancel':
             medias.delete()
             messages.success(request, 'Upload de mídias cancelado com sucesso')
             return redirect('upload_media_step1')
+        elif action == 'coauthor':
+            form = CoauthorRegistrationForm(request.POST)
+            if form.is_valid():
+                coauthor_instance = form.save(commit=False)
+
+                split_name = coauthor_instance.name.lower().split(' ')
+
+                preps = ('de', 'da', 'do', 'das', 'dos', 'e')
+                name = [name.capitalize() if name not in preps else name for name in split_name]
+                name = ' '.join(name)
+                coauthor_instance.name = name
+                
+                form.save()
+                messages.success(request, f'Coautor {name} adicionado com sucesso')
+                return redirect('upload_media_step2')
+            else:
+                messages.error(request, 'Houve um erro ao tentar salvar coautor')
+                return redirect('upload_media_step2')
         
         form = UploadMediaForm(request.POST, request.FILES)
         

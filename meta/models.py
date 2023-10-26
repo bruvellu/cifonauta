@@ -477,6 +477,8 @@ class Tour(models.Model):
             verbose_name=_('arquivos'), help_text=_('Arquivos associados a este tour.'))
     references = models.ManyToManyField('Reference', blank=True,
             verbose_name=_('referências'), help_text=_('Referências associadas a este tour.'))
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
+            verbose_name=_('criador'), help_text=_('Usuário criador do tour.'))
 
     def __str__(self):
         return self.name

@@ -454,6 +454,7 @@ textarea {
     color: white;
     font-size: 1.2rem;
     width: fit-content;
+    height: fit-content;
     padding: .5rem .8rem;
     border-radius: 0.4rem;
     border: none;

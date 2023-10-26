@@ -837,7 +837,7 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
 
 
 def tour_list(request):
-    tours = Tour.objects.all()
+    tours = Tour.objects.filter(creator=request.user)
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
@@ -852,7 +852,6 @@ def tour_list(request):
 def add_tour(request):
     if request.method == 'POST':
         form = TourForm(request.POST)
-        print(form)
         if form.is_valid():
             form.save()
             messages.success(request, 'Tour temático criado com sucesso')
@@ -860,7 +859,16 @@ def add_tour(request):
         
         messages.error(request, 'Houve um erro ao tentar criar o tour temático')
 
-    form = TourForm()
+    form = TourForm(initial={'creator': request.user.id})
+
+    curatorships = Curadoria.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
+    taxon_ids = []
+    for curatorship in curatorships:
+        taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
+    medias = Media.objects.filter(taxon__id__in=taxon_ids)
+    form.fields['media'].queryset = medias
+    form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+    
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
@@ -890,6 +898,15 @@ def edit_tour(request, pk):
             messages.error(request, 'Houve um erro ao tentar editar o tour')
 
     form = TourForm(instance=tour)
+
+    curatorships = Curadoria.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
+    taxon_ids = []
+    for curatorship in curatorships:
+        taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
+    medias = Media.objects.filter(taxon__id__in=taxon_ids)
+    form.fields['media'].queryset = medias
+    form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 

@@ -48,7 +48,7 @@ class UserCifonauta(AbstractUser):
 
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['orcid', 'idlattes', 'first_name', 'last_name', 'email']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'

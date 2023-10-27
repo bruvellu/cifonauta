@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
-from .forms import UserCifonautaCreationForm, LoginForm, PasswordResetForm
+from .forms import UserCifonautaCreationForm, LoginForm, PasswordResetForm, ForgotUsernameForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.auth.views import PasswordResetConfirmView
+from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from meta.models import Person
 
 def user_creation(request):
@@ -78,6 +80,7 @@ class PasswordResetView(PasswordResetView):
         if form.is_valid():
             messages.success(request, "Foi enviada uma mensagem para seu email com instruções para redefinição da senha.")
             return super().form_valid(form)
+        
 class PasswordResetConfirmView(PasswordResetConfirmView):
     success_url = '/user/login'
     template_name = 'users/password_reset_confirm.html'
@@ -86,3 +89,32 @@ class PasswordResetConfirmView(PasswordResetConfirmView):
         if form.is_valid():
             messages.sucess(request, "Senha redefinida com sucesso")
             return super().form_valid(form)
+        
+class ForgotUsernameView(FormView):
+    form_class = ForgotUsernameForm 
+    success_url = '/user/login'
+    title = _('Esqueceu o Nome de Usuário')
+    email_template_name = 'users/forgot_username_email.html'
+    subject_template_name = 'users/forgot_username_email.txt'
+    extra_email_context = None
+    from_email = None
+    html_email_template_name = None
+    template_name = 'users/forgot_username.html'
+    def post(self, request, *args, **keyargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            messages.success(request, "Foi enviada uma mensagem para seu email com instruções para redefinição da senha.")
+            return super().form_valid(form)
+
+    def form_valid(self, form):
+        opts = {
+            "use_https": self.request.is_secure(),
+            "from_email": self.from_email,
+            "email_template_name": self.email_template_name,
+            "subject_template_name": self.subject_template_name,
+            "request": self.request,
+            "html_email_template_name": self.html_email_template_name,
+            "extra_email_context": self.extra_email_context,
+        }
+        form.save(**opts)
+        return super().form_valid(form)

@@ -37,7 +37,7 @@ a:active, a:visited {
     padding: 0.3rem 1.5rem;
 }
 
-.dashboard-aside li:hover a {
+.dashboard-aside li:hover a, .current-page {
     background: #fafafa;
     -moz-border-radius: 0 0.625rem 0.625rem 0;
     -webkit-border-radius: 0 0.625rem 0.625rem 0;

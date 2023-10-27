@@ -6,7 +6,7 @@ from .forms import CuradoriaAdminForm
 
 class CuradoriaAdmin(admin.ModelAdmin):
     form = CuradoriaAdminForm
-    autocomplete_fields = ('specialists', 'curators')
+    autocomplete_fields = ('specialists', 'curators', 'taxons')
 
 # Translation admin.
 class FlatPageAdmin(TranslationAdmin):

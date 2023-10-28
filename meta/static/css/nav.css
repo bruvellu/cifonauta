@@ -1,17 +1,24 @@
 #nav-header {
     display: flex;
-    flex-direction: row-reverse;
+    /*flex-direction: row-reverse;*/
     gap: .1rem;
-    margin-bottom: .3rem;
+    margin-bottom: 1rem;
     text-align: initial; 
     font-size: .99rem; 
 }
 
-#lang-nav-div {
+#nav-languages {
     display: flex;
     justify-content: space-between;
     width: 100%;
 }
+
+#nav-menus {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
 
 .menu { 
     float: none;
@@ -42,10 +49,9 @@
 }
 
 #media.menu {
-    min-width: 36rem;
+    min-width: 30rem;
     height: 25px;
     padding: 0.2rem .625rem 0.08rem !important; 
-    border-width: 0 !important; 
     background:#4d7494;
     background: -moz-linear-gradient(center top , #4d7494 0%, #475D6F 100%) repeat scroll 0 0 transparent; /* firefox */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4d7494), color-stop(100%,#475D6F)); /* webkit */
@@ -53,15 +59,15 @@
     -moz-border-radius: 0 0 10px 0;
     -webkit-border-radius: 0 0 10px 0;
     border-radius: 0 0 10px 0;
-    border-color:#fff #eee #fafafa;
-    border-style:solid;
+    border-color: #fff #eee #fafafa;
+    border-style: solid;
+    border-width: 0 5px 5px 0;
 }
 
 #about.menu {
+    min-width: 7rem;
     height: 25px;
     padding: 0.2rem 0.625rem 0.08rem 1.25rem !important; 
-    border-width: 0 !important; 
-
     background:#94B1CA;
     background: -moz-linear-gradient(center top , #94B1CA 0%, #6B92B2 100%) repeat scroll 0 0 transparent; /* firefox */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#6B92B2), color-stop(100%,#7296B3)); /* webkit */
@@ -71,6 +77,7 @@
     border-radius: 0 0 0px 30px;
     border-color:#fff #fafafa #fafafa #eeeeee;
     border-style:none solid solid solid;
+    border-width: 0 2px 5px 5px;
 }
 
 #hamburger-button {
@@ -153,22 +160,10 @@
     gap: .5rem;
 }
 
-@media (max-width: 920px) {
-    #media {
-        display: flex;
-        justify-content: space-around;
-    }
-}
-
 @media (max-width: 910px) {
-    #nav-header {
-        flex-direction: column-reverse;
-        gap: .3rem;
-    }
 
-    #lang-nav-div {
-        justify-content: flex-start;
-        gap: 1rem;
+    #nav-languages {
+	    display:none;
     }
 }
 
@@ -181,7 +176,7 @@
         margin-top: .5rem;
     }
 
-    #lang-nav-div {
+    #nav-languages {
         justify-content: flex-start;
     }
 

@@ -1,25 +1,9 @@
-// Load Disqus on demand.
-function loadDisqus() {
-  var url = $(location).attr("href");
-  $("#comments p").load(url);
-  return false;
-}
-
 // jQuery Treeview.
 var treeview = $("#colaptree").treeview({
   collapsed: true,
   animated: "fast",
   persist: "location",
 });
-
-// FIXME: This was closing the open tree! Not sure what it is for.
-//function open_tree(taxas){
-	//// Close all tree
-	//$('ul.treeview li div.collapsable-hitarea').click();
-	//$.each((taxas.split(',')), function(index){
-		//$('#taxa' + this).parents('li').children('div.expandable-hitarea').click()
-	//});
-//};
 
 // Highslide
 hs.graphicsDir = '/static/js/highslide/graphics/';
@@ -52,18 +36,11 @@ $(document).ready(function(){
     function () { $(this).find(".external").fadeOut(200); }
     );
 
-  // Disqus
-  $('#comments p').click(loadDisqus);
-
-  // Mostra árvore na página taxa/
-  // FIXME: #colaptree display set to none. Precisa disso?
-  //$("#colaptree").delay(400).fadeIn('slow');
-
   // Esconde avisos.
   $(".success, .notice, .error").delay(10000).fadeOut('slow');
 
   // Trigger do seletor de línguas.
-  $('#languages select').change(function () {
+  $('#nav-languages select').change(function () {
     var myform = $(this).parent();
     myform.submit();
   });

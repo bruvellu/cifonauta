@@ -39,10 +39,10 @@ $(document).ready(function(){
   // Esconde avisos.
   $(".success, .notice, .error").delay(10000).fadeOut('slow');
 
-  // Trigger do seletor de línguas.
+  // Trigger for language selector
   $('#nav-languages select').change(function () {
-    var myform = $(this).parent();
-    myform.submit();
+    var langform = $(this).parent();
+    langform.submit();
   });
 
 });

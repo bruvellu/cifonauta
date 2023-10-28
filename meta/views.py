@@ -29,6 +29,7 @@ from user.models import UserCifonauta
 import re
 from django.conf import settings
 from django.core.files import File
+from django.utils.translation import get_language
 
 @custom_login_required
 @author_required
@@ -974,6 +975,10 @@ def search_page(request, model_name='', field='', slug=''):
         # Query
         query = query_dict.get('query', '').strip()
         if query:
+
+            # Print language.
+            language = get_language()
+            # print(language)
 
             # Create postgres SearchQuery
             # TODO: if search_type='raw' create conditional

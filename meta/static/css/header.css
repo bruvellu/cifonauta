@@ -86,12 +86,12 @@
     #mainheader {
         flex-direction: column;
         gap: 1.5rem;
+	align-items: center;
     }
 
     #stats-search {
-        gap: .4rem;
-        align-items: flex-start;
-        width: 100%;
+        gap: 1rem;
+        align-items: center;
     }
     
     #stats {

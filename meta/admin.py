@@ -1,7 +1,12 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.flatpages.models import FlatPage
 from meta.models import *
 from modeltranslation.admin import TranslationAdmin
+from .forms import CuradoriaAdminForm
+
+class CuradoriaAdmin(admin.ModelAdmin):
+    form = CuradoriaAdminForm
+    autocomplete_fields = ('specialists', 'curators', 'taxons')
 
 # Translation admin.
 class FlatPageAdmin(TranslationAdmin):
@@ -9,9 +14,11 @@ class FlatPageAdmin(TranslationAdmin):
 
 
 class MediaAdmin(TranslationAdmin):
-    list_display = ('filepath', 'is_public', 'highlight', 'title', 'caption', 'timestamp')
+    list_display = ('title', 'status', 'highlight', 'file', 'author', 'pub_date')
     list_filter = ('is_public', 'highlight', 'timestamp', 'person', 'tag', 'taxon')
 
+class ModifiedMediaAdmin(admin.ModelAdmin):
+    list_display = ('title',)
 
 class TagAdmin(TranslationAdmin):
     list_display = ('name', 'description', 'category')
@@ -38,6 +45,25 @@ class CountryAdmin(TranslationAdmin):
 
 class PersonAdmin(admin.ModelAdmin):
     filter_horizontal = ('media',)
+    search_fields = ('name', 'email')
+
+    def delete_queryset(self, request, queryset):
+        for person in queryset:
+            if Media.objects.filter(co_author=person).exists():
+                message = f"Não foi possível efetuar a exclusão porque a pessoa {person} está relacionada a uma mídia."
+                messages.error(request, message)
+                return 
+        
+        super().delete_queryset(request, queryset)
+
+
+    def delete_model(self, request, obj):
+        if Media.objects.filter(co_author=obj).exists():
+            message = "Não foi possível efetuar a exclusão porque esta pessoa está relacionada a uma mídia."
+            self.message_user(request, message, messages.ERROR)
+            return 
+        
+        obj.delete()
 
 
 class TaxonAdmin(TranslationAdmin):
@@ -72,4 +98,6 @@ admin.site.register(Tour, TourAdmin)
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Taxon, TaxonAdmin)
 admin.site.register(Reference, ReferenceAdmin)
-
+admin.site.register(Curadoria, CuradoriaAdmin)
+admin.site.register(ModifiedMedia, ModifiedMediaAdmin)
+admin.site.register(LoadedMedia)

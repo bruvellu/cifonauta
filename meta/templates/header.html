@@ -1,14 +1,16 @@
 {% load i18n %}
 
 <a href="/">
-  <hgroup class="main span-9">
-  <img id="logo" src="{{ STATIC_URL }}logo.png">
-  <h1 id="maintitle">Cifonauta</h1>
-  <h2 id="tagline" {% if LANGUAGE_CODE == 'en' %}style="letter-spacing: 1.6px;"{% endif %}>{% trans 'banco de imagens de biologia marinha' %}</h2>
+  <hgroup id="logo-container" class="main">
+    <img id="logo" src="{{ STATIC_URL }}logo.png">
+    <div>
+      <h1 id="maintitle">Cifonauta</h1>
+      <h2 id="tagline" {% if LANGUAGE_CODE == 'en' %}style="letter-spacing: 1.6px;"{% endif %}>{% trans 'banco de imagens de biologia marinha' %}</h2>
+    </div>
   </hgroup>
 </a>
 
-<div class="span-15 last" id="stats-search">
+<div id="stats-search">
 
   <div class="quiet" id="stats"> {% show_stats %} </div>
 

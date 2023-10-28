@@ -7,6 +7,7 @@
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 {% block extra-head %}
 
+<link rel="stylesheet" href="{{ STATIC_URL }}css/flatpage.css">
 <meta property="og:title" content="{{ flatpage.title }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:type" content="article" />
@@ -16,20 +17,25 @@
 {% endblock %}
 
 {% block content %}
-<section class="span-16">
-<header class="span-16 last"><h1>{{ flatpage.title }}</h1></header>
-{{ flatpage.content }}
+<section  style=
+"display: flex;
+flex-wrap: wrap-reverse;"
+> 
+  <section class="span-16">
+  <header class="span-16 last"><h1>{{ flatpage.title }}</h1></header>
+  {{ flatpage.content }}
 
-{% if request.META.PATH_INFO == '/feedback/' %}
-<div id="comments" class="span-16 last">
-  <h2>{% trans 'Comentários' %}</h2>
-  {% include 'disqus.html' %}
-</div>
-{% endif %}
+  {% if request.META.PATH_INFO == '/feedback/' %}
+  <div id="comments" class="span-16 last">
+    <h2>{% trans 'Comentários' %}</h2>
+    {% include 'disqus.html' %}
+  </div>
+  {% endif %}
+  </section>
+  {% endblock %}
+  {% block sidebar %}
+  <aside class="span-8 last">
+  {% include 'sobremenu.html' %}
+  </aside>
 </section>
-{% endblock %}
-{% block sidebar %}
-<aside class="span-8 last">
-{% include 'sobremenu.html' %}
-</aside>
-{% endblock %}
+  {% endblock %}

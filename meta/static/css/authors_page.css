@@ -1,0 +1,39 @@
+/*
+
+Style to Authors Page
+
+*/
+
+.authors-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.authors-card {
+    width: 43.5%;
+}
+
+.authors-card > h2 {
+    font-size: 1.4rem;
+}
+
+.authors-card > p {
+    width: 100%;
+    font-size: 0.8rem;
+}
+
+.authors-card > ul {
+    font-size: 0.8rem;
+}
+
+
+/*
+    MEDIA
+*/
+
+@media (max-width: 767px) {
+    .authors-card {
+        width: 100%;
+    }
+}

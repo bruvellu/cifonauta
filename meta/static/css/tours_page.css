@@ -1,0 +1,20 @@
+.metagroup {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    width: 100%;
+}
+
+@media (max-width: 758px) {
+    .metagroup > .span-13 {
+        text-align: center;
+    }
+   
+}
+
+@media (max-width: 989px){
+    .metagroup > .span-6 {
+        display: none;
+    }
+}

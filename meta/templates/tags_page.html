@@ -11,6 +11,7 @@ Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o re
 
 {% block extra-head %}
 
+<link rel="stylesheet" href="{{ STATIC_URL }}css/tags_page.css">
 <meta property="og:title" content="{% trans 'Marcadores' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:description" content="{% trans 'Marcadores presentes no banco de imagens Cifonauta.' %}" />
@@ -18,19 +19,19 @@ Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o re
 <meta property="og:type" content="article" />
 {% endblock %}
 {% block content %}
-<section class="span-24 last">
 <header><h1>{% trans 'Marcadores' %}</h1></header>
-
-    {% for cat in cats %}
-    <div class="span-{% cycle '11' '11 last' %} metagroup">
-        <h2>{{ cat.name }}</h2>
-        {% if cat.description %}
-            <p class="quiet">{{ cat.description }}</p>
-        {% endif %}
-        {% print_metalist cat.tags.all 'tag' %}
+<section class="tags-content">
+    <div class="tags-categories">
+        {% for cat in cats %}
+        <div class="metagroup tags-category">
+            <h2 class="tags-category-name">{{ cat.name }}</h2>
+            {% if cat.description %}
+                <p class="quiet tags-category-description">{{ cat.description }}</p>
+            {% endif %}
+            {% print_metalist cat.tags.all 'tag' %}
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-
 </section>
 {% endblock %}
 

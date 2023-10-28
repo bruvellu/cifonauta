@@ -6,6 +6,7 @@
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/authors_page.css">
 <meta property="og:title" content="{% trans 'Autores' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:description" content="{% trans 'Autores incluídos no banco de imagens Cifonauta.' %}" />
@@ -14,19 +15,20 @@
 {% endblock %}
 
 {% block content %}
-<section class="span-24 last">
-<header><h1>{% trans 'Autores e especialistas' %}</h1></header>
+<section class="last">
+    <header><h1>{% trans 'Autores e especialistas' %}</h1></header>
+    <div class="authors-content">
+        <div id="authors" class="authors-card metagroup">
+            <h2>{% trans 'Autores' %}</h2>
+            <p class="quiet">{% trans 'Pessoa que capturou a imagem.' %}</p>
+            {% print_metalist authors 'author' %}
+        </div>
 
-    <div id="authors" class="span-11 metagroup">
-        <h2>{% trans 'Autores' %}</h2>
-        <p class="quiet">{% trans 'Pessoa que capturou a imagem.' %}</p>
-        {% print_metalist authors 'author' %}
-    </div>
-
-    <div id="sources" class="span-11 last metagroup">
-        <h2>{% trans 'Especialistas' %}</h2>
-        <p class="quiet">{% trans 'Pessoa que coletou ou identificou o organismo.' %}</p>
-        {% print_metalist sources 'source' %}
+        <div id="sources" class="authors-card last metagroup">
+            <h2>{% trans 'Especialistas' %}</h2>
+            <p class="quiet">{% trans 'Pessoa que coletou ou identificou o organismo.' %}</p>
+            {% print_metalist sources 'source' %}
+        </div>
     </div>
 </section>
 {% endblock %}

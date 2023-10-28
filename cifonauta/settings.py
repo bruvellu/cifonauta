@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'debug_toolbar',
 
+    'user',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.humanize',
+
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -95,13 +99,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'cebimar',
-        'USER': 'nelas',
+        'USER': 'nelas'
     }
 }
 
 CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
 
@@ -127,6 +131,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 LANGUAGE_CODE = 'pt-br'
 ADMIN_LANGUAGE_CODE = 'pt-br'
+
 
 # Rosetta settings.
 ROSETTA_MESSAGES_SOURCE_LANGUAGE_CODE = 'pt-br'
@@ -162,8 +167,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'site_media')
 SOURCE_ROOT = os.path.join(BASE_DIR, 'source_media')
 
 # List of accepted file extensions.
-PHOTO_EXTENSIONS = ('tif', 'tiff', 'jpg', 'jpeg', 'png', 'gif')
-VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogv', 'dv', 'mpg', 'mpeg', 'flv', 'm2ts', 'wmv')
+# PHOTO_EXTENSIONS = ('tif', 'tiff', 'jpg', 'jpeg', 'png', 'gif')
+# VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogv', 'dv', 'mpg', 'mpeg', 'flv', 'm2ts', 'wmv')
+PHOTO_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.gif')
+VIDEO_EXTENSIONS = ('.mp4',)
 MEDIA_EXTENSIONS = PHOTO_EXTENSIONS + VIDEO_EXTENSIONS
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
@@ -178,6 +185,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'meta/static'),
+    os.path.join(BASE_DIR, 'user/static'),
+    # Add other app directories if necessary
+]
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
@@ -195,7 +208,25 @@ INTERNAL_IPS = ['127.0.0.1']
 #handler.setLevel(logging.ERROR)
 #logging.getLogger('sorl.thumbnail').addHandler(handler)
 
+
+AUTH_USER_MODEL = 'user.UserCifonauta'
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_CREDENTIALS = True
+
+CAPTCHA_STORE = 'captcha.store.database.DatabaseStore'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'email'
+EMAIL_HOST_PASSWORD = 'senha'
+EMAIL_USE_TLS = True
+
 # Import server settings.
 hostname = socket.gethostname()
 if hostname == 'cifonauta':
     from .server_settings import *
+
+

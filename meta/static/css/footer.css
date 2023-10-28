@@ -1,0 +1,73 @@
+#mainfooter {
+    font-size:.75rem;
+    letter-spacing: 2px;
+    border-style: none; 
+    border-color: initial; 
+    border-width: 0; 
+    border-top: 5px #EEEEEE solid;
+    padding: .8rem 0; 
+    margin: 0; 
+    background: #fafafa;
+}
+
+#footerbase {
+    display: flex;
+    justify-content: space-between;
+    gap: .5rem 4rem;
+    padding-right: 1rem;
+    padding-bottom: .5rem; 
+}
+
+#footerbase > div p:first-child {
+    padding: 0; 
+}
+
+#footerbase > div:first-child {
+    padding-left: .6rem;
+}
+
+#footerbase > div:last-child {
+    display: flex;
+    gap: .5rem 2rem;
+}
+
+#footerbase > div:last-child > div:first-child,
+#footerbase > div:last-child > div:last-child {
+    display: flex;
+    align-items: flex-start;
+    gap: .3rem;
+    white-space: nowrap;
+}
+
+#footerbase > div p:last-child {
+    text-indent: 0; 
+    margin-top: 0; 
+}
+
+#sitelinks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+
+    width: 100%;
+    gap: .3rem 2rem;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    padding: 0.3rem 0.7rem 0 0.7rem; 
+}
+
+@media (max-width: 780px) {
+    #footerbase {
+        flex-direction: column;
+        padding-bottom: 1rem;
+    }
+
+    #sitelinks {
+        padding: 1rem 0.7rem 0 0.7rem;
+    }
+
+    #footerbase > div:last-child {
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding-left: .6rem;
+    }
+}

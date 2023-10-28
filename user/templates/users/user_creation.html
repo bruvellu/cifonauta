@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block extra-head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/user_style.css">
+<script src="{{ STATIC_URL }}js/user_script.js" defer></script>
+{% endblock%}
+
+{% block content %}
+<div class='wrapper'>
+
+    <form class='signup-signin-form' action="" method="POST">
+        {% csrf_token %}
+        {% if messages %}
+        {% for message in messages %}
+        <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+        {% endfor %}
+        {% endif %}
+
+        <h1>Cadastre-se</h1>
+
+        <div>
+            {% for field in form %}
+            {% if field.id_for_label != 'id_password2' %}
+            <div class="label-div">
+                <label for="{{field.id_for_label}}">
+                    {{field.label}}
+
+                    {% if field.field.required %} 
+                    <span class='required'>*</span>
+                    {% endif %} 
+                    {% if field.field.help_text %}
+                    <div class="help-text-container">
+                        <span class="help-icon">?</span>
+                        <div class="help-text-div">
+                            {{ field.help_text }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </label>
+                {% for error_field, error in errors.items %}
+                {% if field.name == error_field %}
+                <span class="field-error">
+                    {{ error }}
+                </span>
+                {% endif %}
+                {% endfor %}
+                
+                {% if field.field.widget.input_type == 'password' %}
+                    <div class="password-div">
+                        {{ field }}
+                        <button onclick="showPassword()" type="button">
+                            <img class="visible-icon hidden-icon" src="{{ STATIC_URL }}img/visible.png">
+                            <img class="not-visible-icon" src="{{ STATIC_URL }}img/not-visible.svg">
+                        </button>
+                    </div>
+                    
+                {% else %}
+                    {{field}}
+                {% endif %}
+
+                
+
+            </div>
+            {% else %}
+            <div class="label-div">
+                <label for="{{field.id_for_label}}">
+                    {{field.label}}
+                    <span class='required'>*</span>
+                </label>
+                <span class="field-error">
+                    {% if errors.password2 %}
+                    {{ errors.password2 }}
+                    {% endif %}
+                </span>
+                {{field}}
+                <p class="help-text-visible">{{ field.help_text }}</p>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <button id="signup-submit" type="submit">Cadastrar</button>
+
+    </form>
+</div>
+
+{% endblock content %}

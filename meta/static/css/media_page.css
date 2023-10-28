@@ -1,0 +1,133 @@
+#media-page {
+    display: flex;
+    gap: 2rem;
+}
+
+#media-page a {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+#single {
+    display: flex;
+    flex-direction: column;
+    max-width: 38rem;
+}
+
+.content-only {
+    display: flex;
+    gap: 2rem;
+}
+
+#media-subcontainer {
+    display: flex;
+}
+
+#media-subcontainer > div:first-child {
+    max-width: 32rem;
+}
+
+#author {
+    padding-right: 3rem;
+}
+
+#meta {
+    padding: .625rem;
+}
+
+#meta > div:first-child {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: .5rem;
+    padding-bottom: .9rem;
+}
+
+/*.taxonomy {*/
+    /*margin-right: 1.5rem;*/
+/*}*/
+
+/*.location {*/
+    /*width: 14.375rem;*/
+/*}*/
+
+#media-sideinfo2 {
+    display: none;
+    border-radius: 0;
+}
+
+#media-sideinfo2 > ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    flex: 1;
+    gap: 0 1.5rem;
+    flex-wrap: wrap;
+    border-radius: 0;
+}
+
+#media-sideinfo2 > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#media-sideinfo2 > div > div:first-child {
+    height: -webkit-fill-available;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#media-sideinfo {
+    display: flex;
+    flex-direction: column;
+    width: 6rem;
+    margin-left: -1px;
+    -moz-border-radius: 0 .625rem 0 0;
+    -webkit-border-radius: 0 .625rem 0 0;
+    border-radius: 0 .625rem 0 0;
+}
+
+.size-legend {
+    display: flex;
+}
+
+.size-legend > div {
+    width: 1.25rem;
+    height: 1.1rem;
+}
+
+#references > div {
+    display: flex;
+    flex-direction: column;
+    gap: .7rem;
+}
+
+@media (max-width: 940px) {
+    .size-legend > div {
+        width: 1rem;
+    }
+}
+
+@media (max-width: 900px) {
+    #media-sideinfo {
+        display: none;
+    }
+
+    #media-sideinfo2 {
+        display: flex;
+    }
+}
+
+@media (max-width: 840px) {
+    .content-only {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 300px) {
+    .size-legend > div {
+        width: .8rem;
+        height: 1rem;
+    }
+}

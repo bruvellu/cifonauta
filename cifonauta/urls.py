@@ -51,6 +51,7 @@ sitemaps = {
 urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls)),
         path('admin/', admin.site.urls),
+        path('user/', include('user.urls')),
         path('', include('django.contrib.auth.urls')),
         path('', include('meta.urls')),
         path('rosetta/', include('rosetta.urls')),
@@ -58,6 +59,5 @@ urlpatterns = [
         path('sitemap.xml', views.index, {'sitemaps': sitemaps}),
         path('sitemap-<section>.xml', views.sitemap, {'sitemaps': sitemaps},
             name='django.contrib.sitemaps.views.sitemap'),
-
         # Site media
         ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

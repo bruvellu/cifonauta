@@ -1,0 +1,55 @@
+{% extends 'dashboard.html' %}
+
+{% block title %}Lista de Mídias{% endblock %}
+
+{% block dashboard_content %}
+
+<h2>Lista de suas mídias</h2>
+{% if object_list %}
+<table class="table">
+    <thead class="table-head">
+        <tr>
+            <th class="title-column">Mídia</th>
+            <th class="title-column">Título</th>
+            <th class="">Tipo de mídia</th>
+            <th class="status-column">Status</th>
+            <th class="modification-date">Data de Modificação</th>
+        </tr>
+    </thead>
+    <tbody class="table-body">
+        {% for media in object_list %}
+        <tr>
+            <td class="image-cedule">
+                <a href="{% url 'update_media' pk=media.pk %}">
+                    {% if media.is_video %}
+                    <video src="{{ media.coverpath.url }}"></video>
+                    {% else %}
+                    <img src="{{ media.coverpath.url }}">
+                    {% endif %}
+                </a>
+            </td>
+            <td class="text-cedule">
+                {{ media.title_pt_br }}
+            </td>
+            <td>
+                {% if media.is_video %}
+                Vídeo
+                {% else %}
+                Imagem
+                {% endif %}
+            </td>
+            <td 
+                class="text-cedule {% if media.status == 'not_edited' %}not-edited{% elif media.status == 'to_review' %}to-review{% else %}published{% endif %}"
+            >
+                {{ media.get_status_display }}
+            </td>
+            <td>{{ media.timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Não há mídias</p>
+{% endif %}
+
+{% endblock %}

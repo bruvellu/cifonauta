@@ -6,6 +6,13 @@
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/search.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/pagination.css">
+
+<script src="{{ STATIC_URL }}js/search.js" defer></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 <meta property="og:title" content="{% trans 'Buscador' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:type" content="article" />
@@ -13,25 +20,76 @@
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 {% endblock %}
 
-{% block content %}
-<section class="span-16">
-  <div id="search-results">
-    {% include 'gallery.html' %}
+<div class="photo-and-search-container">
+  {% block content %}
+  <section class="search-results-section">
+    <div id="search-results">
+      {% include 'gallery.html' %}
+    </div>
+  </section>
+  {% endblock %}
+
+
+  {% block sidebar %}
+  <aside class="aside-search-form">
+  <div class="block shadow">
+    <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
+      <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-top" />
+
+      <div>
+        <label for="id_{{ display_form.query.name }}">{{ display_form.query.label }}:</label>
+        {{ display_form.query }}
+      </div>
+
+      <button class="more-filters-button" onClick="showCheckboxOptions(this, event)">
+	      <p>{% trans 'Mais filtros' %}</p>
+        <img class="first-dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg" alt="">
+      </button>
+      
+      <div class="more-filters">
+        {% for field in display_form %}
+          {% if field.field.widget.attrs.fields %}
+            <div>
+              <label for="{{ field.auto_id }}">{{ field.label }}:</label>
+              {{ field }}
+            </div>
+          {% endif %}
+        {% endfor %}
+
+	<p class="p-divider">{% trans 'Escolha como combinar os campos abaixo' %}</p>
+
+        <div class="operator-div">
+          <label for="{{ display_form.operator.auto_id }}">{{ display_form.operator.label }}:</label>
+          {{ display_form.operator }}
+        </div>
+
+        <div>
+          {% for field in display_form %}
+            {% if field.field.widget.attrs.multiple %}
+              <div class="checkbox-div">
+                  <label>{{ field.label }}</label>
+                  {{ field }}
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+      </div>
+
+      <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-bottom" />
+    </form>
   </div>
-</section>
-{% endblock %}
+  </section>
 
-{% block sidebar %}
-<aside class="span-8 last">
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('.select2-options').select2({
+        width: "100%",
+        placeholder: "Escolha os filtros"
+      });
+    });
+  </script>
+  {% endblock %}
 
-<div class="block shadow">
-  <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
-    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-top" />
-    {{ display_form.as_p}}
-    <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-bottom" />
-  </form>
-</div>
-
-</aside>
-
-{% endblock %}

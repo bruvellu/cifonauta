@@ -1,0 +1,30 @@
+.content-only {
+    display: flex;
+}
+
+.section_organization {
+    width: 66%;
+    margin-right: 0.5rem;
+}
+
+.description-text{
+    font-weight: normal;
+}
+
+/* Tablet layout */
+@media (max-width: 990px) {
+    .section_organization {
+        width: 100%;
+    }
+
+    .content-only {
+        flex-wrap: wrap-reverse;
+    }
+}
+
+@media (max-width: 280px) {
+    .thumbs-org > a >  img {
+        width: 35vw;
+    }
+}
+

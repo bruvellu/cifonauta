@@ -86,7 +86,7 @@ createdb -E UTF8 -T template0 -l pt_BR.UTF8 cebimar
 To populate the empty database with the latest dump:
 
 ```
-gunzip < cebimar_2019-09-21_1234.sql.gz | psql cebimar
+gunzip < cebimar_2023-05-09_2117.sql.gz | psql cebimar
 ```
 
 ## Add media files

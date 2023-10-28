@@ -1,0 +1,38 @@
+#related-form {
+    margin-top: .9rem;
+}
+
+#related-form > form {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .3rem;
+}
+
+#crumbs {
+    align-self: flex-end;
+    margin-right: 2rem;
+}
+
+#navbox {
+    margin-right: 2rem;
+}
+
+.rel-thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+}
+
+.rel-thumbs > li {
+    list-style: none;
+    -moz-border-radius: .313rem;
+    -webkit-border-radius: .313rem;
+    border-radius: .313rem;
+    border: .313rem solid #eee;
+    position: relative;
+}
+
+.rel-thumbs img {
+    width: 5.5rem;
+}

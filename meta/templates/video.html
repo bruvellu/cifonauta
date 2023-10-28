@@ -3,7 +3,7 @@
 <!-- Begin VideoJS -->
 <div class="video-js-box">
 
-    <video id="cifovideo" class="video-js" tabindex="0" width="512" height="{{ media.dimensions|slice:"4:" }}" poster="{{ MEDIA_URL }}{{ media.coverpath }}" controls preload loop>
+    <video id="cifovideo" class="video-js" tabindex="0" height="{{ media.dimensions|slice:"4:" }}" poster="{{ MEDIA_URL }}{{ media.coverpath }}" controls preload loop>
 
     <source src="{{ MEDIA_URL }}{{ media.sitepath }}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
 

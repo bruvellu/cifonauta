@@ -1,7 +1,7 @@
 {% load i18n thumbnail %}
-<div id="related-form" class="span-15 last">
+<div id="related-form">
     <form action="." method="post">{% csrf_token %}
-        <div class="span-9" id="crumbs">
+        <div id="crumbs">
         {{ form.type.label_tag }}<strong> {{ type }}:</strong>
         <span class="quiet">
             {% if not crumbs %}
@@ -11,7 +11,7 @@
             {% endif %}
         </span>
         </div>
-        <div class="span-5 last" id="navbox">
+        <div id="navbox">
             {{ form.type }}
             <input name="related" type="submit" value="{% trans 'Trocar' %}" class="fashion" /> 
         </div>
@@ -19,7 +19,7 @@
 </div>
 
 {% if rel_media %}
-<div id="related" class="span-16 last">
+<div id="related">
     <ul class="rel-thumbs">
         {% for media in rel_media %}
             {% if media.id == current.id %}
@@ -49,7 +49,7 @@
 </div>
 
 {% if relative.first1 or relative.last1 %}
-<div id="linear-nav" class="span-13 last">
+<div id="linear-nav">
     <div class="linear" id="center">
         {% if relative.first1 %}
         	<a class="navigation" href="{{ relative.first1.obj.get_absolute_url }}" title="{{ relative.first1.obj.title }}"> {{ relative.first1.index}} </a>
@@ -97,7 +97,7 @@
     </div>
 </div>
 {% endif %}
-<div class="span-13 last quiet" id="total">
+<div id="total">
     {% with number=relative.behind|add:relative.ahead|add:1 %}
     {{ number }} {% if current.datatype == 'photo' %}{% blocktrans count number as counter %}imagem{% plural %}imagens{% endblocktrans %}{% else %}{% if current.datatype == 'video' %}{% blocktrans count number as counter %}vídeo{% plural %}vídeos{% endblocktrans %}{% endif %}{% endif %}
     {% endwith %}

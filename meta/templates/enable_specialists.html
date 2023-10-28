@@ -1,0 +1,74 @@
+{% extends 'dashboard.html' %}
+
+{% block title %}Habilitar Especialistas e Autores{% endblock %}
+
+{% block dashboard_content %}
+    <aside>
+        <form method="get" action="">
+            <h3>Selecione o que quer administrar</h3>
+            <select name="select_users_type">
+                <option value="authors" {% if request.GET.select_users_type == "authors" %}selected{% endif %}>Autores</option>
+                <option value="specialists" {% if request.GET.select_users_type == "specialists" %}selected{% endif %}>Especialistas</option>
+            </select>
+            
+            <h3>Escolha uma curadoria</h3>
+            <select name="selected_curation_id" id="selected_curation_id_get">
+                {% for curation in curations %}
+                    {% if curation.id == selected_curation_id %}
+                        <option value="{{ curation.id }}" selected>{{ curation }}</option>
+                    {% else %}
+                        <option value="{{ curation.id }}">{{ curation }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            
+            <h3>Selecione uma ação</h3>
+            <select name="action">
+                <option value="add" {% if request.GET.action == "add" %}selected{% endif %}>Adicionar</option>
+                <option value="remove" {% if request.GET.action == "remove" %}selected{% endif %}>Remover</option>
+            </select>
+            
+
+            <h3>Pesquise por nome</h3>
+            <input type="text" name="search_query" placeholder="Pesquisar por nome">
+
+            <button type="submit">Filtrar</button>
+        </form>    
+    </aside>
+    
+
+    <form method="post" action="">
+        {% csrf_token %}
+
+        <table class="table">
+            <thead class="table-head">
+                <tr>
+                    <th class="title-column">Nome</th>
+                    <th class="checkbox-column">Selecionar</th>
+                </tr>
+            </thead>
+            <tbody class="table-body">
+                {% if object_list %}
+                    {% for user in object_list %}
+                    <tr>
+                        <td class="text-cedule">{{ user }}</td>
+                        <td>
+                            <input type="checkbox" name="selected_users_ids" value="{{ user.id }}">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td class="text-cedule">Não existem usuários com essas especificações</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <!--This input needs to be hidden, it gets the value from the select "selected_curation_id" in the "GET" form-->
+        <input type="hidden" name="selected_curation_id" id="selected_curation_id_post" value="{{ selected_curation_id }}">
+
+        <button type="submit" name="enable_specialists">Habilitar</button>
+        <button type="submit" name="remove_specialists">Remover</button>
+    </form>
+{% endblock %}

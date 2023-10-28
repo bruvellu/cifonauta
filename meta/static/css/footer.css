@@ -14,8 +14,8 @@
     display: flex;
     justify-content: space-between;
     gap: .5rem 4rem;
-    padding-right: 1rem;
-    padding-bottom: .5rem; 
+    padding: 0 1rem;
+    margin: 1rem 0; 
 }
 
 #footerbase > div p:first-child {
@@ -47,12 +47,12 @@
 #sitelinks {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-
     width: 100%;
     gap: .3rem 2rem;
     flex-wrap: wrap;
     box-sizing: border-box;
-    padding: 0.3rem 0.7rem 0 0.7rem; 
+    padding: 2rem;
+    border-top:#eee solid 1px;
 }
 
 @media (max-width: 780px) {

@@ -677,17 +677,6 @@ Based on work by Jørgen Arnor Gårdsø Lom [http://twistedintellect.com/] */
   vertical-align:top;
 }
 
-#footerbase {
-  padding-bottom:1em;
-}
-
-#sitelinks {
-  padding:1em 0 0 1em;
-  width:940px;
-  border-top:#eee solid 1px;
-}
-
-
 /* METADADA LIST */
 ul.metalist {
   list-style-type:none;

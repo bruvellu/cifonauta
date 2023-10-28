@@ -112,11 +112,29 @@ def upload_media_step2(request):
     medias = LoadedMedia.objects.filter(author=request.user)
     
     if request.method == 'POST':
-        action = request.POST['action']
+        action = request.POST.get('action')
         if action == 'cancel':
             medias.delete()
             messages.success(request, 'Upload de mídias cancelado com sucesso')
             return redirect('upload_media_step1')
+        elif action == 'coauthor':
+            form = CoauthorRegistrationForm(request.POST)
+            if form.is_valid():
+                coauthor_instance = form.save(commit=False)
+
+                split_name = coauthor_instance.name.lower().split(' ')
+
+                preps = ('de', 'da', 'do', 'das', 'dos', 'e')
+                name = [name.capitalize() if name not in preps else name for name in split_name]
+                name = ' '.join(name)
+                coauthor_instance.name = name
+                
+                form.save()
+                messages.success(request, f'Coautor {name} adicionado com sucesso')
+                return redirect('upload_media_step2')
+            else:
+                messages.error(request, 'Houve um erro ao tentar salvar coautor')
+                return redirect('upload_media_step2')
         
         form = UploadMediaForm(request.POST, request.FILES)
         
@@ -127,6 +145,10 @@ def upload_media_step2(request):
 
                 if form.cleaned_data['terms'] == False:
                     messages.error(request, 'Você precisa aceitar os termos')
+                    return redirect('upload_media_step2')
+                
+                if form.cleaned_data['country'].id == 1 and not (form.cleaned_data['state'] and form.cleaned_data['city']):
+                    messages.error(request, 'Você precisa selecionar um estado e uma cidade')
                     return redirect('upload_media_step2')
 
                 file = media.media.name.split('/')[-1]
@@ -152,43 +174,43 @@ def upload_media_step2(request):
         messages.error(request, 'Erro ao tentar salvar mídias')
         return redirect('upload_media_step2')
     
-    metadata = None
-    for media in medias:
-        if media.media.url.endswith('jpg'):
-            metadata = Metadata(media.media.path)
-            try:
-                read_metadata = metadata.read_metadata()
-            except:
-                metadata = None
-            finally:
-                break        
+    # metadata = None
+    # for media in medias:
+    #     if media.media.url.endswith('jpg'):
+    #         metadata = Metadata(media.media.path)
+    #         try:
+    #             read_metadata = metadata.read_metadata()
+    #         except:
+    #             metadata = None
+    #         finally:
+    #             break        
     
-    if metadata:
-        co_authors = []
-        co_authors_meta = read_metadata['source'].split(',')
-        for co_author in co_authors_meta:
-            if co_author.strip() != '':
-                try:
-                    co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
-                except:
-                    messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
-        try:
-            location = Location.objects.filter(name=read_metadata['sublocation']).get().id
-        except:
-            location = ''
-        form = UploadMediaForm(initial={
-            'author': request.user.id,
-            'title': read_metadata['headline'],
-            'caption': read_metadata['description_pt'],
-            'date': read_metadata['datetime'],
-            'geolocation': read_metadata['gps'],
-            'location': location,
-            'license': read_metadata['source'],
-            'co_author': co_authors,
-            'geolocation': read_metadata['gps']
-        })
-    else:
-        form = UploadMediaForm(initial={'author': request.user.id})
+    # if metadata:
+    #     co_authors = []
+    #     co_authors_meta = read_metadata['source'].split(',')
+    #     for co_author in co_authors_meta:
+    #         if co_author.strip() != '':
+    #             try:
+    #                 co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
+    #             except:
+    #                 messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
+    #     try:
+    #         location = Location.objects.filter(name=read_metadata['sublocation']).get().id
+    #     except:
+    #         location = ''
+    #     form = UploadMediaForm(initial={
+    #         'author': request.user.id,
+    #         'title': read_metadata['headline'],
+    #         'caption': read_metadata['description_pt'],
+    #         'date': read_metadata['datetime'],
+    #         'geolocation': read_metadata['gps'],
+    #         'location': location,
+    #         'license': read_metadata['source'],
+    #         'co_author': co_authors,
+    #         'geolocation': read_metadata['gps']
+    #     })
+    # else:
+    form = UploadMediaForm(initial={'author': request.user.id})
     form.fields['state'].queryset = State.objects.none()
     form.fields['city'].queryset = City.objects.none()
 
@@ -292,6 +314,7 @@ def edit_metadata(request, media_id):
             pass
         media.status = 'to_review'
         form.save()
+        media_instance.taxon_set.set(form.cleaned_data['taxons'])
 
     media = get_object_or_404(Media, pk=media_id)
     is_specialist = request.user.curatorship_specialist.exists()
@@ -713,7 +736,6 @@ def revision_media_detail(request, media_id):
 
     return render(request, 'media_revision_detail.html', context) 
 
-
 @method_decorator(custom_login_required, name='dispatch')
 @method_decorator(curator_required, name='dispatch')
 class EnableSpecialists(LoginRequiredMixin, ListView):
@@ -803,6 +825,94 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
         context['selected_curation_id'] = selected_curation_id
         return context
 
+
+def tour_list(request):
+    tours = Tour.objects.filter(creator=request.user)
+    is_specialist = request.user.curatorship_specialist.exists()
+    is_curator = request.user.curatorship_curator.exists()
+
+    context = {
+        'tours': tours,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator
+    }
+
+    return render(request, 'tour_list.html', context)
+
+def add_tour(request):
+    if request.method == 'POST':
+        form = TourForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Tour temático criado com sucesso')
+            return redirect('tour_list')
+        
+        messages.error(request, 'Houve um erro ao tentar criar o tour temático')
+
+    form = TourForm(initial={'creator': request.user.id})
+
+    curatorships = Curadoria.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
+    taxon_ids = []
+    for curatorship in curatorships:
+        taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
+    medias = Media.objects.filter(taxon__id__in=taxon_ids, status='published')
+    form.fields['media'].queryset = medias
+    form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+    
+    is_specialist = request.user.curatorship_specialist.exists()
+    is_curator = request.user.curatorship_curator.exists()
+
+    context = {
+        'form': form,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator
+    }
+
+    return render(request, 'add_tour.html', context)
+
+def edit_tour(request, pk):
+    tour = get_object_or_404(Tour, pk=pk)
+
+    if request.method == 'POST':
+        action = request.POST['action']
+        if action == 'delete':
+            tour.delete()
+            messages.success(request, "Tour excluído com sucesso")
+            return redirect('tour_list')
+
+        form = TourForm(request.POST, instance=tour)
+        media_ids = request.POST.getlist('media')
+        medias = Media.objects.filter(id__in=media_ids)
+        if form.is_valid():
+            form.save()
+            tour.media.set(medias)
+            messages.success(request, f'Tour {tour.name} editado com sucesso')
+        else:
+            messages.error(request, 'Houve um erro ao tentar editar o tour')
+
+    form = TourForm(instance=tour)
+
+    curatorships = Curadoria.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
+    taxon_ids = []
+    for curatorship in curatorships:
+        taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
+    medias = Media.objects.filter(taxon__id__in=taxon_ids)
+    form.fields['media'].queryset = medias
+    form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+
+    medias_related = tour.media.all()
+    is_specialist = request.user.curatorship_specialist.exists()
+    is_curator = request.user.curatorship_curator.exists()
+
+    context = {
+        'form': form,
+        'tour': tour,
+        'medias_related': medias_related,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator
+    }
+
+    return render(request, 'edit_tour.html', context)
 
 # Home
 def home_page(request):

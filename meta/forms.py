@@ -3,7 +3,7 @@
 from django import forms
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
-from .models import Media, Curadoria, Person, ModifiedMedia, Taxon
+from .models import Media, Curadoria, Person, ModifiedMedia, Taxon, Tour
 from user.models import UserCifonauta
 
 
@@ -93,6 +93,9 @@ class UpdateMyMediaForm(forms.ModelForm):
         if self.instance.pk:
             self.fields['taxons'].initial = self.instance.taxon_set.all()
 
+        if self.instance.status != 'not_edited':
+            self.fields['title'].required = True
+
 class EditMetadataForm(forms.ModelForm):
     taxons = forms.ModelMultipleChoiceField(
         required=False,
@@ -115,6 +118,7 @@ class EditMetadataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.fields['title'].required = True
         if self.instance.pk:
             self.fields['taxons'].initial = self.instance.taxon_set.all()
 
@@ -136,6 +140,13 @@ class MyMediaForm(forms.ModelForm):
             'taxons': forms.CheckboxSelectMultiple()
         }
 
+class TourForm(forms.ModelForm):
+    class Meta:
+        model = Tour
+        fields = '__all__'
+        widgets = {
+            'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
+        }
 
 class SearchForm(forms.Form):
     query = forms.CharField(label=_('Buscar por'),

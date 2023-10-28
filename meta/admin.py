@@ -6,7 +6,7 @@ from .forms import CuradoriaAdminForm
 
 class CuradoriaAdmin(admin.ModelAdmin):
     form = CuradoriaAdminForm
-        
+    autocomplete_fields = ('specialists', 'curators', 'taxons')
 
 # Translation admin.
 class FlatPageAdmin(TranslationAdmin):
@@ -45,6 +45,7 @@ class CountryAdmin(TranslationAdmin):
 
 class PersonAdmin(admin.ModelAdmin):
     filter_horizontal = ('media',)
+    search_fields = ('name', 'email')
 
     def delete_queryset(self, request, queryset):
         for person in queryset:

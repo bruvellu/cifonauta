@@ -94,6 +94,19 @@
                 {% endif %}
             </div>
         </div>
+        {% elif field == form.country or field == form.state or field == form.city %}
+        <div class="field-container country-container">
+            <div class="label-div">
+                {{ field.label_tag }}
+                <span class='required'>*</span>
+            </div>
+            <div class="field-div">
+                {{ field }}
+                {% if field.help_text %}
+                <span class="help-text">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
         {% elif field == form.terms %}
         <div class="field-container">
             <div class='label-div'>

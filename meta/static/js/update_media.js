@@ -41,8 +41,22 @@ document.addEventListener('click', (event)=>{
     }
 })
 
-//Synchronize Country, State and City fields
+
+let stateContainer = document.querySelector('.country-container').nextElementSibling
+let cityContainer = document.querySelector('.country-container').nextElementSibling.nextElementSibling
 let countryField = document.querySelector('#id_country')
+if (countryField.options[countryField.selectedIndex].value != 1) {
+    stateContainer.classList.add('hide-div')
+    cityContainer.classList.add('hide-div')
+} else {
+    let stateField = document.querySelector('#id_state')
+    let cityField = document.querySelector('#id_city')
+    
+    stateField.required = true
+    cityField.required = true
+}
+
+//Synchronize Country, State and City fields
 countryField.addEventListener('change', (e) => {
     const url = window.location.origin
     const countryId = e.target.options[e.target.selectedIndex].value
@@ -79,6 +93,20 @@ countryField.addEventListener('change', (e) => {
         let cityField = document.querySelector('#id_city')
         cityField.innerHTML = ''
         cityField.append(createNullOption())
+
+        if (e.target.options[e.target.selectedIndex].value == 1) {
+            stateContainer.classList.remove('hide-div')
+            cityContainer.classList.remove('hide-div')
+
+            stateField.required = true
+            cityField.required = true
+        } else {
+            stateContainer.classList.add('hide-div')
+            cityContainer.classList.add('hide-div')
+
+            stateField.required = false
+            cityField.required = false
+        }
     })
 })
 

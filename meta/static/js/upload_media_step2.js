@@ -41,6 +41,12 @@ if (messagesDiv) {
 }
 
 
+
+let stateContainer = document.querySelector('.country-container').nextElementSibling
+let cityContainer = document.querySelector('.country-container').nextElementSibling.nextElementSibling
+stateContainer.classList.add('hide-div')
+cityContainer.classList.add('hide-div')
+
 //Synchronize Country, State and City fields
 let countryField = document.querySelector('#id_country')
 countryField.addEventListener('change', (e) => {
@@ -79,6 +85,20 @@ countryField.addEventListener('change', (e) => {
         let cityField = document.querySelector('#id_city')
         cityField.innerHTML = ''
         cityField.append(createNullOption())
+        
+        if (e.target.options[e.target.selectedIndex].value == 1) {
+            stateContainer.classList.remove('hide-div')
+            cityContainer.classList.remove('hide-div')
+
+            stateField.required = true
+            cityField.required = true
+        } else {
+            stateContainer.classList.add('hide-div')
+            cityContainer.classList.add('hide-div')
+
+            stateField.required = false
+            cityField.required = false
+        }
     })
 })
 

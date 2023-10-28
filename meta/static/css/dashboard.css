@@ -37,7 +37,7 @@ a:active, a:visited {
     padding: 0.3rem 1.5rem;
 }
 
-.dashboard-aside li:hover a {
+.dashboard-aside li:hover a, .current-page {
     background: #fafafa;
     -moz-border-radius: 0 0.625rem 0.625rem 0;
     -webkit-border-radius: 0 0.625rem 0.625rem 0;
@@ -78,6 +78,11 @@ a:active, a:visited {
         opacity: 0;
         display: none;
     }
+}
+
+.subtitle-wrapper {
+    display: flex;
+    justify-content: space-between;
 }
 
 .form-container {
@@ -320,6 +325,7 @@ input[type='text'], select {
 .field-div {
     display: flex;
     flex-direction: column;
+    align-items: start;
 }
 
 .files-names:has(li) {
@@ -448,6 +454,7 @@ textarea {
     color: white;
     font-size: 1.2rem;
     width: fit-content;
+    height: fit-content;
     padding: .5rem .8rem;
     border-radius: 0.4rem;
     border: none;
@@ -478,7 +485,7 @@ textarea {
 }
 
 .hide-div {
-    display: none;
+    display: none !important;
 }
 
 
@@ -641,3 +648,105 @@ tr, th {
     font-weight: bold;
 } */
 
+/* TOURS */
+.fake-input {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    flex-wrap: wrap;
+    border: .1px solid black;
+    border-radius: 4px;
+    padding: .4rem;
+    width: 24rem;
+}
+
+#selected-options {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+#fake-input-search {
+    border: none;
+    outline: none;
+    height: auto;
+}
+
+.selected-option-div {
+    display: flex;
+    background-color: #E4E4E4;
+    border: 1px solid #0000003d;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.remove-selected-option-btn {
+    border: none;
+    border-right: 1px solid #0000003d;
+    background-color: transparent;
+    padding: 0.5rem;
+}
+
+.remove-selected-option-btn:hover {
+    background-color: #f3f3f3;
+}
+
+.remove-selected-option-btn::after {
+    content: "\00d7";
+    font-size: 1.5rem;
+    color: #000000a1;
+}
+
+.selected-option-media-link {
+    color: #607890 !important;
+    text-decoration: underline;
+}
+
+.selected-option-media-link:hover {
+    color: rgb(61, 76, 92) !important;
+}
+
+
+.fake-input-options-div {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    border-radius: 3px;
+    max-height: 15rem;
+    overflow-y: auto;
+}
+
+.fake-input-label, .selected-option {
+    display: flex;
+    gap: .5rem;
+    padding: .2rem .5rem;
+}
+
+.fake-input-label:hover {
+    background-color: #6fa6ff !important;
+}
+
+.fake-input-label:has(input:checked) {
+    background-color: #cecece;
+}
+
+.tour-img {
+    width: 7rem;
+    height: 5rem;
+    object-fit: cover;
+    -moz-border-radius: .313rem;
+    -webkit-border-radius: 0.313rem;
+    border-radius: 0.313rem;
+    border: 0.313rem solid #eee;
+    border-color: #94B1CA !important;
+}
+
+.tour-infos-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.tour-media-link {
+    color: #323232 !important;
+}

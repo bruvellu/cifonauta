@@ -20,30 +20,40 @@
 </head>
 <body>
     <aside class="dashboard-aside">
+        {% with fullpath=request.get_full_path %}
         <ul>
             <li>
                 <a href="{% url 'home' %}">Voltar para à Página Inicial</a>
             </li>
             <li>
-                <a href="{% url 'upload_media_step1' %}">Adicionar mídia</a>
+                <a 
+                    href="{% url 'upload_media_step1' %}" 
+                    {% if fullpath == '/administrative-module/add/load-media' or fullpath == '/administrative-module/add/fulfill-metadata' %}class='current-page'{% endif %}
+                >
+                    Adicionar mídia
+                </a>
             </li>
             {% if is_specialist %}
             <li>
-                <a href="{% url 'curadory_medias' %}">Edição de metadados</a>
+                <a href="{% url 'curadory_medias' %}" {% if fullpath == '/administrative-module/curadory-medias/' or '/administrative-module/edit-metadata/' in fullpath %}class='current-page'{% endif %}>Edição de metadados</a>
             </li>
             {% endif %}
             {% if is_curator %}
             <li>
-                <a href="{% url 'media_revision' %}">Revisão de mídias</a>
+                <a href="{% url 'media_revision' %}" {% if fullpath == '/administrative-module/revision' or '/administrative-module/revision/detail/' in fullpath or '/administrative-module/revision/changes/' in fullpath %}class='current-page'{% endif %}>Revisão de mídias</a>
             </li>
             <li>
-                <a href="{% url 'enable_specialists' %}">Habilitar Especialistas</a>
+                <a href="{% url 'enable_specialists' %}" {% if '/administrative-module/enable-specialists' in fullpath %}class='current-page'{% endif %}>Habilitar Especialistas</a>
+            </li>
+            <li>
+                <a href="{% url 'tour_list' %}" {% if 'administrative-module/tours' in fullpath %}class='current-page'{% endif %}>Tours</a>
             </li>
             {% endif %}
             <li>
-                <a href="{% url 'my_medias' %}">Minhas mídias</a>
+                <a href="{% url 'my_medias' %}" {% if fullpath == '/administrative-module/my-medias/' or '/administrative-module/update/<int:pk>' in fullpath %}class='current-page'{% endif %}>Minhas mídias</a>
             </li>
         </ul>
+        {% endwith %}
     </aside>
     <div class="dashboard-view">
         <h1>Módulo Administrativo</h1>
@@ -63,6 +73,12 @@
         });
         $('.select2-specialist').select2({
             placeholder: 'Selecione os especialistas'
+        });
+        $('.select2-media').select2({
+            placeholder: 'Selecione as mídias'
+        });
+        $('.select2-references').select2({
+            placeholder: 'Selecione as referências'
         });
     });
     </script>

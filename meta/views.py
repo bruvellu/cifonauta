@@ -865,7 +865,7 @@ def add_tour(request):
     taxon_ids = []
     for curatorship in curatorships:
         taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
-    medias = Media.objects.filter(taxon__id__in=taxon_ids)
+    medias = Media.objects.filter(taxon__id__in=taxon_ids, status='published')
     form.fields['media'].queryset = medias
     form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
     
@@ -890,9 +890,12 @@ def edit_tour(request, pk):
             messages.success(request, "Tour excluído com sucesso")
             return redirect('tour_list')
 
-        form = TourForm(request.POST)
+        form = TourForm(request.POST, instance=tour)
+        media_ids = request.POST.getlist('media')
+        medias = Media.objects.filter(id__in=media_ids)
         if form.is_valid():
             form.save()
+            tour.media.set(medias)
             messages.success(request, f'Tour {tour.name} editado com sucesso')
         else:
             messages.error(request, 'Houve um erro ao tentar editar o tour')
@@ -907,12 +910,14 @@ def edit_tour(request, pk):
     form.fields['media'].queryset = medias
     form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
+    medias_related = tour.media.all()
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     context = {
         'form': form,
         'tour': tour,
+        'medias_related': medias_related,
         'is_specialist': is_specialist,
         'is_curator': is_curator
     }

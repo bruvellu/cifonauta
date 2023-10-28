@@ -145,7 +145,6 @@ class TourForm(forms.ModelForm):
         model = Tour
         fields = '__all__'
         widgets = {
-            'media': forms.SelectMultiple(attrs={"class": "select2-media", "multiple": "multiple"}),
             'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
         }
 

@@ -189,23 +189,21 @@ def upload_media_step2(request):
         co_authors = []
         co_authors_meta = read_metadata['source'].split(',')
         for co_author in co_authors_meta:
-            try:
-                co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
-            except:
-                messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
-        state = State.objects.filter(name=read_metadata['state']).get().id
-        country = Country.objects.filter(name=read_metadata['country']).get().id
-        location = Location.objects.filter(name=read_metadata['sublocation']).get().id
-        city = City.objects.filter(name=read_metadata['city']).get().id
+            if co_author.strip() != '':
+                try:
+                    co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
+                except:
+                    messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
+        try:
+            location = Location.objects.filter(name=read_metadata['sublocation']).get().id
+        except:
+            location = ''
         form = UploadMediaForm(initial={
             'author': request.user.id,
             'title': read_metadata['headline'],
             'caption': read_metadata['description_pt'],
             'date': read_metadata['datetime'],
             'geolocation': read_metadata['gps'],
-            'country': country,
-            'state': state,
-            'city': city,
             'location': location,
             'license': read_metadata['source'],
             'co_author': co_authors,
@@ -277,52 +275,45 @@ def edit_metadata(request, media_id):
             form.fields['state'].queryset = State.objects.none()
     if form.is_valid():
         media_instance = form.save(commit=False)
-
-        if form.cleaned_data['country'].id == 1 and not (form.cleaned_data['state'] and form.cleaned_data['city']):
-            messages.error(request, 'Você precisa selecionar um estado e uma cidade')
-            return redirect('edit_metadata', media.pk)
-
-        author = str(form.cleaned_data['author'])
-        co_authors = str(form.cleaned_data['co_author']).split(';')
-        metadata =  {
-        'software': str(form.cleaned_data['software']),
-        'headline': str(form.cleaned_data['title']),
-        'instructions': str(form.cleaned_data['size']),
-        'license': {
-            'license_type': str(form.cleaned_data['license']),
-            'author': author,
-            'co_authors': co_authors,
+        try:
+            author = str(form.cleaned_data['author'])
+            co_authors = str(form.cleaned_data['co_author']).split(';')
+            metadata =  {
+            'software': str(form.cleaned_data['software']),
+            'headline': str(form.cleaned_data['title']),
+            'instructions': str(form.cleaned_data['size']),
+            'license': {
+                'license_type': str(form.cleaned_data['license']),
+                'author': author,
+                'co_authors': co_authors,
+                },
+            'keywords': {
+                'Estágio de vida': str(form.cleaned_data['life_stage']),
+                'Habitat': str(form.cleaned_data['habitat']),
+                'Microscopia': str(form.cleaned_data['microscopy']),
+                'Modo de vida': str(form.cleaned_data['life_style']),
+                'Técnica fotográfica': str(form.cleaned_data['photographic_technique']),
+                'Diversos': str(form.cleaned_data['several'])
             },
-        'keywords': {
-            'Estágio de vida': str(form.cleaned_data['life_stage']),
-            'Habitat': str(form.cleaned_data['habitat']),
-            'Microscopia': str(form.cleaned_data['microscopy']),
-            'Modo de vida': str(form.cleaned_data['life_style']),
-            'Técnica fotográfica': str(form.cleaned_data['photographic_technique']),
-            'Diversos': str(form.cleaned_data['several'])
-        },
-        'source': str(form.cleaned_data['specialist']),
-        'credit': str(form.cleaned_data['credit']),
-        'description_pt': str(form.cleaned_data['caption']),
-        'description_en': '',
-        'gps': str(form.cleaned_data['geolocation']),
-        'datetime': str(form.cleaned_data['date']),
-        'title_pt': str(form.cleaned_data['title']),
-        'title_en': '',
-        'country': str(form.cleaned_data['country']),
-        'state': str(form.cleaned_data['state']),
-        'city': str(form.cleaned_data['city']),
-        'sublocation': str(form.cleaned_data['location'])
-            }
-        
-        meta = Metadata(file=f'./site_media/{str(media.file)}')
-        meta.edit_metadata(metadata)
-
-        media_instance.status = 'to_review'
-        media_instance.save()
-        
-        media_instance.taxon_set.set(form.cleaned_data['taxons'])
-        media_instance.co_author.set(form.cleaned_data['co_author'])
+            'source': str(form.cleaned_data['specialist']),
+            'credit': str(form.cleaned_data['credit']),
+            'description_pt': str(form.cleaned_data['caption']),
+            'description_en': '',
+            'gps': str(form.cleaned_data['geolocation']),
+            'datetime': str(form.cleaned_data['date']),
+            'title_pt': str(form.cleaned_data['title']),
+            'title_en': '',
+            'country': str(form.cleaned_data['country']),
+            'state': str(form.cleaned_data['state']),
+            'city': str(form.cleaned_data['city']),
+            'sublocation': str(form.cleaned_data['location'])
+                }
+            meta = Metadata(file=f'./site_media/{str(media.file)}')
+            meta.edit_metadata(metadata)
+        except:
+            pass
+        media.status = 'to_review'
+        form.save()
 
     media = get_object_or_404(Media, pk=media_id)
     is_specialist = request.user.curatorship_specialist.exists()
@@ -686,47 +677,45 @@ def revision_media_detail(request, media_id):
             form.fields['state'].queryset = State.objects.none()
     if form.is_valid():
         media_instance = form.save(commit=False)
-
-        if form.cleaned_data['country'].id == 1 and not (form.cleaned_data['state'] and form.cleaned_data['city']):
-            messages.error(request, 'Você precisa selecionar um estado e uma cidade')
-            return redirect('media_revision_detail', media.pk)
-        
-        author = str(form.cleaned_data['author'])
-        co_authors = str(form.cleaned_data['co_author']).split(';')
-        metadata =  {
-        'software': str(form.cleaned_data['software']),
-        'headline': str(form.cleaned_data['title']),
-        'instructions': str(form.cleaned_data['size']),
-        'license': {
-            'license_type': str(form.cleaned_data['license']),
-            'author': author,
-            'co_authors': co_authors,
+        try:
+            author = str(form.cleaned_data['author'])
+            co_authors = str(form.cleaned_data['co_author']).split(';')
+            metadata =  {
+            'software': str(form.cleaned_data['software']),
+            'headline': str(form.cleaned_data['title']),
+            'instructions': str(form.cleaned_data['size']),
+            'license': {
+                'license_type': str(form.cleaned_data['license']),
+                'author': author,
+                'co_authors': co_authors,
+                },
+            'keywords': {
+                'Estágio de vida': str(form.cleaned_data['life_stage']),
+                'Habitat': str(form.cleaned_data['habitat']),
+                'Microscopia': str(form.cleaned_data['microscopy']),
+                'Modo de vida': str(form.cleaned_data['life_style']),
+                'Técnica fotográfica': str(form.cleaned_data['photographic_technique']),
+                'Diversos': str(form.cleaned_data['several'])
             },
-        'keywords': {
-            'Estágio de vida': str(form.cleaned_data['life_stage']),
-            'Habitat': str(form.cleaned_data['habitat']),
-            'Microscopia': str(form.cleaned_data['microscopy']),
-            'Modo de vida': str(form.cleaned_data['life_style']),
-            'Técnica fotográfica': str(form.cleaned_data['photographic_technique']),
-            'Diversos': str(form.cleaned_data['several'])
-        },
-        'source': str(form.cleaned_data['specialist']),
-        'credit': str(form.cleaned_data['credit']),
-        'description_pt': str(form.cleaned_data['caption']),
-        'description_en': '',
-        'gps': str(form.cleaned_data['geolocation']),
-        'datetime': str(form.cleaned_data['date']),
-        'title_pt': str(form.cleaned_data['title']),
-        'title_en': '',
-        'country': str(form.cleaned_data['country']),
-        'state': str(form.cleaned_data['state']),
-        'city': str(form.cleaned_data['city']),
-        'sublocation': str(form.cleaned_data['location'])
-            }
+            'source': str(form.cleaned_data['specialist']),
+            'credit': str(form.cleaned_data['credit']),
+            'description_pt': str(form.cleaned_data['caption']),
+            'description_en': '',
+            'gps': str(form.cleaned_data['geolocation']),
+            'datetime': str(form.cleaned_data['date']),
+            'title_pt': str(form.cleaned_data['title']),
+            'title_en': '',
+            'country': str(form.cleaned_data['country']),
+            'state': str(form.cleaned_data['state']),
+            'city': str(form.cleaned_data['city']),
+            'sublocation': str(form.cleaned_data['location'])
+                }
+            if not media.is_video:
+                Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
+        except:
+            pass
         media_instance.status = 'published'
         media_instance.is_public = True
-        if not media.is_video:
-            Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
         
         media_instance.save()
         media_instance.taxon_set.set(form.cleaned_data['taxons'])

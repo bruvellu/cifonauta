@@ -17,7 +17,7 @@
     {% endfor %}
     </div>
     {% endif %}
-    <form class="update-form" method="post">
+    <form class="update-form tour-form" method="post">
         {% csrf_token %}
         {% for field in form %}
         {% if field == form.media %}
@@ -38,9 +38,13 @@
                         {% for obj in field.field.queryset %}
                         <label onclick='selectOption(event, this)' class="fake-input-label" for="id_media_{{ obj.id }}">
                             <input hidden class="input" type="checkbox" name="media" value="{{ obj.id }}" id="id_media_{{ obj.id }}">
-                            <img class="tour-img" src="{{ obj.coverpath.url }}" >
+                            {% if obj.datatype == 'video' %}
+                            <video class="tour-img" src="{{obj.coverpath.url}}"></video>
+                            {% else %}
+                            <img class="tour-img" src="{{obj.coverpath.url}}">
+                            {% endif %}
                             <div class="tour-infos-div">
-                                <a class="tour-media-link" href="{{ obj.file.url }}" target="_blank">{{obj.title}}</a>
+                                <a class="tour-media-link" href="" target="_blank">{{obj.title}}</a>
                                 <span>
                                     {% if obj.datatype == 'video' %}
                                     Vídeo

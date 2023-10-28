@@ -45,8 +45,23 @@ function removeOption(elemOption) {
   elemOption.querySelector('input').checked = false
 }
 
+function searchOptions() {
+  mediaOptions.forEach(option => {
+    optionTitle = option.querySelector('.tour-media-link').innerText.toLowerCase()
+    inputText = fakeInputSearch.value.toLowerCase()
+
+    if (optionTitle.includes(inputText)) {
+      option.classList.remove('hide-div')
+    } else {
+      option.classList.add('hide-div')
+    }
+  })
+}
+
 function closeInputOptions() {
   fakeInputOptionsDiv.classList.add('hide-div')
+  fakeInputSearch.value = ''
+  searchOptions()
 }
 
 let fakeInputOptionsDiv = document.querySelector('.fake-input-options-div')
@@ -54,15 +69,10 @@ let fakeInput = document.querySelector('.fake-input')
 let fakeInputSearch = document.querySelector('#fake-input-search')
 let selectedOptions = document.querySelector('#selected-options')
 
-fakeInput.addEventListener('click', () => {
-  isInputOptionsOpened = true
-  fakeInputOptionsDiv.classList.remove('hide-div')
-  fakeInputSearch.focus()
-})
+let mediaOptions = document.querySelectorAll('.fake-input-label')
 
 let pageJustLoaded = true
 document.addEventListener('DOMContentLoaded', () => {
-  let mediaOptions = document.querySelectorAll('.fake-input-label')
   mediaOptions.forEach(option => {
     if (option.querySelector('input').checked) {
       selectOption(event, option)
@@ -71,6 +81,21 @@ document.addEventListener('DOMContentLoaded', () => {
   pageJustLoaded = false
 })
 
+fakeInputSearch.addEventListener('input', searchOptions)
+
+fakeInput.addEventListener('click', () => {
+  isInputOptionsOpened = true
+  fakeInputOptionsDiv.classList.remove('hide-div')
+  fakeInputOptionsDiv.scrollIntoView({ block: 'center'})
+  fakeInputSearch.focus()
+})
+
+let tourForm = document.querySelector('.tour-form')
+tourForm.addEventListener('submit', (e) => {
+  if (document.activeElement == fakeInputSearch) {
+    e.preventDefault()
+  }
+})
 
 let isInputOptionsOpened = false
 document.addEventListener('click', (event)=>{

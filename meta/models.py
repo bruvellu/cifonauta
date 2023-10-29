@@ -6,7 +6,8 @@ import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.contrib.postgres.search import SearchVectorField
+from django.contrib.postgres.search import SearchVectorField, SearchVector
+from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -240,6 +241,7 @@ class Media(models.Model):
         verbose_name = _('arquivo')
         verbose_name_plural = _('arquivos')
         ordering = ['id']
+        indexes = (GinIndex(fields=['search_vector']),)
 
 
 class Person(models.Model):

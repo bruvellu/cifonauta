@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
+import os
+import shutil
+import uuid
+
+from django.conf import settings
+from django.contrib.auth.models import Group
+from django.contrib.postgres.search import SearchVectorField
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from mptt.models import MPTTModel
 from meta.signals import *
-
-from django.db.models import Q
-from django.contrib.auth.models import Group
-import uuid
-import os
-from django.conf import settings
-from django.utils import timezone
-import shutil
 
 
 class Curadoria(models.Model):
@@ -187,6 +188,7 @@ class Media(models.Model):
     software = models.CharField(_('Software'), default='', blank=True, help_text=_('Software utilizado na Imagem'))
 
     specialist = models.ManyToManyField('Person',  related_name="pessoas", verbose_name=_('Especialista'), blank=True)
+
     # Foreign metadata
     location = models.ForeignKey('Location', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('local'),
@@ -198,6 +200,11 @@ class Media(models.Model):
     country = models.ForeignKey('Country', on_delete=models.SET_NULL,
             null=True, verbose_name=_('país'),
             help_text=_('País mostrado na imagem (ou país de coleta).'))
+
+    search_vector = SearchVectorField(
+            null=True,
+            verbose_name=_('vetor de busca'),
+            help_text=_('Campo que guarda o vetor de busca.'))
 
 
     def save(self, *args, **kwargs):

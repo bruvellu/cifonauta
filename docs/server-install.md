@@ -274,6 +274,8 @@ gunicorn cifonauta.wsgi
 
 Create systemd service for gunicorn (number of workers = cores*2+1):
 
+Location: `/etc/systemd/system/gunicorn.service`
+
 ```
 [Unit]
 Description=gunicorn daemon
@@ -286,7 +288,8 @@ User=user
 Group=www-data
 RuntimeDirectory=gunicorn
 WorkingDirectory=/home/user/cifonauta
-ExecStart=/home/user/cifonauta/virtual/bin/gunicorn --access-logfile - --workers 17 --bind unix:/run/gunicorn.sock cifonauta.wsgi:application
+EnvironmentFile=/home/nelas/cifonauta/.env
+ExecStart=/home/user/cifonauta/virtual/bin/gunicorn --access-logfile - --workers 17 --timeout 60 --bind unix:/run/gunicorn.sock cifonauta.wsgi:application
 ExecReload=/bin/kill -s HUP $MAINPID
 KillMode=mixed
 TimeoutStopSec=5
@@ -297,6 +300,8 @@ WantedBy=multi-user.target
 ```
 
 Create socket file:
+
+Location: `/etc/systemd/system/gunicorn.socket`
 
 ```
 [Unit]

@@ -8,7 +8,6 @@ from django.contrib.sitemaps import GenericSitemap
 from django.contrib.flatpages.sitemaps import FlatPageSitemap
 from django.urls import include, path
 from meta.models import Media, Person, Tag, Taxon, Location, City, State, Country, Tour
-import debug_toolbar
 
 #admin.autodiscover()
 
@@ -49,7 +48,7 @@ sitemaps = {
 
 
 urlpatterns = [
-        path('__debug__/', include(debug_toolbar.urls)),
+        path('__debug__/', include('debug_toolbar.urls')),
         path('admin/', admin.site.urls),
         path('user/', include('user.urls')),
         path('', include('django.contrib.auth.urls')),

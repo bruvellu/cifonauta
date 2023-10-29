@@ -201,14 +201,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 15000
 
 # Required for debug_toolbar
 INTERNAL_IPS = ['127.0.0.1']
-RESULTS_CACHE_SIZE = 10000
-
-#import logging
-#from sorl.thumbnail.log import ThumbnailLogHandler
-#handler = ThumbnailLogHandler()
-#handler.setLevel(logging.ERROR)
-#logging.getLogger('sorl.thumbnail').addHandler(handler)
-
+RESULTS_CACHE_SIZE = 100000
 
 AUTH_USER_MODEL = 'user.UserCifonauta'
 

@@ -6,8 +6,9 @@ import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.contrib.postgres.search import SearchVectorField, SearchVector
+from django.contrib.postgres.aggregates import StringAgg
 from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.search import SearchVectorField, SearchVector
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -210,11 +211,20 @@ class Media(models.Model):
 
     def save(self, *args, **kwargs):
 
-        # Update search vector field
-        self.search_vector = (
-                SearchVector('title_en', weight='A', config='english') + \
-                SearchVector('title_pt_br', weight='A', config='portuguese_unaccent')
-                )
+        # Update search vector field on save
+        self.search_vector = SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') + \
+                             SearchVector('title_en', weight='A', config='english') + \
+                             SearchVector('caption_pt_br', weight='B', config='portuguese_unaccent') + \
+                             SearchVector('caption_en', weight='B', config='english')
+                             # SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B') + \
+                             # SearchVector(StringAgg('person__name', delimiter=' '), weight='B') + \
+                             # SearchVector(StringAgg('tag__name_pt_br', delimiter=' '), weight='C', config='portuguese_unaccent') + \
+                             # SearchVector(StringAgg('tag__name_en', delimiter=' '), weight='C', config='english') + \
+                             # SearchVector('location__name', weight='D') + \
+                             # SearchVector('city__name', weight='D') + \
+                             # SearchVector('state__name', weight='D') + \
+                             # SearchVector('country__name', weight='D')
+                
 
         if not self.pk:
             _, extension = os.path.splitext(self.file.name.lower())

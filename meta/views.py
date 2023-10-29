@@ -3,6 +3,7 @@
 import json
 import logging
 import os
+import re
 
 from media_utils import Metadata
 from django.http import HttpResponse, JsonResponse
@@ -11,7 +12,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.contrib.postgres.search import SearchVector, SearchQuery
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
 from operator import or_, and_
@@ -26,7 +27,6 @@ from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
-import re
 from django.conf import settings
 from django.core.files import File
 from django.utils.translation import get_language, get_language_info
@@ -1006,8 +1006,11 @@ def search_page(request, model_name='', field='', slug=''):
             # Create SearchQuery
             search_query = SearchQuery(query, config=langconfig)
 
+            # Create SearchRank
+            search_rank = SearchRank(search_vectors, search_query)
+
             # Filter media_list by search_query
-            media_list = media_list.annotate(search=search_vectors).filter(search=search_query)
+            media_list = media_list.annotate(search=search_vectors, rank=search_rank).filter(search=search_query)
 
         # Operator
         operator = query_dict.get('operator', 'and')
@@ -1096,9 +1099,15 @@ def search_page(request, model_name='', field='', slug=''):
         if highlight:
             media_list = media_list.filter(highlight=1)
 
-        # Orderby: replace 'random' by '?'
-        orderby = query_dict.get('orderby', 'random')
+        # Orderby rank when query, otherwise orderby random
+        if query and not query_dict.get('orderby', None):
+            orderby = 'rank'
+        else:
+            orderby = query_dict.get('orderby', 'random')
+
+        # Order
         order = query_dict.get('order', 'desc')
+
         if orderby == 'random':
             sorting = '?'
         else:

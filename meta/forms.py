@@ -18,7 +18,7 @@ METAS = (
         )
 
 ITEMS = (
-        ('16', '16'),
+        ('20', '20'),
         ('40', '40'),
         ('80', '80'),
         ('120', '120'),
@@ -38,6 +38,7 @@ ORDER_BY = (
         ('pub_date', _('data de publicação')),
         ('timestamp', _('data de modificação')),
         ('random', _('aleatório')),
+        ('rank', _('ranking')),
         )
 
 DATATYPES = (

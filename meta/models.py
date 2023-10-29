@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 
+import os
+import shutil
+import uuid
+
+from django.conf import settings
+from django.contrib.auth.models import Group
+from django.contrib.postgres.aggregates import StringAgg
+from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.search import SearchVectorField, SearchVector
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from mptt.models import MPTTModel
 from meta.signals import *
-
-from django.db.models import Q
-from django.contrib.auth.models import Group
-import uuid
-import os
-from django.conf import settings
-from django.utils import timezone
-import shutil
 
 
 class Curadoria(models.Model):
@@ -187,6 +190,7 @@ class Media(models.Model):
     software = models.CharField(_('Software'), default='', blank=True, help_text=_('Software utilizado na Imagem'))
 
     specialist = models.ManyToManyField('Person',  related_name="pessoas", verbose_name=_('Especialista'), blank=True)
+
     # Foreign metadata
     location = models.ForeignKey('Location', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('local'),
@@ -199,8 +203,29 @@ class Media(models.Model):
             null=True, verbose_name=_('país'),
             help_text=_('País mostrado na imagem (ou país de coleta).'))
 
+    search_vector = SearchVectorField(
+            null=True,
+            verbose_name=_('vetor de busca'),
+            help_text=_('Campo que guarda o vetor de busca.'))
+
 
     def save(self, *args, **kwargs):
+
+        # Update search vector field on save
+        self.search_vector = SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') + \
+                             SearchVector('title_en', weight='A', config='english') + \
+                             SearchVector('caption_pt_br', weight='B', config='portuguese_unaccent') + \
+                             SearchVector('caption_en', weight='B', config='english')
+                             # SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B') + \
+                             # SearchVector(StringAgg('person__name', delimiter=' '), weight='B') + \
+                             # SearchVector(StringAgg('tag__name_pt_br', delimiter=' '), weight='C', config='portuguese_unaccent') + \
+                             # SearchVector(StringAgg('tag__name_en', delimiter=' '), weight='C', config='english') + \
+                             # SearchVector('location__name', weight='D') + \
+                             # SearchVector('city__name', weight='D') + \
+                             # SearchVector('state__name', weight='D') + \
+                             # SearchVector('country__name', weight='D')
+                
+
         if not self.pk:
             _, extension = os.path.splitext(self.file.name.lower())
             if extension.endswith(settings.PHOTO_EXTENSIONS):
@@ -226,6 +251,7 @@ class Media(models.Model):
         verbose_name = _('arquivo')
         verbose_name_plural = _('arquivos')
         ordering = ['id']
+        indexes = (GinIndex(fields=['search_vector']),)
 
 
 class Person(models.Model):

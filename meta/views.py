@@ -976,50 +976,38 @@ def search_page(request, model_name='', field='', slug=''):
         query = query_dict.get('query', '').strip()
         if query:
 
-            # Print language.
+            # Get language.
             language = get_language()
-            print(language)
-            print(query)
 
-
+            # Change search config based on language
             if language == 'en':
                 langconfig = 'english'
-                search_vectors = SearchVector('title_en', weight='A', config=langconfig)
+                search_vectors = SearchVector('title_en', weight='A', config=langconfig) + \
+                                 SearchVector('caption_en', weight='B', config=langconfig) + \
+                                 SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B', config=langconfig) + \
+                                 SearchVector(StringAgg('person__name', delimiter=' '), weight='B', config=langconfig) + \
+                                 SearchVector(StringAgg('tag__name_en', delimiter=' '), weight='C', config=langconfig) + \
+                                 SearchVector('location__name', weight='D', config=langconfig) + \
+                                 SearchVector('city__name', weight='D', config=langconfig) + \
+                                 SearchVector('state__name', weight='D', config=langconfig) + \
+                                 SearchVector('country__name', weight='D', config=langconfig)
             elif language == 'pt-br':
                 langconfig = 'portuguese_unaccent'
-                search_vectors = SearchVector('title_pt_br', weight='A', config=langconfig)
+                search_vectors = SearchVector('title_pt_br', weight='A', config=langconfig) + \
+                                 SearchVector('caption_pt_br', weight='B', config=langconfig) + \
+                                 SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B', config=langconfig) + \
+                                 SearchVector(StringAgg('person__name', delimiter=' '), weight='B', config=langconfig) + \
+                                 SearchVector(StringAgg('tag__name_pt_br', delimiter=' '), weight='C', config=langconfig) + \
+                                 SearchVector('location__name', weight='D', config=langconfig) + \
+                                 SearchVector('city__name', weight='D', config=langconfig) + \
+                                 SearchVector('state__name', weight='D', config=langconfig) + \
+                                 SearchVector('country__name', weight='D', config=langconfig)
 
             # Create SearchQuery
             search_query = SearchQuery(query, config=langconfig)
 
-            # Create SearchVector
-            # search_vectors = SearchVector('title', weight='A')
-            # search_vectors = SearchVector('title', weight='A', config=language_name)
-
             # Filter media_list by search_query
             media_list = media_list.annotate(search=search_vectors).filter(search=search_query)
-            print(media_list)
-
-            # Create SearchVector
-            # TODO: create and search location translations
-            # vector = SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') + \
-                     # SearchVector('title_en', weight='A', config='portuguese_unaccent') + \
-                     # SearchVector('caption_pt_br', weight='A', config='portuguese_unaccent') + \
-                     # SearchVector('caption_en', weight='A', config='portuguese_unaccent') + \
-                     # SearchVector(StringAgg('person__name', delimiter=' '), weight='B', config='portuguese_unaccent') + \
-                     # SearchVector(StringAgg('tag__name_pt_br', delimiter=' '), weight='B', config='portuguese_unaccent') + \
-                     # SearchVector(StringAgg('tag__name_en', delimiter=' '), weight='B', config='portuguese_unaccent') + \
-                     # SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B', config='portuguese_unaccent') + \
-                     # SearchVector('location__name', weight='C', config='portuguese_unaccent') + \
-                     # SearchVector('city__name_pt_br', weight='C', config='portuguese_unaccent') + \
-                     # SearchVector('city__name_en', weight='C', config='portuguese_unaccent') + \
-                     # SearchVector('state__name_pt_br', weight='C', config='portuguese_unaccent') + \
-                     # SearchVector('state__name_en', weight='C', config='portuguese_unaccent') + \
-                     # SearchVector('country__name_pt_br', weight='C', config='portuguese_unaccent') + \
-                     # SearchVector('country__name_en', weight='C', config='portuguese_unaccent')
-
-            # Filter media_list by search_query
-            # media_list = media_list.annotate(search=vector).filter(search=search_query)
 
         # Operator
         operator = query_dict.get('operator', 'and')

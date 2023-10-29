@@ -29,6 +29,7 @@ from user.models import UserCifonauta
 import re
 from django.conf import settings
 from django.core.files import File
+from django.utils.translation import get_language, get_language_info
 
 @custom_login_required
 @author_required
@@ -975,30 +976,38 @@ def search_page(request, model_name='', field='', slug=''):
         query = query_dict.get('query', '').strip()
         if query:
 
-            # Create postgres SearchQuery
-            # TODO: if search_type='raw' create conditional
-            search_query = SearchQuery(query, config='portuguese_unaccent')
+            # Get language.
+            language = get_language()
 
-            # Create search vectors
-            # TODO: create and search location translations
-            vector = SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') + \
-                     SearchVector('title_en', weight='A', config='portuguese_unaccent') + \
-                     SearchVector('caption_pt_br', weight='A', config='portuguese_unaccent') + \
-                     SearchVector('caption_en', weight='A', config='portuguese_unaccent') + \
-                     SearchVector(StringAgg('person__name', delimiter=' '), weight='B', config='portuguese_unaccent') + \
-                     SearchVector(StringAgg('tag__name_pt_br', delimiter=' '), weight='B', config='portuguese_unaccent') + \
-                     SearchVector(StringAgg('tag__name_en', delimiter=' '), weight='B', config='portuguese_unaccent') + \
-                     SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B', config='portuguese_unaccent') + \
-                     SearchVector('location__name', weight='C', config='portuguese_unaccent') + \
-                     SearchVector('city__name_pt_br', weight='C', config='portuguese_unaccent') + \
-                     SearchVector('city__name_en', weight='C', config='portuguese_unaccent') + \
-                     SearchVector('state__name_pt_br', weight='C', config='portuguese_unaccent') + \
-                     SearchVector('state__name_en', weight='C', config='portuguese_unaccent') + \
-                     SearchVector('country__name_pt_br', weight='C', config='portuguese_unaccent') + \
-                     SearchVector('country__name_en', weight='C', config='portuguese_unaccent')
+            # Change search config based on language
+            if language == 'en':
+                langconfig = 'english'
+                search_vectors = SearchVector('title_en', weight='A', config=langconfig) + \
+                                 SearchVector('caption_en', weight='B', config=langconfig) + \
+                                 SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B', config=langconfig) + \
+                                 SearchVector(StringAgg('person__name', delimiter=' '), weight='B', config=langconfig) + \
+                                 SearchVector(StringAgg('tag__name_en', delimiter=' '), weight='C', config=langconfig) + \
+                                 SearchVector('location__name', weight='D', config=langconfig) + \
+                                 SearchVector('city__name', weight='D', config=langconfig) + \
+                                 SearchVector('state__name', weight='D', config=langconfig) + \
+                                 SearchVector('country__name', weight='D', config=langconfig)
+            elif language == 'pt-br':
+                langconfig = 'portuguese_unaccent'
+                search_vectors = SearchVector('title_pt_br', weight='A', config=langconfig) + \
+                                 SearchVector('caption_pt_br', weight='B', config=langconfig) + \
+                                 SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B', config=langconfig) + \
+                                 SearchVector(StringAgg('person__name', delimiter=' '), weight='B', config=langconfig) + \
+                                 SearchVector(StringAgg('tag__name_pt_br', delimiter=' '), weight='C', config=langconfig) + \
+                                 SearchVector('location__name', weight='D', config=langconfig) + \
+                                 SearchVector('city__name', weight='D', config=langconfig) + \
+                                 SearchVector('state__name', weight='D', config=langconfig) + \
+                                 SearchVector('country__name', weight='D', config=langconfig)
+
+            # Create SearchQuery
+            search_query = SearchQuery(query, config=langconfig)
 
             # Filter media_list by search_query
-            media_list = media_list.annotate(search=vector).filter(search=search_query)
+            media_list = media_list.annotate(search=search_vectors).filter(search=search_query)
 
         # Operator
         operator = query_dict.get('operator', 'and')

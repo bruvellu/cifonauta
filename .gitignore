@@ -1,6 +1,7 @@
 *.pyc
 *.swp
 tasks.py
+fabfile.py
 static/*
 virtual/*
 site_media/*

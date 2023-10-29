@@ -208,6 +208,13 @@ class Media(models.Model):
 
 
     def save(self, *args, **kwargs):
+
+        # Update search vector field
+        self.search_vector = (
+                SearchVector('title_en', weight='A', config='english') + \
+                SearchVector('title_pt_br', weight='A', config='portuguese_unaccent')
+                )
+
         if not self.pk:
             _, extension = os.path.splitext(self.file.name.lower())
             if extension.endswith(settings.PHOTO_EXTENSIONS):

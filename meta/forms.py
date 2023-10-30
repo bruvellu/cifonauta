@@ -147,6 +147,11 @@ class TourForm(forms.ModelForm):
         widgets = {
             'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
         }
+    
+    def __init__(self, *args, **kwargs):
+        super(TourForm, self).__init__(*args, **kwargs)
+        
+        self.fields['media'].label_from_instance = lambda obj: obj.title
 
 class SearchForm(forms.Form):
     query = forms.CharField(label=_('Buscar por'),

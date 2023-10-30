@@ -35,18 +35,18 @@
                         <input id="fake-input-search" type="text" placeholder="Selecione as mídias">
                     </div>
                     <div class="fake-input-options-div hide-div">
-                        {% for obj in field.field.queryset %}
-                        <label onclick='selectOption(event, this)' class="fake-input-label" for="id_media_{{ obj.id }}">
-                            <input hidden class="input" type="checkbox" name="media" value="{{ obj.id }}" id="id_media_{{ obj.id }}">
-                            {% if obj.datatype == 'video' %}
-                            <video class="tour-img" src="{{obj.coverpath.url}}"></video>
+                        {% for initial_media in initial_medias %}
+                        <label onclick='selectOption(event, this)' class="fake-input-label" for="id_media_{{ initial_media.id }}">
+                            <input hidden class="input" type="checkbox" name="media" value="{{ initial_media.id }}" id="id_media_{{ initial_media.id }}">
+                            {% if initial_media.datatype == 'video' %}
+                            <video class="tour-img" src="{{initial_media.coverpath.url}}"></video>
                             {% else %}
-                            <img class="tour-img" src="{{obj.coverpath.url}}">
+                            <img class="tour-img" src="{{initial_media.coverpath.url}}">
                             {% endif %}
                             <div class="tour-infos-div">
-                                <a class="tour-media-link" href="" target="_blank">{{obj.title}}</a>
+                                <a class="tour-media-link" href="" target="_blank">{{initial_media.title}}</a>
                                 <span>
-                                    {% if obj.datatype == 'video' %}
+                                    {% if initial_media.datatype == 'video' %}
                                     Vídeo
                                     {% else %}
                                     Foto
@@ -57,6 +57,7 @@
                         {% endfor %}
                     </div>
                 </div>
+                {{field}}
                 {% if field.help_text %}
                 <span class="help-text">{{ field.help_text }}</span>
                 {% endif %}

@@ -29,6 +29,8 @@ from user.models import UserCifonauta
 import re
 from django.conf import settings
 from django.core.files import File
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 @custom_login_required
 @author_required
@@ -855,15 +857,18 @@ def add_tour(request):
     taxon_ids = []
     for curatorship in curatorships:
         taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
-    medias = Media.objects.filter(taxon__id__in=taxon_ids, status='published')
+    medias = Media.objects.filter(taxon__id__in=taxon_ids, status='published').distinct()
     form.fields['media'].queryset = medias
     form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+
+    initial_medias = [*medias][:20]
     
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     context = {
         'form': form,
+        'initial_medias': initial_medias,
         'is_specialist': is_specialist,
         'is_curator': is_curator
     }
@@ -881,11 +886,8 @@ def edit_tour(request, pk):
             return redirect('tour_list')
 
         form = TourForm(request.POST, instance=tour)
-        media_ids = request.POST.getlist('media')
-        medias = Media.objects.filter(id__in=media_ids)
         if form.is_valid():
             form.save()
-            tour.media.set(medias)
             messages.success(request, f'Tour {tour.name} editado com sucesso')
         else:
             messages.error(request, 'Houve um erro ao tentar editar o tour')
@@ -896,23 +898,66 @@ def edit_tour(request, pk):
     taxon_ids = []
     for curatorship in curatorships:
         taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
-    medias = Media.objects.filter(taxon__id__in=taxon_ids)
+    medias = Media.objects.filter(taxon__id__in=taxon_ids, status='published').distinct()
+    
     form.fields['media'].queryset = medias
     form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
     medias_related = tour.media.all()
+
+    initial_medias = [*medias][:20]
+
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     context = {
         'form': form,
         'tour': tour,
+        'initial_medias': initial_medias,
         'medias_related': medias_related,
         'is_specialist': is_specialist,
         'is_curator': is_curator
     }
 
     return render(request, 'edit_tour.html', context)
+
+@csrf_exempt
+def get_tour_medias(request):
+    if request.method == 'POST':
+        try:
+            limit = int(request.GET.get('limit', 20))
+            offset = int(request.GET.get('offset', 0))
+            input_value = request.GET.get('input_value', '')
+
+            curatorships = Curadoria.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
+            taxon_ids = []
+            for curatorship in curatorships:
+                taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
+            medias = Media.objects.filter(taxon__id__in=taxon_ids, status='published').distinct()
+
+            query = None
+
+            if input_value:
+                query = medias.filter(title__contains=input_value)[offset:offset + limit]
+            else:
+                query = medias.all()[offset:offset + limit]
+
+            response = {
+                'medias': [
+                    {
+                        'id': media.id, 
+                        'title': media.title,
+                        'datatype': media.datatype,
+                        'isRelated': True if Tour.objects.filter(creator=request.user.id, media=media) else False,
+                        'coverpath': media.coverpath.url
+                        } for media in query
+                ],
+            }
+
+            return JsonResponse(response)
+        
+        except:
+            return JsonResponse({})
 
 # Home
 def home_page(request):

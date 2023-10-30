@@ -142,7 +142,7 @@ function loadOptions(medias) {
   medias?.forEach(media => {
     let label = document.createElement('label')
     label.setAttribute('onclick', 'selectOption(event, this)')
-    label.setAttribute('class', 'fake-input-label')
+    label.classList.add('fake-input-label')
     label.setAttribute('for', `id_media_${media.id}`)
 
     let input = document.createElement('input')
@@ -161,7 +161,7 @@ function loadOptions(medias) {
     } else {
       mediaType = document.createElement('img')
     }
-    mediaType.setAttribute('class', 'tour-img')
+    mediaType.classList.add('tour-img', `size-${media.size}`)
     mediaType.setAttribute('src', media.coverpath)
 
     let tourInfosDiv = document.createElement('div')

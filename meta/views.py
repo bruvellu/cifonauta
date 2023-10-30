@@ -949,7 +949,8 @@ def get_tour_medias(request):
                         'title': media.title,
                         'datatype': media.datatype,
                         'isRelated': True if Tour.objects.filter(creator=request.user.id, media=media) else False,
-                        'coverpath': media.coverpath.url
+                        'coverpath': media.coverpath.url,
+                        'size': media.size,
                         } for media in query
                 ],
             }

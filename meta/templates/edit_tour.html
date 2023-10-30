@@ -37,9 +37,9 @@
                                 <button type="button" class="remove-selected-option-btn" value="{{media_related.id}}" onclick="removeOption({{media_related.id}})"></button>
                                 <div class='selected-option'>
                                     {% if media_related.datatype == 'video' %}
-                                    <video class="tour-img" src="{{media_related.coverpath.url}}"></video>
+                                    <video class="tour-img size-{{media.size}}" src="{{media_related.coverpath.url}}"></video>
                                     {% else %}
-                                    <img class="tour-img" src="{{media_related.coverpath.url}}">
+                                    <img class="tour-img size-{{media.size}}" src="{{media_related.coverpath.url}}">
                                     {% endif %}
                                     <div class="tour-infos-div">
                                         <a class="selected-option-media-link" href="" target="_blank">{{media_related.title}}</a>
@@ -62,9 +62,9 @@
                         <label onclick='selectOption(event, this)' class="fake-input-label" for="id_media_{{ initial_media.id }}">
                             <input {% if initial_media in medias_related %}checked{% endif %} hidden class="input" type="checkbox" name="media2" value="{{ initial_media.id }}" id="id_media_{{ initial_media.id }}">
                             {% if initial_media.datatype == 'video' %}
-                            <video class="tour-img" src="{{initial_media.coverpath.url}}"></video>
+                            <video class="tour-img size-{{ initial_media.size }}" src="{{initial_media.coverpath.url}}"></video>
                             {% else %}
-                            <img class="tour-img" src="{{initial_media.coverpath.url}}">
+                            <img class="tour-img size-{{ initial_media.size }}" src="{{initial_media.coverpath.url}}">
                             {% endif %}
                             <div class="tour-infos-div">
                                 <a class="tour-media-link" href="" target="_blank">{{initial_media.title}}</a>

@@ -70,10 +70,7 @@ function fetchToSearch() {
   }
 
   fetch(`${url}/get-tour-medias?input_value=${inputText}&offset=${offset}&limit=${limit}`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      method: "GET"
   })
   .then(response => {
     if (response.ok) {
@@ -116,10 +113,7 @@ function fetchToLoadMore() {
   }
 
   fetch(`${url}/get-tour-medias?input_value=${inputText}&offset=${offset}&limit=${limit}`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      method: "GET"
   })
   .then(response => {
     if (response.ok) {

@@ -7,7 +7,8 @@ import os
 from media_utils import Metadata
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Q
+from django.db.models import Q, F
+from django.db.models.functions import Lower
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -30,7 +31,6 @@ import re
 from django.conf import settings
 from django.core.files import File
 import json
-from django.views.decorators.csrf import csrf_exempt
 
 @custom_login_required
 @author_required
@@ -921,44 +921,48 @@ def edit_tour(request, pk):
 
     return render(request, 'edit_tour.html', context)
 
-@csrf_exempt
+
+
 def get_tour_medias(request):
-    if request.method == 'POST':
-        try:
-            limit = int(request.GET.get('limit', 20))
-            offset = int(request.GET.get('offset', 0))
-            input_value = request.GET.get('input_value', '')
+    try:
+        limit = int(request.GET.get('limit', 20))
+        offset = int(request.GET.get('offset', 0))
+        input_value = request.GET.get('input_value', '')
 
-            curatorships = Curadoria.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
-            taxon_ids = []
-            for curatorship in curatorships:
-                taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
-            medias = Media.objects.filter(taxon__id__in=taxon_ids, status='published').distinct()
+        curatorships = Curadoria.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
+        taxon_ids = []
+        for curatorship in curatorships:
+            taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
+        medias = Media.objects.filter(taxon__id__in=taxon_ids, status='published').distinct()
 
-            query = None
+        query = None
 
-            if input_value:
-                query = medias.filter(title__contains=input_value)[offset:offset + limit]
-            else:
-                query = medias.all()[offset:offset + limit]
+        if input_value:
+            query = medias.annotate(
+                title_lower=Lower(F('title'))
+            ).filter(
+                Q(title_lower__contains=input_value.lower())
+            )[offset:offset + limit]
+        else:
+            query = medias.all()[offset:offset + limit]
 
-            response = {
-                'medias': [
-                    {
-                        'id': media.id, 
-                        'title': media.title,
-                        'datatype': media.datatype,
-                        'isRelated': True if Tour.objects.filter(creator=request.user.id, media=media) else False,
-                        'coverpath': media.coverpath.url,
-                        'size': media.size,
-                        } for media in query
-                ],
-            }
+        response = {
+            'medias': [
+                {
+                    'id': media.id, 
+                    'title': media.title,
+                    'datatype': media.datatype,
+                    'isRelated': True if Tour.objects.filter(creator=request.user.id, media=media) else False,
+                    'coverpath': media.coverpath.url,
+                    'size': media.size,
+                    } for media in query
+            ],
+        }
 
-            return JsonResponse(response)
-        
-        except:
-            return JsonResponse({})
+        return JsonResponse(response)
+    
+    except:
+        return JsonResponse({})
 
 # Home
 def home_page(request):

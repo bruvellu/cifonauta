@@ -5,7 +5,6 @@ import logging
 import os
 import re
 
-from media_utils import Metadata
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q, F
@@ -15,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
+from media_utils import Metadata
 from operator import or_, and_
 from PIL import Image
 
@@ -30,6 +30,9 @@ from user.models import UserCifonauta
 from django.conf import settings
 from django.core.files import File
 from django.utils.translation import get_language, get_language_info
+
+from dotenv import load_dotenv
+load_dotenv()
 
 @custom_login_required
 @author_required

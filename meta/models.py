@@ -212,6 +212,9 @@ class Media(models.Model):
     def save(self, *args, **kwargs):
 
         # Update search vector field on save
+        #TODO: Make a function to save values to a dictionary, take care of Empty/None/Null values
+        #TODO: Make a function to populate the search_vector with these saved values
+        #TODO: Replace here just with the calls for the functions above
         self.search_vector = SearchVector(Value(self.title_pt_br), weight='A', config='portuguese_unaccent') + \
                              SearchVector(Value(self.title_en), weight='A', config='english') + \
                              SearchVector(Value(self.caption_pt_br), weight='B', config='portuguese_unaccent') + \

@@ -47,7 +47,16 @@ function removeOption(id) {
   selectedOption.remove()
 
   let elemOption = fakeInputOptionsDiv.querySelector(`[value="${id}"]`)
-  elemOption.checked = false
+  if (elemOption) {
+    elemOption.checked = false
+  }
+
+  if (selectedOptions.children.length == 0) {
+    fakeInputOptionsDiv.innerHTML = ''
+    offset = 0
+    fakeInputSearch.value = ''
+    fetchToSearch()
+  }
 }
 
 function saveInMediaField(id) {
@@ -183,6 +192,12 @@ function closeInputOptions() {
   fakeInputOptionsDiv.classList.add('hide-div')
   fakeInputSearch.value = ''
   isInputOptionsOpened = false
+
+  if (fakeInputOptionsDiv.querySelector('p')) {
+    fakeInputOptionsDiv.innerHTML = ''
+    offset = 0
+    fetchToSearch()
+  }
 }
 
 let fakeInputOptionsDiv = document.querySelector('.fake-input-options-div')
@@ -207,11 +222,7 @@ fakeInputSearch.addEventListener('input', () => {
   inputText = fakeInputSearch.value.toLowerCase()
 
   delayFetch = setTimeout(() => {
-    if (inputText == '') {
-      fetchToSearch()
-    } else {
-      fetchToSearch()
-    }
+    fetchToSearch()
   }, 300)
 })
 
@@ -232,12 +243,7 @@ tourForm.addEventListener('submit', (e) => {
 
 fakeInputOptionsDiv.addEventListener('scroll', () => {
   if (fakeInputOptionsDiv.scrollTop + fakeInputOptionsDiv.clientHeight >= fakeInputOptionsDiv.scrollHeight) {
-    
-    if (fakeInputSearch.value != '') {
-      fetchToLoadMore(true)
-    } else {
-      fetchToLoadMore(true)
-    }
+    fetchToLoadMore()
   }
 })
 

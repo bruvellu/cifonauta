@@ -14,3 +14,4 @@ python-xmp-toolkit
 piexif
 suds
 django-simple-captcha
+python-dotenv

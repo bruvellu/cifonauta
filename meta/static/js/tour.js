@@ -96,6 +96,7 @@ function fetchToSearch() {
 
       fakeInputOptionsDiv.append(paragraph)
     } else {
+      fakeInputOptionsDiv.scrollTop = 0
       loadOptions(data.medias)
     }
   })

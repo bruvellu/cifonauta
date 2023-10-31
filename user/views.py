@@ -78,7 +78,7 @@ class PasswordResetView(PasswordResetView):
     def post(self, request, *args, **keyargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            messages.success(request, "Foi enviada uma mensagem para seu email com instruções para redefinição da senha.")
+            messages.success(request, "Foi enviada uma mensagem para seu e-mail com instruções para redefinição da senha.")
             return super().form_valid(form)
         
 class PasswordResetConfirmView(PasswordResetConfirmView):
@@ -103,8 +103,8 @@ class ForgotUsernameView(FormView):
     def post(self, request, *args, **keyargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            messages.success(request, "Foi enviada uma mensagem para seu email com instruções para redefinição da senha.")
-            return super().form_valid(form)
+            messages.success(request, "Foi enviada uma mensagem de recuperação de nome de usuário para o seu e-mail")
+            return self.form_valid(form)
 
     def form_valid(self, form):
         opts = {

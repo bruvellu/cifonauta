@@ -828,7 +828,7 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
         return context
 
 
-def tour_list(request):
+def dashboard_tour_list(request):
     tours = Tour.objects.filter(creator=request.user)
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
@@ -839,15 +839,15 @@ def tour_list(request):
         'is_curator': is_curator
     }
 
-    return render(request, 'tour_list.html', context)
+    return render(request, 'dashboard_tour_list.html', context)
 
-def add_tour(request):
+def dashboard_tour_add(request):
     if request.method == 'POST':
         form = TourForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Tour temático criado com sucesso')
-            return redirect('tour_list')
+            return redirect('dashboard_tour_list')
         
         messages.error(request, 'Houve um erro ao tentar criar o tour temático')
 
@@ -873,9 +873,9 @@ def add_tour(request):
         'is_curator': is_curator
     }
 
-    return render(request, 'add_tour.html', context)
+    return render(request, 'dashboard_tour_add.html', context)
 
-def edit_tour(request, pk):
+def dashboard_tour_edit(request, pk):
     tour = get_object_or_404(Tour, pk=pk)
 
     if request.method == 'POST':
@@ -883,7 +883,7 @@ def edit_tour(request, pk):
         if action == 'delete':
             tour.delete()
             messages.success(request, "Tour excluído com sucesso")
-            return redirect('tour_list')
+            return redirect('dashboard_tour_list')
 
         form = TourForm(request.POST, instance=tour)
         if form.is_valid():
@@ -919,7 +919,7 @@ def edit_tour(request, pk):
         'is_curator': is_curator
     }
 
-    return render(request, 'edit_tour.html', context)
+    return render(request, 'dashboard_tour_edit.html', context)
 
 
 

@@ -6,7 +6,7 @@
 
 <div class="subtitle-wrapper">
   <h2>Lista de tours</h2>
-  <a class='submit-button list-view-button' href="{% url 'add_tour' %}">Criar novo tour</a>
+  <a class='submit-button list-view-button' href="{% url 'dashboard_tour_add' %}">Criar novo tour</a>
 </div>
 {% if messages %}
   <div class="messages-div">
@@ -29,7 +29,7 @@
       {% for tour in tours %}
       <tr>
           <td class="text-cedule">
-            <a href="{% url 'edit_tour' pk=tour.pk %}">
+            <a href="{% url 'dashboard_tour_edit' pk=tour.pk %}">
               {{ tour.name }}
             </a>
           </td>

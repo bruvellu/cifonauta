@@ -22,9 +22,9 @@ urlpatterns = [
         name='media_revision_detail'),
         path('administrative-module/revision/changes/<int:pk>', views.modified_media_revision, name='modified_media_revision'),
         path('administrative-module/enable-specialists', EnableSpecialists.as_view(), name='enable_specialists'),
-        path('administrative-module/tours', views.tour_list, name='tour_list'),
-        path('administrative-module/tours/add', views.add_tour, name='add_tour'),
-        path('administrative-module/tours/<int:pk>', views.edit_tour, name='edit_tour'),
+        path('administrative-module/tours', views.dashboard_tour_list, name='dashboard_tour_list'),
+        path('administrative-module/tours/add', views.dashboard_tour_add, name='dashboard_tour_add'),
+        path('administrative-module/tours/<int:pk>', views.dashboard_tour_edit, name='dashboard_tour_edit'),
         
 
         path('synchronize-fields', views.synchronize_fields, name='synchronize_fields'),

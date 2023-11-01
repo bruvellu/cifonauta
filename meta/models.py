@@ -141,13 +141,6 @@ class Media(models.Model):
 
     credit = models.CharField(_('Referências Bibliográficas'), blank=True, help_text=_('Referências bibliográficas relacionadas com a imagem.'))
 
-    # Website
-    old_image = models.PositiveIntegerField(default=0, blank=True,
-            help_text=_('ID da imagem no antigo modelo.'))
-    old_video = models.PositiveIntegerField(default=0, blank=True,
-            help_text=_('ID do vídeo no antigo modelo.'))
-
-
     # Fields containing plain media metadata
     title = models.CharField(_('título'), max_length=200, default='',
                              blank=True, help_text=_('Título da imagem.'))
@@ -183,6 +176,14 @@ class Media(models.Model):
     # Fields associated with full text search
     search_vector = SearchVectorField(null=True, verbose_name=_('vetor de busca'),
                                       help_text=_('Campo que guarda o vetor de busca.'))
+
+    # Fields required for historical reasons
+    old_image = models.PositiveIntegerField(default=0,
+                                            blank=True,
+                                            help_text=_('ID da imagem no antigo modelo.'))
+    old_video = models.PositiveIntegerField(default=0,
+                                            blank=True,
+                                            help_text=_('ID do vídeo no antigo modelo.'))
 
     # Fields to be deleted
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,

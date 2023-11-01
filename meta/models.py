@@ -266,8 +266,6 @@ class Media(models.Model):
     # Fields to be deleted
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
                                verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
-    co_author = models.ManyToManyField('Person', blank=True, verbose_name=_('coautor'),
-                                       help_text=_('Coautor(es) da mídia'), related_name='co_author')
 
 
     def save(self, *args, **kwargs):

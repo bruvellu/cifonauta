@@ -65,7 +65,7 @@ class UploadMediaForm(forms.ModelForm):
 
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxons', 'co_author', 'author', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
+        fields = ('title', 'caption', 'taxons', 'author', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
         widgets = {
             'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"}),
         }
@@ -83,7 +83,7 @@ class UpdateMyMediaForm(forms.ModelForm):
 
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxons', 'co_author', 'author', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title', 'caption', 'taxons', 'author', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
         widgets = {
             'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"})
         }
@@ -110,9 +110,8 @@ class EditMetadataForm(forms.ModelForm):
 
     class Meta:
         model = Media
-        fields = ('title', 'author', 'co_author', 'specialists', 'caption', 'size', 'date', 'taxons', 'license', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ('title', 'author', 'specialists', 'caption', 'size', 'date', 'taxons', 'license', 'country', 'state', 'city', 'location', 'geolocation')
         widgets = {
-            'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"}),
             'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"})
         }
     
@@ -131,7 +130,7 @@ class CoauthorRegistrationForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
-        fields = ( 'title', 'caption', 'taxons', 'co_author', 'date', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ( 'title', 'caption', 'taxons', 'date', 'country', 'state', 'city', 'location', 'geolocation')
 
 class MyMediaForm(forms.ModelForm):
     class Meta:

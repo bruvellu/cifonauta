@@ -80,6 +80,20 @@ class LoadedMedia(models.Model):
 
 class Media(models.Model):
     '''Table with metadata for photo and video files.'''
+
+    # Pre-defined choices
+    STATUS_CHOICES = (('not_edited', _('Não Editado')),
+                      ('to_review', _('Para Revisão')),
+                      ('published', _('Publicado')),)
+
+    LICENSE_CHOICES = (('cc0', _('CC0 (Domínio Público)')),
+                       ('cc_by', _('CC BY (Atribuição)')),
+                       ('cc_by_sa', _('CC BY-SA (Atribuição-CompartilhaIgual)')),
+                       ('cc_by_nd', _('CC BY-ND (Atribuição-SemDerivações)')),
+                       ('cc_by_nc', _('CC BY-NC (Atribuição-NãoComercial)')),
+                       ('cc_by_nc_sa', _('CC BY-NC-SA (AtribuiçãoNãoComercial-CompartilhaIgual)')),
+                       ('cc_by_nc_nd', _('CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')),)
+
     metadata_error = models.BooleanField(verbose_name=_('Erro nos metadados'), default=False)
 
     # New fields
@@ -88,22 +102,8 @@ class Media(models.Model):
             verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
     co_author = models.ManyToManyField('Person', blank=True,
             verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='co_author')
-    STATUS_CHOICES = (
-        ('not_edited', 'Não Editado'),
-        ('to_review', 'Para Revisão'),
-        ('published', 'Publicado'),
-    )
     status = models.CharField(_('status'), blank=True, max_length=13, choices=STATUS_CHOICES, 
             default='not_edited', help_text=_('Status da mídia.'))
-    LICENSE_CHOICES = (
-        ('cc0', 'CC0 (Domínio Público)'),
-        ('cc_by', 'CC BY (Atribuição)'),
-        ('cc_by_sa', 'CC BY-SA (Atribuição-CompartilhaIgual)'),
-        ('cc_by_nd', 'CC BY-ND (Atribuição-SemDerivações)'),
-        ('cc_by_nc', 'CC BY-NC (Atribuição-NãoComercial)'),
-        ('cc_by_nc_sa', 'CC BY-NC-SA (AtribuiçãoNãoComercial-CompartilhaIgual)'),
-        ('cc_by_nc_nd', ' CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')
-    )
     license = models.CharField(_('Licença'), max_length=60, choices=LICENSE_CHOICES, default='cc0',
         help_text=_('Tipo de licença que a mídia terá'))
     terms = models.BooleanField(_('termos'), default=False)

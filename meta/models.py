@@ -162,8 +162,16 @@ class Media(models.Model):
                                  help_text=_('Longitude onde a imagem foi criada.'))
 
     # Fields associated with other models
-    tags = models.ManyToManyField('Tag', blank=True, verbose_name=_('marcadores do arquivo'),
-                                     help_text=_('Marcadores associados a este arquivo.'), related_name='tag_media')
+    taxa = models.ManyToManyField('Taxon',
+                                  blank=True,
+                                  verbose_name=_('táxons da mídia'),
+                                  help_text=_('Grupos taxonômicos associados com esta mídia.'),
+                                  related_name='media_files')
+    tags = models.ManyToManyField('Tag',
+                                  blank=True,
+                                  verbose_name=_('marcadores da mídia'),
+                                  help_text=_('Marcadores associados com esta mídia.'),
+                                  related_name='media_files')
     location = models.ForeignKey('Location', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('local'),
                                  help_text=_('Localidade mostrada na imagem (ou local de coleta).'))
     city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('cidade'),

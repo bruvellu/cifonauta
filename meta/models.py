@@ -270,8 +270,6 @@ class Media(models.Model):
                                        help_text=_('Coautor(es) da mídia'), related_name='co_author')
     specialist = models.ManyToManyField('Person',  related_name="pessoas",
                                         verbose_name=_('Especialista'), blank=True)
-    software = models.CharField(_('Software'), default='', blank=True, help_text=_('Software utilizado na Imagem'))
-    credit = models.CharField(_('Referências Bibliográficas'), blank=True, help_text=_('Referências bibliográficas relacionadas com a imagem.'))
 
 
     def save(self, *args, **kwargs):

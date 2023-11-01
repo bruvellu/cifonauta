@@ -110,7 +110,7 @@ class EditMetadataForm(forms.ModelForm):
 
     class Meta:
         model = Media
-        fields = ('title', 'author', 'co_author', 'specialist', 'caption', 'size', 'date', 'taxons', 'license', 'credit', 'country', 'state', 'city', 'location', 'geolocation', 'software')
+        fields = ('title', 'author', 'co_author', 'specialist', 'caption', 'size', 'date', 'taxons', 'license', 'country', 'state', 'city', 'location', 'geolocation')
         widgets = {
             'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"}),
             'specialist': forms.SelectMultiple(attrs={"class": "select2-specialist", "multiple": "multiple"})

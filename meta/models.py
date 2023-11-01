@@ -109,11 +109,11 @@ class Media(models.Model):
 
     # Fields related to authorship
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name=_('usuário do arquivo'),
-                             help_text=_('Usuário que fez o upload do arquivo.'), related_name='user')
+                             help_text=_('Usuário que fez o upload do arquivo.'), related_name='user_media')
     authors = models.ManyToManyField('Person', blank=True, verbose_name=_('autores do arquivo'),
-                                     help_text=_('Autores associados a este arquivo.'), related_name='authors')
+                                     help_text=_('Autores associados a este arquivo.'), related_name='author_media')
     specialists = models.ManyToManyField('Person', blank=True, verbose_name=_('especialistas associados'),
-                                     help_text=_('Especialistas associados a este arquivo.'), related_name='specialists')
+                                     help_text=_('Especialistas associados a este arquivo.'), related_name='specialist_media')
     terms = models.BooleanField(_('termos'), default=False)
     license = models.CharField(_('Licença'), max_length=60, choices=LICENSE_CHOICES,
                                default='cc0', help_text=_('Tipo de licença que a mídia terá'))

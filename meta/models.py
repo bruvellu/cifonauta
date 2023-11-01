@@ -139,7 +139,6 @@ class Media(models.Model):
     highlight = models.BooleanField(_('destaque'), default=False,
             help_text=_('Imagem que merece destaque.'))
 
-    credit = models.CharField(_('Referências Bibliográficas'), blank=True, help_text=_('Referências bibliográficas relacionadas com a imagem.'))
 
     # Fields containing plain media metadata
     title = models.CharField(_('título'), max_length=200, default='',
@@ -161,7 +160,7 @@ class Media(models.Model):
     longitude = models.CharField(_('longitude'), default='', max_length=25, blank=True,
                                  help_text=_('Longitude onde a imagem foi criada.'))
 
-    # Fields associated with other models
+    # Fields associated with other models using M2M
     taxa = models.ManyToManyField('Taxon',
                                   blank=True,
                                   verbose_name=_('táxons da mídia'),
@@ -172,6 +171,13 @@ class Media(models.Model):
                                   verbose_name=_('marcadores da mídia'),
                                   help_text=_('Marcadores associados com esta mídia.'),
                                   related_name='media_files')
+    references = models.ManyToManyField('Reference',
+                                        blank=True,
+                                        verbose_name=_('referências da mídia'),
+                                        help_text=_('Referências bibliográficas associadas com esta mídia.'),
+                                        related_name='media_files')
+
+    # Fields associated with other models using FK
     location = models.ForeignKey('Location', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('local'),
                                  help_text=_('Localidade mostrada na imagem (ou local de coleta).'))
     city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('cidade'),
@@ -201,6 +207,7 @@ class Media(models.Model):
     specialist = models.ManyToManyField('Person',  related_name="pessoas",
                                         verbose_name=_('Especialista'), blank=True)
     software = models.CharField(_('Software'), default='', blank=True, help_text=_('Software utilizado na Imagem'))
+    credit = models.CharField(_('Referências Bibliográficas'), blank=True, help_text=_('Referências bibliográficas relacionadas com a imagem.'))
     life_stage = models.ForeignKey('Tag', 
                                         on_delete=models.SET_NULL,
                                         null=True, limit_choices_to={'category': 8},

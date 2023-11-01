@@ -219,7 +219,7 @@ def upload_media_step2(request):
     form.fields['city'].queryset = City.objects.none()
 
     registration_form = CoauthorRegistrationForm()
-    form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+    form.fields['user'].queryset = UserCifonauta.objects.filter(id=request.user.id)
     
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
@@ -280,16 +280,16 @@ def edit_metadata(request, media_id):
     if form.is_valid():
         media_instance = form.save(commit=False)
         try:
-            author = str(form.cleaned_data['author'])
-            co_authors = str(form.cleaned_data['co_author']).split(';')
+            user = str(form.cleaned_data['user'])
+            authors = str(form.cleaned_data['authors']).split(';')
             metadata =  {
             'software': str(form.cleaned_data['software']),
             'headline': str(form.cleaned_data['title']),
             'instructions': str(form.cleaned_data['size']),
             'license': {
                 'license_type': str(form.cleaned_data['license']),
-                'author': author,
-                'co_authors': co_authors,
+                'user': user,
+                'authors': authors,
                 },
             'keywords': {
                 'Estágio de vida': str(form.cleaned_data['life_stage']),

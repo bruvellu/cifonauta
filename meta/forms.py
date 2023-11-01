@@ -65,9 +65,9 @@ class UploadMediaForm(forms.ModelForm):
 
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxons', 'author', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
+        fields = ('title', 'caption', 'taxons', 'user', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
         widgets = {
-            'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"}),
+            'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
         }
 
 class UpdateMyMediaForm(forms.ModelForm):
@@ -83,9 +83,9 @@ class UpdateMyMediaForm(forms.ModelForm):
 
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxons', 'author', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title', 'caption', 'taxons', 'user', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
         widgets = {
-            'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"})
+            'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"})
         }
 
     def __init__(self, *args, **kwargs):
@@ -110,8 +110,9 @@ class EditMetadataForm(forms.ModelForm):
 
     class Meta:
         model = Media
-        fields = ('title', 'author', 'specialists', 'caption', 'size', 'date', 'taxons', 'license', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ('title', 'user', 'authors', 'specialists', 'caption', 'size', 'date', 'taxons', 'license', 'country', 'state', 'city', 'location', 'geolocation')
         widgets = {
+            'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"})
         }
     

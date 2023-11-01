@@ -263,10 +263,6 @@ class Media(models.Model):
                                             blank=True,
                                             help_text=_('ID do vídeo no antigo modelo.'))
 
-    # Fields to be deleted
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
-                               verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
-
 
     def save(self, *args, **kwargs):
 

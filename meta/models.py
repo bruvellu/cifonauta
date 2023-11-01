@@ -95,16 +95,25 @@ class Media(models.Model):
                        ('cc_by_nc_nd', _('CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')),)
 
     # Fields related to file handling
-    file = models.FileField(upload_to='uploads/', default=None, null=True)
-    filepath = models.CharField(_('arquivo original.'), max_length=200,
-                                help_text=_('Caminho único para arquivo original.'))
-    sitepath = models.FileField(_('arquivo web.'), default=None,
+    file = models.FileField(upload_to='uploads/',
+                            default=None,
+                            null=True,
+                            help_text=_('Arquivo carregado pelo usuário.'))
+    filepath = models.CharField(_('arquivo original'),
+                                max_length=200,
+                                help_text=_('Caminho único para o arquivo original.'))
+    sitepath = models.FileField(_('arquivo web'),
+                                default=None,
                                 help_text=_('Arquivo processado para a web.'))
-    coverpath = models.ImageField(_('amostra do arquivo.'), default=None,
-                                  help_text=_('Imagem de amostra do arquivo processado.'))
-    datatype = models.CharField(_('tipo de mídia'), max_length=15,
+    coverpath = models.ImageField(_('imagem de capa'),
+                                  default=None,
+                                  help_text=_('Imagem de capa para o arquivo processado.'))
+    datatype = models.CharField(_('tipo de mídia'),
+                                max_length=15,
                                 help_text=_('Tipo de mídia.'))
-    timestamp = models.DateTimeField(_('data de modificação'), blank=True, default=timezone.now,
+    timestamp = models.DateTimeField(_('data de modificação'),
+                                     blank=True,
+                                     default=timezone.now,
                                      help_text=_('Data da última modificação do arquivo.'))
 
     # Fields related to authorship
@@ -124,40 +133,79 @@ class Media(models.Model):
                                          verbose_name=_('especialistas associados'),
                                          help_text=_('Especialistas associados a este arquivo.'),
                                          related_name='media_as_specialist')
-    terms = models.BooleanField(_('termos'), default=False)
-    license = models.CharField(_('Licença'), max_length=60, choices=LICENSE_CHOICES,
-                               default='cc0', help_text=_('Tipo de licença que a mídia terá'))
+    terms = models.BooleanField(_('termos'),
+                                default=False,
+                                help_text=_('Flag indicando que termos foram aceitos.'))
+    license = models.CharField(_('Licença'),
+                               max_length=60,
+                               choices=LICENSE_CHOICES,
+                               default='cc0',
+                               help_text=_('Tipo de licença da mídia.'))
 
     # Fields related to media status
-    metadata_error = models.BooleanField(verbose_name=_('Erro nos metadados'), default=False)
-    status = models.CharField(_('status'), blank=True, max_length=13, choices=STATUS_CHOICES, 
-            default='not_edited', help_text=_('Status da mídia.'))
-    is_public = models.BooleanField(_('público'), default=False,
-            help_text=_('Visível para visitantes.'))
-    pub_date = models.DateTimeField(_('data de publicação'), blank=True, default=timezone.now,
-            help_text=_('Data de publicação da imagem no Cifonauta.'))
-    highlight = models.BooleanField(_('destaque'), default=False,
-            help_text=_('Imagem que merece destaque.'))
+    metadata_error = models.BooleanField(_('Erro nos metadados'),
+                                         default=False,
+                                         help_text=_('Flag indicando problema nos metadados.'))
+    status = models.CharField(_('status'),
+                              blank=True,
+                              max_length=13,
+                              choices=STATUS_CHOICES,
+                              default='not_edited',
+                              help_text=_('Status da mídia.'))
+    is_public = models.BooleanField(_('público'),
+                                    default=False,
+                                    help_text=_('Visível para visitantes.'))
+    pub_date = models.DateTimeField(_('data de publicação'),
+                                    blank=True,
+                                    default=timezone.now,
+                                    help_text=_('Data de publicação da imagem no Cifonauta.'))
+    highlight = models.BooleanField(_('destaque'),
+                                    default=False,
+                                    help_text=_('Imagem que merece destaque.'))
 
 
     # Fields containing plain media metadata
-    title = models.CharField(_('título'), max_length=200, default='',
-                             blank=True, help_text=_('Título da imagem.'))
-    caption = models.TextField(_('legenda'), default='', blank=True,
+    title = models.CharField(_('título'),
+                             max_length=200,
+                             default='',
+                             blank=True,
+                             help_text=_('Título da imagem.'))
+    caption = models.TextField(_('legenda'),
+                               default='',
+                               blank=True,
                                help_text=_('Legenda da imagem.'))
-    date = models.DateTimeField(_('data'), null=True,
+    date = models.DateTimeField(_('data'),
+                                null=True,
                                 help_text=_('Data de criação da imagem.'))
-    duration = models.CharField(_('duração'), max_length=20, default='00:00:00', blank=True,
+    duration = models.CharField(_('duração'),
+                                max_length=20,
+                                default='00:00:00',
+                                blank=True,
                                 help_text=_('Duração do vídeo no formato HH:MM:SS.'))
-    dimensions = models.CharField(_('dimensões'), max_length=20, default='0x0',
-                                  blank=True, help_text=_('Dimensões do vídeo original.'))
-    size = models.CharField(_('tamanho'), max_length=10, default='none',
-                            blank=True, help_text=_('Classe de tamanho.'))
-    geolocation = models.CharField(_('geolocalização'), default='', max_length=25, blank=True,
+    dimensions = models.CharField(_('dimensões'),
+                                  max_length=20,
+                                  default='0x0',
+                                  blank=True,
+                                  help_text=_('Dimensões do vídeo original.'))
+    size = models.CharField(_('tamanho'),
+                            max_length=10,
+                            default='none',
+                            blank=True,
+                            help_text=_('Classe de tamanho.'))
+    geolocation = models.CharField(_('geolocalização'),
+                                   default='',
+                                   max_length=25,
+                                   blank=True,
                                    help_text=_('Geolocalização da imagem no formato decimal.'))
-    latitude = models.CharField(_('latitude'), default='', max_length=25, blank=True,
+    latitude = models.CharField(_('latitude'),
+                                default='',
+                                max_length=25,
+                                blank=True,
                                 help_text=_('Latitude onde a imagem foi criada.'))
-    longitude = models.CharField(_('longitude'), default='', max_length=25, blank=True,
+    longitude = models.CharField(_('longitude'),
+                                 default='',
+                                 max_length=25,
+                                 blank=True,
                                  help_text=_('Longitude onde a imagem foi criada.'))
 
     # Fields associated with other models using M2M
@@ -178,17 +226,33 @@ class Media(models.Model):
                                         related_name='media_files')
 
     # Fields associated with other models using FK
-    location = models.ForeignKey('Location', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('local'),
-                                 help_text=_('Localidade mostrada na imagem (ou local de coleta).'))
-    city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('cidade'),
-                             help_text=_('Cidade mostrada na imagem (ou cidade de coleta).'))
-    state = models.ForeignKey('State', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('estado'),
-                              help_text=_('Estado mostrado na imagem (ou estado de coleta).'))
-    country = models.ForeignKey('Country', on_delete=models.SET_NULL, null=True, verbose_name=_('país'),
+    location = models.ForeignKey('Location',
+                                 on_delete=models.SET_NULL,
+                                 null=True,
+                                 blank=True,
+                                 verbose_name=_('local'),
+                                 help_text=_('Localidade mostrada na imagem ou local de coleta.'))
+    city = models.ForeignKey('City',
+                             on_delete=models.SET_NULL,
+                             null=True,
+                             blank=True,
+                             verbose_name=_('cidade'),
+                             help_text=_('Cidade mostrada na imagem ou cidade de coleta.'))
+    state = models.ForeignKey('State',
+                              on_delete=models.SET_NULL,
+                              null=True,
+                              blank=True,
+                              verbose_name=_('estado'),
+                              help_text=_('Estado mostrado na imagem ou estado de coleta.'))
+    country = models.ForeignKey('Country',
+                                on_delete=models.SET_NULL,
+                                null=True,
+                                verbose_name=_('país'),
                                 help_text=_('País mostrado na imagem (ou país de coleta).'))
 
     # Fields associated with full text search
-    search_vector = SearchVectorField(null=True, verbose_name=_('vetor de busca'),
+    search_vector = SearchVectorField(_('vetor de busca'),
+                                      null=True,
                                       help_text=_('Campo que guarda o vetor de busca.'))
 
     # Fields required for historical reasons

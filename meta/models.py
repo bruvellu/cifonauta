@@ -268,8 +268,6 @@ class Media(models.Model):
                                verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
     co_author = models.ManyToManyField('Person', blank=True, verbose_name=_('coautor'),
                                        help_text=_('Coautor(es) da mídia'), related_name='co_author')
-    specialist = models.ManyToManyField('Person',  related_name="pessoas",
-                                        verbose_name=_('Especialista'), blank=True)
 
 
     def save(self, *args, **kwargs):

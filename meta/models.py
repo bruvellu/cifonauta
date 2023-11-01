@@ -272,38 +272,6 @@ class Media(models.Model):
                                         verbose_name=_('Especialista'), blank=True)
     software = models.CharField(_('Software'), default='', blank=True, help_text=_('Software utilizado na Imagem'))
     credit = models.CharField(_('Referências Bibliográficas'), blank=True, help_text=_('Referências bibliográficas relacionadas com a imagem.'))
-    life_stage = models.ForeignKey('Tag', 
-                                        on_delete=models.SET_NULL,
-                                        null=True, limit_choices_to={'category': 8},
-                                        related_name='life_stage_test',
-                                        verbose_name=_('Estágio de Vida'))
-    habitat = models.ForeignKey('Tag', 
-                                        on_delete=models.SET_NULL,
-                                        null=True, limit_choices_to={'category': 7},
-                                        related_name='habitat_test',
-                                        verbose_name=_('Habitat'))
-    microscopy = models.ForeignKey('Tag', 
-                                        on_delete=models.SET_NULL,
-                                        null=True, limit_choices_to={'category': 5},
-                                        related_name='microscopy_test',
-                                        verbose_name=_('Microscópia'))
-    life_style = models.ForeignKey('Tag', 
-                                        on_delete=models.SET_NULL,
-                                        null=True, limit_choices_to={'category': 2},
-                                        related_name='life_style_test',
-                                        verbose_name=_('Estilo de Vida'))
-    photographic_technique = models.ForeignKey('Tag', 
-                                        on_delete=models.SET_NULL,
-                                        null=True, limit_choices_to={'category': 1},
-                                        related_name='photographic_technique_test',
-                                        verbose_name=_('Técnica Fotográfica'))
-    several = models.ForeignKey('Tag', 
-                                        on_delete=models.SET_NULL,
-                                        null=True, limit_choices_to={'category': 6},
-                                        related_name='several_test',
-                                        verbose_name=_('Diversos'))
-    
-
 
 
     def save(self, *args, **kwargs):

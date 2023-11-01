@@ -1,73 +1,19 @@
-function selectOption(event, htmlElem) {
-  event.preventDefault()
+function closeOptionsContainer() {
+  optionsContainer.classList.add('hide-div')
+  searchOptionsInput.value = ''
+  isOptionsContainerOpened = false
 
-  const instanceId = htmlElem.htmlFor.match(/\d+/)[0]
-
-  if (!htmlElem.querySelector('input').checked) {
-    htmlElem.querySelector('input').checked = true
-
-    const tourImg = htmlElem.querySelector('.tour-img').cloneNode(true)
-    let tourInfosDiv = htmlElem.querySelector('.tour-infos-div').cloneNode(true)
-    tourInfosDiv.querySelector('a').classList.remove('tour-media-link')
-    tourInfosDiv.querySelector('a').classList.add('selected-option-media-link')
-
-    let selectedOption = document.createElement('div')
-    selectedOption.classList.add('selected-option')
-    selectedOption.append(tourImg)
-    selectedOption.append(tourInfosDiv)
-
-    let selectedOptionDiv = document.createElement('div')
-    selectedOptionDiv.classList.add('selected-option-div', `${htmlElem.htmlFor}`)
-
-    let removeBtn = document.createElement('button')
-    removeBtn.classList.add('remove-selected-option-btn')
-    removeBtn.setAttribute('onclick', `removeOption(${instanceId})`)
-    removeBtn.setAttribute('value', instanceId)
-    removeBtn.setAttribute('type', 'button')
-
-    selectedOptionDiv.append(removeBtn)
-    selectedOptionDiv.append(selectedOption)
-    selectedOptions.append(selectedOptionDiv)
-
-    
-    saveInMediaField(instanceId)
-
-  } else {
-    removeOption(instanceId)
-  }
-
-  closeInputOptions()
-  fakeInputSearch.focus()
-}
-
-function removeOption(id) {
-  saveInMediaField(id)
-  
-  let selectedOption = selectedOptions.querySelector(`.id_media_${id}`)
-  selectedOption.remove()
-
-  let elemOption = fakeInputOptionsDiv.querySelector(`[value="${id}"]`)
-  if (elemOption) {
-    elemOption.checked = false
-  }
-
-  if (selectedOptions.children.length == 0) {
-    fakeInputOptionsDiv.innerHTML = ''
+  if (optionsUl.querySelector('p')) {
+    optionsUl.innerHTML = ''
     offset = 0
-    fakeInputSearch.value = ''
     fetchToSearch()
   }
 }
 
-function saveInMediaField(id) {
-  let options = Array.from(mediaField.options)
-  let optionMedia = options.find(option => option.value == id)
-  optionMedia.selected = !optionMedia.selected
-}
-
 function fetchToSearch() {
   const url = window.location.origin
-  inputText = fakeInputSearch.value.toLowerCase()
+  inputValue = searchOptionsInput.value.toLowerCase()
+  console.log('inputValue', inputValue)
 
   let loadingMessage
   if (!fetchLoading) {
@@ -75,10 +21,10 @@ function fetchToSearch() {
     loadingMessage.innerText = 'Carregando...'
     loadingMessage.setAttribute('id', 'fetch-loading')
     fetchLoading = true
-    fakeInput.append(loadingMessage)
+    inputContainer.append(loadingMessage)
   }
 
-  fetch(`${url}/get-tour-medias?input_value=${inputText}&offset=${offset}&limit=${limit}`, {
+  fetch(`${url}/get-tour-medias?input_value=${inputValue}&offset=${offset}&limit=${limit}`, {
       method: "GET"
   })
   .then(response => {
@@ -88,15 +34,15 @@ function fetchToSearch() {
   })
   .then(data => {
     offset += limit
-    fakeInputOptionsDiv.innerHTML = ''
+    optionsUl.innerHTML = ''
 
     if (data.medias?.length == 0) {
       let paragraph = document.createElement('p')
       paragraph.innerText = 'Mídia não encontrada'
 
-      fakeInputOptionsDiv.append(paragraph)
+      optionsUl.append(paragraph)
     } else {
-      fakeInputOptionsDiv.scrollTop = 0
+      optionsUl.scrollTop = 0
       loadOptions(data.medias)
     }
   })
@@ -111,7 +57,8 @@ function fetchToSearch() {
 function fetchToLoadMore() {
   const url = window.location.origin
 
-  inputText = fakeInputSearch.value.toLowerCase()
+  inputValue = searchOptionsInput.value.toLowerCase()
+  console.log('inputValue', inputValue)
 
   let loadingMessage
   if (!fetchLoading) {
@@ -119,10 +66,10 @@ function fetchToLoadMore() {
     loadingMessage.innerText = 'Carregando...'
     loadingMessage.setAttribute('id', 'fetch-loading')
     fetchLoading = true
-    fakeInput.append(loadingMessage)
+    inputContainer.append(loadingMessage)
   }
 
-  fetch(`${url}/get-tour-medias?input_value=${inputText}&offset=${offset}&limit=${limit}`, {
+  fetch(`${url}/get-tour-medias?input_value=${inputValue}&offset=${offset}&limit=${limit}`, {
       method: "GET"
   })
   .then(response => {
@@ -144,115 +91,163 @@ function fetchToLoadMore() {
 
 function loadOptions(medias) {
   medias?.forEach(media => {
-    let label = document.createElement('label')
-    label.setAttribute('onclick', 'selectOption(event, this)')
-    label.classList.add('fake-input-label')
-    label.setAttribute('for', `id_media_${media.id}`)
+    const isSelected = selectedMediaIds.has(media.id.toString())
 
-    let input = document.createElement('input')
-    const isOptionSelected = selectedOptions.querySelector(`[value="${media.id}"]`)
-    input.checked = isOptionSelected ? true : false
-    input.hidden = true
-    input.setAttribute('class', 'input')
-    input.setAttribute('type', 'checkbox')
-    input.setAttribute('name', 'media2')
-    input.setAttribute('value', media.id)
-    label.setAttribute('id', `id_media_${media.id}`)
-
-    let mediaType
-    if (media.datatype == 'video') {
-      mediaType = document.createElement('video')
-    } else {
-      mediaType = document.createElement('img')
+    let li = document.createElement('li')
+    li.id = `option_${media.id}`
+    li.classList.add('media-option')
+    console.log(isSelected)
+    if (isSelected) {
+      li.classList.add('media-option-selected')
     }
-    mediaType.classList.add('tour-img', `size-${media.size}`)
-    mediaType.setAttribute('src', media.coverpath)
+    li.setAttribute('onclick', 'selectOption(event, this)')
 
-    let tourInfosDiv = document.createElement('div')
-    tourInfosDiv.setAttribute('class', 'tour-infos-div')
+    let optionCover
+    if (media.datatype == 'video') {
+      optionCover = document.createElement('video')
+    } else {
+      optionCover = document.createElement('img')
+    }
+    optionCover.classList.add('option-cover', `size-${media.size}`)
+    optionCover.setAttribute('src', media.coverpath)
 
-    let tourMediaLink = document.createElement('a')
-    tourMediaLink.setAttribute('class', 'tour-media-link')
+    let optionInfos = document.createElement('div')
+    optionInfos.setAttribute('class', 'option-infos')
+
+    let optionTitle = document.createElement('a')
+    optionTitle.setAttribute('class', 'option-title')
     //BOTAR O HREF
-    tourMediaLink.setAttribute('href', '')
-    tourMediaLink.setAttribute('target', '_blank')
-    tourMediaLink.innerText = media.title
+    optionTitle.setAttribute('href', '')
+    optionTitle.setAttribute('tabindex', '-1')
+    optionTitle.setAttribute('target', '_blank')
+    optionTitle.innerText = media.title
 
     let span = document.createElement('span')
     span.innerText = media.datatype == 'video' ? 'Vídeo' : 'Foto'
 
-    tourInfosDiv.append(tourMediaLink, span)
-    label.append(input, mediaType, tourInfosDiv)
+    optionInfos.append(optionTitle, span)
+    li.append(optionCover, optionInfos)
 
-    fakeInputOptionsDiv.append(label)
+    optionsUl.append(li)
   })
   
 }
 
-function closeInputOptions() {
-  fakeInputOptionsDiv.classList.add('hide-div')
-  fakeInputSearch.value = ''
-  isInputOptionsOpened = false
+function selectOption(event, optionClicked) {
+  event.preventDefault()
 
-  if (fakeInputOptionsDiv.querySelector('p')) {
-    fakeInputOptionsDiv.innerHTML = ''
+  const optionClickedId = optionClicked.id.match(/\d+/)[0]
+
+  if (!selectedMediaIds.has(optionClickedId)) {
+    selectedMediaIds.add(optionClickedId)
+    optionClicked.classList.add('media-option-selected')
+
+    let hiddenInput = document.createElement('input')
+    hiddenInput.hidden = true
+    hiddenInput.setAttribute('name', 'selected_media')
+    hiddenInput.value = optionClickedId
+
+    let selectedOption = document.createElement('div')
+    selectedOption.classList.add('selected-option')
+    selectedOption.id = `selected_${optionClickedId}`
+
+    let removeBtn = document.createElement('button')
+    removeBtn.classList.add('remove-selected-option-btn')
+    removeBtn.setAttribute('onclick', `removeOption(${optionClickedId})`)
+    removeBtn.setAttribute('value', optionClickedId)
+    removeBtn.setAttribute('type', 'button')
+
+    let optionInfosWrapper = document.createElement('div')
+    optionInfosWrapper.classList.add('option-infos-wrapper')
+
+    let optionCover = optionClicked.querySelector('.option-cover').cloneNode(true)
+    let optionInfos = optionClicked.querySelector('.option-infos').cloneNode(true)
+    let optionTitle = optionInfos.querySelector('.option-title')
+    optionTitle.classList.remove('option-title')
+    optionTitle.classList.add('selected-option-cover-link')
+
+    selectedOption.append(hiddenInput, removeBtn)
+    optionInfosWrapper.append(optionCover, optionInfos)
+    selectedOption.append(optionInfosWrapper)
+
+    selectedOptionsContainer.append(selectedOption)
+
+  } else {
+    removeOption(optionClickedId)
+  }
+
+  closeOptionsContainer()
+  searchOptionsInput.focus()
+}
+
+function removeOption(id) {
+  let selectedOption = selectedOptionsContainer.querySelector(`#selected_${id}`)
+  selectedOption.remove()
+
+  let option = optionsContainer.querySelector(`#option_${id}`)
+  option?.classList.remove('media-option-selected')
+
+  selectedMediaIds.delete(id.toString())
+
+  if (selectedOptionsContainer.children.length == 0) {
+    optionsUl.innerHTML = ''
     offset = 0
+    searchOptionsInput.value = ''
     fetchToSearch()
   }
 }
 
-let fakeInputOptionsDiv = document.querySelector('.fake-input-options-div')
-let fakeInput = document.querySelector('.fake-input')
-let fakeInputSearch = document.querySelector('#fake-input-search')
-let selectedOptions = document.querySelector('#selected-options')
-let mediaOptions = document.querySelectorAll('.fake-input-label')
-let mediaField = document.querySelector('#id_media')
-mediaField.style.display = 'none'
+
+
+let inputContainer = document.querySelector('#input-container')
+let selectedOptionsContainer = document.querySelector('#selected-options-container')
+let searchOptionsInput = document.querySelector('#search-options-input')
+let optionsContainer = document.querySelector('#options-container')
+let optionsUl = document.querySelector('#options-ul')
 let fetchLoading = false
 let delayFetch
 let offset = 20
 let limit = 20
+let isOptionsContainerOpened = false
 
-fakeInputSearch.addEventListener('input', () => {
+// Get the IDs of the medias initially selected
+let selectedMediaIds = new Set()
+let selectedOptions = Array.from(selectedOptionsContainer.querySelectorAll('.selected-option'))
+selectedOptions.forEach(selectedOption => {
+  selectedMediaIds.add(selectedOption.id.match(/\d+/)[0]) // Getting the id in selected_7
+})
+
+
+
+inputContainer.addEventListener('click', () => {
+  isOptionsContainerOpened = true
+  optionsContainer.classList.remove('hide-div')
+  optionsContainer.scrollIntoView({ block: 'center'})
+  searchOptionsInput.focus()
+})
+
+document.addEventListener('click', (event)=>{
+  if (!optionsContainer.contains(event.target) && 
+      !inputContainer.contains(event.target) &&
+      isOptionsContainerOpened) {
+        closeOptionsContainer()
+  }
+})
+
+searchOptionsInput.addEventListener('input', () => {
   if (delayFetch) {
     clearTimeout(delayFetch);
   }
 
   offset = 0
-  
-  inputText = fakeInputSearch.value.toLowerCase()
 
   delayFetch = setTimeout(() => {
     fetchToSearch()
   }, 300)
 })
 
-
-fakeInput.addEventListener('click', () => {
-  isInputOptionsOpened = true
-  fakeInputOptionsDiv.classList.remove('hide-div')
-  fakeInputOptionsDiv.scrollIntoView({ block: 'center'})
-  fakeInputSearch.focus()
-})
-
-let tourForm = document.querySelector('.tour-form')
-tourForm.addEventListener('submit', (e) => {
-  if (document.activeElement == fakeInputSearch) {
-    e.preventDefault()
-  }
-})
-
-fakeInputOptionsDiv.addEventListener('scroll', () => {
-  if (fakeInputOptionsDiv.scrollTop + fakeInputOptionsDiv.clientHeight >= fakeInputOptionsDiv.scrollHeight) {
+optionsContainer.addEventListener('scroll', () => {
+  if (optionsContainer.scrollTop + optionsContainer.clientHeight >= optionsContainer.scrollHeight) {
     fetchToLoadMore()
-  }
-})
-
-let isInputOptionsOpened = false
-document.addEventListener('click', (event)=>{
-  if (!fakeInputOptionsDiv.contains(event.target) && 
-      !fakeInput.contains(event.target) &&
-      isInputOptionsOpened) {
-          closeInputOptions()
   }
 })

@@ -845,7 +845,14 @@ def dashboard_tour_add(request):
     if request.method == 'POST':
         form = TourForm(request.POST)
         if form.is_valid():
-            form.save()
+            tour_instance = form.save(commit=False)
+
+            tour_instance.save()
+
+            selected_media_ids = request.POST.getlist('selected_media')
+            medias = Media.objects.filter(id__in=selected_media_ids)
+            tour_instance.media.set(medias)
+
             messages.success(request, 'Tour temático criado com sucesso')
             return redirect('dashboard_tour_list')
         
@@ -858,7 +865,7 @@ def dashboard_tour_add(request):
     for curatorship in curatorships:
         taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
     medias = Media.objects.filter(taxon__id__in=taxon_ids, status='published').distinct()
-    form.fields['media'].queryset = medias
+    
     form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
     initial_medias = [*medias][:20]
@@ -887,7 +894,14 @@ def dashboard_tour_edit(request, pk):
 
         form = TourForm(request.POST, instance=tour)
         if form.is_valid():
-            form.save()
+            tour_instance = form.save(commit=False)
+
+            tour_instance.save()
+
+            selected_media_ids = request.POST.getlist('selected_media')
+            medias = Media.objects.filter(id__in=selected_media_ids)
+            tour_instance.media.set(medias)
+
             messages.success(request, f'Tour {tour.name} editado com sucesso')
         else:
             messages.error(request, 'Houve um erro ao tentar editar o tour')
@@ -900,7 +914,6 @@ def dashboard_tour_edit(request, pk):
         taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
     medias = Media.objects.filter(taxon__id__in=taxon_ids, status='published').distinct()
     
-    form.fields['media'].queryset = medias
     form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
     medias_related = tour.media.all()

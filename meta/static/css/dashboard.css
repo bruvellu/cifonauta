@@ -648,8 +648,10 @@ tr, th {
     font-weight: bold;
 } */
 
+
+
 /* TOURS */
-.fake-input {
+#input-container {
     display: flex;
     align-items: center;
     gap: .4rem;
@@ -660,20 +662,13 @@ tr, th {
     width: 24rem;
 }
 
-#selected-options {
+#selected-options-container {
     display: flex;
     gap: 0.4rem;
     flex-wrap: wrap;
 }
 
-#fake-input-search {
-    background-color: transparent;
-    border: none;
-    outline: none;
-    height: auto;
-}
-
-.selected-option-div {
+.selected-option {
     display: flex;
     background-color: #E4E4E4;
     border: 1px solid #0000003d;
@@ -698,40 +693,13 @@ tr, th {
     color: #000000a1;
 }
 
-.selected-option-media-link {
-    color: #607890 !important;
-    text-decoration: underline;
-}
-
-.selected-option-media-link:hover {
-    color: rgb(61, 76, 92) !important;
-}
-
-
-.fake-input-options-div {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid black;
-    border-radius: 3px;
-    max-height: 15rem;
-    overflow-y: auto;
-}
-
-.fake-input-label, .selected-option {
+.option-infos-wrapper {
     display: flex;
     gap: .5rem;
     padding: .2rem .5rem;
 }
 
-.fake-input-label:hover {
-    background-color: #6fa6ff !important;
-}
-
-.fake-input-label:has(input:checked) {
-    background-color: #cecece;
-}
-
-.tour-img {
+.option-cover {
     width: 7rem;
     height: 5rem;
     object-fit: cover;
@@ -741,12 +709,52 @@ tr, th {
     border: 0.313rem solid #eee;
 }
 
-.tour-infos-div {
+.option-infos {
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-.tour-media-link {
+.selected-option-cover-link {
+    color: #607890 !important;
+    text-decoration: underline;
+}
+
+.selected-option-cover-link:hover {
+    color: rgb(61, 76, 92) !important;
+}
+
+#search-options-input {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    height: auto;
+}
+
+#options-container {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    border-radius: 3px;
+    max-height: 15rem;
+    overflow-y: auto;
+}
+
+.media-option {
+    display: flex;
+    gap: .5rem;
+    padding: .2rem .5rem;
+}
+
+.media-option:hover {
+    background-color: #6fa6ff;
+}
+
+.media-option-selected {
+    background-color: #cecece;
+}
+
+.option-title {
     color: #323232 !important;
+    font-weight: bold;
 }

@@ -114,13 +114,6 @@ class Media(models.Model):
                                      help_text=_('Autores associados a este arquivo.'), related_name='authors')
     specialists = models.ManyToManyField('Person', blank=True, verbose_name=_('especialistas associados'),
                                      help_text=_('Especialistas associados a este arquivo.'), related_name='specialists')
-
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
-                               verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
-    co_author = models.ManyToManyField('Person', blank=True, verbose_name=_('coautor'),
-                                       help_text=_('Coautor(es) da mídia'), related_name='co_author')
-    specialist = models.ManyToManyField('Person',  related_name="pessoas",
-                                        verbose_name=_('Especialista'), blank=True)
     terms = models.BooleanField(_('termos'), default=False)
     license = models.CharField(_('Licença'), max_length=60, choices=LICENSE_CHOICES,
                                default='cc0', help_text=_('Tipo de licença que a mídia terá'))
@@ -180,6 +173,12 @@ class Media(models.Model):
                                       help_text=_('Campo que guarda o vetor de busca.'))
 
     # Fields to be deleted
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
+                               verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
+    co_author = models.ManyToManyField('Person', blank=True, verbose_name=_('coautor'),
+                                       help_text=_('Coautor(es) da mídia'), related_name='co_author')
+    specialist = models.ManyToManyField('Person',  related_name="pessoas",
+                                        verbose_name=_('Especialista'), blank=True)
     software = models.CharField(_('Software'), default='', blank=True, help_text=_('Software utilizado na Imagem'))
     life_stage = models.ForeignKey('Tag', 
                                         on_delete=models.SET_NULL,

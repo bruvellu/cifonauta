@@ -94,10 +94,25 @@ class Media(models.Model):
                        ('cc_by_nc_sa', _('CC BY-NC-SA (AtribuiçãoNãoComercial-CompartilhaIgual)')),
                        ('cc_by_nc_nd', _('CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')),)
 
+    # Fields related to file handling
+    file = models.FileField(upload_to='uploads/', default=None, null=True)
+    filepath = models.CharField(_('arquivo original.'), max_length=200,
+                                help_text=_('Caminho único para arquivo original.'))
+    sitepath = models.FileField(_('arquivo web.'), default=None,
+                                help_text=_('Arquivo processado para a web.'))
+    coverpath = models.ImageField(_('amostra do arquivo.'), default=None,
+                                  help_text=_('Imagem de amostra do arquivo processado.'))
+    datatype = models.CharField(_('tipo de mídia'), max_length=15,
+                                help_text=_('Tipo de mídia.'))
+    timestamp = models.DateTimeField(_('data de modificação'), blank=True, default=timezone.now,
+                                     help_text=_('Data da última modificação do arquivo.'))
+
+
+
+
     metadata_error = models.BooleanField(verbose_name=_('Erro nos metadados'), default=False)
 
     # New fields
-    file = models.FileField(upload_to='uploads/', default=None, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
             verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
     co_author = models.ManyToManyField('Person', blank=True,
@@ -106,26 +121,16 @@ class Media(models.Model):
             default='not_edited', help_text=_('Status da mídia.'))
     license = models.CharField(_('Licença'), max_length=60, choices=LICENSE_CHOICES, default='cc0',
         help_text=_('Tipo de licença que a mídia terá'))
-    terms = models.BooleanField(_('termos'), default=False)
-    
-    credit = models.CharField(_('Referências Bibliográficas'), blank=True, help_text=_('Referências bibliográficas relacionadas com a imagem.'))
 
-    # File
-    filepath = models.CharField(_('arquivo original.'), max_length=200, help_text=_('Caminho único para arquivo original.'))
-    sitepath = models.FileField(_('arquivo web.'),
-            help_text=_('Arquivo processado para a web.'), default=None)
-    coverpath = models.ImageField(_('amostra do arquivo.'),
-            help_text=_('Imagem de amostra do arquivo processado.'), default=None)
-    datatype = models.CharField(_('tipo de mídia'), max_length=15,
-            help_text=_('Tipo de mídia.'))
-    timestamp = models.DateTimeField(_('data de modificação'), blank=True, default=timezone.now,
-            help_text=_('Data da última modificação do arquivo.'))
+    terms = models.BooleanField(_('termos'), default=False)
+    credit = models.CharField(_('Referências Bibliográficas'), blank=True, help_text=_('Referências bibliográficas relacionadas com a imagem.'))
 
     # Website
     old_image = models.PositiveIntegerField(default=0, blank=True,
             help_text=_('ID da imagem no antigo modelo.'))
     old_video = models.PositiveIntegerField(default=0, blank=True,
             help_text=_('ID do vídeo no antigo modelo.'))
+
     highlight = models.BooleanField(_('destaque'), default=False,
             help_text=_('Imagem que merece destaque.'))
     is_public = models.BooleanField(_('público'), default=False,

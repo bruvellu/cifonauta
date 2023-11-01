@@ -111,7 +111,9 @@ class Media(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name=_('usuário do arquivo'),
                              help_text=_('Usuário que fez o upload do arquivo.'), related_name='user')
     authors = models.ManyToManyField('Person', blank=True, verbose_name=_('autores do arquivo'),
-                                     help_text=_('Autores associates a este arquivo.'), related_name='authors')
+                                     help_text=_('Autores associados a este arquivo.'), related_name='authors')
+    specialists = models.ManyToManyField('Person', blank=True, verbose_name=_('especialistas associados'),
+                                     help_text=_('Especialistas associados a este arquivo.'), related_name='specialists')
 
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
                                verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')

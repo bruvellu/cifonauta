@@ -556,7 +556,7 @@ class MyMedias(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = super().get_queryset().filter(author=user).order_by('-pk')
+        queryset = super().get_queryset().filter(user=user).order_by('-pk')
         return queryset
     
     def get_context_data(self, **kwargs):

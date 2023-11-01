@@ -108,6 +108,8 @@ class Media(models.Model):
                                      help_text=_('Data da última modificação do arquivo.'))
 
     # Fields related to authorship
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, verbose_name=_('user'),
+                             help_text=_('Usuário que fez o upload do arquivo.'), related_name='user')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
                                verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
     co_author = models.ManyToManyField('Person', blank=True, verbose_name=_('coautor'),

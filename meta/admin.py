@@ -23,7 +23,7 @@ class ModifiedMediaAdmin(admin.ModelAdmin):
 class TagAdmin(TranslationAdmin):
     list_display = ('name', 'description', 'category')
     list_filter = ('category',)
-    filter_horizontal = ('media_files',)
+    filter_horizontal = ('media',)
     search_fields = ['name', 'description']
 
 

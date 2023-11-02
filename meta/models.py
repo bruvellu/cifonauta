@@ -218,7 +218,7 @@ class Media(models.Model):
                                   blank=True,
                                   verbose_name=_('marcadores da mídia'),
                                   help_text=_('Marcadores associados com esta mídia.'),
-                                  related_name='media_files')
+                                  related_name='media')
     references = models.ManyToManyField('Reference',
                                         blank=True,
                                         verbose_name=_('referências da mídia'),

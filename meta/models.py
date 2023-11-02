@@ -322,8 +322,6 @@ class Person(models.Model):
             help_text=_('Nome do autor.'))
     slug = models.SlugField(_('slug'), max_length=200, unique=True, blank=True,
             help_text=_('Slug do nome do autor.'))
-    is_author = models.BooleanField(_('author'), default=False,
-            help_text=_('Informa se a pessoa é autora.'))
     orcid = models.CharField('Orcid', blank=True, null=True, max_length=16)
     idlattes = models.CharField('IDLattes', blank=True, null=True, max_length=16)
     email = models.EmailField(verbose_name='Email', blank=True, null=True)

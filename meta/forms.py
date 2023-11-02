@@ -8,9 +8,8 @@ from user.models import UserCifonauta
 
 
 METAS = (
-        ('person', _('autor')),
+        ('author', _('autor')),
         ('taxon', _('táxon')),
-        # ('size', _('tamanho')),
         ('location', _('local')),
         ('city', _('cidade')),
         ('state', _('estado')),

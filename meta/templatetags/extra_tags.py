@@ -134,14 +134,14 @@ def show_related(context, media, form, related):
         choices[c[0]] = c[1]
 
     # Se o choice escolhido no navegador for:
-    if related == 'person':
+    if related == 'author':
         # Salva queryset para performance.
-        persons = media.person_set.all()
-        if persons:
+        authors = media.authors.all()
+        if authors:
             qobj = Q()
-            for meta in persons:
+            for meta in authors:
                 # Adiciona parâmetros para futuro query usando Q.
-                qobj.add(Q(person=meta), Q.OR)
+                qobj.add(Q(authors=meta), Q.OR)
             if qobj.__len__():
                 # Se objeto não estiver vazio, descobrir seu tipo (foto ou vídeo) e gerar o queryset.
                 query = mediaque(media, qobj)
@@ -157,7 +157,7 @@ def show_related(context, media, form, related):
         if taxa:
             qobj = Q()
             for meta in taxa:
-                qobj.add(Q(taxon=meta), Q.OR)
+                qobj.add(Q(taxa=meta), Q.OR)
             if qobj.__len__():
                 query = mediaque(media, qobj)
                 rel_media, relative = slicer(query, media.id)
@@ -165,15 +165,6 @@ def show_related(context, media, form, related):
                 rel_media = ''
         else:
             rel_media = ''
-
-    # FIXME: Size is not an object anymore, disable for now.
-    # elif related == 'size':
-        # if media.size:
-            # qobj = Q(size=media.size_id)
-            # query = mediaque(media, qobj)
-            # rel_media, relative = slicer(query, media.id)
-        # else:
-            # rel_media = ''
 
     elif related == 'location':
         if media.location:
@@ -211,8 +202,8 @@ def show_related(context, media, form, related):
         rel_media = ''
 
     # Mostra os valores avaliados para o navegador linear.
-    if related == 'person':
-        crumbs = persons
+    if related == 'author':
+        crumbs = authors
     elif related == 'taxon':
         crumbs = taxa
     else:

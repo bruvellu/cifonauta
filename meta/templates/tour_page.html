@@ -106,7 +106,7 @@
             <br>
             {% endif %}
 
-            {% with tag_all=media.tag_set.all %}
+            {% with tag_all=media.tags.all %}
             {% if tag_all %}
             <strong>{% blocktrans count counter=tag_all.count %}Marcador{% plural %}Marcadores{% endblocktrans %}:</strong> <span>{% show_set tag_all '' '' ', ' '' %}</span>
             <br>

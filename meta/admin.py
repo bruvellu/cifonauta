@@ -15,7 +15,7 @@ class FlatPageAdmin(TranslationAdmin):
 
 class MediaAdmin(TranslationAdmin):
     list_display = ('title', 'status', 'highlight', 'file', 'user', 'pub_date')
-    list_filter = ('is_public', 'highlight', 'timestamp', 'authors', 'tag', 'taxon', 'specialists')
+    list_filter = ('is_public', 'highlight', 'timestamp', 'authors', 'tags', 'taxon', 'specialists')
 
 class ModifiedMediaAdmin(admin.ModelAdmin):
     list_display = ('title',)
@@ -23,7 +23,7 @@ class ModifiedMediaAdmin(admin.ModelAdmin):
 class TagAdmin(TranslationAdmin):
     list_display = ('name', 'description', 'category')
     list_filter = ('category',)
-    filter_horizontal = ('media',)
+    filter_horizontal = ('media_files',)
     search_fields = ['name', 'description']
 
 

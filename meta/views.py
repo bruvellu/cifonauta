@@ -1048,7 +1048,7 @@ def search_page(request, model_name='', field='', slug=''):
         if 'tag' in query_dict:
             get_tags = query_dict.getlist('tag')
             tags = Tag.objects.filter(id__in=get_tags)
-            media_list = filter_request(media_list, tags, 'tag', operator)
+            media_list = filter_request(media_list, tags, 'tags', operator)
             form_tags = list(get_tags)
         else:
             form_tags = []
@@ -1147,6 +1147,7 @@ def search_page(request, model_name='', field='', slug=''):
             'order': order,
             'operator': operator,
             'author': form_authors,
+            'specialist': form_specialists,
             'tag': form_tags,
             'location': form_locations,
             'city': form_cities,
@@ -1295,7 +1296,7 @@ def media_page(request, media_id):
                 'tours': tour_list
                 })
 
-    tags = media.tag_set.all()
+    tags = media.tags.all()
     authors = media.authors.all()
     specialists = media.specialists.all()
     taxa = media.taxon_set.all()
@@ -1473,7 +1474,7 @@ def extract_set(media_list):
 
     authors = Person.objects.filter(id__in=media_list.values_list('authors', flat=True))
     specialists = Person.objects.filter(id__in=media_list.values_list('specialists', flat=True))
-    tags = Tag.objects.filter(id__in=media_list.values_list('tag', flat=True))
+    tags = Tag.objects.filter(id__in=media_list.values_list('tags', flat=True))
     taxa = Taxon.objects.filter(id__in=media_list.values_list('taxon', flat=True))
     locations = Location.objects.filter(id__in=media_list.values_list('location', flat=True))
     cities = City.objects.filter(id__in=media_list.values_list('city', flat=True))

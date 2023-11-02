@@ -345,9 +345,6 @@ class Tag(models.Model):
             help_text=_('Slug do nome do marcador.'))
     description = models.TextField(_('descrição'), default='', blank=True,
             help_text=_('Descrição do marcador.'))
-    media = models.ManyToManyField('Media', blank=True,
-            verbose_name=_('arquivos'),
-            help_text=_('Arquivos associados a este marcador.'))
     category = models.ForeignKey('Category', on_delete=models.SET_NULL,
             null=True, blank=True, related_name='tags',
             verbose_name=_('categorias'),

@@ -1057,7 +1057,7 @@ def search_page(request, model_name='', field='', slug=''):
         if 'taxon' in query_dict:
             get_taxa = query_dict.getlist('taxon')
             taxa = Taxon.objects.filter(id__in=get_taxa)
-            media_list = filter_request(media_list, taxa, 'taxon', operator)
+            media_list = filter_request(media_list, taxa, 'taxa', operator)
             form_taxa = list(get_taxa)
         else:
             form_taxa = []
@@ -1219,7 +1219,7 @@ def old_media(request, datatype, old_id):
 
 # Single media file
 def media_page(request, media_id):
-    '''Invididual page for media file with all the information.'''
+    '''Individual page for media file with all the information.'''
 
     # Get object.
     media = get_object_or_404(Media.objects.select_related('location', 'city', 'state', 'country'), id=media_id)
@@ -1299,7 +1299,7 @@ def media_page(request, media_id):
     tags = media.tags.all()
     authors = media.authors.all()
     specialists = media.specialists.all()
-    taxa = media.taxon_set.all()
+    taxa = media.taxa.all()
     references = media.reference_set.all()
     filename, file_extension = os.path.splitext(str(media.coverpath))
 
@@ -1475,7 +1475,7 @@ def extract_set(media_list):
     authors = Person.objects.filter(id__in=media_list.values_list('authors', flat=True))
     specialists = Person.objects.filter(id__in=media_list.values_list('specialists', flat=True))
     tags = Tag.objects.filter(id__in=media_list.values_list('tags', flat=True))
-    taxa = Taxon.objects.filter(id__in=media_list.values_list('taxon', flat=True))
+    taxa = Taxon.objects.filter(id__in=media_list.values_list('taxa', flat=True))
     locations = Location.objects.filter(id__in=media_list.values_list('location', flat=True))
     cities = City.objects.filter(id__in=media_list.values_list('city', flat=True))
     states = State.objects.filter(id__in=media_list.values_list('state', flat=True))
@@ -1512,7 +1512,7 @@ def filter_request(media_list, objects, field, operator):
     # Loop over objects
     for obj in objects:
         # If taxon, also get queries for descendants
-        if field == 'taxon':
+        if field == 'taxa':
             # Store taxon queries separately (include current obj)
             taxa = [Q(**{field: obj})]
             children = obj.get_descendants()

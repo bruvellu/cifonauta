@@ -85,7 +85,7 @@
             {% endif %}
             {% endwith %}
 
-            {% with taxa_all=media.taxon_set.all %}
+            {% with taxa_all=media.taxa.all %}
             {% if taxa_all %}
             <strong>{% blocktrans count counter=taxa_all.count %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set taxa_all '' '' ', ' '' %}</span>
             <br>

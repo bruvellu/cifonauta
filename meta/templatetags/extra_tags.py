@@ -153,7 +153,7 @@ def show_related(context, media, form, related):
             rel_media = ''
 
     elif related == 'taxon':
-        taxa = media.taxon_set.all()
+        taxa = media.taxa.all()
         if taxa:
             qobj = Q()
             for meta in taxa:

@@ -213,7 +213,7 @@ class Media(models.Model):
                                   blank=True,
                                   verbose_name=_('táxons da mídia'),
                                   help_text=_('Grupos taxonômicos associados com esta mídia.'),
-                                  related_name='media_files')
+                                  related_name='media')
     tags = models.ManyToManyField('Tag',
                                   blank=True,
                                   verbose_name=_('marcadores da mídia'),
@@ -400,9 +400,6 @@ class Taxon(MPTTModel):
     valid_taxon = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,
             null=True, related_name='synonyms', verbose_name=_('táxon válido'),
             help_text=_('Sinônimo válido deste táxon.'))
-    media = models.ManyToManyField('Media', blank=True,
-            verbose_name=_('arquivos'),
-            help_text=_('Arquivos associados a este táxon.'))
     timestamp = models.DateTimeField(_('data de modificação'), auto_now=True,
             blank=True, null=True, help_text=_('Data da última modificação do arquivo.'))
 

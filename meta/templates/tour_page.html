@@ -17,6 +17,10 @@
 {% show_set authors '' '' ', ' '' %}
 {% endblock %}
 
+{% block meta-specialist %}
+{% show_set specialists '' '' ', ' '' %}
+{% endblock %}
+
 {% block extra-head %}
 <link rel="stylesheet" href="{{ STATIC_URL }}css/tour_page.css">
 <meta property="og:title" content="{{ tour.name }}" />
@@ -148,21 +152,12 @@
 <div class="last metagroup">
   <h2>{% trans 'Ficha Técnica' %}</h2>
   <ul class="metalist">
-    <li>
-    <strong>{% trans 'Número de imagens' %}:</strong> {{ tour.media.count }}
-    </li>
-    <li>
-    <strong>{% trans 'Data de criação' %}:</strong> {{ tour.pub_date }}
-    </li>
-    <li>
-    <strong>{% trans 'Última modificação' %}:</strong> {{ tour.timestamp }}
-    </li>
-    <li>
-    <strong>{% trans 'Táxons representados' %}:</strong> {% show_set taxa '' '' ', ' 'link' %}
-    </li>
-    <li>
-    <strong>{% trans 'Marcadores presentes' %}:</strong> {% show_set tags '' '' ', ' 'link' %}
-    </li>
+    <li><strong>{% trans 'Número de imagens' %}:</strong> {{ tour.media.count }}</li>
+    <li><strong>{% trans 'Data de criação' %}:</strong> {{ tour.pub_date }}</li>
+    <li><strong>{% trans 'Última modificação' %}:</strong> {{ tour.timestamp }}</li>
+    <li><strong>{% trans 'Autores envolvidos' %}:</strong> {% show_set authors '' '' ', ' 'link' %}</li>
+    <li><strong>{% trans 'Táxons representados' %}:</strong> {% show_set taxa '' '' ', ' 'link' %}</li>
+    <li><strong>{% trans 'Marcadores presentes' %}:</strong> {% show_set tags '' '' ', ' 'link' %}</li>
   </ul>
 </div>
 </article>

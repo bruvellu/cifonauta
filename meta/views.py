@@ -1020,17 +1020,29 @@ def search_page(request, model_name='', field='', slug=''):
 
         # Author
         if 'author' in query_dict:
-            # Extract objects from query_dict.
+            # Extract objects from query_dict
             get_authors = query_dict.getlist('author')
+            # Get instances from the query_dict IDs
             authors = Person.objects.filter(id__in=get_authors)
-
-            # Filter media by field and operator.
-            media_list = filter_request(media_list, authors, 'person', operator)
-
-            # Fill form with values.
+            # Filter media by field and operator
+            media_list = filter_request(media_list, authors, 'authors', operator)
+            # Fill the form with proper values
             form_authors = list(get_authors)
         else:
             form_authors = []
+
+        # Specialist
+        if 'specialist' in query_dict:
+            # Extract objects from query_dict
+            get_specialists = query_dict.getlist('specialist')
+            # Get instances from the query_dict IDs
+            specialists = Person.objects.filter(id__in=get_specialists)
+            # Filter media by field and operator
+            media_list = filter_request(media_list, specialists, 'specialists', operator)
+            # Fill the form with proper values
+            form_specialists = list(get_specialists)
+        else:
+            form_specialists = []
 
         # Tag
         if 'tag' in query_dict:
@@ -1323,9 +1335,7 @@ def tour_page(request, slug):
         thumb = ''
 
     # Extract media metadata.
-    # TODO: Do I really need to get all of these?
-    authors, taxa, locations, cities, states, countries, tags = extract_set(entries)
-    # Only using authors/taxa/tags for meta keywords.
+    authors, specialists, taxa, locations, cities, states, countries, tags = extract_set(entries)
 
     context = {
         'tour': tour,
@@ -1461,7 +1471,8 @@ def extract_set(media_list):
     Returns invididual querysets for each model.
     '''
 
-    authors = Person.objects.filter(id__in=media_list.values_list('person', flat=True))
+    authors = Person.objects.filter(id__in=media_list.values_list('authors', flat=True))
+    specialists = Person.objects.filter(id__in=media_list.values_list('specialists', flat=True))
     tags = Tag.objects.filter(id__in=media_list.values_list('tag', flat=True))
     taxa = Taxon.objects.filter(id__in=media_list.values_list('taxon', flat=True))
     locations = Location.objects.filter(id__in=media_list.values_list('location', flat=True))
@@ -1469,7 +1480,7 @@ def extract_set(media_list):
     states = State.objects.filter(id__in=media_list.values_list('state', flat=True))
     countries = Country.objects.filter(id__in=media_list.values_list('country', flat=True))
 
-    return authors, taxa, locations, cities, states, countries, tags
+    return authors, specialists, taxa, locations, cities, states, countries, tags
 
 
 def add_meta(meta, field, query):

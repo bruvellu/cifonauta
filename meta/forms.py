@@ -218,6 +218,12 @@ class DisplayForm(forms.Form):
                                                 attrs={"class": "select2-options",
                                                        "multiple": "multiple"}),
                                             label=_('Autores'),)
+    specialist = forms.ModelMultipleChoiceField(required=False,
+                                                queryset=Person.objects.all(),
+                                                widget=forms.SelectMultiple(
+                                                    attrs={"class": "select2-options",
+                                                           "multiple": "multiple"}),
+                                                label=_('Especialistas'),)
     location = forms.ModelMultipleChoiceField(required=False,
                                          queryset=Location.objects.all(),
                                          widget=forms.SelectMultiple(

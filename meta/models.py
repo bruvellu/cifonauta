@@ -324,9 +324,6 @@ class Person(models.Model):
             help_text=_('Slug do nome do autor.'))
     is_author = models.BooleanField(_('author'), default=False,
             help_text=_('Informa se a pessoa é autora.'))
-    media = models.ManyToManyField('Media', blank=True,
-            verbose_name=_('arquivos'),
-            help_text=_('Arquivos associados a este autor.'))
     orcid = models.CharField('Orcid', blank=True, null=True, max_length=16)
     idlattes = models.CharField('IDLattes', blank=True, null=True, max_length=16)
     email = models.EmailField(verbose_name='Email', blank=True, null=True)

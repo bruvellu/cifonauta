@@ -15,7 +15,7 @@ class FlatPageAdmin(TranslationAdmin):
 
 class MediaAdmin(TranslationAdmin):
     list_display = ('title', 'status', 'highlight', 'file', 'user', 'pub_date')
-    list_filter = ('is_public', 'highlight', 'timestamp', 'person', 'tag', 'taxon')
+    list_filter = ('is_public', 'highlight', 'timestamp', 'authors', 'tag', 'taxon', 'specialists')
 
 class ModifiedMediaAdmin(admin.ModelAdmin):
     list_display = ('title',)
@@ -44,7 +44,7 @@ class CountryAdmin(TranslationAdmin):
 
 
 class PersonAdmin(admin.ModelAdmin):
-    filter_horizontal = ('media',)
+    filter_horizontal = ()
     search_fields = ('name', 'email')
 
     def delete_queryset(self, request, queryset):

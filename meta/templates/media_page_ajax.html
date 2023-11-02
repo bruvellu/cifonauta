@@ -3,7 +3,8 @@
 
 <div id="ajaxcontent">
   {% if media %}
-  <article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} TIRAR_ISSOsize-{{ media.size }} {% show_set sources 'source-' '' ' ' 'slug' %} location-{{ media.location.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }}">
+  <article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} {% show_set specialists 'specialist-' '' ' ' 'slug' %} location-{{ media.location.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }}">
+{% comment %}This is coloring the entire article: size-{{ media.size }} {% endcomment %}
     <header>
       <h1>{{ media.title }}</h1>
     </header>
@@ -53,8 +54,8 @@
               <br>
               {% endif %}
     
-              {% if sources %}
-              <strong>{% blocktrans count counter=sources.count %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set sources '' '' ', ' '' %}</span>
+              {% if specialists %}
+              <strong>{% blocktrans count counter=specialists.count %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set specialists '' '' ', ' '' %}</span>
               {% endif %}
             </div>
     

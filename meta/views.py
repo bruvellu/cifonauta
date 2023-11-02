@@ -1284,8 +1284,8 @@ def media_page(request, media_id):
                 })
 
     tags = media.tag_set.all()
-    authors = media.person_set.filter(is_author=True)
-    sources = media.person_set.filter(is_author=False)
+    authors = media.authors.all()
+    specialists = media.specialists.all()
     taxa = media.taxon_set.all()
     references = media.reference_set.all()
     filename, file_extension = os.path.splitext(str(media.coverpath))
@@ -1298,7 +1298,7 @@ def media_page(request, media_id):
         'tags': tags,
         'authors': authors,
         'taxa': taxa,
-        'sources': sources,
+        'specialists': specialists,
         'references': references,
         'file_extension': file_extension
         }
@@ -1378,12 +1378,17 @@ def tags_page(request):
 
 
 def authors_page(request):
-    '''Página mostrando autores e especialistas.'''
-    authors = Person.objects.filter(is_author=True).order_by('name')
-    sources = Person.objects.filter(is_author=False).order_by('name')
+    '''Page showing the full list of authors and specialists.'''
+
+    # Get all person instances associated to media as authors
+    authors = Person.objects.filter(media_as_author__isnull=False).distinct()
+
+    # Get person instances associated to media as specialists who are not authors
+    specialists = Person.objects.filter(media_as_specialist__isnull=False).filter(media_as_author__isnull=True).distinct()
+
     context = {
         'authors': authors,
-        'sources': sources,
+        'specialists': specialists,
         }
     return render(request, 'authors_page.html', context)
 

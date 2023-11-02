@@ -223,7 +223,7 @@ class Media(models.Model):
                                         blank=True,
                                         verbose_name=_('referências da mídia'),
                                         help_text=_('Referências bibliográficas associadas com esta mídia.'),
-                                        related_name='media_files')
+                                        related_name='media')
 
     # Fields associated with other models using FK
     location = models.ForeignKey('Location',
@@ -522,9 +522,6 @@ class Reference(models.Model):
             help_text=_('Slug do identificar da referência.'))
     citation = models.TextField(_('citação'), blank=True,
             help_text=_('Citação formatada da referência.'))
-    media = models.ManyToManyField('Media', blank=True,
-            verbose_name=_('arquivos'),
-            help_text=_('Arquivos associados a esta referência.'))
 
     def __str__(self):
         return self.name

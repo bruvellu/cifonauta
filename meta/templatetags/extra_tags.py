@@ -35,7 +35,6 @@ def taxon_paths(taxon):
 @register.inclusion_tag('thumb_org.html', takes_context=True)
 def print_thumb(context, field, obj):
     '''Generates random thumbnail for supplied metadata.'''
-    # Load model and parameters
     Media = apps.get_model('meta', 'Media')
     media_url = context['MEDIA_URL']
     params = {field: obj, 'is_public': True}

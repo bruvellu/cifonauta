@@ -1300,7 +1300,7 @@ def media_page(request, media_id):
     authors = media.authors.all()
     specialists = media.specialists.all()
     taxa = media.taxa.all()
-    references = media.reference_set.all()
+    references = media.references.all()
     filename, file_extension = os.path.splitext(str(media.coverpath))
 
     context = {

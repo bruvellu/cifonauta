@@ -869,7 +869,7 @@ def dashboard_tour_add(request):
     taxon_ids = []
     for curatorship in curatorships:
         taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
-    medias = Media.objects.filter(taxon__id__in=taxon_ids, status='published').distinct()
+    medias = Media.objects.filter(taxa__id__in=taxon_ids, status='published').distinct()
     
     form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
@@ -917,7 +917,7 @@ def dashboard_tour_edit(request, pk):
     taxon_ids = []
     for curatorship in curatorships:
         taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
-    medias = Media.objects.filter(taxon__id__in=taxon_ids, status='published').distinct()
+    medias = Media.objects.filter(taxa__id__in=taxon_ids, status='published').distinct()
     
     form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
@@ -939,8 +939,6 @@ def dashboard_tour_edit(request, pk):
 
     return render(request, 'dashboard_tour_edit.html', context)
 
-
-
 def get_tour_medias(request):
     try:
         limit = int(request.GET.get('limit', 20))
@@ -951,7 +949,7 @@ def get_tour_medias(request):
         taxon_ids = []
         for curatorship in curatorships:
             taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
-        medias = Media.objects.filter(taxon__id__in=taxon_ids, status='published').distinct()
+        medias = Media.objects.filter(taxa__id__in=taxon_ids, status='published').distinct()
 
         query = None
 

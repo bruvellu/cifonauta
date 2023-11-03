@@ -61,28 +61,16 @@ class UploadMediaForm(forms.ModelForm):
         }
 
 class UpdateMyMediaForm(forms.ModelForm):
-    taxons = forms.ModelMultipleChoiceField(
-        required=False,
-        queryset=Taxon.objects.all(),
-        widget=forms.SelectMultiple(
-            attrs={"class": "select2-taxons", "multiple": "multiple"}
-        ),
-        label=_('Táxons'),
-        help_text=_('Táxons pertencentes à mídia.')
-    )
-
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxons', 'user', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title', 'caption', 'taxa', 'user', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
         widgets = {
-            'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"})
+            'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
+            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        if self.instance.pk:
-            self.fields['taxons'].initial = self.instance.taxon_set.all()
 
         if self.instance.status != 'not_edited':
             self.fields['title'].required = True
@@ -121,7 +109,7 @@ class CoauthorRegistrationForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
-        fields = ( 'title', 'caption', 'taxons', 'date', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ( 'title', 'caption', 'taxa', 'date', 'country', 'state', 'city', 'location', 'geolocation')
 
 class MyMediaForm(forms.ModelForm):
     class Meta:

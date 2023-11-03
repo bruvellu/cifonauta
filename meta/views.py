@@ -379,7 +379,6 @@ class MediaDetail(DetailView):
         return context
     
 @custom_login_required
-@media_owner_required
 def update_my_medias(request, pk):
     media = get_object_or_404(Media, pk=pk)
     modified_media = ModifiedMedia.objects.filter(media=media).first()
@@ -493,8 +492,8 @@ def update_my_medias(request, pk):
 
                 media.title = form.cleaned_data['title']
                 media.caption = form.cleaned_data['caption']
-                media.co_author.set(form.cleaned_data['co_author'])
-                media.taxon_set.set(form.cleaned_data['taxons'])
+                media.authors.set(form.cleaned_data['authors'])
+                media.taxa.set(form.cleaned_data['taxa'])
                 media.date = form.cleaned_data['date']
                 media.location = form.cleaned_data['location']
                 media.city = form.cleaned_data['city']
@@ -523,7 +522,7 @@ def update_my_medias(request, pk):
         form.fields['state'].queryset = State.objects.filter(country=media.country.id)
     else:
         form.fields['state'].queryset = State.objects.none()
-    form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+    form.fields['user'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()

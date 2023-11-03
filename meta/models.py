@@ -36,9 +36,13 @@ class ModifiedMedia(models.Model):
             help_text=_('Legenda da imagem.'))
     media = models.OneToOneField('Media', on_delete=models.CASCADE, related_name='modified_media',
             verbose_name=_('mídia modificada'))
-    co_author = models.ManyToManyField('Person', blank=True,
-            verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='modified_co_author')
-    taxons = models.ManyToManyField('Taxon', related_name="modified_taxons", verbose_name=_('táxons'), help_text=_('Táxons pertencentes à mídia.'), blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
+            on_delete=models.SET_NULL, verbose_name=_('usuário do arquivo'),
+            help_text=_('Usuário que fez o upload do arquivo.'),
+            related_name='modified_media')
+    authors = models.ManyToManyField('Person', blank=True,
+            verbose_name=_('autores'), help_text=_('Coautor(es) da mídia'), related_name='modified_media_authors')
+    taxa = models.ManyToManyField('Taxon', related_name="modified_media_taxons", verbose_name=_('táxons'), help_text=_('Táxons pertencentes à mídia.'), blank=True)
     date = models.DateTimeField(_('data'), null=True,
             help_text=_('Data de criação da imagem.'))
     location = models.ForeignKey('Location', on_delete=models.SET_NULL,

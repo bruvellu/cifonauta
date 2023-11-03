@@ -3,8 +3,8 @@
 import json
 import logging
 import os
+import re
 
-from media_utils import Metadata
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q, F
@@ -12,9 +12,10 @@ from django.db.models.functions import Lower
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from django.contrib.postgres.search import SearchVector, SearchQuery
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
+from media_utils import Metadata
 from operator import or_, and_
 from PIL import Image
 
@@ -27,10 +28,13 @@ from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
-import re
 from django.conf import settings
 from django.core.files import File
 import json
+from django.utils.translation import get_language, get_language_info
+
+from dotenv import load_dotenv
+load_dotenv()
 
 @custom_login_required
 @author_required
@@ -217,7 +221,7 @@ def upload_media_step2(request):
     form.fields['city'].queryset = City.objects.none()
 
     registration_form = CoauthorRegistrationForm()
-    form.fields['author'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+    form.fields['user'].queryset = UserCifonauta.objects.filter(id=request.user.id)
     
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
@@ -278,16 +282,16 @@ def edit_metadata(request, media_id):
     if form.is_valid():
         media_instance = form.save(commit=False)
         try:
-            author = str(form.cleaned_data['author'])
-            co_authors = str(form.cleaned_data['co_author']).split(';')
+            user = str(form.cleaned_data['user'])
+            authors = str(form.cleaned_data['authors']).split(';')
             metadata =  {
             'software': str(form.cleaned_data['software']),
             'headline': str(form.cleaned_data['title']),
             'instructions': str(form.cleaned_data['size']),
             'license': {
                 'license_type': str(form.cleaned_data['license']),
-                'author': author,
-                'co_authors': co_authors,
+                'user': user,
+                'authors': authors,
                 },
             'keywords': {
                 'Estágio de vida': str(form.cleaned_data['life_stage']),
@@ -554,7 +558,7 @@ class MyMedias(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = super().get_queryset().filter(author=user).order_by('-pk')
+        queryset = super().get_queryset().filter(user=user).order_by('-pk')
         return queryset
     
     def get_context_data(self, **kwargs):
@@ -1038,53 +1042,76 @@ def search_page(request, model_name='', field='', slug=''):
         query = query_dict.get('query', '').strip()
         if query:
 
-            # Create postgres SearchQuery
-            # TODO: if search_type='raw' create conditional
-            search_query = SearchQuery(query, config='portuguese_unaccent')
+            # Get language.
+            language = get_language()
 
-            # Create search vectors
-            # TODO: create and search location translations
-            vector = SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') + \
-                     SearchVector('title_en', weight='A', config='portuguese_unaccent') + \
-                     SearchVector('caption_pt_br', weight='A', config='portuguese_unaccent') + \
-                     SearchVector('caption_en', weight='A', config='portuguese_unaccent') + \
-                     SearchVector(StringAgg('person__name', delimiter=' '), weight='B', config='portuguese_unaccent') + \
-                     SearchVector(StringAgg('tag__name_pt_br', delimiter=' '), weight='B', config='portuguese_unaccent') + \
-                     SearchVector(StringAgg('tag__name_en', delimiter=' '), weight='B', config='portuguese_unaccent') + \
-                     SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B', config='portuguese_unaccent') + \
-                     SearchVector('location__name', weight='C', config='portuguese_unaccent') + \
-                     SearchVector('city__name_pt_br', weight='C', config='portuguese_unaccent') + \
-                     SearchVector('city__name_en', weight='C', config='portuguese_unaccent') + \
-                     SearchVector('state__name_pt_br', weight='C', config='portuguese_unaccent') + \
-                     SearchVector('state__name_en', weight='C', config='portuguese_unaccent') + \
-                     SearchVector('country__name_pt_br', weight='C', config='portuguese_unaccent') + \
-                     SearchVector('country__name_en', weight='C', config='portuguese_unaccent')
+            # Change search config based on language
+            if language == 'en':
+                langconfig = 'english'
+                # search_vectors = SearchVector('title_en', weight='A', config=langconfig) + \
+                                 # SearchVector('caption_en', weight='B', config=langconfig) + \
+                                 # SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B', config=langconfig) + \
+                                 # SearchVector(StringAgg('person__name', delimiter=' '), weight='B', config=langconfig) + \
+                                 # SearchVector(StringAgg('tag__name_en', delimiter=' '), weight='C', config=langconfig) + \
+                                 # SearchVector('location__name', weight='D', config=langconfig) + \
+                                 # SearchVector('city__name', weight='D', config=langconfig) + \
+                                 # SearchVector('state__name', weight='D', config=langconfig) + \
+                                 # SearchVector('country__name', weight='D', config=langconfig)
+            elif language == 'pt-br':
+                langconfig = 'portuguese_unaccent'
+                # search_vectors = SearchVector('title_pt_br', weight='A', config=langconfig) + \
+                                 # SearchVector('caption_pt_br', weight='B', config=langconfig) + \
+                                 # SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B', config=langconfig) + \
+                                 # SearchVector(StringAgg('person__name', delimiter=' '), weight='B', config=langconfig) + \
+                                 # SearchVector(StringAgg('tag__name_pt_br', delimiter=' '), weight='C', config=langconfig) + \
+                                 # SearchVector('location__name', weight='D', config=langconfig) + \
+                                 # SearchVector('city__name', weight='D', config=langconfig) + \
+                                 # SearchVector('state__name', weight='D', config=langconfig) + \
+                                 # SearchVector('country__name', weight='D', config=langconfig)
+
+            # Create SearchQuery
+            search_query = SearchQuery(query, config=langconfig)
+
+            # Create SearchRank
+            search_rank = SearchRank(F('search_vector'), search_query)
 
             # Filter media_list by search_query
-            media_list = media_list.annotate(search=vector).filter(search=search_query)
+            media_list = media_list.annotate(rank=search_rank).filter(search_vector=search_query)
 
         # Operator
         operator = query_dict.get('operator', 'and')
 
         # Author
         if 'author' in query_dict:
-            # Extract objects from query_dict.
+            # Extract objects from query_dict
             get_authors = query_dict.getlist('author')
+            # Get instances from the query_dict IDs
             authors = Person.objects.filter(id__in=get_authors)
-
-            # Filter media by field and operator.
-            media_list = filter_request(media_list, authors, 'person', operator)
-
-            # Fill form with values.
+            # Filter media by field and operator
+            media_list = filter_request(media_list, authors, 'authors', operator)
+            # Fill the form with proper values
             form_authors = list(get_authors)
         else:
             form_authors = []
+
+        # Specialist
+        if 'specialist' in query_dict:
+            # Extract objects from query_dict
+            get_specialists = query_dict.getlist('specialist')
+            # Get instances from the query_dict IDs
+            specialists = Person.objects.filter(id__in=get_specialists)
+            # Filter media by field and operator
+            media_list = filter_request(media_list, specialists, 'specialists', operator)
+            # Fill the form with proper values
+            form_specialists = list(get_specialists)
+        else:
+            form_specialists = []
 
         # Tag
         if 'tag' in query_dict:
             get_tags = query_dict.getlist('tag')
             tags = Tag.objects.filter(id__in=get_tags)
-            media_list = filter_request(media_list, tags, 'tag', operator)
+            media_list = filter_request(media_list, tags, 'tags', operator)
             form_tags = list(get_tags)
         else:
             form_tags = []
@@ -1093,7 +1120,7 @@ def search_page(request, model_name='', field='', slug=''):
         if 'taxon' in query_dict:
             get_taxa = query_dict.getlist('taxon')
             taxa = Taxon.objects.filter(id__in=get_taxa)
-            media_list = filter_request(media_list, taxa, 'taxon', operator)
+            media_list = filter_request(media_list, taxa, 'taxa', operator)
             form_taxa = list(get_taxa)
         else:
             form_taxa = []
@@ -1150,9 +1177,15 @@ def search_page(request, model_name='', field='', slug=''):
         if highlight:
             media_list = media_list.filter(highlight=1)
 
-        # Orderby: replace 'random' by '?'
-        orderby = query_dict.get('orderby', 'random')
+        # Orderby rank when query, otherwise orderby random
+        if query and not query_dict.get('orderby', None):
+            orderby = 'rank'
+        else:
+            orderby = query_dict.get('orderby', 'random')
+
+        # Order
         order = query_dict.get('order', 'desc')
+
         if orderby == 'random':
             sorting = '?'
         else:
@@ -1177,6 +1210,7 @@ def search_page(request, model_name='', field='', slug=''):
             'order': order,
             'operator': operator,
             'author': form_authors,
+            'specialist': form_specialists,
             'tag': form_tags,
             'location': form_locations,
             'city': form_cities,
@@ -1248,7 +1282,7 @@ def old_media(request, datatype, old_id):
 
 # Single media file
 def media_page(request, media_id):
-    '''Invididual page for media file with all the information.'''
+    '''Individual page for media file with all the information.'''
 
     # Get object.
     media = get_object_or_404(Media.objects.select_related('location', 'city', 'state', 'country'), id=media_id)
@@ -1325,11 +1359,11 @@ def media_page(request, media_id):
                 'tours': tour_list
                 })
 
-    tags = media.tag_set.all()
-    authors = media.person_set.filter(is_author=True)
-    sources = media.person_set.filter(is_author=False)
-    taxa = media.taxon_set.all()
-    references = media.reference_set.all()
+    tags = media.tags.all()
+    authors = media.authors.all()
+    specialists = media.specialists.all()
+    taxa = media.taxa.all()
+    references = media.references.all()
     filename, file_extension = os.path.splitext(str(media.coverpath))
 
     context = {
@@ -1340,7 +1374,7 @@ def media_page(request, media_id):
         'tags': tags,
         'authors': authors,
         'taxa': taxa,
-        'sources': sources,
+        'specialists': specialists,
         'references': references,
         'file_extension': file_extension
         }
@@ -1365,9 +1399,7 @@ def tour_page(request, slug):
         thumb = ''
 
     # Extract media metadata.
-    # TODO: Do I really need to get all of these?
-    authors, taxa, locations, cities, states, countries, tags = extract_set(entries)
-    # Only using authors/taxa/tags for meta keywords.
+    authors, specialists, taxa, locations, cities, states, countries, tags = extract_set(entries)
 
     context = {
         'tour': tour,
@@ -1420,12 +1452,17 @@ def tags_page(request):
 
 
 def authors_page(request):
-    '''Página mostrando autores e especialistas.'''
-    authors = Person.objects.filter(is_author=True).order_by('name')
-    sources = Person.objects.filter(is_author=False).order_by('name')
+    '''Page showing the full list of authors and specialists.'''
+
+    # Get all person instances associated to media as authors
+    authors = Person.objects.filter(media_as_author__isnull=False).distinct()
+
+    # Get person instances associated to media as specialists who are not authors
+    specialists = Person.objects.filter(media_as_specialist__isnull=False).filter(media_as_author__isnull=True).distinct()
+
     context = {
         'authors': authors,
-        'sources': sources,
+        'specialists': specialists,
         }
     return render(request, 'authors_page.html', context)
 
@@ -1498,15 +1535,16 @@ def extract_set(media_list):
     Returns invididual querysets for each model.
     '''
 
-    authors = Person.objects.filter(id__in=media_list.values_list('person', flat=True))
-    tags = Tag.objects.filter(id__in=media_list.values_list('tag', flat=True))
-    taxa = Taxon.objects.filter(id__in=media_list.values_list('taxon', flat=True))
+    authors = Person.objects.filter(id__in=media_list.values_list('authors', flat=True))
+    specialists = Person.objects.filter(id__in=media_list.values_list('specialists', flat=True))
+    tags = Tag.objects.filter(id__in=media_list.values_list('tags', flat=True))
+    taxa = Taxon.objects.filter(id__in=media_list.values_list('taxa', flat=True))
     locations = Location.objects.filter(id__in=media_list.values_list('location', flat=True))
     cities = City.objects.filter(id__in=media_list.values_list('city', flat=True))
     states = State.objects.filter(id__in=media_list.values_list('state', flat=True))
     countries = Country.objects.filter(id__in=media_list.values_list('country', flat=True))
 
-    return authors, taxa, locations, cities, states, countries, tags
+    return authors, specialists, taxa, locations, cities, states, countries, tags
 
 
 def add_meta(meta, field, query):
@@ -1537,7 +1575,7 @@ def filter_request(media_list, objects, field, operator):
     # Loop over objects
     for obj in objects:
         # If taxon, also get queries for descendants
-        if field == 'taxon':
+        if field == 'taxa':
             # Store taxon queries separately (include current obj)
             taxa = [Q(**{field: obj})]
             children = obj.get_descendants()

@@ -8,9 +8,8 @@ from user.models import UserCifonauta
 
 
 METAS = (
-        ('person', _('autor')),
+        ('author', _('autor')),
         ('taxon', _('táxon')),
-        # ('size', _('tamanho')),
         ('location', _('local')),
         ('city', _('cidade')),
         ('state', _('estado')),
@@ -18,7 +17,7 @@ METAS = (
         )
 
 ITEMS = (
-        ('16', '16'),
+        ('20', '20'),
         ('40', '40'),
         ('80', '80'),
         ('120', '120'),
@@ -38,6 +37,7 @@ ORDER_BY = (
         ('pub_date', _('data de publicação')),
         ('timestamp', _('data de modificação')),
         ('random', _('aleatório')),
+        ('rank', _('ranking')),
         )
 
 DATATYPES = (
@@ -64,9 +64,9 @@ class UploadMediaForm(forms.ModelForm):
 
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxons', 'co_author', 'author', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
+        fields = ('title', 'caption', 'taxons', 'user', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
         widgets = {
-            'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"}),
+            'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
         }
 
 class UpdateMyMediaForm(forms.ModelForm):
@@ -82,9 +82,9 @@ class UpdateMyMediaForm(forms.ModelForm):
 
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxons', 'co_author', 'author', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title', 'caption', 'taxons', 'user', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
         widgets = {
-            'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"})
+            'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"})
         }
 
     def __init__(self, *args, **kwargs):
@@ -109,10 +109,10 @@ class EditMetadataForm(forms.ModelForm):
 
     class Meta:
         model = Media
-        fields = ( 'title', 'author', 'co_author', 'specialist', 'caption', 'size', 'date', 'taxons', 'license', 'credit', 'country', 'state', 'city', 'location', 'geolocation', 'life_stage', 'habitat', 'microscopy', 'life_style', 'photographic_technique', 'several', 'software')
+        fields = ('title', 'user', 'authors', 'specialists', 'caption', 'size', 'date', 'taxons', 'license', 'country', 'state', 'city', 'location', 'geolocation')
         widgets = {
-            'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"}),
-            'specialist': forms.SelectMultiple(attrs={"class": "select2-specialist", "multiple": "multiple"})
+            'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
+            'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"})
         }
     
     def __init__(self, *args, **kwargs):
@@ -130,7 +130,7 @@ class CoauthorRegistrationForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
-        fields = ( 'title', 'caption', 'taxons', 'co_author', 'date', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ( 'title', 'caption', 'taxons', 'date', 'country', 'state', 'city', 'location', 'geolocation')
 
 class MyMediaForm(forms.ModelForm):
     class Meta:
@@ -222,6 +222,12 @@ class DisplayForm(forms.Form):
                                                 attrs={"class": "select2-options",
                                                        "multiple": "multiple"}),
                                             label=_('Autores'),)
+    specialist = forms.ModelMultipleChoiceField(required=False,
+                                                queryset=Person.objects.all(),
+                                                widget=forms.SelectMultiple(
+                                                    attrs={"class": "select2-options",
+                                                           "multiple": "multiple"}),
+                                                label=_('Especialistas'),)
     location = forms.ModelMultipleChoiceField(required=False,
                                          queryset=Location.objects.all(),
                                          widget=forms.SelectMultiple(

@@ -7,19 +7,19 @@
 }
 
 #intro {
-    width: 95%;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
-    margin-bottom:1rem;
-    background:#fafafa;
+    margin-bottom: 2rem;
+    background: #fafafa;
     border-radius: 10px;
-    padding:12px 10px 8px;
-    border-color:#eee #fafafa;
-    border-style:solid;
-    border-width:5px;
+    padding: 2rem;
+    border-color: #eee #fafafa;
+    border-style: solid;
+    border-width: 5px;
 }
 
 #intro > #cover-image {
@@ -55,18 +55,13 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    /* display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */
     gap: 0rem 1rem;
     justify-content: center;
+    margin-bottom: 2rem;
 }
 
 #main-content > div {
     width: 300px;
-}
-
-#main-content > div > a > img{
-    width: 95%;
 }
 
 #photos p, #videos p, #tours p {
@@ -103,3 +98,4 @@
         left: .5rem;
     }
 }
+

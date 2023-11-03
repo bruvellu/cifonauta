@@ -184,68 +184,6 @@ def slug_pre_save(signal, instance, sender, **kwargs):
         instance.slug = slug
 
 
-def update_count(signal, instance, sender, **kwargs):
-    '''Update media counter.'''
-    ## Many 2 Many
-    # Authors
-    authors = instance.person_set.filter(is_author=True)
-    if authors:
-        for author in authors:
-            author.counter()
-    # Sources
-    sources = instance.person_set.filter(is_author=False)
-    if sources:
-        for source in sources:
-            source.counter()
-    # Taxa
-    taxa = instance.taxon_set.all()
-    if taxa:
-        for taxon in taxa:
-            taxon.counter()
-    # Tags
-    tags = instance.tag_set.all()
-    if tags:
-        for tag in tags:
-            tag.counter()
-    # References
-    references = instance.reference_set.all()
-    if references:
-        for reference in references:
-            reference.counter()
-    # Tours
-    tours = instance.tour_set.all()
-    if tours:
-        for tour in tours:
-            tour.counter()
-
-    ## Foreign Key
-    # Size
-    try:
-        instance.size.counter()
-    except:
-        print('Size == NULL (id={})'.format(instance.id))
-    # Location
-    try:
-        instance.location.counter()
-    except:
-        print('Location == NULL (id={})'.format(instance.id))
-    # City
-    try:
-        instance.city.counter()
-    except:
-        print('City == NULL (id={})'.format(instance.id))
-    # State
-    try:
-        instance.state.counter()
-    except:
-        print('State == NULL (id={})'.format(instance.id))
-    # Country
-    try:
-        instance.country.counter()
-    except:
-        print('Country == NULL (id={})'.format(instance.id))
-
-
 def makestats(signal, instance, sender, **kwargs):
     '''Cria objeto stats se não existir.'''
     if not instance.stats:

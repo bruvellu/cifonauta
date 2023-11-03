@@ -34,9 +34,9 @@ INSTALLED_APPS = [
     'mptt',
     'rosetta',
     'sorl.thumbnail',
-    'debug_toolbar',
-
     'user',
+
+    'debug_toolbar',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -73,8 +73,8 @@ ROOT_URLCONF = 'cifonauta.urls'
 TEMPLATES = [
         {
             'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [],
             'APP_DIRS': True,
+            'DIRS': [],
             'OPTIONS': {
                 'context_processors': [
                     'django.template.context_processors.debug',
@@ -201,13 +201,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 15000
 
 # Required for debug_toolbar
 INTERNAL_IPS = ['127.0.0.1']
-
-#import logging
-#from sorl.thumbnail.log import ThumbnailLogHandler
-#handler = ThumbnailLogHandler()
-#handler.setLevel(logging.ERROR)
-#logging.getLogger('sorl.thumbnail').addHandler(handler)
-
+RESULTS_CACHE_SIZE = 100000
 
 AUTH_USER_MODEL = 'user.UserCifonauta'
 

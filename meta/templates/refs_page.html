@@ -27,19 +27,19 @@
   <div class="refs-subtitle-more"><h2>{% trans 'Veja mais' %}</h2></div>
 </div>
 
-{% for ref in references %}
-{% if ref.media.all %}
+{% for reference in references %}
+{% if reference.media.all %}
 <div class="refs-citation citation">
   <div class="refs-citation-thumb">
-    {% print_thumb 'reference' ref %}
+    {% print_thumb 'references' reference %}
   </div>
   <div class="refs-citation-info">
     {% autoescape off %}
-    {{ ref.citation }}
+    {{ reference.citation }}
     {% endautoescape %}
   </div>
   <div class="refs-citation-link">
-    <a href="{{ ref.get_absolute_url }}">{% blocktrans count ref.media.count as counter %}{{ counter }} imagem ligada à este trabalho.{% plural %}{{ counter }} imagens ligadas à este trabalho.{% endblocktrans %}</a>
+    <a href="{{ reference.get_absolute_url }}">{% blocktrans count reference.media.count as counter %}{{ counter }} imagem ligada à este trabalho.{% plural %}{{ counter }} imagens ligadas à este trabalho.{% endblocktrans %}</a>
   </div>
 </div>
 {% endif %}

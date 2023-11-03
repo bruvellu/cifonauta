@@ -323,7 +323,7 @@ def edit_metadata(request, media_id):
         media_instance.save()
 
         messages.success(request, 'Edição de mídia realizado com sucesso')
-        
+
         return redirect('curadory_medias')
 
     media = get_object_or_404(Media, pk=media_id)
@@ -400,46 +400,47 @@ def update_my_medias(request, pk):
         if form.is_valid():
             if media.status == 'published':
                 if modified_media:
-                    has_difference = False
-                    difference_equals_to_original = False
+                    altered_fields = []
                     for field in form.fields.keys():
                         if not hasattr(modified_media, field):
                             continue
-                        
-                        modified_value = getattr(modified_media, field)
-                        
-                        if field == "co_author" or field == "taxons":
-                            modified_m2m_value = list(getattr(modified_media, field).all())
+
+                        if field == "authors" or field == "taxa":
+                            model_m2m_value = list(getattr(modified_media, field).all())
                             form_m2m_value = list(form.cleaned_data[field])
 
-                            if modified_m2m_value != form_m2m_value or (modified_m2m_value == form_m2m_value and difference_equals_to_original):
-                                if field == "taxons" and form_m2m_value == list(media.taxon_set.all()):
-                                    difference_equals_to_original = True
-                                elif field == "co_author" and form_m2m_value == list(getattr(media, field).all()):
-                                    difference_equals_to_original = True
-                                else:
-                                    has_difference = True
-                                    break
-                        elif modified_value != form.cleaned_data[field] or (modified_value == form.cleaned_data[field] and difference_equals_to_original):
-                            if form.cleaned_data[field] == getattr(media, field):
-                                difference_equals_to_original = True
-                            else:
-                                has_difference = True
-                                break
+                            if model_m2m_value != form_m2m_value or form_m2m_value != list(getattr(media, field).all()):
+                                altered_fields.append(field)
+                        else:
+                            model_field_value = getattr(modified_media, field)
+                            form_field_value = form.cleaned_data[field]
 
-                    if difference_equals_to_original and not has_difference:
+                            if model_field_value != form_field_value or form_field_value != getattr(media, field):
+                                altered_fields.append(field)
+
+                    fields_equal_to_original = 0
+
+                    for field in altered_fields:
+                        if field == "authors" or field == "taxa":
+                            form_m2m_value = list(form.cleaned_data[field])
+
+                            if list(getattr(media, field).all()) == form_m2m_value:
+                                fields_equal_to_original += 1
+                        else:
+                            form_field_value = form.cleaned_data[field]
+
+                            if getattr(media, field) == form_field_value:
+                                fields_equal_to_original += 1
+                    
+                    if len(altered_fields) == fields_equal_to_original:
                         messages.error(request, 'Mudança igual à versão publicada no site')
                         messages.warning(request, 'Descarte a alteração pendente ou efetue uma alteração válida')
                         return redirect('update_media', media.pk)
-                    
-                    if not has_difference:
-                        messages.error(request, 'As alterações pendente e atual são iguais')
-                        return redirect('update_media', media.pk)
-                    
+
                     modified_media.title = form.cleaned_data['title']
                     modified_media.caption = form.cleaned_data['caption']
-                    modified_media.co_author.set(form.cleaned_data['co_author'])
-                    modified_media.taxons.set(form.cleaned_data['taxons'])
+                    modified_media.authors.set(form.cleaned_data['authors'])
+                    modified_media.taxa.set(form.cleaned_data['taxa'])
                     modified_media.date = form.cleaned_data['date']
                     modified_media.location = form.cleaned_data['location']
                     modified_media.city = form.cleaned_data['city']
@@ -451,7 +452,7 @@ def update_my_medias(request, pk):
                 else:
                     has_difference = False
                     for field in form.fields.keys():
-                        if field != "taxons" and field != "co_author":
+                        if field != "taxa" and field != "authors":
                             media_value = getattr(media, field)
 
                             if media_value != form.cleaned_data[field]:
@@ -459,12 +460,8 @@ def update_my_medias(request, pk):
                                 break
                         else:
                             media_m2m_value = None
-                            # Needs this conditional because taxons is a field from ModifiedMedia, but not from Media
-                            if field == "taxons":
-                                media_m2m_value = list(media.taxon_set.all())
-                            else:
-                                media_m2m_value = list(getattr(media, field).all())
 
+                            media_m2m_value = list(getattr(media, field).all())
                             form_m2m_value = list(form.cleaned_data[field])
 
                             if media_m2m_value != form_m2m_value:
@@ -484,11 +481,12 @@ def update_my_medias(request, pk):
                     new_modified_media.state = form.cleaned_data['state']
                     new_modified_media.country = form.cleaned_data['country']
                     new_modified_media.geolocation = form.cleaned_data['geolocation']
+                    new_modified_media.user = form.cleaned_data['user']
 
                     new_modified_media.save()
 
-                    new_modified_media.co_author.set(form.cleaned_data['co_author'])
-                    new_modified_media.taxons.set(form.cleaned_data['taxons'])
+                    new_modified_media.authors.set(form.cleaned_data['authors'])
+                    new_modified_media.taxa.set(form.cleaned_data['taxa'])
                 
                 messages.success(request, 'Informações alteradas com sucesso')
                 messages.warning(request, 'As alterações serão avaliadas e podem ou não serem aceitas')
@@ -589,8 +587,8 @@ class RevisionMedia(LoginRequiredMixin, ListView):
             curations_taxons.extend(taxons)
 
         queryset = Media.objects.filter(
-            Q(status='to_review') & Q(taxon__in=curations_taxons) |
-            Q(modified_media__taxons__in=curations_taxons))
+            Q(status='to_review') & Q(taxa__in=curations_taxons) |
+            Q(modified_media__taxa__in=curations_taxons))
 
         # Aplies distinct() to eliminate duplicates
         queryset = queryset.distinct()
@@ -637,8 +635,8 @@ def modified_media_revision(request, pk):
         
         media.save()
 
-        media.taxon_set.set(modified_media.taxons.all())
-        media.co_author.set(modified_media.co_author.all())
+        media.taxa.set(modified_media.taxa.all())
+        media.authors.set(modified_media.authors.all())
 
         modified_media.delete()
 
@@ -726,12 +724,12 @@ def revision_media_detail(request, media_id):
             pass
         media_instance.status = 'published'
         media_instance.is_public = True
+        media_instance.taxa.set(form.cleaned_data['taxa'])
+        media_instance.authors.set(form.cleaned_data['authors'])
         
         media_instance.save()
-        media_instance.taxon_set.set(form.cleaned_data['taxons'])
-        media_instance.co_author.set(form.cleaned_data['co_author'])
 
-        messages.success(request, f'A mídia {media.title} foi publicada')
+        messages.success(request, f'A mídia {media.title} foi publicada com sucesso')
         return redirect('media_revision')
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()

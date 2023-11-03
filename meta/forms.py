@@ -98,7 +98,7 @@ class CoauthorRegistrationForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
-        fields = ( 'title', 'caption', 'taxa', 'date', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ( 'title', 'caption', 'taxa', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation')
 
 class MyMediaForm(forms.ModelForm):
     class Meta:

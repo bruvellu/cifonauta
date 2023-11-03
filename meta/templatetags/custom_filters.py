@@ -6,15 +6,11 @@ register = template.Library()
 
 @register.filter
 def get_value(obj, attr_name):
-    if attr_name == "co_author" or attr_name == "taxons":
+    if attr_name == "authors" or attr_name == "taxa":
         query = None
 
-        # Needs this conditional because taxons is a field from ModifiedMedia, but not from Media
-        if attr_name == "taxons":
-            if isinstance(obj, Media):
-                query = list(obj.taxon_set.all())
-            else:
-                query = list(obj.taxons.all())
+        if attr_name == "taxa":
+            query = list(obj.taxa.all())
         else:
             query = getattr(obj, attr_name, '').all()
 

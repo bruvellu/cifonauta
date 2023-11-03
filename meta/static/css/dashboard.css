@@ -303,7 +303,7 @@ a:active, a:visited {
 .label-div {
     display: flex;
     gap: .25rem;
-    width: 10rem;
+    width: 13rem;
 }
 
 .required {

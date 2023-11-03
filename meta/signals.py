@@ -21,20 +21,20 @@ def compress_files(sender, instance, created, **kwargs):
         sitepath.thumbnail((1280, 720))
         sitepath.save(instance.sitepath.path)
             
-        instance.datatype = 'photo'
+        # instance.datatype = 'photo'
 
-        author = str(instance.author)
-        metadata = {
-            'license': {
-                'license_type': str(instance.license),
-                'author': author,
-                'co_authors': ''
-            }
-        }
-        try:
-            Metadata(instance.file.path, metadata)
-        except:
-            instance.metadata_error = True
+        # author = str(instance.author)
+        # metadata = {
+        #     'license': {
+        #         'license_type': str(instance.license),
+        #         'author': author,
+        #         'co_authors': ''
+        #     }
+        # }
+        # try:
+        #     Metadata(instance.file.path, metadata)
+        # except:
+        #     instance.metadata_error = True
 
 def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
     from meta.models import Taxon, Curadoria

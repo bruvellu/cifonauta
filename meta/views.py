@@ -169,9 +169,6 @@ def upload_media_step2(request):
 
                 media_instance.save()
                 form.save_m2m()
-
-                taxons = form.cleaned_data.get('taxons', [])
-                media_instance.taxon_set.set(taxons)
             
             medias.delete()
             messages.success(request, 'Suas mídias foram salvas com sucesso')
@@ -216,12 +213,13 @@ def upload_media_step2(request):
     #         'geolocation': read_metadata['gps']
     #     })
     # else:
-    form = UploadMediaForm(initial={'author': request.user.id})
+    form = UploadMediaForm(initial={'user': request.user.id})
+    form.fields['user'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+
     form.fields['state'].queryset = State.objects.none()
     form.fields['city'].queryset = City.objects.none()
 
     registration_form = CoauthorRegistrationForm()
-    form.fields['user'].queryset = UserCifonauta.objects.filter(id=request.user.id)
     
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()

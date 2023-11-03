@@ -52,20 +52,11 @@ OPERATORS = (
         )
 
 class UploadMediaForm(forms.ModelForm):
-    taxons = forms.ModelMultipleChoiceField(
-        required=False,
-        queryset=Taxon.objects.all(),
-        widget=forms.SelectMultiple(
-            attrs={"class": "select2-taxons", "multiple": "multiple"}
-        ),
-        label=_('Táxons'),
-        help_text=_('Táxons pertencentes à mídia.')
-    )
-
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxons', 'user', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
+        fields = ('title', 'caption', 'taxa', 'user', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
         widgets = {
+            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
         }
 

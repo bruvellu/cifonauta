@@ -1,10 +1,3 @@
-let message = document.querySelector('.success')
-if (message) {
-    setInterval(() => {
-        message.remove()
-    }, 10000)
-}
-
 var isModalOpened = false
 function showModal() {
     const behindModalContainer = document.querySelector('.behind-modal-container')

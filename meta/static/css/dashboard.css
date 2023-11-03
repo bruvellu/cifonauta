@@ -56,6 +56,17 @@ a:active, a:visited {
 .messages-div {
     display: grid;
     gap: 0.5rem;
+    animation-name: hide-messages-div;
+    animation-duration: 1s;
+    animation-delay: 10s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes hide-messages-div {
+    100% {
+        opacity: 0;
+        display: none;
+    }
 }
 
 .error, .notice, .success, .info {
@@ -68,16 +79,8 @@ a:active, a:visited {
     background-color: #ffffb3;
     color: #565600;
     font-size: 1.1rem;
-    animation: disappear 1s 9s forwards;
     /* background-color: #e8edff;
     color: #000b43de; */
-}
-
-@keyframes disappear {
-    100% {
-        opacity: 0;
-        display: none;
-    }
 }
 
 .subtitle-wrapper {

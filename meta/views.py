@@ -316,9 +316,15 @@ def edit_metadata(request, media_id):
             meta.edit_metadata(metadata)
         except:
             pass
-        media.status = 'to_review'
-        form.save()
-        media_instance.taxon_set.set(form.cleaned_data['taxons'])
+        media_instance.status = 'to_review'
+        media_instance.taxa.set(form.cleaned_data['taxa'])
+        media_instance.authors.set(form.cleaned_data['authors'])
+
+        media_instance.save()
+
+        messages.success(request, 'Edição de mídia realizado com sucesso')
+        
+        return redirect('curadory_medias')
 
     media = get_object_or_404(Media, pk=media_id)
     is_specialist = request.user.curatorship_specialist.exists()
@@ -351,7 +357,7 @@ class CuradoriaMediaList(LoginRequiredMixin, ListView):
 
         queryset = Media.objects.filter(status='not_edited')
 
-        queryset = queryset.filter(taxon__in=curations_taxons)
+        queryset = queryset.filter(taxa__in=curations_taxons)
         
         # Aplies distinct() to eliminate duplicates
         queryset = queryset.distinct()

@@ -329,6 +329,8 @@ class Person(models.Model):
     orcid = models.CharField('Orcid', blank=True, null=True, max_length=16)
     idlattes = models.CharField('IDLattes', blank=True, null=True, max_length=16)
     email = models.EmailField(verbose_name='Email', blank=True, null=True)
+    user_cifonauta = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
+            verbose_name=_('Usuário relacionado'))
 
     def __str__(self):
         return self.name

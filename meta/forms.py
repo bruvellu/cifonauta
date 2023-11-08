@@ -78,7 +78,7 @@ class UpdateMyMediaForm(forms.ModelForm):
 class EditMetadataForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title', 'user', 'authors', 'specialists', 'caption', 'size', 'date', 'taxa', 'license', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ('title', 'user', 'authors', 'specialists', 'caption', 'date', 'taxa', 'license', 'country', 'state', 'city', 'location', 'geolocation')
         widgets = {
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),

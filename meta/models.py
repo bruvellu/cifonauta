@@ -191,11 +191,6 @@ class Media(models.Model):
                                   default='0x0',
                                   blank=True,
                                   help_text=_('Dimensões do vídeo original.'))
-    size = models.CharField(_('tamanho'),
-                            max_length=10,
-                            default='none',
-                            blank=True,
-                            help_text=_('Classe de tamanho.'))
     geolocation = models.CharField(_('geolocalização'),
                                    default='',
                                    max_length=25,

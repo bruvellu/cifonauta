@@ -742,6 +742,29 @@ def revision_media_detail(request, media_id):
 
 @method_decorator(custom_login_required, name='dispatch')
 @method_decorator(curator_required, name='dispatch')
+class ManageAuthors(LoginRequiredMixin, ListView):
+    model = UserCifonauta
+    template_name = 'manage_authors.html'
+
+    def get_queryset(self): 
+        queryset = UserCifonauta.objects.all()
+        return queryset
+    
+    def post(self, request):
+        selected_users_ids = request.POST.getlist('selected_users_ids')
+        users = UserCifonauta.objects.filter(id__in=selected_users_ids)
+
+        action = request.GET.get('action')
+        
+        if action == 'add':
+            users.update(is_author=True)
+        elif action == 'remove':
+            users.update(is_author=False)
+
+        return redirect('manage_authors')
+
+@method_decorator(custom_login_required, name='dispatch')
+@method_decorator(curator_required, name='dispatch')
 class EnableSpecialists(LoginRequiredMixin, ListView):
     model = UserCifonauta
     template_name = 'enable_specialists.html'

@@ -46,6 +46,9 @@
                 <a href="{% url 'enable_specialists' %}" {% if '/administrative-module/enable-specialists' in fullpath %}class='current-page'{% endif %}>Habilitar Especialistas</a>
             </li>
             <li>
+                <a href="{% url 'manage_authors' %}" {% if '/administrative-module/manage-authors' in fullpath %}class='current-page'{% endif %}>Gerenciar Autores</a>
+            </li>
+            <li>
                 <a href="{% url 'tour_list' %}" {% if 'administrative-module/tours' in fullpath %}class='current-page'{% endif %}>Tours</a>
             </li>
             {% endif %}

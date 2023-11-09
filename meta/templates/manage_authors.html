@@ -1,0 +1,47 @@
+{% extends 'dashboard.html' %}
+
+{% block title %}Habilitar Especialistas e Autores{% endblock %}
+
+{% block dashboard_content %}
+    
+    <h2> Tabela de Usuários </h2>
+
+    <form method="post" action="">
+        {% csrf_token %}
+
+        <table class="table">
+            <thead class="table-head">
+                <tr>
+                    <th>Selecionar</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Autor</th>
+                </tr>
+            </thead>
+            <tbody class="table-body">
+                {% if object_list %}
+                    {% for user in object_list %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="selected_users_ids" value="{{ user.id }}">
+                        </td>
+                        <td class="text-cedule">{{ user }}</td>
+                        <td class="text-cedule">{{ user.email }}</td>
+                        <td class="text-cedule">
+                            {% if user.is_author == True %}
+                                Sim
+                            {% else %}
+                                Não
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td class="text-cedule">Não existem usuários</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </form>
+{% endblock %}

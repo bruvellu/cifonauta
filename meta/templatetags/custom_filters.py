@@ -5,14 +5,9 @@ from meta.models import Media
 register = template.Library()
 
 @register.filter
-def get_value(obj, attr_name):
+def get_attribute(obj, attr_name):
     if attr_name == "authors" or attr_name == "taxa":
-        query = None
-
-        if attr_name == "taxa":
-            query = list(obj.taxa.all())
-        else:
-            query = getattr(obj, attr_name, '').all()
+        query = getattr(obj, attr_name, '').all()
 
         html = "<ul>"
         for value in query:
@@ -21,7 +16,14 @@ def get_value(obj, attr_name):
 
         return mark_safe(html)
     
+    field = obj._meta.get_field(attr_name)
+
+    if field.choices:
+        field_choices = dict(field.choices)
+        key = getattr(obj, attr_name, '')
+        return field_choices[key]
+    
     if getattr(obj, attr_name, '') == None:
         return ""
-    
+
     return getattr(obj, attr_name, '')

@@ -30,6 +30,14 @@ class Curadoria(models.Model):
         return self.name
 
 class ModifiedMedia(models.Model):
+    LICENSE_CHOICES = (('cc0', _('CC0 (Domínio Público)')),
+                       ('cc_by', _('CC BY (Atribuição)')),
+                       ('cc_by_sa', _('CC BY-SA (Atribuição-CompartilhaIgual)')),
+                       ('cc_by_nd', _('CC BY-ND (Atribuição-SemDerivações)')),
+                       ('cc_by_nc', _('CC BY-NC (Atribuição-NãoComercial)')),
+                       ('cc_by_nc_sa', _('CC BY-NC-SA (AtribuiçãoNãoComercial-CompartilhaIgual)')),
+                       ('cc_by_nc_nd', _('CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')),)
+    
     title = models.CharField(_('título'), max_length=200, default='',
             blank=True, help_text=_('Título da imagem.'))
     caption = models.TextField(_('legenda'), default='', blank=True,
@@ -58,6 +66,11 @@ class ModifiedMedia(models.Model):
     geolocation = models.CharField(_('geolocalização'), default='',
             max_length=25, blank=True,
         help_text=_('Geolocalização da imagem no formato decimal.'))
+    license = models.CharField(_('Licença'),
+                               max_length=60,
+                               choices=LICENSE_CHOICES,
+                               default='cc0',
+                               help_text=_('Tipo de licença da mídia.'))
     
     def __str__(self):
         return self.title

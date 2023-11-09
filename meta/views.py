@@ -447,6 +447,7 @@ def update_my_medias(request, pk):
                     modified_media.state = form.cleaned_data['state']
                     modified_media.country = form.cleaned_data['country']
                     modified_media.geolocation = form.cleaned_data['geolocation']
+                    modified_media.license = form.cleaned_data['license']
 
                     modified_media.save()
                 else:
@@ -482,6 +483,7 @@ def update_my_medias(request, pk):
                     new_modified_media.country = form.cleaned_data['country']
                     new_modified_media.geolocation = form.cleaned_data['geolocation']
                     new_modified_media.user = form.cleaned_data['user']
+                    new_modified_media.license = form.cleaned_data['license']
 
                     new_modified_media.save()
 
@@ -504,6 +506,7 @@ def update_my_medias(request, pk):
                 media.state = form.cleaned_data['state']
                 media.country = form.cleaned_data['country']
                 media.geolocation = form.cleaned_data['geolocation']
+                media.license = form.cleaned_data['license']
 
                 media.save()
 
@@ -632,6 +635,7 @@ def modified_media_revision(request, pk):
         media.state = modified_media.state
         media.country = modified_media.country
         media.geolocation = modified_media.geolocation
+        media.license = modified_media.license
         
         media.save()
 
@@ -646,21 +650,21 @@ def modified_media_revision(request, pk):
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
-    media_form = ModifiedMediaForm(instance=media)
-    modified_media_form = ModifiedMediaForm(instance=modified_media)
+    form = ModifiedMediaForm()
 
-    field_names = media_form.fields.keys()
-    medias_data = []
+    field_names = form.fields.keys()
+    fields = []
     for field_name in field_names:
-        medias_data.append({
-            'media': media_form[field_name],
-            'modified_media': modified_media_form[field_name]
+        fields.append({
+            'name': field_name,
+            'label': form[field_name].label,
+            'required': form[field_name].field.required
         })
     
     context = {
+        'fields': fields,
         'media': media,
         'modified_media': modified_media,
-        'medias_data': medias_data,
         'is_specialist': is_specialist,
         'is_curator': is_curator
     }

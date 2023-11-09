@@ -747,7 +747,7 @@ class ManageAuthors(LoginRequiredMixin, ListView):
     template_name = 'manage_authors.html'
 
     def get_queryset(self): 
-        queryset = UserCifonauta.objects.all()
+        queryset = UserCifonauta.objects.all().order_by('-date_joined')
         return queryset
     
     def post(self, request):

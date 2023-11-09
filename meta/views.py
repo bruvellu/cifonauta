@@ -530,6 +530,10 @@ def update_my_medias(request, pk):
     else:
         form.fields['state'].queryset = State.objects.none()
     form.fields['user'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+    if media.status == 'published':
+        license_choices = [choice[0] for choice in Media.LICENSE_CHOICES]
+        license_index = license_choices.index(media.license)
+        form.fields['license'].choices = Media.LICENSE_CHOICES[:license_index + 1]
 
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()

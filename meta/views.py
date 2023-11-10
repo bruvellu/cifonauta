@@ -32,6 +32,7 @@ from django.conf import settings
 from django.core.files import File
 import json
 from django.utils.translation import get_language, get_language_info
+from django.utils.translation import gettext_lazy as _
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -181,13 +182,14 @@ def upload_media_step2(request):
                 media.status = 'not_edited'
                 media.save()
 
-                coverpath = Image.open(media.coverpath.path)
-                coverpath.thumbnail((1280, 720))
-                coverpath.save(media.coverpath.path, quality=40)
+                if not media.is_video():
+                    coverpath = Image.open(media.coverpath.path)
+                    coverpath.thumbnail((1280, 720))
+                    coverpath.save(media.coverpath.path, quality=40)
 
-                sitepath = Image.open(media.sitepath.path)
-                sitepath.thumbnail((1280, 720))
-                sitepath.save(media.sitepath.path)
+                    sitepath = Image.open(media.sitepath.path)
+                    sitepath.thumbnail((1280, 720))
+                    sitepath.save(media.sitepath.path)
             
             messages.success(request, 'Suas mídias foram salvas com sucesso')
             return redirect('upload_media_step1')
@@ -357,37 +359,57 @@ def edit_metadata(request, media_id):
 
     return render(request, 'update_media.html', context) 
 
-@method_decorator(custom_login_required, name='dispatch')
-@method_decorator(curator_required, name='dispatch')
-class CuradoriaMediaList(LoginRequiredMixin, ListView):
-    model = Media
-    template_name = 'curadoria_media_list.html'
+@custom_login_required
+@curator_required
+def curadoria_media_list(request):
+    if request.method == "POST":
+        media_ids = request.POST.getlist('selected_media_ids')
 
-    def get_queryset(self):
-        user = self.request.user
+        if media_ids:
+            form = SpecialistActionForm(request.POST)
 
-        curations = user.curatorship_specialist.all()
-        curations_taxons = []
+            if form.is_valid():
+                medias = Media.objects.filter(id__in=media_ids)
+                
+                if form.cleaned_data['taxa_action'] != 'maintain':
+                    for media in medias:
+                        media.taxa.set(form.cleaned_data['taxa'])
+                if form.cleaned_data['status_action'] != 'maintain':
+                    medias.update(status='to_review')
 
-        for curadoria in curations:
-            taxons = curadoria.taxons.all()
-            curations_taxons.extend(taxons)
+                messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
+            else:
+                messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+        else:
+            messages.warning(request, _('Nenhum registro foi selecionado'))
 
-        queryset = Media.objects.filter(status='not_edited')
+    user = request.user
 
-        queryset = queryset.filter(taxa__in=curations_taxons)
-        
-        # Aplies distinct() to eliminate duplicates
-        queryset = queryset.distinct()
+    curations = user.curatorship_specialist.all()
+    curations_taxons = []
 
-        return queryset
+    for curadoria in curations:
+        taxons = curadoria.taxons.all()
+        curations_taxons.extend(taxons)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.curatorship_specialist.exists()
-        context['is_curator'] = user.curatorship_curator.exists()
-        return context
+    queryset = Media.objects.filter(status='not_edited')
+    queryset = queryset.filter(taxa__in=curations_taxons)
+    
+    # Apply distinct() to eliminate duplicates
+    queryset = queryset.distinct()
+
+    form = SpecialistActionForm()
+    # Options are: mantain status or send to revision
+    form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[2])
+
+    context = {
+        'form': form,
+        'object_list': queryset,
+        'is_specialist': user.curatorship_specialist.exists(),
+        'is_curator': user.curatorship_curator.exists(),
+    }
+
+    return render(request, 'curadoria_media_list.html', context)
 
 #Missing
 @method_decorator(custom_login_required, name='dispatch')

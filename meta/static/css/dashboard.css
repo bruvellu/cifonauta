@@ -9,6 +9,10 @@ ul {
     list-style: none;
 }
 
+p {
+    padding: 0;
+}
+
 a:active, a:visited {
     color: #ffffff;
 }
@@ -60,6 +64,7 @@ a:active, a:visited {
     animation-duration: 1s;
     animation-delay: 10s;
     animation-fill-mode: forwards;
+    margin-bottom: 1rem;
 }
 
 @keyframes hide-messages-div {
@@ -128,6 +133,7 @@ a:active, a:visited {
     position: relative;
     background-color: transparent;
     border: none;
+    flex-shrink: 0;
 }
 
 .close-modal-button:hover div {
@@ -151,6 +157,35 @@ a:active, a:visited {
 .line2 {
     rotate: -43deg;
 }
+
+.close-modal-button2 {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    width: 2rem;
+    height: 2rem;
+    opacity: 0.7;
+}
+.close-modal-button2:hover {
+    opacity: 1;
+}
+.close-modal-button2:before, .close-modal-button2:after {
+    position: absolute;
+    left: 15px;
+    content: ' ';
+    height: 33px;
+    width: 2px;
+    background-color: #333;
+}
+.close-modal-button2:before {
+    transform: rotate(45deg);
+}
+.close-modal-button2:after {
+    transform: rotate(-45deg);
+}
+
+
+
 
 .field2-container + .field2-container {
     margin-top: 1rem;
@@ -223,8 +258,45 @@ a:active, a:visited {
     border-color: #94b1ca #eee #fafafa;
     border-radius: 10px;
     box-shadow: 2px 2px 5px #aaa;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
+}
+
+.action-button {
+    margin-bottom: .5rem;
+} 
+
+.list-modal-container {
+    max-width: 20rem;
+    height: auto;
+    padding: 1rem;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.modal-header > p {
+    font-size: 1.2rem;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.modal-field-div {
+    display: flex;
+    flex-direction: column;
+}
+
+#taxa-wrapper > span {
+    width: 100% !important;
 }
 
 .opened-modal {

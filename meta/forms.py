@@ -121,6 +121,29 @@ class TourForm(forms.ModelForm):
         
         self.fields['media'].label_from_instance = lambda obj: obj.title
 
+class SpecialistActionForm(forms.ModelForm):
+    STATUS_CHOICES = [
+        ('maintain', _('Manter status')),
+        ('to_review', _('Enviar para revisão')),
+        ('publish', _('Publicar')),
+    ]
+
+    TAXA_CHOICES = (
+        ('maintain', _('Manter táxons')),
+        ('overwrite', _('Sobrescrever táxons')),
+    )
+
+    status_action = forms.ChoiceField(label=_('Status'), choices=STATUS_CHOICES, initial='maintain')
+    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain')
+
+    class Meta:
+        model = Media
+        fields = ('taxa_action', 'taxa', 'status_action',)
+        widgets = {
+            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
+        }
+
+
 class SearchForm(forms.Form):
     query = forms.CharField(label=_('Buscar por'),
                 widget=forms.TextInput(attrs={'size': 32}),

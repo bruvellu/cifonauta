@@ -78,28 +78,14 @@ class ModifiedMedia(models.Model):
     class Meta:
         verbose_name = _('mídia modificada')
         verbose_name_plural = _('mídias modificadas')
-
-class LoadedMedia(models.Model):
-    media = models.FileField(upload_to='loaded_media')
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
-
-    def __str__(self):
-        return self.media.name
-
-    def is_video(self):
-        name, extension = os.path.splitext(self.media.name)
-        return True if extension in settings.VIDEO_EXTENSIONS else False
-    
-    class Meta:
-        verbose_name = _('mídia carregada')
-        verbose_name_plural = _('mídias carregadas')
     
 
 class Media(models.Model):
     '''Table with metadata for photo and video files.'''
 
     # Pre-defined choices
-    STATUS_CHOICES = (('not_edited', _('Não Editado')),
+    STATUS_CHOICES = (('loaded', _('Carregada')),
+                      ('not_edited', _('Não Editado')),
                       ('to_review', _('Para Revisão')),
                       ('published', _('Publicado')),)
 
@@ -167,7 +153,7 @@ class Media(models.Model):
                               blank=True,
                               max_length=13,
                               choices=STATUS_CHOICES,
-                              default='not_edited',
+                              default='loaded',
                               help_text=_('Status da mídia.'))
     is_public = models.BooleanField(_('público'),
                                     default=False,
@@ -324,7 +310,7 @@ class Media(models.Model):
         return reverse('media_url', args=[str(self.id)])
 
     def is_video(self):
-        name, extension = os.path.splitext(self.file.name)
+        _, extension = os.path.splitext(self.file.name)
         return True if extension in settings.VIDEO_EXTENSIONS else False
 
     class Meta:
@@ -624,11 +610,7 @@ models.signals.pre_save.connect(slug_pre_save, sender=Tour)
 
 # Create citation with bibkey.
 models.signals.pre_save.connect(citation_pre_save, sender=Reference)
-
-# Compress files when uploaded
-models.signals.post_save.connect(compress_files, sender=Media)
 # Delete file from folder when the media is deleted on website
 models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
-models.signals.pre_delete.connect(delete_file_from_folder, sender=LoadedMedia)
 # Get taxons descendents when creating a curatorship
 models.signals.m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)

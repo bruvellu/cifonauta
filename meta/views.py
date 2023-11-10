@@ -82,7 +82,8 @@ def upload_media_step1(request):
                 new_filename = uuid.uuid4()
 
                 media.name = f"{new_filename}.{ext}"
-                LoadedMedia.objects.create(media=media, author=request.user)
+                media_instance = Media(file=media, user=request.user)
+                media_instance.save()
             
             messages.success(request, 'Mídias carregadas com sucesso')
             messages.info(request, 'Preencha os dados para completar o upload')
@@ -91,7 +92,7 @@ def upload_media_step1(request):
         messages.error(request, 'Por favor, selecione as mídias')
         return redirect('upload_media_step1')
 
-    if LoadedMedia.objects.filter(author=request.user).exists():
+    if Media.objects.filter(user=request.user, status='loaded').exists():
         messages.warning(request, 'Você tem mídias carregadas')
         messages.info(request, 'Complete ou cancele o upload para adicionar outras mídias')
         return redirect('upload_media_step2')
@@ -115,7 +116,7 @@ def upload_media_step1(request):
 @custom_login_required
 @author_required
 def upload_media_step2(request):
-    medias = LoadedMedia.objects.filter(author=request.user)
+    medias = Media.objects.filter(user=request.user, status='loaded')
     
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -145,32 +146,49 @@ def upload_media_step2(request):
         form = UploadMediaForm(request.POST, request.FILES)
         
         if form.is_valid():
-            for media in medias:
-                form = UploadMediaForm(request.POST, request.FILES)
-                media_instance = form.save(commit=False)
-
-                if form.cleaned_data['terms'] == False:
+            if form.cleaned_data['terms'] == False:
                     messages.error(request, 'Você precisa aceitar os termos')
                     return redirect('upload_media_step2')
                 
-                if form.cleaned_data['country'].id == 1 and not (form.cleaned_data['state'] and form.cleaned_data['city']):
-                    messages.error(request, 'Você precisa selecionar um estado e uma cidade')
-                    return redirect('upload_media_step2')
-
-                file = media.media.name.split('/')[-1]
+            if form.cleaned_data['country'].id == 1 and not (form.cleaned_data['state'] and form.cleaned_data['city']):
+                messages.error(request, 'Você precisa selecionar um estado e uma cidade')
+                return redirect('upload_media_step2')
+            
+            for media in medias:
+                file = media.file.name.split('/')[-1]
                 ext = file.split('.')[-1]
                 filename = file.split('.')[0]
 
-                media_file = File(media.media, name=f'{filename}.{ext}')
-                media_instance.file = media_file
-                media_instance.sitepath = media_file
-                media_file = File(media.media, name=f'{filename}_cover.{ext}')
-                media_instance.coverpath = media_file
+                media_file = File(media.file, name=f'{filename}.{ext}')
+                media.sitepath = media_file
+                media_file = File(media.file, name=f'{filename}_cover.{ext}')
+                media.coverpath = media_file
 
-                media_instance.save()
-                form.save_m2m()
+                media.title = form.cleaned_data['title']
+                media.caption = form.cleaned_data['caption']
+                media.taxa.set(form.cleaned_data['taxa'])
+                media.user = form.cleaned_data['user']
+                media.authors.set(form.cleaned_data['authors'])
+                media.date = form.cleaned_data['date']
+                media.country = form.cleaned_data['country']
+                media.state = form.cleaned_data['state']
+                media.city = form.cleaned_data['city']
+                media.location = form.cleaned_data['location']
+                media.geolocation = form.cleaned_data['geolocation']
+                media.license = form.cleaned_data['license']
+                media.terms = form.cleaned_data['terms']
+
+                media.status = 'not_edited'
+                media.save()
+
+                coverpath = Image.open(media.coverpath.path)
+                coverpath.thumbnail((1280, 720))
+                coverpath.save(media.coverpath.path, quality=40)
+
+                sitepath = Image.open(media.sitepath.path)
+                sitepath.thumbnail((1280, 720))
+                sitepath.save(media.sitepath.path)
             
-            medias.delete()
             messages.success(request, 'Suas mídias foram salvas com sucesso')
             return redirect('upload_media_step1')
 
@@ -557,24 +575,22 @@ def update_my_medias(request, pk):
     return render(request, 'update_media.html', context)
     
 
-@method_decorator(custom_login_required, name='dispatch')
-@method_decorator(author_required, name='dispatch')
-class MyMedias(LoginRequiredMixin, ListView):
-    model = Media
-    template_name = 'my_medias.html'
-    form_class = MyMediaForm
+@custom_login_required
+@author_required
+def my_medias(request):
+    user = request.user
+    queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
 
-    def get_queryset(self):
-        user = self.request.user
-        queryset = super().get_queryset().filter(user=user).order_by('-pk')
-        return queryset
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.curatorship_specialist.exists()
-        context['is_curator'] = user.curatorship_curator.exists()
-        return context
+    is_specialist = user.curatorship_specialist.exists()
+    is_curator = user.curatorship_curator.exists()
+
+    context = {
+        'object_list': queryset,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator,
+    }
+
+    return render(request, 'my_medias.html', context)
 
 @method_decorator(custom_login_required, name='dispatch')
 @method_decorator(curator_required, name='dispatch')

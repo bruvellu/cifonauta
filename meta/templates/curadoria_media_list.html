@@ -19,7 +19,7 @@
     {% endfor %}
 </div>
 {% endif %}
-{% if object_list %}
+{% if entries.object_list %}
 <form method="post">
 {% csrf_token %}
 
@@ -55,7 +55,13 @@
     </div>
     <button type="submit" class="pre-registration-submit">Processar</button>
 </div>
-<button type="button" id="open-modal-button" class="action-button">Ações em lotes</button>
+
+<div class='table-top'>
+    <button type="button" id="open-modal-button" class="action-button">Ações em lotes</button>
+    {% if entries.paginator.num_pages > 1 %}
+    {% include 'pagination.html' %}
+    {% endif %}
+</div>
 
 <table class="table">
     <thead class="table-head">
@@ -68,7 +74,7 @@
         </tr>
     </thead>
     <tbody class="table-body">
-        {% for media in object_list %}
+        {% for media in entries.object_list %}
         <tr>
             <td>
                 <input type="checkbox" class="selected-record" name="selected_media_ids" value="{{ media.id }}">
@@ -93,6 +99,13 @@
         {% endfor %}
     </tbody>
 </table>
+
+<div class="table-bottom">
+    {% if entries.paginator.num_pages > 1 %}
+    {% include 'pagination.html' %}
+    {% endif %}
+</div>
+
 </form>
 
 {% else %}

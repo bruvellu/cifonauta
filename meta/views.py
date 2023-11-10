@@ -398,13 +398,17 @@ def curadoria_media_list(request):
     # Apply distinct() to eliminate duplicates
     queryset = queryset.distinct()
 
+    queryset_paginator = Paginator(queryset, 12)
+    page_num = request.GET.get('page')
+    page = queryset_paginator.get_page(page_num)
+
     form = SpecialistActionForm()
     # Options are: mantain status or send to revision
     form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[1])
 
     context = {
         'form': form,
-        'object_list': queryset,
+        'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
         'is_curator': user.curatorship_curator.exists(),
     }
@@ -633,9 +637,13 @@ def my_medias(request):
     is_specialist = user.curatorship_specialist.exists()
     is_curator = user.curatorship_curator.exists()
 
+    queryset_paginator = Paginator(queryset, 12)
+    page_num = request.GET.get('page')
+    page = queryset_paginator.get_page(page_num)
+
     context = {
         'form': form,
-        'object_list': queryset,
+        'entries': page,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }
@@ -681,13 +689,17 @@ def revision_media(request):
 
     queryset = queryset.distinct()
 
+    queryset_paginator = Paginator(queryset, 12)
+    page_num = request.GET.get('page')
+    page = queryset_paginator.get_page(page_num)
+
     form = SpecialistActionForm()
     # Options are: mantain status or publish media
     form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[2])
 
     context = {
         'form': form,
-        'object_list': queryset,
+        'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
         'is_curator': user.curatorship_curator.exists(),
     }

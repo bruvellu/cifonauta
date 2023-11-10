@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import CuradoriaMediaList, MediaDetail, MyMedias, RevisionMedia, EnableSpecialists, ManageAuthors
+from .views import CuradoriaMediaList, MediaDetail, MyMedias, RevisionMedia, ManageAuthors
 
 def extra(model, field):
     return {'model_name': model, 'field': field}
@@ -21,7 +21,7 @@ urlpatterns = [
         path('administrative-module/revision/detail/<int:media_id>', views.revision_media_detail, 
         name='media_revision_detail'),
         path('administrative-module/revision/changes/<int:pk>', views.modified_media_revision, name='modified_media_revision'),
-        path('administrative-module/enable-specialists', EnableSpecialists.as_view(), name='enable_specialists'),
+        # path('administrative-module/enable-specialists', EnableSpecialists.as_view(), name='enable_specialists'),
         path('administrative-module/manage-authors', ManageAuthors.as_view(), name='manage_authors'),
         path('administrative-module/tours', views.tour_list, name='tour_list'),
         path('administrative-module/tours/add', views.add_tour, name='add_tour'),

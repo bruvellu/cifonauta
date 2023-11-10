@@ -42,9 +42,9 @@
             <li>
                 <a href="{% url 'media_revision' %}" {% if fullpath == '/administrative-module/revision' or '/administrative-module/revision/detail/' in fullpath or '/administrative-module/revision/changes/' in fullpath %}class='current-page'{% endif %}>Revisão de mídias</a>
             </li>
-            <li>
+            {% comment %} <li>
                 <a href="{% url 'enable_specialists' %}" {% if '/administrative-module/enable-specialists' in fullpath %}class='current-page'{% endif %}>Habilitar Especialistas</a>
-            </li>
+            </li> {% endcomment %}
             <li>
                 <a href="{% url 'manage_authors' %}" {% if '/administrative-module/manage-authors' in fullpath %}class='current-page'{% endif %}>Gerenciar Autores</a>
             </li>

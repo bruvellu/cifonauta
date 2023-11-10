@@ -1,4 +1,4 @@
-{% extends 'dashboard.html' %}
+{% comment %} {% extends 'dashboard.html' %}
 
 {% block title %}Habilitar Especialistas e Autores{% endblock %}
 
@@ -52,9 +52,6 @@
                     {% for user in object_list %}
                     <tr>
                         <td class="text-cedule">{{ user }}</td>
-                        <td>
-                            <input type="checkbox" name="selected_users_ids" value="{{ user.id }}">
-                        </td>
                     </tr>
                     {% endfor %}
                 {% else %}
@@ -71,4 +68,4 @@
         <button type="submit" name="enable_specialists">Habilitar</button>
         <button type="submit" name="remove_specialists">Remover</button>
     </form>
-{% endblock %}
+{% endblock %} {% endcomment %}

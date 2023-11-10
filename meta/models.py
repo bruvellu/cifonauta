@@ -79,6 +79,11 @@ class ModifiedMedia(models.Model):
         verbose_name = _('mídia modificada')
         verbose_name_plural = _('mídias modificadas')
     
+def save_file(instance, filename):
+    return os.path.join(f'uploads/{instance.user.username}', filename)
+
+def save_cover(instance, filename):
+    return os.path.join(f'{instance.user.username}', filename)
 
 class Media(models.Model):
     '''Table with metadata for photo and video files.'''
@@ -98,7 +103,7 @@ class Media(models.Model):
                        ('cc_by_nc_nd', _('CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')),)
 
     # Fields related to file handling
-    file = models.FileField(upload_to='uploads/',
+    file = models.FileField(upload_to=save_file,
                             default=None,
                             null=True,
                             help_text=_('Arquivo carregado pelo usuário.'))
@@ -106,9 +111,11 @@ class Media(models.Model):
                                 max_length=200,
                                 help_text=_('Caminho único para o arquivo original.'))
     sitepath = models.FileField(_('arquivo web'),
+                                upload_to=save_cover,
                                 default=None,
                                 help_text=_('Arquivo processado para a web.'))
     coverpath = models.ImageField(_('imagem de capa'),
+                                  upload_to=save_cover,
                                   default=None,
                                   help_text=_('Imagem de capa para o arquivo processado.'))
     datatype = models.CharField(_('tipo de mídia'),

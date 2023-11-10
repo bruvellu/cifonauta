@@ -138,7 +138,7 @@ class SpecialistActionForm(forms.ModelForm):
 
     class Meta:
         model = Media
-        fields = ('taxa_action', 'taxa', 'status_action',)
+        fields = ( 'status_action', 'taxa_action', 'taxa',)
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
         }

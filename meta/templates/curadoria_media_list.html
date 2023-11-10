@@ -4,7 +4,7 @@
 {% block extra_head %}
 <script src="{% static 'js/adm_select_all_records.js' %}" defer></script>
 <script src="{% static 'js/adm_popup.js' %}" defer></script>
-<script src="{% static 'js/curadoria_media_list.js' %}" defer></script>
+<script src="{% static 'js/adm_actions.js' %}" defer></script>
 {% endblock %}
 
 {% block title %}Lista de Mídias{% endblock %}
@@ -53,7 +53,7 @@
             {% endfor %}
         </div>
     </div>
-    <button type="submit" class="pre-registration-submit">Enviar</button>
+    <button type="submit" class="pre-registration-submit">Processar</button>
 </div>
 <button type="button" id="open-modal-button" class="action-button">Ações em lotes</button>
 
@@ -63,7 +63,7 @@
             <th><input type="checkbox" id="select-all-records"></th>
             <th class="image-column">Mídia</th>
             <th class="title-column">Título</th>
-            <th>Autor</th>
+            <th>Usuário</th>
             <th class="status-column">Status</th>
         </tr>
     </thead>
@@ -83,7 +83,7 @@
                 </a>
             </td>
             <td class="text-cedule">{{ media.title_pt_br }}</td>
-            <td>{{media.author}}</td>
+            <td>{{media.user}}</td>
             <td 
                 class="text-cedule {% if media.status == 'not_edited' %}not-edited{% elif media.status == 'to_review' %}to-review{% else %}published{% endif %}"
             >

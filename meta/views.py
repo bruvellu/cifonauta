@@ -400,7 +400,7 @@ def curadoria_media_list(request):
 
     form = SpecialistActionForm()
     # Options are: mantain status or send to revision
-    form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[2])
+    form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[1])
 
     context = {
         'form': form,
@@ -642,46 +642,57 @@ def my_medias(request):
 
     return render(request, 'my_medias.html', context)
 
-@method_decorator(custom_login_required, name='dispatch')
-@method_decorator(curator_required, name='dispatch')
-class RevisionMedia(LoginRequiredMixin, ListView):
-    model = Media
-    template_name = 'media_revision.html'
+@custom_login_required
+@curator_required
+def revision_media(request):
+    if request.method == 'POST':
+        media_ids = request.POST.getlist('selected_media_ids')
 
-    # Shows the images and videos that have taxons that are in one of the user's curations
-    def get_queryset(self):
-        user = self.request.user
+        if media_ids:
+            form = SpecialistActionForm(request.POST)
 
-        curations = user.curatorship_curator.all()
-        curations_taxons = []
+            if form.is_valid():
+                medias = Media.objects.filter(id__in=media_ids)
+                
+                if form.cleaned_data['taxa_action'] != 'maintain':
+                    for media in medias:
+                        media.taxa.set(form.cleaned_data['taxa'])
+                if form.cleaned_data['status_action'] != 'maintain':
+                    medias.update(status='published', is_public=True) #TODO: Remove is_public
 
-        for curadoria in curations:
-            taxons = curadoria.taxons.all()
-            curations_taxons.extend(taxons)
-
-        queryset = Media.objects.filter(
-            Q(status='to_review') & Q(taxa__in=curations_taxons) |
-            Q(modified_media__taxa__in=curations_taxons))
-
-        # Aplies distinct() to eliminate duplicates
-        queryset = queryset.distinct()
-
-        return queryset
-
-    # Gets the images and videos selected in the checkboxes and publish them
-    def post(self, request):
-        selected_images_ids = request.POST.getlist('selected_images_ids')
-        # Gets the images selected by their id and updates their status
-        Media.objects.filter(id__in=selected_images_ids).update(is_public=True, status='published') 
-        return redirect('my_medias')
+                messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
+            else:
+                messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+        else:
+            messages.warning(request, _('Nenhum registro foi selecionado'))
     
-    # Gets the user's permissions
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.curatorship_specialist.exists()
-        context['is_curator'] = user.curatorship_curator.exists()
-        return context
+    user = request.user
+
+    curations = user.curatorship_curator.all()
+    curations_taxons = []
+
+    for curadoria in curations:
+        taxons = curadoria.taxons.all()
+        curations_taxons.extend(taxons)
+
+    queryset = Media.objects.filter(
+        Q(status='to_review') & Q(taxa__in=curations_taxons) |
+        Q(modified_media__taxa__in=curations_taxons))
+
+    queryset = queryset.distinct()
+
+    form = SpecialistActionForm()
+    # Options are: mantain status or publish media
+    form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[2])
+
+    context = {
+        'form': form,
+        'object_list': queryset,
+        'is_specialist': user.curatorship_specialist.exists(),
+        'is_curator': user.curatorship_curator.exists(),
+    }
+
+    return render(request, 'media_revision.html', context)
 
 
 @custom_login_required

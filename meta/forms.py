@@ -143,6 +143,20 @@ class SpecialistActionForm(forms.ModelForm):
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
         }
 
+class MyMediasActionForm(forms.ModelForm):
+    TAXA_CHOICES = (
+        ('maintain', _('Manter táxons')),
+        ('overwrite', _('Sobrescrever táxons')),
+    )
+
+    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain')
+
+    class Meta:
+        model = Media
+        fields = ('taxa_action', 'taxa',)
+        widgets = {
+            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
+        }
 
 class SearchForm(forms.Form):
     query = forms.CharField(label=_('Buscar por'),

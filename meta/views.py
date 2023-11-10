@@ -600,13 +600,41 @@ def update_my_medias(request, pk):
 @custom_login_required
 @author_required
 def my_medias(request):
+    if request.method == "POST":
+        media_ids = request.POST.getlist('selected_media_ids')
+
+        if media_ids:
+            form = MyMediasActionForm(request.POST)
+
+            if form.is_valid():
+                has_published_media = Media.objects.filter(id__in=media_ids, status='published').exists()
+                if has_published_media:
+                    messages.error(request, _('Não é possível aplicar ações em mídias já publicadas'))
+                    return redirect('my_medias')
+                
+                medias = Media.objects.filter(id__in=media_ids)
+                
+                if form.cleaned_data['taxa_action'] != 'maintain':
+                    for media in medias:
+                        media.taxa.set(form.cleaned_data['taxa'])
+                medias.update(status='not_edited')
+                
+                messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
+            else:
+                messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+        else:
+            messages.warning(request, _('Nenhum registro foi selecionado'))
+    
     user = request.user
     queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
+    
+    form = MyMediasActionForm()
 
     is_specialist = user.curatorship_specialist.exists()
     is_curator = user.curatorship_curator.exists()
 
     context = {
+        'form': form,
         'object_list': queryset,
         'is_specialist': is_specialist,
         'is_curator': is_curator,

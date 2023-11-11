@@ -342,6 +342,8 @@ def edit_metadata(request, media_id):
 
         media_instance.save()
 
+        form.send_mail(request.user.id, [media], 'Edição de mídia do Cifonauta', 'edited_media_email.html')
+
         messages.success(request, 'Edição de mídia realizado com sucesso')
 
         return redirect('curadory_medias')
@@ -376,6 +378,18 @@ def curadoria_media_list(request):
                         media.taxa.set(form.cleaned_data['taxa'])
                 if form.cleaned_data['status_action'] != 'maintain':
                     medias.update(status='to_review')
+                
+                user_medias = {}
+                for media in medias:
+                    user_id = media.user.id
+
+                    if user_id not in user_medias:
+                        user_medias[user_id] = [media]
+                    else:
+                        user_medias[user_id].append(media)
+                
+                for medias in user_medias.values():
+                    form.send_mail(request.user, medias, 'Edição de mídia do Cifonauta', 'edited_media_email.html')
 
                 messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
             else:
@@ -667,6 +681,18 @@ def revision_media(request):
                         media.taxa.set(form.cleaned_data['taxa'])
                 if form.cleaned_data['status_action'] != 'maintain':
                     medias.update(status='published', is_public=True) #TODO: Remove is_public
+                
+                user_medias = {}
+                for media in medias:
+                    user_id = media.user.id
+
+                    if user_id not in user_medias:
+                        user_medias[user_id] = [media]
+                    else:
+                        user_medias[user_id].append(media)
+                
+                for medias in user_medias.values():
+                    form.send_mail(request.user, medias, 'Revisão de mídia do Cifonauta', 'published_media_email.html')
 
                 messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
             else:
@@ -825,6 +851,8 @@ def revision_media_detail(request, media_id):
         media_instance.authors.set(form.cleaned_data['authors'])
         
         media_instance.save()
+
+        form.send_mail(request.user, [media], 'Revisão de mídia do Cifonauta', 'published_media_email.html')
 
         messages.success(request, f'A mídia {media.title} foi publicada com sucesso')
         return redirect('media_revision')

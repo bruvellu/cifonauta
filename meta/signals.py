@@ -1,40 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django.template.defaultfilters import slugify
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
-from media_utils import Metadata
 import os
-from django.db.models import Q
-from PIL import Image
 from django.db.models.signals import m2m_changed
-
-from django.conf import settings
-
-def compress_files(sender, instance, created, **kwargs):
-    if created and instance.file.name.lower().endswith(settings.PHOTO_EXTENSIONS):
-        coverpath = Image.open(instance.coverpath.path)
-        coverpath.thumbnail((1280, 720))
-        coverpath.save(instance.coverpath.path, quality=50)
-
-        sitepath = Image.open(instance.sitepath.path)
-        sitepath.thumbnail((1280, 720))
-        sitepath.save(instance.sitepath.path)
-            
-        instance.datatype = 'photo'
-
-        author = str(instance.author)
-        metadata = {
-            'license': {
-                'license_type': str(instance.license),
-                'author': author,
-                'co_authors': ''
-            }
-        }
-        try:
-            Metadata(instance.file.path, metadata)
-        except:
-            instance.metadata_error = True
 
 def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
     from meta.models import Taxon, Curadoria
@@ -52,21 +20,15 @@ def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
 
 
 def delete_file_from_folder(sender, instance, **kwargs):
-    from meta.models import LoadedMedia
-    if sender == LoadedMedia:
-        if instance.media:
-            if os.path.isfile(instance.media.path):
-                os.remove(instance.media.path)
-    else:
-        if instance.file:
-            if os.path.isfile(instance.file.path):
-                os.remove(instance.file.path)
-        if instance.coverpath:
-            if os.path.isfile(instance.coverpath.path):
-                os.remove(instance.coverpath.path)
-        if instance.sitepath:
-            if os.path.isfile(instance.sitepath.path):
-                os.remove(instance.sitepath.path)  
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
+    if instance.coverpath:
+        if os.path.isfile(instance.coverpath.path):
+            os.remove(instance.coverpath.path)
+    if instance.sitepath:
+        if os.path.isfile(instance.sitepath.path):
+            os.remove(instance.sitepath.path)  
 
     
 

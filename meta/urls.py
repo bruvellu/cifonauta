@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import CuradoriaMediaList, MediaDetail, MyMedias, RevisionMedia, EnableSpecialists
+from .views import MediaDetail, EnableSpecialists
 
 def extra(model, field):
     return {'model_name': model, 'field': field}
@@ -15,19 +15,20 @@ urlpatterns = [
         path('administrative-module/edit-metadata/<int:media_id>', views.edit_metadata, name='edit_metadata'),
         path('administrative-module/details/<int:pk>/', MediaDetail.as_view(), name='media_detail'),
         path('administrative-module/update/<int:pk>', views.update_my_medias, name='update_media'),
-        path('administrative-module/curadory-medias/', CuradoriaMediaList.as_view(), name='curadory_medias'),
-        path('administrative-module/my-medias/', MyMedias.as_view(), name='my_medias'),
-        path('administrative-module/revision', RevisionMedia.as_view(), name='media_revision'),
+        path('administrative-module/curadory-medias/', views.curadoria_media_list, name='curadory_medias'),
+        path('administrative-module/my-medias/', views.my_medias, name='my_medias'),
+        path('administrative-module/revision', views.revision_media, name='media_revision'),
         path('administrative-module/revision/detail/<int:media_id>', views.revision_media_detail, 
         name='media_revision_detail'),
         path('administrative-module/revision/changes/<int:pk>', views.modified_media_revision, name='modified_media_revision'),
         path('administrative-module/enable-specialists', EnableSpecialists.as_view(), name='enable_specialists'),
-        path('administrative-module/tours', views.tour_list, name='tour_list'),
-        path('administrative-module/tours/add', views.add_tour, name='add_tour'),
-        path('administrative-module/tours/<int:pk>', views.edit_tour, name='edit_tour'),
+        path('administrative-module/tours', views.dashboard_tour_list, name='dashboard_tour_list'),
+        path('administrative-module/tours/add', views.dashboard_tour_add, name='dashboard_tour_add'),
+        path('administrative-module/tours/<int:pk>', views.dashboard_tour_edit, name='dashboard_tour_edit'),
         
 
         path('synchronize-fields', views.synchronize_fields, name='synchronize_fields'),
+        path('get-tour-medias', views.get_tour_medias, name='get_tour_medias'),
 
         # Menu
         path('search/', views.search_page, name='search_url'),

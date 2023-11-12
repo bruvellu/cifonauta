@@ -1111,6 +1111,7 @@ ul.rel-thumbs li.size-micro {
 }
 .size-micro {
   background: #94B1CA !important;
+  border-color: #94B1CA !important;
 }
 
 ul.thumbs li.size-tiny,
@@ -1119,6 +1120,7 @@ ul.rel-thumbs li.size-tiny {
 }
 .size-tiny {
   background: #BACC70 !important;
+  border-color: #BACC70 !important;
 }
 
 ul.thumbs li.size-visible,
@@ -1127,6 +1129,7 @@ ul.rel-thumbs li.size-visible {
 }
 .size-visible {
   background: #FFE866 !important;
+  border-color: #FFE866 !important;
 }
 
 ul.thumbs li.size-large,
@@ -1135,6 +1138,7 @@ ul.rel-thumbs li.size-large {
 }
 .size-large {
   background: #FFB566 !important;
+  border-color: #FFB566 !important;
 }
 
 ul.thumbs li.size-huge,
@@ -1143,6 +1147,7 @@ ul.rel-thumbs li.size-huge {
 }
 .size-huge {
   background: #B25959 !important;
+  border-color: #B25959 !important;
 }
 
 /* SIDEBAR */

@@ -26,14 +26,14 @@
         </thead>
         <tbody class="comparison-table-body">
             {% for field in modified_media_fields %}
-            <tr class="comparison-row {% if media|get_value:field.name != modified_media|get_value:field.name%}highlight-difference{% endif %}">
+            <tr class="comparison-row {% if media|get_attribute:field.name != modified_media|get_attribute:field.name%}highlight-difference{% endif %}">
                 <td class="comparison-label-row">
                     {{ field.label_tag }}
                     {% if field.field.required %}
                     <span class='required'>*</span>
                     {% endif %}
                 </td>
-                <td>{{ modified_media|get_value:field.name }}</td>
+                <td>{{ modified_media|get_attribute:field.name }}</td>
             </tr>
             {% endfor %}
         </tbody>

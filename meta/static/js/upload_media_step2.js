@@ -33,13 +33,6 @@ uploadForm.addEventListener('submit', (event) => {
     }
 })
 
-let messagesDiv = document.querySelector('.messages-div')
-if (messagesDiv) {
-    setInterval(() => {
-        messagesDiv.remove()
-    }, 10000)
-}
-
 
 
 let stateContainer = document.querySelector('.country-container').nextElementSibling

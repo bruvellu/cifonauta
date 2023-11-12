@@ -10,9 +10,7 @@
   <section id="photo-gallery">
     <header>
       {% if meta %}
-        <div class="quiet" id="metafield">
-          {% trans field %}{% if field == 'tag' %} ({{ meta.category|lower }}){% else %}{% if field == 'taxon' %} ({% if meta.rank %}{{ meta.rank|lower }}{% else %}{% trans 'sem ranking' %}{% endif %}){% endif %}{% endif %}:
-        </div>
+        <h1>{{ meta|sp_em }} <span class="quiet" id="metafield">({% trans field %}{% if field == 'tag' %}: {{ meta.category|lower }}{% else %}{% if field == 'taxon' %}{% if meta.rank %}: {{ meta.rank|lower }}{% endif %}{% endif %}{% endif %})</span></h1>
         
         {% if meta.citation %}
           <div id="citation">
@@ -22,8 +20,6 @@
             {% endautoescape %}
             </p>
           </div>
-        {% else %}
-          <h1>{{ meta|sp_em }}</h1>
         {% endif %}
       {% endif %}
 

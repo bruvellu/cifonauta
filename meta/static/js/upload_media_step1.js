@@ -33,10 +33,3 @@ mediasInput.addEventListener('change', (e) => {
         }
     }
 })
-
-let message = document.querySelector('.success')
-if (message) {
-    setInterval(() => {
-        message.remove()
-    }, 10000)
-}

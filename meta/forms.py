@@ -5,12 +5,13 @@ from django.apps import apps
 from django.utils.translation import gettext_lazy as _
 from .models import Media, Curadoria, Person, ModifiedMedia, Taxon, Tour
 from user.models import UserCifonauta
+from django.template import loader 
+from django.core.mail import EmailMultiAlternatives
 
 
 METAS = (
-        ('person', _('autor')),
+        ('author', _('autor')),
         ('taxon', _('táxon')),
-        # ('size', _('tamanho')),
         ('location', _('local')),
         ('city', _('cidade')),
         ('state', _('estado')),
@@ -53,75 +54,75 @@ OPERATORS = (
         )
 
 class UploadMediaForm(forms.ModelForm):
-    taxons = forms.ModelMultipleChoiceField(
-        required=False,
-        queryset=Taxon.objects.all(),
-        widget=forms.SelectMultiple(
-            attrs={"class": "select2-taxons", "multiple": "multiple"}
-        ),
-        label=_('Táxons'),
-        help_text=_('Táxons pertencentes à mídia.')
-    )
-
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxons', 'co_author', 'author', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
+        fields = ('title', 'caption', 'taxa', 'user', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
         widgets = {
-            'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"}),
+            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
+            'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
         }
 
 class UpdateMyMediaForm(forms.ModelForm):
-    taxons = forms.ModelMultipleChoiceField(
-        required=False,
-        queryset=Taxon.objects.all(),
-        widget=forms.SelectMultiple(
-            attrs={"class": "select2-taxons", "multiple": "multiple"}
-        ),
-        label=_('Táxons'),
-        help_text=_('Táxons pertencentes à mídia.')
-    )
-
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxons', 'co_author', 'author', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title', 'caption', 'taxa', 'user', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
         widgets = {
-            'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"})
+            'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
+            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if self.instance.pk:
-            self.fields['taxons'].initial = self.instance.taxon_set.all()
-
         if self.instance.status != 'not_edited':
             self.fields['title'].required = True
 
-class EditMetadataForm(forms.ModelForm):
-    taxons = forms.ModelMultipleChoiceField(
-        required=False,
-        queryset=Taxon.objects.all(),
-        widget=forms.SelectMultiple(
-            attrs={"class": "select2-taxons", "multiple": "multiple"}
-        ),
-        label=_('Táxons'),
-        help_text=_('Táxons pertencentes à mídia.')
-    )
+class SendEmailForm(forms.Form):
+    def send_mail(
+            self,
+            sender,
+            medias,
+            subject_template_name,
+            email_template_name,
+            from_email=None,
+            html_email_template_name=None,
+        ):
+            receiver = UserCifonauta.objects.filter(id=medias[0].user.id).first()
 
+            email = receiver.email
+
+            context = {
+                "single_media": True if len(medias) == 1 else False,
+                "media_names": [media.title for media in medias],
+                "sender_name": sender.get_full_name(),
+                "timestamp": medias[0].timestamp,
+            }
+
+            subject = subject_template_name
+            # Email subject must not contain newlines
+            subject = "".join(subject.splitlines())
+            body = loader.render_to_string(email_template_name, context)
+
+            email_message = EmailMultiAlternatives(subject, body, from_email, [email])
+            if html_email_template_name is not None:
+                html_email = loader.render_to_string(html_email_template_name, context)
+                email_message.attach_alternative(html_email, "text/html")
+            email_message.send()
+
+class EditMetadataForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = Media
-        fields = ( 'title', 'author', 'co_author', 'specialist', 'caption', 'size', 'date', 'taxons', 'license', 'credit', 'country', 'state', 'city', 'location', 'geolocation', 'life_stage', 'habitat', 'microscopy', 'life_style', 'photographic_technique', 'several', 'software')
+        fields = ('title', 'user', 'authors', 'specialists', 'caption', 'date', 'taxa', 'license', 'country', 'state', 'city', 'location', 'geolocation')
         widgets = {
-            'co_author': forms.SelectMultiple(attrs={"class": "select2-co-author", "multiple": "multiple"}),
-            'specialist': forms.SelectMultiple(attrs={"class": "select2-specialist", "multiple": "multiple"})
+            'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
+            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
+            'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"})
         }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields['title'].required = True
-        if self.instance.pk:
-            self.fields['taxons'].initial = self.instance.taxon_set.all()
 
 class CoauthorRegistrationForm(forms.ModelForm):
     class Meta:
@@ -131,7 +132,7 @@ class CoauthorRegistrationForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
-        fields = ( 'title', 'caption', 'taxons', 'co_author', 'date', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ( 'title', 'caption', 'taxa', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
 
 class MyMediaForm(forms.ModelForm):
     class Meta:
@@ -147,6 +148,48 @@ class TourForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super(TourForm, self).__init__(*args, **kwargs)
+        
+        self.fields['media'].label_from_instance = lambda obj: obj.title
+
+class SpecialistActionForm(forms.ModelForm, SendEmailForm):
+    STATUS_CHOICES = [
+        ('maintain', _('Manter status')),
+        ('to_review', _('Enviar para revisão')),
+        ('publish', _('Publicar')),
+    ]
+
+    TAXA_CHOICES = (
+        ('maintain', _('Manter táxons')),
+        ('overwrite', _('Sobrescrever táxons')),
+    )
+
+    status_action = forms.ChoiceField(label=_('Status'), choices=STATUS_CHOICES, initial='maintain')
+    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain')
+
+    class Meta:
+        model = Media
+        fields = ( 'status_action', 'taxa_action', 'taxa',)
+        widgets = {
+            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
+        }
+
+class MyMediasActionForm(forms.ModelForm):
+    TAXA_CHOICES = (
+        ('maintain', _('Manter táxons')),
+        ('overwrite', _('Sobrescrever táxons')),
+    )
+
+    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain')
+
+    class Meta:
+        model = Media
+        fields = ('taxa_action', 'taxa',)
+        widgets = {
+            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
         }
 
 class SearchForm(forms.Form):
@@ -218,6 +261,12 @@ class DisplayForm(forms.Form):
                                                 attrs={"class": "select2-options",
                                                        "multiple": "multiple"}),
                                             label=_('Autores'),)
+    specialist = forms.ModelMultipleChoiceField(required=False,
+                                                queryset=Person.objects.all(),
+                                                widget=forms.SelectMultiple(
+                                                    attrs={"class": "select2-options",
+                                                           "multiple": "multiple"}),
+                                                label=_('Especialistas'),)
     location = forms.ModelMultipleChoiceField(required=False,
                                          queryset=Location.objects.all(),
                                          widget=forms.SelectMultiple(

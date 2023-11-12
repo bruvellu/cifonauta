@@ -1,14 +1,72 @@
 {% extends 'dashboard.html' %}
+{% load static %}
+
+{% block extra_head %}
+<script src="{% static 'js/adm_select_all_records.js' %}" defer></script>
+<script src="{% static 'js/adm_popup.js' %}" defer></script>
+<script src="{% static 'js/adm_actions.js' %}" defer></script>
+{% endblock %}
 
 {% block title %}Lista de Mídias{% endblock %}
 
 {% block dashboard_content %}
 
 <h2>Lista de suas mídias</h2>
-{% if object_list %}
+
+<div class="messages-div">
+    {% for message in messages %}
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    {% endfor %}
+</div>
+
+{% if entries.object_list %}
+<form method="post">
+{% csrf_token %}
+
+<div id="behind-modal-container" class="behind-modal-container"></div>
+<div id="modal-container" class="modal-container list-modal-container">
+    <div>
+        <div class="modal-header">
+            <p>Processar em lote as mídias selecionadas</p>
+            <button type="button" id="close-modal-button" class="close-modal-button">
+                <div class='line1'></div>
+                <div class='line2'></div>
+            </button>
+        </div>
+        <div class="modal-body">
+            {% for field in form %}
+            {% if field == form.taxa_action %}
+            <div class="modal-field-div">
+                {{ field.label_tag }}
+                {{ field }}
+                <div id="taxa-wrapper" class="hide-div">
+                    {{ form.taxa }}
+                </div>
+            </div>
+            {% elif field == form.taxa %}
+            {% else %}
+            <div class="modal-field-div">
+                {{ field.label_tag }}
+                {{ field }}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <button type="submit" class="pre-registration-submit">Processar</button>
+</div>
+
+<div class='table-top'>
+    <button type="button" id="open-modal-button" class="action-button">Ações em lotes</button>
+    {% if entries.paginator.num_pages > 1 %}
+    {% include 'pagination.html' %}
+    {% endif %}
+</div>
+
 <table class="table">
     <thead class="table-head">
         <tr>
+            <th><input type="checkbox" id="select-all-records"></th>
             <th class="title-column">Mídia</th>
             <th class="title-column">Título</th>
             <th class="">Tipo de mídia</th>
@@ -17,8 +75,11 @@
         </tr>
     </thead>
     <tbody class="table-body">
-        {% for media in object_list %}
+        {% for media in entries.object_list %}
         <tr>
+            <td>
+                <input type="checkbox" class="selected-record" name="selected_media_ids" value="{{ media.id }}">
+            </td>
             <td class="image-cedule">
                 <a href="{% url 'update_media' pk=media.pk %}">
                     {% if media.is_video %}
@@ -48,6 +109,15 @@
         {% endfor %}
     </tbody>
 </table>
+
+<div class="table-bottom">
+    {% if entries.paginator.num_pages > 1 %}
+    {% include 'pagination.html' %}
+    {% endif %}
+</div>
+
+</form>
+
 {% else %}
 <p>Não há mídias</p>
 {% endif %}

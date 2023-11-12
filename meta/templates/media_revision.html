@@ -2,7 +2,9 @@
 {% load static %}
 
 {% block extra_head %}
-<script src="{% static 'js/media_revision.js' %}" defer></script>
+<script src="{% static 'js/adm_select_all_records.js' %}" defer></script>
+<script src="{% static 'js/adm_popup.js' %}" defer></script>
+<script src="{% static 'js/adm_actions.js' %}" defer></script>
 {% endblock %}
 
 {% block title %}Revisão de Mídias{% endblock %}
@@ -16,24 +18,64 @@
         {% endfor %}
     </div>
     {% endif %}
-    {% if object_list %}
+    {% if entries.object_list %}
     <form method="post" class="margin-top">
         {% csrf_token %}
+        <div id="behind-modal-container" class="behind-modal-container"></div>
+        <div id="modal-container" class="modal-container list-modal-container">
+            <div>
+                <div class="modal-header">
+                    <p>Processar em lote as mídias selecionadas</p>
+                    <button type="button" id="close-modal-button" class="close-modal-button">
+                        <div class='line1'></div>
+                        <div class='line2'></div>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% for field in form %}
+                    {% if field == form.taxa_action %}
+                    <div class="modal-field-div">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        <div id="taxa-wrapper" class="hide-div">
+                            {{ form.taxa }}
+                        </div>
+                    </div>
+                    {% elif field == form.taxa %}
+                    {% else %}
+                    <div class="modal-field-div">
+                        {{ field.label_tag }}
+                        {{ field }}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <button type="submit" class="pre-registration-submit">Processar</button>
+        </div>
+
+        <div class='table-top'>
+            <button type="button" id="open-modal-button" class="action-button">Ações em lotes</button>
+            {% if entries.paginator.num_pages > 1 %}
+            {% include 'pagination.html' %}
+            {% endif %}
+        </div>
+
         <table class="table">
             <thead class="table-head">
                 <tr>
-                    <th class="checkbox-column">Selecionar</th>
+                    <th class="checkbox-column"><input type="checkbox" id="select-all-records"></th>
                     <th class="image-column">Imagem</th>
                     <th class="title-column">Título</th>
-                    <th>Autor</th>
+                    <th>Usuário</th>
                     <th class="status-column">Status</th>
                 </tr>
             </thead>
             <tbody class="table-body">
-                {% for media in object_list %}
+                {% for media in entries.object_list %}
                 <tr>
                     <td>
-                        <input type="checkbox" name="selected_images_ids" value="{{ media.id }}">
+                        <input type="checkbox" class="selected-record" name="selected_media_ids" value="{{ media.id }}">
                     </td>
                     <td class="image-cedule">
                         <a href="{% if media.modified_media %}{% url 'modified_media_revision' media.pk %}{% else %}{% url 'media_revision_detail' media.id %}{% endif %}">
@@ -47,7 +89,7 @@
                     <td class="text-cedule">
                         {{ media.title_pt_br }}
                     </td>
-                    <td>{{media.author}}</td>
+                    <td>{{media.user}}</td>
                     <td 
                         class="text-cedule {% if media.status == 'not_edited' %}not-edited{% elif media.status == 'to_review' %}to-review{% else %}published{% endif %}"
                     >
@@ -57,7 +99,13 @@
                 {% endfor %}
             </tbody>
         </table>
-        <button class="submit-button" type="submit">Publicar</button>
+
+        <div class="table-bottom">
+            {% if entries.paginator.num_pages > 1 %}
+            {% include 'pagination.html' %}
+            {% endif %}
+        </div>
+
     </form>
     {% else %}
         <p class="margin-top">Não há imagens</p>

@@ -1,0 +1,120 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block extra_head %}
+<script src="{% static 'js/tour.js' %}" defer></script>
+{% endblock %}
+
+{% block title %}Editar Tour Temático{% endblock %}
+
+{% block dashboard_content %}
+<div class="form-container">
+    <h2>Editar tour temático</h2>
+    {% if messages %}
+    <div class="messages-div">
+    {% for message in messages %}
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <form class="update-form tour-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+        {% if field == form.media %}
+        <div class="field-container">
+            <div class="label-div">
+                {{ field.label_tag }}
+                {% if field.field.required %}
+                <span class='required'>*</span>
+                {% endif %}
+            </div>
+            <div class="field-div">
+                <div>
+                    <div id="input-container">
+                        <div id="selected-options-container">
+                            {% for media_related in medias_related %}
+                            <div class="selected-option" id="selected_{{ media_related.id }}">
+                                <input type="text" hidden name="selected_media" value="{{ media_related.id }}">
+
+                                <button type="button" class="remove-selected-option-btn" onclick="removeOption({{ media_related.id }})"></button>
+
+                                <div class='option-infos-wrapper'>
+                                    {% if media_related.datatype == 'video' %}
+                                    <video class="option-cover size-{{media.size}}" src="{{media_related.coverpath.url}}"></video>
+                                    {% else %}
+                                    <img class="option-cover size-{{media.size}}" src="{{media_related.coverpath.url}}">
+                                    {% endif %}
+                                    
+                                    <div class="option-infos">
+                                        <a class="selected-option-cover-link" href="{{ media_related.coverpath.url }}" target="_blank">{{media_related.title}}</a>
+                                        <span>
+                                            {% if media_related.datatype == 'video' %}
+                                            Vídeo
+                                            {% else %}
+                                            Foto
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <input id="search-options-input" type="text" placeholder="Selecione as mídias" autocomplete="off">
+                    </div>
+
+                    <div id="options-container" class="hide-div">
+                        <ul id="options-ul">
+                            {% for initial_media in initial_medias %}
+                            <li tabindex="0" id="option_{{ initial_media.id }}" class="media-option {% if initial_media in medias_related %}media-option-selected{% endif %}"  onclick='selectOption(event, this)'>
+                                {% if initial_media.datatype == 'video' %}
+                                <video class="option-cover size-{{ initial_media.size }}" src="{{initial_media.coverpath.url}}"></video>
+                                {% else %}
+                                <img class="option-cover size-{{ initial_media.size }}" src="{{initial_media.coverpath.url}}">
+                                {% endif %}
+                                <div class="option-infos">
+                                    <a class="option-title" href="" tabindex="-1" target="_blank">{{initial_media.title}}</a>
+                                    <span>
+                                        {% if initial_media.datatype == 'video' %}
+                                        Vídeo
+                                        {% else %}
+                                        Foto
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% if field.help_text %}
+                <span class="help-text">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="field-container">
+            <div class="label-div">
+                {{ field.label_tag }}
+                {% if field.field.required %}
+                <span class='required'>*</span>
+                {% endif %}
+            </div>
+            <div class="field-div">
+                {{ field }}
+                {% if field.help_text %}
+                <span class="help-text">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        <div class="buttons-div">
+            <button class='submit-button' type="submit" name="action" value="submit">Salvar edições</button>
+            <button class='cancel-button' type="submit" name="action" value="delete">Excluir tour</button>
+        </div>
+    </form>
+</div>
+
+
+
+{% endblock %}

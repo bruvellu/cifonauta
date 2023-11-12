@@ -1,40 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django.template.defaultfilters import slugify
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
-from media_utils import Metadata
 import os
-from django.db.models import Q
-from PIL import Image
 from django.db.models.signals import m2m_changed
-
-from django.conf import settings
-
-def compress_files(sender, instance, created, **kwargs):
-    if created and instance.file.name.lower().endswith(settings.PHOTO_EXTENSIONS):
-        coverpath = Image.open(instance.coverpath.path)
-        coverpath.thumbnail((1280, 720))
-        coverpath.save(instance.coverpath.path, quality=50)
-
-        sitepath = Image.open(instance.sitepath.path)
-        sitepath.thumbnail((1280, 720))
-        sitepath.save(instance.sitepath.path)
-            
-        instance.datatype = 'photo'
-
-        author = str(instance.author)
-        metadata = {
-            'license': {
-                'license_type': str(instance.license),
-                'author': author,
-                'co_authors': ''
-            }
-        }
-        try:
-            Metadata(instance.file.path, metadata)
-        except:
-            instance.metadata_error = True
 
 def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
     from meta.models import Taxon, Curadoria
@@ -52,21 +20,15 @@ def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
 
 
 def delete_file_from_folder(sender, instance, **kwargs):
-    from meta.models import LoadedMedia
-    if sender == LoadedMedia:
-        if instance.media:
-            if os.path.isfile(instance.media.path):
-                os.remove(instance.media.path)
-    else:
-        if instance.file:
-            if os.path.isfile(instance.file.path):
-                os.remove(instance.file.path)
-        if instance.coverpath:
-            if os.path.isfile(instance.coverpath.path):
-                os.remove(instance.coverpath.path)
-        if instance.sitepath:
-            if os.path.isfile(instance.sitepath.path):
-                os.remove(instance.sitepath.path)  
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
+    if instance.coverpath:
+        if os.path.isfile(instance.coverpath.path):
+            os.remove(instance.coverpath.path)
+    if instance.sitepath:
+        if os.path.isfile(instance.sitepath.path):
+            os.remove(instance.sitepath.path)  
 
     
 
@@ -182,68 +144,6 @@ def slug_pre_save(signal, instance, sender, **kwargs):
     if not instance.slug:
         slug = slugify(instance.name)
         instance.slug = slug
-
-
-def update_count(signal, instance, sender, **kwargs):
-    '''Update media counter.'''
-    ## Many 2 Many
-    # Authors
-    authors = instance.person_set.filter(is_author=True)
-    if authors:
-        for author in authors:
-            author.counter()
-    # Sources
-    sources = instance.person_set.filter(is_author=False)
-    if sources:
-        for source in sources:
-            source.counter()
-    # Taxa
-    taxa = instance.taxon_set.all()
-    if taxa:
-        for taxon in taxa:
-            taxon.counter()
-    # Tags
-    tags = instance.tag_set.all()
-    if tags:
-        for tag in tags:
-            tag.counter()
-    # References
-    references = instance.reference_set.all()
-    if references:
-        for reference in references:
-            reference.counter()
-    # Tours
-    tours = instance.tour_set.all()
-    if tours:
-        for tour in tours:
-            tour.counter()
-
-    ## Foreign Key
-    # Size
-    try:
-        instance.size.counter()
-    except:
-        print('Size == NULL (id={})'.format(instance.id))
-    # Location
-    try:
-        instance.location.counter()
-    except:
-        print('Location == NULL (id={})'.format(instance.id))
-    # City
-    try:
-        instance.city.counter()
-    except:
-        print('City == NULL (id={})'.format(instance.id))
-    # State
-    try:
-        instance.state.counter()
-    except:
-        print('State == NULL (id={})'.format(instance.id))
-    # Country
-    try:
-        instance.country.counter()
-    except:
-        print('Country == NULL (id={})'.format(instance.id))
 
 
 def makestats(signal, instance, sender, **kwargs):

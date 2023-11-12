@@ -14,8 +14,8 @@ class FlatPageAdmin(TranslationAdmin):
 
 
 class MediaAdmin(TranslationAdmin):
-    list_display = ('title', 'status', 'highlight', 'file', 'author', 'pub_date')
-    list_filter = ('is_public', 'highlight', 'timestamp', 'person', 'tag', 'taxon')
+    list_display = ('title', 'status', 'highlight', 'file', 'user', 'pub_date')
+    list_filter = ('is_public', 'highlight', 'timestamp', 'authors', 'tags', 'taxa', 'specialists')
 
 class ModifiedMediaAdmin(admin.ModelAdmin):
     list_display = ('title',)
@@ -44,12 +44,12 @@ class CountryAdmin(TranslationAdmin):
 
 
 class PersonAdmin(admin.ModelAdmin):
-    filter_horizontal = ('media',)
+    filter_horizontal = ()
     search_fields = ('name', 'email')
 
     def delete_queryset(self, request, queryset):
         for person in queryset:
-            if Media.objects.filter(co_author=person).exists():
+            if Media.objects.filter(authors=person).exists():
                 message = f"Não foi possível efetuar a exclusão porque a pessoa {person} está relacionada a uma mídia."
                 messages.error(request, message)
                 return 
@@ -58,7 +58,7 @@ class PersonAdmin(admin.ModelAdmin):
 
 
     def delete_model(self, request, obj):
-        if Media.objects.filter(co_author=obj).exists():
+        if Media.objects.filter(authors=obj).exists():
             message = "Não foi possível efetuar a exclusão porque esta pessoa está relacionada a uma mídia."
             self.message_user(request, message, messages.ERROR)
             return 
@@ -100,4 +100,3 @@ admin.site.register(Taxon, TaxonAdmin)
 admin.site.register(Reference, ReferenceAdmin)
 admin.site.register(Curadoria, CuradoriaAdmin)
 admin.site.register(ModifiedMedia, ModifiedMediaAdmin)
-admin.site.register(LoadedMedia)

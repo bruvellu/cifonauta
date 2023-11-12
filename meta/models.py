@@ -30,15 +30,27 @@ class Curadoria(models.Model):
         return self.name
 
 class ModifiedMedia(models.Model):
+    LICENSE_CHOICES = (('cc0', _('CC0 (Domínio Público)')),
+                       ('cc_by', _('CC BY (Atribuição)')),
+                       ('cc_by_sa', _('CC BY-SA (Atribuição-CompartilhaIgual)')),
+                       ('cc_by_nd', _('CC BY-ND (Atribuição-SemDerivações)')),
+                       ('cc_by_nc', _('CC BY-NC (Atribuição-NãoComercial)')),
+                       ('cc_by_nc_sa', _('CC BY-NC-SA (AtribuiçãoNãoComercial-CompartilhaIgual)')),
+                       ('cc_by_nc_nd', _('CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')),)
+    
     title = models.CharField(_('título'), max_length=200, default='',
             blank=True, help_text=_('Título da imagem.'))
     caption = models.TextField(_('legenda'), default='', blank=True,
             help_text=_('Legenda da imagem.'))
     media = models.OneToOneField('Media', on_delete=models.CASCADE, related_name='modified_media',
             verbose_name=_('mídia modificada'))
-    co_author = models.ManyToManyField('Person', blank=True,
-            verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='modified_co_author')
-    taxons = models.ManyToManyField('Taxon', related_name="modified_taxons", verbose_name=_('táxons'), help_text=_('Táxons pertencentes à mídia.'), blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
+            on_delete=models.SET_NULL, verbose_name=_('usuário do arquivo'),
+            help_text=_('Usuário que fez o upload do arquivo.'),
+            related_name='modified_media')
+    authors = models.ManyToManyField('Person', blank=True,
+            verbose_name=_('autores'), help_text=_('Coautor(es) da mídia'), related_name='modified_media_authors')
+    taxa = models.ManyToManyField('Taxon', related_name="modified_media_taxons", verbose_name=_('táxons'), help_text=_('Táxons pertencentes à mídia.'), blank=True)
     date = models.DateTimeField(_('data'), null=True,
             help_text=_('Data de criação da imagem.'))
     location = models.ForeignKey('Location', on_delete=models.SET_NULL,
@@ -54,6 +66,11 @@ class ModifiedMedia(models.Model):
     geolocation = models.CharField(_('geolocalização'), default='',
             max_length=25, blank=True,
         help_text=_('Geolocalização da imagem no formato decimal.'))
+    license = models.CharField(_('Licença'),
+                               max_length=60,
+                               choices=LICENSE_CHOICES,
+                               default='cc0',
+                               help_text=_('Tipo de licença da mídia.'))
     
     def __str__(self):
         return self.title
@@ -61,161 +78,207 @@ class ModifiedMedia(models.Model):
     class Meta:
         verbose_name = _('mídia modificada')
         verbose_name_plural = _('mídias modificadas')
-
-class LoadedMedia(models.Model):
-    media = models.FileField(upload_to='loaded_media')
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True)
-
-    def __str__(self):
-        return self.media.name
-
-    def is_video(self):
-        name, extension = os.path.splitext(self.media.name)
-        return True if extension in settings.VIDEO_EXTENSIONS else False
     
-    class Meta:
-        verbose_name = _('mídia carregada')
-        verbose_name_plural = _('mídias carregadas')
-    
+def save_file(instance, filename):
+    return os.path.join(f'uploads/{instance.user.username}', filename)
+
+def save_cover(instance, filename):
+    return os.path.join(f'{instance.user.username}', filename)
 
 class Media(models.Model):
-    '''Table containing both image and video files.'''
-    metadata_error = models.BooleanField(verbose_name=_('Erro nos metadados'), default=False)
-    id = models.AutoField(primary_key=True)
+    '''Table with metadata for photo and video files.'''
 
-    # New fields
-    file = models.FileField(upload_to='uploads/', default=None, null=True)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
-            verbose_name=_('autor'), help_text=_('Autor da mídia.'), related_name='author')
-    co_author = models.ManyToManyField('Person', blank=True,
-            verbose_name=_('coautor'), help_text=_('Coautor(es) da mídia'), related_name='co_author')
-    STATUS_CHOICES = (
-        ('not_edited', 'Não Editado'),
-        ('to_review', 'Para Revisão'),
-        ('published', 'Publicado'),
-    )
-    status = models.CharField(_('status'), blank=True, max_length=13, choices=STATUS_CHOICES, 
-            default='not_edited', help_text=_('Status da mídia.'))
-    LICENSE_CHOICES = (
-        ('cc0', 'CC0 (Domínio Público)'),
-        ('cc_by', 'CC BY (Atribuição)'),
-        ('cc_by_sa', 'CC BY-SA (Atribuição-CompartilhaIgual)'),
-        ('cc_by_nd', 'CC BY-ND (Atribuição-SemDerivações)'),
-        ('cc_by_nc', 'CC BY-NC (Atribuição-NãoComercial)'),
-        ('cc_by_nc_sa', 'CC BY-NC-SA (AtribuiçãoNãoComercial-CompartilhaIgual)'),
-        ('cc_by_nc_nd', ' CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')
-    )
-    license = models.CharField(_('Licença'), max_length=60, choices=LICENSE_CHOICES, default='cc0',
-        help_text=_('Tipo de licença que a mídia terá'))
-    terms = models.BooleanField(_('termos'), default=False)
-    
-    credit = models.CharField(_('Referências Bibliográficas'), blank=True, help_text=_('Referências bibliográficas relacionadas com a imagem.'))
+    # Pre-defined choices
+    STATUS_CHOICES = (('loaded', _('Carregada')),
+                      ('not_edited', _('Não Editado')),
+                      ('to_review', _('Para Revisão')),
+                      ('published', _('Publicado')),)
 
-    # File
-    filepath = models.CharField(_('arquivo original.'), max_length=200, help_text=_('Caminho único para arquivo original.'))
-    sitepath = models.FileField(_('arquivo web.'),
-            help_text=_('Arquivo processado para a web.'), default=None)
-    coverpath = models.ImageField(_('amostra do arquivo.'),
-            help_text=_('Imagem de amostra do arquivo processado.'), default=None)
-    datatype = models.CharField(_('tipo de mídia'), max_length=15,
-            help_text=_('Tipo de mídia.'))
-    timestamp = models.DateTimeField(_('data de modificação'), blank=True, default=timezone.now,
-            help_text=_('Data da última modificação do arquivo.'))
+    LICENSE_CHOICES = (('cc0', _('CC0 (Domínio Público)')),
+                       ('cc_by', _('CC BY (Atribuição)')),
+                       ('cc_by_sa', _('CC BY-SA (Atribuição-CompartilhaIgual)')),
+                       ('cc_by_nd', _('CC BY-ND (Atribuição-SemDerivações)')),
+                       ('cc_by_nc', _('CC BY-NC (Atribuição-NãoComercial)')),
+                       ('cc_by_nc_sa', _('CC BY-NC-SA (AtribuiçãoNãoComercial-CompartilhaIgual)')),
+                       ('cc_by_nc_nd', _('CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')),)
 
-    # Website
-    old_image = models.PositiveIntegerField(default=0, blank=True,
-            help_text=_('ID da imagem no antigo modelo.'))
-    old_video = models.PositiveIntegerField(default=0, blank=True,
-            help_text=_('ID do vídeo no antigo modelo.'))
-    highlight = models.BooleanField(_('destaque'), default=False,
-            help_text=_('Imagem que merece destaque.'))
-    is_public = models.BooleanField(_('público'), default=False,
-            help_text=_('Visível para visitantes.'))
-    pub_date = models.DateTimeField(_('data de publicação'), blank=True, default=timezone.now,
-            help_text=_('Data de publicação da imagem no Cifonauta.'))
+    # Fields related to file handling
+    file = models.FileField(upload_to=save_file,
+                            default=None,
+                            null=True,
+                            help_text=_('Arquivo carregado pelo usuário.'))
+    filepath = models.CharField(_('arquivo original'),
+                                max_length=200,
+                                help_text=_('Caminho único para o arquivo original.'))
+    sitepath = models.FileField(_('arquivo web'),
+                                upload_to=save_cover,
+                                default=None,
+                                help_text=_('Arquivo processado para a web.'))
+    coverpath = models.ImageField(_('imagem de capa'),
+                                  upload_to=save_cover,
+                                  default=None,
+                                  help_text=_('Imagem de capa para o arquivo processado.'))
+    datatype = models.CharField(_('tipo de mídia'),
+                                max_length=15,
+                                help_text=_('Tipo de mídia.'))
+    timestamp = models.DateTimeField(_('data de modificação'),
+                                     blank=True,
+                                     default=timezone.now,
+                                     help_text=_('Data da última modificação do arquivo.'))
 
-    # Metadata
-    title = models.CharField(_('título'), max_length=200, default='',
-            blank=True, help_text=_('Título da imagem.'))
-    caption = models.TextField(_('legenda'), default='', blank=True,
-            help_text=_('Legenda da imagem.'))
-    date = models.DateTimeField(_('data'), null=True,
-            help_text=_('Data de criação da imagem.'))
-    duration = models.CharField(_('duração'), max_length=20,
-            default='00:00:00', blank=True,
-            help_text=_('Duração do vídeo no formato HH:MM:SS.'))
-    dimensions = models.CharField(_('dimensões'), max_length=20, default='0x0',
-            blank=True, help_text=_('Dimensões do vídeo original.'))
-    size = models.CharField(_('tamanho'), max_length=10, default='none',
-            blank=True, help_text=_('Classe de tamanho.'))
-    geolocation = models.CharField(_('geolocalização'), default='',
-            max_length=25, blank=True,
-        help_text=_('Geolocalização da imagem no formato decimal.'))
-    latitude = models.CharField(_('latitude'), default='', max_length=25,
-            blank=True, help_text=_('Latitude onde a imagem foi criada.'))
-    longitude = models.CharField(_('longitude'), default='', max_length=25,
-            blank=True, help_text=_('Longitude onde a imagem foi criada.'))
+    # Fields related to authorship
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             null=True,
+                             on_delete=models.SET_NULL,
+                             verbose_name=_('usuário do arquivo'),
+                             help_text=_('Usuário que fez o upload do arquivo.'),
+                             related_name='uploaded_media')
+    authors = models.ManyToManyField('Person',
+                                     blank=True,
+                                     verbose_name=_('autores do arquivo'),
+                                     help_text=_('Autores associados a este arquivo.'),
+                                     related_name='media_as_author')
+    specialists = models.ManyToManyField('Person',
+                                         blank=True,
+                                         verbose_name=_('especialistas associados'),
+                                         help_text=_('Especialistas associados a este arquivo.'),
+                                         related_name='media_as_specialist')
+    terms = models.BooleanField(_('termos'),
+                                default=False,
+                                help_text=_('Flag indicando que termos foram aceitos.'))
+    license = models.CharField(_('Licença'),
+                               max_length=60,
+                               choices=LICENSE_CHOICES,
+                               default='cc0',
+                               help_text=_('Tipo de licença da mídia.'))
 
-    life_stage = models.ForeignKey('Tag', 
-                                        on_delete=models.SET_NULL,
-                                        null=True, limit_choices_to={'category': 8},
-                                        related_name='life_stage_test',
-                                        verbose_name=_('Estágio de Vida'))
-    habitat = models.ForeignKey('Tag', 
-                                        on_delete=models.SET_NULL,
-                                        null=True, limit_choices_to={'category': 7},
-                                        related_name='habitat_test',
-                                        verbose_name=_('Habitat'))
-    microscopy = models.ForeignKey('Tag', 
-                                        on_delete=models.SET_NULL,
-                                        null=True, limit_choices_to={'category': 5},
-                                        related_name='microscopy_test',
-                                        verbose_name=_('Microscópia'))
-    life_style = models.ForeignKey('Tag', 
-                                        on_delete=models.SET_NULL,
-                                        null=True, limit_choices_to={'category': 2},
-                                        related_name='life_style_test',
-                                        verbose_name=_('Estilo de Vida'))
-    photographic_technique = models.ForeignKey('Tag', 
-                                        on_delete=models.SET_NULL,
-                                        null=True, limit_choices_to={'category': 1},
-                                        related_name='photographic_technique_test',
-                                        verbose_name=_('Técnica Fotográfica'))
-    several = models.ForeignKey('Tag', 
-                                        on_delete=models.SET_NULL,
-                                        null=True, limit_choices_to={'category': 6},
-                                        related_name='several_test',
-                                        verbose_name=_('Diversos'))
-    
-    software = models.CharField(_('Software'), default='', blank=True, help_text=_('Software utilizado na Imagem'))
+    # Fields related to media status
+    metadata_error = models.BooleanField(_('Erro nos metadados'),
+                                         default=False,
+                                         help_text=_('Flag indicando problema nos metadados.'))
+    status = models.CharField(_('status'),
+                              blank=True,
+                              max_length=13,
+                              choices=STATUS_CHOICES,
+                              default='loaded',
+                              help_text=_('Status da mídia.'))
+    is_public = models.BooleanField(_('público'),
+                                    default=False,
+                                    help_text=_('Visível para visitantes.'))
+    pub_date = models.DateTimeField(_('data de publicação'),
+                                    blank=True,
+                                    default=timezone.now,
+                                    help_text=_('Data de publicação da imagem no Cifonauta.'))
+    highlight = models.BooleanField(_('destaque'),
+                                    default=False,
+                                    help_text=_('Imagem que merece destaque.'))
 
-    specialist = models.ManyToManyField('Person',  related_name="pessoas", verbose_name=_('Especialista'), blank=True)
 
-    # Foreign metadata
-    location = models.ForeignKey('Location', on_delete=models.SET_NULL,
-            null=True, blank=True, verbose_name=_('local'),
-            help_text=_('Localidade mostrada na imagem (ou local de coleta).'))
-    city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('cidade'),
-            help_text=_('Cidade mostrada na imagem (ou cidade de coleta).'))
-    state = models.ForeignKey('State', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('estado'),
-            help_text=_('Estado mostrado na imagem (ou estado de coleta).'))
-    country = models.ForeignKey('Country', on_delete=models.SET_NULL,
-            null=True, verbose_name=_('país'),
-            help_text=_('País mostrado na imagem (ou país de coleta).'))
+    # Fields containing plain media metadata
+    title = models.CharField(_('título'),
+                             max_length=200,
+                             default='',
+                             blank=True,
+                             help_text=_('Título da imagem.'))
+    caption = models.TextField(_('legenda'),
+                               default='',
+                               blank=True,
+                               help_text=_('Legenda da imagem.'))
+    date = models.DateTimeField(_('data'),
+                                null=True,
+                                help_text=_('Data de criação da imagem.'))
+    duration = models.CharField(_('duração'),
+                                max_length=20,
+                                default='00:00:00',
+                                blank=True,
+                                help_text=_('Duração do vídeo no formato HH:MM:SS.'))
+    dimensions = models.CharField(_('dimensões'),
+                                  max_length=20,
+                                  default='0x0',
+                                  blank=True,
+                                  help_text=_('Dimensões do vídeo original.'))
+    geolocation = models.CharField(_('geolocalização'),
+                                   default='',
+                                   max_length=25,
+                                   blank=True,
+                                   help_text=_('Geolocalização da imagem no formato decimal.'))
+    latitude = models.CharField(_('latitude'),
+                                default='',
+                                max_length=25,
+                                blank=True,
+                                help_text=_('Latitude onde a imagem foi criada.'))
+    longitude = models.CharField(_('longitude'),
+                                 default='',
+                                 max_length=25,
+                                 blank=True,
+                                 help_text=_('Longitude onde a imagem foi criada.'))
 
-    search_vector = SearchVectorField(
-            null=True,
-            verbose_name=_('vetor de busca'),
-            help_text=_('Campo que guarda o vetor de busca.'))
+    # Fields associated with other models using M2M
+    taxa = models.ManyToManyField('Taxon',
+                                  blank=True,
+                                  verbose_name=_('táxons da mídia'),
+                                  help_text=_('Grupos taxonômicos associados com esta mídia.'),
+                                  related_name='media')
+    tags = models.ManyToManyField('Tag',
+                                  blank=True,
+                                  verbose_name=_('marcadores da mídia'),
+                                  help_text=_('Marcadores associados com esta mídia.'),
+                                  related_name='media')
+    references = models.ManyToManyField('Reference',
+                                        blank=True,
+                                        verbose_name=_('referências da mídia'),
+                                        help_text=_('Referências bibliográficas associadas com esta mídia.'),
+                                        related_name='media')
+
+    # Fields associated with other models using FK
+    location = models.ForeignKey('Location',
+                                 on_delete=models.SET_NULL,
+                                 null=True,
+                                 blank=True,
+                                 verbose_name=_('local'),
+                                 help_text=_('Localidade mostrada na imagem ou local de coleta.'))
+    city = models.ForeignKey('City',
+                             on_delete=models.SET_NULL,
+                             null=True,
+                             blank=True,
+                             verbose_name=_('cidade'),
+                             help_text=_('Cidade mostrada na imagem ou cidade de coleta.'))
+    state = models.ForeignKey('State',
+                              on_delete=models.SET_NULL,
+                              null=True,
+                              blank=True,
+                              verbose_name=_('estado'),
+                              help_text=_('Estado mostrado na imagem ou estado de coleta.'))
+    country = models.ForeignKey('Country',
+                                on_delete=models.SET_NULL,
+                                null=True,
+                                verbose_name=_('país'),
+                                help_text=_('País mostrado na imagem (ou país de coleta).'))
+
+    # Fields associated with full text search
+    search_vector = SearchVectorField(_('vetor de busca'),
+                                      null=True,
+                                      help_text=_('Campo que guarda o vetor de busca.'))
+
+    # Fields required for historical reasons
+    old_image = models.PositiveIntegerField(default=0,
+                                            blank=True,
+                                            help_text=_('ID da imagem no antigo modelo.'))
+    old_video = models.PositiveIntegerField(default=0,
+                                            blank=True,
+                                            help_text=_('ID do vídeo no antigo modelo.'))
 
 
     def save(self, *args, **kwargs):
 
         # Update search vector field on save
-        self.search_vector = SearchVector(Value(self.title_pt_br), weight='A', config='portuguese_unaccent') + \
-                             SearchVector(Value(self.title_en), weight='A', config='english') + \
-                             SearchVector(Value(self.caption_pt_br), weight='B', config='portuguese_unaccent') + \
-                             SearchVector(Value(self.caption_en), weight='B', config='english')
+        #TODO: Make a function to save values to a dictionary, take care of Empty/None/Null values
+        #TODO: Make a function to populate the search_vector with these saved values
+        #TODO: Replace here just with the calls for the functions above
+        self.search_vector = SearchVector(Value(self.title_pt_br, output_field=models.TextField()), weight='A', config='portuguese_unaccent') + \
+                             SearchVector(Value(self.title_en, output_field=models.TextField()), weight='A', config='english') + \
+                             SearchVector(Value(self.caption_pt_br, output_field=models.TextField()), weight='B', config='portuguese_unaccent') + \
+                             SearchVector(Value(self.caption_en, output_field=models.TextField()), weight='B', config='english')
 
         # self.search_vector = SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') + \
                              # SearchVector('title_en', weight='A', config='english') + \
@@ -249,8 +312,17 @@ class Media(models.Model):
         return reverse('media_url', args=[str(self.id)])
 
     def is_video(self):
-        name, extension = os.path.splitext(self.file.name)
+        _, extension = os.path.splitext(self.file.name)
         return True if extension in settings.VIDEO_EXTENSIONS else False
+
+    def get_size(self):
+        '''Returns tag from size category, if any.'''
+        size_query = self.tags.filter(category__slug='tamanho')
+        if size_query:
+            size = size_query[0]
+        else:
+            size = ''
+        return size
 
     class Meta:
         verbose_name = _('arquivo')
@@ -264,14 +336,11 @@ class Person(models.Model):
             help_text=_('Nome do autor.'))
     slug = models.SlugField(_('slug'), max_length=200, unique=True, blank=True,
             help_text=_('Slug do nome do autor.'))
-    is_author = models.BooleanField(_('author'), default=False,
-            help_text=_('Informa se a pessoa é autora.'))
-    media = models.ManyToManyField('Media', blank=True,
-            verbose_name=_('arquivos'),
-            help_text=_('Arquivos associados a este autor.'))
     orcid = models.CharField('Orcid', blank=True, null=True, max_length=16)
     idlattes = models.CharField('IDLattes', blank=True, null=True, max_length=16)
     email = models.EmailField(verbose_name='Email', blank=True, null=True)
+    user_cifonauta = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
+            verbose_name=_('Usuário relacionado'))
 
     def __str__(self):
         return self.name
@@ -292,9 +361,6 @@ class Tag(models.Model):
             help_text=_('Slug do nome do marcador.'))
     description = models.TextField(_('descrição'), default='', blank=True,
             help_text=_('Descrição do marcador.'))
-    media = models.ManyToManyField('Media', blank=True,
-            verbose_name=_('arquivos'),
-            help_text=_('Arquivos associados a este marcador.'))
     category = models.ForeignKey('Category', on_delete=models.SET_NULL,
             null=True, blank=True, related_name='tags',
             verbose_name=_('categorias'),
@@ -350,9 +416,6 @@ class Taxon(MPTTModel):
     valid_taxon = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,
             null=True, related_name='synonyms', verbose_name=_('táxon válido'),
             help_text=_('Sinônimo válido deste táxon.'))
-    media = models.ManyToManyField('Media', blank=True,
-            verbose_name=_('arquivos'),
-            help_text=_('Arquivos associados a este táxon.'))
     timestamp = models.DateTimeField(_('data de modificação'), auto_now=True,
             blank=True, null=True, help_text=_('Data da última modificação do arquivo.'))
 
@@ -475,9 +538,6 @@ class Reference(models.Model):
             help_text=_('Slug do identificar da referência.'))
     citation = models.TextField(_('citação'), blank=True,
             help_text=_('Citação formatada da referência.'))
-    media = models.ManyToManyField('Media', blank=True,
-            verbose_name=_('arquivos'),
-            help_text=_('Arquivos associados a esta referência.'))
 
     def __str__(self):
         return self.name
@@ -561,11 +621,7 @@ models.signals.pre_save.connect(slug_pre_save, sender=Tour)
 
 # Create citation with bibkey.
 models.signals.pre_save.connect(citation_pre_save, sender=Reference)
-
-# Compress files when uploaded
-models.signals.post_save.connect(compress_files, sender=Media)
 # Delete file from folder when the media is deleted on website
 models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
-models.signals.pre_delete.connect(delete_file_from_folder, sender=LoadedMedia)
 # Get taxons descendents when creating a curatorship
 models.signals.m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)

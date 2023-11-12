@@ -41,11 +41,11 @@
     </ul>
     {% endif %}
 
-    {% if sources %}
+    {% if specialists %}
     <li>Especialista(s)</li>
     <ul>
-        {% for source in sources %}
-        <li><a href="/admin/meta/source/{{ source.id }}/">{{ source.name }}</a></li>
+        {% for specialist in specialists %}
+        <li><a href="/admin/meta/person/{{ specialist.id }}/">{{ specialist.name }}</a></li>
         {% endfor %}
     </ul>
     {% endif %}

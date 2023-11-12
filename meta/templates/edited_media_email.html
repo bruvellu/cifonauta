@@ -1,0 +1,9 @@
+{% if single_media %}
+A sua mídia: {% for media_name in media_names %}{{ media_name }}{% endfor %}  foi enviada para a revisão.
+{% else %}
+As seguintes mídias foram enviadas para a revisão:
+{% for media_name in media_names %}
+  - {{ media_name }}
+{% endfor %}
+{% endif %}
+O especialista responsável pela edição foi o(a): {{ sender_name }}.

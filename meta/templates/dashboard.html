@@ -46,7 +46,7 @@
                 <a href="{% url 'enable_specialists' %}" {% if '/administrative-module/enable-specialists' in fullpath %}class='current-page'{% endif %}>Habilitar Especialistas</a>
             </li>
             <li>
-                <a href="{% url 'tour_list' %}" {% if 'administrative-module/tours' in fullpath %}class='current-page'{% endif %}>Tours</a>
+                <a href="{% url 'dashboard_tour_list' %}" {% if 'administrative-module/tours' in fullpath %}class='current-page'{% endif %}>Tours</a>
             </li>
             {% endif %}
             <li>
@@ -65,13 +65,13 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
     $(document).ready(function() {
-        $('.select2-co-author').select2({
+        $('.select2-authors').select2({
             placeholder: 'Selecione os coautores'
         });
         $('.select2-taxons').select2({
             placeholder: 'Selecione os táxons'
         });
-        $('.select2-specialist').select2({
+        $('.select2-specialists').select2({
             placeholder: 'Selecione os especialistas'
         });
         $('.select2-media').select2({

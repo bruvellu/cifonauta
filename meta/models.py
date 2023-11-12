@@ -315,6 +315,15 @@ class Media(models.Model):
         _, extension = os.path.splitext(self.file.name)
         return True if extension in settings.VIDEO_EXTENSIONS else False
 
+    def get_size(self):
+        '''Returns tag from size category, if any.'''
+        size_query = self.tags.filter(category__slug='tamanho')
+        if size_query:
+            size = size_query[0]
+        else:
+            size = ''
+        return size
+
     class Meta:
         verbose_name = _('arquivo')
         verbose_name_plural = _('arquivos')

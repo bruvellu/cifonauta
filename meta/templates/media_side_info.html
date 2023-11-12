@@ -1,0 +1,20 @@
+{% load i18n thumbnail %}
+
+{% if taxa %}
+  {% include 'biodb.html' %}
+{% endif %}
+
+{% if size %}
+{% spaceless %}
+<div id="size">
+  <div class="size-{{ size.slug }}" id="size-string">{% trans 'Tamanho' %}<br>{% trans size.name %}</div>
+  <div class="size-legend">
+    <div class="size-micro" title="{% trans '<0,1 mm' %}"></div>
+    <div class="size-tiny" title="{% trans '0,1 - 1,0 mm' %}"></div>
+    <div class="size-visible" title="{% trans '1,0 - 10 mm' %}"></div>
+    <div class="size-large" title="{% trans '10 - 100 mm' %}"></div>
+    <div class="size-huge" title="{% trans '>100 mm' %}"></div>
+  </div>
+</div>
+{% endspaceless %}
+{% endif %}

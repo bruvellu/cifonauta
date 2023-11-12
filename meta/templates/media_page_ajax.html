@@ -81,24 +81,7 @@
           </div>
 
           <div id="media-sideinfo2">
-            {% if taxa %}
-            {% include 'biodb.html' %}
-            {% endif %}
-    
-            {% if media.size %}
-            {% spaceless %}
-            <div id="size">
-              <div class="size-{{ media.size }}" id="size-string">{% trans 'Tamanho' %}</div>
-              <div class="size-legend">
-                <div class="size-micro" title="<0,1 mm"></div>
-                <div class="size-tiny" title="0,1 - 1,0 mm"></div>
-                <div class="size-visible" title="1,0 - 10 mm"></div>
-                <div class="size-large" title="10 - 100 mm"></div>
-                <div class="size-huge" title=">100 mm"></div>
-              </div>
-            </div>
-            {% endspaceless %}
-            {% endif %}
+		  {% include 'media_side_info.html' %}
           </div>
 
           <div id="citethis">
@@ -122,24 +105,7 @@
       </div>
       
       <div id="media-sideinfo">
-        {% if taxa %}
-        {% include 'biodb.html' %}
-        {% endif %}
-
-        {% if media.size %}
-        {% spaceless %}
-        <div id="size">
-          <div class="size-{{ media.size }}" id="size-string">{% trans 'Tamanho' %}</div>
-          <div class="size-legend">
-            <div class="size-micro" title="<0,1 mm"></div>
-            <div class="size-tiny" title="0,1 - 1,0 mm"></div>
-            <div class="size-visible" title="1,0 - 10 mm"></div>
-            <div class="size-large" title="10 - 100 mm"></div>
-            <div class="size-huge" title=">100 mm"></div>
-          </div>
-        </div>
-        {% endspaceless %}
-        {% endif %}
+	      {% include 'media_side_info.html' %}
       </div>
     </div>
 

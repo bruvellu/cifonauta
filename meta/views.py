@@ -1302,10 +1302,12 @@ def search_page(request, model_name='', field='', slug=''):
             media_list = media_list.filter(highlight=1)
 
         # Orderby rank when query, otherwise orderby random
-        if query and not query_dict.get('orderby', None):
+        if query:
             orderby = 'rank'
         else:
             orderby = query_dict.get('orderby', 'random')
+            if orderby == 'rank':
+                orderby = 'random'
 
         # Order
         order = query_dict.get('order', 'desc')

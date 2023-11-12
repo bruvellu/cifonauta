@@ -197,11 +197,6 @@ class Media(models.Model):
                                   default='0x0',
                                   blank=True,
                                   help_text=_('Dimensões do vídeo original.'))
-    size = models.CharField(_('tamanho'),
-                            max_length=10,
-                            default='none',
-                            blank=True,
-                            help_text=_('Classe de tamanho.'))
     geolocation = models.CharField(_('geolocalização'),
                                    default='',
                                    max_length=25,
@@ -280,10 +275,10 @@ class Media(models.Model):
         #TODO: Make a function to save values to a dictionary, take care of Empty/None/Null values
         #TODO: Make a function to populate the search_vector with these saved values
         #TODO: Replace here just with the calls for the functions above
-        self.search_vector = SearchVector(Value(self.title_pt_br), weight='A', config='portuguese_unaccent') + \
-                             SearchVector(Value(self.title_en), weight='A', config='english') + \
-                             SearchVector(Value(self.caption_pt_br), weight='B', config='portuguese_unaccent') + \
-                             SearchVector(Value(self.caption_en), weight='B', config='english')
+        self.search_vector = SearchVector(Value(self.title_pt_br, output_field=models.TextField()), weight='A', config='portuguese_unaccent') + \
+                             SearchVector(Value(self.title_en, output_field=models.TextField()), weight='A', config='english') + \
+                             SearchVector(Value(self.caption_pt_br, output_field=models.TextField()), weight='B', config='portuguese_unaccent') + \
+                             SearchVector(Value(self.caption_en, output_field=models.TextField()), weight='B', config='english')
 
         # self.search_vector = SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') + \
                              # SearchVector('title_en', weight='A', config='english') + \

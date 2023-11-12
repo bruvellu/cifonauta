@@ -17,13 +17,6 @@ def user_creation(request):
 
             user_instance.first_name = form.cleaned_data['first_name'].capitalize()
             user_instance.last_name = form.cleaned_data['last_name'].capitalize()
-            
-            name = user_instance.first_name + ' ' + user_instance.last_name
-            email = form.cleaned_data['email']
-            orcid = form.cleaned_data['orcid']
-            idlattes = form.cleaned_data['idlattes']
-
-            Person.objects.create(name=name, email=email, orcid=orcid, idlattes=idlattes)
 
             user_instance.save()
 

@@ -32,6 +32,7 @@ from django.conf import settings
 from django.core.files import File
 import json
 from django.utils.translation import get_language, get_language_info
+from django.utils.translation import gettext_lazy as _
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -82,7 +83,8 @@ def upload_media_step1(request):
                 new_filename = uuid.uuid4()
 
                 media.name = f"{new_filename}.{ext}"
-                LoadedMedia.objects.create(media=media, author=request.user)
+                media_instance = Media(file=media, user=request.user)
+                media_instance.save()
             
             messages.success(request, 'Mídias carregadas com sucesso')
             messages.info(request, 'Preencha os dados para completar o upload')
@@ -91,7 +93,7 @@ def upload_media_step1(request):
         messages.error(request, 'Por favor, selecione as mídias')
         return redirect('upload_media_step1')
 
-    if LoadedMedia.objects.filter(author=request.user).exists():
+    if Media.objects.filter(user=request.user, status='loaded').exists():
         messages.warning(request, 'Você tem mídias carregadas')
         messages.info(request, 'Complete ou cancele o upload para adicionar outras mídias')
         return redirect('upload_media_step2')
@@ -115,7 +117,7 @@ def upload_media_step1(request):
 @custom_login_required
 @author_required
 def upload_media_step2(request):
-    medias = LoadedMedia.objects.filter(author=request.user)
+    medias = Media.objects.filter(user=request.user, status='loaded')
     
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -145,32 +147,50 @@ def upload_media_step2(request):
         form = UploadMediaForm(request.POST, request.FILES)
         
         if form.is_valid():
-            for media in medias:
-                form = UploadMediaForm(request.POST, request.FILES)
-                media_instance = form.save(commit=False)
-
-                if form.cleaned_data['terms'] == False:
+            if form.cleaned_data['terms'] == False:
                     messages.error(request, 'Você precisa aceitar os termos')
                     return redirect('upload_media_step2')
                 
-                if form.cleaned_data['country'].id == 1 and not (form.cleaned_data['state'] and form.cleaned_data['city']):
-                    messages.error(request, 'Você precisa selecionar um estado e uma cidade')
-                    return redirect('upload_media_step2')
-
-                file = media.media.name.split('/')[-1]
+            if form.cleaned_data['country'].id == 1 and not (form.cleaned_data['state'] and form.cleaned_data['city']):
+                messages.error(request, 'Você precisa selecionar um estado e uma cidade')
+                return redirect('upload_media_step2')
+            
+            for media in medias:
+                file = media.file.name.split('/')[-1]
                 ext = file.split('.')[-1]
                 filename = file.split('.')[0]
 
-                media_file = File(media.media, name=f'{filename}.{ext}')
-                media_instance.file = media_file
-                media_instance.sitepath = media_file
-                media_file = File(media.media, name=f'{filename}_cover.{ext}')
-                media_instance.coverpath = media_file
+                media_file = File(media.file, name=f'{filename}.{ext}')
+                media.sitepath = media_file
+                media_file = File(media.file, name=f'{filename}_cover.{ext}')
+                media.coverpath = media_file
 
-                media_instance.save()
-                form.save_m2m()
+                media.title = form.cleaned_data['title']
+                media.caption = form.cleaned_data['caption']
+                media.taxa.set(form.cleaned_data['taxa'])
+                media.user = form.cleaned_data['user']
+                media.authors.set(form.cleaned_data['authors'])
+                media.date = form.cleaned_data['date']
+                media.country = form.cleaned_data['country']
+                media.state = form.cleaned_data['state']
+                media.city = form.cleaned_data['city']
+                media.location = form.cleaned_data['location']
+                media.geolocation = form.cleaned_data['geolocation']
+                media.license = form.cleaned_data['license']
+                media.terms = form.cleaned_data['terms']
+
+                media.status = 'not_edited'
+                media.save()
+
+                if not media.is_video():
+                    coverpath = Image.open(media.coverpath.path)
+                    coverpath.thumbnail((1280, 720))
+                    coverpath.save(media.coverpath.path, quality=40)
+
+                    sitepath = Image.open(media.sitepath.path)
+                    sitepath.thumbnail((1280, 720))
+                    sitepath.save(media.sitepath.path)
             
-            medias.delete()
             messages.success(request, 'Suas mídias foram salvas com sucesso')
             return redirect('upload_media_step1')
 
@@ -322,6 +342,8 @@ def edit_metadata(request, media_id):
 
         media_instance.save()
 
+        form.send_mail(request.user.id, [media], 'Edição de mídia do Cifonauta', 'edited_media_email.html')
+
         messages.success(request, 'Edição de mídia realizado com sucesso')
 
         return redirect('curadory_medias')
@@ -339,37 +361,73 @@ def edit_metadata(request, media_id):
 
     return render(request, 'update_media.html', context) 
 
-@method_decorator(custom_login_required, name='dispatch')
-@method_decorator(curator_required, name='dispatch')
-class CuradoriaMediaList(LoginRequiredMixin, ListView):
-    model = Media
-    template_name = 'curadoria_media_list.html'
+@custom_login_required
+@curator_required
+def curadoria_media_list(request):
+    if request.method == "POST":
+        media_ids = request.POST.getlist('selected_media_ids')
 
-    def get_queryset(self):
-        user = self.request.user
+        if media_ids:
+            form = SpecialistActionForm(request.POST)
 
-        curations = user.curatorship_specialist.all()
-        curations_taxons = []
+            if form.is_valid():
+                medias = Media.objects.filter(id__in=media_ids)
+                
+                if form.cleaned_data['taxa_action'] != 'maintain':
+                    for media in medias:
+                        media.taxa.set(form.cleaned_data['taxa'])
+                if form.cleaned_data['status_action'] != 'maintain':
+                    medias.update(status='to_review')
+                
+                user_medias = {}
+                for media in medias:
+                    user_id = media.user.id
 
-        for curadoria in curations:
-            taxons = curadoria.taxons.all()
-            curations_taxons.extend(taxons)
+                    if user_id not in user_medias:
+                        user_medias[user_id] = [media]
+                    else:
+                        user_medias[user_id].append(media)
+                
+                for medias in user_medias.values():
+                    form.send_mail(request.user, medias, 'Edição de mídia do Cifonauta', 'edited_media_email.html')
 
-        queryset = Media.objects.filter(status='not_edited')
+                messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
+            else:
+                messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+        else:
+            messages.warning(request, _('Nenhum registro foi selecionado'))
 
-        queryset = queryset.filter(taxa__in=curations_taxons)
-        
-        # Aplies distinct() to eliminate duplicates
-        queryset = queryset.distinct()
+    user = request.user
 
-        return queryset
+    curations = user.curatorship_specialist.all()
+    curations_taxons = []
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.curatorship_specialist.exists()
-        context['is_curator'] = user.curatorship_curator.exists()
-        return context
+    for curadoria in curations:
+        taxons = curadoria.taxons.all()
+        curations_taxons.extend(taxons)
+
+    queryset = Media.objects.filter(status='not_edited')
+    queryset = queryset.filter(taxa__in=curations_taxons)
+    
+    # Apply distinct() to eliminate duplicates
+    queryset = queryset.distinct()
+
+    queryset_paginator = Paginator(queryset, 12)
+    page_num = request.GET.get('page')
+    page = queryset_paginator.get_page(page_num)
+
+    form = SpecialistActionForm()
+    # Options are: mantain status or send to revision
+    form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[1])
+
+    context = {
+        'form': form,
+        'entries': page,
+        'is_specialist': user.curatorship_specialist.exists(),
+        'is_curator': user.curatorship_curator.exists(),
+    }
+
+    return render(request, 'curadoria_media_list.html', context)
 
 #Missing
 @method_decorator(custom_login_required, name='dispatch')
@@ -447,6 +505,7 @@ def update_my_medias(request, pk):
                     modified_media.state = form.cleaned_data['state']
                     modified_media.country = form.cleaned_data['country']
                     modified_media.geolocation = form.cleaned_data['geolocation']
+                    modified_media.license = form.cleaned_data['license']
 
                     modified_media.save()
                 else:
@@ -482,6 +541,7 @@ def update_my_medias(request, pk):
                     new_modified_media.country = form.cleaned_data['country']
                     new_modified_media.geolocation = form.cleaned_data['geolocation']
                     new_modified_media.user = form.cleaned_data['user']
+                    new_modified_media.license = form.cleaned_data['license']
 
                     new_modified_media.save()
 
@@ -504,6 +564,7 @@ def update_my_medias(request, pk):
                 media.state = form.cleaned_data['state']
                 media.country = form.cleaned_data['country']
                 media.geolocation = form.cleaned_data['geolocation']
+                media.license = form.cleaned_data['license']
 
                 media.save()
 
@@ -527,6 +588,10 @@ def update_my_medias(request, pk):
     else:
         form.fields['state'].queryset = State.objects.none()
     form.fields['user'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+    if media.status == 'published':
+        license_choices = [choice[0] for choice in Media.LICENSE_CHOICES]
+        license_index = license_choices.index(media.license)
+        form.fields['license'].choices = Media.LICENSE_CHOICES[:license_index + 1]
 
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
@@ -550,65 +615,122 @@ def update_my_medias(request, pk):
     return render(request, 'update_media.html', context)
     
 
-@method_decorator(custom_login_required, name='dispatch')
-@method_decorator(author_required, name='dispatch')
-class MyMedias(LoginRequiredMixin, ListView):
-    model = Media
-    template_name = 'my_medias.html'
-    form_class = MyMediaForm
+@custom_login_required
+@author_required
+def my_medias(request):
+    if request.method == "POST":
+        media_ids = request.POST.getlist('selected_media_ids')
 
-    def get_queryset(self):
-        user = self.request.user
-        queryset = super().get_queryset().filter(user=user).order_by('-pk')
-        return queryset
+        if media_ids:
+            form = MyMediasActionForm(request.POST)
+
+            if form.is_valid():
+                has_published_media = Media.objects.filter(id__in=media_ids, status='published').exists()
+                if has_published_media:
+                    messages.error(request, _('Não é possível aplicar ações em mídias já publicadas'))
+                    return redirect('my_medias')
+                
+                medias = Media.objects.filter(id__in=media_ids)
+                
+                if form.cleaned_data['taxa_action'] != 'maintain':
+                    for media in medias:
+                        media.taxa.set(form.cleaned_data['taxa'])
+                medias.update(status='not_edited')
+                
+                messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
+            else:
+                messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+        else:
+            messages.warning(request, _('Nenhum registro foi selecionado'))
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.curatorship_specialist.exists()
-        context['is_curator'] = user.curatorship_curator.exists()
-        return context
-
-@method_decorator(custom_login_required, name='dispatch')
-@method_decorator(curator_required, name='dispatch')
-class RevisionMedia(LoginRequiredMixin, ListView):
-    model = Media
-    template_name = 'media_revision.html'
-
-    # Shows the images and videos that have taxons that are in one of the user's curations
-    def get_queryset(self):
-        user = self.request.user
-
-        curations = user.curatorship_curator.all()
-        curations_taxons = []
-
-        for curadoria in curations:
-            taxons = curadoria.taxons.all()
-            curations_taxons.extend(taxons)
-
-        queryset = Media.objects.filter(
-            Q(status='to_review') & Q(taxa__in=curations_taxons) |
-            Q(modified_media__taxa__in=curations_taxons))
-
-        # Aplies distinct() to eliminate duplicates
-        queryset = queryset.distinct()
-
-        return queryset
-
-    # Gets the images and videos selected in the checkboxes and publish them
-    def post(self, request):
-        selected_images_ids = request.POST.getlist('selected_images_ids')
-        # Gets the images selected by their id and updates their status
-        Media.objects.filter(id__in=selected_images_ids).update(is_public=True, status='published') 
-        return redirect('my_medias')
+    user = request.user
+    queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
     
-    # Gets the user's permissions
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.curatorship_specialist.exists()
-        context['is_curator'] = user.curatorship_curator.exists()
-        return context
+    form = MyMediasActionForm()
+
+    is_specialist = user.curatorship_specialist.exists()
+    is_curator = user.curatorship_curator.exists()
+
+    queryset_paginator = Paginator(queryset, 12)
+    page_num = request.GET.get('page')
+    page = queryset_paginator.get_page(page_num)
+
+    context = {
+        'form': form,
+        'entries': page,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator,
+    }
+
+    return render(request, 'my_medias.html', context)
+
+@custom_login_required
+@curator_required
+def revision_media(request):
+    if request.method == 'POST':
+        media_ids = request.POST.getlist('selected_media_ids')
+
+        if media_ids:
+            form = SpecialistActionForm(request.POST)
+
+            if form.is_valid():
+                medias = Media.objects.filter(id__in=media_ids)
+                
+                if form.cleaned_data['taxa_action'] != 'maintain':
+                    for media in medias:
+                        media.taxa.set(form.cleaned_data['taxa'])
+                if form.cleaned_data['status_action'] != 'maintain':
+                    medias.update(status='published', is_public=True) #TODO: Remove is_public
+                
+                user_medias = {}
+                for media in medias:
+                    user_id = media.user.id
+
+                    if user_id not in user_medias:
+                        user_medias[user_id] = [media]
+                    else:
+                        user_medias[user_id].append(media)
+                
+                for medias in user_medias.values():
+                    form.send_mail(request.user, medias, 'Revisão de mídia do Cifonauta', 'published_media_email.html')
+
+                messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
+            else:
+                messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+        else:
+            messages.warning(request, _('Nenhum registro foi selecionado'))
+    
+    user = request.user
+
+    curations = user.curatorship_curator.all()
+    curations_taxons = []
+
+    for curadoria in curations:
+        taxons = curadoria.taxons.all()
+        curations_taxons.extend(taxons)
+
+    queryset = Media.objects.filter(
+        Q(status='to_review') & Q(taxa__in=curations_taxons) |
+        Q(modified_media__taxa__in=curations_taxons))
+
+    queryset = queryset.distinct()
+
+    queryset_paginator = Paginator(queryset, 12)
+    page_num = request.GET.get('page')
+    page = queryset_paginator.get_page(page_num)
+
+    form = SpecialistActionForm()
+    # Options are: mantain status or publish media
+    form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[2])
+
+    context = {
+        'form': form,
+        'entries': page,
+        'is_specialist': user.curatorship_specialist.exists(),
+        'is_curator': user.curatorship_curator.exists(),
+    }
+
+    return render(request, 'media_revision.html', context)
 
 
 @custom_login_required
@@ -632,6 +754,7 @@ def modified_media_revision(request, pk):
         media.state = modified_media.state
         media.country = modified_media.country
         media.geolocation = modified_media.geolocation
+        media.license = modified_media.license
         
         media.save()
 
@@ -646,21 +769,21 @@ def modified_media_revision(request, pk):
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
-    media_form = ModifiedMediaForm(instance=media)
-    modified_media_form = ModifiedMediaForm(instance=modified_media)
+    form = ModifiedMediaForm()
 
-    field_names = media_form.fields.keys()
-    medias_data = []
+    field_names = form.fields.keys()
+    fields = []
     for field_name in field_names:
-        medias_data.append({
-            'media': media_form[field_name],
-            'modified_media': modified_media_form[field_name]
+        fields.append({
+            'name': field_name,
+            'label': form[field_name].label,
+            'required': form[field_name].field.required
         })
     
     context = {
+        'fields': fields,
         'media': media,
         'modified_media': modified_media,
-        'medias_data': medias_data,
         'is_specialist': is_specialist,
         'is_curator': is_curator
     }
@@ -728,6 +851,8 @@ def revision_media_detail(request, media_id):
         media_instance.authors.set(form.cleaned_data['authors'])
         
         media_instance.save()
+
+        form.send_mail(request.user, [media], 'Revisão de mídia do Cifonauta', 'published_media_email.html')
 
         messages.success(request, f'A mídia {media.title} foi publicada com sucesso')
         return redirect('media_revision')

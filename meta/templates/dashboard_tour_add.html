@@ -45,7 +45,7 @@
                                 <img class="option-cover size-{{ initial_media.size }}" src="{{initial_media.coverpath.url}}">
                                 {% endif %}
                                 <div class="option-infos">
-                                    <a class="option-title" href="" tabindex="-1" target="_blank">{{initial_media.title}}</a>
+                                    <a class="option-title" href="{{ initial_media.coverpath.url }}" tabindex="-1" target="_blank">{{initial_media.title}}</a>
                                     <span>
                                         {% if initial_media.datatype == 'video' %}
                                         Vídeo

@@ -5,6 +5,8 @@ from django.apps import apps
 from django.utils.translation import gettext_lazy as _
 from .models import Media, Curadoria, Person, ModifiedMedia, Taxon, Tour
 from user.models import UserCifonauta
+from django.template import loader 
+from django.core.mail import EmailMultiAlternatives
 
 
 METAS = (
@@ -75,7 +77,39 @@ class UpdateMyMediaForm(forms.ModelForm):
         if self.instance.status != 'not_edited':
             self.fields['title'].required = True
 
-class EditMetadataForm(forms.ModelForm):
+class SendEmailForm(forms.Form):
+    def send_mail(
+            self,
+            sender,
+            medias,
+            subject_template_name,
+            email_template_name,
+            from_email=None,
+            html_email_template_name=None,
+        ):
+            receiver = UserCifonauta.objects.filter(id=medias[0].user.id).first()
+
+            email = receiver.email
+
+            context = {
+                "single_media": True if len(medias) == 1 else False,
+                "media_names": [media.title for media in medias],
+                "sender_name": sender.get_full_name(),
+                "timestamp": medias[0].timestamp,
+            }
+
+            subject = subject_template_name
+            # Email subject must not contain newlines
+            subject = "".join(subject.splitlines())
+            body = loader.render_to_string(email_template_name, context)
+
+            email_message = EmailMultiAlternatives(subject, body, from_email, [email])
+            if html_email_template_name is not None:
+                html_email = loader.render_to_string(html_email_template_name, context)
+                email_message.attach_alternative(html_email, "text/html")
+            email_message.send()
+
+class EditMetadataForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = Media
         fields = ('title', 'user', 'authors', 'specialists', 'caption', 'date', 'taxa', 'license', 'country', 'state', 'city', 'location', 'geolocation')
@@ -98,7 +132,7 @@ class CoauthorRegistrationForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
-        fields = ( 'title', 'caption', 'taxa', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ( 'title', 'caption', 'taxa', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
 
 class MyMediaForm(forms.ModelForm):
     class Meta:
@@ -120,6 +154,43 @@ class TourForm(forms.ModelForm):
         super(TourForm, self).__init__(*args, **kwargs)
         
         self.fields['media'].label_from_instance = lambda obj: obj.title
+
+class SpecialistActionForm(forms.ModelForm, SendEmailForm):
+    STATUS_CHOICES = [
+        ('maintain', _('Manter status')),
+        ('to_review', _('Enviar para revisão')),
+        ('publish', _('Publicar')),
+    ]
+
+    TAXA_CHOICES = (
+        ('maintain', _('Manter táxons')),
+        ('overwrite', _('Sobrescrever táxons')),
+    )
+
+    status_action = forms.ChoiceField(label=_('Status'), choices=STATUS_CHOICES, initial='maintain')
+    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain')
+
+    class Meta:
+        model = Media
+        fields = ( 'status_action', 'taxa_action', 'taxa',)
+        widgets = {
+            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
+        }
+
+class MyMediasActionForm(forms.ModelForm):
+    TAXA_CHOICES = (
+        ('maintain', _('Manter táxons')),
+        ('overwrite', _('Sobrescrever táxons')),
+    )
+
+    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain')
+
+    class Meta:
+        model = Media
+        fields = ('taxa_action', 'taxa',)
+        widgets = {
+            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
+        }
 
 class SearchForm(forms.Form):
     query = forms.CharField(label=_('Buscar por'),

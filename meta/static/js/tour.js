@@ -116,8 +116,7 @@ function loadOptions(medias) {
 
     let optionTitle = document.createElement('a')
     optionTitle.setAttribute('class', 'option-title')
-    //BOTAR O HREF
-    optionTitle.setAttribute('href', '')
+    optionTitle.setAttribute('href', media.coverpath)
     optionTitle.setAttribute('tabindex', '-1')
     optionTitle.setAttribute('target', '_blank')
     optionTitle.innerText = media.title

@@ -51,9 +51,9 @@
                 <div class="medias-wrapper">
                     {% for media in medias %}
                     {% if media.is_video %}
-                    <video class="loaded-media" src="{{media.media.url}}"></video>
+                    <video class="loaded-media" src="{{media.file.url}}"></video>
                     {% else %}
-                    <img class="loaded-media" src="{{media.media.url}}" alt="">
+                    <img class="loaded-media" src="{{media.file.url}}" alt="">
                     {% endif %}
                     {% endfor %}
                 </div>

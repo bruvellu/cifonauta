@@ -61,7 +61,7 @@
                 <label>Mídia:</label>
             </div>
             <div class="field-div media-div">
-                <a href="{{ media.file.url }}" target="_blank">
+                <a href="{{ media.coverpath.url }}" target="_blank">
                     {% if media.is_video %}
                     <video src="{{ media.coverpath.url }}"></video>
                     {% else %}

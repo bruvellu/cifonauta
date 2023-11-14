@@ -342,7 +342,7 @@ def edit_metadata(request, media_id):
 
         media_instance.save()
 
-        form.send_mail(request.user.id, [media], 'Edição de mídia do Cifonauta', 'edited_media_email.html')
+        form.send_mail(request.user, [media], 'Edição de mídia do Cifonauta', 'edited_media_email.html')
 
         messages.success(request, 'Edição de mídia realizado com sucesso')
 

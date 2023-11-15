@@ -27,9 +27,9 @@ let openModalButton = document.querySelector('#open-modal-button')
 let closeModalButton = document.querySelector('#close-modal-button')
 
 
-openModalButton.addEventListener('click', showModal)
+openModalButton?.addEventListener('click', showModal)
 
-closeModalButton.addEventListener('click', closeModal)
+closeModalButton?.addEventListener('click', closeModal)
 
 // Popup closes without clicking on #close-modal-button
 // document.addEventListener('click', (event)=>{

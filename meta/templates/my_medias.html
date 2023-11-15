@@ -13,14 +13,16 @@
 
 <h2>Lista de suas mídias</h2>
 
+{% if messages %}
 <div class="messages-div">
     {% for message in messages %}
     <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
     {% endfor %}
 </div>
+{% endif %}
 
 {% if entries.object_list %}
-<form method="post">
+<form method="post" class="list-form">
 {% csrf_token %}
 
 <div id="behind-modal-container" class="behind-modal-container"></div>
@@ -53,7 +55,7 @@
             {% endfor %}
         </div>
     </div>
-    <button type="submit" class="pre-registration-submit">Processar</button>
+    <button type="submit" class="secondary-button">Processar</button>
 </div>
 
 <div class='table-top'>

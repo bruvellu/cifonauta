@@ -30,108 +30,107 @@
             </div>
         </div>
         {% endfor %}
-        <button class="pre-registration-submit" type="submit" name="action" value="coauthor">Cadastrar</button>
+        <button class="secondary-button" type="submit" name="action" value="coauthor">Cadastrar</button>
     </form>
 </div>
 
-<div class="form-container">
-    <h2>Adicionar nova mídia</h2>
-    {% if messages %}
-    <div class="messages-div">
-        {% for message in messages %}
-        <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
-        {% endfor %}
+<h2>Adicionar nova mídia</h2>
+{% if messages %}
+<div class="messages-div">
+    {% for message in messages %}
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form class="dashboard-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="field-container">
+        <div class="label-div">
+            <label>Mídias:</label>
+        </div>
+        <div class="medias-div">
+            <div class="medias-wrapper">
+                {% for media in medias %}
+                {% if media.is_video %}
+                <video class="loaded-media" src="{{media.file.url}}"></video>
+                {% else %}
+                <img class="loaded-media" src="{{media.file.url}}" alt="">
+                {% endif %}
+                {% endfor %}
+            </div>
+        {% if medias|length > 1 %}
+        <span class="info-span">Os metadados serão aplicados a todas as mídias</span>
+        {% endif %}
+        </div>
+    </div>
+    {% for field in form %}
+    {% if field == form.authors %}
+    <div class="field-container">
+        <div class="label-div">
+            {{ field.label_tag }}
+        </div>
+        <div class="field-div authors-field-div">
+            {{ field }}
+            {% if field.help_text %}
+            <span class="help-text">{{ field.help_text }}</span>
+            {% endif %}
+            <div>
+                <p>Coautor não está na lista?</p>
+                <button id="open-modal-button" class="pre-registration-button" type="button">Registrar coautor</button>
+            </div>
+        </div>
+    </div>
+    {% elif field == form.country or field == form.state or field == form.city %}
+    <div class="field-container country-container">
+        <div class="label-div">
+            {{ field.label_tag }}
+            <span class='required'>*</span>
+        </div>
+        <div class="field-div">
+            {{ field }}
+            {% if field.help_text %}
+            <span class="help-text">{{ field.help_text }}</span>
+            {% endif %}
+        </div>
+    </div>
+    {% elif field == form.terms %}
+    <div class="field-container">
+        <div class='label-div'>
+            {{ field.label_tag }}
+            <span class='required'>*</span>
+        </div>
+        <div class="field-div terms-div">
+            <div class="term-wrapper">
+                {{ field }}
+                Declaro...
+            </div>
+            {% if field.help_text %}
+            <span class="help-text">{{ field.help_text }}</span>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="field-container">
+        <div class="label-div">
+            {{ field.label_tag }}
+            {% if field.field.required %}
+            <span class='required'>*</span>
+            {% endif %}
+        </div>
+        <div class="field-div">
+            {{ field }}
+            {% if field.help_text %}
+            <span class="help-text">{{ field.help_text }}</span>
+            {% endif %}
+        </div>
     </div>
     {% endif %}
-    <form class="upload-form" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="field-container">
-            <div class="label-div">
-                <label>Mídias:</label>
-            </div>
-            <div class="medias-div">
-                <div class="medias-wrapper">
-                    {% for media in medias %}
-                    {% if media.is_video %}
-                    <video class="loaded-media" src="{{media.file.url}}"></video>
-                    {% else %}
-                    <img class="loaded-media" src="{{media.file.url}}" alt="">
-                    {% endif %}
-                    {% endfor %}
-                </div>
-            {% if medias|length > 1 %}
-            <span class="info-span">Os metadados serão aplicados a todas as mídias</span>
-            {% endif %}
-            </div>
-        </div>
-        {% for field in form %}
-        {% if field == form.authors %}
-        <div class="field-container">
-            <div class="label-div">
-                {{ field.label_tag }}
-            </div>
-            <div class="field-div co_author-div">
-                {{ field }}
-                {% if field.help_text %}
-                <span class="help-text">{{ field.help_text }}</span>
-                {% endif %}
-                <div>
-                    <p>Coautor não está na lista?</p>
-                    <button id="open-modal-button" class="pre-registration-button" type="button">Registrar coautor</button>
-                </div>
-            </div>
-        </div>
-        {% elif field == form.country or field == form.state or field == form.city %}
-        <div class="field-container country-container">
-            <div class="label-div">
-                {{ field.label_tag }}
-                <span class='required'>*</span>
-            </div>
-            <div class="field-div">
-                {{ field }}
-                {% if field.help_text %}
-                <span class="help-text">{{ field.help_text }}</span>
-                {% endif %}
-            </div>
-        </div>
-        {% elif field == form.terms %}
-        <div class="field-container">
-            <div class='label-div'>
-                {{ field.label_tag }}
-                <span class='required'>*</span>
-            </div>
-            <div class="field-div terms-div">
-                <div class="term-wrapper">
-                    {{ field }}
-                    Declaro...
-                </div>
-                {% if field.help_text %}
-                <span class="help-text">{{ field.help_text }}</span>
-                {% endif %}
-            </div>
-        </div>
-        {% else %}
-        <div class="field-container">
-            <div class="label-div">
-                {{ field.label_tag }}
-                {% if field.field.required %}
-                <span class='required'>*</span>
-                {% endif %}
-            </div>
-            <div class="field-div">
-                {{ field }}
-                {% if field.help_text %}
-                <span class="help-text">{{ field.help_text }}</span>
-                {% endif %}
-            </div>
-        </div>
-        {% endif %}
-        {% endfor %}
-        <div class="buttons-div">
-            <button class="submit-button" type="submit" name="action" value="add">Adicionar</button>
-            <button class="cancel-button" type="submit" name="action" value="cancel" formnovalidate>Cancelar</button>
-        </div>
-    </form>
-</div>
+    {% endfor %}
+    <div class="buttons-div">
+        <button class="primary-button submit-button" type="submit" name="action" value="add">Adicionar</button>
+        <button class="primary-button cancel-button" type="submit" name="action" value="cancel" formnovalidate>Cancelar</button>
+    </div>
+</form>
 
 {% endblock %}

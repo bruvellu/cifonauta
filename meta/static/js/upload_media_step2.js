@@ -6,8 +6,8 @@ idTerms.addEventListener('click', () => {
     }
 })
 
-let uploadForm = document.querySelector('.upload-form')
-uploadForm.addEventListener('submit', (event) => {
+let dashboardForm = document.querySelector('.dashboard-form')
+dashboardForm.addEventListener('submit', (event) => {
     
     if (!idTerms.checked && event.submitter.value != 'cancel') {
         event.preventDefault()
@@ -34,7 +34,6 @@ let countryField = document.querySelector('#id_country')
 countryField.addEventListener('change', (e) => {
     const url = window.location.origin
     const countryId = e.target.options[e.target.selectedIndex].value
-
     fetch(`${url}/synchronize-fields?country_id=${countryId}`, {
         method: "GET"
     })

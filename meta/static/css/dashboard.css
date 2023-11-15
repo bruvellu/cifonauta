@@ -368,7 +368,7 @@ tr, th {
 .label-div {
     display: flex;
     gap: .25rem;
-    width: 14rem;
+    min-width: 12rem;
 }
 
 .required {

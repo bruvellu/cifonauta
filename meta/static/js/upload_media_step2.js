@@ -1,14 +1,3 @@
-let preRegistrationButton = document.querySelector('.pre-registration-button')
-let closeModalButton = document.querySelector('.close-modal-button')
-let modal = document.querySelector('dialog')
-
-preRegistrationButton.addEventListener('click', () => {
-    modal.showModal()
-})
-closeModalButton.addEventListener('click', () => {
-    modal.close()
-})
-
 let idTerms = document.querySelector('#id_terms')
 idTerms.addEventListener('click', () => {
     let errorMessage = document.querySelector('.field-error')

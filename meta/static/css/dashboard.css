@@ -97,34 +97,44 @@ p {
 
 
 
-/* REGISTRATION FORM */
-.dialog::backdrop {
-    display: revert;
-    background: rgba(0,0,0,0.3);
+
+/* POPUP */
+#behind-modal-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    display: none;
 }
 
-.dialog {
-    display: revert;
-    border: 0;
-    border-style: solid;
-    border-width: 5px;
-    border-color: #94b1ca /* #7cc682 */ #eee #fafafa;
-    border-radius: 10px;
-    background: #fafafa;
-    box-shadow: 2px 2px 5px #aaa;
-    width: 100%;
-    max-width: 18rem;
+#modal-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    scale: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 5;
 }
 
-.dialog > div {
-    display: flex;
-    flex-direction: column;
+.opened-behind-modal {
+    display: block !important;
+}
+
+.opened-modal {
+    scale: 1 !important;
+}
+
+.behind-modal-container {
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 .close-modal-button {
-    align-self: flex-end;
-    width: 1.8rem;
-    height: 1.8rem;
+    width: 2rem;
+    height: 2rem;
     padding: 0;
     position: relative;
     background-color: transparent;
@@ -142,7 +152,7 @@ p {
     height: 0.24rem;
     border-radius: 0.2rem;
     position: absolute;
-    translate: -0.3rem -0.1rem;
+    translate: -0.09rem -0.1rem;
     transition: background-color .2s;
 }
 
@@ -154,31 +164,154 @@ p {
     rotate: -43deg;
 }
 
-.close-modal-button2 {
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.modal-header > p {
+    font-size: 1.2rem;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+
+
+
+
+/* LIST PAGES */
+.action-button {
     position: absolute;
-    right: 1rem;
-    top: 1rem;
-    width: 2rem;
-    height: 2rem;
-    opacity: 0.7;
+    left: 0;
+} 
+
+.list-modal-container {
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 20rem;
+    height: auto;
+    max-height: 60%;
+    padding: 1rem;
+    border: 0;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #94b1ca #eee #fafafa;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px #aaa;
 }
-.close-modal-button2:hover {
-    opacity: 1;
+
+.table-top, .table-bottom {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    min-height: 1.5rem;
 }
-.close-modal-button2:before, .close-modal-button2:after {
-    position: absolute;
-    left: 15px;
-    content: ' ';
-    height: 33px;
-    width: 2px;
-    background-color: #333;
+
+.paginator {
+    display: flex;
+    gap: 1rem;
 }
-.close-modal-button2:before {
-    transform: rotate(45deg);
+
+tr, th {
+    color: #333;
 }
-.close-modal-button2:after {
-    transform: rotate(-45deg);
+
+/* .table-body tr:nth-child(odd) td {
+    background-color: #e2e2e2 !important;
 }
+
+.table-body tr:nth-child(even) td, .table-head th {
+    background-color: #405c73 !important;
+} */
+
+.table-head th {
+    background: -webkit-linear-gradient(top, #5b83a4 16%, #002746 100%);
+    background: -moz-linear-gradient(top, #5b83a4 16%, #002746 100%);
+    background: -o-linear-gradient(top, #5b83a4 16%, #002746 100%);
+    background: linear-gradient(to bottom, #5b83a4 16%, #002746 100%);
+    color: white;
+}
+
+.table-body td {
+    background-color: #e9ecf2;
+}
+
+.table-body a {
+    font-weight: bold;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.table-body a:hover {
+    color: #000000;
+}
+
+.not-edited {
+    color: #ff4703;
+}
+
+.to-review {
+    color: #6a6aff;
+}
+
+.published {
+    color: #13ad13;
+}
+
+.image-cedule img, .image-cedule video {
+    width: 11rem;
+    height: 6rem;
+    object-fit: cover;
+    transition: filter .1s;
+}
+
+.image-cedule img:hover,
+.image-cedule video:hover {
+    filter: brightness(65%);
+}
+
+
+
+
+
+/* FORM PAGES */
+
+
+
+
+
+
+/* UPLOAD MEDIA STEP 2 */
+.pre-registration-behind-modal {
+    background-color: rgba(0,0,0,0.3);
+}
+
+.pre-registration-modal {
+    border: 0;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #94b1ca /* #7cc682 */ #eee #fafafa;
+    border-radius: 10px;
+    background: #fafafa;
+    box-shadow: 2px 2px 5px #aaa;
+    width: 100%;
+    max-width: 18rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+}
+
 
 
 
@@ -220,72 +353,38 @@ p {
 
 
 /* UPDATE MEDIA */
-.behind-modal-container {
-    background-color: rgba(0, 0, 0, 0.4);
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 3;
-    display: none;
-}
-
-.opened-behind-modal {
-    display: block;
-}
-
-.modal-container {
-    background: #fafafa;
+.media-changes-modal {
+    background: #fcfcfc;
     display: flex;
     flex-direction: column;
-    position: fixed;
-    z-index: 5;
     max-width: 38rem;
     width: 100%;
     height: 75%;
-    top: 50%;
-    left: 50%;
-    translate: -50% -50%;
-    scale: 0;
     border: 0;
     border-style: solid;
     border-width: 5px;
     border-color: #94b1ca #eee #fafafa;
     border-radius: 10px;
     box-shadow: 2px 2px 5px #aaa;
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 
-.action-button {
-    position: absolute;
-    left: 0;
-} 
-
-.list-modal-container {
-    max-width: 20rem;
-    height: auto;
-    padding: 1rem;
+.media-changes-modal-header {
+    padding: 1rem 1rem 0 1rem;
 }
 
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2rem;
+.media-changes-close-modal-button {
+    width: 2.4rem;
+    height: 2.4rem;
 }
 
-.modal-header > p {
-    font-size: 1.2rem;
+.media-changes-close-modal-button > div {
+    width: 2.8rem;
+    height: 0.28rem;
+    translate: -0.2rem -0.1rem;
 }
 
-.modal-body {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 2rem;
-}
+
+
 
 .modal-field-div {
     display: flex;
@@ -296,16 +395,8 @@ p {
     width: 100% !important;
 }
 
-.opened-modal {
-    scale: 1;
-}
 
-.close-modal-update {
-    top: 3rem;
-    right: 2rem;
-    scale: 1.4;
-    position: sticky;
-}
+
 
 .update-comparison-table {
     margin-top: 1rem;
@@ -636,106 +727,13 @@ div + .margin-top {
 
 
 
-/* MY MEDIAS */
-.table-top, .table-bottom {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 0.5rem;
-    min-height: 1.5rem;
-}
-
-.paginator {
-    display: flex;
-    gap: 1rem;
-}
-
-tr, th {
-    color: #333;
-}
-
-/* .table-body tr:nth-child(odd) td {
-    background-color: #e2e2e2 !important;
-}
-
-.table-body tr:nth-child(even) td, .table-head th {
-    background-color: #405c73 !important;
-} */
-
-.table-head th {
-    background: -webkit-linear-gradient(top, #5b83a4 16%, #002746 100%);
-    background: -moz-linear-gradient(top, #5b83a4 16%, #002746 100%);
-    background: -o-linear-gradient(top, #5b83a4 16%, #002746 100%);
-    background: linear-gradient(to bottom, #5b83a4 16%, #002746 100%);
-    color: white;
-}
-
-.table-body td {
-    background-color: #e9ecf2;
-}
-
-.table-body a {
-    font-weight: bold;
-    color: #333;
-    font-size: 1.1rem;
-}
-
-.table-body a:hover {
-    color: #000000;
-}
-
-.not-edited {
-    color: #ff4703;
-}
-
-.to-review {
-    color: #6a6aff;
-}
-
-.published {
-    color: #13ad13;
-}
-
-.image-cedule img, .image-cedule video {
-    width: 11rem;
-    height: 6rem;
-    object-fit: cover;
-    transition: filter .1s;
-}
-
-.image-cedule img:hover,
-.image-cedule video:hover {
-    filter: brightness(65%);
-}
-
-
-/* .text-cedule {
-    vertical-align: top;
-    text-align: center;
-    padding: 1rem;
-}
-
-.image-cedule {
-    padding: 1rem;
-    display: flex;
-    justify-content: center;
-}
-
-.button-cedule {
-    text-align: center;
-}
-
-.button-cedule a {
-    padding: 0.5rem 1.7rem;
-    background-color: #f0f860;
-    text-decoration: none;
-    color: #353400;
-    font-weight: bold;
-} */
+/* TABLE FROM LIST PAGES */
 
 
 
-/* TOURS */
+
+
+/* MY SELECT2 FOR TOURS */
 .list-view-button {
     color: #fff !important;
 }

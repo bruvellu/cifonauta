@@ -3,34 +3,36 @@
 
 {% block extra_head %}
 <script src="{% static 'js/upload_media_step2.js' %}" defer></script>
+<script src="{% static 'js/adm_popup.js' %}" defer></script>
 {% endblock %}
 {% block title %}Enviar Mídia{% endblock %}
 
 {% block dashboard_content %}
-<dialog class="dialog">
-    <div>
-        <button class="close-modal-button">
+<div id="behind-modal-container" class="pre-registration-behind-modal"></div>
+<div id="modal-container" class="pre-registration-modal">
+    <div class="modal-header">
+        <p>Registre o coautor</p>
+        <button id="close-modal-button" class="close-modal-button">
             <div class='line1'></div>
             <div class='line2'></div>
         </button>
-        <form class="pre-registration-form" method="post">
-            {% csrf_token %}
-            <p>Registre o coautor</p>
-            {% for field2 in registration_form %}
-            <div class="field2-container">
-                {{ field2.label_tag }}
-                <div class="field-div field2-div">
-                    {{ field2 }}
-                    {% if field2.help_text %}
-                    <span class="help-text">{{ field2.help_text }}</span>
-                    {% endif %}
-                </div>
-            </div>
-            {% endfor %}
-            <button class="pre-registration-submit" type="submit" name="action" value="coauthor">Cadastrar</button>
-        </form>
     </div>
-</dialog>
+    <form class="pre-registration-form" method="post">
+        {% csrf_token %}
+        {% for field2 in registration_form %}
+        <div class="field2-container">
+            {{ field2.label_tag }}
+            <div class="field-div field2-div">
+                {{ field2 }}
+                {% if field2.help_text %}
+                <span class="help-text">{{ field2.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        <button class="pre-registration-submit" type="submit" name="action" value="coauthor">Cadastrar</button>
+    </form>
+</div>
 
 <div class="form-container">
     <h2>Adicionar nova mídia</h2>
@@ -75,7 +77,7 @@
                 {% endif %}
                 <div>
                     <p>Coautor não está na lista?</p>
-                    <button class="pre-registration-button" type="button">Registrar coautor</button>
+                    <button id="open-modal-button" class="pre-registration-button" type="button">Registrar coautor</button>
                 </div>
             </div>
         </div>

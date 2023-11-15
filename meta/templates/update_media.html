@@ -3,6 +3,7 @@
 
 {% block extra_head %}
 <script src="{% static 'js/update_media.js' %}" defer></script>
+<script src="{% static 'js/adm_popup.js' %}" defer></script>
 {% endblock %}
 
 {% block title %}Revisar Mídia{% endblock %}
@@ -12,12 +13,15 @@
 {% if modified_media %}
 <div class="behind-modal-container"></div>
 
-<div class="modal-container">
-    <button class="close-modal-button close-modal-update" onclick="closeModal()">
-        <div class='line1'></div>
-        <div class='line2'></div>
-    </button>
-    <table class="comparison-table update-comparison-table">
+<div id="modal-container" class="media-changes-modal">
+    <div class="modal-header media-changes-modal-header">
+        <p>Alterações da mídia</p>
+        <button id="close-modal-button" class="close-modal-button media-changes-close-modal-button" onclick="closeModal()">
+            <div class='line1'></div>
+            <div class='line2'></div>
+        </button>
+    </div>
+    <table class="comparison-table">
         <thead class="comparison-table-head">
             <tr>
                 <th class='comparison-label-column'></th>
@@ -143,7 +147,7 @@
         <div class="buttons-div">
             <button class='submit-button' type="submit" name="action" value="update">Atualizar</button>
             {% if media.modified_media %}
-            <button class='other-button' type="button" onclick="showModal()">Ver alterações</button>
+            <button id="open-modal-button" class='other-button' type="button">Ver alterações</button>
             {% endif %}
         </div>
     </form>

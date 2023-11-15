@@ -1,3 +1,4 @@
+// NEEDS 4 TAGS IN THE HTML WITH THE IDs: "behind-modal-container", "modal-container", "open-modal-button", "close-modal-button"
 function showModal() {
     const behindModalContainer = document.querySelector('#behind-modal-container')
     behindModalContainer?.classList.add('opened-behind-modal')
@@ -30,9 +31,8 @@ openModalButton.addEventListener('click', showModal)
 
 closeModalButton.addEventListener('click', closeModal)
 
+// Popup closes without clicking on #close-modal-button
 // document.addEventListener('click', (event)=>{
-//     const modalContainer = document.querySelector('.modal-container')
-
 //     if (!modalContainer?.contains(event.target) && 
 //         !openModalButton?.contains(event.target) &&
 //         isModalOpened) {

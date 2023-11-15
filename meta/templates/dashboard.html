@@ -50,7 +50,7 @@
             </li>
             {% endif %}
             <li>
-                <a href="{% url 'my_medias' %}" {% if fullpath == '/administrative-module/my-medias/' or '/administrative-module/update/<int:pk>' in fullpath %}class='current-page'{% endif %}>Minhas mídias</a>
+                <a href="{% url 'my_medias' %}" {% if fullpath == '/administrative-module/my-medias/' or '/administrative-module/update/' in fullpath %}class='current-page'{% endif %}>Minhas mídias</a>
             </li>
         </ul>
         {% endwith %}

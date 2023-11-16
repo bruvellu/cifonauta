@@ -1,13 +1,27 @@
 # -*- coding: utf-8 -*-
 
 import os
-from django.db.models.signals import m2m_changed
+from django.db.models.signals import pre_save, post_save, m2m_changed
 from django.template.defaultfilters import slugify
-from django.contrib.postgres.search import SearchVector
+from django.dispatch import receiver
+from meta.models import Media, Person, Tag, Category
+from django.utils import translation
 
 
-def update_search_vector(signal, instance, sender, **kwargs):
+@receiver(pre_save, sender=Person)
+@receiver(pre_save, sender=Tag)
+@receiver(pre_save, sender=Category)
+def slugify_name(sender, instance, *args, **kwargs):
+    '''Create slug using the name field of several models.'''
+    if not instance.slug:
+        translation.activate('pt_br')
+        instance.slug = slugify(instance.name)
+
+
+@receiver(post_save, sender=Media)
+def update_search_vector(sender, instance, created, *args, **kwargs):
     '''Update search_vector field with current metadata before saving.'''
+    print(sender, instance, created, args, kwargs)
     sender.objects.filter(id=instance.id).update(search_vector=instance.update_search_vector())
 
 
@@ -145,12 +159,6 @@ def citation_pre_save(signal, instance, sender, **kwargs):
     instance.citation = citation
 
 
-#@receiver(post_save, sender=[ModelA, ModelB, ModelC])
-def slug_pre_save(signal, instance, sender, **kwargs):
-    '''Cria slug antes de salvar.'''
-    if not instance.slug:
-        slug = slugify(instance.name)
-        instance.slug = slug
 
 
 def makestats(signal, instance, sender, **kwargs):

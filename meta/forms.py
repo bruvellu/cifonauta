@@ -155,6 +155,18 @@ class TourForm(forms.ModelForm):
         
         self.fields['media'].label_from_instance = lambda obj: obj.title
 
+class CuratorManagementForm(forms.ModelForm):
+    class Meta:
+        model = Curadoria
+        fields = '__all__'
+
+    def __init__(self, user, *args, **kwargs):
+        super(CuratorManagementForm, self).__init__(*args, **kwargs)
+        user_curations = Curadoria.objects.filter(curators=user.id)
+        choices = [(curadoria.id, curadoria.name) for curadoria in user_curations]
+
+        self.fields['curadoria'] = forms.ChoiceField(choices=choices, widget=forms.Select(attrs={'class': 'form-control'}))
+
 class SpecialistActionForm(forms.ModelForm, SendEmailForm):
     STATUS_CHOICES = [
         ('maintain', _('Manter status')),

@@ -1,0 +1,78 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block extra_head %}
+<script src="{% static 'js/manage_users.js' %}" defer></script>
+{% endblock %}
+
+{% block title %}Habilitar Especialistas e Autores{% endblock %}
+
+{% block dashboard_content %}
+    {% comment %} <aside>
+        <form method="get" action="">
+            <h3>Selecione o que quer administrar</h3>
+            <select name="select_users_type">
+                <option value="authors" {% if request.GET.select_users_type == "authors" %}selected{% endif %}>Autores</option>
+                <option value="specialists" {% if request.GET.select_users_type == "specialists" %}selected{% endif %}>Especialistas</option>
+            </select>
+            
+            <h3>Escolha uma curadoria</h3>
+            <select name="selected_curation_id" id="selected_curation_id_get">
+                {% for curation in curations %}
+                    {% if curation.id == selected_curation_id %}
+                        <option value="{{ curation.id }}" selected>{{ curation }}</option>
+                    {% else %}
+                        <option value="{{ curation.id }}">{{ curation }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            
+            <h3>Selecione uma ação</h3>
+            <select name="action">
+                <option value="add" {% if request.GET.action == "add" %}selected{% endif %}>Adicionar</option>
+                <option value="remove" {% if request.GET.action == "remove" %}selected{% endif %}>Remover</option>
+            </select>
+            
+
+            <h3>Pesquise por nome</h3>
+            <input type="text" name="search_query" placeholder="Pesquisar por nome">
+
+            <button type="submit">Filtrar</button>
+        </form>    
+    </aside> {% endcomment %}
+    
+
+    <form method="post">
+        {% csrf_token %}
+        
+        
+        <div>
+            <select name="" id="curatorship-options">
+                <option value="1">Mamíferos</option>
+                <option value="2">Felinos</option>
+                <option value="3">Plantas</option>
+            </select>
+            <div class="enable-specialists-field">
+                <div class="users-table user-options-container">
+                    <input type="text" name="" id="search-users">
+                    <div id="user-options">
+                        {% for user in users %}
+                        <div value={{ user.id }} class="user-option">
+                            <span class="user-name">
+                                {{ user.first_name }} {{ user.last_name }}
+                            </span>
+                            <button class="select-user-button" type="button" onclick="selectUser(this)">Adicionar</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="users-table selected-users-container">
+                    <input type="text" name="" id="search-users-in-curatorship">
+                    <div id="selected-users">
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </form>
+{% endblock %}

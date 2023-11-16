@@ -37,8 +37,7 @@ from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
 load_dotenv()
 
-@custom_login_required
-@author_required
+
 def dashboard(request):
     is_specialist = Curadoria.objects.filter(Q(specialists=request.user)).exists()
     is_curator = Curadoria.objects.filter(Q(curators=request.user)).exists()
@@ -50,8 +49,7 @@ def dashboard(request):
 
     return render(request, 'dashboard.html', context)
 
-@custom_login_required
-@author_required
+
 def upload_media_step1(request):
     if request.method == 'POST':
         medias = request.FILES.getlist('medias')
@@ -114,8 +112,6 @@ def upload_media_step1(request):
     return render(request, 'upload_media_step1.html', context)
 
 
-@custom_login_required
-@author_required
 def upload_media_step2(request):
     medias = Media.objects.filter(user=request.user, status='loaded')
     
@@ -281,8 +277,6 @@ def synchronize_fields(request):
     return JsonResponse({})
 
 
-@custom_login_required
-@curator_required
 def edit_metadata(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     if request.method == 'POST':
@@ -364,8 +358,7 @@ def edit_metadata(request, media_id):
 
     return render(request, 'update_media.html', context) 
 
-@custom_login_required
-@curator_required
+
 def curadoria_media_list(request):
     if request.method == "POST":
         media_ids = request.POST.getlist('selected_media_ids')
@@ -437,8 +430,7 @@ def curadoria_media_list(request):
 
     return render(request, 'curadoria_media_list.html', context)
 
-#Missing
-@method_decorator(custom_login_required, name='dispatch')
+
 class MediaDetail(DetailView):
     model = Media
     template_name = 'media_detail.html'
@@ -450,7 +442,7 @@ class MediaDetail(DetailView):
         context['is_curator'] = user.curatorship_curator.exists()
         return context
     
-@custom_login_required
+
 def update_my_medias(request, pk):
     media = get_object_or_404(Media, pk=pk)
     modified_media = ModifiedMedia.objects.filter(media=media).first()
@@ -623,8 +615,6 @@ def update_my_medias(request, pk):
     return render(request, 'update_media.html', context)
     
 
-@custom_login_required
-@author_required
 def my_medias(request):
     if request.method == "POST":
         media_ids = request.POST.getlist('selected_media_ids')
@@ -672,8 +662,7 @@ def my_medias(request):
 
     return render(request, 'my_medias.html', context)
 
-@custom_login_required
-@curator_required
+
 def revision_media(request):
     if request.method == 'POST':
         media_ids = request.POST.getlist('selected_media_ids')
@@ -691,7 +680,7 @@ def revision_media(request):
                     medias.update(status='published', is_public=True) #TODO: Remove is_public
                 
                 person = Person.objects.filter(user_cifonauta=request.user.id).first()
-                
+
                 user_medias = {}
                 for media in medias:
                     media.curators.add(person)
@@ -745,8 +734,6 @@ def revision_media(request):
     return render(request, 'media_revision.html', context)
 
 
-@custom_login_required
-@curator_required
 def modified_media_revision(request, pk):
     media = get_object_or_404(Media, pk=pk)
     modified_media = ModifiedMedia.objects.filter(media=media).first()
@@ -802,8 +789,7 @@ def modified_media_revision(request, pk):
 
     return render(request, 'modified_media_revision.html', context)
 
-@custom_login_required
-@curator_required
+
 def revision_media_detail(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     if request.method == 'POST':
@@ -883,8 +869,7 @@ def revision_media_detail(request, media_id):
 
     return render(request, 'media_revision_detail.html', context) 
 
-@method_decorator(custom_login_required, name='dispatch')
-@method_decorator(curator_required, name='dispatch')
+
 class EnableSpecialists(LoginRequiredMixin, ListView):
     model = UserCifonauta
     template_name = 'enable_specialists.html'

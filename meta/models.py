@@ -604,19 +604,11 @@ class Stats(models.Model):
         verbose_name_plural = _('estatísticas')
 
 
-# # Slugify before saving
-# models.signals.pre_save.connect(slug_pre_save, sender=Category)
-# models.signals.pre_save.connect(slug_pre_save, sender=Taxon)
-# models.signals.pre_save.connect(slug_pre_save, sender=Location)
-# models.signals.pre_save.connect(slug_pre_save, sender=City)
-# models.signals.pre_save.connect(slug_pre_save, sender=State)
-# models.signals.pre_save.connect(slug_pre_save, sender=Country)
-# models.signals.pre_save.connect(slug_pre_save, sender=Reference)
-# models.signals.pre_save.connect(slug_pre_save, sender=Tour)
-
 # # Create citation with bibkey
 # models.signals.pre_save.connect(citation_pre_save, sender=Reference)
+
 # # Delete file from folder when the media is deleted on website
 # models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
+
 # # Get taxons descendents when creating a curatorship
 # models.signals.m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)

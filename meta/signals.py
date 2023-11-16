@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from django.template.defaultfilters import slugify
 import os
 from django.db.models.signals import m2m_changed
+from django.template.defaultfilters import slugify
+from django.contrib.postgres.search import SearchVector
+
+
+def update_search_vector(signal, instance, sender, **kwargs):
+    '''Update search_vector field with current metadata before saving.'''
+    sender.objects.filter(id=instance.id).update(search_vector=instance.update_search_vector())
+
 
 def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
     from meta.models import Taxon, Curadoria

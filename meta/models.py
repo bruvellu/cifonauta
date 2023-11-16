@@ -143,6 +143,11 @@ class Media(models.Model):
                                          verbose_name=_('especialistas associados'),
                                          help_text=_('Especialistas associados a este arquivo.'),
                                          related_name='media_as_specialist')
+    curators = models.ManyToManyField('Person',
+                                  blank=True,
+                                  verbose_name=_('curadores do arquivo'),
+                                  help_text=_('Curadores associados a este arquivo.'),
+                                  related_name='media_as_curator')
     terms = models.BooleanField(_('termos'),
                                 default=False,
                                 help_text=_('Flag indicando que termos foram aceitos.'))

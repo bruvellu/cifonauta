@@ -756,8 +756,10 @@ class ManageAuthors(LoginRequiredMixin, ListView):
         
         if "enable-authors" in request.POST:
             users.update(is_author=True)
+            messages.success(request, "Autores foram habilitados com sucesso!")
         elif "disable-authors" in request.POST:
             users.update(is_author=False)
+            messages.success(request, "Autores foram desabilitados com sucesso!")
 
         return redirect('manage_authors')
 

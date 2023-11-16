@@ -1,9 +1,14 @@
 {% extends 'dashboard.html' %}
 
-{% block title %}Habilitar Especialistas e Autores{% endblock %}
+{% block title %}Gerenciar Autores{% endblock %}
 
 {% block dashboard_content %}
     
+    <div class="messages-div">
+        {% for message in messages %}
+            <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+        {% endfor %}
+    </div>
     <h2> Tabela de Usuários </h2>
 
     <form method="post" action="">

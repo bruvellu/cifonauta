@@ -122,7 +122,6 @@ class ForgotUsernameForm(forms.Form):
         if html_email_template_name is not None:
             html_email = loader.render_to_string(html_email_template_name, context)
             email_message.attach_alternative(html_email, "text/html")
-        print('oi')
         email_message.send()
     def get_users(self, email):
         """Given an email, return matching user(s) who should receive a reset.
@@ -142,7 +141,6 @@ class ForgotUsernameForm(forms.Form):
             u
             for u in active_users
             if u.has_usable_password()
-            and forms._unicode_ci_compare(email, getattr(u, email_field_name))
         )
     def save(
         self,
@@ -171,11 +169,9 @@ class ForgotUsernameForm(forms.Form):
             user_email = getattr(user, email_field_name)
             context = {
                 "email": user_email,
-                "domain": domain,
                 "site_name": site_name,
                 "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                "user": user,
-                "protocol": "https" if use_https else "http",
+                "username": user.username,
                 **(extra_email_context or {}),
             }
             self.send_mail(

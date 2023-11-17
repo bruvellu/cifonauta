@@ -1,11 +1,52 @@
 # -*- coding: utf-8 -*-
 
-from django.template.defaultfilters import slugify
 import os
-from django.db.models.signals import m2m_changed
+from django.db.models.signals import pre_save, post_save, m2m_changed, pre_delete
+from django.dispatch import receiver
+from django.template.defaultfilters import slugify
+from django.utils import translation
+from meta.models import Media, Person, Tag, Category, Taxon, Location, City, State, Country, Reference, Tour, Curadoria
 
+
+@receiver(pre_save, sender=Person)
+@receiver(pre_save, sender=Tag)
+@receiver(pre_save, sender=Category)
+@receiver(pre_save, sender=Taxon)
+@receiver(pre_save, sender=Location)
+@receiver(pre_save, sender=City)
+@receiver(pre_save, sender=State)
+@receiver(pre_save, sender=Country)
+@receiver(pre_save, sender=Reference)
+@receiver(pre_save, sender=Tour)
+def slugify_name(sender, instance, *args, **kwargs):
+    '''Create slug using the name field of several models.'''
+    if not instance.slug:
+        # Force slug in Portuguese, for now
+        translation.activate('pt_br')
+        instance.slug = slugify(instance.name)
+
+
+@receiver(post_save, sender=Media)
+def update_search_vector(sender, instance, created, *args, **kwargs):
+    '''Update search_vector field with current metadata before saving.'''
+    sender.objects.filter(id=instance.id).update(search_vector=instance.update_search_vector())
+
+
+@receiver(pre_delete, sender=Media)
+def delete_file_from_folder(sender, instance, **kwargs):
+    if instance.file:
+        if os.path.isfile(instance.file.path):
+            os.remove(instance.file.path)
+    if instance.coverpath:
+        if os.path.isfile(instance.coverpath.path):
+            os.remove(instance.coverpath.path)
+    if instance.sitepath:
+        if os.path.isfile(instance.sitepath.path):
+            os.remove(instance.sitepath.path)  
+
+
+@receiver(m2m_changed, sender=Curadoria.taxons.through)
 def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
-    from meta.models import Taxon, Curadoria
     m2m_changed.disconnect(get_taxons_descendants, sender=Curadoria.taxons.through)
     
     taxon = Taxon.objects.filter(id__in=pk_set)
@@ -19,18 +60,6 @@ def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
     m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)
 
 
-def delete_file_from_folder(sender, instance, **kwargs):
-    if instance.file:
-        if os.path.isfile(instance.file.path):
-            os.remove(instance.file.path)
-    if instance.coverpath:
-        if os.path.isfile(instance.coverpath.path):
-            os.remove(instance.coverpath.path)
-    if instance.sitepath:
-        if os.path.isfile(instance.sitepath.path):
-            os.remove(instance.sitepath.path)  
-
-    
 
 
 # Não é signal, apenas função acessória.
@@ -92,7 +121,9 @@ def citation_html(reference):
     return citation
 
 
-def citation_pre_save(signal, instance, sender, **kwargs):
+# FIXME: No longer functional.
+# @receiver(pre_save, sender=Reference)
+def create_citation(sender, instance, *args, **kwargs):
     '''Cria citação em HTML a partir da bibkey.
 
     Usa o ID da entrada (= Mendeley ID) para pegar os dados da referência via
@@ -138,12 +169,6 @@ def citation_pre_save(signal, instance, sender, **kwargs):
     instance.citation = citation
 
 
-#@receiver(post_save, sender=[ModelA, ModelB, ModelC])
-def slug_pre_save(signal, instance, sender, **kwargs):
-    '''Cria slug antes de salvar.'''
-    if not instance.slug:
-        slug = slugify(instance.name)
-        instance.slug = slug
 
 
 def makestats(signal, instance, sender, **kwargs):

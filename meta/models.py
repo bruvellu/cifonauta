@@ -15,7 +15,6 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from mptt.models import MPTTModel
-from meta.signals import *
 
 
 class Curadoria(models.Model):
@@ -143,6 +142,11 @@ class Media(models.Model):
                                          verbose_name=_('especialistas associados'),
                                          help_text=_('Especialistas associados a este arquivo.'),
                                          related_name='media_as_specialist')
+    curators = models.ManyToManyField('Person',
+                                  blank=True,
+                                  verbose_name=_('curadores do arquivo'),
+                                  help_text=_('Curadores associados a este arquivo.'),
+                                  related_name='media_as_curator')
     terms = models.BooleanField(_('termos'),
                                 default=False,
                                 help_text=_('Flag indicando que termos foram aceitos.'))
@@ -269,16 +273,29 @@ class Media(models.Model):
                                             help_text=_('ID do vídeo no antigo modelo.'))
 
 
-    def save(self, *args, **kwargs):
+    def __str__(self):
+        return 'ID={} {} ({}) {}'.format(self.id, self.title, self.datatype, self.status)
+
+    def get_absolute_url(self):
+        return reverse('media_url', args=[str(self.id)])
+
+    def is_video(self):
+        _, extension = os.path.splitext(self.file.name)
+        return True if extension in settings.VIDEO_EXTENSIONS else False
+
+    def update_search_vector(self):
+        '''Collect metadata and update the search vector field.'''
 
         # Update search vector field on save
         #TODO: Make a function to save values to a dictionary, take care of Empty/None/Null values
         #TODO: Make a function to populate the search_vector with these saved values
         #TODO: Replace here just with the calls for the functions above
-        self.search_vector = SearchVector(Value(self.title_pt_br, output_field=models.TextField()), weight='A', config='portuguese_unaccent') + \
-                             SearchVector(Value(self.title_en, output_field=models.TextField()), weight='A', config='english') + \
-                             SearchVector(Value(self.caption_pt_br, output_field=models.TextField()), weight='B', config='portuguese_unaccent') + \
-                             SearchVector(Value(self.caption_en, output_field=models.TextField()), weight='B', config='english')
+        self.search_vector = SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') + \
+                             SearchVector('title_en', weight='A', config='english') + \
+                             SearchVector('caption_pt_br', weight='B', config='portuguese_unaccent') + \
+                             SearchVector('caption_en', weight='B', config='english')
+
+        return self.search_vector
 
         # self.search_vector = SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') + \
                              # SearchVector('title_en', weight='A', config='english') + \
@@ -292,28 +309,7 @@ class Media(models.Model):
                              # SearchVector('city__name', weight='D') + \
                              # SearchVector('state__name', weight='D') + \
                              # SearchVector('country__name', weight='D')
-                
 
-        if not self.pk:
-            _, extension = os.path.splitext(self.file.name.lower())
-            if extension.endswith(settings.PHOTO_EXTENSIONS):
-                self.datatype = 'photo'
-            else:
-                self.datatype = 'video'
-        
-        self.timestamp = timezone.now()
-
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return 'ID={} {} ({}) {}'.format(self.id, self.title, self.datatype, self.status)
-
-    def get_absolute_url(self):
-        return reverse('media_url', args=[str(self.id)])
-
-    def is_video(self):
-        _, extension = os.path.splitext(self.file.name)
-        return True if extension in settings.VIDEO_EXTENSIONS else False
 
     def get_size(self):
         '''Returns tag from size category, if any.'''
@@ -607,21 +603,11 @@ class Stats(models.Model):
         verbose_name_plural = _('estatísticas')
 
 
-# Slugify before saving.
-models.signals.pre_save.connect(slug_pre_save, sender=Person)
-models.signals.pre_save.connect(slug_pre_save, sender=Tag)
-models.signals.pre_save.connect(slug_pre_save, sender=Category)
-models.signals.pre_save.connect(slug_pre_save, sender=Taxon)
-models.signals.pre_save.connect(slug_pre_save, sender=Location)
-models.signals.pre_save.connect(slug_pre_save, sender=City)
-models.signals.pre_save.connect(slug_pre_save, sender=State)
-models.signals.pre_save.connect(slug_pre_save, sender=Country)
-models.signals.pre_save.connect(slug_pre_save, sender=Reference)
-models.signals.pre_save.connect(slug_pre_save, sender=Tour)
+# # Create citation with bibkey
+# models.signals.pre_save.connect(citation_pre_save, sender=Reference)
 
-# Create citation with bibkey.
-models.signals.pre_save.connect(citation_pre_save, sender=Reference)
-# Delete file from folder when the media is deleted on website
-models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
-# Get taxons descendents when creating a curatorship
-models.signals.m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)
+# # Delete file from folder when the media is deleted on website
+# models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
+
+# # Get taxons descendents when creating a curatorship
+# models.signals.m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)

@@ -3,76 +3,109 @@
 
 {% block extra_head %}
 <script src="{% static 'js/manage_users.js' %}" defer></script>
+<script src="{% static 'js/adm_select_all_records.js' %}" defer></script>
 {% endblock %}
 
-{% block title %}Habilitar Especialistas e Autores{% endblock %}
+{% block title %}Gerenciar Usuários{% endblock %}
 
 {% block dashboard_content %}
-    {% comment %} <aside>
-        <form method="get" action="">
-            <h3>Selecione o que quer administrar</h3>
-            <select name="select_users_type">
-                <option value="authors" {% if request.GET.select_users_type == "authors" %}selected{% endif %}>Autores</option>
-                <option value="specialists" {% if request.GET.select_users_type == "specialists" %}selected{% endif %}>Especialistas</option>
-            </select>
-            
-            <h3>Escolha uma curadoria</h3>
-            <select name="selected_curation_id" id="selected_curation_id_get">
-                {% for curation in curations %}
-                    {% if curation.id == selected_curation_id %}
-                        <option value="{{ curation.id }}" selected>{{ curation }}</option>
-                    {% else %}
-                        <option value="{{ curation.id }}">{{ curation }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-            
-            <h3>Selecione uma ação</h3>
-            <select name="action">
-                <option value="add" {% if request.GET.action == "add" %}selected{% endif %}>Adicionar</option>
-                <option value="remove" {% if request.GET.action == "remove" %}selected{% endif %}>Remover</option>
-            </select>
-            
+    <h2>Gerenciar usuários</h3>
 
-            <h3>Pesquise por nome</h3>
-            <input type="text" name="search_query" placeholder="Pesquisar por nome">
+    {% if messages %}
+    <div class="messages-div">
+    {% for message in messages %}
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    {% endfor %}
+    </div>
+    {% endif %}
 
-            <button type="submit">Filtrar</button>
-        </form>    
-    </aside> {% endcomment %}
-    
-
-    <form method="post">
-        {% csrf_token %}
-        
-        
-        <div>
-            <select name="" id="curatorship-options">
-                <option value="1">Mamíferos</option>
-                <option value="2">Felinos</option>
-                <option value="3">Plantas</option>
-            </select>
-            <div class="enable-specialists-field">
-                <div class="users-table user-options-container">
-                    <input type="text" name="" id="search-users">
-                    <div id="user-options">
+    <div class="dashboard-form">
+        <section class="enable-authors-section">
+            <h3>Habilitar autores</h3>
+            <form method="post" class="users-table-form">
+                {% csrf_token %}
+                <div class="table-search-div">
+                    
+                    <input type="text" name="" placeholder="Procurar usuários" id="search-user-authors" class="search-users">
+                </div>
+                <div>
+                    <select required name="author_action" id="author-action">
+                        <option value="">----------</option>
+                        <option value="turn_author">Tornar autor</option>
+                        <option value="disable_author">Desabilitar autor</option>
+                    </select>
+                    <button type="submit" name='action' value="enable-authors">Realizar ação</button>
+                </div>
+                <table>
+                    <thead class="table-head">
+                        <tr>
+                            <th class="checkbox-column"><input type="checkbox" id="select-all-records"></th>
+                            <th class="image-column">Nome do usuário</th>
+                            <th class="title-column">Autor</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-body">
                         {% for user in users %}
-                        <div value={{ user.id }} class="user-option">
-                            <span class="user-name">
+                        <tr class="user-row">
+                            <td>
+                                <input type="checkbox" class="selected-record" name="selected_authors" value="{{ user.id }}">
+                            </td>
+                            <td class="user-name-cedule">
                                 {{ user.first_name }} {{ user.last_name }}
-                            </span>
-                            <button class="select-user-button" type="button" onclick="selectUser(this)">Adicionar</button>
-                        </div>
+                            </td>
+                            {% if user.is_author %}
+                            <td class="to-review">
+                                Habilitado
+                            </td>
+                            {% else %}
+                            <td class="not-edited">
+                                Não habilitado
+                            </td>
+                            {% endif %}
+                        </tr>
                         {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+        </section>
+        <section class="enable-specialists-section">
+            <h3>Habilitar especialistas</h3>
+            <form method="post">
+                {% csrf_token %}
+                <select name="curatorship_id" id="id_curatorship">
+                    {% for curatorship in curatorships %}
+                    <option value="{{ curatorship.id }}">{{ curatorship.name }}</option>
+                    {% endfor %}
+                </select>
+                <div class="users-table-container">
+                    <div class="users-table user-options-container">
+                        <div class="search-input-div">
+                            
+                            <input type="text" name="" placeholder="Procurar usuários" id="search-user-options" class="search-users">
+                        </div>
+                        <button class="" type="button" onclick="selectAllUsers()">Adicionar todos</button>
+                        <div id="user-options">
+                            {% comment %} {% for user in users %}
+                            <div value={{ user.id }} class="user-option">
+                                <span class="user-name">
+                                    {{ user.first_name }} {{ user.last_name }}
+                                </span>
+                                <button class="select-user-button" type="button" onclick="selectUser(this)">Adicionar</button>
+                            </div>
+                            {% endfor %} {% endcomment %}
+                        </div>
+                    </div>
+                    <div class="users-table selected-users-container">
+                        <div class="search-input-div">
+                            <input type="text" name="" placeholder="Procurar usuários" id="search-users-in-curatorship" class="search-users">
+                        </div>
+                        <button class="" type="button" onclick="removeAllUsers()">Remover todos</button>
+                        <div id="selected-users">
+                        </div>
                     </div>
                 </div>
-                <div class="users-table selected-users-container">
-                    <input type="text" name="" id="search-users-in-curatorship">
-                    <div id="selected-users">
-                    </div>
-                </div>
-            </div>
-            
-        </div>
-    </form>
+                <button type="submit" name='action' value="enable-specialists">Salvar configurações</button>
+            </form>
+        </section>
+    </div>
 {% endblock %}

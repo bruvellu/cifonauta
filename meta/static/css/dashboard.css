@@ -774,3 +774,97 @@ textarea {
     color: #323232 !important;
     font-weight: bold;
 }
+
+
+
+
+
+
+/* MANAGE USERS */
+.users-table-form {
+    width: 50rem;
+}
+.enable-specialists-section {
+    border-top: 1px solid black;
+    margin-top: 2rem;
+    padding-top: 2rem;
+}
+
+.users-table-container {
+    display: flex;
+    justify-content: space-between;
+    max-width: 44rem;
+}
+
+.users-table {
+    background-color: #aaa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    max-width: 20rem;
+    width: 100%;
+    padding: 1rem 0.5rem;
+}
+
+.search-input
+
+.search-users {
+    width: 18rem;
+}
+
+.users-table > div:last-child {
+    width: 100%;
+    height: 12rem;
+    overflow: auto;
+    margin-top: 1rem;
+}
+
+.search-input-div, .table-search-div {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 0.2rem;
+}
+
+.table-search-div {
+    border: 1px solid black;
+}
+
+.search-input-div > span, .table-search-div > span {
+    display: flex;
+    justify-content: center;
+    width: 1.5rem;
+    border-radius: 0.2rem;
+    background-color: #e5e5e5;
+}
+
+.search-input-div > span:hover,
+.table-search-div > span:hover {
+    background-color: rgb(180, 180, 180);
+    cursor: pointer;
+}
+
+.search-input-div > input,
+.table-search-div > input {
+    border: none;
+    outline: none;
+}
+
+.search-input-div:has(input:focus),
+.table-search-div:has(input:focus) {
+    outline: black solid 1px;
+}
+
+.select-user-button, .remove-user-button {
+    background-color: transparent;
+    border: none;
+}
+
+.select-user-button {
+    color: green;
+}
+
+.remove-user-button {
+    color: red;
+}

@@ -662,53 +662,76 @@ def my_medias(request):
 
     return render(request, 'my_medias.html', context)
 
-@custom_login_required
-@curator_required 
+
 def manage_users(request):
-    curations = request.user.curatorship_curator.all()
-    users = UserCifonauta.objects.filter(Q(is_author=True) & Q(curatorship_specialist__in=curations) | Q(curatorship_curator__in=curations))
-    form = CuratorManagementForm(request.user)
-    """selected_curation_id = form.cleaned_data['selected_curation_id']
-            queryset = queryset.filter(is_author=True)
-            if action == 'add':
-                if selected_curation_id:
-                    queryset = queryset.exclude(curatorship_specialist__id=selected_curation_id)
-            elif action == 'remove':
-                if selected_curation_id:
-                    queryset = queryset.filter(curatorship_specialist__id=selected_curation_id)"""
+    users = UserCifonauta.objects.all()
+
     if request.method == 'POST':
-        specialists = request.POST.getlist('specialist_ids')
+        action = request.POST['action']
+        if action == 'enable-authors':
+            user_ids = request.POST.getlist('selected_authors')
+            print(user_ids)
+            if len(user_ids) == 0:
+                messages.error(request, 'Nenhum usuário selecionado para realizar ação')
+                return redirect('manage_users')
+            author_action = request.POST.get('author_action')
+            print(author_action)
+            users_action = UserCifonauta.objects.filter(id__in=user_ids)
+
+            if author_action == 'turn_author':
+                users_action.update(is_author=True)
+            elif author_action == 'disable_author':
+                for user in users_action:
+                    print(user.uploaded_media.all())
+                    if user.uploaded_media.all():
+                        messages.error(request, f'O usuário "{user.first_name} {user.last_name}" possui mídia relacionada')
+                        return redirect('manage_users')
+                    
+                users_action.update(is_author=False)
+            else:
+                messages.warning(request, "Nenhuma ação selecionada")
+                return redirect('manage_users')
+            messages.success(request, "Os autores foram atualizados com sucesso")
+        else:
+            specialist_ids = request.POST.getlist('specialist_ids')
+            curatorship_id = request.POST.get('curatorship_id')
+
+            specialists = UserCifonauta.objects.filter(id__in=specialist_ids)
+            curatorship = Curadoria.objects.filter(id=curatorship_id).first()
+            curatorship.specialists.set(specialists)
+
+            messages.success(request, "Os especialistas foram atualizados com sucesso")
+            
+    curatorships = Curadoria.objects.filter(curators=request.user.id)
+
+    is_specialist = request.user.curatorship_specialist.exists()
+    is_curator = request.user.curatorship_curator.exists()
 
     context = {
         'users': users,
-        'form': form
+        'curatorships': curatorships,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator,
     }
     return render(request, 'manage_users.html', context)        
     
 
-def json_for_curation(request):
-    curations = Curadoria.objects.filter(curators=request.user.id)
-    users = UserCifonauta.objects.filter(Q(is_author=True) & Q(curatorship_specialist__in=curations) | Q(curatorship_curator__in=curations))
+def get_users(request):
+    curatorships = Curadoria.objects.filter(curators=request.user.id)
+    users = UserCifonauta.objects.filter(is_author=True).exclude(id=request.user.id)
 
     response = {
-        'curatorships':
-        [
+        'users': [
             {
-                str(curatory.id): 
-            [
-                {
-                 'id': str(user.id), 
-                 'nome': str(user.get_full_name())
-                 } for user in UserCifonauta.objects.filter(curatorship_specialist=curatory)
-            ]
-            } for curatory in curations
+                'name': user.first_name + user.last_name,
+                'id': user.id,
+                'curatorship_ids': [str(curatorship.id) for curatorship in curatorships.filter(Q(specialists=user.id))]
+            } for user in users
         ]
     }
     
     return JsonResponse(response)
 
-@custom_login_required
-@curator_required
 
 def revision_media(request):
     if request.method == 'POST':

@@ -619,6 +619,11 @@ class Metadata():
         except:
             return ''
         else:
+            if field == 'datetime':
+                meta = exif_dict['Exif'][piexif.ExifIFD.DateTimeOriginal]
+                if meta == '':
+                    meta = exif_dict['Exif'][piexif.ExifIFD.DateTimeDigitized]
+                return meta
             try:
                 meta = exif_dict[field]
             except:
@@ -628,6 +633,7 @@ class Metadata():
                     gps = meta
                     meta = f"{gps[2][0][0]} deg {gps[2][1][0]}' {gps[2][2][0]:.2f}\u0022 {gps[1].decode()}, {gps[4][0][0]} deg {gps[4][1][0]}' {gps[4][2][0]:.2f}\u0022 {gps[3].decode()}"
                 return meta
+            
         
     def read_metadata(self):
         keys_metadata = {
@@ -645,7 +651,7 @@ class Metadata():
             'title_pt': {'xmp': 'TitlePT', 'iptc': 'object name'},
             'description_pt': {'exif': piexif.ImageIFD.ImageDescription,'xmp': 'DescriptionPT', 'iptc': 'caption/abstract'},
             'gps': {'exif': 'GPS', 'iptc': 'content location name'},
-            'datetime': {'xmp': 'date_created', 'iptc': 'DateCreated', 'exif': piexif.ImageIFD.DateTime},
+            'datetime': {'xmp': 'date_created', 'iptc': 'DateCreated', 'exif': 'datetime'},
             'country': {'xmp': 'Country', 'iptc': 'country/primary location name'},
             'state': {'xmp': 'State', 'iptc': 'province/state'},
             'city': {'xmp': 'City', 'iptc': 'city'},
@@ -673,6 +679,10 @@ class Metadata():
                         except AttributeError:
                             pass
                         metadata[k] = meta
+                        if k == 'datetime':
+                            print(meta)
+                            print(meta_type)
+                        
                     except KeyError:
-                        continue
+                        pass
         return metadata

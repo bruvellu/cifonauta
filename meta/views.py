@@ -193,43 +193,58 @@ def upload_media_step2(request):
         messages.error(request, 'Erro ao tentar salvar mídias')
         return redirect('upload_media_step2')
     
-    # metadata = None
-    # for media in medias:
-    #     if media.media.url.endswith('jpg'):
-    #         metadata = Metadata(media.media.path)
-    #         try:
-    #             read_metadata = metadata.read_metadata()
-    #         except:
-    #             metadata = None
-    #         finally:
-    #             break        
+    metadata = None
+    for media in medias:
+        print(media.file.name)
+        try:
+            metadata = Metadata(f'site_media/{media.file.name}')
+            try:
+                read_metadata = metadata.read_metadata()
+            except Exception as error:
+                print(error)
+                metadata = None
+            finally:
+                break
+        except:
+            print('Erro')
+            pass        
     
-    # if metadata:
-    #     co_authors = []
-    #     co_authors_meta = read_metadata['source'].split(',')
-    #     for co_author in co_authors_meta:
-    #         if co_author.strip() != '':
-    #             try:
-    #                 co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
-    #             except:
-    #                 messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
-    #     try:
-    #         location = Location.objects.filter(name=read_metadata['sublocation']).get().id
-    #     except:
-    #         location = ''
-    #     form = UploadMediaForm(initial={
-    #         'author': request.user.id,
-    #         'title': read_metadata['headline'],
-    #         'caption': read_metadata['description_pt'],
-    #         'date': read_metadata['datetime'],
-    #         'geolocation': read_metadata['gps'],
-    #         'location': location,
-    #         'license': read_metadata['source'],
-    #         'co_author': co_authors,
-    #         'geolocation': read_metadata['gps']
-    #     })
-    # else:
-    form = UploadMediaForm(initial={'user': request.user.id})
+    if metadata:
+        print(read_metadata)
+        co_authors = []
+        co_authors_meta = read_metadata['source'].split(',')
+        for co_author in co_authors_meta:
+            if co_author.strip() != '':
+                try:
+                    co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
+                except:
+                    messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
+        try:
+            location = Location.objects.filter(name=read_metadata['sublocation'].strip()).get().id
+        except:
+            location = ''
+        try:
+            country = Country.objects.filter(name=read_metadata['country'].strip()).get().id
+        except:
+            country = ''
+        if read_metadata['datetime'] != '':
+            datetime = read_metadata['datetime']
+        else:
+            datetime = '1900:01:01 00:00:00'
+        form = UploadMediaForm(initial={
+            'author': request.user.id,
+            'title': read_metadata['headline'],
+            'caption': read_metadata['description_pt'],
+            'date': datetime,
+            'country': country,
+            'geolocation': read_metadata['gps'],
+            'location': location,
+            'license': read_metadata['source'],
+            'co_author': co_authors,
+            'geolocation': read_metadata['gps']
+        })
+    else:
+        form = UploadMediaForm(initial={'user': request.user.id})
     form.fields['user'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
     form.fields['state'].queryset = State.objects.none()

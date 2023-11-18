@@ -4,9 +4,11 @@ from meta.models import *
 from modeltranslation.admin import TranslationAdmin
 from .forms import CuradoriaAdminForm
 
+
 class CuradoriaAdmin(admin.ModelAdmin):
     form = CuradoriaAdminForm
     autocomplete_fields = ('specialists', 'curators', 'taxons')
+
 
 # Translation admin.
 class FlatPageAdmin(TranslationAdmin):
@@ -14,11 +16,13 @@ class FlatPageAdmin(TranslationAdmin):
 
 
 class MediaAdmin(TranslationAdmin):
-    list_display = ('title', 'status', 'highlight', 'file', 'user', 'pub_date')
+    list_display = ('id', 'title', 'status', 'highlight', 'file', 'user', 'pub_date')
     list_filter = ('is_public', 'highlight', 'timestamp', 'authors', 'tags', 'taxa', 'specialists')
+
 
 class ModifiedMediaAdmin(admin.ModelAdmin):
     list_display = ('title',)
+
 
 class TagAdmin(TranslationAdmin):
     list_display = ('name', 'description', 'category')
@@ -100,3 +104,4 @@ admin.site.register(Taxon, TaxonAdmin)
 admin.site.register(Reference, ReferenceAdmin)
 admin.site.register(Curadoria, CuradoriaAdmin)
 admin.site.register(ModifiedMedia, ModifiedMediaAdmin)
+

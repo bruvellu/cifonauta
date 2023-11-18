@@ -33,11 +33,13 @@ from django.core.files import File
 import json
 from django.utils.translation import get_language, get_language_info
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import never_cache
 
 from dotenv import load_dotenv
 load_dotenv()
 
 
+@never_cache
 def dashboard(request):
     is_specialist = Curadoria.objects.filter(Q(specialists=request.user)).exists()
     is_curator = Curadoria.objects.filter(Q(curators=request.user)).exists()
@@ -50,6 +52,7 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 
+@never_cache
 def upload_media_step1(request):
     if request.method == 'POST':
         medias = request.FILES.getlist('medias')
@@ -112,6 +115,7 @@ def upload_media_step1(request):
     return render(request, 'upload_media_step1.html', context)
 
 
+@never_cache
 def upload_media_step2(request):
     medias = Media.objects.filter(user=request.user, status='loaded')
     
@@ -277,6 +281,7 @@ def synchronize_fields(request):
     return JsonResponse({})
 
 
+@never_cache
 def edit_metadata(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     if request.method == 'POST':
@@ -359,6 +364,7 @@ def edit_metadata(request, media_id):
     return render(request, 'update_media.html', context) 
 
 
+@never_cache
 def curadoria_media_list(request):
     if request.method == "POST":
         media_ids = request.POST.getlist('selected_media_ids')
@@ -435,6 +441,7 @@ class MediaDetail(DetailView):
     model = Media
     template_name = 'media_detail.html'
 
+    @never_cache
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
@@ -443,6 +450,7 @@ class MediaDetail(DetailView):
         return context
     
 
+@never_cache
 def update_my_medias(request, pk):
     media = get_object_or_404(Media, pk=pk)
     modified_media = ModifiedMedia.objects.filter(media=media).first()
@@ -615,6 +623,7 @@ def update_my_medias(request, pk):
     return render(request, 'update_media.html', context)
     
 
+@never_cache
 def my_medias(request):
     if request.method == "POST":
         media_ids = request.POST.getlist('selected_media_ids')
@@ -663,6 +672,7 @@ def my_medias(request):
     return render(request, 'my_medias.html', context)
 
 
+@never_cache
 def revision_media(request):
     if request.method == 'POST':
         media_ids = request.POST.getlist('selected_media_ids')
@@ -734,6 +744,7 @@ def revision_media(request):
     return render(request, 'media_revision.html', context)
 
 
+@never_cache
 def modified_media_revision(request, pk):
     media = get_object_or_404(Media, pk=pk)
     modified_media = ModifiedMedia.objects.filter(media=media).first()
@@ -790,6 +801,7 @@ def modified_media_revision(request, pk):
     return render(request, 'modified_media_revision.html', context)
 
 
+@never_cache
 def revision_media_detail(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     if request.method == 'POST':
@@ -936,6 +948,7 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
         return redirect('enable_specialists')
     
     # Gets the user's permissions and curations
+    @never_cache
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
@@ -958,6 +971,7 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
         return context
 
 
+@never_cache
 def dashboard_tour_list(request):
     tours = Tour.objects.filter(creator=request.user)
     is_specialist = request.user.curatorship_specialist.exists()
@@ -971,6 +985,8 @@ def dashboard_tour_list(request):
 
     return render(request, 'dashboard_tour_list.html', context)
 
+
+@never_cache
 def dashboard_tour_add(request):
     if request.method == 'POST':
         form = TourForm(request.POST)
@@ -1012,6 +1028,8 @@ def dashboard_tour_add(request):
 
     return render(request, 'dashboard_tour_add.html', context)
 
+
+@never_cache
 def dashboard_tour_edit(request, pk):
     tour = get_object_or_404(Tour, pk=pk)
 
@@ -1064,6 +1082,8 @@ def dashboard_tour_edit(request, pk):
 
     return render(request, 'dashboard_tour_edit.html', context)
 
+
+@never_cache
 def get_tour_medias(request):
     try:
         limit = int(request.GET.get('limit', 20))
@@ -1104,6 +1124,7 @@ def get_tour_medias(request):
     
     except:
         return JsonResponse({})
+
 
 # Home
 def home_page(request):

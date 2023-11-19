@@ -111,10 +111,6 @@ class Media(models.Model):
                             null=True,
                             help_text=_('Arquivo carregado pelo usuário.'))
 
-    filepath = models.CharField(_('arquivo original'),
-                                max_length=200,
-                                help_text=_('Caminho único para o arquivo original.'))
-
     sitepath = models.FileField(_('arquivo web'),
                                 upload_to=save_cover,
                                 default=None,
@@ -124,6 +120,11 @@ class Media(models.Model):
                                   upload_to=save_cover,
                                   default=None,
                                   help_text=_('Imagem de capa para o arquivo processado.'))
+
+    filepath = models.CharField(_('arquivo original'),
+                                max_length=200,
+                                blank=True,
+                                help_text=_('Caminho único para o arquivo original.'))
 
     datatype = models.CharField(_('tipo de mídia'),
                                 max_length=15,

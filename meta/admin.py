@@ -74,6 +74,7 @@ class TaxonAdmin(TranslationAdmin):
     list_filter = ['is_valid', 'timestamp', 'rank']
     filter_horizontal = ['media']
     search_fields = ['name', 'authority']
+    readonly_fields = ['timestamp']
 
 
 class ReferenceAdmin(admin.ModelAdmin):

@@ -59,23 +59,23 @@ def upload_media_step1(request):
 
         # Files selected via upload form
         #TODO: Rename medias to files
-        medias = request.FILES.getlist('medias')
-        print(medias)
+        files = request.FILES.getlist('files')
+        print(files)
 
-        if medias:
+        if files:
 
             # Iterate over multiple files
-            for media in medias:
-                print(media)
+            for file in files:
+                print(file)
 
                 # Prevent upload of large files
-                if media.size > 3000000:
+                if file.size > 3000000:
                     messages.error(request, 'Arquivo maior que 3MB')
                     return redirect('upload_media_step1')
 
                 #TODO: Move filename regex to settings.py
                 filename_regex = fr"{os.environ['FILENAME_REGEX']}"
-                filename, extension = os.path.splitext(media.name.lower())
+                filename, extension = os.path.splitext(file.name.lower())
                 print(filename, extension)
 
                 #TODO: Use elif for absolute control
@@ -83,26 +83,27 @@ def upload_media_step1(request):
                 
                 if extension:
                     if not re.match(filename_regex, filename):
-                        messages.error(request, f'Nome de arquivo inválido:  {media.name}')
+                        messages.error(request, f'Nome de arquivo inválido: {file.name}')
                         messages.warning(request, 'Caracteres especiais aceitos: - _ ( )')
                         return redirect('upload_media_step1')
                     
                     if not extension.endswith(settings.MEDIA_EXTENSIONS):
-                        messages.error(request, f'Formato de arquivo não aceito:  {media.name}')
+                        messages.error(request, f'Formato de arquivo não aceito: {file.name}')
                         messages.warning(request, 'Verifique os tipos de arquivos aceitos')
                         return redirect('upload_media_step1')
                 else:
-                    messages.error(request, f'Arquivo inválido:  {media.name}')
+                    messages.error(request, f'Arquivo inválido: {file.name}')
                     return redirect('upload_media_step1')
                 
                 #TODO: Don't split for extension (already parsed above)
-                ext = media.name.split('.')[-1]
+                ext = file.name.split('.')[-1]
                 #TODO: Generate instance first for UUID
                 new_filename = uuid.uuid4()
                 print(ext, new_filename)
 
-                media.name = f"{new_filename}.{ext}"
-                media_instance = Media(file=media, user=request.user)
+                file.name = f"{new_filename}.{ext}"
+                import pdb; pdb.set_trace()
+                media_instance = Media(file=file, user=request.user)
                 media_instance.save()
                 print(media.id, media.uuid, media.user, media.file)
             

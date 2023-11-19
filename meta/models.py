@@ -209,15 +209,6 @@ class Media(models.Model):
                                           help_text=_('Data da publicação do arquivo.'))
 
     # Date fields to be deprecated
-    date = models.DateTimeField(_('data'),
-                                null=True,
-                                help_text=_('Data de criação da imagem.'))
-
-    pub_date = models.DateTimeField(_('data de publicação'),
-                                    blank=True,
-                                    default=timezone.now,
-                                    help_text=_('Data de publicação da imagem no Cifonauta.'))
-
     timestamp = models.DateTimeField(_('data de modificação'),
                                      blank=True,
                                      default=timezone.now,

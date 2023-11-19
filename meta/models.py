@@ -288,6 +288,7 @@ class Media(models.Model):
     country = models.ForeignKey('Country',
                                 on_delete=models.SET_NULL,
                                 null=True,
+                                blank=True,
                                 verbose_name=_('país'),
                                 help_text=_('País mostrado na imagem (ou país de coleta).'))
 

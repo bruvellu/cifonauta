@@ -54,18 +54,33 @@ def dashboard(request):
 
 @never_cache
 def upload_media_step1(request):
+
     if request.method == 'POST':
+
+        # Files selected via upload form
+        #TODO: Rename medias to files
         medias = request.FILES.getlist('medias')
+        print(medias)
 
         if medias:
+
+            # Iterate over multiple files
             for media in medias:
+                print(media)
+
+                # Prevent upload of large files
                 if media.size > 3000000:
                     messages.error(request, 'Arquivo maior que 3MB')
                     return redirect('upload_media_step1')
-                
+
+                #TODO: Move filename regex to settings.py
                 filename_regex = fr"{os.environ['FILENAME_REGEX']}"
                 filename, extension = os.path.splitext(media.name.lower())
+                print(filename, extension)
 
+                #TODO: Use elif for absolute control
+                #TODO: Also check for content_type
+                
                 if extension:
                     if not re.match(filename_regex, filename):
                         messages.error(request, f'Nome de arquivo inválido:  {media.name}')
@@ -80,12 +95,16 @@ def upload_media_step1(request):
                     messages.error(request, f'Arquivo inválido:  {media.name}')
                     return redirect('upload_media_step1')
                 
+                #TODO: Don't split for extension (already parsed above)
                 ext = media.name.split('.')[-1]
+                #TODO: Generate instance first for UUID
                 new_filename = uuid.uuid4()
+                print(ext, new_filename)
 
                 media.name = f"{new_filename}.{ext}"
                 media_instance = Media(file=media, user=request.user)
                 media_instance.save()
+                print(media.id, media.uuid, media.user, media.file)
             
             messages.success(request, 'Mídias carregadas com sucesso')
             messages.info(request, 'Preencha os dados para completar o upload')

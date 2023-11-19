@@ -441,7 +441,7 @@ class MediaDetail(DetailView):
     model = Media
     template_name = 'media_detail.html'
 
-    @never_cache
+    # @method_decorator(never_cache)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
@@ -948,7 +948,7 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
         return redirect('enable_specialists')
     
     # Gets the user's permissions and curations
-    @never_cache
+    # @method_decorator(never_cache)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user

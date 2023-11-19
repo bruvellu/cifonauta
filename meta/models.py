@@ -208,12 +208,6 @@ class Media(models.Model):
                                           null=True,
                                           help_text=_('Data da publicação do arquivo.'))
 
-    # Date fields to be deprecated
-    timestamp = models.DateTimeField(_('data de modificação'),
-                                     blank=True,
-                                     default=timezone.now,
-                                     help_text=_('Data da última modificação do arquivo.'))
-
     # Fields containing plain media metadata
     title = models.CharField(_('título'),
                              max_length=200,

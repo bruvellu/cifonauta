@@ -187,19 +187,19 @@ class Media(models.Model):
 
     # Date the image was uploaded to the website
     # Automatically set when Media instance is created
-    # date_uploaded = models.DateTimeField(_('data do upload'),
+    date_uploaded = models.DateTimeField(_('data do upload'),
                                          # auto_now_add=True,
-                                         # blank=True,
-                                         # null=True,
-                                         # help_text=_('Data do upload do arquivo.'))
+                                         blank=True,
+                                         null=True,
+                                         help_text=_('Data do upload do arquivo.'))
 
     # Date the image was last modified
     # Automatically updated every time Media.save() is called
-    # date_modified = models.DateTimeField(_('data de modificação'),
+    date_modified = models.DateTimeField(_('data de modificação'),
                                          # auto_now=True,
-                                         # blank=True,
-                                         # null=True,
-                                         # help_text=_('Data da última modificação do arquivo.'))
+                                         blank=True,
+                                         null=True,
+                                         help_text=_('Data da última modificação do arquivo.'))
 
     # Date the image was made public in the website
     # Set manually by logic in the publishing pipeline

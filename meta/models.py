@@ -190,7 +190,7 @@ class Media(models.Model):
     date_uploaded = models.DateTimeField(_('data do upload'),
                                          auto_now_add=True,
                                          blank=True,
-                                         null=True,
+                                         null=True, #TODO: eventually remove
                                          help_text=_('Data do upload do arquivo.'))
 
     # Date the image was last modified
@@ -198,7 +198,7 @@ class Media(models.Model):
     date_modified = models.DateTimeField(_('data de modificação'),
                                          auto_now=True,
                                          blank=True,
-                                         null=True,
+                                         null=True, #TODO: eventually remove
                                          help_text=_('Data da última modificação do arquivo.'))
 
     # Date the image was made public in the website

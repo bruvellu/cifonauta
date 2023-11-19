@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import re
+import json
 
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -28,16 +29,17 @@ from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
-from django.conf import settings
+from cifonauta.settings import MEDIA_EXTENSIONS, FILENAME_REGEX
 from django.core.files import File
-import json
 from django.utils.translation import get_language, get_language_info
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import never_cache
 
 from dotenv import load_dotenv
 load_dotenv()
 
 
+@never_cache
 def dashboard(request):
     is_specialist = Curadoria.objects.filter(Q(specialists=request.user)).exists()
     is_curator = Curadoria.objects.filter(Q(curators=request.user)).exists()
@@ -50,40 +52,58 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 
+@never_cache
 def upload_media_step1(request):
-    if request.method == 'POST':
-        medias = request.FILES.getlist('medias')
 
-        if medias:
-            for media in medias:
-                if media.size > 3000000:
+    if request.method == 'POST':
+
+        # Files selected via upload form
+        files = request.FILES.getlist('files')
+
+        if files:
+
+            # Iterate over multiple files
+            for file in files:
+
+                # Prevent upload of large files
+                if file.size > 3000000:
                     messages.error(request, 'Arquivo maior que 3MB')
                     return redirect('upload_media_step1')
-                
-                filename_regex = fr"{os.environ['FILENAME_REGEX']}"
-                filename, extension = os.path.splitext(media.name.lower())
 
+                # Split lower cased name and extension
+                filename, extension = os.path.splitext(file.name.lower())
+
+                #TODO: Use elif for capturing every possibility
+                #TODO: Also check for content_type
+                
                 if extension:
-                    if not re.match(filename_regex, filename):
-                        messages.error(request, f'Nome de arquivo inválido:  {media.name}')
+                    if not re.match(FILENAME_REGEX, filename):
+                        messages.error(request, f'Nome de arquivo inválido: {file.name}')
                         messages.warning(request, 'Caracteres especiais aceitos: - _ ( )')
                         return redirect('upload_media_step1')
                     
-                    if not extension.endswith(settings.MEDIA_EXTENSIONS):
-                        messages.error(request, f'Formato de arquivo não aceito:  {media.name}')
+                    if not extension.endswith(MEDIA_EXTENSIONS):
+                        messages.error(request, f'Formato de arquivo não aceito: {file.name}')
                         messages.warning(request, 'Verifique os tipos de arquivos aceitos')
                         return redirect('upload_media_step1')
                 else:
-                    messages.error(request, f'Arquivo inválido:  {media.name}')
+                    messages.error(request, f'Arquivo inválido: {file.name}')
                     return redirect('upload_media_step1')
                 
-                ext = media.name.split('.')[-1]
-                new_filename = uuid.uuid4()
 
-                media.name = f"{new_filename}.{ext}"
-                media_instance = Media(file=media, user=request.user)
-                media_instance.save()
-            
+                # Create empty Media instance for new UUID
+                media = Media()
+                # Rename file name with UUID and lowercase extension
+                file.name = f'{media.uuid}{extension}'
+
+                # Define file field of Media instance
+                media.file = file
+                # Define user field of Media instance
+                media.user = request.user
+
+                # Save instance
+                media.save()
+
             messages.success(request, 'Mídias carregadas com sucesso')
             messages.info(request, 'Preencha os dados para completar o upload')
             return redirect('upload_media_step2')
@@ -97,7 +117,7 @@ def upload_media_step1(request):
         return redirect('upload_media_step2')
     
     media_extensions = ''
-    for media_extension in settings.MEDIA_EXTENSIONS:
+    for media_extension in MEDIA_EXTENSIONS:
         media_extensions += f'{media_extension[1:].upper()} '
 
     is_specialist = request.user.curatorship_specialist.exists()
@@ -112,6 +132,7 @@ def upload_media_step1(request):
     return render(request, 'upload_media_step1.html', context)
 
 
+@never_cache
 def upload_media_step2(request):
     medias = Media.objects.filter(user=request.user, status='loaded')
     
@@ -166,7 +187,7 @@ def upload_media_step2(request):
                 media.taxa.set(form.cleaned_data['taxa'])
                 media.user = form.cleaned_data['user']
                 media.authors.set(form.cleaned_data['authors'])
-                media.date = form.cleaned_data['date']
+                media.date_created = form.cleaned_data['date_created']
                 media.country = form.cleaned_data['country']
                 media.state = form.cleaned_data['state']
                 media.city = form.cleaned_data['city']
@@ -277,6 +298,7 @@ def synchronize_fields(request):
     return JsonResponse({})
 
 
+@never_cache
 def edit_metadata(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     if request.method == 'POST':
@@ -318,7 +340,7 @@ def edit_metadata(request, media_id):
             'description_pt': str(form.cleaned_data['caption']),
             'description_en': '',
             'gps': str(form.cleaned_data['geolocation']),
-            'datetime': str(form.cleaned_data['date']),
+            'datetime': str(form.cleaned_data['date_created']),
             'title_pt': str(form.cleaned_data['title']),
             'title_en': '',
             'country': str(form.cleaned_data['country']),
@@ -359,6 +381,7 @@ def edit_metadata(request, media_id):
     return render(request, 'update_media.html', context) 
 
 
+@never_cache
 def curadoria_media_list(request):
     if request.method == "POST":
         media_ids = request.POST.getlist('selected_media_ids')
@@ -435,6 +458,7 @@ class MediaDetail(DetailView):
     model = Media
     template_name = 'media_detail.html'
 
+    # @method_decorator(never_cache)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
@@ -443,6 +467,7 @@ class MediaDetail(DetailView):
         return context
     
 
+@never_cache
 def update_my_medias(request, pk):
     media = get_object_or_404(Media, pk=pk)
     modified_media = ModifiedMedia.objects.filter(media=media).first()
@@ -499,7 +524,7 @@ def update_my_medias(request, pk):
                     modified_media.caption = form.cleaned_data['caption']
                     modified_media.authors.set(form.cleaned_data['authors'])
                     modified_media.taxa.set(form.cleaned_data['taxa'])
-                    modified_media.date = form.cleaned_data['date']
+                    modified_media.date = form.cleaned_data['date_created']
                     modified_media.location = form.cleaned_data['location']
                     modified_media.city = form.cleaned_data['city']
                     modified_media.state = form.cleaned_data['state']
@@ -534,7 +559,7 @@ def update_my_medias(request, pk):
                     new_modified_media = ModifiedMedia(media=media)
                     new_modified_media.title = form.cleaned_data['title']
                     new_modified_media.caption = form.cleaned_data['caption']
-                    new_modified_media.date = form.cleaned_data['date']
+                    new_modified_media.date = form.cleaned_data['date_created']
                     new_modified_media.location = form.cleaned_data['location']
                     new_modified_media.city = form.cleaned_data['city']
                     new_modified_media.state = form.cleaned_data['state']
@@ -558,7 +583,7 @@ def update_my_medias(request, pk):
                 media.caption = form.cleaned_data['caption']
                 media.authors.set(form.cleaned_data['authors'])
                 media.taxa.set(form.cleaned_data['taxa'])
-                media.date = form.cleaned_data['date']
+                media.date_created = form.cleaned_data['date_created']
                 media.location = form.cleaned_data['location']
                 media.city = form.cleaned_data['city']
                 media.state = form.cleaned_data['state']
@@ -615,6 +640,7 @@ def update_my_medias(request, pk):
     return render(request, 'update_media.html', context)
     
 
+@never_cache
 def my_medias(request):
     if request.method == "POST":
         media_ids = request.POST.getlist('selected_media_ids')
@@ -663,6 +689,7 @@ def my_medias(request):
     return render(request, 'my_medias.html', context)
 
 
+@never_cache
 def revision_media(request):
     if request.method == 'POST':
         media_ids = request.POST.getlist('selected_media_ids')
@@ -734,6 +761,7 @@ def revision_media(request):
     return render(request, 'media_revision.html', context)
 
 
+@never_cache
 def modified_media_revision(request, pk):
     media = get_object_or_404(Media, pk=pk)
     modified_media = ModifiedMedia.objects.filter(media=media).first()
@@ -747,7 +775,7 @@ def modified_media_revision(request, pk):
 
         media.title = modified_media.title
         media.caption = modified_media.caption
-        media.date = modified_media.date
+        media.date_created = modified_media.date
         media.location = modified_media.location
         media.city = modified_media.city
         media.state = modified_media.state
@@ -790,6 +818,7 @@ def modified_media_revision(request, pk):
     return render(request, 'modified_media_revision.html', context)
 
 
+@never_cache
 def revision_media_detail(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     if request.method == 'POST':
@@ -831,7 +860,7 @@ def revision_media_detail(request, media_id):
             'description_pt': str(form.cleaned_data['caption']),
             'description_en': '',
             'gps': str(form.cleaned_data['geolocation']),
-            'datetime': str(form.cleaned_data['date']),
+            'datetime': str(form.cleaned_data['date_created']),
             'title_pt': str(form.cleaned_data['title']),
             'title_en': '',
             'country': str(form.cleaned_data['country']),
@@ -936,6 +965,7 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
         return redirect('enable_specialists')
     
     # Gets the user's permissions and curations
+    # @method_decorator(never_cache)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
@@ -958,6 +988,7 @@ class EnableSpecialists(LoginRequiredMixin, ListView):
         return context
 
 
+@never_cache
 def dashboard_tour_list(request):
     tours = Tour.objects.filter(creator=request.user)
     is_specialist = request.user.curatorship_specialist.exists()
@@ -971,6 +1002,8 @@ def dashboard_tour_list(request):
 
     return render(request, 'dashboard_tour_list.html', context)
 
+
+@never_cache
 def dashboard_tour_add(request):
     if request.method == 'POST':
         form = TourForm(request.POST)
@@ -1012,6 +1045,8 @@ def dashboard_tour_add(request):
 
     return render(request, 'dashboard_tour_add.html', context)
 
+
+@never_cache
 def dashboard_tour_edit(request, pk):
     tour = get_object_or_404(Tour, pk=pk)
 
@@ -1064,6 +1099,8 @@ def dashboard_tour_edit(request, pk):
 
     return render(request, 'dashboard_tour_edit.html', context)
 
+
+@never_cache
 def get_tour_medias(request):
     try:
         limit = int(request.GET.get('limit', 20))
@@ -1104,6 +1141,7 @@ def get_tour_medias(request):
     
     except:
         return JsonResponse({})
+
 
 # Home
 def home_page(request):

@@ -21,7 +21,7 @@ from meta.models import Media, Person, Tag, Taxon, Location, City, State, Countr
 #ONE_YEAR = 60 * 60 * 24 * 30 * 12   # 31104000
 
 # Sitemaps
-media_dict = {'queryset': Media.objects.filter(is_public=True), 'date_field': 'timestamp'}
+media_dict = {'queryset': Media.objects.filter(is_public=True), 'date_field': 'date_modified'}
 person_dict = {'queryset': Person.objects.all()}
 tag_dict = {'queryset': Tag.objects.all()}
 taxon_dict = {'queryset': Taxon.objects.all()}
@@ -29,7 +29,7 @@ location_dict = {'queryset': Location.objects.all()}
 city_dict = {'queryset': City.objects.all()}
 state_dict = {'queryset': State.objects.all()}
 country_dict = {'queryset': Country.objects.all()}
-tour_dict = {'queryset': Tour.objects.filter(is_public=True), 'date_field': 'timestamp'}
+tour_dict = {'queryset': Tour.objects.filter(is_public=True), 'date_field': 'date_modified'}
 # reference_dict = {'queryset': Reference.objects.all()}
 
 sitemaps = {

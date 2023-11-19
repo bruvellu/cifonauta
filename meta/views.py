@@ -58,7 +58,6 @@ def upload_media_step1(request):
     if request.method == 'POST':
 
         # Files selected via upload form
-        #TODO: Rename medias to files
         files = request.FILES.getlist('files')
         print(files)
 
@@ -66,7 +65,6 @@ def upload_media_step1(request):
 
             # Iterate over multiple files
             for file in files:
-                print(file)
 
                 # Prevent upload of large files
                 if file.size > 3000000:
@@ -76,7 +74,6 @@ def upload_media_step1(request):
                 #TODO: Move filename regex to settings.py
                 filename_regex = fr"{os.environ['FILENAME_REGEX']}"
                 filename, extension = os.path.splitext(file.name.lower())
-                print(filename, extension)
 
                 #TODO: Use elif for absolute control
                 #TODO: Also check for content_type
@@ -95,16 +92,20 @@ def upload_media_step1(request):
                     messages.error(request, f'Arquivo inválido: {file.name}')
                     return redirect('upload_media_step1')
                 
-                #TODO: Don't split for extension (already parsed above)
-                ext = file.name.split('.')[-1]
-                #TODO: Generate instance first for UUID
-                new_filename = uuid.uuid4()
-                print(ext, new_filename)
 
-                file.name = f"{new_filename}.{ext}"
-                import pdb; pdb.set_trace()
-                media_instance = Media(file=file, user=request.user)
-                media_instance.save()
+                # Create empty Media instance for new UUID
+                media = Media()
+                # Rename file name with UUID and lowercase extension
+                file.name = f'{media.uuid}{extension}'
+
+                # Define file field of Media instance
+                media.file = file
+                # Define user field of Media instance
+                media.user = request.user
+
+                # Save instance
+                media.save()
+
                 print(media.id, media.uuid, media.user, media.file)
             
             messages.success(request, 'Mídias carregadas com sucesso')

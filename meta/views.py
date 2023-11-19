@@ -170,7 +170,7 @@ def upload_media_step2(request):
                 media.taxa.set(form.cleaned_data['taxa'])
                 media.user = form.cleaned_data['user']
                 media.authors.set(form.cleaned_data['authors'])
-                media.date = form.cleaned_data['date']
+                media.date_created = form.cleaned_data['date_created']
                 media.country = form.cleaned_data['country']
                 media.state = form.cleaned_data['state']
                 media.city = form.cleaned_data['city']
@@ -323,7 +323,7 @@ def edit_metadata(request, media_id):
             'description_pt': str(form.cleaned_data['caption']),
             'description_en': '',
             'gps': str(form.cleaned_data['geolocation']),
-            'datetime': str(form.cleaned_data['date']),
+            'datetime': str(form.cleaned_data['date_created']),
             'title_pt': str(form.cleaned_data['title']),
             'title_en': '',
             'country': str(form.cleaned_data['country']),
@@ -507,7 +507,7 @@ def update_my_medias(request, pk):
                     modified_media.caption = form.cleaned_data['caption']
                     modified_media.authors.set(form.cleaned_data['authors'])
                     modified_media.taxa.set(form.cleaned_data['taxa'])
-                    modified_media.date = form.cleaned_data['date']
+                    modified_media.date = form.cleaned_data['date_created']
                     modified_media.location = form.cleaned_data['location']
                     modified_media.city = form.cleaned_data['city']
                     modified_media.state = form.cleaned_data['state']
@@ -542,7 +542,7 @@ def update_my_medias(request, pk):
                     new_modified_media = ModifiedMedia(media=media)
                     new_modified_media.title = form.cleaned_data['title']
                     new_modified_media.caption = form.cleaned_data['caption']
-                    new_modified_media.date = form.cleaned_data['date']
+                    new_modified_media.date = form.cleaned_data['date_created']
                     new_modified_media.location = form.cleaned_data['location']
                     new_modified_media.city = form.cleaned_data['city']
                     new_modified_media.state = form.cleaned_data['state']
@@ -566,7 +566,7 @@ def update_my_medias(request, pk):
                 media.caption = form.cleaned_data['caption']
                 media.authors.set(form.cleaned_data['authors'])
                 media.taxa.set(form.cleaned_data['taxa'])
-                media.date = form.cleaned_data['date']
+                media.date_created = form.cleaned_data['date_created']
                 media.location = form.cleaned_data['location']
                 media.city = form.cleaned_data['city']
                 media.state = form.cleaned_data['state']
@@ -758,7 +758,7 @@ def modified_media_revision(request, pk):
 
         media.title = modified_media.title
         media.caption = modified_media.caption
-        media.date = modified_media.date
+        media.date_created = modified_media.date
         media.location = modified_media.location
         media.city = modified_media.city
         media.state = modified_media.state
@@ -843,7 +843,7 @@ def revision_media_detail(request, media_id):
             'description_pt': str(form.cleaned_data['caption']),
             'description_en': '',
             'gps': str(form.cleaned_data['geolocation']),
-            'datetime': str(form.cleaned_data['date']),
+            'datetime': str(form.cleaned_data['date_created']),
             'title_pt': str(form.cleaned_data['title']),
             'title_en': '',
             'country': str(form.cleaned_data['country']),

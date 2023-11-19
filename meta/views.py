@@ -29,7 +29,7 @@ from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
-from cifonauta.settings import MEDIA_EXTENSIONS
+from cifonauta.settings import MEDIA_EXTENSIONS, FILENAME_REGEX
 from django.core.files import File
 from django.utils.translation import get_language, get_language_info
 from django.utils.translation import gettext_lazy as _
@@ -70,15 +70,14 @@ def upload_media_step1(request):
                     messages.error(request, 'Arquivo maior que 3MB')
                     return redirect('upload_media_step1')
 
-                #TODO: Move filename regex to settings.py
-                filename_regex = fr"{os.environ['FILENAME_REGEX']}"
+                # Split lower cased name and extension
                 filename, extension = os.path.splitext(file.name.lower())
 
                 #TODO: Use elif for capturing every possibility
                 #TODO: Also check for content_type
                 
                 if extension:
-                    if not re.match(filename_regex, filename):
+                    if not re.match(FILENAME_REGEX, filename):
                         messages.error(request, f'Nome de arquivo inválido: {file.name}')
                         messages.warning(request, 'Caracteres especiais aceitos: - _ ( )')
                         return redirect('upload_media_step1')

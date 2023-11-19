@@ -102,6 +102,10 @@ class Media(models.Model):
                        ('cc_by_nc_nd', _('CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')),)
 
     # Fields related to file handling
+    uuid = models.UUIDField(_('identificador'),
+                            default=uuid.uuid4,
+                            help_text=_('Identificador único universal do arquivo.'))
+
     file = models.FileField(upload_to=save_file,
                             default=None,
                             null=True,

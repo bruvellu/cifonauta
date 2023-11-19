@@ -7,7 +7,7 @@ from .forms import CuradoriaAdminForm
 
 class CuradoriaAdmin(admin.ModelAdmin):
     form = CuradoriaAdminForm
-    autocomplete_fields = ('specialists', 'curators', 'taxons')
+    autocomplete_fields = ['specialists', 'curators', 'taxons']
 
 
 # Translation admin.
@@ -16,8 +16,8 @@ class FlatPageAdmin(TranslationAdmin):
 
 
 class MediaAdmin(TranslationAdmin):
-    list_display = ['id', 'title', 'status', 'highlight', 'file', 'user', 'date_created', 'date_published']
-    list_filter = ['is_public', 'highlight', 'timestamp', 'authors', 'tags', 'taxa', 'specialists']
+    list_display = ['id', 'title', 'status', 'highlight', 'file', 'user', 'date_created', 'date_uploaded', 'date_modified', 'date_published']
+    list_filter = ['is_public', 'highlight', 'date_modified', 'authors', 'tags', 'taxa', 'specialists']
 
 
 class ModifiedMediaAdmin(admin.ModelAdmin):

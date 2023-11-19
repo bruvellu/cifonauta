@@ -35,9 +35,9 @@ ORDER = (
 
 ORDER_BY = (
         ('id', _('id')),
-        ('date_created', _('data da imagem')),
+        ('date_created', _('data de criação')),
         ('date_published', _('data de publicação')),
-        ('timestamp', _('data de modificação')),
+        ('date_modified', _('data de modificação')),
         ('random', _('aleatório')),
         ('rank', _('ranking')),
         )
@@ -95,7 +95,7 @@ class SendEmailForm(forms.Form):
                 "single_media": True if len(medias) == 1 else False,
                 "media_names": [media.title for media in medias],
                 "sender_name": sender.get_full_name(),
-                "timestamp": medias[0].timestamp,
+                "timestamp": medias[0].date_modified,
             }
 
             subject = subject_template_name
@@ -137,7 +137,7 @@ class ModifiedMediaForm(forms.ModelForm):
 class MyMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title', 'coverpath', 'file', 'status', 'timestamp')
+        fields = ('title', 'coverpath', 'file', 'status')
         widgets = {
             'taxons': forms.CheckboxSelectMultiple()
         }

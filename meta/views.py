@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import re
+import json
 
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -28,9 +29,8 @@ from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
-from django.conf import settings
+from cifonauta.settings import MEDIA_EXTENSIONS
 from django.core.files import File
-import json
 from django.utils.translation import get_language, get_language_info
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import never_cache
@@ -59,7 +59,6 @@ def upload_media_step1(request):
 
         # Files selected via upload form
         files = request.FILES.getlist('files')
-        print(files)
 
         if files:
 
@@ -75,7 +74,7 @@ def upload_media_step1(request):
                 filename_regex = fr"{os.environ['FILENAME_REGEX']}"
                 filename, extension = os.path.splitext(file.name.lower())
 
-                #TODO: Use elif for absolute control
+                #TODO: Use elif for capturing every possibility
                 #TODO: Also check for content_type
                 
                 if extension:
@@ -84,7 +83,7 @@ def upload_media_step1(request):
                         messages.warning(request, 'Caracteres especiais aceitos: - _ ( )')
                         return redirect('upload_media_step1')
                     
-                    if not extension.endswith(settings.MEDIA_EXTENSIONS):
+                    if not extension.endswith(MEDIA_EXTENSIONS):
                         messages.error(request, f'Formato de arquivo não aceito: {file.name}')
                         messages.warning(request, 'Verifique os tipos de arquivos aceitos')
                         return redirect('upload_media_step1')
@@ -106,8 +105,6 @@ def upload_media_step1(request):
                 # Save instance
                 media.save()
 
-                print(media.id, media.uuid, media.user, media.file)
-            
             messages.success(request, 'Mídias carregadas com sucesso')
             messages.info(request, 'Preencha os dados para completar o upload')
             return redirect('upload_media_step2')
@@ -121,7 +118,7 @@ def upload_media_step1(request):
         return redirect('upload_media_step2')
     
     media_extensions = ''
-    for media_extension in settings.MEDIA_EXTENSIONS:
+    for media_extension in MEDIA_EXTENSIONS:
         media_extensions += f'{media_extension[1:].upper()} '
 
     is_specialist = request.user.curatorship_specialist.exists()

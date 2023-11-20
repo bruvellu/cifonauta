@@ -102,28 +102,33 @@ class Media(models.Model):
                        ('cc_by_nc_nd', _('CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')),)
 
     # Fields related to file handling
+    uuid = models.UUIDField(_('identificador'),
+                            default=uuid.uuid4,
+                            help_text=_('Identificador único universal do arquivo.'))
+
     file = models.FileField(upload_to=save_file,
                             default=None,
                             null=True,
                             help_text=_('Arquivo carregado pelo usuário.'))
-    filepath = models.CharField(_('arquivo original'),
-                                max_length=200,
-                                help_text=_('Caminho único para o arquivo original.'))
+
     sitepath = models.FileField(_('arquivo web'),
                                 upload_to=save_cover,
                                 default=None,
                                 help_text=_('Arquivo processado para a web.'))
+
     coverpath = models.ImageField(_('imagem de capa'),
                                   upload_to=save_cover,
                                   default=None,
                                   help_text=_('Imagem de capa para o arquivo processado.'))
+
+    filepath = models.CharField(_('arquivo original'),
+                                max_length=200,
+                                blank=True,
+                                help_text=_('Caminho único para o arquivo original.'))
+
     datatype = models.CharField(_('tipo de mídia'),
                                 max_length=15,
                                 help_text=_('Tipo de mídia.'))
-    timestamp = models.DateTimeField(_('data de modificação'),
-                                     blank=True,
-                                     default=timezone.now,
-                                     help_text=_('Data da última modificação do arquivo.'))
 
     # Fields related to authorship
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -132,24 +137,29 @@ class Media(models.Model):
                              verbose_name=_('usuário do arquivo'),
                              help_text=_('Usuário que fez o upload do arquivo.'),
                              related_name='uploaded_media')
+
     authors = models.ManyToManyField('Person',
                                      blank=True,
                                      verbose_name=_('autores do arquivo'),
                                      help_text=_('Autores associados a este arquivo.'),
                                      related_name='media_as_author')
+
     specialists = models.ManyToManyField('Person',
                                          blank=True,
                                          verbose_name=_('especialistas associados'),
                                          help_text=_('Especialistas associados a este arquivo.'),
                                          related_name='media_as_specialist')
+
     curators = models.ManyToManyField('Person',
                                   blank=True,
                                   verbose_name=_('curadores do arquivo'),
                                   help_text=_('Curadores associados a este arquivo.'),
                                   related_name='media_as_curator')
+
     terms = models.BooleanField(_('termos'),
                                 default=False,
                                 help_text=_('Flag indicando que termos foram aceitos.'))
+
     license = models.CharField(_('Licença'),
                                max_length=60,
                                choices=LICENSE_CHOICES,
@@ -169,14 +179,39 @@ class Media(models.Model):
     is_public = models.BooleanField(_('público'),
                                     default=False,
                                     help_text=_('Visível para visitantes.'))
-    pub_date = models.DateTimeField(_('data de publicação'),
-                                    blank=True,
-                                    default=timezone.now,
-                                    help_text=_('Data de publicação da imagem no Cifonauta.'))
     highlight = models.BooleanField(_('destaque'),
                                     default=False,
                                     help_text=_('Imagem que merece destaque.'))
 
+    # Date the image was created (when the photo taken or the video recorded)
+    # Imported from the file metadata or manually set
+    date_created = models.DateTimeField(_('data de criação'),
+                                        blank=True,
+                                        null=True,
+                                        help_text=_('Data de criação do arquivo.'))
+
+    # Date the image was uploaded to the website
+    # Automatically set when Media instance is created
+    date_uploaded = models.DateTimeField(_('data do upload'),
+                                         auto_now_add=True,
+                                         blank=True,
+                                         null=True, #TODO: eventually remove
+                                         help_text=_('Data do upload do arquivo.'))
+
+    # Date the image was last modified
+    # Automatically updated every time Media.save() is called
+    date_modified = models.DateTimeField(_('data de modificação'),
+                                         auto_now=True,
+                                         blank=True,
+                                         null=True, #TODO: eventually remove
+                                         help_text=_('Data da última modificação do arquivo.'))
+
+    # Date the image was made public in the website
+    # Set manually by logic in the publishing pipeline
+    date_published = models.DateTimeField(_('data de publicação'),
+                                          blank=True,
+                                          null=True,
+                                          help_text=_('Data da publicação do arquivo.'))
 
     # Fields containing plain media metadata
     title = models.CharField(_('título'),
@@ -188,9 +223,6 @@ class Media(models.Model):
                                default='',
                                blank=True,
                                help_text=_('Legenda da imagem.'))
-    date = models.DateTimeField(_('data'),
-                                null=True,
-                                help_text=_('Data de criação da imagem.'))
     duration = models.CharField(_('duração'),
                                 max_length=20,
                                 default='00:00:00',
@@ -217,7 +249,7 @@ class Media(models.Model):
                                  blank=True,
                                  help_text=_('Longitude onde a imagem foi criada.'))
 
-    # Fields associated with other models using M2M
+    # Fields associated with other models using Many2Many
     taxa = models.ManyToManyField('Taxon',
                                   blank=True,
                                   verbose_name=_('táxons da mídia'),
@@ -234,7 +266,7 @@ class Media(models.Model):
                                         help_text=_('Referências bibliográficas associadas com esta mídia.'),
                                         related_name='media')
 
-    # Fields associated with other models using FK
+    # Fields associated with other models using ForeignKey
     location = models.ForeignKey('Location',
                                  on_delete=models.SET_NULL,
                                  null=True,
@@ -256,6 +288,7 @@ class Media(models.Model):
     country = models.ForeignKey('Country',
                                 on_delete=models.SET_NULL,
                                 null=True,
+                                blank=True,
                                 verbose_name=_('país'),
                                 help_text=_('País mostrado na imagem (ou país de coleta).'))
 

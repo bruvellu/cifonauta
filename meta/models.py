@@ -174,15 +174,18 @@ class Media(models.Model):
     metadata_error = models.BooleanField(_('Erro nos metadados'),
                                          default=False,
                                          help_text=_('Flag indicando problema nos metadados.'))
+
     status = models.CharField(_('status'),
                               blank=True,
                               max_length=13,
                               choices=STATUS_CHOICES,
                               default='loaded',
                               help_text=_('Status da mídia.'))
+
     is_public = models.BooleanField(_('público'),
                                     default=False,
                                     help_text=_('Visível para visitantes.'))
+
     highlight = models.BooleanField(_('destaque'),
                                     default=False,
                                     help_text=_('Imagem que merece destaque.'))
@@ -223,30 +226,36 @@ class Media(models.Model):
                              default='',
                              blank=True,
                              help_text=_('Título da imagem.'))
+
     caption = models.TextField(_('legenda'),
                                default='',
                                blank=True,
                                help_text=_('Legenda da imagem.'))
+
     duration = models.CharField(_('duração'),
                                 max_length=20,
                                 default='00:00:00',
                                 blank=True,
                                 help_text=_('Duração do vídeo no formato HH:MM:SS.'))
+
     dimensions = models.CharField(_('dimensões'),
                                   max_length=20,
                                   default='0x0',
                                   blank=True,
                                   help_text=_('Dimensões do vídeo original.'))
+
     geolocation = models.CharField(_('geolocalização'),
                                    default='',
                                    max_length=25,
                                    blank=True,
                                    help_text=_('Geolocalização da imagem no formato decimal.'))
+
     latitude = models.CharField(_('latitude'),
                                 default='',
                                 max_length=25,
                                 blank=True,
                                 help_text=_('Latitude onde a imagem foi criada.'))
+
     longitude = models.CharField(_('longitude'),
                                  default='',
                                  max_length=25,
@@ -259,11 +268,13 @@ class Media(models.Model):
                                   verbose_name=_('táxons da mídia'),
                                   help_text=_('Grupos taxonômicos associados com esta mídia.'),
                                   related_name='media')
+
     tags = models.ManyToManyField('Tag',
                                   blank=True,
                                   verbose_name=_('marcadores da mídia'),
                                   help_text=_('Marcadores associados com esta mídia.'),
                                   related_name='media')
+
     references = models.ManyToManyField('Reference',
                                         blank=True,
                                         verbose_name=_('referências da mídia'),
@@ -277,18 +288,21 @@ class Media(models.Model):
                                  blank=True,
                                  verbose_name=_('local'),
                                  help_text=_('Localidade mostrada na imagem ou local de coleta.'))
+
     city = models.ForeignKey('City',
                              on_delete=models.SET_NULL,
                              null=True,
                              blank=True,
                              verbose_name=_('cidade'),
                              help_text=_('Cidade mostrada na imagem ou cidade de coleta.'))
+
     state = models.ForeignKey('State',
                               on_delete=models.SET_NULL,
                               null=True,
                               blank=True,
                               verbose_name=_('estado'),
                               help_text=_('Estado mostrado na imagem ou estado de coleta.'))
+
     country = models.ForeignKey('Country',
                                 on_delete=models.SET_NULL,
                                 null=True,
@@ -305,6 +319,7 @@ class Media(models.Model):
     old_image = models.PositiveIntegerField(default=0,
                                             blank=True,
                                             help_text=_('ID da imagem no antigo modelo.'))
+
     old_video = models.PositiveIntegerField(default=0,
                                             blank=True,
                                             help_text=_('ID do vídeo no antigo modelo.'))

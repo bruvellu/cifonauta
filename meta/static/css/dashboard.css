@@ -774,3 +774,132 @@ textarea {
     color: #323232 !important;
     font-weight: bold;
 }
+
+
+
+
+
+
+/* MANAGE USERS */
+.users-table-form {
+    max-width: 50rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.enable-specialists-section {
+    border-top: 1px solid black;
+    margin-top: 2rem;
+    padding-top: 2rem;
+}
+
+.users-table-container {
+    display: flex;
+    justify-content: space-between;
+    max-width: 43rem;
+    margin-top: .5rem;
+    margin-bottom: 1.5rem;
+}
+
+.users-table {
+    background-color: #d0d0d0;;
+    display: flex;
+    flex-direction: column;
+    max-width: 20rem;
+    width: 100%;
+    border-radius: 0.3rem;
+    border: 1px solid #adadad;
+    overflow: hidden;
+}
+
+.users-table > div:last-child {
+    height: 12rem;
+    overflow-y: scroll;
+    margin-top: 1rem;
+    padding-left: 0.5rem;
+    border-top: 1px solid #adadad;
+}
+
+.search-input-div, .table-search-div {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 0.2rem;
+    position: relative;
+}
+
+.table-search-div {
+    border: 1px solid black;
+}
+
+.search-input-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 0.7rem;
+    margin-block: 0.5rem;
+}
+
+.search-icon {
+    flex-shrink: 0;
+}
+
+.search-users {
+    width: 18rem;
+}
+
+.search-input-div, .talbe-search-div {
+    border: 1px solid #adadad;
+}
+
+.search-input-div > button, .table-search-div > button {
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: center;
+    width: 1.4rem;
+    border-radius: 0.2rem;
+    background-color: #ebebeb;
+    border: none;
+    position: absolute;
+    right: .2rem;
+}
+
+.search-input-div > button:hover,
+.table-search-div > button:hover {
+    background-color: rgb(197, 197, 197);
+    cursor: pointer;
+}
+
+.search-input-div > input,
+.table-search-div > input {
+    border: none;
+    outline: none;
+}
+
+.search-input-div:has(input:focus),
+.table-search-div:has(input:focus) {
+    outline: black solid 1px;
+}
+
+.all-users-button {
+    width: fit-content;
+    padding: 0.15rem 0.3rem;
+    font-weight: bold;
+    font-size: .8rem;
+    align-self: flex-end;
+    margin-right: 1rem;
+}
+
+.select-user-button, .remove-user-button {
+    background-color: transparent;
+    border: none;
+    font-size: .8rem;
+    font-weight: bold;
+}
+
+.select-user-button {
+    color: green;
+}
+
+.remove-user-button {
+    color: red;
+}

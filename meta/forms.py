@@ -155,6 +155,7 @@ class TourForm(forms.ModelForm):
         
         self.fields['media'].label_from_instance = lambda obj: obj.title
 
+
 class SpecialistActionForm(forms.ModelForm, SendEmailForm):
     STATUS_CHOICES = [
         ('maintain', _('Manter status')),

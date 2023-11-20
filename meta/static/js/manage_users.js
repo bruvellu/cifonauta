@@ -1,35 +1,7 @@
 function setUsersData(users) {
   usersData = users
-  usersData = [
-    {
-      "curatorship_ids": ["36"],
-      "id": "78",
-      "name": "LiamAdmin"
-    },
-    {
-      "curatorship_ids": ["36", "37"],
-      "id": "27",
-      "name": "OliviaAdmin"
-    },
-    {
-      "curatorship_ids": ["36"],
-      "id": "14",
-      "name": "NoahAdmin"
-    },
-    {
-      "curatorship_ids": ["36", "37"],
-      "id": "83",
-      "name": "AvaAdmin"
-    },
-    {
-      "curatorship_ids": ["36"],
-      "id": "32",
-      "name": "EmmaAdmin"
-    },
-  ]
 
   usersData.sort((a, b) => a.name.localeCompare(b.name));
-  console.log(usersData)
   changeCuratorship(curatorshipOptions.value)
 }
 
@@ -153,18 +125,19 @@ function changeCuratorship(curatorshipId) {
 
 function searchUsers(inputTag, optionsTag) {
   let inputValue = inputTag.value.toLowerCase()
-  let spanVisible = inputTag.parentNode.querySelector('span')
+  let spanVisible = inputTag.parentNode.querySelector('button')
 
   if (inputValue != '' && !spanVisible) {
-    let span = document.createElement('span')
-    span.innerText = 'x'
+    let span = document.createElement('button')
+    span.setAttribute('type', 'button')
+    span.innerHTML = '&times;'
     span.addEventListener('click', () => {
       inputTag.value = ''
       searchUsers(inputTag, optionsTag)
       span.remove()
     })
 
-    inputTag.parentNode.insertBefore(span, inputTag)
+    inputTag.insertAdjacentElement('afterend', span)
   }
 
   if (inputValue == '') {
@@ -185,17 +158,6 @@ function searchUsers(inputTag, optionsTag) {
       return option
     }
   })
-
-  // let areAllUsersHidden = optionsArray.every(option => option.classList.contains('hide-div'))
-  // let notFoundMessage = optionsTag.querySelector('[data-not-found]')
-  // if (areAllUsersHidden && !notFoundMessage) {
-  //   let span = document.createElement('span')
-  //   span.setAttribute('data-not-found', '')
-  //   span.innerText = 'Nenhum usuário encontrado'
-  //   optionsTag.append(span)
-  // } else if (!areAllUsersHidden && notFoundMessage) {
-  //   notFoundMessage?.remove()
-  // }
 }
 
 

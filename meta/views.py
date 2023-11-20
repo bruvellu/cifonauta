@@ -664,25 +664,22 @@ def my_medias(request):
 
 
 def manage_users(request):
-    users = UserCifonauta.objects.all()
+    users = UserCifonauta.objects.all().exclude(id=request.user.id)
 
     if request.method == 'POST':
         action = request.POST['action']
         if action == 'enable-authors':
             user_ids = request.POST.getlist('selected_authors')
-            print(user_ids)
             if len(user_ids) == 0:
                 messages.error(request, 'Nenhum usuário selecionado para realizar ação')
                 return redirect('manage_users')
             author_action = request.POST.get('author_action')
-            print(author_action)
             users_action = UserCifonauta.objects.filter(id__in=user_ids)
 
             if author_action == 'turn_author':
                 users_action.update(is_author=True)
             elif author_action == 'disable_author':
                 for user in users_action:
-                    print(user.uploaded_media.all())
                     if user.uploaded_media.all():
                         messages.error(request, f'O usuário "{user.first_name} {user.last_name}" possui mídia relacionada')
                         return redirect('manage_users')

@@ -1,9 +1,53 @@
 function setUsersData(users) {
   usersData = users
+  usersData = [
+    {
+      "curatorship_ids": ["36"],
+      "id": "78",
+      "name": "LiamAdmin"
+    },
+    {
+      "curatorship_ids": ["36", "37"],
+      "id": "27",
+      "name": "OliviaAdmin"
+    },
+    {
+      "curatorship_ids": ["36"],
+      "id": "14",
+      "name": "NoahAdmin"
+    },
+    {
+      "curatorship_ids": ["36", "37"],
+      "id": "83",
+      "name": "AvaAdmin"
+    },
+    {
+      "curatorship_ids": ["36"],
+      "id": "32",
+      "name": "EmmaAdmin"
+    },
+  ]
 
   usersData.sort((a, b) => a.name.localeCompare(b.name));
-
+  console.log(usersData)
   changeCuratorship(curatorshipOptions.value)
+}
+
+function resetSearchInput(inputTag, optionsTag) {
+  let spanVisible = inputTag.parentNode.querySelector('span')
+
+  if (spanVisible) {
+    spanVisible.remove()
+  }
+
+  inputTag.value = ''
+  searchUsers(inputTag, optionsTag)
+
+  let notFoundMessage = optionsTag.querySelector('[data-not-found]')
+
+  if (notFoundMessage) {
+    notFoundMessage.remove()
+  }
 }
 
 function selectUser(buttonTag) {
@@ -42,7 +86,7 @@ function removeUser(buttonTag) {
   let userName = buttonTag.previousElementSibling.innerText
 
   for (let userOption of userOptions.children) {
-    if (userOption.querySelector('.user-name').innerText > userName) {
+    if (userOption.querySelector('.user-name')?.innerText > userName) {
       userOptions.insertBefore(buttonTag.parentNode, userOption)
       return
     }
@@ -52,38 +96,29 @@ function removeUser(buttonTag) {
 }
 
 function selectAllUsers() {
-  selectedUsers.innerHTML = ''
-  userOptions.innerHTML = ''
-
-  usersData.forEach(user => {
-    let html = `
-    <div value=${user.id} class="selected-user">
-        <span class="user-name">
-          ${user.name}
-        </span>
-        <button class="remove-user-button" type="button" onclick="removeUser(this)">Remover</button>
-        <input type="text" name="specialist_ids" value="${user.id}" hidden="">
-    </div>
-    `
-    selectedUsers.innerHTML += html
+  let userOptionsArray = Array.from(userOptions.children)
+  userOptionsArray.forEach(user => {
+    if (!user.classList.contains('hide-div')) {
+      let button = user.querySelector('.select-user-button')
+      selectUser(button)
+    }
   })
+
+  resetSearchInput(searchUserOptions, userOptions)
+  resetSearchInput(searchUsersInCuratorship, selectedUsers)
 }
 
 function removeAllUsers() {
-  selectedUsers.innerHTML = ''
-  userOptions.innerHTML = ''
-
-  usersData.forEach(user => {
-    let html = `
-    <div value=${user.id} class="user-option">
-        <span class="user-name">
-          ${user.name}
-        </span>
-        <button class="select-user-button" type="button" onclick="selectUser(this)">Adicionar</button>
-    </div>
-    `
-    userOptions.innerHTML += html
+  let selectedUsersArray = Array.from(selectedUsers.children)
+  selectedUsersArray.forEach(user => {
+    if (!user.classList.contains('hide-div')) {
+      let button = user.querySelector('.remove-user-button')
+      removeUser(button)
+    }
   })
+
+  resetSearchInput(searchUserOptions, userOptions)
+  resetSearchInput(searchUsersInCuratorship, selectedUsers)
 }
 
 function changeCuratorship(curatorshipId) {
@@ -133,7 +168,7 @@ function searchUsers(inputTag, optionsTag) {
   }
 
   if (inputValue == '') {
-    spanVisible.remove()
+    spanVisible?.remove()
   }
 
   let optionsArray = Array.from(optionsTag.children)
@@ -151,16 +186,16 @@ function searchUsers(inputTag, optionsTag) {
     }
   })
 
-  let areAllUsersHidden = optionsArray.every(option => option.classList.contains('hide-div'))
-  let notFoundMessage = optionsTag.querySelector('[data-not-found]')
-  if (areAllUsersHidden && !notFoundMessage) {
-    let span = document.createElement('span')
-    span.setAttribute('data-not-found', '')
-    span.innerText = 'Nenhum usuário encontrado'
-    optionsTag.append(span)
-  } else if (!areAllUsersHidden && notFoundMessage) {
-    notFoundMessage?.remove()
-  }
+  // let areAllUsersHidden = optionsArray.every(option => option.classList.contains('hide-div'))
+  // let notFoundMessage = optionsTag.querySelector('[data-not-found]')
+  // if (areAllUsersHidden && !notFoundMessage) {
+  //   let span = document.createElement('span')
+  //   span.setAttribute('data-not-found', '')
+  //   span.innerText = 'Nenhum usuário encontrado'
+  //   optionsTag.append(span)
+  // } else if (!areAllUsersHidden && notFoundMessage) {
+  //   notFoundMessage?.remove()
+  // }
 }
 
 

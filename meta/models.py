@@ -88,9 +88,9 @@ class Media(models.Model):
     '''Table with metadata for photo and video files.'''
 
     # Pre-defined choices
-    STATUS_CHOICES = (('loaded', _('Carregada')),
-                      ('not_edited', _('Não Editado')),
-                      ('to_review', _('Para Revisão')),
+    STATUS_CHOICES = (('loaded', _('Carregado')),
+                      ('draft', _('Rascunho')),
+                      ('submitted', _('Submetido')),
                       ('published', _('Publicado')))
 
     LICENSE_CHOICES = (('cc0', _('CC0 (Domínio Público)')),

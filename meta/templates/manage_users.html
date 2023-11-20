@@ -50,7 +50,7 @@
                             <td>
                                 <input type="checkbox" class="selected-record" name="selected_authors" value="{{ user.id }}">
                             </td>
-                            <td class="user-name-cedule">
+                            <td class="user-name">
                                 {{ user.first_name }} {{ user.last_name }}
                             </td>
                             {% if user.is_author %}
@@ -85,14 +85,6 @@
                         </div>
                         <button class="" type="button" onclick="selectAllUsers()">Adicionar todos</button>
                         <div id="user-options">
-                            {% comment %} {% for user in users %}
-                            <div value={{ user.id }} class="user-option">
-                                <span class="user-name">
-                                    {{ user.first_name }} {{ user.last_name }}
-                                </span>
-                                <button class="select-user-button" type="button" onclick="selectUser(this)">Adicionar</button>
-                            </div>
-                            {% endfor %} {% endcomment %}
                         </div>
                     </div>
                     <div class="users-table selected-users-container">

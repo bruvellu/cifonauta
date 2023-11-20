@@ -1,4 +1,4 @@
-function setCuratorshipData(users) {
+function setUsersData(users) {
   usersData = users
 
   usersData.sort((a, b) => a.name.localeCompare(b.name));
@@ -89,7 +89,7 @@ function removeAllUsers() {
 function changeCuratorship(curatorshipId) {
   selectedUsers.innerHTML = ''
   userOptions.innerHTML = ''
-  console.log(usersData)
+
   usersData.forEach(user => {
     if (user.curatorship_ids.includes(curatorshipId)) {
       let html = `
@@ -137,48 +137,30 @@ function searchUsers(inputTag, optionsTag) {
   }
 
   let optionsArray = Array.from(optionsTag.children)
-  optionsArray.forEach(option => {
-    let userName = option.querySelector('.user-name').innerText.toLowerCase()
-
-    if (userName.includes(inputValue)) {
-      option.classList.remove('hide-div')
-    } else {
-      option.classList.add('hide-div')
+  optionsArray = optionsArray.filter(option => {
+    let userName = option.querySelector('.user-name')?.innerText.toLowerCase()
+    
+    if (userName) {
+      if (userName.includes(inputValue)) {
+        option.classList.remove('hide-div')
+      } else {
+        option.classList.add('hide-div')
+      }
+      
+      return option
     }
   })
-}
 
-function searchUsersTable(inputValue) {
-  inputValue = inputValue.toLowerCase()
-  let tableSearchDiv = document.querySelector('.table-search-div')
-  let spanVisible = tableSearchDiv.querySelector('span')
-
-  if (inputValue != '' && !spanVisible) {
+  let areAllUsersHidden = optionsArray.every(option => option.classList.contains('hide-div'))
+  let notFoundMessage = optionsTag.querySelector('[data-not-found]')
+  if (areAllUsersHidden && !notFoundMessage) {
     let span = document.createElement('span')
-    span.innerText = 'x'
-    span.addEventListener('click', () => {
-      searchUserAuthors.value = ''
-      searchUsersTable(searchUserAuthors.value)
-      span.remove()
-    })
-
-    tableSearchDiv.prepend(span)
+    span.setAttribute('data-not-found', '')
+    span.innerText = 'Nenhum usuário encontrado'
+    optionsTag.append(span)
+  } else if (!areAllUsersHidden && notFoundMessage) {
+    notFoundMessage?.remove()
   }
-
-  if (inputValue == '') {
-    spanVisible.remove()
-  }
-
-  let userRowArray = Array.from(document.querySelectorAll('.user-row'))
-  userRowArray.forEach(user => {
-    let userName = user.querySelector('.user-name-cedule').innerText.toLowerCase()
-
-    if (userName.includes(inputValue)) {
-      user.classList.remove('hide-div')
-    } else {
-      user.classList.add('hide-div')
-    }
-  })
 }
 
 
@@ -194,7 +176,7 @@ fetch(`${url}/get-users`, {
 })
 .then(data => {
   if (data) {
-    setCuratorshipData(data.users)
+    setUsersData(data.users)
   }
 })
 
@@ -206,6 +188,7 @@ let searchUserOptions = document.querySelector('#search-user-options')
 let searchUsersInCuratorship = document.querySelector('#search-users-in-curatorship')
 let searchUserAuthors = document.querySelector('#search-user-authors')
 let usersTableForm = document.querySelector('.users-table-form')
+let tableBody = document.querySelector('.table-body')
 
 
 curatorshipOptions.addEventListener('change', () => {
@@ -219,5 +202,5 @@ searchUsersInCuratorship.addEventListener('input', (e) => {
 })
 
 searchUserAuthors.addEventListener('input', (e) => {
-  searchUsersTable(e.target.value)
+  searchUsers(e.target, tableBody)
 })

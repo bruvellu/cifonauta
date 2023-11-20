@@ -91,7 +91,7 @@ class Media(models.Model):
     STATUS_CHOICES = (('loaded', _('Carregada')),
                       ('not_edited', _('Não Editado')),
                       ('to_review', _('Para Revisão')),
-                      ('published', _('Publicado')),)
+                      ('published', _('Publicado')))
 
     LICENSE_CHOICES = (('cc0', _('CC0 (Domínio Público)')),
                        ('cc_by', _('CC BY (Atribuição)')),
@@ -99,7 +99,10 @@ class Media(models.Model):
                        ('cc_by_nd', _('CC BY-ND (Atribuição-SemDerivações)')),
                        ('cc_by_nc', _('CC BY-NC (Atribuição-NãoComercial)')),
                        ('cc_by_nc_sa', _('CC BY-NC-SA (AtribuiçãoNãoComercial-CompartilhaIgual)')),
-                       ('cc_by_nc_nd', _('CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')),)
+                       ('cc_by_nc_nd', _('CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')))
+
+    DATATYPE_CHOICES = (('photo', _('photo')),
+                        ('video', _('video')))
 
     # Fields related to file handling
     uuid = models.UUIDField(_('identificador'),
@@ -128,7 +131,8 @@ class Media(models.Model):
 
     datatype = models.CharField(_('tipo de mídia'),
                                 max_length=15,
-                                help_text=_('Tipo de mídia.'))
+                                choices=DATATYPE_CHOICES,
+                                help_text=_('Foto ou vídeo.'))
 
     # Fields related to authorship
     user = models.ForeignKey(settings.AUTH_USER_MODEL,

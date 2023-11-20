@@ -16,8 +16,11 @@ class FlatPageAdmin(TranslationAdmin):
 
 
 class MediaAdmin(TranslationAdmin):
-    list_display = ['id', 'title', 'status', 'highlight', 'uuid', 'file', 'user', 'date_created', 'date_uploaded', 'date_modified', 'date_published']
-    list_filter = ['is_public', 'highlight', 'date_modified', 'authors', 'tags', 'taxa', 'specialists']
+    list_display = ['id', 'user', 'title', 'status', 'highlight',
+                    'date_created', 'date_modified', 'date_published']
+    list_filter = ['status', 'highlight', 'date_modified', 'authors', 'tags']
+    search_fields = ['title', 'taxa__name']
+    readonly_fields = ['uuid', 'date_uploaded', 'date_modified', 'search_vector']
 
 
 class ModifiedMediaAdmin(admin.ModelAdmin):

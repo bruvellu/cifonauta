@@ -43,7 +43,7 @@
                 <a href="{% url 'media_revision' %}" {% if fullpath == '/administrative-module/revision' or '/administrative-module/revision/detail/' in fullpath or '/administrative-module/revision/changes/' in fullpath %}class='current-page'{% endif %}>Revisão de mídias</a>
             </li>
             <li>
-                <a href="{% url 'enable_specialists' %}" {% if '/administrative-module/enable-specialists' in fullpath %}class='current-page'{% endif %}>Habilitar Especialistas</a>
+                <a href="{% url 'manage_users' %}" {% if '/administrative-module/manage-users' in fullpath %}class='current-page'{% endif %}>Gerenciar Usuários</a>
             </li>
             <li>
                 <a href="{% url 'dashboard_tour_list' %}" {% if 'administrative-module/tours' in fullpath %}class='current-page'{% endif %}>Tours</a>

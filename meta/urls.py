@@ -25,10 +25,11 @@ urlpatterns = [
         path('administrative-module/tours', views.dashboard_tour_list, name='dashboard_tour_list'),
         path('administrative-module/tours/add', views.dashboard_tour_add, name='dashboard_tour_add'),
         path('administrative-module/tours/<int:pk>', views.dashboard_tour_edit, name='dashboard_tour_edit'),
-        
+        path('administrative-module/manage-users/', views.manage_users, name='manage_users'),
 
         path('synchronize-fields', views.synchronize_fields, name='synchronize_fields'),
         path('get-tour-medias', views.get_tour_medias, name='get_tour_medias'),
+        path('get-users', views.get_users, name='get_users'),
 
         # Menu
         path('search/', views.search_page, name='search_url'),

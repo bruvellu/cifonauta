@@ -746,7 +746,7 @@ def get_users(request):
     response = {
         'users': [
             {
-                'name': user.first_name + user.last_name,
+                'name': f'{user.first_name} {user.last_name}',
                 'id': user.id,
                 'curatorship_ids': [str(curatorship.id) for curatorship in curatorships.filter(Q(specialists=user.id))]
             } for user in users

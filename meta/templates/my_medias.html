@@ -14,7 +14,7 @@
 <h2>Lista de suas mídias</h2>
 
 {% if messages %}
-<div class="messages-div">
+<div class="messages-div hide-messages-animation">
     {% for message in messages %}
     <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
     {% endfor %}

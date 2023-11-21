@@ -56,11 +56,14 @@ p {
 .messages-div {
     display: grid;
     gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.hide-messages-animation {
     animation-name: hide-messages-div;
     animation-duration: 1s;
     animation-delay: 10s;
     animation-fill-mode: forwards;
-    margin-bottom: 1rem;
 }
 
 @keyframes hide-messages-div {

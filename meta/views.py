@@ -595,7 +595,7 @@ def update_my_medias(request, pk):
 
                 messages.success(request, 'Informações alteradas com sucesso')
             
-            return redirect('update_media', media.pk)
+            return redirect('my_medias')
 
         messages.error(request, 'Houve um erro com as alterações feitas')
         return redirect('update_media', media.pk)

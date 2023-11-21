@@ -56,7 +56,7 @@ OPERATORS = (
 class UploadMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxa', 'user', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
+        fields = ('title', 'caption', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),

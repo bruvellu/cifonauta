@@ -61,6 +61,7 @@ def upload_media_step1(request):
         files = request.FILES.getlist('files')
 
         if files:
+            user_person = Person.objects.filter(user_cifonauta=request.user.id)
 
             # Iterate over multiple files
             for file in files:
@@ -100,9 +101,14 @@ def upload_media_step1(request):
                 media.file = file
                 # Define user field of Media instance
                 media.user = request.user
+                # Define date when midia was created
+                media.date_created = timezone.now()
 
                 # Save instance
                 media.save()
+
+                # Define the user as author
+                media.authors.set(user_person)
 
             messages.success(request, 'Mídias carregadas com sucesso')
             messages.info(request, 'Preencha os dados para completar o upload')
@@ -135,6 +141,7 @@ def upload_media_step1(request):
 @never_cache
 def upload_media_step2(request):
     medias = Media.objects.filter(user=request.user, status='loaded')
+    user_person = Person.objects.get(user_cifonauta=request.user)
     
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -167,6 +174,10 @@ def upload_media_step2(request):
             if form.cleaned_data['terms'] == False:
                     messages.error(request, 'Você precisa aceitar os termos')
                     return redirect('upload_media_step2')
+            
+            if user_person not in form.cleaned_data['authors']:
+                    messages.error(request, f'O usuário logado ({user_person.name}) deve ser incluído como autor')
+                    return redirect('upload_media_step2')
                 
             if form.cleaned_data['country'].id == 1 and not (form.cleaned_data['state'] and form.cleaned_data['city']):
                 messages.error(request, 'Você precisa selecionar um estado e uma cidade')
@@ -185,7 +196,6 @@ def upload_media_step2(request):
                 media.title = form.cleaned_data['title']
                 media.caption = form.cleaned_data['caption']
                 media.taxa.set(form.cleaned_data['taxa'])
-                media.user = form.cleaned_data['user']
                 media.authors.set(form.cleaned_data['authors'])
                 media.date_created = form.cleaned_data['date_created']
                 media.country = form.cleaned_data['country']
@@ -250,8 +260,7 @@ def upload_media_step2(request):
     #         'geolocation': read_metadata['gps']
     #     })
     # else:
-    form = UploadMediaForm(initial={'user': request.user.id})
-    form.fields['user'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+    form = UploadMediaForm(initial={'authors': user_person.id})
 
     form.fields['state'].queryset = State.objects.none()
     form.fields['city'].queryset = City.objects.none()
@@ -838,7 +847,7 @@ def revision_media(request):
                     for media in medias:
                         media.taxa.set(form.cleaned_data['taxa'])
                 if form.cleaned_data['status_action'] != 'maintain':
-                    medias.update(status='published', is_public=True) #TODO: Remove is_public
+                    medias.update(status='published', date_published=timezone.now(), is_public=True) #TODO: Remove is_public
                 
                 person = Person.objects.filter(user_cifonauta=request.user.id).first()
 

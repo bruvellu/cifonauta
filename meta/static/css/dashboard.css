@@ -56,11 +56,14 @@ p {
 .messages-div {
     display: grid;
     gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.hide-messages-animation {
     animation-name: hide-messages-div;
     animation-duration: 1s;
     animation-delay: 10s;
     animation-fill-mode: forwards;
-    margin-bottom: 1rem;
 }
 
 @keyframes hide-messages-div {
@@ -813,11 +816,14 @@ textarea {
 }
 
 .users-table > div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
     height: 12rem;
-    overflow-y: scroll;
     margin-top: 1rem;
     padding-left: 0.5rem;
     border-top: 1px solid #adadad;
+    overflow-y: scroll;
 }
 
 .search-input-div, .table-search-div {
@@ -889,11 +895,20 @@ textarea {
     margin-right: 1rem;
 }
 
+.user-option, .selected-user {
+    line-height: 1.2;
+}
+
+.user-option > span, .selected-user > span {
+    margin-right: 0.5rem;
+}
+
 .select-user-button, .remove-user-button {
     background-color: transparent;
     border: none;
     font-size: .8rem;
     font-weight: bold;
+    padding: 0;
 }
 
 .select-user-button {

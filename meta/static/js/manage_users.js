@@ -164,7 +164,10 @@ function searchUsers(inputTag, optionsTag) {
 let usersData = []
 const url = window.location.origin
 fetch(`${url}/get-users`, {
-  method: 'GET'
+  method: 'GET',
+  headers: {
+    'Origin': url
+  }
 })
 .then(response => {
   if (response.ok) {

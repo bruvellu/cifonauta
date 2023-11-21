@@ -12,7 +12,7 @@
 {% block dashboard_content %}
     <h2>Lista de mídias para revisão</h2>
     {% if messages %}
-    <div class="messages-div">
+    <div class="messages-div hide-messages-animation">
         {% for message in messages %}
         <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
         {% endfor %}
@@ -91,7 +91,7 @@
                     </td>
                     <td>{{media.user}}</td>
                     <td 
-                        class="text-cedule {% if media.status == 'not_edited' %}not-edited{% elif media.status == 'to_review' %}to-review{% else %}published{% endif %}"
+                        class="text-cedule {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}"
                     >
                         {{ media.get_status_display }}
                     </td>

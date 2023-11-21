@@ -61,6 +61,7 @@ def upload_media_step1(request):
         files = request.FILES.getlist('files')
 
         if files:
+            user_person = Person.objects.filter(user_cifonauta=request.user.id)
 
             # Iterate over multiple files
             for file in files:
@@ -104,6 +105,9 @@ def upload_media_step1(request):
                 # Save instance
                 media.save()
 
+                # Define the user as author
+                media.authors.set(user_person)
+
             messages.success(request, 'Mídias carregadas com sucesso')
             messages.info(request, 'Preencha os dados para completar o upload')
             return redirect('upload_media_step2')
@@ -135,6 +139,7 @@ def upload_media_step1(request):
 @never_cache
 def upload_media_step2(request):
     medias = Media.objects.filter(user=request.user, status='loaded')
+    user_person = Person.objects.get(user_cifonauta=request.user)
     
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -167,6 +172,10 @@ def upload_media_step2(request):
             if form.cleaned_data['terms'] == False:
                     messages.error(request, 'Você precisa aceitar os termos')
                     return redirect('upload_media_step2')
+            
+            if user_person not in form.cleaned_data['authors']:
+                    messages.error(request, f'O usuário logado ({user_person.name}) deve ser incluído como autor')
+                    return redirect('upload_media_step2')
                 
             if form.cleaned_data['country'].id == 1 and not (form.cleaned_data['state'] and form.cleaned_data['city']):
                 messages.error(request, 'Você precisa selecionar um estado e uma cidade')
@@ -185,7 +194,6 @@ def upload_media_step2(request):
                 media.title = form.cleaned_data['title']
                 media.caption = form.cleaned_data['caption']
                 media.taxa.set(form.cleaned_data['taxa'])
-                media.user = form.cleaned_data['user']
                 media.authors.set(form.cleaned_data['authors'])
                 media.date_created = form.cleaned_data['date_created']
                 media.country = form.cleaned_data['country']
@@ -196,7 +204,7 @@ def upload_media_step2(request):
                 media.license = form.cleaned_data['license']
                 media.terms = form.cleaned_data['terms']
 
-                media.status = 'not_edited'
+                media.status = 'draft'
                 media.save()
 
                 if not media.is_video():
@@ -250,8 +258,7 @@ def upload_media_step2(request):
     #         'geolocation': read_metadata['gps']
     #     })
     # else:
-    form = UploadMediaForm(initial={'user': request.user.id})
-    form.fields['user'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+    form = UploadMediaForm(initial={'authors': user_person.id})
 
     form.fields['state'].queryset = State.objects.none()
     form.fields['city'].queryset = City.objects.none()
@@ -352,7 +359,7 @@ def edit_metadata(request, media_id):
             meta.edit_metadata(metadata)
         except:
             pass
-        media_instance.status = 'to_review'
+        media_instance.status = 'submitted'
         media_instance.taxa.set(form.cleaned_data['taxa'])
         media_instance.authors.set(form.cleaned_data['authors'])
 
@@ -396,7 +403,7 @@ def curadoria_media_list(request):
                     for media in medias:
                         media.taxa.set(form.cleaned_data['taxa'])
                 if form.cleaned_data['status_action'] != 'maintain':
-                    medias.update(status='to_review')
+                    medias.update(status='submitted')
 
                 person = Person.objects.filter(user_cifonauta=request.user.id).first()
                 
@@ -430,7 +437,7 @@ def curadoria_media_list(request):
         taxons = curadoria.taxons.all()
         curations_taxons.extend(taxons)
 
-    queryset = Media.objects.filter(status='not_edited')
+    queryset = Media.objects.filter(status='draft')
     queryset = queryset.filter(taxa__in=curations_taxons)
     
     # Apply distinct() to eliminate duplicates
@@ -576,8 +583,8 @@ def update_my_medias(request, pk):
                 messages.success(request, 'Informações alteradas com sucesso')
                 messages.warning(request, 'As alterações serão avaliadas e podem ou não serem aceitas')
             else:
-                if media.status == "to_review":
-                    media.status = "not_edited"
+                if media.status == "submitted":
+                    media.status = "draft"
 
                 media.title = form.cleaned_data['title']
                 media.caption = form.cleaned_data['caption']
@@ -595,7 +602,7 @@ def update_my_medias(request, pk):
 
                 messages.success(request, 'Informações alteradas com sucesso')
             
-            return redirect('update_media', media.pk)
+            return redirect('my_medias')
 
         messages.error(request, 'Houve um erro com as alterações feitas')
         return redirect('update_media', media.pk)
@@ -659,7 +666,7 @@ def my_medias(request):
                 if form.cleaned_data['taxa_action'] != 'maintain':
                     for media in medias:
                         media.taxa.set(form.cleaned_data['taxa'])
-                medias.update(status='not_edited')
+                medias.update(status='draft')
                 
                 messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
             else:
@@ -746,13 +753,13 @@ def get_users(request):
     response = {
         'users': [
             {
-                'name': user.first_name + user.last_name,
+                'name': f'{user.first_name} {user.last_name}',
                 'id': user.id,
                 'curatorship_ids': [str(curatorship.id) for curatorship in curatorships.filter(Q(specialists=user.id))]
             } for user in users
         ]
     }
-    
+
     return JsonResponse(response)
 
 
@@ -838,7 +845,7 @@ def revision_media(request):
                     for media in medias:
                         media.taxa.set(form.cleaned_data['taxa'])
                 if form.cleaned_data['status_action'] != 'maintain':
-                    medias.update(status='published', is_public=True) #TODO: Remove is_public
+                    medias.update(status='published', date_published=timezone.now(), is_public=True) #TODO: Remove is_public
                 
                 person = Person.objects.filter(user_cifonauta=request.user.id).first()
 
@@ -872,7 +879,7 @@ def revision_media(request):
         curations_taxons.extend(taxons)
 
     queryset = Media.objects.filter(
-        Q(status='to_review') & Q(taxa__in=curations_taxons) |
+        Q(status='submitted') & Q(taxa__in=curations_taxons) |
         Q(modified_media__taxa__in=curations_taxons))
 
     queryset = queryset.distinct()

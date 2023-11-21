@@ -101,8 +101,6 @@ def upload_media_step1(request):
                 media.file = file
                 # Define user field of Media instance
                 media.user = request.user
-                # Define date when midia was created
-                media.date_created = timezone.now()
 
                 # Save instance
                 media.save()
@@ -206,7 +204,7 @@ def upload_media_step2(request):
                 media.license = form.cleaned_data['license']
                 media.terms = form.cleaned_data['terms']
 
-                media.status = 'not_edited'
+                media.status = 'draft'
                 media.save()
 
                 if not media.is_video():
@@ -361,7 +359,7 @@ def edit_metadata(request, media_id):
             meta.edit_metadata(metadata)
         except:
             pass
-        media_instance.status = 'to_review'
+        media_instance.status = 'submitted'
         media_instance.taxa.set(form.cleaned_data['taxa'])
         media_instance.authors.set(form.cleaned_data['authors'])
 
@@ -405,7 +403,7 @@ def curadoria_media_list(request):
                     for media in medias:
                         media.taxa.set(form.cleaned_data['taxa'])
                 if form.cleaned_data['status_action'] != 'maintain':
-                    medias.update(status='to_review')
+                    medias.update(status='submitted')
 
                 person = Person.objects.filter(user_cifonauta=request.user.id).first()
                 
@@ -439,7 +437,7 @@ def curadoria_media_list(request):
         taxons = curadoria.taxons.all()
         curations_taxons.extend(taxons)
 
-    queryset = Media.objects.filter(status='not_edited')
+    queryset = Media.objects.filter(status='draft')
     queryset = queryset.filter(taxa__in=curations_taxons)
     
     # Apply distinct() to eliminate duplicates
@@ -585,8 +583,8 @@ def update_my_medias(request, pk):
                 messages.success(request, 'Informações alteradas com sucesso')
                 messages.warning(request, 'As alterações serão avaliadas e podem ou não serem aceitas')
             else:
-                if media.status == "to_review":
-                    media.status = "not_edited"
+                if media.status == "submitted":
+                    media.status = "draft"
 
                 media.title = form.cleaned_data['title']
                 media.caption = form.cleaned_data['caption']
@@ -668,7 +666,7 @@ def my_medias(request):
                 if form.cleaned_data['taxa_action'] != 'maintain':
                     for media in medias:
                         media.taxa.set(form.cleaned_data['taxa'])
-                medias.update(status='not_edited')
+                medias.update(status='draft')
                 
                 messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
             else:
@@ -761,7 +759,7 @@ def get_users(request):
             } for user in users
         ]
     }
-    
+
     return JsonResponse(response)
 
 
@@ -881,7 +879,7 @@ def revision_media(request):
         curations_taxons.extend(taxons)
 
     queryset = Media.objects.filter(
-        Q(status='to_review') & Q(taxa__in=curations_taxons) |
+        Q(status='submitted') & Q(taxa__in=curations_taxons) |
         Q(modified_media__taxa__in=curations_taxons))
 
     queryset = queryset.distinct()

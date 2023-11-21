@@ -74,7 +74,7 @@ class UpdateMyMediaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if self.instance.status != 'not_edited':
+        if self.instance.status != 'draft':
             self.fields['title'].required = True
 
 class SendEmailForm(forms.Form):
@@ -159,7 +159,7 @@ class TourForm(forms.ModelForm):
 class SpecialistActionForm(forms.ModelForm, SendEmailForm):
     STATUS_CHOICES = [
         ('maintain', _('Manter status')),
-        ('to_review', _('Enviar para revisão')),
+        ('submitted', _('Enviar para revisão')),
         ('publish', _('Publicar')),
     ]
 

@@ -91,7 +91,7 @@
             <td class="text-cedule">{{ media.title_pt_br }}</td>
             <td>{{media.user}}</td>
             <td 
-                class="text-cedule {% if media.status == 'not_edited' %}not-edited{% elif media.status == 'to_review' %}to-review{% else %}published{% endif %}"
+                class="text-cedule {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}"
             >
                 {{ media.get_status_display }}
             </td>

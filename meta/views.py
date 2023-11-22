@@ -459,19 +459,6 @@ def curadoria_media_list(request):
     }
 
     return render(request, 'curadoria_media_list.html', context)
-
-
-class MediaDetail(DetailView):
-    model = Media
-    template_name = 'media_detail.html'
-
-    # @method_decorator(never_cache)
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.curatorship_specialist.exists()
-        context['is_curator'] = user.curatorship_curator.exists()
-        return context
     
 
 @never_cache
@@ -1038,95 +1025,6 @@ def revision_media_detail(request, media_id):
     }
 
     return render(request, 'media_revision_detail.html', context) 
-
-
-class EnableSpecialists(LoginRequiredMixin, ListView):
-    model = UserCifonauta
-    template_name = 'enable_specialists.html'
-
-    def get_queryset(self):
-        queryset = UserCifonauta.objects.all()
-
-        search_query = self.request.GET.get('search_query')
-        action = self.request.GET.get('action')
-        users_type = self.request.GET.get('select_users_type')
-
-        if search_query:
-            queryset = queryset.filter(
-                Q(first_name__icontains=search_query) | 
-                Q(last_name__icontains=search_query)
-            )
-
-        if users_type == 'specialists':
-            selected_curation_id = self.request.GET.get('selected_curation_id')
-            queryset = queryset.filter(is_author=True)
-            if action == 'add':
-                if selected_curation_id:
-                    queryset = queryset.exclude(curatorship_specialist__id=selected_curation_id)
-            elif action == 'remove':
-                if selected_curation_id:
-                    queryset = queryset.filter(curatorship_specialist__id=selected_curation_id)
-        elif users_type == 'authors':
-            if action == 'add':
-                queryset = queryset.filter(is_author=False)
-            elif action == 'remove':
-                queryset = queryset.filter(is_author=True)
-                queryset = queryset.filter(
-                    Q(curatorship_specialist__isnull=True) | Q(curatorship_curator__isnull=True)
-                )
-
-        queryset = queryset.distinct()
-        return queryset
-
-    def post(self, request):
-        selected_users_ids = request.POST.getlist('selected_users_ids')
-        users = UserCifonauta.objects.filter(id__in=selected_users_ids)
-
-        users_type = request.GET.get('select_users_type')
-        action = request.GET.get('action')
-        
-        if users_type == 'authors':
-            if action == 'add':
-                users.update(is_author=True)
-            elif action == 'remove':
-                users.update(is_author=False)
-        elif users_type == 'specialists':
-            selected_curation_id = request.POST.get('selected_curation_id')
-            curation = Curadoria.objects.get(id=selected_curation_id)
-            if action == 'add':
-                for user in users:
-                    user.curatorship_specialist.add(curation)
-                    user.save()
-                    curation.specialists.add(user)
-                    curation.save()
-            elif action == 'remove':
-                for user in users:
-                    user.curatorship_specialist.remove(curation)
-                    user.save()
-        return redirect('enable_specialists')
-    
-    # Gets the user's permissions and curations
-    # @method_decorator(never_cache)
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.curatorship_specialist.exists()
-        context['is_curator'] = user.curatorship_curator.exists()
-
-        user = self.request.user
-        curations = user.curatorship_curator.all()
-        curations_taxons = []
-        for curadoria in curations:
-            taxons = curadoria.taxons.all()
-            curations_taxons.extend(taxons)
-        context['curations'] = curations
-        context['curations_taxons'] = curations_taxons
-
-        selected_curation_id = self.request.GET.get('selected_curation_id')
-        if selected_curation_id is not None and selected_curation_id != "":
-            selected_curation_id = int(selected_curation_id)
-        context['selected_curation_id'] = selected_curation_id
-        return context
 
 
 @never_cache

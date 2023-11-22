@@ -1,10 +1,11 @@
 {% extends 'dashboard.html' %}
-{% load static %}
+{% load static custom_filters %}
 
 {% block extra_head %}
 <script src="{% static 'js/adm_select_all_records.js' %}" defer></script>
 <script src="{% static 'js/adm_popup.js' %}" defer></script>
 <script src="{% static 'js/adm_actions.js' %}" defer></script>
+<script src="{% static 'js/curadoria_media_list.js' %}" defer></script>
 {% endblock %}
 
 {% block title %}Lista de Mídias{% endblock %}
@@ -69,8 +70,8 @@
             <th><input type="checkbox" id="select-all-records"></th>
             <th class="image-column">Mídia</th>
             <th class="title-column">Título</th>
+            <th class="">Curadorias</th>
             <th>Usuário</th>
-            <th class="status-column">Status</th>
         </tr>
     </thead>
     <tbody class="table-body">
@@ -89,12 +90,17 @@
                 </a>
             </td>
             <td class="text-cedule">{{ media.title_pt_br }}</td>
-            <td>{{media.user}}</td>
-            <td 
-                class="text-cedule {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}"
-            >
-                {{ media.get_status_display }}
+            <td>
+                <ul class="curations-list">
+                    {% get_media_curations media as curations %}
+                    {% for curation in curations %}
+                    <li>
+                        {{ curation }}
+                    </li>
+                    {% endfor %}
+                </ul>
             </td>
+            <td>{{media.user}}</td>
         </tr>
         {% endfor %}
     </tbody>

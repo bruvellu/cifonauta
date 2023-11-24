@@ -1,10 +1,11 @@
 {% extends 'dashboard.html' %}
-{% load static %}
+{% load static custom_filters %}
 
 {% block extra_head %}
 <script src="{% static 'js/adm_select_all_records.js' %}" defer></script>
 <script src="{% static 'js/adm_popup.js' %}" defer></script>
 <script src="{% static 'js/adm_actions.js' %}" defer></script>
+<script src="{% static 'js/my_medias.js' %}" defer></script>
 {% endblock %}
 
 {% block title %}Lista de Mídias{% endblock %}
@@ -73,6 +74,7 @@
             <th class="title-column">Título</th>
             <th class="">Tipo de mídia</th>
             <th class="status-column">Status</th>
+            <th>Curadorias</th>
             <th class="modification-date">Data de Modificação</th>
         </tr>
     </thead>
@@ -105,6 +107,16 @@
                 class="text-cedule {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}"
             >
                 {{ media.get_status_display }}
+            </td>
+            <td>
+                <ul class="curations-list">
+                    {% get_media_curations media as curations %}
+                    {% for curation in curations %}
+                    <li>
+                        {{ curation }}
+                    </li>
+                    {% endfor %}
+                </ul>
             </td>
             <td>{{ media.date_modified }}</td>
         </tr>

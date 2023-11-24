@@ -415,7 +415,7 @@ class Tag(models.Model):
             help_text=_('Categoria associada a este marcador.'))
 
     def __str__(self):
-        return self.name
+        return f'{self.category}: {self.name}'
 
     def get_absolute_url(self):
         return reverse('tag_url', args=[self.slug])

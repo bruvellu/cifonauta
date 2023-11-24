@@ -112,10 +112,11 @@ class SendEmailForm(forms.Form):
 class EditMetadataForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = Media
-        fields = ('title', 'user', 'authors', 'caption', 'date_created', 'taxa', 'license', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ('title', 'user', 'authors', 'caption', 'date_created', 'taxa', 'tags', 'license', 'country', 'state', 'city', 'location', 'geolocation')
         widgets = {
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
+            'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
             'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"})
         }
     
@@ -123,6 +124,7 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
         super().__init__(*args, **kwargs)
 
         self.fields['title'].required = True
+        self.fields['tags'].queryset = self.fields['tags'].queryset.order_by('category')
 
 class CoauthorRegistrationForm(forms.ModelForm):
     class Meta:

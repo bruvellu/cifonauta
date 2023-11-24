@@ -390,6 +390,23 @@ def edit_metadata(request, media_id):
 
 @never_cache
 def curadoria_media_list(request):
+    user = request.user
+    curations = user.curatorship_specialist.all()
+    curations_taxons = []
+
+    for curadoria in curations:
+        taxons = curadoria.taxons.all()
+        curations_taxons.extend(taxons)
+
+    queryset = Media.objects.filter(status='draft')
+    queryset = queryset.filter(taxa__in=curations_taxons)
+    
+    # Apply distinct() to eliminate duplicates
+    queryset = queryset.distinct()
+
+    filtered_queryset = queryset
+    filter_form = DashboardFilterForm(user)
+
     if request.method == "POST":
         media_ids = request.POST.getlist('selected_media_ids')
 
@@ -427,23 +444,34 @@ def curadoria_media_list(request):
                 messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
         else:
             messages.warning(request, _('Nenhum registro foi selecionado'))
+    elif request.method == "GET":
+        search = request.GET.get('search')
+        if search:
+            filtered_queryset = filtered_queryset.filter(title__icontains=search)
+        
 
-    user = request.user
+        curation_ids = request.GET.getlist('curations')
+        if curation_ids:
+            filtered_curations = curations.filter(id__in=curation_ids)
 
-    curations = user.curatorship_specialist.all()
-    curations_taxons = []
+            taxons = set()
+            for curation in filtered_curations:
+                taxons.update(curation.taxons.all())
 
-    for curadoria in curations:
-        taxons = curadoria.taxons.all()
-        curations_taxons.extend(taxons)
+            filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
+        
 
-    queryset = Media.objects.filter(status='draft')
-    queryset = queryset.filter(taxa__in=curations_taxons)
-    
-    # Apply distinct() to eliminate duplicates
-    queryset = queryset.distinct()
+        alphabetical_order = request.GET.get('alphabetical_order')
+        if alphabetical_order:
+            filtered_queryset = filtered_queryset.order_by('title')
+        
+        filter_form = DashboardFilterForm(user, {
+            'search': search,
+            'curations': curation_ids,
+            'alphabetical_order': alphabetical_order,
+        })
 
-    queryset_paginator = Paginator(queryset, 12)
+    queryset_paginator = Paginator(filtered_queryset, 12)
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
@@ -453,6 +481,8 @@ def curadoria_media_list(request):
 
     context = {
         'form': form,
+        'filter_form': filter_form,
+        'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
         'is_curator': user.curatorship_curator.exists(),

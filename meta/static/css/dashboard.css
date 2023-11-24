@@ -243,6 +243,10 @@ p {
 
 
 /* LIST PAGES */
+.post-form-wrapper {
+    margin-top: 2rem;
+}
+
 .action-button {
     position: absolute;
     left: 0;
@@ -383,6 +387,27 @@ tr, th {
     content: "Esconder";
 }
 
+.filter-aside {
+    width: fit-content;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #94b1ca #eee #fafafa;
+    margin: 0 0 1em 0;
+    padding: 0.9rem 0.9rem 0 0.9rem;
+    background: #fafafa;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 2px 2px 5px #aaa;
+    -moz-box-shadow: 2px 2px 5px #aaa;
+    box-shadow: 2px 2px 5px #aaa;
+
+    font-size: 80%;
+}
+
+.filter-aside input {
+    height: auto !important;
+}
 
 
 

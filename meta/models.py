@@ -50,8 +50,10 @@ class ModifiedMedia(models.Model):
     authors = models.ManyToManyField('Person', blank=True,
             verbose_name=_('autores'), help_text=_('Coautor(es) da mídia'), related_name='modified_media_authors')
     taxa = models.ManyToManyField('Taxon', related_name="modified_media_taxons", verbose_name=_('táxons'), help_text=_('Táxons pertencentes à mídia.'), blank=True)
-    date = models.DateTimeField(_('data'), null=True,
-            help_text=_('Data de criação da imagem.'))
+    date_created = models.DateTimeField(_('data de criação'),
+                                        blank=True,
+                                        null=True,
+                                        help_text=_('Data de criação do arquivo.'))
     location = models.ForeignKey('Location', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('local'),
             help_text=_('Localidade mostrada na imagem (ou local de coleta).'))

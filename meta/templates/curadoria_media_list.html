@@ -21,121 +21,116 @@
 </div>
 {% endif %}
 {% if object_exists %}
-<div class="list-form">
-    <section class="table-section">
-        <aside class='filter-aside'>
-            <form method="get">
-                <input type="submit" value="Filtrar" class="secondary-button">
-                {% for field in filter_form %}
-                <div>
-                    {{ field.label_tag }}
-                    {{ field }}
-                </div>
-                {% endfor %}
-            </form>
-        </aside>
-
-        <form class="post-form-wrapper" method="post">
-            {% csrf_token %}
-            <div id="behind-modal-container" class="behind-modal-container"></div>
-            <div id="modal-container" class="list-modal-container">
-                <div>
-                    <div class="modal-header">
-                        <p>Processar em lote as mídias selecionadas</p>
-                        <button type="button" id="close-modal-button" class="close-modal-button">
-                            <div class='line1'></div>
-                            <div class='line2'></div>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                            {% for field in form %}
-                            {% if field == form.taxa_action %}
-                            <div class="modal-field-div">
-                                {{ field.label_tag }}
-                                {{ field }}
-                                <div id="taxa-wrapper" class="hide-div">
-                                    {{ form.taxa }}
-                                </div>
-                            </div>
-                            {% elif field == form.taxa %}
-                            {% else %}
-                            <div class="modal-field-div">
-                                {{ field.label_tag }}
-                                {{ field }}
-                            </div>
-                            {% endif %}
-                            {% endfor %}
-                    </div>
-                </div>
-                <button type="submit" class="secondary-button">Processar</button>
+<section class="table-section">
+    <aside class='filter-aside'>
+        <form method="get">
+            <input type="submit" value="Filtrar" class="secondary-button">
+            {% for field in filter_form %}
+            <div>
+                {{ field.label_tag }}
+                {{ field }}
             </div>
-
-            <div class="table-container">
-                {% if entries.object_list %}
-                <div class='table-top'>
-                    <button type="button" id="open-modal-button" class="action-button">Ações em lotes</button>
-                    {% if entries.paginator.num_pages > 1 %}
-                    {% include 'pagination.html' %}
-                    {% endif %}
-                </div>
-                
-                <table class="table">
-                    <thead class="table-head">
-                        <tr>
-                            <th><input type="checkbox" id="select-all-records"></th>
-                            <th class="image-column">Mídia</th>
-                            <th class="title-column">Título</th>
-                            <th class="">Curadorias</th>
-                            <th>Usuário</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-body">
-                        {% for media in entries.object_list %}
-                        <tr>
-                            <td>
-                                <input type="checkbox" class="selected-record" name="selected_media_ids" value="{{ media.id }}">
-                            </td>
-                            <td class="image-cedule">
-                                <a href="{% url 'edit_metadata' media.id %}">
-                                    {% if media.is_video %}
-                                    <video src="{{ media.coverpath.url }}"></video>
-                                    {% else %}
-                                    <img src="{{ media.coverpath.url }}">
-                                    {% endif %}
-                                </a>
-                            </td>
-                            <td class="text-cedule">{{ media.title_pt_br }}</td>
-                            <td>
-                                <ul class="curations-list">
-                                    {% get_media_curations media as curations %}
-                                    {% for curation in curations %}
-                                    <li>
-                                        {{ curation }}
-                                    </li>
-                                    {% endfor %}
-                                </ul>
-                            </td>
-                            <td>{{media.user}}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-
-                <div class="table-bottom">
-                    {% if entries.paginator.num_pages > 1 %}
-                    {% include 'pagination.html' %}
-                    {% endif %}
-                </div>
-                {% else %}
-                <p>
-                    Nenhum arquivo encontrado :(
-                </p>
-                {% endif %}
-            </div>
+            {% endfor %}
         </form>
-    </section>
-</div>
+    </aside>
 
+    <form class="post-form-wrapper" method="post">
+        {% csrf_token %}
+        <div id="behind-modal-container" class="behind-modal-container"></div>
+        <div id="modal-container" class="list-modal-container">
+            <div>
+                <div class="modal-header">
+                    <p>Processar em lote as mídias selecionadas</p>
+                    <button type="button" id="close-modal-button" class="close-modal-button">
+                        <div class='line1'></div>
+                        <div class='line2'></div>
+                    </button>
+                </div>
+                <div class="modal-body">
+                        {% for field in form %}
+                        {% if field == form.taxa_action %}
+                        <div class="modal-field-div">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            <div id="taxa-wrapper" class="hide-div">
+                                {{ form.taxa }}
+                            </div>
+                        </div>
+                        {% elif field == form.taxa %}
+                        {% else %}
+                        <div class="modal-field-div">
+                            {{ field.label_tag }}
+                            {{ field }}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                </div>
+            </div>
+            <button type="submit" class="secondary-button">Processar</button>
+        </div>
+
+        {% if entries.object_list %}
+        <div class='table-top'>
+            <button type="button" id="open-modal-button" class="action-button">Ações em lotes</button>
+            {% if entries.paginator.num_pages > 1 %}
+            {% include 'pagination.html' %}
+            {% endif %}
+        </div>
+        
+        <table class="table">
+            <thead class="table-head">
+                <tr>
+                    <th><input type="checkbox" id="select-all-records"></th>
+                    <th class="image-column">Mídia</th>
+                    <th class="title-column">Título</th>
+                    <th class="">Curadorias</th>
+                    <th>Usuário</th>
+                </tr>
+            </thead>
+            <tbody class="table-body">
+                {% for media in entries.object_list %}
+                <tr>
+                    <td>
+                        <input type="checkbox" class="selected-record" name="selected_media_ids" value="{{ media.id }}">
+                    </td>
+                    <td class="image-cedule">
+                        <a href="{% url 'edit_metadata' media.id %}">
+                            {% if media.is_video %}
+                            <video src="{{ media.coverpath.url }}"></video>
+                            {% else %}
+                            <img src="{{ media.coverpath.url }}">
+                            {% endif %}
+                        </a>
+                    </td>
+                    <td class="text-cedule">{{ media.title_pt_br }}</td>
+                    <td>
+                        <ul class="curations-list">
+                            {% get_media_curations media as curations %}
+                            {% for curation in curations %}
+                            <li>
+                                {{ curation }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>{{media.user}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="table-bottom">
+            {% if entries.paginator.num_pages > 1 %}
+            {% include 'pagination.html' %}
+            {% endif %}
+        </div>
+        {% else %}
+        <p>
+            Nenhum arquivo encontrado :(
+        </p>
+        {% endif %}
+    </form>
+</section>
 {% else %}
     <p>Não há imagens</p>
 {% endif %}

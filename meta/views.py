@@ -405,7 +405,7 @@ def curadoria_media_list(request):
     queryset = queryset.distinct()
 
     filtered_queryset = queryset
-    filter_form = DashboardFilterForm(user)
+    filter_form = DashboardFilterForm()
 
     if request.method == "POST":
         media_ids = request.POST.getlist('selected_media_ids')
@@ -452,7 +452,7 @@ def curadoria_media_list(request):
 
         curation_ids = request.GET.getlist('curations')
         if curation_ids:
-            filtered_curations = curations.filter(id__in=curation_ids)
+            filtered_curations = curations.filter(id__in=curation_ids).distinct()
 
             taxons = set()
             for curation in filtered_curations:
@@ -465,7 +465,7 @@ def curadoria_media_list(request):
         if alphabetical_order:
             filtered_queryset = filtered_queryset.order_by('title')
         
-        filter_form = DashboardFilterForm(user, {
+        filter_form = DashboardFilterForm({
             'search': search,
             'curations': curation_ids,
             'alphabetical_order': alphabetical_order,
@@ -666,6 +666,12 @@ def update_my_medias(request, pk):
 
 @never_cache
 def my_medias(request):
+    user = request.user
+    queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
+
+    filtered_queryset = queryset
+    filter_form = DashboardFilterForm()
+
     if request.method == "POST":
         media_ids = request.POST.getlist('selected_media_ids')
 
@@ -690,7 +696,33 @@ def my_medias(request):
                 messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
         else:
             messages.warning(request, _('Nenhum registro foi selecionado'))
-    
+    elif request.method == "GET":
+        search = request.GET.get('search')
+        if search:
+            filtered_queryset = filtered_queryset.filter(title__icontains=search)
+        
+
+        curation_ids = request.GET.getlist('curations')
+        if curation_ids:
+            filtered_curations = Curadoria.objects.filter(id__in=curation_ids)
+
+            taxons = set()
+            for curation in filtered_curations:
+                taxons.update(curation.taxons.all())
+
+            filtered_queryset = filtered_queryset.filter(taxa__in=taxons).distinct()
+        
+
+        alphabetical_order = request.GET.get('alphabetical_order')
+        if alphabetical_order:
+            filtered_queryset = filtered_queryset.order_by('title')
+        
+        filter_form = DashboardFilterForm({
+            'search': search,
+            'curations': curation_ids,
+            'alphabetical_order': alphabetical_order,
+        })
+
     user = request.user
     queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
     
@@ -699,12 +731,14 @@ def my_medias(request):
     is_specialist = user.curatorship_specialist.exists()
     is_curator = user.curatorship_curator.exists()
 
-    queryset_paginator = Paginator(queryset, 12)
+    queryset_paginator = Paginator(filtered_queryset, 12)
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
     context = {
         'form': form,
+        'filter_form': filter_form,
+        'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
@@ -849,6 +883,24 @@ def get_users(request):
 
 @never_cache
 def revision_media(request):
+    user = request.user
+
+    curations = user.curatorship_curator.all()
+    curations_taxons = []
+
+    for curadoria in curations:
+        taxons = curadoria.taxons.all()
+        curations_taxons.extend(taxons)
+
+    queryset = Media.objects.filter(
+        Q(status='submitted') & Q(taxa__in=curations_taxons) |
+        Q(modified_media__taxa__in=curations_taxons))
+
+    queryset = queryset.distinct()
+
+    filtered_queryset = queryset
+    filter_form = DashboardFilterForm()
+
     if request.method == 'POST':
         media_ids = request.POST.getlist('selected_media_ids')
 
@@ -885,23 +937,35 @@ def revision_media(request):
                 messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
         else:
             messages.warning(request, _('Nenhum registro foi selecionado'))
+    elif request.method == "GET":
+        search = request.GET.get('search')
+        if search:
+            filtered_queryset = filtered_queryset.filter(title__icontains=search)
+        
+
+        curation_ids = request.GET.getlist('curations')
+        if curation_ids:
+            filtered_curations = curations.filter(id__in=curation_ids)
+
+            taxons = set()
+            for curation in filtered_curations:
+                taxons.update(curation.taxons.all())
+
+            filtered_queryset = filtered_queryset.filter(taxa__in=taxons).distinct()
+        
+
+        alphabetical_order = request.GET.get('alphabetical_order')
+        if alphabetical_order:
+            filtered_queryset = filtered_queryset.order_by('title')
+        
+        filter_form = DashboardFilterForm({
+            'search': search,
+            'curations': curation_ids,
+            'alphabetical_order': alphabetical_order,
+        })
     
-    user = request.user
 
-    curations = user.curatorship_curator.all()
-    curations_taxons = []
-
-    for curadoria in curations:
-        taxons = curadoria.taxons.all()
-        curations_taxons.extend(taxons)
-
-    queryset = Media.objects.filter(
-        Q(status='submitted') & Q(taxa__in=curations_taxons) |
-        Q(modified_media__taxa__in=curations_taxons))
-
-    queryset = queryset.distinct()
-
-    queryset_paginator = Paginator(queryset, 12)
+    queryset_paginator = Paginator(filtered_queryset, 12)
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
@@ -911,6 +975,8 @@ def revision_media(request):
 
     context = {
         'form': form,
+        'filter_form': filter_form,
+        'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
         'is_curator': user.curatorship_curator.exists(),

@@ -205,23 +205,13 @@ class DashboardFilterForm(forms.Form):
                                    initial=False,
                                    label=_('Ordem alfabética'),
                                    widget=forms.CheckboxInput())
-    
-    
-    def __init__(self, user, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        user_curations = Curadoria.objects.filter(specialists=user.id)
-
-        self.fields['curations'] = forms.ModelMultipleChoiceField(
-            required=False,
-            queryset=user_curations,
-            widget=forms.SelectMultiple(attrs={"class": "select2-curations", "multiple": "multiple"}),
-            label=_('Curadorias')
-        )
-
-
+    curations = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Curadoria.objects.all(),
+        widget=forms.SelectMultiple(attrs={"class": "select2-curations", "multiple": "multiple"}),
+        label=_('Curadorias')
+    )
             
-
 
 class SearchForm(forms.Form):
     query = forms.CharField(label=_('Buscar por'),

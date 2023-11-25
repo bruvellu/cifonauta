@@ -23,13 +23,20 @@
 {% if object_exists %}
 <section class="table-section">
     <aside class='filter-aside'>
-        <form method="get">
+        <form method="get" class="dashboard-filter-form">
             <input type="submit" value="Filtrar" class="secondary-button">
             {% for field in filter_form %}
+            {% if field == filter_form.alphabetical_order %}
             <div>
+                {{ field.label_tag}}
+                {{ field }}
+            </div>
+            {% else %}
+            <div class="filter-form-field">
                 {{ field.label_tag }}
                 {{ field }}
             </div>
+            {% endif %}
             {% endfor %}
         </form>
     </aside>

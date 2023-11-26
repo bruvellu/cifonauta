@@ -107,10 +107,10 @@ class Media(models.Model):
                         ('video', _('video')))
 
     SCALE_CHOICES = (('micro', _('<0,1 mm')),
-                    ('tiny', _('0,1–1,0 mm')),
-                    ('visible', _('1,0–10 mm')),
-                    ('large', _('10–100 mm')),
-                    ('huge', _('>100 mm')))
+                     ('tiny', _('0,1–1,0 mm')),
+                     ('visible', _('1,0–10 mm')),
+                     ('large', _('10–100 mm')),
+                     ('huge', _('>100 mm')))
 
     # Fields related to file handling
     uuid = models.UUIDField(_('identificador'),

@@ -1,6 +1,6 @@
 from django import template
 from django.utils.safestring import mark_safe
-from meta.models import Media
+from meta.models import Curadoria
 
 register = template.Library()
 
@@ -27,3 +27,9 @@ def get_attribute(obj, attr_name):
         return ""
 
     return getattr(obj, attr_name, '')
+
+@register.simple_tag
+def get_media_curations(media):
+  taxons = media.taxa.all()
+  curations = Curadoria.objects.filter(taxons__in=taxons).distinct()
+  return list(curations)

@@ -112,10 +112,11 @@ class SendEmailForm(forms.Form):
 class EditMetadataForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = Media
-        fields = ('title', 'user', 'authors', 'caption', 'date_created', 'taxa', 'license', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ('title', 'user', 'authors', 'caption', 'date_created', 'taxa', 'tags', 'license', 'country', 'state', 'city', 'location', 'geolocation')
         widgets = {
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
+            'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
             'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"})
         }
     
@@ -123,6 +124,7 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
         super().__init__(*args, **kwargs)
 
         self.fields['title'].required = True
+        self.fields['tags'].queryset = self.fields['tags'].queryset.order_by('category')
 
 class CoauthorRegistrationForm(forms.ModelForm):
     class Meta:
@@ -132,7 +134,7 @@ class CoauthorRegistrationForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
-        fields = ('title', 'caption', 'taxa', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title', 'caption', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
 
 class MyMediaForm(forms.ModelForm):
     class Meta:
@@ -192,6 +194,24 @@ class MyMediasActionForm(forms.ModelForm):
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
         }
+
+
+class DashboardFilterForm(forms.Form):
+    Curadoria = apps.get_model('meta', 'Curadoria')
+    
+    search = forms.CharField(required=False,
+                             label=_('Buscar por'))
+    alphabetical_order = forms.BooleanField(required=False,
+                                   initial=False,
+                                   label=_('Ordem alfabética'),
+                                   widget=forms.CheckboxInput())
+    curations = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Curadoria.objects.all(),
+        widget=forms.SelectMultiple(attrs={"class": "select2-curations", "multiple": "multiple"}),
+        label=_('Curadorias')
+    )
+            
 
 class SearchForm(forms.Form):
     query = forms.CharField(label=_('Buscar por'),

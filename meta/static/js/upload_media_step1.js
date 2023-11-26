@@ -1,6 +1,6 @@
-let mediasInput = document.querySelector('#medias')
+let filesInput = document.querySelector('#files')
 
-mediasInput.addEventListener('change', (e) => {
+filesInput.addEventListener('change', (e) => {
     let mediasList = Array.from(e.target.files)
     let filesNames = document.querySelector('.files-names')
 

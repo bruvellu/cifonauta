@@ -390,6 +390,23 @@ def edit_metadata(request, media_id):
 
 @never_cache
 def curadoria_media_list(request):
+    user = request.user
+    curations = user.curatorship_specialist.all()
+    curations_taxons = []
+
+    for curadoria in curations:
+        taxons = curadoria.taxons.all()
+        curations_taxons.extend(taxons)
+
+    queryset = Media.objects.filter(status='draft')
+    queryset = queryset.filter(taxa__in=curations_taxons)
+    
+    # Apply distinct() to eliminate duplicates
+    queryset = queryset.distinct()
+
+    filtered_queryset = queryset
+    filter_form = DashboardFilterForm()
+
     if request.method == "POST":
         media_ids = request.POST.getlist('selected_media_ids')
 
@@ -427,23 +444,34 @@ def curadoria_media_list(request):
                 messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
         else:
             messages.warning(request, _('Nenhum registro foi selecionado'))
+    elif request.method == "GET":
+        search = request.GET.get('search')
+        if search:
+            filtered_queryset = filtered_queryset.filter(title__icontains=search)
+        
 
-    user = request.user
+        curation_ids = request.GET.getlist('curations')
+        if curation_ids:
+            filtered_curations = curations.filter(id__in=curation_ids).distinct()
 
-    curations = user.curatorship_specialist.all()
-    curations_taxons = []
+            taxons = set()
+            for curation in filtered_curations:
+                taxons.update(curation.taxons.all())
 
-    for curadoria in curations:
-        taxons = curadoria.taxons.all()
-        curations_taxons.extend(taxons)
+            filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
+        
 
-    queryset = Media.objects.filter(status='draft')
-    queryset = queryset.filter(taxa__in=curations_taxons)
-    
-    # Apply distinct() to eliminate duplicates
-    queryset = queryset.distinct()
+        alphabetical_order = request.GET.get('alphabetical_order')
+        if alphabetical_order:
+            filtered_queryset = filtered_queryset.order_by('title')
+        
+        filter_form = DashboardFilterForm({
+            'search': search,
+            'curations': curation_ids,
+            'alphabetical_order': alphabetical_order,
+        })
 
-    queryset_paginator = Paginator(queryset, 12)
+    queryset_paginator = Paginator(filtered_queryset, 12)
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
@@ -453,25 +481,14 @@ def curadoria_media_list(request):
 
     context = {
         'form': form,
+        'filter_form': filter_form,
+        'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
         'is_curator': user.curatorship_curator.exists(),
     }
 
     return render(request, 'curadoria_media_list.html', context)
-
-
-class MediaDetail(DetailView):
-    model = Media
-    template_name = 'media_detail.html'
-
-    # @method_decorator(never_cache)
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.curatorship_specialist.exists()
-        context['is_curator'] = user.curatorship_curator.exists()
-        return context
     
 
 @never_cache
@@ -649,6 +666,12 @@ def update_my_medias(request, pk):
 
 @never_cache
 def my_medias(request):
+    user = request.user
+    queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
+
+    filtered_queryset = queryset
+    filter_form = DashboardFilterForm()
+
     if request.method == "POST":
         media_ids = request.POST.getlist('selected_media_ids')
 
@@ -673,7 +696,33 @@ def my_medias(request):
                 messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
         else:
             messages.warning(request, _('Nenhum registro foi selecionado'))
-    
+    elif request.method == "GET":
+        search = request.GET.get('search')
+        if search:
+            filtered_queryset = filtered_queryset.filter(title__icontains=search)
+        
+
+        curation_ids = request.GET.getlist('curations')
+        if curation_ids:
+            filtered_curations = Curadoria.objects.filter(id__in=curation_ids)
+
+            taxons = set()
+            for curation in filtered_curations:
+                taxons.update(curation.taxons.all())
+
+            filtered_queryset = filtered_queryset.filter(taxa__in=taxons).distinct()
+        
+
+        alphabetical_order = request.GET.get('alphabetical_order')
+        if alphabetical_order:
+            filtered_queryset = filtered_queryset.order_by('title')
+        
+        filter_form = DashboardFilterForm({
+            'search': search,
+            'curations': curation_ids,
+            'alphabetical_order': alphabetical_order,
+        })
+
     user = request.user
     queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
     
@@ -682,12 +731,14 @@ def my_medias(request):
     is_specialist = user.curatorship_specialist.exists()
     is_curator = user.curatorship_curator.exists()
 
-    queryset_paginator = Paginator(queryset, 12)
+    queryset_paginator = Paginator(filtered_queryset, 12)
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
     context = {
         'form': form,
+        'filter_form': filter_form,
+        'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
@@ -832,6 +883,24 @@ def get_users(request):
 
 @never_cache
 def revision_media(request):
+    user = request.user
+
+    curations = user.curatorship_curator.all()
+    curations_taxons = []
+
+    for curadoria in curations:
+        taxons = curadoria.taxons.all()
+        curations_taxons.extend(taxons)
+
+    queryset = Media.objects.filter(
+        Q(status='submitted') & Q(taxa__in=curations_taxons) |
+        Q(modified_media__taxa__in=curations_taxons))
+
+    queryset = queryset.distinct()
+
+    filtered_queryset = queryset
+    filter_form = DashboardFilterForm()
+
     if request.method == 'POST':
         media_ids = request.POST.getlist('selected_media_ids')
 
@@ -868,23 +937,35 @@ def revision_media(request):
                 messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
         else:
             messages.warning(request, _('Nenhum registro foi selecionado'))
+    elif request.method == "GET":
+        search = request.GET.get('search')
+        if search:
+            filtered_queryset = filtered_queryset.filter(title__icontains=search)
+        
+
+        curation_ids = request.GET.getlist('curations')
+        if curation_ids:
+            filtered_curations = curations.filter(id__in=curation_ids)
+
+            taxons = set()
+            for curation in filtered_curations:
+                taxons.update(curation.taxons.all())
+
+            filtered_queryset = filtered_queryset.filter(taxa__in=taxons).distinct()
+        
+
+        alphabetical_order = request.GET.get('alphabetical_order')
+        if alphabetical_order:
+            filtered_queryset = filtered_queryset.order_by('title')
+        
+        filter_form = DashboardFilterForm({
+            'search': search,
+            'curations': curation_ids,
+            'alphabetical_order': alphabetical_order,
+        })
     
-    user = request.user
 
-    curations = user.curatorship_curator.all()
-    curations_taxons = []
-
-    for curadoria in curations:
-        taxons = curadoria.taxons.all()
-        curations_taxons.extend(taxons)
-
-    queryset = Media.objects.filter(
-        Q(status='submitted') & Q(taxa__in=curations_taxons) |
-        Q(modified_media__taxa__in=curations_taxons))
-
-    queryset = queryset.distinct()
-
-    queryset_paginator = Paginator(queryset, 12)
+    queryset_paginator = Paginator(filtered_queryset, 12)
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
@@ -894,6 +975,8 @@ def revision_media(request):
 
     context = {
         'form': form,
+        'filter_form': filter_form,
+        'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
         'is_curator': user.curatorship_curator.exists(),
@@ -1038,95 +1121,6 @@ def revision_media_detail(request, media_id):
     }
 
     return render(request, 'media_revision_detail.html', context) 
-
-
-class EnableSpecialists(LoginRequiredMixin, ListView):
-    model = UserCifonauta
-    template_name = 'enable_specialists.html'
-
-    def get_queryset(self):
-        queryset = UserCifonauta.objects.all()
-
-        search_query = self.request.GET.get('search_query')
-        action = self.request.GET.get('action')
-        users_type = self.request.GET.get('select_users_type')
-
-        if search_query:
-            queryset = queryset.filter(
-                Q(first_name__icontains=search_query) | 
-                Q(last_name__icontains=search_query)
-            )
-
-        if users_type == 'specialists':
-            selected_curation_id = self.request.GET.get('selected_curation_id')
-            queryset = queryset.filter(is_author=True)
-            if action == 'add':
-                if selected_curation_id:
-                    queryset = queryset.exclude(curatorship_specialist__id=selected_curation_id)
-            elif action == 'remove':
-                if selected_curation_id:
-                    queryset = queryset.filter(curatorship_specialist__id=selected_curation_id)
-        elif users_type == 'authors':
-            if action == 'add':
-                queryset = queryset.filter(is_author=False)
-            elif action == 'remove':
-                queryset = queryset.filter(is_author=True)
-                queryset = queryset.filter(
-                    Q(curatorship_specialist__isnull=True) | Q(curatorship_curator__isnull=True)
-                )
-
-        queryset = queryset.distinct()
-        return queryset
-
-    def post(self, request):
-        selected_users_ids = request.POST.getlist('selected_users_ids')
-        users = UserCifonauta.objects.filter(id__in=selected_users_ids)
-
-        users_type = request.GET.get('select_users_type')
-        action = request.GET.get('action')
-        
-        if users_type == 'authors':
-            if action == 'add':
-                users.update(is_author=True)
-            elif action == 'remove':
-                users.update(is_author=False)
-        elif users_type == 'specialists':
-            selected_curation_id = request.POST.get('selected_curation_id')
-            curation = Curadoria.objects.get(id=selected_curation_id)
-            if action == 'add':
-                for user in users:
-                    user.curatorship_specialist.add(curation)
-                    user.save()
-                    curation.specialists.add(user)
-                    curation.save()
-            elif action == 'remove':
-                for user in users:
-                    user.curatorship_specialist.remove(curation)
-                    user.save()
-        return redirect('enable_specialists')
-    
-    # Gets the user's permissions and curations
-    # @method_decorator(never_cache)
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.request.user
-        context['is_specialist'] = user.curatorship_specialist.exists()
-        context['is_curator'] = user.curatorship_curator.exists()
-
-        user = self.request.user
-        curations = user.curatorship_curator.all()
-        curations_taxons = []
-        for curadoria in curations:
-            taxons = curadoria.taxons.all()
-            curations_taxons.extend(taxons)
-        context['curations'] = curations
-        context['curations_taxons'] = curations_taxons
-
-        selected_curation_id = self.request.GET.get('selected_curation_id')
-        if selected_curation_id is not None and selected_curation_id != "":
-            selected_curation_id = int(selected_curation_id)
-        context['selected_curation_id'] = selected_curation_id
-        return context
 
 
 @never_cache

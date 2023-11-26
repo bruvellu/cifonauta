@@ -437,7 +437,7 @@ class Tag(models.Model):
     class Meta:
         verbose_name = _('marcador')
         verbose_name_plural = _('marcadores')
-        ordering = ['name']
+        ordering = ['category', 'name']
 
 
 class Category(models.Model):

@@ -106,6 +106,12 @@ class Media(models.Model):
     DATATYPE_CHOICES = (('photo', _('photo')),
                         ('video', _('video')))
 
+    SCALE_CHOICES = (('micro', _('<0,1 mm')),
+                    ('tiny', _('0,1–1,0 mm')),
+                    ('visible', _('1,0–10 mm')),
+                    ('large', _('10–100 mm')),
+                    ('huge', _('>100 mm')))
+
     # Fields related to file handling
     uuid = models.UUIDField(_('identificador'),
                             default=uuid.uuid4,
@@ -233,6 +239,12 @@ class Media(models.Model):
                                default='',
                                blank=True,
                                help_text=_('Legenda da imagem.'))
+
+    scale = models.CharField(_('escala da imagem'),
+                             max_length=12,
+                             blank=True,
+                             choices=SCALE_CHOICES,
+                             help_text=_('Classes de escala.'))
 
     duration = models.CharField(_('duração'),
                                 max_length=20,

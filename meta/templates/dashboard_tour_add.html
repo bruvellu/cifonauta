@@ -40,9 +40,9 @@
                             {% for initial_media in initial_medias %}
                             <li tabindex="0" id="option_{{ initial_media.id }}" class="media-option {% if initial_media in medias_related %}media-option-selected{% endif %}"  onclick='selectOption(event, this)'>
                                 {% if initial_media.datatype == 'video' %}
-                                <video class="option-cover size-{{ initial_media.size }}" src="{{initial_media.coverpath.url}}"></video>
+                                <video class="option-cover scale-{{ initial_media.scale }}" src="{{initial_media.coverpath.url}}"></video>
                                 {% else %}
-                                <img class="option-cover size-{{ initial_media.size }}" src="{{initial_media.coverpath.url}}">
+                                <img class="option-cover scale-{{ initial_media.scale }}" src="{{initial_media.coverpath.url}}">
                                 {% endif %}
                                 <div class="option-infos">
                                     <a class="option-title" href="{{ initial_media.coverpath.url }}" tabindex="-1" target="_blank">{{initial_media.title}}</a>

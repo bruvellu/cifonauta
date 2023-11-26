@@ -4,7 +4,7 @@
 <div id="ajaxcontent">
   {% if media %}
   <article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} {% show_set specialists 'specialist-' '' ' ' 'slug' %} location-{{ media.location.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }}">
-{% comment %}This is coloring the entire article: size-{{ media.size }} {% endcomment %}
+{% comment %}This is coloring the entire article: scale-{{ media.scale }} {% endcomment %}
     <header>
       <h1>{{ media.title }}</h1>
     </header>

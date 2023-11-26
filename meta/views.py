@@ -1659,7 +1659,6 @@ def media_page(request, media_id):
                 })
 
     tags = media.tags.all()
-    size = media.get_size()
     authors = media.authors.all()
     specialists = media.specialists.all()
     taxa = media.taxa.all()
@@ -1672,7 +1671,6 @@ def media_page(request, media_id):
         'admin_form': admin_form,
         'related': related,
         'tags': tags,
-        'size': size,
         'authors': authors,
         'taxa': taxa,
         'specialists': specialists,

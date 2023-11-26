@@ -27,10 +27,6 @@ class ModifiedMediaAdmin(admin.ModelAdmin):
     list_display = ['title']
 
 
-class ScaleAdmin(TranslationAdmin):
-    pass
-
-
 class TagAdmin(TranslationAdmin):
     list_display = ['name', 'description', 'category']
     list_filter = ['category']
@@ -102,7 +98,6 @@ admin.site.register(Stats)
 admin.site.unregister(FlatPage)
 admin.site.register(FlatPage, FlatPageAdmin)
 admin.site.register(Media, MediaAdmin)
-admin.site.register(Scale, ScaleAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Category, CatAdmin)
 admin.site.register(City, CityAdmin)

@@ -416,41 +416,6 @@ class Person(models.Model):
         ordering = ['name']
 
 
-class Scale(models.Model):
-    """Classes of size giving the sense of scale of the organisms."""
-
-    SIZE_CHOICES = (('micro', _('<0,1 mm')),
-                    ('tiny', _('0,1–1,0 mm')),
-                    ('visible', _('1,0–10 mm')),
-                    ('large', _('10–100 mm')),
-                    ('huge', _('>100 mm')))
-
-    name = models.CharField(_('nome'),
-                            max_length=12,
-                            unique=True,
-                            choices=SIZE_CHOICES,
-                            help_text=_('Nome da classe de tamanho.'))
-
-    slug = models.SlugField(_('slug'),
-                            max_length=12,
-                            blank=True,
-                            help_text=_('Slug do nome da classe de tamanho.'))
-
-    description = models.TextField(_('descrição'),
-                                   blank=True,
-                                   help_text=_('Descrição da classe de tamanho.'))
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse('scale_url', args=[self.slug])
-
-    class Meta:
-        verbose_name = _('escala')
-        verbose_name_plural = _('escalas')
-
-
 class Tag(models.Model):
     name = models.CharField(_('nome'), max_length=64, unique=True,
             help_text=_('Nome do marcador.'))

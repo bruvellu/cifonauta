@@ -35,9 +35,9 @@ ORDER = (
 
 ORDER_BY = (
         ('id', _('id')),
-        ('date', _('data da imagem')),
-        ('pub_date', _('data de publicação')),
-        ('timestamp', _('data de modificação')),
+        ('date_created', _('data de criação')),
+        ('date_published', _('data de publicação')),
+        ('date_modified', _('data de modificação')),
         ('random', _('aleatório')),
         ('rank', _('ranking')),
         )
@@ -56,7 +56,7 @@ OPERATORS = (
 class UploadMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxa', 'user', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
+        fields = ('title', 'caption', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
@@ -65,7 +65,7 @@ class UploadMediaForm(forms.ModelForm):
 class UpdateMyMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxa', 'user', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title', 'caption', 'taxa', 'user', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
         widgets = {
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
@@ -74,7 +74,7 @@ class UpdateMyMediaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if self.instance.status != 'not_edited':
+        if self.instance.status != 'draft':
             self.fields['title'].required = True
 
 class SendEmailForm(forms.Form):
@@ -95,7 +95,7 @@ class SendEmailForm(forms.Form):
                 "single_media": True if len(medias) == 1 else False,
                 "media_names": [media.title for media in medias],
                 "sender_name": sender.get_full_name(),
-                "timestamp": medias[0].timestamp,
+                "timestamp": medias[0].date_modified,
             }
 
             subject = subject_template_name
@@ -112,10 +112,11 @@ class SendEmailForm(forms.Form):
 class EditMetadataForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = Media
-        fields = ('title', 'user', 'authors', 'caption', 'date', 'taxa', 'license', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ('title', 'user', 'authors', 'caption', 'date_created', 'taxa', 'tags', 'license', 'country', 'state', 'city', 'location', 'geolocation')
         widgets = {
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
+            'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
             'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"})
         }
     
@@ -123,6 +124,7 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
         super().__init__(*args, **kwargs)
 
         self.fields['title'].required = True
+        self.fields['tags'].queryset = self.fields['tags'].queryset.order_by('category')
 
 class CoauthorRegistrationForm(forms.ModelForm):
     class Meta:
@@ -132,12 +134,12 @@ class CoauthorRegistrationForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
-        fields = ( 'title', 'caption', 'taxa', 'authors', 'date', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title', 'caption', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
 
 class MyMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title', 'coverpath', 'file', 'status', 'timestamp')
+        fields = ('title', 'coverpath', 'file', 'status')
         widgets = {
             'taxons': forms.CheckboxSelectMultiple()
         }
@@ -155,10 +157,11 @@ class TourForm(forms.ModelForm):
         
         self.fields['media'].label_from_instance = lambda obj: obj.title
 
+
 class SpecialistActionForm(forms.ModelForm, SendEmailForm):
     STATUS_CHOICES = [
         ('maintain', _('Manter status')),
-        ('to_review', _('Enviar para revisão')),
+        ('submitted', _('Enviar para revisão')),
         ('publish', _('Publicar')),
     ]
 
@@ -191,6 +194,24 @@ class MyMediasActionForm(forms.ModelForm):
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
         }
+
+
+class DashboardFilterForm(forms.Form):
+    Curadoria = apps.get_model('meta', 'Curadoria')
+    
+    search = forms.CharField(required=False,
+                             label=_('Buscar por'))
+    alphabetical_order = forms.BooleanField(required=False,
+                                   initial=False,
+                                   label=_('Ordem alfabética'),
+                                   widget=forms.CheckboxInput())
+    curations = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Curadoria.objects.all(),
+        widget=forms.SelectMultiple(attrs={"class": "select2-curations", "multiple": "multiple"}),
+        label=_('Curadorias')
+    )
+            
 
 class SearchForm(forms.Form):
     query = forms.CharField(label=_('Buscar por'),

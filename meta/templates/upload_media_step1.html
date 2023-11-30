@@ -10,7 +10,7 @@
 
 <h2>Adicionar nova mídia</h2>
 {% if messages %}
-<div class="messages-div">
+<div class="messages-div hide-messages-animation">
     {% for message in messages %}
     <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
     {% endfor %}
@@ -24,7 +24,7 @@
             <span class='required'>*</span>
         </div>
         <div class="field-div">
-            <input type="file" name="medias" id="medias" multiple>
+            <input type="file" name="files" id="files" multiple>
             <div class="file-div"></div>
             <span class="help-text">Arquivos aceitos: {{ media_extensions }}</span>
             <span class="help-text">Tamanho máximo: 3MB</span>

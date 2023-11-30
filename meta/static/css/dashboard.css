@@ -56,11 +56,14 @@ p {
 .messages-div {
     display: grid;
     gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.hide-messages-animation {
     animation-name: hide-messages-div;
     animation-duration: 1s;
     animation-delay: 10s;
     animation-fill-mode: forwards;
-    margin-bottom: 1rem;
 }
 
 @keyframes hide-messages-div {
@@ -132,8 +135,7 @@ p {
     padding: 6px 20px;
     border: none;
     box-shadow: 2px 2px 5px #ddd;
-    width: 65%;
-    margin-top: 1rem;
+    width: fit-content;
 }
  
 .secondary-button:hover {
@@ -240,6 +242,41 @@ p {
 
 
 /* LIST PAGES */
+.filter-aside {
+    width: 16rem;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #94b1ca #eee #fafafa;
+    padding: 1rem;
+    background: #fafafa;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 2px 2px 5px #aaa;
+    -moz-box-shadow: 2px 2px 5px #aaa;
+    box-shadow: 2px 2px 5px #aaa;
+    font-size: 80%;
+}
+
+.dashboard-filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.filter-aside input {
+    height: auto !important;
+    align-self: flex-end;
+}
+
+.dashboard-filter-form > button {
+    width: 7rem;
+}
+
+.post-form-wrapper {
+    margin-top: 2rem;
+}
+
 .action-button {
     position: absolute;
     left: 0;
@@ -249,6 +286,7 @@ p {
     background: #fafafa;
     display: flex;
     flex-direction: column;
+    gap: 1rem;
     width: 100%;
     max-width: 20rem;
     height: auto;
@@ -306,6 +344,7 @@ tr, th {
 
 .table-body td {
     background-color: #e9ecf2;
+    padding: 1rem .5rem;
 }
 
 .table-body a {
@@ -340,6 +379,43 @@ tr, th {
 .image-cedule img:hover,
 .image-cedule video:hover {
     filter: brightness(65%);
+}
+
+.curations-list {
+    --max-lines: 3;
+    --line-height: 1.3;
+
+    height: calc(var(--max-lines) * 1rem * var(--line-height));
+    line-height: var(--line-height);
+
+    overflow: hidden;
+    position: relative;
+}
+
+.expand-curations {
+    appearance: none;
+    font-size: .7rem;
+    font-weight: bold;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color .1s;
+}
+
+.expand-curations:hover {
+    background-color: rgb(240, 240, 240);
+}
+
+.curations-list:has(+ .expand-curations:checked) {
+    height: auto;
+}
+
+.expand-curations::before {
+    content: "...";
+}
+
+.expand-curations:checked::before {
+    content: "Esconder";
 }
 
 
@@ -434,7 +510,7 @@ textarea {
 }
 
 
-#medias { /* ONLY ON UPLOAD_MEDIA_STEP1 */
+#files { /* ONLY ON UPLOAD_MEDIA_STEP1 */
     background-color: transparent;
 }
 
@@ -773,4 +849,145 @@ textarea {
 .option-title {
     color: #323232 !important;
     font-weight: bold;
+}
+
+
+
+
+
+
+/* MANAGE USERS */
+.users-table-form {
+    max-width: 50rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.enable-specialists-section {
+    border-top: 1px solid black;
+    margin-top: 2rem;
+    padding-top: 2rem;
+}
+
+.users-table-container {
+    display: flex;
+    justify-content: space-between;
+    max-width: 43rem;
+    margin-top: .5rem;
+    margin-bottom: 1.5rem;
+}
+
+.users-table {
+    background-color: #d0d0d0;;
+    display: flex;
+    flex-direction: column;
+    max-width: 20rem;
+    width: 100%;
+    border-radius: 0.3rem;
+    border: 1px solid #adadad;
+    overflow: hidden;
+}
+
+.users-table > div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    height: 12rem;
+    margin-top: 1rem;
+    padding-left: 0.5rem;
+    border-top: 1px solid #adadad;
+    overflow-y: scroll;
+}
+
+.search-input-div, .table-search-div {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 0.2rem;
+    position: relative;
+}
+
+.table-search-div {
+    border: 1px solid black;
+}
+
+.search-input-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 0.7rem;
+    margin-block: 0.5rem;
+}
+
+.search-icon {
+    flex-shrink: 0;
+}
+
+.search-users {
+    width: 18rem;
+}
+
+.search-input-div, .talbe-search-div {
+    border: 1px solid #adadad;
+}
+
+.search-input-div > button, .table-search-div > button {
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: center;
+    width: 1.4rem;
+    border-radius: 0.2rem;
+    background-color: #ebebeb;
+    border: none;
+    position: absolute;
+    right: .2rem;
+}
+
+.search-input-div > button:hover,
+.table-search-div > button:hover {
+    background-color: rgb(197, 197, 197);
+    cursor: pointer;
+}
+
+.search-input-div > input,
+.table-search-div > input {
+    border: none;
+    outline: none;
+}
+
+.search-input-div:has(input:focus),
+.table-search-div:has(input:focus) {
+    outline: black solid 1px;
+}
+
+.all-users-button {
+    width: fit-content;
+    padding: 0.15rem 0.3rem;
+    font-weight: bold;
+    font-size: .8rem;
+    align-self: flex-end;
+    margin-right: 1rem;
+}
+
+.user-option, .selected-user {
+    line-height: 1.2;
+}
+
+.user-option > span, .selected-user > span {
+    margin-right: 0.5rem;
+}
+
+.select-user-button, .remove-user-button {
+    background-color: transparent;
+    border: none;
+    font-size: .8rem;
+    font-weight: bold;
+    padding: 0;
+}
+
+.select-user-button {
+    color: green;
+}
+
+.remove-user-button {
+    color: red;
 }

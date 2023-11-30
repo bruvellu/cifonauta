@@ -4,9 +4,11 @@ from meta.models import *
 from modeltranslation.admin import TranslationAdmin
 from .forms import CuradoriaAdminForm
 
+
 class CuradoriaAdmin(admin.ModelAdmin):
     form = CuradoriaAdminForm
-    autocomplete_fields = ('specialists', 'curators', 'taxons')
+    autocomplete_fields = ['specialists', 'curators', 'taxons']
+
 
 # Translation admin.
 class FlatPageAdmin(TranslationAdmin):
@@ -14,16 +16,21 @@ class FlatPageAdmin(TranslationAdmin):
 
 
 class MediaAdmin(TranslationAdmin):
-    list_display = ('title', 'status', 'highlight', 'file', 'user', 'pub_date')
-    list_filter = ('is_public', 'highlight', 'timestamp', 'authors', 'tags', 'taxa', 'specialists')
+    list_display = ['id', 'user', 'title', 'is_public', 'status', 'highlight',
+                    'date_created', 'date_modified']
+    list_filter = ['status', 'highlight', 'date_modified', 'scale', 'authors', 'tags']
+    search_fields = ['title', 'taxa__name']
+    readonly_fields = ['uuid', 'date_uploaded', 'date_modified', 'search_vector']
+
 
 class ModifiedMediaAdmin(admin.ModelAdmin):
-    list_display = ('title',)
+    list_display = ['title']
+
 
 class TagAdmin(TranslationAdmin):
-    list_display = ('name', 'description', 'category')
-    list_filter = ('category',)
-    filter_horizontal = ('media',)
+    list_display = ['name', 'description', 'category']
+    list_filter = ['category']
+    filter_horizontal = ['media']
     search_fields = ['name', 'description']
 
 
@@ -44,8 +51,7 @@ class CountryAdmin(TranslationAdmin):
 
 
 class PersonAdmin(admin.ModelAdmin):
-    filter_horizontal = ()
-    search_fields = ('name', 'email')
+    search_fields = ['name', 'email']
 
     def delete_queryset(self, request, queryset):
         for person in queryset:
@@ -67,18 +73,21 @@ class PersonAdmin(admin.ModelAdmin):
 
 
 class TaxonAdmin(TranslationAdmin):
-    list_display = ('name', 'aphia', 'rank', 'authority', 'status', 'is_valid', 'valid_taxon', 'parent', 'timestamp')
-    list_filter = ('is_valid', 'timestamp', 'rank')
-    filter_horizontal = ('media',)
+    list_display = ['name', 'aphia', 'rank', 'authority', 'status', 'is_valid', 'valid_taxon', 'parent', 'timestamp']
+    list_filter = ['is_valid', 'timestamp', 'rank']
+    filter_horizontal = ['media']
     search_fields = ['name', 'authority']
+    readonly_fields = ['timestamp']
 
 
 class ReferenceAdmin(admin.ModelAdmin):
-    filter_horizontal = ('media',)
+    filter_horizontal = ['media']
 
 
 class TourAdmin(TranslationAdmin):
-    filter_horizontal = ('media', 'references',)
+    list_display = ['id', 'name', 'is_public', 'pub_date', 'timestamp']
+    filter_horizontal = ['media', 'references']
+    readonly_fields = ['pub_date', 'timestamp']
 
 
 # Regular models.
@@ -100,3 +109,4 @@ admin.site.register(Taxon, TaxonAdmin)
 admin.site.register(Reference, ReferenceAdmin)
 admin.site.register(Curadoria, CuradoriaAdmin)
 admin.site.register(ModifiedMedia, ModifiedMediaAdmin)
+

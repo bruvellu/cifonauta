@@ -12,7 +12,7 @@
 <div class="form-container">
     <h2>Alterações feitas pelo autor</h2>
     {% if messages %}
-    <div class="messages-div">
+    <div class="messages-div hide-messages-animation">
     {% for message in messages %}
     <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
     {% endfor %}
@@ -33,11 +33,11 @@
             </div>
             <div>
                 <p>Autor:</p>
-                <div>{{media.author}}</div>
+                <div>{{ media.user }}</div>
             </div>
             <div>
                 <p>Data de modificação:</p>
-                <div>{{media.timestamp}}</div>
+                <div>{{ media.date_modified }}</div>
             </div>
         </div>
         <table class="comparison-table">

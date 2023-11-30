@@ -51,7 +51,7 @@
 <h2>Alterar informações da mídia</h2>
 
 {% if messages %}
-<div class="messages-div">
+<div class="messages-div hide-messages-animation">
 {% for message in messages %}
 <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
 {% endfor %}
@@ -80,7 +80,7 @@
             <label>Status:</label>
         </div>
         <div 
-            class="field-div {% if media.status == 'not_edited' %}not-edited{% elif media.status == 'to_review' %}to-review{% else %}published{% endif %}"
+            class="field-div {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}"
         >
             {{ media.get_status_display }}
         </div>

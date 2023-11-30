@@ -108,7 +108,7 @@ function loadOptions(medias) {
     } else {
       optionCover = document.createElement('img')
     }
-    optionCover.classList.add('option-cover', `size-${media.size}`)
+    optionCover.classList.add('option-cover', `scale-${media.scale}`)
     optionCover.setAttribute('src', media.coverpath)
 
     let optionInfos = document.createElement('div')

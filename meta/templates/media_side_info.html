@@ -4,16 +4,16 @@
   {% include 'biodb.html' %}
 {% endif %}
 
-{% if size %}
+{% if media.scale %}
 {% spaceless %}
-<div id="size">
-  <div class="size-{{ size.slug }}" id="size-string">{% trans 'Tamanho' %}<br>{% trans size.name %}</div>
-  <div class="size-legend">
-    <div class="size-micro" title="{% trans '<0,1 mm' %}"></div>
-    <div class="size-tiny" title="{% trans '0,1 - 1,0 mm' %}"></div>
-    <div class="size-visible" title="{% trans '1,0 - 10 mm' %}"></div>
-    <div class="size-large" title="{% trans '10 - 100 mm' %}"></div>
-    <div class="size-huge" title="{% trans '>100 mm' %}"></div>
+<div id="scale">
+  <div class="scale-{{ media.scale }}" id="scale-string">{% trans 'Escala' %}<br>{% trans media.get_scale_display %}</div>
+  <div class="scale-legend">
+    <div class="scale-micro" title="{% trans media.SCALE_CHOICES.0.1 %}"></div>
+    <div class="scale-tiny" title="{% trans media.SCALE_CHOICES.1.1 %}"></div>
+    <div class="scale-visible" title="{% trans media.SCALE_CHOICES.2.1 %}"></div>
+    <div class="scale-large" title="{% trans media.SCALE_CHOICES.3.1 %}"></div>
+    <div class="scale-huge" title="{% trans media.SCALE_CHOICES.4.1 %}"></div>
   </div>
 </div>
 {% endspaceless %}

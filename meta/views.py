@@ -932,7 +932,7 @@ def modified_media_revision(request, pk):
 
         media.title = modified_media.title
         media.caption = modified_media.caption
-        media.date_created = modified_media.date
+        media.date_created = modified_media.date_created
         media.location = modified_media.location
         media.city = modified_media.city
         media.state = modified_media.state

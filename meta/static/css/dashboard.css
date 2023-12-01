@@ -661,6 +661,14 @@ textarea {
     align-self: center;
 }
 
+.dashboard-form:has( > .modifications-button) {
+    margin-top: 0;
+}
+
+.modifications-button {
+    margin-bottom: 1rem;
+}
+
 
 
 

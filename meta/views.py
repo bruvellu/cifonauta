@@ -625,7 +625,7 @@ def update_my_medias(request, pk):
         return redirect('update_media', media.pk)
 
     if modified_media and not messages.get_messages(request):
-        messages.warning(request, "Esta mídia tem alterações pendentes")
+        messages.warning(request, "Esta mídia tem alterações pendentes. Clique no botão abaixo para ver as alterações. Se você fizer outras alterações, as anteriores serão sobrepostas")
 
     form = UpdateMyMediaForm(instance=media)
     if media.state:

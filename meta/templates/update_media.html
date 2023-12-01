@@ -51,7 +51,7 @@
 <h2>Alterar informações da mídia</h2>
 
 {% if messages %}
-<div class="messages-div hide-messages-animation">
+<div class="messages-div">
 {% for message in messages %}
 <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
 {% endfor %}
@@ -59,6 +59,10 @@
 {% endif %}
 
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
+    {% if media.modified_media %}
+    <button id="open-modal-button" class='primary-button neutral-button modifications-button' type="button">Ver alterações</button>
+    {% endif %}
+
     {% csrf_token %}
     <div class="field-container">
         <div class="label-div">
@@ -134,9 +138,6 @@
     {% endfor %}
     <div class="buttons-div">
         <button class='primary-button submit-button' type="submit" name="action" value="update">Atualizar</button>
-        {% if media.modified_media %}
-        <button id="open-modal-button" class='primary-button neutral-button' type="button">Ver alterações</button>
-        {% endif %}
     </div>
 </form>
 

@@ -101,6 +101,11 @@ def upload_media_step1(request):
                 media.file = file
                 # Define user field of Media instance
                 media.user = request.user
+                # Define if media is a photo or a video
+                if extension.endswith(settings.PHOTO_EXTENSIONS):
+                    media.datatype = 'photo'
+                elif extension.endswith(settings.VIDEO_EXTENSIONS):
+                    media.datatype = 'video'
 
                 # Save instance
                 media.save()
@@ -548,7 +553,7 @@ def update_my_medias(request, pk):
                     modified_media.caption = form.cleaned_data['caption']
                     modified_media.authors.set(form.cleaned_data['authors'])
                     modified_media.taxa.set(form.cleaned_data['taxa'])
-                    modified_media.date = form.cleaned_data['date_created']
+                    modified_media.date_created = form.cleaned_data['date_created']
                     modified_media.location = form.cleaned_data['location']
                     modified_media.city = form.cleaned_data['city']
                     modified_media.state = form.cleaned_data['state']
@@ -583,13 +588,13 @@ def update_my_medias(request, pk):
                     new_modified_media = ModifiedMedia(media=media)
                     new_modified_media.title = form.cleaned_data['title']
                     new_modified_media.caption = form.cleaned_data['caption']
-                    new_modified_media.date = form.cleaned_data['date_created']
+                    new_modified_media.date_created = form.cleaned_data['date_created']
                     new_modified_media.location = form.cleaned_data['location']
                     new_modified_media.city = form.cleaned_data['city']
                     new_modified_media.state = form.cleaned_data['state']
                     new_modified_media.country = form.cleaned_data['country']
                     new_modified_media.geolocation = form.cleaned_data['geolocation']
-                    new_modified_media.user = form.cleaned_data['user']
+                    new_modified_media.user = request.user.id
                     new_modified_media.license = form.cleaned_data['license']
 
                     new_modified_media.save()
@@ -636,7 +641,6 @@ def update_my_medias(request, pk):
         form.fields['state'].queryset = State.objects.filter(country=media.country.id)
     else:
         form.fields['state'].queryset = State.objects.none()
-    form.fields['user'].queryset = UserCifonauta.objects.filter(id=request.user.id)
     if media.status == 'published':
         license_choices = [choice[0] for choice in Media.LICENSE_CHOICES]
         license_index = license_choices.index(media.license)

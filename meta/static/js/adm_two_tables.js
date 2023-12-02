@@ -1,9 +1,9 @@
 class TwoTables {
   data = []
   options
-  searchOptions
+  searchOptionsInput
   selectedOptions
-  searchSelectedOptions
+  searchSelectedOptionsInput
   selectAllOptions
   removeAllOptions
   categoryOptions
@@ -11,18 +11,18 @@ class TwoTables {
 
   constructor(options, searchOptions, selectedOptions, searchSelectedOptions, selectAllOptions, removeAllOptions, categoryOptions = null) {
     this.options = options
-    this.searchOptions = searchOptions
+    this.searchOptionsInput = searchOptions
     this.selectedOptions = selectedOptions
-    this.searchSelectedOptions = searchSelectedOptions
+    this.searchSelectedOptionsInput = searchSelectedOptions
     this.selectAllOptions = selectAllOptions
     this.removeAllOptions = removeAllOptions
 
-    this.searchOptions.addEventListener('input', (e) => {
-      this.searchOptions(this.searchOptions, this.options)
+    this.searchOptionsInput.addEventListener('input', (e) => {
+      this.searchOptions(this.searchOptionsInput, this.options)
     })
 
-    this.searchSelectedOptions.addEventListener('input', (e) => {
-      this.searchOptions(this.searchSelectedOptions, this.selectedOptions)
+    this.searchSelectedOptionsInput.addEventListener('input', (e) => {
+      this.searchOptions(this.searchSelectedOptionsInput, this.selectedOptions)
     })
 
     this.selectAllOptions.addEventListener('click', () => {
@@ -77,8 +77,8 @@ class TwoTables {
       }
     })
 
-    this.resetSearchInput(this.searchOptions, this.options)
-    this.resetSearchInput(this.searchSelectedOptions, this.selectedOptions)
+    this.resetSearchInput(this.searchOptionsInput, this.options)
+    this.resetSearchInput(this.searchSelectedOptionsInput, this.selectedOptions)
   }
   
   selectOption(buttonTag) {
@@ -141,8 +141,8 @@ class TwoTables {
       }
     })
   
-    this.resetSearchInput(this.searchOptions, this.options)
-    this.resetSearchInput(this.searchSelectedOptions, this.selectedOptions)
+    this.resetSearchInput(this.searchOptionsInput, this.options)
+    this.resetSearchInput(this.searchSelectedOptionsInput, this.selectedOptions)
   }
   
   removeAll() {
@@ -154,8 +154,8 @@ class TwoTables {
       }
     })
   
-    this.resetSearchInput(this.searchOptions, this.options)
-    this.resetSearchInput(this.searchSelectedOptions, this.selectedOptions)
+    this.resetSearchInput(this.searchOptionsInput, this.options)
+    this.resetSearchInput(this.searchSelectedOptionsInput, this.selectedOptions)
   }
 
   createOptionTag(optionInfos, isSelected) {

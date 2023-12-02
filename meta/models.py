@@ -262,19 +262,19 @@ class Media(models.Model):
                                    default='',
                                    max_length=25,
                                    blank=True,
-                                   help_text=_('Geolocalização da imagem no formato decimal.'))
+                                   help_text=_('Geolocalização no formato sexagesimal (S 23°48\'45" W 45°24\'27").'))
 
     latitude = models.CharField(_('latitude'),
                                 default='',
                                 max_length=25,
                                 blank=True,
-                                help_text=_('Latitude onde a imagem foi criada.'))
+                                help_text=_('Latitude onde a imagem foi criada no formato decimal.'))
 
     longitude = models.CharField(_('longitude'),
                                  default='',
                                  max_length=25,
                                  blank=True,
-                                 help_text=_('Longitude onde a imagem foi criada.'))
+                                 help_text=_('Longitude onde a imagem foi criada no formato decimal.'))
 
     # Fields associated with other models using Many2Many
     taxa = models.ManyToManyField('Taxon',

@@ -26,7 +26,6 @@ urlpatterns = [
 
         path('synchronize-fields', views.synchronize_fields, name='synchronize_fields'),
         path('get-tour-medias', views.get_tour_medias, name='get_tour_medias'),
-        path('get-users', views.get_users, name='get_users'),
 
         # Menu
         path('search/', views.search_page, name='search_url'),

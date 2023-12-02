@@ -751,31 +751,26 @@ def my_medias(request):
     return render(request, 'my_medias.html', context)
 
 
+@never_cache
 def manage_users(request):
-    users = UserCifonauta.objects.all().exclude(id=request.user.id)
+    users_queryset = UserCifonauta.objects.all().exclude(id=request.user.id)
 
     if request.method == 'POST':
         action = request.POST['action']
         if action == 'enable-authors':
-            user_ids = request.POST.getlist('selected_authors')
-            if len(user_ids) == 0:
-                messages.error(request, 'Nenhum usuário selecionado para realizar ação')
-                return redirect('manage_users')
-            author_action = request.POST.get('author_action')
-            users_action = UserCifonauta.objects.filter(id__in=user_ids)
+            author_ids = request.POST.getlist('author_ids')
 
-            if author_action == 'turn_author':
-                users_action.update(is_author=True)
-            elif author_action == 'disable_author':
-                for user in users_action:
-                    if user.uploaded_media.all():
-                        messages.error(request, f'O usuário "{user.first_name} {user.last_name}" possui mídia relacionada')
-                        return redirect('manage_users')
-                    
-                users_action.update(is_author=False)
-            else:
-                messages.warning(request, "Nenhuma ação selecionada")
-                return redirect('manage_users')
+            authors = UserCifonauta.objects.filter(id__in=author_ids)
+            not_authors = UserCifonauta.objects.exclude(Q(id__in=author_ids) | Q(id=request.user.id))
+
+            for user in not_authors:
+                if user.uploaded_media.all():
+                    messages.error(request, f'O usuário "{user.first_name} {user.last_name}" possui mídia relacionada')
+                    return redirect('manage_users')
+                
+            authors.update(is_author=True)
+            not_authors.update(is_author=False)
+
             messages.success(request, "Os autores foram atualizados com sucesso")
         else:
             specialist_ids = request.POST.getlist('specialist_ids')
@@ -786,36 +781,38 @@ def manage_users(request):
             curatorship.specialists.set(specialists)
 
             messages.success(request, "Os especialistas foram atualizados com sucesso")
-            
-    curatorships = Curadoria.objects.filter(curators=request.user.id)
 
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
+    curatorships = Curadoria.objects.filter(curators=request.user.id)
+    authors_queryset = UserCifonauta.objects.filter(is_author=True).exclude(id=request.user.id)
+    
+    users = [
+        {
+            'name': f'{user.first_name} {user.last_name}',
+            'id': user.id,
+            'is_author': user.is_author,
+            'curatorship_ids': [str(curatorship.id) for curatorship in curatorships.filter(Q(specialists=user.id))]
+        } for user in users_queryset
+    ]
+
+    authors = [
+        {
+            'name': f'{user.first_name} {user.last_name}',
+            'id': user.id,
+            'curatorship_ids': [str(curatorship.id) for curatorship in curatorships.filter(Q(specialists=user.id))]
+        } for user in authors_queryset
+    ]
+
     context = {
         'users': users,
+        'authors': authors,
         'curatorships': curatorships,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }
     return render(request, 'manage_users.html', context)        
-    
-
-def get_users(request):
-    curatorships = Curadoria.objects.filter(curators=request.user.id)
-    users = UserCifonauta.objects.filter(is_author=True).exclude(id=request.user.id)
-
-    response = {
-        'users': [
-            {
-                'name': f'{user.first_name} {user.last_name}',
-                'id': user.id,
-                'curatorship_ids': [str(curatorship.id) for curatorship in curatorships.filter(Q(specialists=user.id))]
-            } for user in users
-        ]
-    }
-
-    return JsonResponse(response)
 
 
 @never_cache

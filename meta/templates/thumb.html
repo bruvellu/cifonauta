@@ -9,7 +9,7 @@
   {% if media.datatype == 'video' %}<span class="thumb-duration">{{ media.duration|slice:'3:' }}</span>{% endif %}
 </a>
 
-<a class="lupa highslide size-{{ media.size }}" onclick="return hs.expand(this)" href="{{ MEDIA_URL }}{{ media.coverpath }}">+</a>
+<a class="lupa highslide scale-{{ media.scale }}" onclick="return hs.expand(this)" href="{{ MEDIA_URL }}{{ media.coverpath }}">+</a>
 
 {% if media.title %}
 <div class="highslide-heading">{{ media.title }}</div>

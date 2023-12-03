@@ -106,6 +106,12 @@ class Media(models.Model):
     DATATYPE_CHOICES = (('photo', _('photo')),
                         ('video', _('video')))
 
+    SCALE_CHOICES = (('micro', _('<0,1 mm')),
+                     ('tiny', _('0,1–1,0 mm')),
+                     ('visible', _('1,0–10 mm')),
+                     ('large', _('10–100 mm')),
+                     ('huge', _('>100 mm')))
+
     # Fields related to file handling
     uuid = models.UUIDField(_('identificador'),
                             default=uuid.uuid4,
@@ -234,6 +240,12 @@ class Media(models.Model):
                                blank=True,
                                help_text=_('Legenda da imagem.'))
 
+    scale = models.CharField(_('escala da imagem'),
+                             max_length=12,
+                             blank=True,
+                             choices=SCALE_CHOICES,
+                             help_text=_('Classes de escala.'))
+
     duration = models.CharField(_('duração'),
                                 max_length=20,
                                 default='00:00:00',
@@ -250,19 +262,19 @@ class Media(models.Model):
                                    default='',
                                    max_length=25,
                                    blank=True,
-                                   help_text=_('Geolocalização da imagem no formato decimal.'))
+                                   help_text=_('Geolocalização no formato sexagesimal (S 23°48\'45" W 45°24\'27").'))
 
     latitude = models.CharField(_('latitude'),
                                 default='',
                                 max_length=25,
                                 blank=True,
-                                help_text=_('Latitude onde a imagem foi criada.'))
+                                help_text=_('Latitude onde a imagem foi criada no formato decimal.'))
 
     longitude = models.CharField(_('longitude'),
                                  default='',
                                  max_length=25,
                                  blank=True,
-                                 help_text=_('Longitude onde a imagem foi criada.'))
+                                 help_text=_('Longitude onde a imagem foi criada no formato decimal.'))
 
     # Fields associated with other models using Many2Many
     taxa = models.ManyToManyField('Taxon',
@@ -365,15 +377,6 @@ class Media(models.Model):
                              # SearchVector('country__name', weight='D')
 
 
-    def get_size(self):
-        '''Returns tag from size category, if any.'''
-        size_query = self.tags.filter(category__slug='tamanho')
-        if size_query:
-            size = size_query[0]
-        else:
-            size = ''
-        return size
-
     class Meta:
         verbose_name = _('arquivo')
         verbose_name_plural = _('arquivos')
@@ -425,7 +428,7 @@ class Tag(models.Model):
     class Meta:
         verbose_name = _('marcador')
         verbose_name_plural = _('marcadores')
-        ordering = ['name']
+        ordering = ['category', 'name']
 
 
 class Category(models.Model):

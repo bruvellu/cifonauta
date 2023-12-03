@@ -101,6 +101,11 @@ def upload_media_step1(request):
                 media.file = file
                 # Define user field of Media instance
                 media.user = request.user
+                # Define if media is a photo or a video
+                if extension.endswith(settings.PHOTO_EXTENSIONS):
+                    media.datatype = 'photo'
+                elif extension.endswith(settings.VIDEO_EXTENSIONS):
+                    media.datatype = 'video'
 
                 # Save instance
                 media.save()
@@ -399,13 +404,13 @@ def curadoria_media_list(request):
         curations_taxons.extend(taxons)
 
     queryset = Media.objects.filter(status='draft')
-    queryset = queryset.filter(taxa__in=curations_taxons)
+    if curations.filter(name='Sem táxon').exists():
+        queryset = queryset.filter(Q(taxa__in=curations_taxons) | Q(taxa=None))
+    else:
+        queryset = queryset.filter(taxa__in=curations_taxons)
     
     # Apply distinct() to eliminate duplicates
     queryset = queryset.distinct()
-
-    filtered_queryset = queryset
-    filter_form = DashboardFilterForm()
 
     if request.method == "POST":
         media_ids = request.POST.getlist('selected_media_ids')
@@ -444,32 +449,40 @@ def curadoria_media_list(request):
                 messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
         else:
             messages.warning(request, _('Nenhum registro foi selecionado'))
-    elif request.method == "GET":
-        search = request.GET.get('search')
-        if search:
-            filtered_queryset = filtered_queryset.filter(title__icontains=search)
-        
 
-        curation_ids = request.GET.getlist('curations')
-        if curation_ids:
-            filtered_curations = curations.filter(id__in=curation_ids).distinct()
+    filtered_queryset = queryset
 
-            taxons = set()
-            for curation in filtered_curations:
-                taxons.update(curation.taxons.all())
+    search = request.GET.get('search')
+    if search:
+        filtered_queryset = filtered_queryset.filter(title__icontains=search)
+    
 
+    curation_ids = request.GET.getlist('curations')
+    if curation_ids:
+        filtered_curations = curations.filter(id__in=curation_ids).distinct()
+
+        taxons = set()
+        for curation in filtered_curations:
+            taxons.update(curation.taxons.all())
+
+        if filtered_curations.filter(name='Sem táxon').exists():
+            filtered_queryset = filtered_queryset.filter(Q(taxa__in=taxons) | Q(taxa=None))
+        else:
             filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
-        
+    
 
-        alphabetical_order = request.GET.get('alphabetical_order')
-        if alphabetical_order:
-            filtered_queryset = filtered_queryset.order_by('title')
-        
-        filter_form = DashboardFilterForm({
-            'search': search,
-            'curations': curation_ids,
-            'alphabetical_order': alphabetical_order,
-        })
+    alphabetical_order = request.GET.get('alphabetical_order')
+    if alphabetical_order:
+        filtered_queryset = filtered_queryset.order_by('title')
+    
+    filter_form = DashboardFilterForm({
+        'search': search,
+        'curations': curation_ids,
+        'alphabetical_order': alphabetical_order,
+    })
+    
+    if not curations.filter(name='Sem táxon').exists():
+        filter_form.fields['curations'].queryset = Curadoria.objects.exclude(name='Sem táxon')
 
     queryset_paginator = Paginator(filtered_queryset, 12)
     page_num = request.GET.get('page')
@@ -548,7 +561,7 @@ def update_my_medias(request, pk):
                     modified_media.caption = form.cleaned_data['caption']
                     modified_media.authors.set(form.cleaned_data['authors'])
                     modified_media.taxa.set(form.cleaned_data['taxa'])
-                    modified_media.date = form.cleaned_data['date_created']
+                    modified_media.date_created = form.cleaned_data['date_created']
                     modified_media.location = form.cleaned_data['location']
                     modified_media.city = form.cleaned_data['city']
                     modified_media.state = form.cleaned_data['state']
@@ -583,13 +596,13 @@ def update_my_medias(request, pk):
                     new_modified_media = ModifiedMedia(media=media)
                     new_modified_media.title = form.cleaned_data['title']
                     new_modified_media.caption = form.cleaned_data['caption']
-                    new_modified_media.date = form.cleaned_data['date_created']
+                    new_modified_media.date_created = form.cleaned_data['date_created']
                     new_modified_media.location = form.cleaned_data['location']
                     new_modified_media.city = form.cleaned_data['city']
                     new_modified_media.state = form.cleaned_data['state']
                     new_modified_media.country = form.cleaned_data['country']
                     new_modified_media.geolocation = form.cleaned_data['geolocation']
-                    new_modified_media.user = form.cleaned_data['user']
+                    new_modified_media.user = request.user
                     new_modified_media.license = form.cleaned_data['license']
 
                     new_modified_media.save()
@@ -625,7 +638,7 @@ def update_my_medias(request, pk):
         return redirect('update_media', media.pk)
 
     if modified_media and not messages.get_messages(request):
-        messages.warning(request, "Esta mídia tem alterações pendentes")
+        messages.warning(request, "Esta mídia tem alterações pendentes. Clique no botão abaixo para ver as alterações. Se você fizer outras alterações, as anteriores serão sobrepostas")
 
     form = UpdateMyMediaForm(instance=media)
     if media.state:
@@ -636,7 +649,6 @@ def update_my_medias(request, pk):
         form.fields['state'].queryset = State.objects.filter(country=media.country.id)
     else:
         form.fields['state'].queryset = State.objects.none()
-    form.fields['user'].queryset = UserCifonauta.objects.filter(id=request.user.id)
     if media.status == 'published':
         license_choices = [choice[0] for choice in Media.LICENSE_CHOICES]
         license_index = license_choices.index(media.license)
@@ -669,9 +681,6 @@ def my_medias(request):
     user = request.user
     queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
 
-    filtered_queryset = queryset
-    filter_form = DashboardFilterForm()
-
     if request.method == "POST":
         media_ids = request.POST.getlist('selected_media_ids')
 
@@ -696,32 +705,37 @@ def my_medias(request):
                 messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
         else:
             messages.warning(request, _('Nenhum registro foi selecionado'))
-    elif request.method == "GET":
-        search = request.GET.get('search')
-        if search:
-            filtered_queryset = filtered_queryset.filter(title__icontains=search)
-        
 
-        curation_ids = request.GET.getlist('curations')
-        if curation_ids:
-            filtered_curations = Curadoria.objects.filter(id__in=curation_ids)
+    filtered_queryset = queryset
 
-            taxons = set()
-            for curation in filtered_curations:
-                taxons.update(curation.taxons.all())
+    search = request.GET.get('search')
+    if search:
+        filtered_queryset = filtered_queryset.filter(title__icontains=search)
+    
 
-            filtered_queryset = filtered_queryset.filter(taxa__in=taxons).distinct()
-        
+    curation_ids = request.GET.getlist('curations')
+    if curation_ids:
+        filtered_curations = Curadoria.objects.filter(id__in=curation_ids)
 
-        alphabetical_order = request.GET.get('alphabetical_order')
-        if alphabetical_order:
-            filtered_queryset = filtered_queryset.order_by('title')
-        
-        filter_form = DashboardFilterForm({
-            'search': search,
-            'curations': curation_ids,
-            'alphabetical_order': alphabetical_order,
-        })
+        taxons = set()
+        for curation in filtered_curations:
+            taxons.update(curation.taxons.all())
+
+        if filtered_curations.filter(name='Sem táxon').exists():
+            filtered_queryset = filtered_queryset.filter(Q(taxa__in=taxons) | Q(taxa=None))
+        else:
+            filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
+    
+
+    alphabetical_order = request.GET.get('alphabetical_order')
+    if alphabetical_order:
+        filtered_queryset = filtered_queryset.order_by('title')
+    
+    filter_form = DashboardFilterForm({
+        'search': search,
+        'curations': curation_ids,
+        'alphabetical_order': alphabetical_order,
+    })
 
     user = request.user
     queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
@@ -747,31 +761,26 @@ def my_medias(request):
     return render(request, 'my_medias.html', context)
 
 
+@never_cache
 def manage_users(request):
-    users = UserCifonauta.objects.all().exclude(id=request.user.id)
+    users_queryset = UserCifonauta.objects.all().exclude(id=request.user.id)
 
     if request.method == 'POST':
         action = request.POST['action']
         if action == 'enable-authors':
-            user_ids = request.POST.getlist('selected_authors')
-            if len(user_ids) == 0:
-                messages.error(request, 'Nenhum usuário selecionado para realizar ação')
-                return redirect('manage_users')
-            author_action = request.POST.get('author_action')
-            users_action = UserCifonauta.objects.filter(id__in=user_ids)
+            author_ids = request.POST.getlist('author_ids')
 
-            if author_action == 'turn_author':
-                users_action.update(is_author=True)
-            elif author_action == 'disable_author':
-                for user in users_action:
-                    if user.uploaded_media.all():
-                        messages.error(request, f'O usuário "{user.first_name} {user.last_name}" possui mídia relacionada')
-                        return redirect('manage_users')
-                    
-                users_action.update(is_author=False)
-            else:
-                messages.warning(request, "Nenhuma ação selecionada")
-                return redirect('manage_users')
+            authors = UserCifonauta.objects.filter(id__in=author_ids)
+            not_authors = UserCifonauta.objects.exclude(Q(id__in=author_ids) | Q(id=request.user.id))
+
+            for user in not_authors:
+                if user.uploaded_media.all():
+                    messages.error(request, f'O usuário "{user.first_name} {user.last_name}" possui mídia relacionada')
+                    return redirect('manage_users')
+                
+            authors.update(is_author=True)
+            not_authors.update(is_author=False)
+
             messages.success(request, "Os autores foram atualizados com sucesso")
         else:
             specialist_ids = request.POST.getlist('specialist_ids')
@@ -782,103 +791,38 @@ def manage_users(request):
             curatorship.specialists.set(specialists)
 
             messages.success(request, "Os especialistas foram atualizados com sucesso")
-            
-    curatorships = Curadoria.objects.filter(curators=request.user.id)
 
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
+    curatorships = Curadoria.objects.filter(curators=request.user.id)
+    authors_queryset = UserCifonauta.objects.filter(is_author=True).exclude(id=request.user.id)
+    
+    users = [
+        {
+            'name': f'{user.first_name} {user.last_name}',
+            'id': user.id,
+            'is_author': user.is_author,
+            'curatorship_ids': [str(curatorship.id) for curatorship in curatorships.filter(Q(specialists=user.id))]
+        } for user in users_queryset
+    ]
+
+    authors = [
+        {
+            'name': f'{user.first_name} {user.last_name}',
+            'id': user.id,
+            'curatorship_ids': [str(curatorship.id) for curatorship in curatorships.filter(Q(specialists=user.id))]
+        } for user in authors_queryset
+    ]
+
     context = {
         'users': users,
+        'authors': authors,
         'curatorships': curatorships,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }
     return render(request, 'manage_users.html', context)        
-    
-
-def get_users(request):
-    curatorships = Curadoria.objects.filter(curators=request.user.id)
-    users = UserCifonauta.objects.filter(is_author=True).exclude(id=request.user.id)
-
-    response = {
-        'users': [
-            {
-                'name': f'{user.first_name} {user.last_name}',
-                'id': user.id,
-                'curatorship_ids': [str(curatorship.id) for curatorship in curatorships.filter(Q(specialists=user.id))]
-            } for user in users
-        ]
-    }
-
-    return JsonResponse(response)
-
-
-def manage_users(request):
-    users = UserCifonauta.objects.all().exclude(id=request.user.id)
-
-    if request.method == 'POST':
-        action = request.POST['action']
-        if action == 'enable-authors':
-            user_ids = request.POST.getlist('selected_authors')
-            if len(user_ids) == 0:
-                messages.error(request, 'Nenhum usuário selecionado para realizar ação')
-                return redirect('manage_users')
-            author_action = request.POST.get('author_action')
-            users_action = UserCifonauta.objects.filter(id__in=user_ids)
-
-            if author_action == 'turn_author':
-                users_action.update(is_author=True)
-            elif author_action == 'disable_author':
-                for user in users_action:
-                    if user.uploaded_media.all():
-                        messages.error(request, f'O usuário "{user.first_name} {user.last_name}" possui mídia relacionada')
-                        return redirect('manage_users')
-                    
-                users_action.update(is_author=False)
-            else:
-                messages.warning(request, "Nenhuma ação selecionada")
-                return redirect('manage_users')
-            messages.success(request, "Os autores foram atualizados com sucesso")
-        else:
-            specialist_ids = request.POST.getlist('specialist_ids')
-            curatorship_id = request.POST.get('curatorship_id')
-
-            specialists = UserCifonauta.objects.filter(id__in=specialist_ids)
-            curatorship = Curadoria.objects.filter(id=curatorship_id).first()
-            curatorship.specialists.set(specialists)
-
-            messages.success(request, "Os especialistas foram atualizados com sucesso")
-            
-    curatorships = Curadoria.objects.filter(curators=request.user.id)
-
-    is_specialist = request.user.curatorship_specialist.exists()
-    is_curator = request.user.curatorship_curator.exists()
-
-    context = {
-        'users': users,
-        'curatorships': curatorships,
-        'is_specialist': is_specialist,
-        'is_curator': is_curator,
-    }
-    return render(request, 'manage_users.html', context)        
-    
-
-def get_users(request):
-    curatorships = Curadoria.objects.filter(curators=request.user.id)
-    users = UserCifonauta.objects.filter(is_author=True).exclude(id=request.user.id)
-
-    response = {
-        'users': [
-            {
-                'name': user.first_name + user.last_name,
-                'id': user.id,
-                'curatorship_ids': [str(curatorship.id) for curatorship in curatorships.filter(Q(specialists=user.id))]
-            } for user in users
-        ]
-    }
-    
-    return JsonResponse(response)
 
 
 @never_cache
@@ -891,15 +835,29 @@ def revision_media(request):
     for curadoria in curations:
         taxons = curadoria.taxons.all()
         curations_taxons.extend(taxons)
+    
+    queryset = None
 
-    queryset = Media.objects.filter(
-        Q(status='submitted') & Q(taxa__in=curations_taxons) |
-        Q(modified_media__taxa__in=curations_taxons))
+    if curations.filter(name='Sem táxon').exists():
+        queryset = Media.objects.filter(
+            (Q(status='submitted') & (Q(taxa__in=curations_taxons) | Q(taxa=None))) |
+            (Q(status='published') & (
+                Q(modified_media__taxa__in=curations_taxons) | 
+                (Q(modified_media__isnull=False) & Q(modified_media__taxa=None))
+            ))
+        )
+    else:
+        queryset = Media.objects.filter(
+            Q(status='submitted') & Q(taxa__in=curations_taxons) |
+            Q(modified_media__taxa__in=curations_taxons))
 
     queryset = queryset.distinct()
 
-    filtered_queryset = queryset
-    filter_form = DashboardFilterForm()
+    # filtered_queryset = queryset
+    # filter_form = DashboardFilterForm()
+    # if not curations.filter(name='Sem táxon').exists():
+    #     print('oi')
+    #     filter_form.fields['curations'].queryset = Curadoria.objects.exclude(name='Sem táxon')
 
     if request.method == 'POST':
         media_ids = request.POST.getlist('selected_media_ids')
@@ -937,32 +895,40 @@ def revision_media(request):
                 messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
         else:
             messages.warning(request, _('Nenhum registro foi selecionado'))
-    elif request.method == "GET":
-        search = request.GET.get('search')
-        if search:
-            filtered_queryset = filtered_queryset.filter(title__icontains=search)
-        
+    
+    filtered_queryset = queryset
 
-        curation_ids = request.GET.getlist('curations')
-        if curation_ids:
-            filtered_curations = curations.filter(id__in=curation_ids)
+    search = request.GET.get('search')
+    if search:
+        filtered_queryset = filtered_queryset.filter(title__icontains=search)
+    
 
-            taxons = set()
-            for curation in filtered_curations:
-                taxons.update(curation.taxons.all())
+    curation_ids = request.GET.getlist('curations')
+    if curation_ids:
+        filtered_curations = curations.filter(id__in=curation_ids)
 
-            filtered_queryset = filtered_queryset.filter(taxa__in=taxons).distinct()
-        
+        taxons = set()
+        for curation in filtered_curations:
+            taxons.update(curation.taxons.all())
 
-        alphabetical_order = request.GET.get('alphabetical_order')
-        if alphabetical_order:
-            filtered_queryset = filtered_queryset.order_by('title')
-        
-        filter_form = DashboardFilterForm({
-            'search': search,
-            'curations': curation_ids,
-            'alphabetical_order': alphabetical_order,
-        })
+        if filtered_curations.filter(name='Sem táxon').exists():
+            filtered_queryset = filtered_queryset.filter(Q(taxa__in=taxons) | Q(taxa=None))
+        else:
+            filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
+    
+
+    alphabetical_order = request.GET.get('alphabetical_order')
+    if alphabetical_order:
+        filtered_queryset = filtered_queryset.order_by('title')
+    
+    filter_form = DashboardFilterForm({
+        'search': search,
+        'curations': curation_ids,
+        'alphabetical_order': alphabetical_order,
+    })
+
+    if not curations.filter(name='Sem táxon').exists():
+        filter_form.fields['curations'].queryset = Curadoria.objects.exclude(name='Sem táxon')
     
 
     queryset_paginator = Paginator(filtered_queryset, 12)
@@ -999,7 +965,7 @@ def modified_media_revision(request, pk):
 
         media.title = modified_media.title
         media.caption = modified_media.caption
-        media.date_created = modified_media.date
+        media.date_created = modified_media.date_created
         media.location = modified_media.location
         media.city = modified_media.city
         media.state = modified_media.state

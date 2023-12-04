@@ -364,7 +364,11 @@ def edit_metadata(request, media_id):
             meta.edit_metadata(metadata)
         except:
             pass
-        media_instance.status = 'submitted'
+
+        action = request.POST.get('action')
+        
+        if action == 'submit':
+            media_instance.status = 'submitted'
         media_instance.taxa.set(form.cleaned_data['taxa'])
         media_instance.authors.set(form.cleaned_data['authors'])
 
@@ -373,7 +377,8 @@ def edit_metadata(request, media_id):
 
         media_instance.save()
 
-        form.send_mail(request.user, [media], 'Edição de mídia do Cifonauta', 'edited_media_email.html')
+        if action == 'submit':
+            form.send_mail(request.user, [media], 'Edição de mídia do Cifonauta', 'edited_media_email.html')
 
         messages.success(request, 'Edição de mídia realizado com sucesso')
 
@@ -390,7 +395,7 @@ def edit_metadata(request, media_id):
         'is_curator': is_curator,
     }
 
-    return render(request, 'update_media.html', context) 
+    return render(request, 'media_editing.html', context) 
 
 
 @never_cache
@@ -1062,8 +1067,12 @@ def revision_media_detail(request, media_id):
                 Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
         except:
             pass
-        media_instance.status = 'published'
-        media_instance.is_public = True
+        
+        action = request.POST.get('action')
+        if action == 'publish':
+            media_instance.status = 'published'
+            media_instance.is_public = True
+            
         media_instance.taxa.set(form.cleaned_data['taxa'])
         media_instance.authors.set(form.cleaned_data['authors'])
 
@@ -1072,10 +1081,12 @@ def revision_media_detail(request, media_id):
         
         media_instance.save()
 
-        form.send_mail(request.user, [media], 'Revisão de mídia do Cifonauta', 'published_media_email.html')
+        if action == 'publish':
+            form.send_mail(request.user, [media], 'Revisão de mídia do Cifonauta', 'published_media_email.html')
 
         messages.success(request, f'A mídia {media.title} foi publicada com sucesso')
         return redirect('media_revision')
+    
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 

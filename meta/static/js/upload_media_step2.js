@@ -70,15 +70,9 @@ countryField.addEventListener('change', (e) => {
         if (e.target.options[e.target.selectedIndex].value == 1) {
             stateContainer.classList.remove('hide-div')
             cityContainer.classList.remove('hide-div')
-
-            stateField.required = true
-            cityField.required = true
         } else {
             stateContainer.classList.add('hide-div')
             cityContainer.classList.add('hide-div')
-
-            stateField.required = false
-            cityField.required = false
         }
     })
 })

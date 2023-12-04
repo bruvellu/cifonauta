@@ -4,12 +4,6 @@ let countryField = document.querySelector('#id_country')
 if (countryField.options[countryField.selectedIndex].value != 1) {
     stateContainer.classList.add('hide-div')
     cityContainer.classList.add('hide-div')
-} else {
-    let stateField = document.querySelector('#id_state')
-    let cityField = document.querySelector('#id_city')
-    
-    stateField.required = true
-    cityField.required = true
 }
 
 //Synchronize Country, State and City fields
@@ -53,15 +47,9 @@ countryField.addEventListener('change', (e) => {
         if (e.target.options[e.target.selectedIndex].value == 1) {
             stateContainer.classList.remove('hide-div')
             cityContainer.classList.remove('hide-div')
-
-            stateField.required = true
-            cityField.required = true
         } else {
             stateContainer.classList.add('hide-div')
             cityContainer.classList.add('hide-div')
-
-            stateField.required = false
-            cityField.required = false
         }
     })
 })

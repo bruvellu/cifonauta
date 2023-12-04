@@ -181,10 +181,6 @@ def upload_media_step2(request):
             if user_person not in form.cleaned_data['authors']:
                     messages.error(request, f'O usuário logado ({user_person.name}) deve ser incluído como autor')
                     return redirect('upload_media_step2')
-                
-            if form.cleaned_data['country'].id == 1 and not (form.cleaned_data['state'] and form.cleaned_data['city']):
-                messages.error(request, 'Você precisa selecionar um estado e uma cidade')
-                return redirect('upload_media_step2')
             
             for media in medias:
                 file = media.file.name.split('/')[-1]

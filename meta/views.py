@@ -208,7 +208,7 @@ def upload_media_step2(request):
                 media.status = 'draft'
                 media.save()
 
-                if not media.is_video():
+                if media.datatype == 'photo':
                     coverpath = Image.open(media.coverpath.path)
                     coverpath.thumbnail((1280, 720))
                     coverpath.save(media.coverpath.path, quality=40)
@@ -404,7 +404,7 @@ def curadoria_media_list(request):
         taxons = curadoria.taxons.all()
         curations_taxons.extend(taxons)
 
-    queryset = Media.objects.filter(status='draft')
+    queryset = Media.objects.filter(status='draft').order_by('-date_modified')
     if curations.filter(name='Sem táxon').exists():
         queryset = queryset.filter(Q(taxa__in=curations_taxons) | Q(taxa=None))
     else:
@@ -846,11 +846,11 @@ def revision_media(request):
                 Q(modified_media__taxa__in=curations_taxons) | 
                 (Q(modified_media__isnull=False) & Q(modified_media__taxa=None))
             ))
-        )
+        ).order_by('-date_modified')
     else:
         queryset = Media.objects.filter(
             Q(status='submitted') & Q(taxa__in=curations_taxons) |
-            Q(modified_media__taxa__in=curations_taxons))
+            Q(modified_media__taxa__in=curations_taxons)).order_by('-date_modified')
 
     queryset = queryset.distinct()
 
@@ -1059,7 +1059,7 @@ def revision_media_detail(request, media_id):
             'city': str(form.cleaned_data['city']),
             'sublocation': str(form.cleaned_data['location'])
                 }
-            if not media.is_video:
+            if media.datatype == 'photo':
                 Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
         except:
             pass

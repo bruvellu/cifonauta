@@ -70,7 +70,7 @@
         </div>
         <div class="field-div media-div">
             <a href="{{ media.coverpath.url }}" target="_blank">
-                {% if media.is_video %}
+                {% if media.datatype == 'video' %}
                 <video src="{{ media.coverpath.url }}"></video>
                 {% else %}
                 <img src="{{ media.coverpath.url }}">

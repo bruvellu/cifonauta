@@ -102,7 +102,7 @@
                     </td>
                     <td class="image-cedule">
                         <a href="{% url 'edit_metadata' media.id %}">
-                            {% if media.is_video %}
+                            {% if media.datatype == 'video' %}
                             <video src="{{ media.coverpath.url }}"></video>
                             {% else %}
                             <img src="{{ media.coverpath.url }}">

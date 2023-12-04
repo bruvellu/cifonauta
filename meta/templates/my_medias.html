@@ -107,7 +107,7 @@
                     </td>
                     <td class="image-cedule">
                         <a href="{% url 'update_media' pk=media.pk %}">
-                            {% if media.is_video %}
+                            {% if media.datatype == 'video' %}
                             <video src="{{ media.coverpath.url }}"></video>
                             {% else %}
                             <img src="{{ media.coverpath.url }}">
@@ -118,7 +118,7 @@
                         {{ media.title_pt_br }}
                     </td>
                     <td>
-                        {% if media.is_video %}
+                        {% if media.datatype == 'video' %}
                         Vídeo
                         {% else %}
                         Imagem

@@ -52,7 +52,7 @@
         <div class="medias-div">
             <div class="medias-wrapper">
                 {% for media in medias %}
-                {% if media.is_video %}
+                {% if media.datatype == 'video' %}
                 <video class="loaded-media" src="{{media.file.url}}"></video>
                 {% else %}
                 <img class="loaded-media" src="{{media.file.url}}" alt="">

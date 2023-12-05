@@ -261,7 +261,7 @@ def upload_media_step2(request):
         else:
             datetime = '1900:01:01 00:00:00'
         form = UploadMediaForm(initial={
-            'author': request.user.id,
+            'authors': user_person.id,
             'title': read_metadata['headline'],
             'caption': read_metadata['description_pt'],
             'date': datetime,
@@ -273,8 +273,7 @@ def upload_media_step2(request):
             'geolocation': read_metadata['gps']
         })
     else:
-        form = UploadMediaForm(initial={'user': request.user.id})
-    form.fields['user'].queryset = UserCifonauta.objects.filter(id=request.user.id)
+        form = UploadMediaForm(initial={'authors': user_person.id})
 
     form.fields['state'].queryset = State.objects.none()
     form.fields['city'].queryset = City.objects.none()
@@ -338,43 +337,32 @@ def edit_metadata(request, media_id):
             form.fields['state'].queryset = State.objects.none()
     if form.is_valid():
         media_instance = form.save(commit=False)
-        try:
-            user = str(form.cleaned_data['user'])
-            authors = str(form.cleaned_data['authors']).split(';')
-            metadata =  {
-            'software': str(form.cleaned_data['software']),
-            'headline': str(form.cleaned_data['title']),
-            'instructions': str(form.cleaned_data['size']),
-            'license': {
-                'license_type': str(form.cleaned_data['license']),
-                'user': user,
-                'authors': authors,
-                },
-            'keywords': {
-                'Estágio de vida': str(form.cleaned_data['life_stage']),
-                'Habitat': str(form.cleaned_data['habitat']),
-                'Microscopia': str(form.cleaned_data['microscopy']),
-                'Modo de vida': str(form.cleaned_data['life_style']),
-                'Técnica fotográfica': str(form.cleaned_data['photographic_technique']),
-                'Diversos': str(form.cleaned_data['several'])
+        keywords = {tag.category.name: tag.name for tag in form.cleaned_data['tags']}
+        print(form.cleaned_data['tags'])
+        authors = str(form.cleaned_data['authors']).split(';')
+        metadata =  {
+        'headline': str(form.cleaned_data['title']),#
+        'license': {
+            'license_type': str(form.cleaned_data['license']),
+            'authors': authors,
             },
-            'source': str(form.cleaned_data['specialist']),
-            'credit': str(form.cleaned_data['credit']),
-            'description_pt': str(form.cleaned_data['caption']),
-            'description_en': '',
-            'gps': str(form.cleaned_data['geolocation']),
-            'datetime': str(form.cleaned_data['date_created']),
-            'title_pt': str(form.cleaned_data['title']),
-            'title_en': '',
-            'country': str(form.cleaned_data['country']),
-            'state': str(form.cleaned_data['state']),
-            'city': str(form.cleaned_data['city']),
-            'sublocation': str(form.cleaned_data['location'])
-                }
-            meta = Metadata(file=f'./site_media/{str(media.file)}')
-            meta.edit_metadata(metadata)
-        except:
-            pass
+        'keywords': keywords,
+        'credit': str(form.cleaned_data['license']),
+        'description_pt': str(form.cleaned_data['caption']),#
+        'description_en': '',
+        'gps': str(form.cleaned_data['geolocation']),#
+        'datetime': str(form.cleaned_data['date_created']),#
+        'title_pt': str(form.cleaned_data['title']),
+        'title_en': '',
+        'country': str(form.cleaned_data['country']),#
+        'state': str(form.cleaned_data['state']),#
+        'city': str(form.cleaned_data['city']),#
+        'sublocation': str(form.cleaned_data['location'])#
+            }
+        meta = Metadata(file=f'./site_media/{str(media.file)}')
+        meta.edit_metadata(metadata)
+
+
         media_instance.status = 'submitted'
         media_instance.taxa.set(form.cleaned_data['taxa'])
         media_instance.authors.set(form.cleaned_data['authors'])

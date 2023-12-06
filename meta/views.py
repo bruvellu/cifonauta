@@ -337,7 +337,12 @@ def edit_metadata(request, media_id):
             form.fields['state'].queryset = State.objects.none()
     if form.is_valid():
         media_instance = form.save(commit=False)
-        keywords = {tag.category.name: tag.name for tag in form.cleaned_data['tags']}
+        keywords = {}
+        for tag in form.cleaned_data['tags']:
+            try:
+                keywords[tag.category.name].append(tag.name)
+            except:
+                keywords[tag.category.name] = [tag.name]
         authors = [str(author) for author in form.cleaned_data['authors']]
         metadata =  {
         'headline': str(form.cleaned_data['title']),#

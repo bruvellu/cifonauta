@@ -587,8 +587,8 @@ class Metadata():
                             keywords = []
                             subject = []
                             for k1, v2 in v.items():
-                                keywords.append(f'{k1}: {v2}')
-                                subject.append(f'{k1}: {v2}')
+                                keywords.append(f'{k1}: {", ".join(v2)}')
+                                subject.append(f'{k1}: {", ".join(v2)}')
                             subject = '; '.join(subject)
                             self._insert_metadata_xmp('Subject', subject)
                             self._insert_metadata_iptc(k, keywords)

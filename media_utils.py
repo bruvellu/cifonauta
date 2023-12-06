@@ -431,7 +431,7 @@ class Metadata():
         try:
             exif_dict = piexif.load(image.info['exif'])
         except KeyError:
-            exif_dict = {}
+            exif_dict = {'0th': {}, 'GPS': {}}
             
         finally:
             if field == 'software':
@@ -475,7 +475,6 @@ class Metadata():
                 exif_dict['0th'][piexif.ImageIFD.Artist] = val
             elif field == 'keywords':
                 exif_dict['0th'][piexif.ImageIFD.XPKeywords] = val
-                print(exif_dict)
             exif_dict.pop('thumbnail', None)
             exif_bytes = piexif.dump(exif_dict)
 
@@ -486,14 +485,12 @@ class Metadata():
 
         info = IPTCInfo(self.file, force=True)
 
-        if clear:
-            info[field].clear()
-        else:
-            info[field] = val
-
-        #Saving IPTC
+        info[field] = val
+        
+        # Saving IPTC
         info.save_as(self.file)
         os.remove(f'{self.file}~')
+
 
     def _insert_metadata_xmp(self, field, val, license=False):
     
@@ -504,7 +501,6 @@ class Metadata():
             self.xmp_erro = True
         else:
             xmp = self.xmpfile.get_xmp()
-
             if license:
                 xmp.register_namespace('http://creativecommons.org/ns#', 'cc')
                 xmp.set_property(consts.XMP_NS_CC, field, val)
@@ -574,31 +570,31 @@ class Metadata():
                     case "source":
                         self._insert_metadata_iptc(k, v)
                     case "credit":
-                        self._insert_metadata_iptc(k, v)
+                        self._insert_metadata_iptc('credit', v)
                     case 'license':
                         license_type = v['license_type']
-                        creators = f'Authors: {";".join(v["authors"])}'
+                        creators = ", ".join(v["authors"])
+                        print(creators)
                         self._insert_metadata_xmp('License', self._RIGHTS[license_type]["license_name"], license=True)
                         self._insert_metadata_xmp('AttributionURL', self._RIGHTS[license_type]["license_link"], license=True)
                         self._insert_metadata_xmp('Rights', self._RIGHTS[license_type]["license_text"], license=True)
                         self._insert_metadata_xmp('Creators', creators)
                         license_exif = f'{self._RIGHTS[license_type]["license_name"]}: {self._RIGHTS[license_type]["license_text"]}. {self._RIGHTS[license_type]["license_link"]}'
-                        self._insert_metadata_exif('copyright', license_exif)
-                        self._insert_metadata_exif('creators', creators)
+                        self._insert_metadata_exif('copyright', license_exif.encode())
+                        self._insert_metadata_exif('creators', creators.encode())
 
                     case 'keywords':
                         if len(v) > 0:
-                            self._insert_metadata_iptc(k, clear=True)
                             keywords = []
                             subject = []
                             for k1, v2 in v.items():
-                                keywords.append(f'{k1}: {v2}'.encode())
+                                keywords.append(f'{k1}: {v2}')
                                 subject.append(f'{k1}: {v2}')
-                            subject = ';'.join(subject)
-                            self._insert_metadata_iptc(k, keywords)
+                            subject = '; '.join(subject)
                             self._insert_metadata_xmp('Subject', subject)
+                            self._insert_metadata_iptc(k, keywords)
                     case 'description_pt':
-                        self._insert_metadata_exif('image_description', v)
+                        self._insert_metadata_exif('image_description', v.encode())
                         self._insert_metadata_xmp('DescriptionPT', v)
                         self._insert_metadata_iptc('caption/abstract', v)
                         
@@ -611,7 +607,7 @@ class Metadata():
                     case 'datetime':
                         self._insert_metadata_iptc('date created', v)
                         self._insert_metadata_xmp('DateCreated', v)
-                        self._insert_metadata_exif('datetime', v)
+                        self._insert_metadata_exif('datetime', v.encode())
                     case 'country':
                         self._insert_metadata_xmp('Country', v)
                         self._insert_metadata_iptc('country/primary location name', v)
@@ -723,13 +719,3 @@ class Metadata():
                     except KeyError:
                         pass
         return metadata
-
-if __name__ == '__main__':
-    latitude_dec = float('-5.289873')
-    graus = int(latitude_dec)
-    minutos_decimais = (latitude_dec - graus) * 60
-    minutos = int(minutos_decimais)
-    segundos = (minutos_decimais - minutos) * 60
-
-    latitude_deg = ((graus, 1), (minutos, 1), (int(segundos), 1))
-    print(latitude_deg)

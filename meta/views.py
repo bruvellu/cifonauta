@@ -338,15 +338,14 @@ def edit_metadata(request, media_id):
     if form.is_valid():
         media_instance = form.save(commit=False)
         keywords = {tag.category.name: tag.name for tag in form.cleaned_data['tags']}
-        print(form.cleaned_data['tags'])
-        authors = str(form.cleaned_data['authors']).split(';')
+        authors = [str(author) for author in form.cleaned_data['authors']]
+        print(authors)
         metadata =  {
         'headline': str(form.cleaned_data['title']),#
         'license': {
             'license_type': str(form.cleaned_data['license']),
             'authors': authors,
             },
-        'keywords': keywords,
         'credit': str(form.cleaned_data['license']),
         'description_pt': str(form.cleaned_data['caption']),#
         'description_en': '',
@@ -357,7 +356,8 @@ def edit_metadata(request, media_id):
         'country': str(form.cleaned_data['country']),#
         'state': str(form.cleaned_data['state']),#
         'city': str(form.cleaned_data['city']),#
-        'sublocation': str(form.cleaned_data['location'])#
+        'sublocation': str(form.cleaned_data['location']),
+        'keywords': keywords
             }
         meta = Metadata(file=f'./site_media/{str(media.file)}')
         meta.edit_metadata(metadata)

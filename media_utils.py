@@ -574,7 +574,6 @@ class Metadata():
                     case 'license':
                         license_type = v['license_type']
                         creators = ", ".join(v["authors"])
-                        print(creators)
                         self._insert_metadata_xmp('License', self._RIGHTS[license_type]["license_name"], license=True)
                         self._insert_metadata_xmp('AttributionURL', self._RIGHTS[license_type]["license_link"], license=True)
                         self._insert_metadata_xmp('Rights', self._RIGHTS[license_type]["license_text"], license=True)

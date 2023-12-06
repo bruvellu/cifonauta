@@ -339,7 +339,6 @@ def edit_metadata(request, media_id):
         media_instance = form.save(commit=False)
         keywords = {tag.category.name: tag.name for tag in form.cleaned_data['tags']}
         authors = [str(author) for author in form.cleaned_data['authors']]
-        print(authors)
         metadata =  {
         'headline': str(form.cleaned_data['title']),#
         'license': {
@@ -361,7 +360,6 @@ def edit_metadata(request, media_id):
             }
         meta = Metadata(file=f'./site_media/{str(media.file)}')
         meta.edit_metadata(metadata)
-
 
         media_instance.status = 'submitted'
         media_instance.taxa.set(form.cleaned_data['taxa'])

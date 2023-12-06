@@ -884,15 +884,36 @@ textarea {
     margin-bottom: 1.5rem;
 }
 
-.users-table {
-    background-color: #d0d0d0;;
-    display: flex;
-    flex-direction: column;
+.users-table-wrapper {
     max-width: 20rem;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.users-table {
+    display: flex;
+    flex-direction: column;
     border-radius: 0.3rem;
     border: 1px solid #adadad;
     overflow: hidden;
+    width: 100%;
+}
+
+.users-table-header {
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid #adadad;
+}
+
+.user-options-container > header {
+    background-color: #f1f1f1;
+}
+
+.selected-users-container > header {
+    background-color: #4D7494;
+    color: #fff;
 }
 
 .users-table > div:last-child {
@@ -900,8 +921,8 @@ textarea {
     flex-direction: column;
     gap: 0.4rem;
     height: 12rem;
-    margin-top: 1rem;
-    padding-left: 0.5rem;
+    padding-top: .5rem;
+    padding-left: .5rem;
     border-top: 1px solid #adadad;
     overflow-y: scroll;
 }
@@ -910,8 +931,11 @@ textarea {
     background-color: white;
     display: flex;
     align-items: center;
-    padding: 0 0.2rem;
+    padding: 0 1.9rem 0 .2rem;
     position: relative;
+    width: 100%;
+    border: 1px solid #adadad;
+    border-radius: 4px;
 }
 
 .table-search-div {
@@ -922,7 +946,8 @@ textarea {
     display: flex;
     justify-content: center;
     gap: 0.7rem;
-    margin-block: 0.5rem;
+    margin-block: .5rem;
+    padding: 0 .75rem;
 }
 
 .search-icon {
@@ -933,17 +958,13 @@ textarea {
     width: 18rem;
 }
 
-.search-input-div, .talbe-search-div {
-    border: 1px solid #adadad;
-}
-
 .search-input-div > button, .table-search-div > button {
-    font-size: 1.1rem;
+    font-size: 1.7rem;
     display: flex;
     justify-content: center;
     width: 1.4rem;
-    border-radius: 0.2rem;
-    background-color: #ebebeb;
+    border-radius: .2rem;
+    background-color: transparent;
     border: none;
     position: absolute;
     right: .2rem;
@@ -951,7 +972,7 @@ textarea {
 
 .search-input-div > button:hover,
 .table-search-div > button:hover {
-    background-color: rgb(197, 197, 197);
+    color: #4e4e4e;
     cursor: pointer;
 }
 
@@ -959,6 +980,7 @@ textarea {
 .table-search-div > input {
     border: none;
     outline: none;
+    width: 100%;
 }
 
 .search-input-div:has(input:focus),
@@ -968,11 +990,14 @@ textarea {
 
 .all-users-button {
     width: fit-content;
-    padding: 0.15rem 0.3rem;
     font-weight: bold;
     font-size: .8rem;
-    align-self: flex-end;
-    margin-right: 1rem;
+    background-color: transparent;
+    border: none;
+}
+
+.all-users-button:hover {
+    color: #4e4e4e;
 }
 
 .user-option, .selected-user {
@@ -992,9 +1017,17 @@ textarea {
 }
 
 .select-user-button {
-    color: green;
+    color: #26A336;
+}
+
+.select-user-button:hover {
+    color: #1E7A2A;
 }
 
 .remove-user-button {
-    color: red;
+    color: #DC3545;
+}
+
+.remove-user-button:hover {
+    color: #AA2B37
 }

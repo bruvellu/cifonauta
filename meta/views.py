@@ -227,43 +227,58 @@ def upload_media_step2(request):
         messages.error(request, 'Erro ao tentar salvar mídias')
         return redirect('upload_media_step2')
     
-    # metadata = None
-    # for media in medias:
-    #     if media.media.url.endswith('jpg'):
-    #         metadata = Metadata(media.media.path)
-    #         try:
-    #             read_metadata = metadata.read_metadata()
-    #         except:
-    #             metadata = None
-    #         finally:
-    #             break        
+    metadata = None
+    for media in medias:
+        print(media.file.name)
+        try:
+            metadata = Metadata(f'site_media/{media.file.name}')
+            try:
+                read_metadata = metadata.read_metadata()
+            except Exception as error:
+                print(error)
+                metadata = None
+            finally:
+                break
+        except:
+            print('Erro')
+            pass        
     
-    # if metadata:
-    #     co_authors = []
-    #     co_authors_meta = read_metadata['source'].split(',')
-    #     for co_author in co_authors_meta:
-    #         if co_author.strip() != '':
-    #             try:
-    #                 co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
-    #             except:
-    #                 messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
-    #     try:
-    #         location = Location.objects.filter(name=read_metadata['sublocation']).get().id
-    #     except:
-    #         location = ''
-    #     form = UploadMediaForm(initial={
-    #         'author': request.user.id,
-    #         'title': read_metadata['headline'],
-    #         'caption': read_metadata['description_pt'],
-    #         'date': read_metadata['datetime'],
-    #         'geolocation': read_metadata['gps'],
-    #         'location': location,
-    #         'license': read_metadata['source'],
-    #         'co_author': co_authors,
-    #         'geolocation': read_metadata['gps']
-    #     })
-    # else:
-    form = UploadMediaForm(initial={'authors': user_person.id})
+    if metadata:
+        print(read_metadata)
+        co_authors = []
+        co_authors_meta = read_metadata['source'].split(',')
+        for co_author in co_authors_meta:
+            if co_author.strip() != '':
+                try:
+                    co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
+                except:
+                    messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
+        try:
+            location = Location.objects.filter(name=read_metadata['sublocation'].strip()).get().id
+        except:
+            location = ''
+        try:
+            country = Country.objects.filter(name=read_metadata['country'].strip()).get().id
+        except:
+            country = ''
+        if read_metadata['datetime'] != '':
+            datetime = read_metadata['datetime']
+        else:
+            datetime = '1900:01:01 00:00:00'
+        form = UploadMediaForm(initial={
+            'authors': user_person.id,
+            'title': read_metadata['headline'],
+            'caption': read_metadata['description_pt'],
+            'date': datetime,
+            'country': country,
+            'geolocation': read_metadata['gps'],
+            'location': location,
+            'license': read_metadata['source'],
+            'co_author': co_authors,
+            'geolocation': read_metadata['gps']
+        })
+    else:
+        form = UploadMediaForm(initial={'authors': user_person.id})
 
     form.fields['state'].queryset = State.objects.none()
     form.fields['city'].queryset = City.objects.none()
@@ -327,43 +342,35 @@ def edit_metadata(request, media_id):
             form.fields['state'].queryset = State.objects.none()
     if form.is_valid():
         media_instance = form.save(commit=False)
-        try:
-            user = str(form.cleaned_data['user'])
-            authors = str(form.cleaned_data['authors']).split(';')
-            metadata =  {
-            'software': str(form.cleaned_data['software']),
-            'headline': str(form.cleaned_data['title']),
-            'instructions': str(form.cleaned_data['size']),
-            'license': {
-                'license_type': str(form.cleaned_data['license']),
-                'user': user,
-                'authors': authors,
-                },
-            'keywords': {
-                'Estágio de vida': str(form.cleaned_data['life_stage']),
-                'Habitat': str(form.cleaned_data['habitat']),
-                'Microscopia': str(form.cleaned_data['microscopy']),
-                'Modo de vida': str(form.cleaned_data['life_style']),
-                'Técnica fotográfica': str(form.cleaned_data['photographic_technique']),
-                'Diversos': str(form.cleaned_data['several'])
+        keywords = {}
+        for tag in form.cleaned_data['tags']:
+            try:
+                keywords[tag.category.name].append(tag.name)
+            except:
+                keywords[tag.category.name] = [tag.name]
+        authors = [str(author) for author in form.cleaned_data['authors']]
+        metadata =  {
+        'headline': str(form.cleaned_data['title']),#
+        'license': {
+            'license_type': str(form.cleaned_data['license']),
+            'authors': authors,
             },
-            'source': str(form.cleaned_data['specialist']),
-            'credit': str(form.cleaned_data['credit']),
-            'description_pt': str(form.cleaned_data['caption']),
-            'description_en': '',
-            'gps': str(form.cleaned_data['geolocation']),
-            'datetime': str(form.cleaned_data['date_created']),
-            'title_pt': str(form.cleaned_data['title']),
-            'title_en': '',
-            'country': str(form.cleaned_data['country']),
-            'state': str(form.cleaned_data['state']),
-            'city': str(form.cleaned_data['city']),
-            'sublocation': str(form.cleaned_data['location'])
-                }
-            meta = Metadata(file=f'./site_media/{str(media.file)}')
-            meta.edit_metadata(metadata)
-        except:
-            pass
+        'credit': str(form.cleaned_data['license']),
+        'description_pt': str(form.cleaned_data['caption']),#
+        'description_en': '',
+        'gps': str(form.cleaned_data['geolocation']),#
+        'datetime': str(form.cleaned_data['date_created']),#
+        'title_pt': str(form.cleaned_data['title']),
+        'title_en': '',
+        'country': str(form.cleaned_data['country']),#
+        'state': str(form.cleaned_data['state']),#
+        'city': str(form.cleaned_data['city']),#
+        'sublocation': str(form.cleaned_data['location']),
+        'keywords': keywords
+            }
+        meta = Metadata(file=f'./site_media/{str(media.file)}')
+        meta.edit_metadata(metadata)
+
         media_instance.status = 'submitted'
         media_instance.taxa.set(form.cleaned_data['taxa'])
         media_instance.authors.set(form.cleaned_data['authors'])

@@ -431,39 +431,66 @@ class Metadata():
         try:
             exif_dict = piexif.load(image.info['exif'])
         except KeyError:
-            exif_dict = {'0th': {}}
-        
-        if field == 'software':
-            exif_dict['0th'][piexif.ImageIFD.Software] = val
-        elif field == 'image_description':
-            exif_dict['0th'][piexif.ImageIFD.ImageDescription] = val
-        elif field == 'gps':
-            exif_dict['0th'][piexif.ImageIFD.GPSTag] = val
-        elif field == 'datetime':
-            exif_dict['0th'][piexif.ImageIFD.DateTime] = val
-        elif field == 'copyright':
-            exif_dict['0th'][piexif.ImageIFD.Copyright] = val
-        elif field == 'creators':
-            exif_dict['0th'][piexif.ImageIFD.Artist] = val
+            exif_dict = {'0th': {}, 'GPS': {}}
+            
+        finally:
+            if field == 'software':
+                exif_dict['0th'][piexif.ImageIFD.Software] = val
+            elif field == 'image_description':
+                exif_dict['0th'][piexif.ImageIFD.ImageDescription] = val
+            elif field == 'gps':
 
-        exif_dict.pop('thumbnail', None)
-        exif_bytes = piexif.dump(exif_dict)
+                latitude_dec = val.split(', ')[0]
+                latitude_ref = 'N'
+                longitude_dec = val.split(', ')[1]
+                longitude_ref = 'E'
 
-        #Saving EXIF
-        image.save(self.file, exif=exif_bytes)
+                latitude = float(latitude_dec.replace('-', ''))
+                graus = int(latitude)
+                minutos_decimais = (latitude - graus) * 60
+                minutos = int(minutos_decimais)
+                segundos = (minutos_decimais - minutos) * 60
+                latitude_deg = ((graus, 1), (minutos, 1), (segundos, 1))
+                
+                longitude = float(longitude_dec.replace('-', ''))
+                graus = int(longitude)
+                minutos_decimais = (longitude - graus) * 60
+                minutos = int(minutos_decimais)
+                segundos = (minutos_decimais - minutos) * 60
+                longitude_deg = ((graus, 1), (minutos, 1), (segundos, 1))
+
+                if float(latitude_dec) < 0:
+                    latitude_ref = 'S'
+                if float(longitude_dec) < 0:
+                    longitude_ref = 'W'
+                exif_dict['GPS'][piexif.GPSIFD.GPSLatitudeRef] = latitude_ref
+                exif_dict['GPS'][piexif.GPSIFD.GPSLongitudeRef] = longitude_ref
+                exif_dict['GPS'][piexif.GPSIFD.GPSLatitude] = latitude_deg
+                exif_dict['GPS'][piexif.GPSIFD.GPSLongitude] = longitude_deg
+            elif field == 'datetime':
+                exif_dict['0th'][piexif.ImageIFD.DateTime] = val
+            elif field == 'copyright':
+                exif_dict['0th'][piexif.ImageIFD.Copyright] = val
+            elif field == 'creators':
+                exif_dict['0th'][piexif.ImageIFD.Artist] = val
+            elif field == 'keywords':
+                exif_dict['0th'][piexif.ImageIFD.XPKeywords] = val
+            exif_dict.pop('thumbnail', None)
+            exif_bytes = piexif.dump(exif_dict)
+
+            #Saving EXIF
+            image.save(self.file, exif=exif_bytes)
 
     def _insert_metadata_iptc(self, field, val=None, clear=False):
 
         info = IPTCInfo(self.file, force=True)
 
-        if clear:
-            info[field].clear()
-        else:
-            info[field] = val
-
-        #Saving IPTC
+        info[field] = val
+        
+        # Saving IPTC
         info.save_as(self.file)
         os.remove(f'{self.file}~')
+
 
     def _insert_metadata_xmp(self, field, val, license=False):
     
@@ -474,7 +501,6 @@ class Metadata():
             self.xmp_erro = True
         else:
             xmp = self.xmpfile.get_xmp()
-
             if license:
                 xmp.register_namespace('http://creativecommons.org/ns#', 'cc')
                 xmp.set_property(consts.XMP_NS_CC, field, val)
@@ -530,68 +556,68 @@ class Metadata():
         
         self.metadata = metadata
 
+        self._insert_metadata_exif('software', 'CebimarUSP')
+
         for k, v in self.metadata.items():
             if v != '' and v != ' ' and v != None:
-                if k == "software":
-                    self._insert_metadata_exif(k, v)
-                elif k == "headline":
-                    self._insert_metadata_xmp(k.capitalize(), v)
-                    self._insert_metadata_iptc(k, v)
-                elif k == "instructions":
-                    self._insert_metadata_iptc('special instructions', v)
-                    self._insert_metadata_xmp('Instructions', v)
-                elif k == "source":
-                    self._insert_metadata_iptc(k, v)
-                elif k == "credit":
-                    self._insert_metadata_iptc(k, v)
-                elif k == 'license':
-                    license_type = v['license_type']
-                    creators = f'Author: {v["author"]}, Co-authors: {";".join(v["co_authors"])}'
-                    self._insert_metadata_xmp('License', self._RIGHTS[license_type]["license_name"], license=True)
-                    self._insert_metadata_xmp('AttributionURL', self._RIGHTS[license_type]["license_link"], license=True)
-                    self._insert_metadata_xmp('Rights', self._RIGHTS[license_type]["license_text"], license=True)
-                    self._insert_metadata_xmp('Creators', creators)
-                    license_exif = f'{self._RIGHTS[license_type]["license_name"]}: {self._RIGHTS[license_type]["license_text"]}. {self._RIGHTS[license_type]["license_link"]}'
-                    self._insert_metadata_exif('copyright', license_exif)
-                    self._insert_metadata_exif('creators', creators)
+                match k:
+                    case "headline":
+                        self._insert_metadata_xmp(k.capitalize(), v)
+                        self._insert_metadata_iptc(k, v)
+                    case "instructions":
+                        self._insert_metadata_iptc('special instructions', v)
+                        self._insert_metadata_xmp('Instructions', v)
+                    case "source":
+                        self._insert_metadata_iptc(k, v)
+                    case "credit":
+                        self._insert_metadata_iptc('credit', v)
+                    case 'license':
+                        license_type = v['license_type']
+                        creators = ", ".join(v["authors"])
+                        self._insert_metadata_xmp('License', self._RIGHTS[license_type]["license_name"], license=True)
+                        self._insert_metadata_xmp('AttributionURL', self._RIGHTS[license_type]["license_link"], license=True)
+                        self._insert_metadata_xmp('Rights', self._RIGHTS[license_type]["license_text"], license=True)
+                        self._insert_metadata_xmp('Creators', creators)
+                        license_exif = f'{self._RIGHTS[license_type]["license_name"]}: {self._RIGHTS[license_type]["license_text"]}. {self._RIGHTS[license_type]["license_link"]}'
+                        self._insert_metadata_exif('copyright', license_exif.encode())
+                        self._insert_metadata_exif('creators', creators.encode())
 
-                elif k == 'keywords':
-                    if len(v) > 0:
-                        self._insert_metadata_iptc(k, clear=True)
-                        keywords = []
-                        subject = []
-                        for k1, v2 in v.items():
-                            keywords.append(f'{k}: {v}'.encode())
-                            subject.append(f'{k}: {v}')
-                        self._insert_metadata_iptc(k, keywords)
-                        subject = ';'.join(subject)
-                        self._insert_metadata_xmp('Subject', subject)
-                elif k == 'description_pt':
-                    self._insert_metadata_exif('image_description', v)
-                    self._insert_metadata_xmp('DescriptionPT', v)
-                    self._insert_metadata_iptc('caption/abstract', v)
-                    
-                elif k == 'title_pt':
-                    self._insert_metadata_xmp('TitlePT', v)
-                    self._insert_metadata_iptc('object name', v)
-                elif k == 'gps':
-                    self._insert_metadata_exif('gps', v)
-                    self._insert_metadata_iptc('content location name', f'GPScoordinates: {v}')
-                elif k == 'datetime':
-                    self._insert_metadata_iptc('date created', v)
-                    self._insert_metadata_xmp('DateCreated', v)
-                    self._insert_metadata_exif('datetime', v)
-                elif k == 'country':
-                    self._insert_metadata_xmp('Country', v)
-                    self._insert_metadata_iptc('country/primary location name', v)
-                elif k == 'state':
-                    self._insert_metadata_xmp('State', v)
-                    self._insert_metadata_iptc('province/state', v)
-                elif k == 'city':
-                    self._insert_metadata_xmp('City', v)
-                    self._insert_metadata_iptc('city', v)
-                elif k == 'sublocation':
-                    self._insert_metadata_iptc('sub-location', v)
+                    case 'keywords':
+                        if len(v) > 0:
+                            keywords = []
+                            subject = []
+                            for k1, v2 in v.items():
+                                keywords.append(f'{k1}: {", ".join(v2)}')
+                                subject.append(f'{k1}: {", ".join(v2)}')
+                            subject = '; '.join(subject)
+                            self._insert_metadata_xmp('Subject', subject)
+                            self._insert_metadata_iptc(k, keywords)
+                    case 'description_pt':
+                        self._insert_metadata_exif('image_description', v.encode())
+                        self._insert_metadata_xmp('DescriptionPT', v)
+                        self._insert_metadata_iptc('caption/abstract', v)
+                        
+                    case 'title_pt':
+                        self._insert_metadata_xmp('TitlePT', v)
+                        self._insert_metadata_iptc('object name', v)
+                    case 'gps':
+                        self._insert_metadata_exif('gps', v)
+                        self._insert_metadata_iptc('content location name', f'GPScoordinates: {v}')
+                    case 'datetime':
+                        self._insert_metadata_iptc('date created', v)
+                        self._insert_metadata_xmp('DateCreated', v)
+                        self._insert_metadata_exif('datetime', v.encode())
+                    case 'country':
+                        self._insert_metadata_xmp('Country', v)
+                        self._insert_metadata_iptc('country/primary location name', v)
+                    case 'state':
+                        self._insert_metadata_xmp('State', v)
+                        self._insert_metadata_iptc('province/state', v)
+                    case 'city':
+                        self._insert_metadata_xmp('City', v)
+                        self._insert_metadata_iptc('city', v)
+                    case 'sublocation':
+                        self._insert_metadata_iptc('sub-location', v)
 
     def _read_iptc(self, field):
         info = IPTCInfo(self.file, force=True)
@@ -619,6 +645,11 @@ class Metadata():
         except:
             return ''
         else:
+            if field == 'datetime':
+                meta = exif_dict['Exif'][piexif.ExifIFD.DateTimeOriginal]
+                if meta == '':
+                    meta = exif_dict['Exif'][piexif.ExifIFD.DateTimeDigitized]
+                return meta
             try:
                 meta = exif_dict[field]
             except:
@@ -626,8 +657,15 @@ class Metadata():
             finally:
                 if field == 'GPS':
                     gps = meta
-                    meta = f"{gps[2][0][0]} deg {gps[2][1][0]}' {gps[2][2][0]:.2f}\u0022 {gps[1].decode()}, {gps[4][0][0]} deg {gps[4][1][0]}' {gps[4][2][0]:.2f}\u0022 {gps[3].decode()}"
+                    latitude = gps[2][0][0] + gps[2][1][0]/60 + gps[2][2][0]/3600
+                    if gps[1] == 'S':
+                        latitude = -latitude
+                    longitude = gps[4][0][0] + gps[4][1][0]/60 + gps[4][2][0]/3600
+                    if gps[3] == 'W':
+                        longitude = -longitude
+                    meta = f'{latitude:.11f}, {longitude:.11f}'
                 return meta
+            
         
     def read_metadata(self):
         keys_metadata = {
@@ -645,7 +683,7 @@ class Metadata():
             'title_pt': {'xmp': 'TitlePT', 'iptc': 'object name'},
             'description_pt': {'exif': piexif.ImageIFD.ImageDescription,'xmp': 'DescriptionPT', 'iptc': 'caption/abstract'},
             'gps': {'exif': 'GPS', 'iptc': 'content location name'},
-            'datetime': {'xmp': 'date_created', 'iptc': 'DateCreated', 'exif': piexif.ImageIFD.DateTime},
+            'datetime': {'xmp': 'date_created', 'iptc': 'DateCreated', 'exif': 'datetime'},
             'country': {'xmp': 'Country', 'iptc': 'country/primary location name'},
             'state': {'xmp': 'State', 'iptc': 'province/state'},
             'city': {'xmp': 'City', 'iptc': 'city'},
@@ -673,6 +711,10 @@ class Metadata():
                         except AttributeError:
                             pass
                         metadata[k] = meta
+                        if k == 'datetime':
+                            print(meta)
+                            print(meta_type)
+                        
                     except KeyError:
-                        continue
+                        pass
         return metadata

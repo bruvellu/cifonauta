@@ -94,39 +94,36 @@ p {
 
 .primary-button {
     color: white;
-    font-size: 1.2rem;
+    font-size: 1rem;
     width: fit-content;
-    height: 2.3rem;
-    padding-inline: 1rem;
+    height: 2.4rem;
+    padding: 0.8rem 1rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 0.25rem;
+    border-radius: .375rem;
     border: none;
     transition: background-color .1s;
 }
 
 .submit-button {
-    /* background-color: #44c544; */
-    background: linear-gradient(to bottom, #51bb47 0%, #1c7524 100%);
+    background-color: #26a336;
 }
 
 .submit-button:hover {
-    /* background-color: rgb(57, 168, 57); */
-    background: linear-gradient(to bottom, #7edc75 0%, #46bf51 100%);
+    background-color: #1e7a2a
 }
 
 .cancel-button {
-    background: linear-gradient(to bottom, #ee3737 0%, #751c1c 100%);
     line-height: initial;
+    background-color: #dc3545;;
 }
 
 .cancel-button:hover {
-    background: linear-gradient(to bottom, #ea7070 0%, #ab3b3b 100%);
+    background-color: #aa2b37;
 }
 
 .secondary-button {
-    /* background: linear-gradient(to bottom, #51bb47 0%, #1c7524 100%); */
     background: linear-gradient(to bottom, #5ea3dd 0%, #456b8b 100%);
     font-weight: bold;
     border-radius: 5px;
@@ -197,7 +194,7 @@ p {
 }
 
 .close-modal-button:hover div {
-    background-color: #ff2d2d;
+    background-color: #f10f24;
 }
 
 .close-modal-button > div {
@@ -500,13 +497,15 @@ textarea {
 }
 
 .neutral-button {
-    background-color: #ededed;
+    background-color: transparent;
     color: #3f3f3f !important;
-    border: 1px solid #00000069 !important;
+    border: 2px solid #00000069 !important;
 }
 
 .neutral-button:hover {
-    background-color: #ccc;
+    background-color: #8a8a8a;
+    border: 2px solid #8a8a8a!important;
+    color: white !important;
 }
 
 
@@ -520,7 +519,7 @@ textarea {
 
 .buttons-div {
     display: flex;
-    gap: 1rem;
+    gap: .6rem;
     margin-top: 3rem;
 }
 

@@ -1,0 +1,93 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block extra_head %}
+<script src="{% static 'js/update_media.js' %}" defer></script>
+{% endblock %}
+
+{% block title %}Alterar Mídia{% endblock %}
+
+{% block dashboard_content %}
+
+<h2>Alterar mídia publicada</h2>
+{% if messages %}
+<div class="messages-div">
+    {% for message in messages %}
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    {% endfor %}
+</div>
+{% endif %}
+<form class="dashboard-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="field-container">
+        <div class="label-div">
+            <label>
+                Mídia:
+            </label>
+        </div>
+        <div class="field-div media-div">
+            <a href="{{ media.coverpath.url }}" target="_blank">
+                {% if media.datatype == 'video' %}
+                <video src="{{ media.coverpath.url }}"></video>
+                {% else %}
+                <img src="{{ media.coverpath.url }}">
+                {% endif %}
+            </a>
+            <span class="help-text">{{ media.sitepath.help_text }}</span>
+        </div>
+    </div>
+    {% for field in form %}
+    {% if field == form.country %}
+    <div class="field-container country-container">
+        <div class="label-div">
+            {{ field.label_tag }}
+            {% if field.field.required %}
+            <span class='required'>*</span>
+            {% endif %}
+        </div>
+        <div class="field-div">
+            {{ field }}
+            {% if field.help_text %}
+            <span class="help-text">{{ field.help_text }}</span>
+            {% endif %}
+        </div>
+    </div>
+    {% elif field == form.terms %}
+    <div class="field-container">
+        <div class='label-div'>
+            {{ field.label_tag }}
+            <span class='required'>*</span>
+        </div>
+        <div class="field-div terms-div">
+            <div class="term-wrapper">
+                {{ field }}
+                Declaro...
+            </div>
+            {% if field.help_text %}
+            <span class="help-text">{{ field.help_text }}</span>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="field-container">
+        <div class="label-div">
+            {{ field.label_tag }}
+            {% if field.field.required %}
+            <span class='required'>*</span>
+            {% endif %}
+        </div>
+        <div class="field-div">
+            {{ field }}
+            {% if field.help_text %}
+            <span class="help-text">{{ field.help_text }}</span>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <div class='buttons-div'>
+        <button class='primary-button submit-button' {% if media.status != 'published' %}disabled{% endif %} type="submit">Alterar</button>
+    </div>
+</form>
+
+{% endblock %}

@@ -49,6 +49,11 @@
                 <a href="{% url 'dashboard_tour_list' %}" {% if 'administrative-module/tours' in fullpath %}class='current-page'{% endif %}>Tours</a>
             </li>
             {% endif %}
+            {% if is_specialist or is_curator %}
+            <li>
+                <a href="{% url 'media_from_my_curations_list' %}" {% if 'administrative-module/media-from-my-curations/' in fullpath %}class='current-page'{% endif %}>Mídias da minha curadoria</a>
+            </li>
+            {% endif %}
             <li>
                 <a href="{% url 'my_medias' %}" {% if '/administrative-module/my-medias/' in fullpath or '/administrative-module/update/' in fullpath %}class='current-page'{% endif %}>Minhas mídias</a>
             </li>

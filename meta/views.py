@@ -1106,6 +1106,178 @@ def revision_media_detail(request, media_id):
 
 
 @never_cache
+def media_from_my_curation_list(request):
+    user = request.user
+
+    curations_as_specialist = user.curatorship_specialist.all()
+    curations_as_specialist_taxons = []
+
+    for curation in curations_as_specialist:
+        curations_as_specialist_taxons.extend(curation.taxons.all())
+    
+    curations_as_curator = user.curatorship_curator.all()
+    curations_as_curator_taxons = []
+
+    for curation in curations_as_curator:
+        curations_as_curator_taxons.extend(curation.taxons.all())
+
+    curations = curations_as_specialist | curations_as_curator
+    curations = curations.distinct()
+
+    curations_taxons = []
+
+    for curation in curations:
+        curations_taxons.extend(curation.taxons.all())
+    
+    queryset = None
+    user_person = Person.objects.filter(user_cifonauta=user.id).first()
+    
+    queryset = Media.objects.filter(Q(specialists=user_person) | Q(curators=user_person))
+    if curations_as_curator.filter(name='Sem táxon').exists():
+        curator_queryset = queryset.filter(Q(curators=user_person) & (Q(taxa=None) | Q(taxa__in=curations_as_curator_taxons)))
+    else:
+        curator_queryset = queryset.filter(Q(curators=user_person) & Q(taxa__in=curations_taxons))
+
+    if curations_as_specialist.filter(name='Sem táxon').exists():
+        specialist_queryset = queryset.filter(Q(specialists=user_person) & (Q(taxa=None) | Q(taxa__in=curations_as_specialist_taxons)))
+    else:
+        specialist_queryset = queryset.filter(Q(specialists=user_person) & Q(taxa__in=curations_taxons))    
+
+    queryset = (curator_queryset | specialist_queryset).distinct()
+
+    filtered_queryset = queryset
+    filter_form = DashboardFilterForm()
+
+    if not curations.filter(name='Sem táxon').exists():
+        filter_form.fields['curations'].queryset = Curadoria.objects.exclude(name='Sem táxon')
+
+    if request.method == 'POST':
+        media_ids = request.POST.getlist('selected_media_ids')
+
+        if media_ids:
+            form = MyMediasActionForm(request.POST)
+
+            if form.is_valid():
+                medias = Media.objects.filter(id__in=media_ids)
+                
+                if form.cleaned_data['taxa_action'] != 'maintain':
+                    for media in medias:
+                        media.taxa.set(form.cleaned_data['taxa'])
+                
+                messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
+            else:
+                messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+        else:
+            messages.warning(request, _('Nenhum registro foi selecionado'))
+    
+    filtered_queryset = queryset
+
+    search = request.GET.get('search')
+    if search:
+        filtered_queryset = filtered_queryset.filter(title__icontains=search)
+    
+
+    curation_ids = request.GET.getlist('curations')
+    if curation_ids:
+        filtered_curations = curations.filter(id__in=curation_ids)
+
+        taxons = set()
+        for curation in filtered_curations:
+            taxons.update(curation.taxons.all())
+
+        if filtered_curations.filter(name='Sem táxon').exists():
+            filtered_queryset = filtered_queryset.filter(Q(taxa__in=taxons) | Q(taxa=None))
+        else:
+            filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
+    
+
+    alphabetical_order = request.GET.get('alphabetical_order')
+    if alphabetical_order:
+        filtered_queryset = filtered_queryset.order_by('title')
+    
+    filter_form = DashboardFilterForm({
+        'search': search,
+        'curations': curation_ids,
+        'alphabetical_order': alphabetical_order,
+    })
+
+    if not curations.filter(name='Sem táxon').exists():
+        filter_form.fields['curations'].queryset = Curadoria.objects.exclude(name='Sem táxon')
+    
+
+    queryset_paginator = Paginator(filtered_queryset, 12)
+    page_num = request.GET.get('page')
+    page = queryset_paginator.get_page(page_num)
+
+    form = MyMediasActionForm()
+
+    context = {
+        'form': form,
+        'filter_form': filter_form,
+        'object_exists': queryset.exists(),
+        'entries': page,
+        'is_specialist': user.curatorship_specialist.exists(),
+        'is_curator': user.curatorship_curator.exists(),
+    }
+
+    return render(request, 'media_from_my_curation_list.html', context)
+
+
+@never_cache
+def media_from_my_curation_edit(request, media_id):
+    media = get_object_or_404(Media, id=media_id)
+
+    is_only_media_specialist = False
+    if request.user in media.specialists.all() and not request.user in media.curators.all():
+        is_only_media_specialist = True
+
+    if request.method == 'POST':
+        form = EditMetadataForm(request.POST, instance=media)
+
+        if form.is_valid():
+            if media.status != 'published':
+                messages.error(request, f'Não foi possível fazer alteração')
+                return redirect('media_from_my_curation_edit', media.id)
+            
+            media_instance = form.save(commit=False)
+            
+            media_instance.taxa.set(form.cleaned_data['taxa'])
+            media_instance.authors.set(form.cleaned_data['authors'])
+
+            media_instance.save()
+
+            messages.success(request, f'A mídia {media.title} foi alterada com sucesso')
+            return redirect('media_from_my_curations_list')
+
+    form = EditMetadataForm(instance=media)
+
+    if media.status != 'published':
+        messages.warning(request, 'Esta mídia não pode ser alterada diretamente se não estiver publicada')
+
+    if media.state:
+        form.fields['city'].queryset = City.objects.filter(state=media.state.id)
+    else:
+        form.fields['city'].queryset = City.objects.none()
+    if media.country:
+        form.fields['state'].queryset = State.objects.filter(country=media.country.id)
+    else:
+        form.fields['state'].queryset = State.objects.none()
+    
+    
+    is_specialist = request.user.curatorship_specialist.exists()
+    is_curator = request.user.curatorship_curator.exists()
+
+    context = {
+        'form': form,
+        'media': media,
+        'is_only_specialist': is_only_media_specialist,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator,
+    }
+
+    return render(request, 'media_from_my_curation_edit.html', context) 
+
+@never_cache
 def dashboard_tour_list(request):
     tours = Tour.objects.filter(creator=request.user)
     is_specialist = request.user.curatorship_specialist.exists()

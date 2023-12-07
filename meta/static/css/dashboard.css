@@ -110,7 +110,12 @@ p {
     background-color: #26a336;
 }
 
-.submit-button:hover {
+.submit-button:disabled {
+    background-color: #26a33778;
+    cursor: not-allowed;
+}
+
+.submit-button:not(:disabled):hover {
     background-color: #1e7a2a
 }
 

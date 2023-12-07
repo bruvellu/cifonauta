@@ -71,11 +71,6 @@ class UpdateMyMediaForm(forms.ModelForm):
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if self.instance.status != 'draft':
-            self.fields['title'].required = True
 
 class SendEmailForm(forms.Form):
     def send_mail(
@@ -135,6 +130,11 @@ class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
         fields = ('title', 'caption', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['title'].required = True
 
 class MyMediaForm(forms.ModelForm):
     class Meta:

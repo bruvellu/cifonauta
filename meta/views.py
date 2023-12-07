@@ -660,6 +660,9 @@ def update_my_medias(request, pk):
         license_choices = [choice[0] for choice in Media.LICENSE_CHOICES]
         license_index = license_choices.index(media.license)
         form.fields['license'].choices = Media.LICENSE_CHOICES[:license_index + 1]
+        form.fields['title'].required = True
+    elif media.status == 'submitted':
+        form.fields['title'].required = True
 
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()

@@ -218,7 +218,7 @@ def upload_media_step2(request):
                     sitepath.save(media.sitepath.path)
             
             messages.success(request, 'Suas mídias foram salvas com sucesso')
-            return redirect('upload_media_step1')
+            return redirect('my_medias')
 
         messages.error(request, 'Erro ao tentar salvar mídias')
         return redirect('upload_media_step2')

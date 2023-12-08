@@ -52,7 +52,7 @@
         <div class="medias-div">
             <div class="medias-wrapper">
                 {% for media in medias %}
-                {% if media.is_video %}
+                {% if media.datatype == 'video' %}
                 <video class="loaded-media" src="{{media.file.url}}"></video>
                 {% else %}
                 <img class="loaded-media" src="{{media.file.url}}" alt="">
@@ -81,11 +81,13 @@
             </div>
         </div>
     </div>
-    {% elif field == form.country or field == form.state or field == form.city %}
+    {% elif field == form.country %}
     <div class="field-container country-container">
         <div class="label-div">
             {{ field.label_tag }}
+            {% if field.field.required %}
             <span class='required'>*</span>
+            {% endif %}
         </div>
         <div class="field-div">
             {{ field }}
@@ -131,6 +133,8 @@
         <button class="primary-button submit-button" type="submit" name="action" value="add">Adicionar</button>
         <button class="primary-button cancel-button" type="submit" name="action" value="cancel" formnovalidate>Cancelar</button>
     </div>
+    <p>Adicionar às minhas mídias e enviar para revisão</p>
+
 </form>
 
 {% endblock %}

@@ -57,12 +57,12 @@ class ModifiedMedia(models.Model):
     location = models.ForeignKey('Location', on_delete=models.SET_NULL,
             null=True, blank=True, verbose_name=_('local'),
             help_text=_('Localidade mostrada na imagem (ou local de coleta).'))
-    city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True, verbose_name=_('cidade'),
+    city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('cidade'),
             help_text=_('Cidade mostrada na imagem (ou cidade de coleta).'))
-    state = models.ForeignKey('State', on_delete=models.SET_NULL, null=True, verbose_name=_('estado'),
+    state = models.ForeignKey('State', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('estado'),
             help_text=_('Estado mostrado na imagem (ou estado de coleta).'))
     country = models.ForeignKey('Country', on_delete=models.SET_NULL,
-            null=True, verbose_name=_('país'),
+            null=True, blank=True, verbose_name=_('país'),
             help_text=_('País mostrado na imagem (ou país de coleta).'))
     geolocation = models.CharField(_('geolocalização'), default='',
             max_length=25, blank=True,
@@ -344,10 +344,6 @@ class Media(models.Model):
 
     def get_absolute_url(self):
         return reverse('media_url', args=[str(self.id)])
-
-    def is_video(self):
-        _, extension = os.path.splitext(self.file.name)
-        return True if extension in settings.VIDEO_EXTENSIONS else False
 
     def update_search_vector(self):
         '''Collect metadata and update the search vector field.'''

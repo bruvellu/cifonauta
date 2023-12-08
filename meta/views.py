@@ -181,10 +181,6 @@ def upload_media_step2(request):
             if user_person not in form.cleaned_data['authors']:
                     messages.error(request, f'O usuário logado ({user_person.name}) deve ser incluído como autor')
                     return redirect('upload_media_step2')
-                
-            if form.cleaned_data['country'].id == 1 and not (form.cleaned_data['state'] and form.cleaned_data['city']):
-                messages.error(request, 'Você precisa selecionar um estado e uma cidade')
-                return redirect('upload_media_step2')
             
             for media in medias:
                 file = media.file.name.split('/')[-1]
@@ -212,7 +208,7 @@ def upload_media_step2(request):
                 media.status = 'draft'
                 media.save()
 
-                if not media.is_video():
+                if media.datatype == 'photo':
                     coverpath = Image.open(media.coverpath.path)
                     coverpath.thumbnail((1280, 720))
                     coverpath.save(media.coverpath.path, quality=40)
@@ -222,7 +218,7 @@ def upload_media_step2(request):
                     sitepath.save(media.sitepath.path)
             
             messages.success(request, 'Suas mídias foram salvas com sucesso')
-            return redirect('upload_media_step1')
+            return redirect('my_medias')
 
         messages.error(request, 'Erro ao tentar salvar mídias')
         return redirect('upload_media_step2')
@@ -371,7 +367,10 @@ def edit_metadata(request, media_id):
         meta = Metadata(file=f'./site_media/{str(media.file)}')
         meta.edit_metadata(metadata)
 
-        media_instance.status = 'submitted'
+        action = request.POST.get('action')
+        
+        if action == 'submit':
+            media_instance.status = 'submitted'
         media_instance.taxa.set(form.cleaned_data['taxa'])
         media_instance.authors.set(form.cleaned_data['authors'])
 
@@ -380,7 +379,8 @@ def edit_metadata(request, media_id):
 
         media_instance.save()
 
-        form.send_mail(request.user, [media], 'Edição de mídia do Cifonauta', 'edited_media_email.html')
+        if action == 'submit':
+            form.send_mail(request.user, [media], 'Edição de mídia do Cifonauta', 'edited_media_email.html')
 
         messages.success(request, 'Edição de mídia realizado com sucesso')
 
@@ -397,7 +397,7 @@ def edit_metadata(request, media_id):
         'is_curator': is_curator,
     }
 
-    return render(request, 'update_media.html', context) 
+    return render(request, 'media_editing.html', context) 
 
 
 @never_cache
@@ -410,7 +410,7 @@ def curadoria_media_list(request):
         taxons = curadoria.taxons.all()
         curations_taxons.extend(taxons)
 
-    queryset = Media.objects.filter(status='draft')
+    queryset = Media.objects.filter(status='draft').order_by('-date_modified')
     if curations.filter(name='Sem táxon').exists():
         queryset = queryset.filter(Q(taxa__in=curations_taxons) | Q(taxa=None))
     else:
@@ -660,6 +660,9 @@ def update_my_medias(request, pk):
         license_choices = [choice[0] for choice in Media.LICENSE_CHOICES]
         license_index = license_choices.index(media.license)
         form.fields['license'].choices = Media.LICENSE_CHOICES[:license_index + 1]
+        form.fields['title'].required = True
+    elif media.status == 'submitted':
+        form.fields['title'].required = True
 
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
@@ -852,11 +855,11 @@ def revision_media(request):
                 Q(modified_media__taxa__in=curations_taxons) | 
                 (Q(modified_media__isnull=False) & Q(modified_media__taxa=None))
             ))
-        )
+        ).order_by('-date_modified')
     else:
         queryset = Media.objects.filter(
             Q(status='submitted') & Q(taxa__in=curations_taxons) |
-            Q(modified_media__taxa__in=curations_taxons))
+            Q(modified_media__taxa__in=curations_taxons)).order_by('-date_modified')
 
     queryset = queryset.distinct()
 
@@ -1065,12 +1068,16 @@ def revision_media_detail(request, media_id):
             'city': str(form.cleaned_data['city']),
             'sublocation': str(form.cleaned_data['location'])
                 }
-            if not media.is_video:
+            if media.datatype == 'photo':
                 Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
         except:
             pass
-        media_instance.status = 'published'
-        media_instance.is_public = True
+        
+        action = request.POST.get('action')
+        if action == 'publish':
+            media_instance.status = 'published'
+            media_instance.is_public = True
+            
         media_instance.taxa.set(form.cleaned_data['taxa'])
         media_instance.authors.set(form.cleaned_data['authors'])
 
@@ -1079,10 +1086,12 @@ def revision_media_detail(request, media_id):
         
         media_instance.save()
 
-        form.send_mail(request.user, [media], 'Revisão de mídia do Cifonauta', 'published_media_email.html')
+        if action == 'publish':
+            form.send_mail(request.user, [media], 'Revisão de mídia do Cifonauta', 'published_media_email.html')
 
         messages.success(request, f'A mídia {media.title} foi publicada com sucesso')
         return redirect('media_revision')
+    
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 

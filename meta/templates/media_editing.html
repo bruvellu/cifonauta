@@ -48,7 +48,7 @@
 </div>
 {% endif %}
 
-<h2>Alterar informações da mídia</h2>
+<h2>Edição de mídia</h2>
 
 {% if messages %}
 <div class="messages-div">
@@ -59,10 +59,6 @@
 {% endif %}
 
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
-    {% if media.modified_media %}
-    <button id="open-modal-button" class='primary-button neutral-button modifications-button' type="button">Ver alterações</button>
-    {% endif %}
-
     {% csrf_token %}
     <div class="field-container">
         <div class="label-div">
@@ -139,7 +135,8 @@
     {% endif %}
     {% endfor %}
     <div class="buttons-div">
-        <button class='primary-button submit-button' type="submit" name="action" value="update">Atualizar</button>
+        <button class='primary-button submit-button' type="submit" name="action" value="submit">Salvar e enviar para revisão</button>
+        <button class='primary-button neutral-button' type="submit" name="action" value="save_only">Apenas salvar</button>
     </div>
 </form>
 

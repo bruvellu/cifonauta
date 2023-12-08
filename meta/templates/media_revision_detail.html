@@ -25,7 +25,7 @@
         </div>
         <div class="field-div media-div">
             <a href="{{ media.coverpath.url }}" target="_blank">
-                {% if media.is_video %}
+                {% if media.datatype == 'video' %}
                 <video src="{{ media.coverpath.url }}"></video>
                 {% else %}
                 <img src="{{ media.coverpath.url }}">
@@ -35,11 +35,13 @@
         </div>
     </div>
     {% for field in form %}
-    {% if field == form.country or field == form.state or field == form.city %}
+    {% if field == form.country %}
     <div class="field-container country-container">
         <div class="label-div">
             {{ field.label_tag }}
+            {% if field.field.required %}
             <span class='required'>*</span>
+            {% endif %}
         </div>
         <div class="field-div">
             {{ field }}
@@ -81,7 +83,10 @@
     </div>
     {% endif %}
     {% endfor %}
-    <button class='primary-button submit-button' type="submit">Publicar</button>
+    <div class='buttons-div'>
+        <button class='primary-button submit-button' type="submit" name="action" value="publish">Publicar</button>
+        <button class='primary-button neutral-button' type="submit" name="action" value="save_only">Apenas salvar</button>
+    </div>
 </form>
 
 {% endblock %}

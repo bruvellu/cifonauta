@@ -200,17 +200,18 @@ class DashboardFilterForm(forms.Form):
     Curadoria = apps.get_model('meta', 'Curadoria')
     
     search = forms.CharField(required=False,
-                             label=_('Buscar por'))
-    alphabetical_order = forms.BooleanField(required=False,
-                                   initial=False,
-                                   label=_('Ordem alfabética'),
-                                   widget=forms.CheckboxInput())
+                             label=_('Buscar por'),
+                             widget=forms.TextInput(attrs={'placeholder': _('Digite o título da mídia')}))
     curations = forms.ModelMultipleChoiceField(
         required=False,
         queryset=Curadoria.objects.all(),
         widget=forms.SelectMultiple(attrs={"class": "select2-curations", "multiple": "multiple"}),
         label=_('Curadorias')
     )
+    alphabetical_order = forms.BooleanField(required=False,
+                                   initial=False,
+                                   label=_('Ordem alfabética'),
+                                   widget=forms.CheckboxInput(attrs={'class': 'dashboard-input'}))
             
 
 class SearchForm(forms.Form):

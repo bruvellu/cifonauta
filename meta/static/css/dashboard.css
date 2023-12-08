@@ -98,10 +98,18 @@ p {
 
 
 .dashboard-view {
-    background-color: var(--gray-300);
+    /* background-color: var(--gray-300); */
     margin-left: 16rem;
     padding: 2rem 2rem 5rem 2rem;
     min-height: 100vh;
+}
+
+.light-background {
+    background-color: #fcfcfc;
+}
+
+.dark-background {
+    background-color: var(--gray-300);
 }
 
 .messages-div {
@@ -501,6 +509,7 @@ tr, th {
     width: fit-content;
     height: 6rem;
     overflow: hidden;
+    border: 1px solid #0000005e;
 }
 
 .media-wrapper-td img {
@@ -511,7 +520,7 @@ tr, th {
 .media-wrapper-td:hover video,
 .media-wrapper-td a:focus img,
 .media-wrapper-td a:focus video {
-    transform: scale(1.08);
+    transform: scale(1.1);
 }
 
 .table-body a {
@@ -944,7 +953,12 @@ textarea {
 
 
 /* MY SELECT2 FOR TOURS */
-.list-view-button {
+.list-page-add-btn {
+    position: absolute;
+    right: 0;
+}
+
+.list-page-add-btn > a {
     color: #fff !important;
 }
 

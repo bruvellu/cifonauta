@@ -64,7 +64,7 @@
         </ul>
         {% endwith %}
     </aside>
-    <div class="dashboard-view">
+    <div class="dashboard-view {% if list_page %}dark-background{% else %}light-background{% endif %}">
         <h1>Módulo Administrativo</h1>
 
         {% block dashboard_content %}{% endblock %}

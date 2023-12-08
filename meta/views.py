@@ -506,6 +506,7 @@ def curadoria_media_list(request):
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
         'is_curator': user.curatorship_curator.exists(),
+        'list_page': True
     }
 
     return render(request, 'curadoria_media_list.html', context)
@@ -766,6 +767,7 @@ def my_medias(request):
         'entries': page,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
+        'list_page': True
     }
 
     return render(request, 'my_medias.html', context)
@@ -956,6 +958,7 @@ def revision_media(request):
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
         'is_curator': user.curatorship_curator.exists(),
+        'list_page': True
     }
 
     return render(request, 'media_revision.html', context)
@@ -1218,6 +1221,7 @@ def media_from_my_curation_list(request):
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
         'is_curator': user.curatorship_curator.exists(),
+        'list_page': True
     }
 
     return render(request, 'media_from_my_curation_list.html', context)
@@ -1286,7 +1290,8 @@ def dashboard_tour_list(request):
     context = {
         'tours': tours,
         'is_specialist': is_specialist,
-        'is_curator': is_curator
+        'is_curator': is_curator,
+        'list_page': True
     }
 
     return render(request, 'dashboard_tour_list.html', context)

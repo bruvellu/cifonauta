@@ -9,7 +9,7 @@
 
 {% block dashboard_content %}
 <div id="behind-modal-container" class="pre-registration-behind-modal"></div>
-<div id="modal-container" class="pre-registration-modal">
+<div id="modal-container" class="list-modal-container">
     <div class="modal-header">
         <p>Registre o coautor</p>
         <button id="close-modal-button" class="close-modal-button">
@@ -17,7 +17,7 @@
             <div class='line2'></div>
         </button>
     </div>
-    <form class="pre-registration-form" method="post">
+    <form class="modal-body" method="post">
         {% csrf_token %}
         {% for field2 in registration_form %}
         <div class="field2-container">

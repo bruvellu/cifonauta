@@ -11,6 +11,7 @@
     --blue-600: #607890;
     --blue-700: #304e67;
 
+    --red-400: #e92134;
     --red-500: #DC3545;
     --red-700: #AA2B37;
 
@@ -361,7 +362,7 @@ p {
 
 .filter-form-search-wrapper > input {
     background-color: transparent;
-    border: none;
+    border: none !important;
     outline: none;
 }
 
@@ -652,9 +653,16 @@ tr, th {
 }
 
 .required {
-    color: red;
+    color: var(--red-400);
     font-weight: initial;
     font-size: 1.2rem;
+}
+
+.field-error {
+    font-size: 90%;
+    margin-bottom: 0.25rem;
+    color: var(--red-400);
+    font-weight: 500;
 }
 
 .field-div {
@@ -674,6 +682,13 @@ select {
     padding-left: 0.3rem;
     height: 1.8rem;
     border: 1px solid #9d9d9d;
+}
+
+.field-error + input,
+.field-error + textarea,
+.field-error + select,
+.field-error ~ .select2-container .select2-selection--multiple {
+    border: 2px solid #e92134;
 }
 
 input[type='text'],
@@ -821,14 +836,6 @@ textarea {
     gap: .4rem;
 }
 
-.term-wrapper > input {
-    height: fit-content;
-    margin-top: .1rem;
-}
-
-.field-error { /* IT IS ALSO IN USER CREATION */
-    color: #f60000 !important;
-}
 
 
 
@@ -1072,6 +1079,10 @@ textarea {
 .option-title {
     color: #323232 !important;
     font-weight: bold;
+}
+
+.is-public-checkbox {
+    margin-bottom: 0.25rem;
 }
 
 

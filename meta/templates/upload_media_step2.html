@@ -71,6 +71,13 @@
             {{ field.label_tag }}
         </div>
         <div class="field-div authors-field-div">
+            {% if form.authors.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             {{ field }}
             {% if field.help_text %}
             <span class="help-text">{{ field.help_text }}</span>
@@ -90,6 +97,13 @@
             {% endif %}
         </div>
         <div class="field-div">
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             {{ field }}
             {% if field.help_text %}
             <span class="help-text">{{ field.help_text }}</span>
@@ -103,6 +117,13 @@
             <span class='required'>*</span>
         </div>
         <div class="field-div terms-div">
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             <div class="term-wrapper">
                 {{ field }}
                 Declaro...
@@ -121,6 +142,13 @@
             {% endif %}
         </div>
         <div class="field-div">
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             {{ field }}
             {% if field.help_text %}
             <span class="help-text">{{ field.help_text }}</span>

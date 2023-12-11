@@ -171,17 +171,9 @@ def upload_media_step2(request):
                 messages.error(request, 'Houve um erro ao tentar salvar coautor')
                 return redirect('upload_media_step2')
         
-        form = UploadMediaForm(request.POST, request.FILES)
+        form = UploadMediaForm(request.POST, request.FILES, media_author=user_person)
         
         if form.is_valid():
-            if form.cleaned_data['terms'] == False:
-                    messages.error(request, 'Você precisa aceitar os termos')
-                    return redirect('upload_media_step2')
-            
-            if user_person not in form.cleaned_data['authors']:
-                    messages.error(request, f'O usuário logado ({user_person.name}) deve ser incluído como autor')
-                    return redirect('upload_media_step2')
-            
             for media in medias:
                 file = media.file.name.split('/')[-1]
                 ext = file.split('.')[-1]
@@ -220,61 +212,60 @@ def upload_media_step2(request):
             messages.success(request, 'Suas mídias foram salvas com sucesso')
             return redirect('my_medias')
 
-        messages.error(request, 'Erro ao tentar salvar mídias')
-        return redirect('upload_media_step2')
-    
-    metadata = None
-    for media in medias:
-        print(media.file.name)
-        try:
-            metadata = Metadata(f'site_media/{media.file.name}')
-            try:
-                read_metadata = metadata.read_metadata()
-            except Exception as error:
-                print(error)
-                metadata = None
-            finally:
-                break
-        except:
-            print('Erro')
-            pass        
-    
-    if metadata:
-        print(read_metadata)
-        co_authors = []
-        co_authors_meta = read_metadata['source'].split(',')
-        for co_author in co_authors_meta:
-            if co_author.strip() != '':
-                try:
-                    co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
-                except:
-                    messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
-        try:
-            location = Location.objects.filter(name=read_metadata['sublocation'].strip()).get().id
-        except:
-            location = ''
-        try:
-            country = Country.objects.filter(name=read_metadata['country'].strip()).get().id
-        except:
-            country = ''
-        if read_metadata['datetime'] != '':
-            datetime = read_metadata['datetime']
-        else:
-            datetime = '1900:01:01 00:00:00'
-        form = UploadMediaForm(initial={
-            'authors': user_person.id,
-            'title': read_metadata['headline'],
-            'caption': read_metadata['description_pt'],
-            'date': datetime,
-            'country': country,
-            'geolocation': read_metadata['gps'],
-            'location': location,
-            'license': read_metadata['source'],
-            'co_author': co_authors,
-            'geolocation': read_metadata['gps']
-        })
+        messages.error(request, 'Houve um erro ao tentar salvar mídia(s)')
     else:
         form = UploadMediaForm(initial={'authors': user_person.id})
+
+        metadata = None
+        for media in medias:
+            print(media.file.name)
+            try:
+                metadata = Metadata(f'site_media/{media.file.name}')
+                try:
+                    read_metadata = metadata.read_metadata()
+                except Exception as error:
+                    print(error)
+                    metadata = None
+                finally:
+                    break
+            except:
+                print('Erro')
+                pass        
+        
+        if metadata:
+            print(read_metadata)
+            co_authors = []
+            co_authors_meta = read_metadata['source'].split(',')
+            for co_author in co_authors_meta:
+                if co_author.strip() != '':
+                    try:
+                        co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
+                    except:
+                        messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
+            try:
+                location = Location.objects.filter(name=read_metadata['sublocation'].strip()).get().id
+            except:
+                location = ''
+            try:
+                country = Country.objects.filter(name=read_metadata['country'].strip()).get().id
+            except:
+                country = ''
+            if read_metadata['datetime'] != '':
+                datetime = read_metadata['datetime']
+            else:
+                datetime = '1900:01:01 00:00:00'
+            form = UploadMediaForm(initial={
+                'authors': user_person.id,
+                'title': read_metadata['headline'],
+                'caption': read_metadata['description_pt'],
+                'date': datetime,
+                'country': country,
+                'geolocation': read_metadata['gps'],
+                'location': location,
+                'license': read_metadata['source'],
+                'co_author': co_authors,
+                'geolocation': read_metadata['gps']
+            })
 
     form.fields['state'].queryset = State.objects.none()
     form.fields['city'].queryset = City.objects.none()
@@ -326,67 +317,69 @@ def edit_metadata(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     if request.method == 'POST':
         form = EditMetadataForm(request.POST, instance=media)
+        if form.is_valid():
+            media_instance = form.save(commit=False)
+            keywords = {}
+            for tag in form.cleaned_data['tags']:
+                try:
+                    keywords[tag.category.name].append(tag.name)
+                except:
+                    keywords[tag.category.name] = [tag.name]
+            authors = [str(author) for author in form.cleaned_data['authors']]
+            metadata =  {
+            'headline': str(form.cleaned_data['title']),#
+            'license': {
+                'license_type': str(form.cleaned_data['license']),
+                'authors': authors,
+                },
+            'credit': str(form.cleaned_data['license']),
+            'description_pt': str(form.cleaned_data['caption']),#
+            'description_en': '',
+            'gps': str(form.cleaned_data['geolocation']),#
+            'datetime': str(form.cleaned_data['date_created']),#
+            'title_pt': str(form.cleaned_data['title']),
+            'title_en': '',
+            'country': str(form.cleaned_data['country']),#
+            'state': str(form.cleaned_data['state']),#
+            'city': str(form.cleaned_data['city']),#
+            'sublocation': str(form.cleaned_data['location']),
+            'keywords': keywords
+                }
+            meta = Metadata(file=f'./site_media/{str(media.file)}')
+            meta.edit_metadata(metadata)
+
+            action = request.POST.get('action')
+            
+            if action == 'submit':
+                media_instance.status = 'submitted'
+            media_instance.taxa.set(form.cleaned_data['taxa'])
+
+            person = Person.objects.filter(user_cifonauta=request.user.id).first()
+            media_instance.specialists.add(person)
+
+            media_instance.save()
+
+            if action == 'submit':
+                form.send_mail(request.user, [media], 'Edição de mídia do Cifonauta', 'edited_media_email.html')
+
+            messages.success(request, 'Edição de mídia realizado com sucesso')
+
+            return redirect('curadory_medias')
+        else:
+            messages.error(request, 'Houve um erro ao tentar salvar mídia')
     else:
-        form = EditMetadataForm(instance=media)
-        if media.state:
-            form.fields['city'].queryset = City.objects.filter(state=media.state.id)
-        else:
-            form.fields['city'].queryset = City.objects.none()
-        if media.country:
-            form.fields['state'].queryset = State.objects.filter(country=media.country.id)
-        else:
-            form.fields['state'].queryset = State.objects.none()
-    if form.is_valid():
-        media_instance = form.save(commit=False)
-        keywords = {}
-        for tag in form.cleaned_data['tags']:
-            try:
-                keywords[tag.category.name].append(tag.name)
-            except:
-                keywords[tag.category.name] = [tag.name]
-        authors = [str(author) for author in form.cleaned_data['authors']]
-        metadata =  {
-        'headline': str(form.cleaned_data['title']),#
-        'license': {
-            'license_type': str(form.cleaned_data['license']),
-            'authors': authors,
-            },
-        'credit': str(form.cleaned_data['license']),
-        'description_pt': str(form.cleaned_data['caption']),#
-        'description_en': '',
-        'gps': str(form.cleaned_data['geolocation']),#
-        'datetime': str(form.cleaned_data['date_created']),#
-        'title_pt': str(form.cleaned_data['title']),
-        'title_en': '',
-        'country': str(form.cleaned_data['country']),#
-        'state': str(form.cleaned_data['state']),#
-        'city': str(form.cleaned_data['city']),#
-        'sublocation': str(form.cleaned_data['location']),
-        'keywords': keywords
-            }
-        meta = Metadata(file=f'./site_media/{str(media.file)}')
-        meta.edit_metadata(metadata)
+        form = EditMetadataForm(instance=media)    
+    
+    if media.state:
+        form.fields['city'].queryset = City.objects.filter(state=media.state.id)
+    else:
+        form.fields['city'].queryset = City.objects.none()
+    if media.country:
+        form.fields['state'].queryset = State.objects.filter(country=media.country.id)
+    else:
+        form.fields['state'].queryset = State.objects.none()
 
-        action = request.POST.get('action')
-        
-        if action == 'submit':
-            media_instance.status = 'submitted'
-        media_instance.taxa.set(form.cleaned_data['taxa'])
-        media_instance.authors.set(form.cleaned_data['authors'])
-
-        person = Person.objects.filter(user_cifonauta=request.user.id).first()
-        media_instance.specialists.add(person)
-
-        media_instance.save()
-
-        if action == 'submit':
-            form.send_mail(request.user, [media], 'Edição de mídia do Cifonauta', 'edited_media_email.html')
-
-        messages.success(request, 'Edição de mídia realizado com sucesso')
-
-        return redirect('curadory_medias')
-
-    media = get_object_or_404(Media, pk=media_id)
+    # media = get_object_or_404(Media, pk=media_id)
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
@@ -524,7 +517,7 @@ def update_my_medias(request, pk):
             messages.success(request, "Alterações discartadas com sucesso")
             return redirect('update_media', media.pk)
 
-        form = UpdateMyMediaForm(request.POST)
+        form = UpdateMyMediaForm(request.POST, instance=media)
         if form.is_valid():
             if media.status == 'published':
                 if modified_media:
@@ -643,12 +636,12 @@ def update_my_medias(request, pk):
             return redirect('my_medias')
 
         messages.error(request, 'Houve um erro com as alterações feitas')
-        return redirect('update_media', media.pk)
+    else:
+        form = UpdateMyMediaForm(instance=media)
 
     if modified_media and not messages.get_messages(request):
         messages.warning(request, "Esta mídia tem alterações pendentes. Clique no botão abaixo para ver as alterações. Se você fizer outras alterações, as anteriores serão sobrepostas")
-
-    form = UpdateMyMediaForm(instance=media)
+    
     if media.state:
         form.fields['city'].queryset = City.objects.filter(state=media.state.id)
     else:
@@ -1026,74 +1019,83 @@ def revision_media_detail(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     if request.method == 'POST':
         form = EditMetadataForm(request.POST, instance=media)
-    else:
-        form = EditMetadataForm(instance=media)
-        if media.state:
-            form.fields['city'].queryset = City.objects.filter(state=media.state.id)
-        else:
-            form.fields['city'].queryset = City.objects.none()
-        if media.country:
-            form.fields['state'].queryset = State.objects.filter(country=media.country.id)
-        else:
-            form.fields['state'].queryset = State.objects.none()
-    if form.is_valid():
-        media_instance = form.save(commit=False)
-        try:
-            author = str(form.cleaned_data['author'])
-            co_authors = str(form.cleaned_data['co_author']).split(';')
-            metadata =  {
-            'software': str(form.cleaned_data['software']),
-            'headline': str(form.cleaned_data['title']),
-            'instructions': str(form.cleaned_data['size']),
-            'license': {
-                'license_type': str(form.cleaned_data['license']),
-                'author': author,
-                'co_authors': co_authors,
+        
+        if form.is_valid():
+            media_instance = form.save(commit=False)
+            try:
+                author = str(form.cleaned_data['author'])
+                co_authors = str(form.cleaned_data['co_author']).split(';')
+                metadata =  {
+                'software': str(form.cleaned_data['software']),
+                'headline': str(form.cleaned_data['title']),
+                'instructions': str(form.cleaned_data['size']),
+                'license': {
+                    'license_type': str(form.cleaned_data['license']),
+                    'author': author,
+                    'co_authors': co_authors,
+                    },
+                'keywords': {
+                    'Estágio de vida': str(form.cleaned_data['life_stage']),
+                    'Habitat': str(form.cleaned_data['habitat']),
+                    'Microscopia': str(form.cleaned_data['microscopy']),
+                    'Modo de vida': str(form.cleaned_data['life_style']),
+                    'Técnica fotográfica': str(form.cleaned_data['photographic_technique']),
+                    'Diversos': str(form.cleaned_data['several'])
                 },
-            'keywords': {
-                'Estágio de vida': str(form.cleaned_data['life_stage']),
-                'Habitat': str(form.cleaned_data['habitat']),
-                'Microscopia': str(form.cleaned_data['microscopy']),
-                'Modo de vida': str(form.cleaned_data['life_style']),
-                'Técnica fotográfica': str(form.cleaned_data['photographic_technique']),
-                'Diversos': str(form.cleaned_data['several'])
-            },
-            'source': str(form.cleaned_data['specialist']),
-            'credit': str(form.cleaned_data['credit']),
-            'description_pt': str(form.cleaned_data['caption']),
-            'description_en': '',
-            'gps': str(form.cleaned_data['geolocation']),
-            'datetime': str(form.cleaned_data['date_created']),
-            'title_pt': str(form.cleaned_data['title']),
-            'title_en': '',
-            'country': str(form.cleaned_data['country']),
-            'state': str(form.cleaned_data['state']),
-            'city': str(form.cleaned_data['city']),
-            'sublocation': str(form.cleaned_data['location'])
-                }
-            if media.datatype == 'photo':
-                Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
-        except:
-            pass
-        
-        action = request.POST.get('action')
-        if action == 'publish':
-            media_instance.status = 'published'
-            media_instance.is_public = True
+                'source': str(form.cleaned_data['specialist']),
+                'credit': str(form.cleaned_data['credit']),
+                'description_pt': str(form.cleaned_data['caption']),
+                'description_en': '',
+                'gps': str(form.cleaned_data['geolocation']),
+                'datetime': str(form.cleaned_data['date_created']),
+                'title_pt': str(form.cleaned_data['title']),
+                'title_en': '',
+                'country': str(form.cleaned_data['country']),
+                'state': str(form.cleaned_data['state']),
+                'city': str(form.cleaned_data['city']),
+                'sublocation': str(form.cleaned_data['location'])
+                    }
+                if media.datatype == 'photo':
+                    Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
+            except:
+                pass
             
-        media_instance.taxa.set(form.cleaned_data['taxa'])
-        media_instance.authors.set(form.cleaned_data['authors'])
+            action = request.POST.get('action')
+            if action == 'publish':
+                media_instance.status = 'published'
+                media_instance.is_public = True
+                
+            media_instance.taxa.set(form.cleaned_data['taxa'])
 
-        person = Person.objects.filter(user_cifonauta=request.user.id).first()
-        media_instance.curators.add(person)
-        
-        media_instance.save()
+            person = Person.objects.filter(user_cifonauta=request.user.id).first()
+            media_instance.curators.add(person)
+            
+            media_instance.save()
 
-        if action == 'publish':
-            form.send_mail(request.user, [media], 'Revisão de mídia do Cifonauta', 'published_media_email.html')
+            if action == 'publish':
+                form.send_mail(request.user, [media], 'Revisão de mídia do Cifonauta', 'published_media_email.html')
 
-        messages.success(request, f'A mídia {media.title} foi publicada com sucesso')
-        return redirect('media_revision')
+            if action == 'publish':
+                messages.success(request, f'A mídia ({media.title}) foi publicada com sucesso')
+            else:
+                messages.success(request, f'A mídia ({media.title}) foi salva com sucesso')
+                messages.warning(request, f'Você ainda não a publicou')
+
+            return redirect('media_revision')
+        else:
+            messages.error(request, f'Houve um erro ao tentar salvar a mídia')
+
+    else: 
+        form = EditMetadataForm(instance=media)
+
+    if media.state:
+        form.fields['city'].queryset = City.objects.filter(state=media.state.id)
+    else:
+        form.fields['city'].queryset = City.objects.none()
+    if media.country:
+        form.fields['state'].queryset = State.objects.filter(country=media.country.id)
+    else:
+        form.fields['state'].queryset = State.objects.none()
     
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
@@ -1361,11 +1363,11 @@ def dashboard_tour_edit(request, pk):
             medias = Media.objects.filter(id__in=selected_media_ids)
             tour_instance.media.set(medias)
 
-            messages.success(request, f'Tour {tour.name} editado com sucesso')
+            messages.success(request, f'Tour ({tour.name}) editado com sucesso')
         else:
             messages.error(request, 'Houve um erro ao tentar editar o tour')
-
-    form = TourForm(instance=tour)
+    else:
+        form = TourForm(instance=tour)
 
     curatorships = Curadoria.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
     taxon_ids = []

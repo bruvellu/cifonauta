@@ -54,23 +54,14 @@
             {% endif %}
         </div>
         <div class="field-div">
-            {{ field }}
-            {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
             {% endif %}
-        </div>
-    </div>
-    {% elif field == form.terms %}
-    <div class="field-container">
-        <div class='label-div'>
-            {{ field.label_tag }}
-            <span class='required'>*</span>
-        </div>
-        <div class="field-div terms-div">
-            <div class="term-wrapper">
-                {{ field }}
-                Declaro...
-            </div>
+            {{ field }}
             {% if field.help_text %}
             <span class="help-text">{{ field.help_text }}</span>
             {% endif %}
@@ -85,6 +76,13 @@
             {% endif %}
         </div>
         <div class="field-div">
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             {{ field }}
             {% if field.help_text %}
             <span class="help-text">{{ field.help_text }}</span>

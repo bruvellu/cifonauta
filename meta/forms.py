@@ -60,8 +60,36 @@ class UploadMediaForm(forms.ModelForm):
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
-            'date_created': forms.DateInput(attrs={'type': 'date'})
+            'date_created': forms.DateInput(attrs={'type': 'date'}),
+            'terms': forms.CheckboxInput(attrs={'class': 'dashboard-input'})
         }
+
+    def __init__(self, *args, **kwargs):
+        self.media_author = kwargs.pop('media_author', None)
+        super().__init__(*args, **kwargs)
+
+    def clean_authors(self):
+        authors = self.cleaned_data['authors']
+
+        if self.media_author and self.media_author not in authors:
+            
+            self.add_error('authors', forms.ValidationError(
+                _(f"Você ({self.media_author}) deve ser incluído como autor"), 
+                code="required"
+            ))
+
+        return authors 
+
+    def clean_terms(self):
+        terms = self.cleaned_data['terms']
+
+        if not terms:
+            self.add_error('terms', forms.ValidationError(
+                _("Você precisa aceitar os termos"), 
+                code="required"
+            ))
+
+        return terms
 
 class UpdateMyMediaForm(forms.ModelForm):
     class Meta:
@@ -153,6 +181,7 @@ class TourForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
+            'is_public': forms.CheckboxInput(attrs={'class': 'dashboard-input is-public-checkbox'})
         }
     
     def __init__(self, *args, **kwargs):

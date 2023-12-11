@@ -10,44 +10,6 @@
 
 {% block dashboard_content %}
 
-{% if modified_media %}
-<div id="behind-modal-container" class="behind-modal-container"></div>
-<div id="modal-container" class="media-changes-modal">
-    <div class="modal-header media-changes-modal-header">
-        <p>Alterações da mídia</p>
-        <button id="close-modal-button" class="close-modal-button media-changes-close-modal-button" onclick="closeModal()">
-            <div class='line1'></div>
-            <div class='line2'></div>
-        </button>
-    </div>
-    <table class="comparison-table">
-        <thead class="comparison-table-head">
-            <tr>
-                <th class='comparison-label-column'></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody class="comparison-table-body">
-            {% for field in modified_media_fields %}
-            <tr class="comparison-row {% if media|get_attribute:field.name != modified_media|get_attribute:field.name%}highlight-difference{% endif %}">
-                <td class="comparison-label-row update-media-comparison-label-row">
-                    {{ field.label_tag }}
-                    {% if field.field.required %}
-                    <span class='required'>*</span>
-                    {% endif %}
-                </td>
-                <td>{{ modified_media|get_attribute:field.name }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <form class="discard-pending-changes" method="POST">
-        {% csrf_token %}
-        <button class="primary-button cancel-button" type="submit" name="action" value="discard">Descartar alterações</button>
-    </form>
-</div>
-{% endif %}
-
 <h2>Edição de mídia</h2>
 
 {% if messages %}
@@ -79,10 +41,10 @@
         <div class="label-div">
             <label>Status:</label>
         </div>
-        <div 
-            class="field-div {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}"
-        >
-            {{ media.get_status_display }}
+        <div  class="field-div">
+            <span class="media-status {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}">
+                {{ media.get_status_display }}
+            </span>
         </div>
     </div>
     {% for field in form %}

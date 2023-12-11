@@ -34,6 +34,16 @@
             <span class="help-text">{{ media.sitepath.help_text }}</span>
         </div>
     </div>
+    <div class="field-container">
+        <div class="label-div">
+            <label>Status:</label>
+        </div>
+        <div  class="field-div">
+            <span class="media-status {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}">
+                {{ media.get_status_display }}
+            </span>
+        </div>
+    </div>
     {% for field in form %}
     {% if field == form.country %}
     <div class="field-container country-container">

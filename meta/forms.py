@@ -60,6 +60,7 @@ class UploadMediaForm(forms.ModelForm):
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
+            'date_created': forms.DateInput(attrs={'type': 'date'})
         }
 
 class UpdateMyMediaForm(forms.ModelForm):
@@ -68,7 +69,8 @@ class UpdateMyMediaForm(forms.ModelForm):
         fields = ('title', 'caption', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
         widgets = {
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
-            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
+            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
+            'date_created': forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date'})
         }
 
 
@@ -112,7 +114,8 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
-            'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"})
+            'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"}),
+            'date_created': forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date'})
         }
     
     def __init__(self, *args, **kwargs):

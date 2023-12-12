@@ -539,6 +539,11 @@ tr, th {
     border: 1px solid #0000005e;
 }
 
+.media-wrapper {
+    height: 9rem;
+    overflow: hidden;
+}
+
 .media-wrapper-td img {
     transition: transform .5s ease;
 }
@@ -660,6 +665,16 @@ tr, th {
     flex-direction: column;
     gap: 0.5rem;
     margin-top: 2rem;
+}
+
+.media-wrapper img,
+.media-wrapper video {
+    transition: transform .5s ease;
+}
+
+.media-wrapper:hover img,
+.media-wrapper:hover video {
+    transform: scale(1.1);
 }
 
 .field-container {
@@ -931,14 +946,14 @@ textarea {
 .media-infos {
     display: grid;
     gap: .5rem;
-    padding-inline: 0.5rem;
-    margin-bottom: 1.5rem;
+    padding-inline: .4rem;
+    margin-bottom: 3rem;
 }
 
 .media-cover {
-    width: 18rem;
+    width: 16rem;
     object-fit: cover;
-    height: 12rem;
+    height: 9rem;
 }
 
 .media-infos > div {
@@ -950,7 +965,7 @@ textarea {
 }
 
 .media-infos > div > p:first-child {
-    width: 11rem;
+    width: 12rem;
     font-weight: bold;
 }
 

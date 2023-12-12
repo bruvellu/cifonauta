@@ -23,13 +23,15 @@
         <div class="media-infos">
             <div>
                 <p>Mídia:</p>
-                <a href="{{ media.file.url }}" target="_blank">
-                    {% if media.datatype == 'video' %}
-                    <video class="media-cover" src="{{ media.coverpath.url }}"></video>
-                    {% else %}
-                    <img class="media-cover" src="{{ media.coverpath.url }}">
-                    {% endif %}
-                </a>
+                <div class='media-wrapper'>
+                    <a href="{{ media.file.url }}" target="_blank">
+                        {% if media.datatype == 'video' %}
+                        <video class="media-cover" src="{{ media.coverpath.url }}"></video>
+                        {% else %}
+                        <img class="media-cover" src="{{ media.coverpath.url }}">
+                        {% endif %}
+                    </a>
+                </div>
             </div>
             <div>
                 <p>Autor:</p>

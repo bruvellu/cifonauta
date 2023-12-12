@@ -315,24 +315,26 @@ def synchronize_fields(request):
 @never_cache
 def edit_metadata(request, media_id):
     media = get_object_or_404(Media, id=media_id)
+    
     if request.method == 'POST':
         form = EditMetadataForm(request.POST, instance=media)
+        
         if form.is_valid():
-            media_instance = form.save(commit=False)
+            media_instance = form.save()
             keywords = {}
             for tag in form.cleaned_data['tags']:
                 try:
                     keywords[tag.category.name].append(tag.name)
                 except:
                     keywords[tag.category.name] = [tag.name]
-            authors = [str(author) for author in form.cleaned_data['authors']]
+            authors = [str(author.name) for author in media.authors.all()]
             metadata =  {
             'headline': str(form.cleaned_data['title']),#
             'license': {
-                'license_type': str(form.cleaned_data['license']),
+                # 'license_type': str(form.cleaned_data['license']), # TODO: get license value, not the key
                 'authors': authors,
                 },
-            'credit': str(form.cleaned_data['license']),
+            # 'credit': str(form.cleaned_data['license']),
             'description_pt': str(form.cleaned_data['caption']),#
             'description_en': '',
             'gps': str(form.cleaned_data['geolocation']),#
@@ -352,7 +354,6 @@ def edit_metadata(request, media_id):
             
             if action == 'submit':
                 media_instance.status = 'submitted'
-            media_instance.taxa.set(form.cleaned_data['taxa'])
 
             person = Person.objects.filter(user_cifonauta=request.user.id).first()
             media_instance.specialists.add(person)
@@ -505,6 +506,7 @@ def curadoria_media_list(request):
 def update_my_medias(request, pk):
     media = get_object_or_404(Media, pk=pk)
     modified_media = ModifiedMedia.objects.filter(media=media)
+    user_person = Person.objects.get(user_cifonauta=request.user)
 
     if request.method == 'POST':
         action = request.POST['action']
@@ -513,7 +515,7 @@ def update_my_medias(request, pk):
             messages.success(request, "Alterações discartadas com sucesso")
             return redirect('update_media', media.pk)
 
-        form = UpdateMyMediaForm(request.POST, instance=media)
+        form = UpdateMyMediaForm(request.POST, instance=media, media_author=user_person)
         if form.is_valid():
             if media.status == 'published':
                 if modified_media:
@@ -854,7 +856,6 @@ def revision_media(request):
         'alphabetical_order': alphabetical_order,
     }, user_curations=curations)
     
-
     queryset_paginator = Paginator(filtered_queryset, records_number)
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)

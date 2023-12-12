@@ -114,9 +114,22 @@ class UpdateMyMediaForm(forms.ModelForm):
         }
     
     def __init__(self, *args, **kwargs):
+        self.media_author = kwargs.pop('media_author', None)
         super().__init__(*args, **kwargs)
 
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
+    
+    def clean_authors(self):
+        authors = self.cleaned_data['authors']
+
+        if self.media_author and self.media_author not in authors:
+            
+            self.add_error('authors', forms.ValidationError(
+                _(f"Você ({self.media_author}) deve ser incluído como autor"), 
+                code="required"
+            ))
+
+        return authors 
     
     def clean_taxa(self):
         taxa = self.cleaned_data['taxa']
@@ -127,6 +140,7 @@ class UpdateMyMediaForm(forms.ModelForm):
             taxa = Taxon.objects.filter(name='Sem táxon')
 
         return taxa
+        
 
 class SendEmailForm(forms.Form):
     def send_mail(
@@ -163,9 +177,8 @@ class SendEmailForm(forms.Form):
 class EditMetadataForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = Media
-        fields = ('title', 'authors', 'caption', 'date_created', 'taxa', 'tags', 'license', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ('title', 'caption', 'date_created', 'taxa', 'tags', 'country', 'state', 'city', 'location', 'geolocation')
         widgets = {
-            'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
             'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"}),

@@ -1,5 +1,5 @@
 {% extends 'dashboard.html' %}
-{% load static %}
+{% load static custom_filters %}
 
 {% block extra_head %}
 <script src="{% static 'js/update_media.js' %}" defer></script>
@@ -17,31 +17,43 @@
 {% endif %}
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="field-container">
-        <div class="label-div">
-            <label>
-                Mídia:
-            </label>
+    <div class="media-infos">
+        <div>
+            <p>Mídia:</p>
+            <div class='media-wrapper'>
+                <a href="{{ media.file.url }}" target="_blank">
+                    {% if media.datatype == 'video' %}
+                    <video class="media-cover" src="{{ media.coverpath.url }}"></video>
+                    {% else %}
+                    <img class="media-cover" src="{{ media.coverpath.url }}">
+                    {% endif %}
+                </a>
+            </div>
         </div>
-        <div class="field-div media-div">
-            <a href="{{ media.coverpath.url }}" target="_blank">
-                {% if media.datatype == 'video' %}
-                <video src="{{ media.coverpath.url }}"></video>
-                {% else %}
-                <img src="{{ media.coverpath.url }}">
-                {% endif %}
-            </a>
-            <span class="help-text">{{ media.sitepath.help_text }}</span>
-        </div>
-    </div>
-    <div class="field-container">
-        <div class="label-div">
-            <label>Status:</label>
-        </div>
-        <div  class="field-div">
+        <div>
+            <p>Status:</p>
             <span class="media-status {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}">
                 {{ media.get_status_display }}
             </span>
+        </div>
+        <div>
+            <p>Autores:</p>
+            {{ media.get_authors_display }}
+            {% get_field_value media 'authors' as authors %}
+            <div>
+                <ul>
+                    {% for author in authors %}
+                    <li>
+                        {{ author }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div>
+            <p>Licença:</p>
+            {% get_field_value media 'license' as license %}
+            <div>{{ media.get_license_display }}</div>
         </div>
     </div>
     {% for field in form %}

@@ -401,16 +401,9 @@ def curadoria_media_list(request):
 
     for curadoria in curations:
         taxons = curadoria.taxons.all()
-        curations_taxons.extend(taxons)
+        curations_taxons.extend(taxons) #Melhorar isso
 
-    queryset = Media.objects.filter(status='draft').order_by('-date_modified')
-    if curations.filter(name='Sem táxon').exists():
-        queryset = queryset.filter(Q(taxa__in=curations_taxons) | Q(taxa=None))
-    else:
-        queryset = queryset.filter(taxa__in=curations_taxons)
-    
-    # Apply distinct() to eliminate duplicates
-    queryset = queryset.distinct()
+    queryset = Media.objects.filter(status='draft').filter(taxa__in=curations_taxons).distinct().order_by('-date_modified')
 
     if request.method == "POST":
         media_ids = request.POST.getlist('selected_media_ids')
@@ -465,10 +458,7 @@ def curadoria_media_list(request):
         for curation in filtered_curations:
             taxons.update(curation.taxons.all())
 
-        if filtered_curations.filter(name='Sem táxon').exists():
-            filtered_queryset = filtered_queryset.filter(Q(taxa__in=taxons) | Q(taxa=None))
-        else:
-            filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
+        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
     
 
     alphabetical_order = request.GET.get('alphabetical_order')
@@ -479,10 +469,10 @@ def curadoria_media_list(request):
         'search': search,
         'curations': curation_ids,
         'alphabetical_order': alphabetical_order,
-    })
+    }, user_curations=curations)
     
-    if not curations.filter(name='Sem táxon').exists():
-        filter_form.fields['curations'].queryset = Curadoria.objects.exclude(name='Sem táxon')
+    # if not curations.filter(name='Sem táxon').exists():
+    #     filter_form.fields['curations'].queryset = Curadoria.objects.exclude(name='Sem táxon')
 
     queryset_paginator = Paginator(filtered_queryset, 12)
     page_num = request.GET.get('page')
@@ -565,15 +555,15 @@ def update_my_medias(request, pk):
                     messages.error(request, 'Nenhuma alteração identificada')
                     return redirect('update_media', media.pk)
 
-                media_instance = form.save(commit=False)
+                media_instance = form.save()
 
                 media_instance.status = 'draft'
 
-                media.save()
+                media_instance.save()
 
                 messages.success(request, 'Informações alteradas com sucesso')
             
-            return redirect('my_medias')
+            return redirect('update_media', pk)
 
         messages.error(request, 'Houve um erro com as alterações feitas')
     else:
@@ -657,10 +647,7 @@ def my_medias(request):
         for curation in filtered_curations:
             taxons.update(curation.taxons.all())
 
-        if filtered_curations.filter(name='Sem táxon').exists():
-            filtered_queryset = filtered_queryset.filter(Q(taxa__in=taxons) | Q(taxa=None))
-        else:
-            filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
+        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
     
 
     alphabetical_order = request.GET.get('alphabetical_order')
@@ -775,26 +762,11 @@ def revision_media(request):
     
     queryset = None
 
-    if curations.filter(name='Sem táxon').exists():
-        queryset = Media.objects.filter(
-            (Q(status='submitted') & (Q(taxa__in=curations_taxons) | Q(taxa=None))) |
-            (Q(status='published') & (
-                Q(modified_media__taxa__in=curations_taxons) | 
-                (Q(modified_media__isnull=False) & Q(modified_media__taxa=None))
-            ))
-        ).order_by('-date_modified')
-    else:
-        queryset = Media.objects.filter(
-            Q(status='submitted') & Q(taxa__in=curations_taxons) |
-            Q(modified_media__taxa__in=curations_taxons)).order_by('-date_modified')
+    queryset = Media.objects.filter(
+        Q(status='submitted') & Q(taxa__in=curations_taxons) |
+        Q(modified_media__taxa__in=curations_taxons))
 
-    queryset = queryset.distinct()
-
-    # filtered_queryset = queryset
-    # filter_form = DashboardFilterForm()
-    # if not curations.filter(name='Sem táxon').exists():
-    #     print('oi')
-    #     filter_form.fields['curations'].queryset = Curadoria.objects.exclude(name='Sem táxon')
+    queryset = queryset.distinct().order_by('-date_modified')
 
     if request.method == 'POST':
         media_ids = request.POST.getlist('selected_media_ids')
@@ -848,10 +820,7 @@ def revision_media(request):
         for curation in filtered_curations:
             taxons.update(curation.taxons.all())
 
-        if filtered_curations.filter(name='Sem táxon').exists():
-            filtered_queryset = filtered_queryset.filter(Q(taxa__in=taxons) | Q(taxa=None))
-        else:
-            filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
+        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
     
 
     alphabetical_order = request.GET.get('alphabetical_order')
@@ -862,10 +831,7 @@ def revision_media(request):
         'search': search,
         'curations': curation_ids,
         'alphabetical_order': alphabetical_order,
-    })
-
-    if not curations.filter(name='Sem táxon').exists():
-        filter_form.fields['curations'].queryset = Curadoria.objects.exclude(name='Sem táxon')
+    }, user_curations=curations)
     
 
     queryset_paginator = Paginator(filtered_queryset, 12)
@@ -1060,23 +1026,15 @@ def media_from_my_curation_list(request):
     user_person = Person.objects.filter(user_cifonauta=user.id).first()
     
     queryset = Media.objects.filter(Q(specialists=user_person) | Q(curators=user_person))
-    if curations_as_curator.filter(name='Sem táxon').exists():
-        curator_queryset = queryset.filter(Q(curators=user_person) & (Q(taxa=None) | Q(taxa__in=curations_as_curator_taxons)))
-    else:
-        curator_queryset = queryset.filter(Q(curators=user_person) & Q(taxa__in=curations_taxons))
 
-    if curations_as_specialist.filter(name='Sem táxon').exists():
-        specialist_queryset = queryset.filter(Q(specialists=user_person) & (Q(taxa=None) | Q(taxa__in=curations_as_specialist_taxons)))
-    else:
-        specialist_queryset = queryset.filter(Q(specialists=user_person) & Q(taxa__in=curations_taxons))    
+    curator_queryset = queryset.filter(Q(curators=user_person) & Q(taxa__in=curations_as_curator_taxons))
+
+    specialist_queryset = queryset.filter(Q(specialists=user_person) & Q(taxa__in=curations_as_specialist_taxons))    
 
     queryset = (curator_queryset | specialist_queryset).distinct()
 
     filtered_queryset = queryset
-    filter_form = DashboardFilterForm()
 
-    if not curations.filter(name='Sem táxon').exists():
-        filter_form.fields['curations'].queryset = Curadoria.objects.exclude(name='Sem táxon')
 
     if request.method == 'POST':
         media_ids = request.POST.getlist('selected_media_ids')
@@ -1112,10 +1070,7 @@ def media_from_my_curation_list(request):
         for curation in filtered_curations:
             taxons.update(curation.taxons.all())
 
-        if filtered_curations.filter(name='Sem táxon').exists():
-            filtered_queryset = filtered_queryset.filter(Q(taxa__in=taxons) | Q(taxa=None))
-        else:
-            filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
+        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
     
 
     alphabetical_order = request.GET.get('alphabetical_order')
@@ -1126,10 +1081,8 @@ def media_from_my_curation_list(request):
         'search': search,
         'curations': curation_ids,
         'alphabetical_order': alphabetical_order,
-    })
+    }, user_curations=curations)
 
-    if not curations.filter(name='Sem táxon').exists():
-        filter_form.fields['curations'].queryset = Curadoria.objects.exclude(name='Sem táxon')
     
 
     queryset_paginator = Paginator(filtered_queryset, 12)
@@ -1180,7 +1133,7 @@ def media_from_my_curation_edit(request, media_id):
     form = EditMetadataForm(instance=media)
 
     if media.status != 'published':
-        messages.warning(request, 'Esta mídia não pode ser alterada diretamente se não estiver publicada')
+        messages.warning(request, 'Esta mídia ainda não pode ser alterada por aqui, apenas depois de publicada')
 
     if media.state:
         form.fields['city'].queryset = City.objects.filter(state=media.state.id)

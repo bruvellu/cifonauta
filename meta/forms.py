@@ -3,7 +3,7 @@
 from django import forms
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
-from .models import Media, Curadoria, ModifiedMedia, Person, Tour
+from .models import Media, Curadoria, ModifiedMedia, Person, Taxon, Tour
 from user.models import UserCifonauta
 from django.template import loader 
 from django.core.mail import EmailMultiAlternatives
@@ -68,6 +68,8 @@ class UploadMediaForm(forms.ModelForm):
         self.media_author = kwargs.pop('media_author', None)
         super().__init__(*args, **kwargs)
 
+        self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
+
     def clean_authors(self):
         authors = self.cleaned_data['authors']
 
@@ -91,6 +93,16 @@ class UploadMediaForm(forms.ModelForm):
 
         return terms
 
+    def clean_taxa(self):
+        taxa = self.cleaned_data['taxa']
+
+        if taxa:
+            taxa.exclude(name='Sem táxon')
+        if not taxa:
+            taxa = Taxon.objects.filter(name='Sem táxon')
+
+        return taxa
+
 class UpdateMyMediaForm(forms.ModelForm):
     class Meta:
         model = Media
@@ -100,7 +112,21 @@ class UpdateMyMediaForm(forms.ModelForm):
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
+        self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
+    
+    def clean_taxa(self):
+        taxa = self.cleaned_data['taxa']
+
+        if taxa:
+            taxa.exclude(name='Sem táxon')
+        if not taxa:
+            taxa = Taxon.objects.filter(name='Sem táxon')
+
+        return taxa
 
 class SendEmailForm(forms.Form):
     def send_mail(
@@ -151,6 +177,17 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
 
         self.fields['title'].required = True
         self.fields['tags'].queryset = self.fields['tags'].queryset.order_by('category')
+        self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
+    
+    def clean_taxa(self):
+        taxa = self.cleaned_data['taxa']
+
+        if taxa:
+            taxa.exclude(name='Sem táxon')
+        if not taxa:
+            taxa = Taxon.objects.filter(name='Sem táxon')
+
+        return taxa
 
 class CoauthorRegistrationForm(forms.ModelForm):
     class Meta:
@@ -169,6 +206,17 @@ class ModifiedMediaForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields['title'].required = True
+        self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
+    
+    def clean_taxa(self):
+        taxa = self.cleaned_data['taxa']
+
+        if taxa:
+            taxa.exclude(name='Sem táxon')
+        if not taxa:
+            taxa = Taxon.objects.filter(name='Sem táxon')
+
+        return taxa
 
 class MyMediaForm(forms.ModelForm):
     class Meta:
@@ -247,6 +295,14 @@ class DashboardFilterForm(forms.Form):
                                    initial=False,
                                    label=_('Ordem alfabética'),
                                    widget=forms.CheckboxInput(attrs={'class': 'dashboard-input'}))
+
+    def __init__(self, *args, **kwargs):
+        user_curations = kwargs.pop('user_curations', None)
+        super().__init__(*args, **kwargs)
+
+        if user_curations:
+            if not user_curations.filter(name='Sem táxon').exists():
+                self.fields['curations'].queryset = self.fields['curations'].queryset.exclude(name='Sem táxon')
             
 
 class SearchForm(forms.Form):

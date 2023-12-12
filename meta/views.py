@@ -1120,12 +1120,7 @@ def media_from_my_curation_edit(request, media_id):
                 messages.error(request, f'Não foi possível fazer alteração')
                 return redirect('media_from_my_curation_edit', media.id)
             
-            media_instance = form.save(commit=False)
-            
-            media_instance.taxa.set(form.cleaned_data['taxa'])
-            media_instance.authors.set(form.cleaned_data['authors'])
-
-            media_instance.save()
+            form.save()
 
             messages.success(request, f'A mídia {media.title} foi alterada com sucesso')
             return redirect('media_from_my_curations_list')

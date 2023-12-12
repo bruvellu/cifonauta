@@ -330,8 +330,11 @@ class Media(models.Model):
 
 
 class ModifiedMedia(Media):
-    media = models.OneToOneField('Media', on_delete=models.CASCADE, related_name='modified_media',
+    media = models.ForeignKey('Media', on_delete=models.CASCADE, related_name='modified_media',
             verbose_name=_('mídia original'), help_text=_('Mídia original com metadados antes das modificações.'))
+    altered_by_author = models.BooleanField(_('termos'),
+            default=True,
+            help_text=_('Flag indicando que quem fez a alteração na mídia.'))
 
     class Meta:
         verbose_name = _("mídia modificada")

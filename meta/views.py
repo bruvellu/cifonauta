@@ -536,7 +536,7 @@ def update_my_medias(request, pk):
                         modified_media.save()
 
                     else:
-                        messages.error(request, 'Mudança igual à versão publicada no site NOVO')
+                        messages.error(request, 'Mudança igual à versão publicada no site')
                         messages.warning(request, 'Descarte a alteração pendente ou efetue uma alteração válida')
                         return redirect('update_media', media.pk)
                 else:
@@ -901,42 +901,32 @@ def modified_media_revision(request, pk):
             messages.success(request, 'Alteração descartada com sucesso')
             return redirect('media_revision')
 
-        media.title = modified_media.title
-        media.caption = modified_media.caption
-        media.date_created = modified_media.date_created
-        media.location = modified_media.location
-        media.city = modified_media.city
-        media.state = modified_media.state
-        media.country = modified_media.country
-        media.geolocation = modified_media.geolocation
-        media.license = modified_media.license
-        
-        media.save()
+        form = ModifiedMediaForm(request.POST)
+        if form.is_valid():
+            update_fields = {field: form.cleaned_data[field] for field in form.cleaned_data if field not in ('taxa', 'authors')}
 
-        media.taxa.set(modified_media.taxa.all())
-        media.authors.set(modified_media.authors.all())
+            for field, value in update_fields.items():
+                setattr(media, field, value)
 
-        modified_media.delete()
+            media.taxa.set(form.cleaned_data['taxa'])
+            media.authors.set(form.cleaned_data['authors'])
+            media.save()
 
-        messages.success(request, 'Alterações aceitas com sucesso')
-        return redirect('media_revision')
+            modified_media.delete()
+
+            messages.success(request, 'Alterações aceitas com sucesso')
+            return redirect('media_revision')
+        else:
+            messages.error(request, 'Houve um erro ao tentar realizar a ação')
+
 
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
-    form = ModifiedMediaForm()
-
-    field_names = form.fields.keys()
-    fields = []
-    for field_name in field_names:
-        fields.append({
-            'name': field_name,
-            'label': form[field_name].label,
-            'required': form[field_name].field.required
-        })
+    form = ModifiedMediaForm(instance=modified_media)
     
     context = {
-        'fields': fields,
+        'modified_media_form': form,
         'media': media,
         'modified_media': modified_media,
         'is_specialist': is_specialist,

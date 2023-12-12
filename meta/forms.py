@@ -98,7 +98,7 @@ class UpdateMyMediaForm(forms.ModelForm):
         widgets = {
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
-            'date_created': forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date'})
+            'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
         }
 
 
@@ -161,6 +161,9 @@ class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
         fields = ('title', 'caption', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        widgets = {
+            'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -28,15 +28,31 @@
             </tr>
         </thead>
         <tbody class="comparison-table-body">
-            {% for field in modified_media_fields %}
-            <tr class="comparison-row {% if media|get_attribute:field.name != modified_media|get_attribute:field.name%}highlight-difference{% endif %}">
+            {% for field in modified_media_form %}
+
+            {% get_field_value media field.name as value1 %}
+            {% get_field_value modified_media field.name as value2 %}
+            
+            <tr class="comparison-row {% if value1 != value2 %}highlight-difference{% endif %}">
                 <td class="comparison-label-row update-media-comparison-label-row">
                     {{ field.label_tag }}
                     {% if field.field.required %}
                     <span class='required'>*</span>
                     {% endif %}
                 </td>
-                <td>{{ modified_media|get_attribute:field.name }}</td>
+                <td>
+                    {% if field.name == 'authors' or field.name == 'taxa' %}
+                    <ul>
+                        {% for item in value2 %}
+                        <li>
+                            {{ item }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    {{ value2 }}
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>

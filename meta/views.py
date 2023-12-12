@@ -508,12 +508,12 @@ def curadoria_media_list(request):
 @never_cache
 def update_my_medias(request, pk):
     media = get_object_or_404(Media, pk=pk)
-    modified_media = ModifiedMedia.objects.filter(media=media).first()
+    modified_media = ModifiedMedia.objects.filter(media=media)
 
     if request.method == 'POST':
         action = request.POST['action']
         if action == 'discard':
-            modified_media.delete()
+            modified_media.first().delete()
             messages.success(request, "Alterações discartadas com sucesso")
             return redirect('update_media', media.pk)
 
@@ -521,113 +521,53 @@ def update_my_medias(request, pk):
         if form.is_valid():
             if media.status == 'published':
                 if modified_media:
-                    altered_fields = []
-                    for field in form.fields.keys():
-                        if not hasattr(modified_media, field):
-                            continue
+                    if form.has_changed():
+                        modified_media.update(
+                            **{ 
+                                field: form.cleaned_data[field] for field in form.cleaned_data
+                                if field != 'taxa' and field != 'authors'
+                            }
+                        )
 
-                        if field == "authors" or field == "taxa":
-                            model_m2m_value = list(getattr(modified_media, field).all())
-                            form_m2m_value = list(form.cleaned_data[field])
+                        modified_media = modified_media.first()
+                        
+                        modified_media.authors.set(form.cleaned_data['authors'])
+                        modified_media.taxa.set(form.cleaned_data['taxa'])
+                        modified_media.save()
 
-                            if model_m2m_value != form_m2m_value or form_m2m_value != list(getattr(media, field).all()):
-                                altered_fields.append(field)
-                        else:
-                            model_field_value = getattr(modified_media, field)
-                            form_field_value = form.cleaned_data[field]
-
-                            if model_field_value != form_field_value or form_field_value != getattr(media, field):
-                                altered_fields.append(field)
-
-                    fields_equal_to_original = 0
-
-                    for field in altered_fields:
-                        if field == "authors" or field == "taxa":
-                            form_m2m_value = list(form.cleaned_data[field])
-
-                            if list(getattr(media, field).all()) == form_m2m_value:
-                                fields_equal_to_original += 1
-                        else:
-                            form_field_value = form.cleaned_data[field]
-
-                            if getattr(media, field) == form_field_value:
-                                fields_equal_to_original += 1
-                    
-                    if len(altered_fields) == fields_equal_to_original:
-                        messages.error(request, 'Mudança igual à versão publicada no site')
+                    else:
+                        messages.error(request, 'Mudança igual à versão publicada no site NOVO')
                         messages.warning(request, 'Descarte a alteração pendente ou efetue uma alteração válida')
                         return redirect('update_media', media.pk)
-
-                    modified_media.title = form.cleaned_data['title']
-                    modified_media.caption = form.cleaned_data['caption']
-                    modified_media.authors.set(form.cleaned_data['authors'])
-                    modified_media.taxa.set(form.cleaned_data['taxa'])
-                    modified_media.date_created = form.cleaned_data['date_created']
-                    modified_media.location = form.cleaned_data['location']
-                    modified_media.city = form.cleaned_data['city']
-                    modified_media.state = form.cleaned_data['state']
-                    modified_media.country = form.cleaned_data['country']
-                    modified_media.geolocation = form.cleaned_data['geolocation']
-                    modified_media.license = form.cleaned_data['license']
-
-                    modified_media.save()
                 else:
-                    has_difference = False
-                    for field in form.fields.keys():
-                        if field != "taxa" and field != "authors":
-                            media_value = getattr(media, field)
+                    if form.has_changed():
+                        new_modified_media = ModifiedMedia(
+                            media=media,
+                            **{
+                                field: form.cleaned_data[field] for field in form.cleaned_data 
+                                if field != 'taxa' and field != 'authors' # needs to set m2m fields manually
+                            }
+                        )
 
-                            if media_value != form.cleaned_data[field]:
-                                has_difference = True
-                                break
-                        else:
-                            media_m2m_value = None
+                        new_modified_media.save()
 
-                            media_m2m_value = list(getattr(media, field).all())
-                            form_m2m_value = list(form.cleaned_data[field])
+                        new_modified_media.authors.set(form.cleaned_data['authors'])
+                        new_modified_media.taxa.set(form.cleaned_data['taxa'])
 
-                            if media_m2m_value != form_m2m_value:
-                                has_difference = True
-                                break
-
-                    if not has_difference:
+                    else:
                         messages.error(request, 'Nenhuma alteração identificada')
                         return redirect('update_media', media.pk)
-
-                    new_modified_media = ModifiedMedia(media=media)
-                    new_modified_media.title = form.cleaned_data['title']
-                    new_modified_media.caption = form.cleaned_data['caption']
-                    new_modified_media.date_created = form.cleaned_data['date_created']
-                    new_modified_media.location = form.cleaned_data['location']
-                    new_modified_media.city = form.cleaned_data['city']
-                    new_modified_media.state = form.cleaned_data['state']
-                    new_modified_media.country = form.cleaned_data['country']
-                    new_modified_media.geolocation = form.cleaned_data['geolocation']
-                    new_modified_media.user = request.user
-                    new_modified_media.license = form.cleaned_data['license']
-
-                    new_modified_media.save()
-
-                    new_modified_media.authors.set(form.cleaned_data['authors'])
-                    new_modified_media.taxa.set(form.cleaned_data['taxa'])
                 
                 messages.success(request, 'Informações alteradas com sucesso')
                 messages.warning(request, 'As alterações serão avaliadas e podem ou não serem aceitas')
             else:
-                if media.status == "submitted":
-                    media.status = "draft"
+                if media.status == 'submitted' and not form.has_changed():
+                    messages.error(request, 'Nenhuma alteração identificada')
+                    return redirect('update_media', media.pk)
 
-                media.title = form.cleaned_data['title']
-                media.caption = form.cleaned_data['caption']
-                media.authors.set(form.cleaned_data['authors'])
-                media.taxa.set(form.cleaned_data['taxa'])
-                media.date_created = form.cleaned_data['date_created']
-                media.location = form.cleaned_data['location']
-                media.city = form.cleaned_data['city']
-                media.state = form.cleaned_data['state']
-                media.country = form.cleaned_data['country']
-                media.geolocation = form.cleaned_data['geolocation']
-                media.license = form.cleaned_data['license']
+                media_instance = form.save(commit=False)
+
+                media_instance.status = 'draft'
 
                 media.save()
 
@@ -654,24 +594,16 @@ def update_my_medias(request, pk):
         license_choices = [choice[0] for choice in Media.LICENSE_CHOICES]
         license_index = license_choices.index(media.license)
         form.fields['license'].choices = Media.LICENSE_CHOICES[:license_index + 1]
-        form.fields['title'].required = True
-    elif media.status == 'submitted':
-        form.fields['title'].required = True
 
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     modified_media_form = ModifiedMediaForm(instance=media)
 
-    field_names = modified_media_form.fields.keys()
-    modified_media_fields = []
-    for field_name in field_names:
-        modified_media_fields.append(modified_media_form[field_name])
-
     context = {
         'media': media,
-        'modified_media': modified_media,
-        'modified_media_fields': modified_media_fields,
+        'modified_media': modified_media.first(),
+        'modified_media_form': modified_media_form,
         'form': form,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
@@ -960,7 +892,7 @@ def revision_media(request):
 @never_cache
 def modified_media_revision(request, pk):
     media = get_object_or_404(Media, pk=pk)
-    modified_media = ModifiedMedia.objects.filter(media=media).first()
+    modified_media = ModifiedMedia.objects.filter(media=media).first() 
 
     if request.method == 'POST':
         action = request.POST['action']

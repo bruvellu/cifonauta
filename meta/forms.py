@@ -3,7 +3,7 @@
 from django import forms
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
-from .models import Media, Curadoria, Person, ModifiedMedia, Taxon, Tour
+from .models import Media, Curadoria, ModifiedMedia, Person, Tour
 from user.models import UserCifonauta
 from django.template import loader 
 from django.core.mail import EmailMultiAlternatives

@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
-from media_utils import Metadata
+from media_utils import Metadata, number_of_entries_per_page
 from operator import or_, and_
 from PIL import Image
 
@@ -395,6 +395,8 @@ def edit_metadata(request, media_id):
 
 @never_cache
 def curadoria_media_list(request):
+    records_number = number_of_entries_per_page(request, 'entries_curadoria_media_list')
+
     user = request.user
     curations = user.curatorship_specialist.all()
     curations_taxons = []
@@ -406,42 +408,47 @@ def curadoria_media_list(request):
     queryset = Media.objects.filter(status='draft').filter(taxa__in=curations_taxons).distinct().order_by('-date_modified')
 
     if request.method == "POST":
-        media_ids = request.POST.getlist('selected_media_ids')
-
-        if media_ids:
-            form = SpecialistActionForm(request.POST)
-
-            if form.is_valid():
-                medias = Media.objects.filter(id__in=media_ids)
-                
-                if form.cleaned_data['taxa_action'] != 'maintain':
-                    for media in medias:
-                        media.taxa.set(form.cleaned_data['taxa'])
-                if form.cleaned_data['status_action'] != 'maintain':
-                    medias.update(status='submitted')
-
-                person = Person.objects.filter(user_cifonauta=request.user.id).first()
-                
-                user_medias = {}
-                for media in medias:
-                    media.specialists.add(person)
-                    user_id = media.user.id
-
-                    if user_id not in user_medias:
-                        user_medias[user_id] = [media]
-                    else:
-                        user_medias[user_id].append(media)
-                
-                for medias in user_medias.values():
-                    form.send_mail(request.user, medias, 'Edição de mídia do Cifonauta', 'edited_media_email.html')
-                
-
-
-                messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
-            else:
-                messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+        action = request.POST['action']
+        
+        if action == 'entries_number':
+            records_number = number_of_entries_per_page(request, 'entries_curadoria_media_list', request.POST['entries_number'])
         else:
-            messages.warning(request, _('Nenhum registro foi selecionado'))
+            media_ids = request.POST.getlist('selected_media_ids')
+
+            if media_ids:
+                form = SpecialistActionForm(request.POST)
+
+                if form.is_valid():
+                    medias = Media.objects.filter(id__in=media_ids)
+                    
+                    if form.cleaned_data['taxa_action'] != 'maintain':
+                        for media in medias:
+                            media.taxa.set(form.cleaned_data['taxa'])
+                    if form.cleaned_data['status_action'] != 'maintain':
+                        medias.update(status='submitted')
+
+                    person = Person.objects.filter(user_cifonauta=request.user.id).first()
+                    
+                    user_medias = {}
+                    for media in medias:
+                        media.specialists.add(person)
+                        user_id = media.user.id
+
+                        if user_id not in user_medias:
+                            user_medias[user_id] = [media]
+                        else:
+                            user_medias[user_id].append(media)
+                    
+                    for medias in user_medias.values():
+                        form.send_mail(request.user, medias, 'Edição de mídia do Cifonauta', 'edited_media_email.html')
+                    
+
+
+                    messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
+                else:
+                    messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+            else:
+                messages.warning(request, _('Nenhum registro foi selecionado'))
 
     filtered_queryset = queryset
 
@@ -471,10 +478,8 @@ def curadoria_media_list(request):
         'alphabetical_order': alphabetical_order,
     }, user_curations=curations)
     
-    # if not curations.filter(name='Sem táxon').exists():
-    #     filter_form.fields['curations'].queryset = Curadoria.objects.exclude(name='Sem táxon')
 
-    queryset_paginator = Paginator(filtered_queryset, 12)
+    queryset_paginator = Paginator(filtered_queryset, records_number)
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
@@ -483,6 +488,7 @@ def curadoria_media_list(request):
     form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[1])
 
     context = {
+        'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
         'object_exists': queryset.exists(),
@@ -604,33 +610,40 @@ def update_my_medias(request, pk):
 
 @never_cache
 def my_medias(request):
+    records_number = number_of_entries_per_page(request, 'entries_my_medias')
+
     user = request.user
     queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
 
     if request.method == "POST":
-        media_ids = request.POST.getlist('selected_media_ids')
+        action = request.POST['action']
 
-        if media_ids:
-            form = MyMediasActionForm(request.POST)
-
-            if form.is_valid():
-                has_published_media = Media.objects.filter(id__in=media_ids, status='published').exists()
-                if has_published_media:
-                    messages.error(request, _('Não é possível aplicar ações em mídias já publicadas'))
-                    return redirect('my_medias')
-                
-                medias = Media.objects.filter(id__in=media_ids)
-                
-                if form.cleaned_data['taxa_action'] != 'maintain':
-                    for media in medias:
-                        media.taxa.set(form.cleaned_data['taxa'])
-                medias.update(status='draft')
-                
-                messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
-            else:
-                messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+        if action == 'entries_number':
+            records_number = number_of_entries_per_page(request, 'entries_my_medias', request.POST['entries_number'])
         else:
-            messages.warning(request, _('Nenhum registro foi selecionado'))
+            if media_ids:
+                media_ids = request.POST.getlist('selected_media_ids')
+
+                form = MyMediasActionForm(request.POST)
+
+                if form.is_valid():
+                    has_published_media = Media.objects.filter(id__in=media_ids, status='published').exists()
+                    if has_published_media:
+                        messages.error(request, _('Não é possível aplicar ações em mídias já publicadas'))
+                        return redirect('my_medias')
+                    
+                    medias = Media.objects.filter(id__in=media_ids)
+                    
+                    if form.cleaned_data['taxa_action'] != 'maintain':
+                        for media in medias:
+                            media.taxa.set(form.cleaned_data['taxa'])
+                    medias.update(status='draft')
+                    
+                    messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
+                else:
+                    messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+            else:
+                messages.warning(request, _('Nenhum registro foi selecionado'))
 
     filtered_queryset = queryset
 
@@ -668,11 +681,12 @@ def my_medias(request):
     is_specialist = user.curatorship_specialist.exists()
     is_curator = user.curatorship_curator.exists()
 
-    queryset_paginator = Paginator(filtered_queryset, 12)
+    queryset_paginator = Paginator(filtered_queryset, records_number)
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
     context = {
+        'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
         'object_exists': queryset.exists(),
@@ -751,6 +765,8 @@ def manage_users(request):
 
 @never_cache
 def revision_media(request):
+    records_number = number_of_entries_per_page(request, 'entries_revision_media')
+
     user = request.user
 
     curations = user.curatorship_curator.all()
@@ -769,41 +785,46 @@ def revision_media(request):
     queryset = queryset.distinct().order_by('-date_modified')
 
     if request.method == 'POST':
-        media_ids = request.POST.getlist('selected_media_ids')
-
-        if media_ids:
-            form = SpecialistActionForm(request.POST)
-
-            if form.is_valid():
-                medias = Media.objects.filter(id__in=media_ids)
-                
-                if form.cleaned_data['taxa_action'] != 'maintain':
-                    for media in medias:
-                        media.taxa.set(form.cleaned_data['taxa'])
-                if form.cleaned_data['status_action'] != 'maintain':
-                    medias.update(status='published', date_published=timezone.now(), is_public=True) #TODO: Remove is_public
-                
-                person = Person.objects.filter(user_cifonauta=request.user.id).first()
-
-                user_medias = {}
-                for media in medias:
-                    media.curators.add(person)
-
-                    user_id = media.user.id
-
-                    if user_id not in user_medias:
-                        user_medias[user_id] = [media]
-                    else:
-                        user_medias[user_id].append(media)
-                
-                for medias in user_medias.values():
-                    form.send_mail(request.user, medias, 'Revisão de mídia do Cifonauta', 'published_media_email.html')
-
-                messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
-            else:
-                messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+        action = request.POST['action']
+        
+        if action == 'entries_number':
+            records_number = number_of_entries_per_page(request, 'entries_revision_media', request.POST['entries_number'])
         else:
-            messages.warning(request, _('Nenhum registro foi selecionado'))
+            media_ids = request.POST.getlist('selected_media_ids')
+
+            if media_ids:
+                form = SpecialistActionForm(request.POST)
+
+                if form.is_valid():
+                    medias = Media.objects.filter(id__in=media_ids)
+                    
+                    if form.cleaned_data['taxa_action'] != 'maintain':
+                        for media in medias:
+                            media.taxa.set(form.cleaned_data['taxa'])
+                    if form.cleaned_data['status_action'] != 'maintain':
+                        medias.update(status='published', date_published=timezone.now(), is_public=True) #TODO: Remove is_public
+                    
+                    person = Person.objects.filter(user_cifonauta=request.user.id).first()
+
+                    user_medias = {}
+                    for media in medias:
+                        media.curators.add(person)
+
+                        user_id = media.user.id
+
+                        if user_id not in user_medias:
+                            user_medias[user_id] = [media]
+                        else:
+                            user_medias[user_id].append(media)
+                    
+                    for medias in user_medias.values():
+                        form.send_mail(request.user, medias, 'Revisão de mídia do Cifonauta', 'published_media_email.html')
+
+                    messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
+                else:
+                    messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+            else:
+                messages.warning(request, _('Nenhum registro foi selecionado'))
     
     filtered_queryset = queryset
 
@@ -834,7 +855,7 @@ def revision_media(request):
     }, user_curations=curations)
     
 
-    queryset_paginator = Paginator(filtered_queryset, 12)
+    queryset_paginator = Paginator(filtered_queryset, records_number)
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
@@ -843,6 +864,7 @@ def revision_media(request):
     form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[2])
 
     context = {
+        'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
         'object_exists': queryset.exists(),
@@ -1000,6 +1022,8 @@ def revision_media_detail(request, media_id):
 
 @never_cache
 def media_from_my_curation_list(request):
+    records_number = number_of_entries_per_page(request, 'entries_media_from_curation')
+
     user = request.user
 
     curations_as_specialist = user.curatorship_specialist.all()
@@ -1037,23 +1061,28 @@ def media_from_my_curation_list(request):
 
 
     if request.method == 'POST':
-        media_ids = request.POST.getlist('selected_media_ids')
+        action = request.POST['action']
 
-        if media_ids:
-            form = MyMediasActionForm(request.POST)
-
-            if form.is_valid():
-                medias = Media.objects.filter(id__in=media_ids)
-                
-                if form.cleaned_data['taxa_action'] != 'maintain':
-                    for media in medias:
-                        media.taxa.set(form.cleaned_data['taxa'])
-                
-                messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
-            else:
-                messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+        if action == 'entries_number':
+            records_number = number_of_entries_per_page(request, 'entries_media_from_curation', request.POST['entries_number'])
         else:
-            messages.warning(request, _('Nenhum registro foi selecionado'))
+            media_ids = request.POST.getlist('selected_media_ids')
+
+            if media_ids:
+                form = MyMediasActionForm(request.POST)
+
+                if form.is_valid():
+                    medias = Media.objects.filter(id__in=media_ids)
+                    
+                    if form.cleaned_data['taxa_action'] != 'maintain':
+                        for media in medias:
+                            media.taxa.set(form.cleaned_data['taxa'])
+                    
+                    messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
+                else:
+                    messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
+            else:
+                messages.warning(request, _('Nenhum registro foi selecionado'))
     
     filtered_queryset = queryset
 
@@ -1083,15 +1112,15 @@ def media_from_my_curation_list(request):
         'alphabetical_order': alphabetical_order,
     }, user_curations=curations)
 
-    
 
-    queryset_paginator = Paginator(filtered_queryset, 12)
+    queryset_paginator = Paginator(filtered_queryset, records_number)
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
     form = MyMediasActionForm()
 
     context = {
+        'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
         'object_exists': queryset.exists(),

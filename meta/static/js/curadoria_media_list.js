@@ -10,3 +10,8 @@ curationsListArray.forEach(curationList => {
     curationList.insertAdjacentElement('afterend', input)
   }
 })
+
+let entriesNumberButton = document.querySelector('#entries-number-button')
+entriesNumberButton.addEventListener('click', () => {
+  entriesNumberButton.querySelector('img').classList.add('rotate-animation')
+})

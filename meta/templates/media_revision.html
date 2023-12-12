@@ -78,7 +78,7 @@
                         {% endfor %}
                     </div>
                 </div>
-                <button type="submit" class="secondary-button">Processar</button>
+                <button type="submit" class="secondary-button" name='action' value='{{ records_number }}'>Processar</button>
             </div>
             
             {% if entries.object_list %}
@@ -89,8 +89,11 @@
                 {% endif %}
                 <div class="entries-number-div">
                     <span>Mostrar</span>
-                    <input type="number" name="entries_number" id="entries-number" value="12" min="1">
+                    <input type="number" name="entries_number" id="entries-number" value="{{ records_number }}" min="1">
                     <span>registros</span>
+                    <button type="submit" name="action" value="entries_number" id="entries-number-button">
+                        <img src="{{ STATIC_URL }}img/reload.svg" alt="">
+                    </button>
                 </div>
             </div>
     

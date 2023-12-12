@@ -433,7 +433,7 @@ p {
     color: #222;
     display: flex;
     align-items: center;
-    gap: .5rem;
+    gap: .375rem;
     font-weight: 500;
     position: absolute;
     right: 0;
@@ -442,7 +442,7 @@ p {
 #entries-number {
     background-color: var(--gray-200);
     width: 3rem;
-    padding: .375rem;
+    padding: .2rem .25rem;
     border-radius: 5px;
     border: 2px solid var(--blue-300);
     text-align: center;
@@ -452,6 +452,32 @@ p {
 
 #entries-number:focus {
     outline: 1px solid var(--blue-700);
+}
+
+#entries-number-button {
+    padding: .25rem;
+    display: flex;
+    border-radius: 6px;
+    border: 1px solid gray;
+    background-color: #efefef;
+}
+
+#entries-number-button:hover {
+    background-color: #dedede;
+}
+
+#entries-number-button img {
+    width: 1.2rem;
+}
+
+.rotate-animation {
+    animation: rotate .45s 0s infinite linear;
+}
+
+@keyframes rotate {
+    100% {
+        rotate: 360deg;
+    }
 }
 
 .list-form {

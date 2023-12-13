@@ -9,6 +9,7 @@
 {% block dashboard_content %}
 
 <h2>Adicionar nova mídia</h2>
+
 {% if messages %}
 <div class="messages-div hide-messages-animation">
     {% for message in messages %}
@@ -16,6 +17,19 @@
     {% endfor %}
 </div>
 {% endif %}
+
+<div class="steps-container">
+    <div class="steps-div">
+        <div class="fulfilled-step-div">1</div>
+        <span class="fulfilled-step-span current-step-span">Carregar mídia</span>
+    </div>
+    <div class="steps-bar"></div>
+    <div class="steps-div">
+        <div>2</div>
+        <span>Preencher dados</span>
+    </div>
+</div>
+
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="field-container">

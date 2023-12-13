@@ -43,6 +43,18 @@
 </div>
 {% endif %}
 
+<div class="steps-container">
+    <div class="steps-div">
+        <div class="fulfilled-step-div">&#10003;</div>
+        <span class="fulfilled-step-span">Carregar mídia</span>
+    </div>
+    <div class="steps-bar full-step-bar"></div>
+    <div class="steps-div">
+        <div class="fulfilled-step-div">2</div>
+        <span class="fulfilled-step-span current-step-span">Preencher dados</span>
+    </div>
+</div>
+
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="field-container">

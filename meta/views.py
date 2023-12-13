@@ -204,6 +204,7 @@ def upload_media_step2(request):
                 return redirect('my_medias')
 
             messages.error(request, 'Houve um erro ao tentar salvar mídia(s)')
+
     else:
         form = UploadMediaForm(initial={'authors': user_person.id})
 

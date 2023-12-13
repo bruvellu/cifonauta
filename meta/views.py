@@ -225,22 +225,18 @@ def upload_media_step2(request):
     
     metadata = None
     for media in medias:
-        print(media.file.name)
         try:
             metadata = Metadata(f'site_media/{media.file.name}')
             try:
                 read_metadata = metadata.read_metadata()
-            except Exception as error:
-                print(error)
+            except:
                 metadata = None
             finally:
                 break
         except:
-            print('Erro')
             pass        
     
     if metadata:
-        print(read_metadata)
         co_authors = []
         co_authors_meta = read_metadata['source'].split(',')
         for co_author in co_authors_meta:
@@ -249,14 +245,8 @@ def upload_media_step2(request):
                     co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
                 except:
                     messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
-        try:
-            location = Location.objects.filter(name=read_metadata['sublocation'].strip()).get().id
-        except:
-            location = ''
-        try:
-            country = Country.objects.filter(name=read_metadata['country'].strip()).get().id
-        except:
-            country = ''
+
+        
         if read_metadata['datetime'] != '':
             datetime = read_metadata['datetime']
         else:
@@ -265,10 +255,8 @@ def upload_media_step2(request):
             'authors': user_person.id,
             'title': read_metadata['headline'],
             'caption': read_metadata['description_pt'],
-            'date': datetime,
-            'country': country,
+            'date_created': datetime,
             'geolocation': read_metadata['gps'],
-            'location': location,
             'license': read_metadata['source'],
             'co_author': co_authors,
             'geolocation': read_metadata['gps']
@@ -866,7 +854,6 @@ def revision_media(request):
     # filtered_queryset = queryset
     # filter_form = DashboardFilterForm()
     # if not curations.filter(name='Sem táxon').exists():
-    #     print('oi')
     #     filter_form.fields['curations'].queryset = Curadoria.objects.exclude(name='Sem táxon')
 
     if request.method == 'POST':

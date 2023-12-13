@@ -10,7 +10,7 @@
 
 {% block dashboard_content %}
 
-{% if modified_media %}
+{% if modified_media.altered_by_author %}
 <div id="behind-modal-container" class="behind-modal-container"></div>
 <div id="modal-container" class="media-changes-modal">
     <div class="modal-header media-changes-modal-header">
@@ -28,15 +28,31 @@
             </tr>
         </thead>
         <tbody class="comparison-table-body">
-            {% for field in modified_media_fields %}
-            <tr class="comparison-row {% if media|get_attribute:field.name != modified_media|get_attribute:field.name%}highlight-difference{% endif %}">
+            {% for field in modified_media_form %}
+
+            {% get_field_value media field.name as value1 %}
+            {% get_field_value modified_media field.name as value2 %}
+            
+            <tr class="comparison-row {% if value1 != value2 %}highlight-difference{% endif %}">
                 <td class="comparison-label-row update-media-comparison-label-row">
                     {{ field.label_tag }}
                     {% if field.field.required %}
                     <span class='required'>*</span>
                     {% endif %}
                 </td>
-                <td>{{ modified_media|get_attribute:field.name }}</td>
+                <td>
+                    {% if field.name == 'authors' or field.name == 'taxa' or field.name == 'tags' %}
+                    <ul>
+                        {% for item in value2 %}
+                        <li>
+                            {{ item }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    {{ value2 }}
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -59,36 +75,32 @@
 {% endif %}
 
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
-    {% if media.modified_media %}
+    {% if modified_media.altered_by_author %}
     <button id="open-modal-button" class='primary-button neutral-button modifications-button' type="button">Ver alterações</button>
     {% endif %}
 
     {% csrf_token %}
-    <div class="field-container">
-        <div class="label-div">
-            <label>Mídia:</label>
+    <div class="media-infos">
+        <div>
+            <p>Mídia:</p>
+            <div class='media-wrapper'>
+                <a href="{{ media.file.url }}" target="_blank">
+                    {% if media.datatype == 'video' %}
+                    <video class="media-cover" src="{{ media.coverpath.url }}"></video>
+                    {% else %}
+                    <img class="media-cover" src="{{ media.coverpath.url }}">
+                    {% endif %}
+                </a>
+            </div>
         </div>
-        <div class="field-div media-div">
-            <a href="{{ media.coverpath.url }}" target="_blank">
-                {% if media.datatype == 'video' %}
-                <video src="{{ media.coverpath.url }}"></video>
-                {% else %}
-                <img src="{{ media.coverpath.url }}">
-                {% endif %}
-            </a>
-            <span class="help-text">{{ media.sitepath.help_text }}</span>
-        </div>
-    </div>
-    <div class="field-container">
-        <div class="label-div">
-            <label>Status:</label>
-        </div>
-        <div 
-            class="field-div {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}"
-        >
-            {{ media.get_status_display }}
+        <div>
+            <p>Status:</p>
+            <span class="media-status {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}">
+                {{ media.get_status_display }}
+            </span>
         </div>
     </div>
+
     {% for field in form %}
     {% if field == form.country %}
     <div class="field-container country-container">
@@ -99,6 +111,13 @@
             {% endif %}
         </div>
         <div class="field-div">
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             {{ field }}
             {% if field.help_text %}
             <span class="help-text">{{ field.help_text }}</span>
@@ -112,6 +131,13 @@
             <span class='required'>*</span>
         </div>
         <div class="field-div terms-div">
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             <div class="term-wrapper">
                 {{ field }}
                 Declaro...
@@ -130,6 +156,13 @@
             {% endif %}
         </div>
         <div class="field-div">
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             {{ field }}
             {% if field.help_text %}
             <span class="help-text">{{ field.help_text }}</span>
@@ -139,7 +172,7 @@
     {% endif %}
     {% endfor %}
     <div class="buttons-div">
-        <button class='primary-button submit-button' type="submit" name="action" value="update">Atualizar</button>
+        <button class='primary-button submit-button' {% if modified_media and not modified_media.altered_by_author%}disabled{% endif %} type="submit">Atualizar</button>
     </div>
 </form>
 

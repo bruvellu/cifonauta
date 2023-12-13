@@ -687,3 +687,11 @@ class Metadata():
                         pass
         return metadata
     
+def number_of_entries_per_page(request, session_name, value=None):
+    if value and int(value) > 0:
+        request.session[session_name] = value
+    
+    try:
+        return request.session[session_name]
+    except:
+        return 12

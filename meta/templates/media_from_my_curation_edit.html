@@ -6,21 +6,79 @@
 <script src="{% static 'js/adm_popup.js' %}" defer></script>
 {% endblock %}
 
-{% block title %}Editar Mídia{% endblock %}
+{% block title %}Alterar Mídia{% endblock %}
 
 {% block dashboard_content %}
 
-<h2>Edição de mídia</h2>
+{% if modified_media and not modified_media.altered_by_author %}
+<div id="behind-modal-container" class="behind-modal-container"></div>
+<div id="modal-container" class="media-changes-modal">
+    <div class="modal-header media-changes-modal-header">
+        <p>Alterações da mídia</p>
+        <button id="close-modal-button" class="close-modal-button media-changes-close-modal-button" onclick="closeModal()">
+            <div class='line1'></div>
+            <div class='line2'></div>
+        </button>
+    </div>
+    <table class="comparison-table">
+        <thead class="comparison-table-head">
+            <tr>
+                <th class='comparison-label-column'></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="comparison-table-body">
+            {% for field in modified_media_form %}
+
+            {% get_field_value media field.name as value1 %}
+            {% get_field_value modified_media field.name as value2 %}
+            
+            <tr class="comparison-row {% if value1 != value2 %}highlight-difference{% endif %}">
+                <td class="comparison-label-row update-media-comparison-label-row">
+                    {{ field.label_tag }}
+                    {% if field.field.required %}
+                    <span class='required'>*</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if field.name == 'authors' or field.name == 'taxa' or field.name == 'tags' %}
+                    <ul>
+                        {% for item in value2 %}
+                        <li>
+                            {{ item }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    {{ value2 }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <form class="discard-pending-changes" method="POST">
+        {% csrf_token %}
+        <button class="primary-button cancel-button" type="submit" name="action" value="discard">Descartar alterações</button>
+    </form>
+</div>
+{% endif %}
+
+<h2>Alterar mídia publicada</h2>
 
 {% if messages %}
 <div class="messages-div">
-{% for message in messages %}
-<span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
-{% endfor %}
+    {% for message in messages %}
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    {% endfor %}
 </div>
 {% endif %}
 
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
+    {% if modified_media and not modified_media.altered_by_author %}
+    <button id="open-modal-button" class='primary-button neutral-button modifications-button' type="button">Ver alterações</button>
+    {% endif %}
+
     {% csrf_token %}
     <div class="media-infos">
         <div>
@@ -71,23 +129,14 @@
             {% endif %}
         </div>
         <div class="field-div">
-            {{ field }}
-            {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
             {% endif %}
-        </div>
-    </div>
-    {% elif field == form.terms %}
-    <div class="field-container">
-        <div class='label-div'>
-            {{ field.label_tag }}
-            <span class='required'>*</span>
-        </div>
-        <div class="field-div terms-div">
-            <div class="term-wrapper">
-                {{ field }}
-                Declaro...
-            </div>
+            {{ field }}
             {% if field.help_text %}
             <span class="help-text">{{ field.help_text }}</span>
             {% endif %}
@@ -117,9 +166,8 @@
     </div>
     {% endif %}
     {% endfor %}
-    <div class="buttons-div">
-        <button class='primary-button submit-button' type="submit" name="action" value="submit">Salvar e enviar para revisão</button>
-        <button class='primary-button neutral-button' type="submit" name="action" value="save_only">Apenas salvar</button>
+    <div class='buttons-div'>
+        <button class='primary-button submit-button' {% if media.status != 'published' or modified_media and modified_media.altered_by_author%}disabled{% endif %} type="submit">Alterar</button>
     </div>
 </form>
 

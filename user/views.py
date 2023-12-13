@@ -28,12 +28,7 @@ def user_creation(request):
     else:
         form = UserCifonautaCreationForm()
 
-    errors = {}
-    for field in form:
-        if field.errors:
-            errors[field.name] = field.errors[0]
-
-    return render(request, 'users/user_creation.html', {'form': form, 'errors': errors})
+    return render(request, 'users/user_creation.html', { 'form': form })
 
 
 def login_view(request):

@@ -28,57 +28,6 @@ class Curadoria(models.Model):
     def __str__(self):
         return self.name
 
-class ModifiedMedia(models.Model):
-    LICENSE_CHOICES = (('cc0', _('CC0 (Domínio Público)')),
-                       ('cc_by', _('CC BY (Atribuição)')),
-                       ('cc_by_sa', _('CC BY-SA (Atribuição-CompartilhaIgual)')),
-                       ('cc_by_nd', _('CC BY-ND (Atribuição-SemDerivações)')),
-                       ('cc_by_nc', _('CC BY-NC (Atribuição-NãoComercial)')),
-                       ('cc_by_nc_sa', _('CC BY-NC-SA (AtribuiçãoNãoComercial-CompartilhaIgual)')),
-                       ('cc_by_nc_nd', _('CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')),)
-    
-    title = models.CharField(_('título'), max_length=200, default='',
-            blank=True, help_text=_('Título da imagem.'))
-    caption = models.TextField(_('legenda'), default='', blank=True,
-            help_text=_('Legenda da imagem.'))
-    media = models.OneToOneField('Media', on_delete=models.CASCADE, related_name='modified_media',
-            verbose_name=_('mídia modificada'))
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True,
-            on_delete=models.SET_NULL, verbose_name=_('usuário do arquivo'),
-            help_text=_('Usuário que fez o upload do arquivo.'),
-            related_name='modified_media')
-    authors = models.ManyToManyField('Person', blank=True,
-            verbose_name=_('autores'), help_text=_('Coautor(es) da mídia'), related_name='modified_media_authors')
-    taxa = models.ManyToManyField('Taxon', related_name="modified_media_taxons", verbose_name=_('táxons'), help_text=_('Táxons pertencentes à mídia.'), blank=True)
-    date_created = models.DateTimeField(_('data de criação'),
-                                        blank=True,
-                                        null=True,
-                                        help_text=_('Data de criação do arquivo.'))
-    location = models.ForeignKey('Location', on_delete=models.SET_NULL,
-            null=True, blank=True, verbose_name=_('local'),
-            help_text=_('Localidade mostrada na imagem (ou local de coleta).'))
-    city = models.ForeignKey('City', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('cidade'),
-            help_text=_('Cidade mostrada na imagem (ou cidade de coleta).'))
-    state = models.ForeignKey('State', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('estado'),
-            help_text=_('Estado mostrado na imagem (ou estado de coleta).'))
-    country = models.ForeignKey('Country', on_delete=models.SET_NULL,
-            null=True, blank=True, verbose_name=_('país'),
-            help_text=_('País mostrado na imagem (ou país de coleta).'))
-    geolocation = models.CharField(_('geolocalização'), default='',
-            max_length=25, blank=True,
-        help_text=_('Geolocalização da imagem no formato decimal.'))
-    license = models.CharField(_('Licença'),
-                               max_length=60,
-                               choices=LICENSE_CHOICES,
-                               default='cc0',
-                               help_text=_('Tipo de licença da mídia.'))
-    
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = _('mídia modificada')
-        verbose_name_plural = _('mídias modificadas')
     
 def save_file(instance, filename):
     return os.path.join(f'uploads/{instance.user.username}', filename)
@@ -379,6 +328,19 @@ class Media(models.Model):
         ordering = ['id']
         indexes = (GinIndex(fields=['search_vector']),)
 
+
+class ModifiedMedia(Media):
+    media = models.ForeignKey('Media', on_delete=models.CASCADE, related_name='modified_media',
+            verbose_name=_('mídia original'), help_text=_('Mídia original com metadados antes das modificações.'))
+    altered_by_author = models.BooleanField(_('alterada pelo autor'),
+            default=True,
+            help_text=_('Flag indicando quem fez a alteração na mídia.'))
+    specialist_person = models.OneToOneField('Person', null=True, blank=True, on_delete=models.CASCADE,
+            verbose_name=_('Especialista da mídia modificada'), help_text=_('Especialista que realizou alterações na mídia publicada'))
+
+    class Meta:
+        verbose_name = _("mídia modificada")
+        verbose_name_plural = _("mídias modificadas")
 
 class Person(models.Model):
     name = models.CharField(_('nome'), max_length=200, unique=True, blank=True,

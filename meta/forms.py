@@ -3,7 +3,7 @@
 from django import forms
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
-from .models import Media, Curadoria, Person, ModifiedMedia, Taxon, Tour
+from .models import Media, Curadoria, ModifiedMedia, Person, Taxon, Tour
 from user.models import UserCifonauta
 from django.template import loader 
 from django.core.mail import EmailMultiAlternatives
@@ -56,21 +56,95 @@ OPERATORS = (
 class UploadMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
+            'date_created': forms.DateInput(attrs={'type': 'date'}),
+            'terms': forms.CheckboxInput(attrs={'class': 'dashboard-input'})
         }
+
+    def __init__(self, *args, **kwargs):
+        self.media_author = kwargs.pop('media_author', None)
+        super().__init__(*args, **kwargs)
+
+        self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
+
+    def clean_authors(self):
+        authors = self.cleaned_data['authors']
+
+        if self.media_author and self.media_author not in authors:
+            
+            self.add_error('authors', forms.ValidationError(
+                _(f"Você ({self.media_author}) deve ser incluído como autor"), 
+                code="required"
+            ))
+
+        return authors 
+
+    def clean_terms(self):
+        terms = self.cleaned_data['terms']
+
+        if not terms:
+            self.add_error('terms', forms.ValidationError(
+                _("Você precisa aceitar os termos"), 
+                code="required"
+            ))
+
+        return terms
+
+    def clean_taxa(self):
+        taxa = self.cleaned_data['taxa']
+
+        if taxa:
+            taxa.exclude(name='Sem táxon')
+        if not taxa:
+            taxa = Taxon.objects.filter(name='Sem táxon')
+
+        return taxa
 
 class UpdateMyMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
         widgets = {
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
-            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
+            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
+            'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
         }
+    
+    def __init__(self, *args, **kwargs):
+        self.media_author = kwargs.pop('media_author', None)
+        media_status = kwargs.pop('media_status', None)
+        super().__init__(*args, **kwargs)
 
+        if media_status and media_status != 'draft':
+            self.fields['title_pt_br'].required = True
+            self.fields['title_en'].required = True
+        self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
+    
+    def clean_authors(self):
+        authors = self.cleaned_data['authors']
+
+        if self.media_author and self.media_author not in authors:
+            
+            self.add_error('authors', forms.ValidationError(
+                _(f"Você ({self.media_author}) deve ser incluído como autor"), 
+                code="required"
+            ))
+
+        return authors 
+    
+    def clean_taxa(self):
+        taxa = self.cleaned_data['taxa']
+
+        if taxa:
+            taxa.exclude(name='Sem táxon')
+        if not taxa:
+            taxa = Taxon.objects.filter(name='Sem táxon')
+
+        return taxa
+        
 
 class SendEmailForm(forms.Form):
     def send_mail(
@@ -107,19 +181,31 @@ class SendEmailForm(forms.Form):
 class EditMetadataForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = Media
-        fields = ('title', 'authors', 'caption', 'date_created', 'taxa', 'tags', 'license', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'date_created', 'taxa', 'tags', 'country', 'state', 'city', 'location', 'geolocation')
         widgets = {
-            'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
-            'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"})
+            'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"}),
+            'date_created': forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date'})
         }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['title'].required = True
+        self.fields['title_pt_br'].required = True
+        self.fields['title_en'].required = True
         self.fields['tags'].queryset = self.fields['tags'].queryset.order_by('category')
+        self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
+    
+    def clean_taxa(self):
+        taxa = self.cleaned_data['taxa']
+
+        if taxa:
+            taxa.exclude(name='Sem táxon')
+        if not taxa:
+            taxa = Taxon.objects.filter(name='Sem táxon')
+
+        return taxa
 
 class CoauthorRegistrationForm(forms.ModelForm):
     class Meta:
@@ -129,12 +215,34 @@ class CoauthorRegistrationForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
-        fields = ('title', 'caption', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'tags', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        widgets = {
+            'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
+        }
 
     def __init__(self, *args, **kwargs):
+        author_form = kwargs.pop('author_form', None)
         super().__init__(*args, **kwargs)
 
-        self.fields['title'].required = True
+        if author_form:
+            self.fields.pop('tags')
+        else:
+            self.fields.pop('authors')
+            self.fields.pop('license')
+
+        self.fields['title_pt_br'].required = True
+        self.fields['title_en'].required = True
+        self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
+    
+    def clean_taxa(self):
+        taxa = self.cleaned_data['taxa']
+
+        if taxa:
+            taxa.exclude(name='Sem táxon')
+        if not taxa:
+            taxa = Taxon.objects.filter(name='Sem táxon')
+
+        return taxa
 
 class MyMediaForm(forms.ModelForm):
     class Meta:
@@ -150,6 +258,7 @@ class TourForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
+            'is_public': forms.CheckboxInput(attrs={'class': 'dashboard-input is-public-checkbox'})
         }
     
     def __init__(self, *args, **kwargs):
@@ -200,17 +309,26 @@ class DashboardFilterForm(forms.Form):
     Curadoria = apps.get_model('meta', 'Curadoria')
     
     search = forms.CharField(required=False,
-                             label=_('Buscar por'))
-    alphabetical_order = forms.BooleanField(required=False,
-                                   initial=False,
-                                   label=_('Ordem alfabética'),
-                                   widget=forms.CheckboxInput())
+                             label=_('Buscar por'),
+                             widget=forms.TextInput(attrs={'placeholder': _('Digite o título da mídia')}))
     curations = forms.ModelMultipleChoiceField(
         required=False,
         queryset=Curadoria.objects.all(),
         widget=forms.SelectMultiple(attrs={"class": "select2-curations", "multiple": "multiple"}),
         label=_('Curadorias')
     )
+    alphabetical_order = forms.BooleanField(required=False,
+                                   initial=False,
+                                   label=_('Ordem alfabética'),
+                                   widget=forms.CheckboxInput(attrs={'class': 'dashboard-input'}))
+
+    def __init__(self, *args, **kwargs):
+        user_curations = kwargs.pop('user_curations', None)
+        super().__init__(*args, **kwargs)
+
+        if user_curations:
+            if not user_curations.filter(name='Sem táxon').exists():
+                self.fields['curations'].queryset = self.fields['curations'].queryset.exclude(name='Sem táxon')
             
 
 class SearchForm(forms.Form):

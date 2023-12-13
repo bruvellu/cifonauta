@@ -19,6 +19,8 @@ urlpatterns = [
         path('administrative-module/revision/detail/<int:media_id>', views.revision_media_detail, 
         name='media_revision_detail'),
         path('administrative-module/revision/changes/<int:pk>', views.modified_media_revision, name='modified_media_revision'),
+        path('administrative-module/media-from-my-curations/', views.media_from_my_curation_list, name='media_from_my_curations_list'),
+        path('administrative-module/media-from-my-curations/<int:media_id>', views.media_from_my_curation_edit, name='media_from_my_curation_edit'),
         path('administrative-module/tours', views.dashboard_tour_list, name='dashboard_tour_list'),
         path('administrative-module/tours/add', views.dashboard_tour_add, name='dashboard_tour_add'),
         path('administrative-module/tours/<int:pk>', views.dashboard_tour_edit, name='dashboard_tour_edit'),

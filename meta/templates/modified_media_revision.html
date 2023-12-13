@@ -23,13 +23,15 @@
         <div class="media-infos">
             <div>
                 <p>Mídia:</p>
-                <a href="{{ media.file.url }}" target="_blank">
-                    {% if media.datatype == 'video' %}
-                    <video class="media-cover" src="{{ media.coverpath.url }}"></video>
-                    {% else %}
-                    <img class="media-cover" src="{{ media.coverpath.url }}">
-                    {% endif %}
-                </a>
+                <div class='media-wrapper'>
+                    <a href="{{ media.file.url }}" target="_blank">
+                        {% if media.datatype == 'video' %}
+                        <video class="media-cover" src="{{ media.coverpath.url }}"></video>
+                        {% else %}
+                        <img class="media-cover" src="{{ media.coverpath.url }}">
+                        {% endif %}
+                    </a>
+                </div>
             </div>
             <div>
                 <p>Autor:</p>
@@ -38,6 +40,16 @@
             <div>
                 <p>Data de modificação:</p>
                 <div>{{ media.date_modified }}</div>
+            </div>
+            <div>
+                <p>Alterações feitas pelo:</p>
+                <div>
+                    {% if modified_media.altered_by_author %}
+                    {{ media.user }} (Autor)
+                    {% else %}
+                    {{ modified_media.specialist_person }} (Especialista)
+                    {% endif %}
+                </div>
             </div>
         </div>
         <table class="comparison-table">
@@ -49,18 +61,41 @@
                 </tr>
             </thead>
             <tbody class="comparison-table-body">
-                {% for field in fields %}
-                <tr class="comparison-row {% if media|get_attribute:field.name != modified_media|get_attribute:field.name%}highlight-difference{% endif %}">
+                {% for field in modified_media_form %}
+
+                {% get_field_value media field.name as media_value %}
+                {% get_field_value modified_media field.name as modified_value %}
+
+                <tr class="comparison-row {% if media_value != modified_value %}highlight-difference{% endif %}">
                     <td class="comparison-label-row">
-                        <label>
-                            {{ field.label }}
-                        </label>
-                        {% if field.required %}
+                        {{ field.label_tag }}
+                        {% if field.field.required %}
                         <span class='required'>*</span>
                         {% endif %}
                     </td>
-                    <td>{{ media|get_attribute:field.name }}</td>
-                    <td>{{ modified_media|get_attribute:field.name }}</td>
+                    {% if field.name == 'authors' or field.name == 'taxa' or field.name == 'tags' %}
+                    <td>
+                        <ul>
+                            {% for item in media_value %}
+                            <li>
+                                {{ item }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            {% for item in modified_value %}
+                            <li>
+                                {{ item }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    {% else %}
+                    <td>{{ media_value }}</td>
+                    <td>{{ modified_value }}</td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>
@@ -69,6 +104,12 @@
         <div class='buttons-div'>
             <button class='primary-button submit-button' type="submit" name="action" value="accept">Aceitar alterações</button>
             <button class='primary-button cancel-button' type="submit" name="action" value="discard" formnovalidate>Descartar alterações</button>
+        </div>
+
+        <div class='hide-div'>
+            {% for field in modified_media_form %}
+            {{ field }}
+            {% endfor %}
         </div>
     </form>
 </div>

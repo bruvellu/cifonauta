@@ -9,7 +9,7 @@
 
 {% block dashboard_content %}
 <div id="behind-modal-container" class="pre-registration-behind-modal"></div>
-<div id="modal-container" class="pre-registration-modal">
+<div id="modal-container" class="list-modal-container">
     <div class="modal-header">
         <p>Registre o coautor</p>
         <button id="close-modal-button" class="close-modal-button">
@@ -17,7 +17,7 @@
             <div class='line2'></div>
         </button>
     </div>
-    <form class="pre-registration-form" method="post">
+    <form class="modal-body" method="post">
         {% csrf_token %}
         {% for field2 in registration_form %}
         <div class="field2-container">
@@ -42,6 +42,18 @@
     {% endfor %}
 </div>
 {% endif %}
+
+<div class="steps-container">
+    <div class="steps-div">
+        <div class="fulfilled-step-div">&#10003;</div>
+        <span class="fulfilled-step-span">Carregar mídia</span>
+    </div>
+    <div class="steps-bar full-step-bar"></div>
+    <div class="steps-div">
+        <div class="fulfilled-step-div">2</div>
+        <span class="fulfilled-step-span current-step-span">Preencher dados</span>
+    </div>
+</div>
 
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -71,6 +83,13 @@
             {{ field.label_tag }}
         </div>
         <div class="field-div authors-field-div">
+            {% if form.authors.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             {{ field }}
             {% if field.help_text %}
             <span class="help-text">{{ field.help_text }}</span>
@@ -90,6 +109,13 @@
             {% endif %}
         </div>
         <div class="field-div">
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             {{ field }}
             {% if field.help_text %}
             <span class="help-text">{{ field.help_text }}</span>
@@ -103,6 +129,13 @@
             <span class='required'>*</span>
         </div>
         <div class="field-div terms-div">
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             <div class="term-wrapper">
                 {{ field }}
                 Declaro...
@@ -121,6 +154,13 @@
             {% endif %}
         </div>
         <div class="field-div">
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
             {{ field }}
             {% if field.help_text %}
             <span class="help-text">{{ field.help_text }}</span>

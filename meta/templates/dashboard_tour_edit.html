@@ -100,6 +100,13 @@
                 {% endif %}
             </div>
             <div class="field-div">
+                {% if field.errors %}
+                <ul class="field-error">
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
                 {{ field }}
                 {% if field.help_text %}
                 <span class="help-text">{{ field.help_text }}</span>

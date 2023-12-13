@@ -37,13 +37,11 @@
                     </div>
                     {% endif %}
                 </label>
-                {% for error_field, error in errors.items %}
-                {% if field.name == error_field %}
-                <span class="field-error">
-                    {{ error }}
-                </span>
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <span class='field-error'>{{ error }}</span>
+                    {% endfor %}
                 {% endif %}
-                {% endfor %}
                 
                 {% if field.field.widget.input_type == 'password' %}
                     <div class="password-div">

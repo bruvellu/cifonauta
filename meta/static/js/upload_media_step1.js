@@ -1,9 +1,10 @@
 let filesInput = document.querySelector('#files')
+let stepsBar = document.querySelector('.steps-bar')
 
 filesInput.addEventListener('change', (e) => {
     let mediasList = Array.from(e.target.files)
     let filesNames = document.querySelector('.files-names')
-
+    
     if (mediasList.length > 1) {
         if (filesNames) {
             filesNames.innerHTML = ''
@@ -32,4 +33,6 @@ filesInput.addEventListener('change', (e) => {
             filesNames.remove()
         }
     }
+
+    mediasList.length >= 1 ? stepsBar.classList.add('mid-step-bar') : stepsBar.classList.remove('mid-step-bar')
 })

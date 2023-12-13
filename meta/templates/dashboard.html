@@ -7,6 +7,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
@@ -22,8 +26,8 @@
     <aside class="dashboard-aside">
         {% with fullpath=request.get_full_path %}
         <ul>
-            <li>
-                <a href="{% url 'home' %}">Voltar para à Página Inicial</a>
+            <li class='initial-page-li'>
+                <a href="{% url 'home' %}">Voltar à Página Inicial</a>
             </li>
             <li>
                 <a 
@@ -49,13 +53,18 @@
                 <a href="{% url 'dashboard_tour_list' %}" {% if 'administrative-module/tours' in fullpath %}class='current-page'{% endif %}>Tours</a>
             </li>
             {% endif %}
+            {% if is_specialist or is_curator %}
+            <li>
+                <a href="{% url 'media_from_my_curations_list' %}" {% if 'administrative-module/media-from-my-curations/' in fullpath %}class='current-page'{% endif %}>Mídias da minha curadoria</a>
+            </li>
+            {% endif %}
             <li>
                 <a href="{% url 'my_medias' %}" {% if '/administrative-module/my-medias/' in fullpath or '/administrative-module/update/' in fullpath %}class='current-page'{% endif %}>Minhas mídias</a>
             </li>
         </ul>
         {% endwith %}
     </aside>
-    <div class="dashboard-view">
+    <div class="dashboard-view {% if list_page %}dark-background{% else %}light-background{% endif %}">
         <h1>Módulo Administrativo</h1>
 
         {% block dashboard_content %}{% endblock %}

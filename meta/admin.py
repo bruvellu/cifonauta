@@ -23,9 +23,6 @@ class MediaAdmin(TranslationAdmin):
     readonly_fields = ['uuid', 'date_uploaded', 'date_modified', 'search_vector']
 
 
-class ModifiedMediaAdmin(admin.ModelAdmin):
-    list_display = ['title']
-
 
 class TagAdmin(TranslationAdmin):
     list_display = ['name', 'description', 'category']
@@ -93,6 +90,7 @@ class TourAdmin(TranslationAdmin):
 # Regular models.
 admin.site.register(Location)
 admin.site.register(Stats)
+admin.site.register(ModifiedMedia)
 
 # Translation models.
 admin.site.unregister(FlatPage)
@@ -108,5 +106,3 @@ admin.site.register(Person, PersonAdmin)
 admin.site.register(Taxon, TaxonAdmin)
 admin.site.register(Reference, ReferenceAdmin)
 admin.site.register(Curadoria, CuradoriaAdmin)
-admin.site.register(ModifiedMedia, ModifiedMediaAdmin)
-

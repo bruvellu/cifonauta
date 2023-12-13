@@ -6,7 +6,6 @@
 
 <div class="subtitle-wrapper">
   <h2>Lista de tours</h2>
-  <a class='primary-button submit-button list-view-button' href="{% url 'dashboard_tour_add' %}">Criar novo tour</a>
 </div>
 {% if messages %}
   <div class="messages-div hide-messages-animation">
@@ -16,7 +15,14 @@
   </div>
 {% endif %}
 {% if tours %}
-<table class="table list-form">
+
+<div class='table-top'>
+  <button type="button" class="primary-button submit-button list-page-add-btn">
+    <a href="{% url 'dashboard_tour_add' %}">Criar novo tour</a>
+  </button>
+</div>
+
+<table class="dashboard-table list-form">
   <thead class="table-head">
     <tr>
         <th class="title-column">Nome</th>

@@ -171,43 +171,39 @@ def upload_media_step2(request):
                 messages.error(request, 'Houve um erro ao tentar salvar coautor')
                 return redirect('upload_media_step2')
         
-        form = UploadMediaForm(request.POST, request.FILES, media_author=user_person)
-        
-        if form.is_valid():
-            for media in medias:
-                file = media.file.name.split('/')[-1]
-                ext = file.split('.')[-1]
-                filename = file.split('.')[0]
-
-                media_file = File(media.file, name=f'{filename}.{ext}')
-                media.sitepath = media_file
-                media_file = File(media.file, name=f'{filename}_cover.{ext}')
-                media.coverpath = media_file
-
-                update_fields = {field: form.cleaned_data[field] for field in form.cleaned_data if field not in ('taxa', 'authors')}
-
-                for field, value in update_fields.items():
-                    setattr(media, field, value)
-
-                media.taxa.set(form.cleaned_data['taxa'])
-                media.authors.set(form.cleaned_data['authors'])
-
-                media.status = 'draft'
-                media.save()
-
-                if media.datatype == 'photo':
-                    coverpath = Image.open(media.coverpath.path)
-                    coverpath.thumbnail((1280, 720))
-                    coverpath.save(media.coverpath.path, quality=40)
-
-                    sitepath = Image.open(media.sitepath.path)
-                    sitepath.thumbnail((1280, 720))
-                    sitepath.save(media.sitepath.path)
+        if request.method == 'POST':
+            form = UploadMediaForm(request.POST, request.FILES, media_author=user_person)
             
-            messages.success(request, 'Suas mídias foram salvas com sucesso')
-            return redirect('my_medias')
+            if form.is_valid():
+                for media in medias:
+                    form = UploadMediaForm(request.POST, request.FILES, media_author=user_person, instance=media)
+                    
+                    file = media.file.name.split('/')[-1]
+                    ext = file.split('.')[-1]
+                    filename = file.split('.')[0]
 
-        messages.error(request, 'Houve um erro ao tentar salvar mídia(s)')
+                    media_file = File(media.file, name=f'{filename}.{ext}')
+                    media.sitepath = media_file
+                    media_file = File(media.file, name=f'{filename}_cover.{ext}')
+                    media.coverpath = media_file
+
+                    media_instance = form.save()
+                    media_instance.status = 'draft'
+                    media_instance.save()
+
+                    if media.datatype == 'photo':
+                        coverpath = Image.open(media.coverpath.path)
+                        coverpath.thumbnail((1280, 720))
+                        coverpath.save(media.coverpath.path, quality=40)
+
+                        sitepath = Image.open(media.sitepath.path)
+                        sitepath.thumbnail((1280, 720))
+                        sitepath.save(media.sitepath.path)
+
+                    messages.success(request, 'Suas mídias foram salvas com sucesso')
+                    return redirect('my_medias')
+
+            messages.error(request, 'Houve um erro ao tentar salvar mídia(s)')
     else:
         form = UploadMediaForm(initial={'authors': user_person.id})
 
@@ -515,18 +511,9 @@ def update_my_medias(request, pk):
             if media.status == 'published':
                 if modified_media:
                     if form.has_changed():
-                        modified_media.update(
-                            **{ 
-                                field: form.cleaned_data[field] for field in form.cleaned_data
-                                if field != 'taxa' and field != 'authors'
-                            }
-                        )
+                        form = UpdateMyMediaForm(request.POST, instance=modified_media, media_author=user_person, media_status=media.status)
 
-                        modified_media = modified_media.first()
-                        
-                        modified_media.authors.set(form.cleaned_data['authors'])
-                        modified_media.taxa.set(form.cleaned_data['taxa'])
-                        modified_media.save()
+                        form.save()
 
                     else:
                         messages.error(request, 'Mudança igual à versão publicada no site')
@@ -534,18 +521,10 @@ def update_my_medias(request, pk):
                         return redirect('update_media', media.pk)
                 else:
                     if form.has_changed():
-                        new_modified_media = ModifiedMedia(
-                            media=media,
-                            **{
-                                field: form.cleaned_data[field] for field in form.cleaned_data 
-                                if field != 'taxa' and field != 'authors' # needs to set m2m fields manually
-                            }
-                        )
+                        new_modified_media = ModifiedMedia(media=media)
+                        form = UpdateMyMediaForm(request.POST, instance=new_modified_media, media_author=user_person, media_status=media.status)
 
-                        new_modified_media.save()
-
-                        new_modified_media.authors.set(form.cleaned_data['authors'])
-                        new_modified_media.taxa.set(form.cleaned_data['taxa'])
+                        form.save()
 
                     else:
                         messages.error(request, 'Nenhuma alteração identificada')
@@ -887,14 +866,8 @@ def modified_media_revision(request, pk):
 
         form = ModifiedMediaForm(request.POST)
         if form.is_valid():
-            update_fields = {field: form.cleaned_data[field] for field in form.cleaned_data if field not in ('taxa', 'authors')}
-
-            for field, value in update_fields.items():
-                setattr(media, field, value)
-
-            media.taxa.set(form.cleaned_data['taxa'])
-            media.authors.set(form.cleaned_data['authors'])
-            media.save()
+            form = ModifiedMediaForm(request.POST, instance=media)
+            form.save()
 
             modified_media.delete()
 

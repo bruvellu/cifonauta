@@ -439,7 +439,12 @@ class Metadata():
             elif field == 'image_description':
                 exif_dict['0th'][piexif.ImageIFD.ImageDescription] = val
             elif field == 'gps':
-                pass
+                gps = {}
+                gps[1] = val[0].encode()
+                gps[2] = ((int(val[2:4]), 1), (int(val[5:7]), 1), (int(val[8:10]), 1))
+                gps[3] = val[12].encode()
+                gps[4] = ((int(val[14:16]), 1), (int(val[17:19]), 1), (int(val[20:22]), 1))
+                exif_dict['GPS'] = gps
             elif field == 'datetime':
                 exif_dict['0th'][piexif.ImageIFD.DateTime] = val
             elif field == 'copyright':
@@ -528,7 +533,7 @@ class Metadata():
         
         self.metadata = metadata
 
-        self._insert_metadata_exif('software', 'CebimarUSP')
+        self._insert_metadata_exif('software', 'Cifonauta - CEBIMar/USP')
 
         for k, v in self.metadata.items():
             if v != '' and v != ' ' and v != None:
@@ -630,10 +635,9 @@ class Metadata():
                 if field == 'GPS':
                     gps = meta
                     meta = f"{gps[1].decode()} {gps[2][0][0]}\u00ba{int(gps[2][1][0])}'{int(gps[2][2][0])}\u0022 {gps[3].decode()} {gps[4][0][0]}\u00ba{int(gps[4][1][0])}'{int(gps[4][2][0])}\u0022"
-                    print(meta)
                 return meta
             
-        
+         
     def read_metadata(self):
         keys_metadata = {
             'software': {'exif': piexif.ImageIFD.Software},
@@ -677,11 +681,9 @@ class Metadata():
                                 meta = meta.decode(errors='ignore')
                         except AttributeError:
                             pass
-                        metadata[k] = meta
-                        if k == 'datetime':
-                            print(meta)
-                            print(meta_type)
+                        metadata[k] = met
                         
                     except KeyError:
                         pass
         return metadata
+    

@@ -391,11 +391,11 @@ def curadoria_media_list(request):
 
     user = request.user
     curations = user.curatorship_specialist.all()
-    curations_taxons = []
+    curations_taxons = set()
 
     for curadoria in curations:
         taxons = curadoria.taxons.all()
-        curations_taxons.extend(taxons) #Melhorar isso
+        curations_taxons.update(taxons)
 
     queryset = Media.objects.filter(status='draft').filter(taxa__in=curations_taxons).distinct().order_by('-date_modified')
 
@@ -760,11 +760,11 @@ def revision_media(request):
     user = request.user
 
     curations = user.curatorship_curator.all()
-    curations_taxons = []
+    curations_taxons = set()
 
     for curadoria in curations:
         taxons = curadoria.taxons.all()
-        curations_taxons.extend(taxons)
+        curations_taxons.update(taxons)
     
     queryset = None
 
@@ -1009,25 +1009,23 @@ def media_from_my_curation_list(request):
     user = request.user
 
     curations_as_specialist = user.curatorship_specialist.all()
-    curations_as_specialist_taxons = []
-
+    curations_as_specialist_taxons = set()
     for curation in curations_as_specialist:
-        curations_as_specialist_taxons.extend(curation.taxons.all())
-    
-    curations_as_curator = user.curatorship_curator.all()
-    curations_as_curator_taxons = []
+        curations_as_specialist_taxons.update(curation.taxons.all())
 
+
+    curations_as_curator = user.curatorship_curator.all()
+    curations_as_curator_taxons = set()
     for curation in curations_as_curator:
-        curations_as_curator_taxons.extend(curation.taxons.all())
+        curations_as_curator_taxons.update(curation.taxons.all())
 
     curations = curations_as_specialist | curations_as_curator
     curations = curations.distinct()
 
-    curations_taxons = []
-
+    curations_taxons = set()
     for curation in curations:
-        curations_taxons.extend(curation.taxons.all())
-    
+        curations_taxons.update(curation.taxons.all())
+
     queryset = None
     user_person = Person.objects.filter(user_cifonauta=user.id).first()
     
@@ -1038,7 +1036,6 @@ def media_from_my_curation_list(request):
     specialist_queryset = queryset.filter(Q(specialists=user_person) & Q(taxa__in=curations_as_specialist_taxons))    
 
     queryset = (curator_queryset | specialist_queryset).distinct()
-
     filtered_queryset = queryset
 
 

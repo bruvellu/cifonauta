@@ -184,18 +184,13 @@ def upload_media_step2(request):
                 media_file = File(media.file, name=f'{filename}_cover.{ext}')
                 media.coverpath = media_file
 
-                media.title = form.cleaned_data['title']
-                media.caption = form.cleaned_data['caption']
+                update_fields = {field: form.cleaned_data[field] for field in form.cleaned_data if field not in ('taxa', 'authors')}
+
+                for field, value in update_fields.items():
+                    setattr(media, field, value)
+
                 media.taxa.set(form.cleaned_data['taxa'])
                 media.authors.set(form.cleaned_data['authors'])
-                media.date_created = form.cleaned_data['date_created']
-                media.country = form.cleaned_data['country']
-                media.state = form.cleaned_data['state']
-                media.city = form.cleaned_data['city']
-                media.location = form.cleaned_data['location']
-                media.geolocation = form.cleaned_data['geolocation']
-                media.license = form.cleaned_data['license']
-                media.terms = form.cleaned_data['terms']
 
                 media.status = 'draft'
                 media.save()
@@ -329,17 +324,17 @@ def edit_metadata(request, media_id):
                     keywords[tag.category.name] = [tag.name]
             authors = [str(author.name) for author in media.authors.all()]
             metadata =  {
-            'headline': str(form.cleaned_data['title']),#
+            'headline': str(form.cleaned_data['title_pt_br']),#
             'license': {
                 # 'license_type': str(form.cleaned_data['license']), # TODO: get license value, not the key
                 'authors': authors,
                 },
             # 'credit': str(form.cleaned_data['license']),
-            'description_pt': str(form.cleaned_data['caption']),#
+            'description_pt': str(form.cleaned_data['caption_pt_br']),#
             'description_en': '',
             'gps': str(form.cleaned_data['geolocation']),#
             'datetime': str(form.cleaned_data['date_created']),#
-            'title_pt': str(form.cleaned_data['title']),
+            'title_pt': str(form.cleaned_data['title_pt_br']),
             'title_en': '',
             'country': str(form.cleaned_data['country']),#
             'state': str(form.cleaned_data['state']),#
@@ -515,7 +510,7 @@ def update_my_medias(request, pk):
             messages.success(request, "Alterações discartadas com sucesso")
             return redirect('update_media', media.pk)
 
-        form = UpdateMyMediaForm(request.POST, instance=media, media_author=user_person)
+        form = UpdateMyMediaForm(request.POST, instance=media, media_author=user_person, media_status=media.status)
         if form.is_valid():
             if media.status == 'published':
                 if modified_media:
@@ -575,7 +570,7 @@ def update_my_medias(request, pk):
 
         messages.error(request, 'Houve um erro com as alterações feitas')
     else:
-        form = UpdateMyMediaForm(instance=media)
+        form = UpdateMyMediaForm(instance=media, media_status=media.status)
 
     if modified_media and not messages.get_messages(request):
         messages.warning(request, "Esta mídia tem alterações pendentes. Clique no botão abaixo para ver as alterações. Se você fizer outras alterações, as anteriores serão sobrepostas")
@@ -932,7 +927,7 @@ def revision_media_detail(request, media_id):
         form = EditMetadataForm(request.POST, instance=media)
         
         if form.is_valid():
-            media_instance = form.save(commit=False)
+            media_instance = form.save()
             try:
                 author = str(form.cleaned_data['author'])
                 co_authors = str(form.cleaned_data['co_author']).split(';')
@@ -976,7 +971,6 @@ def revision_media_detail(request, media_id):
                 media_instance.status = 'published'
                 media_instance.is_public = True
                 
-            media_instance.taxa.set(form.cleaned_data['taxa'])
 
             person = Person.objects.filter(user_cifonauta=request.user.id).first()
             media_instance.curators.add(person)
@@ -1137,9 +1131,10 @@ def media_from_my_curation_list(request):
 @never_cache
 def media_from_my_curation_edit(request, media_id):
     media = get_object_or_404(Media, id=media_id)
+    user_person = Person.objects.filter(user_cifonauta=request.user.id).first()
 
     is_only_media_specialist = False
-    if request.user in media.specialists.all() and not request.user in media.curators.all():
+    if user_person in media.specialists.all() and not user_person in media.curators.all():
         is_only_media_specialist = True
 
     if request.method == 'POST':

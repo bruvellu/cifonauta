@@ -56,7 +56,7 @@ OPERATORS = (
 class UploadMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
@@ -106,7 +106,7 @@ class UploadMediaForm(forms.ModelForm):
 class UpdateMyMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
         widgets = {
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
@@ -115,8 +115,12 @@ class UpdateMyMediaForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         self.media_author = kwargs.pop('media_author', None)
+        media_status = kwargs.pop('media_status', None)
         super().__init__(*args, **kwargs)
 
+        if media_status and media_status != 'draft':
+            self.fields['title_pt_br'].required = True
+            self.fields['title_en'].required = True
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
     
     def clean_authors(self):
@@ -177,7 +181,7 @@ class SendEmailForm(forms.Form):
 class EditMetadataForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = Media
-        fields = ('title', 'caption', 'date_created', 'taxa', 'tags', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'date_created', 'taxa', 'tags', 'country', 'state', 'city', 'location', 'geolocation')
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
@@ -188,7 +192,8 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['title'].required = True
+        self.fields['title_pt_br'].required = True
+        self.fields['title_en'].required = True
         self.fields['tags'].queryset = self.fields['tags'].queryset.order_by('category')
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
     
@@ -210,7 +215,7 @@ class CoauthorRegistrationForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
-        fields = ('title', 'caption', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
         widgets = {
             'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
         }
@@ -218,7 +223,8 @@ class ModifiedMediaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['title'].required = True
+        self.fields['title_pt_br'].required = True
+        self.fields['title_en'].required = True
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
     
     def clean_taxa(self):

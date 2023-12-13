@@ -41,6 +41,16 @@
                 <p>Data de modificação:</p>
                 <div>{{ media.date_modified }}</div>
             </div>
+            <div>
+                <p>Alterações feitas pelo:</p>
+                <div>
+                    {% if modified_media.altered_by_author %}
+                    {{ media.user }} (Autor)
+                    {% else %}
+                    {{ modified_media.specialist_person }} (Especialista)
+                    {% endif %}
+                </div>
+            </div>
         </div>
         <table class="comparison-table">
             <thead class="comparison-table-head">
@@ -63,7 +73,7 @@
                         <span class='required'>*</span>
                         {% endif %}
                     </td>
-                    {% if field.name == 'authors' or field.name == 'taxa' %}
+                    {% if field.name == 'authors' or field.name == 'taxa' or field.name == 'tags' %}
                     <td>
                         <ul>
                             {% for item in media_value %}

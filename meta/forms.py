@@ -215,13 +215,20 @@ class CoauthorRegistrationForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'tags', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
         widgets = {
             'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
         }
 
     def __init__(self, *args, **kwargs):
+        author_form = kwargs.pop('author_form', None)
         super().__init__(*args, **kwargs)
+
+        if author_form:
+            self.fields.pop('tags')
+        else:
+            self.fields.pop('authors')
+            self.fields.pop('license')
 
         self.fields['title_pt_br'].required = True
         self.fields['title_en'].required = True

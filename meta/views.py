@@ -496,29 +496,40 @@ def curadoria_media_list(request):
 @never_cache
 def update_my_medias(request, pk):
     media = get_object_or_404(Media, pk=pk)
-    modified_media = ModifiedMedia.objects.filter(media=media)
+    modified_media = ModifiedMedia.objects.filter(media=media).first()
     user_person = Person.objects.get(user_cifonauta=request.user)
 
     if request.method == 'POST':
-        action = request.POST['action']
+        action = request.POST.get('action', None)
+
         if action == 'discard':
-            modified_media.first().delete()
+            modified_media.delete()
             messages.success(request, "Alterações discartadas com sucesso")
             return redirect('update_media', media.pk)
+
+        if modified_media and not modified_media.altered_by_author:
+            messages.error(request, "Esta mídia tem alterações pendentes de um especialista. Não é possível fazer mudanças até que elas sejam revisadas pelo curador")
+
+            return redirect('update_media', pk)
 
         form = UpdateMyMediaForm(request.POST, instance=media, media_author=user_person, media_status=media.status)
         if form.is_valid():
             if media.status == 'published':
                 if modified_media:
-                    if form.has_changed():
-                        form = UpdateMyMediaForm(request.POST, instance=modified_media, media_author=user_person, media_status=media.status)
+                    if modified_media.altered_by_author:
+                        if form.has_changed():
+                            form = UpdateMyMediaForm(request.POST, instance=modified_media, media_author=user_person, media_status=media.status)
 
-                        form.save()
+                            form.save()
 
+                        else:
+                            messages.error(request, 'Mudança igual à versão publicada no site')
+                            messages.warning(request, 'Descarte a alteração pendente ou efetue uma alteração válida')
+                            return redirect('update_media', media.pk)
                     else:
-                        messages.error(request, 'Mudança igual à versão publicada no site')
-                        messages.warning(request, 'Descarte a alteração pendente ou efetue uma alteração válida')
-                        return redirect('update_media', media.pk)
+                        messages.warning(request, "Esta mídia tem alterações pendentes de um especialista. Não é possível realizar alterações até que elas sejam revisadas pelo curador")
+                        return redirect('update_media', pk)
+
                 else:
                     if form.has_changed():
                         new_modified_media = ModifiedMedia(media=media)
@@ -551,9 +562,12 @@ def update_my_medias(request, pk):
     else:
         form = UpdateMyMediaForm(instance=media, media_status=media.status)
 
-    if modified_media and not messages.get_messages(request):
-        messages.warning(request, "Esta mídia tem alterações pendentes. Clique no botão abaixo para ver as alterações. Se você fizer outras alterações, as anteriores serão sobrepostas")
-    
+    if modified_media:
+        if modified_media.altered_by_author and not messages.get_messages(request):
+            messages.warning(request, "Esta mídia tem alterações pendentes. Clique no botão abaixo para ver as alterações. Se você fizer outras alterações, as anteriores serão sobrepostas")
+        elif not modified_media.altered_by_author and not messages.get_messages(request):
+            messages.warning(request, "Esta mídia tem alterações pendentes de um especialista. Não é possível realizar alterações até que elas sejam revisadas pelo curador")
+
     if media.state:
         form.fields['city'].queryset = City.objects.filter(state=media.state.id)
     else:
@@ -570,11 +584,11 @@ def update_my_medias(request, pk):
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
-    modified_media_form = ModifiedMediaForm(instance=media)
+    modified_media_form = ModifiedMediaForm(instance=media, author_form=True)
 
     context = {
         'media': media,
-        'modified_media': modified_media.first(),
+        'modified_media': modified_media,
         'modified_media_form': modified_media_form,
         'form': form,
         'is_specialist': is_specialist,
@@ -866,7 +880,7 @@ def modified_media_revision(request, pk):
 
         form = ModifiedMediaForm(request.POST)
         if form.is_valid():
-            form = ModifiedMediaForm(request.POST, instance=media)
+            form = ModifiedMediaForm(request.POST, instance=media, author_form=True) if modified_media.altered_by_author else ModifiedMediaForm(request.POST, instance=media)
             form.save()
 
             modified_media.delete()
@@ -880,7 +894,7 @@ def modified_media_revision(request, pk):
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
-    form = ModifiedMediaForm(instance=modified_media)
+    form = ModifiedMediaForm(instance=media, author_form=True) if modified_media.altered_by_author else ModifiedMediaForm(instance=media)
     
     context = {
         'modified_media_form': form,
@@ -1104,6 +1118,7 @@ def media_from_my_curation_list(request):
 @never_cache
 def media_from_my_curation_edit(request, media_id):
     media = get_object_or_404(Media, id=media_id)
+    modified_media = ModifiedMedia.objects.filter(media=media).first()
     user_person = Person.objects.filter(user_cifonauta=request.user.id).first()
 
     is_only_media_specialist = False
@@ -1111,19 +1126,61 @@ def media_from_my_curation_edit(request, media_id):
         is_only_media_specialist = True
 
     if request.method == 'POST':
+        action = request.POST.get('action', None)
+
+        if action == 'discard':
+            modified_media.delete()
+            messages.success(request, "Alterações discartadas com sucesso")
+            return redirect('media_from_my_curation_edit', media.id)
+        
         form = EditMetadataForm(request.POST, instance=media)
 
         if form.is_valid():
             if media.status != 'published':
                 messages.error(request, f'Não foi possível fazer alteração')
                 return redirect('media_from_my_curation_edit', media.id)
+
+            if is_only_media_specialist:
+                if modified_media:
+                    if modified_media.altered_by_author:
+                        messages.error(request, "Esta mídia tem alterações pendentes do autor. Não é possível fazer mudanças até que elas sejam revisadas pelo curador")
+
+                    if form.has_changed():
+                        form = EditMetadataForm(request.POST, instance=modified_media)
+                        form.save()
+                    else:
+                        messages.error(request, 'Mudança igual à versão publicada no site')
+                        messages.warning(request, 'Descarte a alteração pendente ou efetue uma alteração válida')
+                else:
+                    if form.has_changed():
+                        new_modified_media = ModifiedMedia(media=media)
+
+                        form = EditMetadataForm(request.POST, instance=new_modified_media)
+
+                        modified_media_instance = form.save()
+                        modified_media_instance.altered_by_author = False
+                        modified_media_instance.specialist_person = user_person
+                        modified_media_instance.save()
+                    else:
+                        messages.error(request, 'Nenhuma alteração identificada')
+                
+                messages.success(request, 'Informações alteradas com sucesso')
+                messages.warning(request, 'As alterações serão avaliadas e podem ou não serem aceitas')
+            else:
+                form.save()
+                messages.success(request, f'A mídia ({media.title}) foi alterada com sucesso')
             
-            form.save()
+            return redirect('media_from_my_curation_edit', media.id)
+        else:
+            messages.error(request, 'Houve um erro com as alterações feitas')
+    else:
+        form = EditMetadataForm(instance=media)
 
-            messages.success(request, f'A mídia {media.title} foi alterada com sucesso')
-            return redirect('media_from_my_curations_list')
-
-    form = EditMetadataForm(instance=media)
+    if modified_media:
+        if not modified_media.altered_by_author and not messages.get_messages(request):
+            messages.warning(request, "Esta mídia tem alterações suas. Clique no botão abaixo para ver as alterações. Se você fizer outras alterações, as anteriores serão sobrepostas")
+        elif modified_media.altered_by_author and not messages.get_messages(request):
+            messages.warning(request, "Esta mídia tem alterações pendentes do autor. Não é possível realizar alterações até que elas sejam revisadas pelo curador")
 
     if media.status != 'published':
         messages.warning(request, 'Esta mídia ainda não pode ser alterada por aqui, apenas depois de publicada')
@@ -1140,10 +1197,13 @@ def media_from_my_curation_edit(request, media_id):
     
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
+    modified_media_form = ModifiedMediaForm(instance=media)
 
     context = {
         'form': form,
+        'modified_media_form': modified_media_form,
         'media': media,
+        'modified_media': modified_media,
         'is_only_specialist': is_only_media_specialist,
         'is_specialist': is_specialist,
         'is_curator': is_curator,

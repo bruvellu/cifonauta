@@ -329,7 +329,7 @@ def edit_metadata(request, media_id):
             'credit': media.license,
             'description_pt': str(form.cleaned_data['caption_pt_br']),#
             'description_en': '',
-            'gps': str(form.cleaned_data['geolocation']),#
+            'gps': media.geolocation,
             'datetime': str(form.cleaned_data['date_created']),#
             'title_pt': str(form.cleaned_data['title_pt_br']),
             'title_en': '',

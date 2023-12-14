@@ -706,6 +706,9 @@ def manage_users(request):
                 if user.uploaded_media.all():
                     messages.error(request, f'O usuário "{user.first_name} {user.last_name}" possui mídia relacionada')
                     return redirect('manage_users')
+
+                user.curatorship_specialist.clear()
+                user.curatorship_curator.clear()
                 
             authors.update(is_author=True)
             not_authors.update(is_author=False)

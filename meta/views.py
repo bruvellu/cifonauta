@@ -91,7 +91,7 @@ def upload_media_step1(request):
                     messages.error(request, f'Arquivo inválido: {file.name}')
                     return redirect('upload_media_step1')
                 
-
+            for file in files:
                 # Create empty Media instance for new UUID
                 media = Media()
                 # Rename file name with UUID and lowercase extension

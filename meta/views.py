@@ -323,10 +323,10 @@ def edit_metadata(request, media_id):
             metadata =  {
             'headline': str(form.cleaned_data['title_pt_br']),#
             'license': {
-                'license_type': str(form.cleaned_data['license']), # TODO: get license value, not the key
+                'license_type': media.license,
                 'authors': authors,
                 },
-            'credit': str(form.cleaned_data['license']),
+            'credit': media.license,
             'description_pt': str(form.cleaned_data['caption_pt_br']),#
             'description_en': '',
             'gps': str(form.cleaned_data['geolocation']),#

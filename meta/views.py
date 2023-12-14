@@ -898,7 +898,7 @@ def modified_media_revision(request, pk):
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
-    form = ModifiedMediaForm(instance=media, author_form=True) if modified_media.altered_by_author else ModifiedMediaForm(instance=media)
+    form = ModifiedMediaForm(instance=modified_media, author_form=True) if modified_media.altered_by_author else ModifiedMediaForm(instance=modified_media)
     
     context = {
         'modified_media_form': form,

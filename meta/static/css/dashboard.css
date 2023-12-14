@@ -779,7 +779,7 @@ textarea {
 .steps-container {
     display: flex;
     align-items: center;
-    max-width: 20rem;
+    max-width: 16rem;
     margin: 2rem 0 4rem 2.6rem;
 }
 

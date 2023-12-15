@@ -1132,20 +1132,22 @@ def media_from_my_curation_edit(request, media_id):
         if action == 'discard':
             modified_media.delete()
             messages.success(request, "Alterações discartadas com sucesso")
-            return redirect('media_from_my_curation_edit', media.id)
+            return redirect('media_from_my_curation_edit', media_id)
+
+        if media.status != 'published':
+            messages.error(request, f'Não foi possível fazer alteração')
+            return redirect('media_from_my_curation_edit', media_id)
+
+        if modified_media and modified_media.altered_by_author:
+            messages.error(request, "Esta mídia tem alterações pendentes do autor. Não é possível fazer mudanças até que elas sejam revisadas pelo curador")
+            return redirect('media_from_my_curation_edit', media_id)
         
         form = EditMetadataForm(request.POST, instance=media)
 
         if form.is_valid():
-            if media.status != 'published':
-                messages.error(request, f'Não foi possível fazer alteração')
-                return redirect('media_from_my_curation_edit', media.id)
 
             if is_only_media_specialist:
                 if modified_media:
-                    if modified_media.altered_by_author:
-                        messages.error(request, "Esta mídia tem alterações pendentes do autor. Não é possível fazer mudanças até que elas sejam revisadas pelo curador")
-
                     if form.has_changed():
                         form = EditMetadataForm(request.POST, instance=modified_media)
                         form.save()

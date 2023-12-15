@@ -40,6 +40,7 @@ load_dotenv()
 
 
 @never_cache
+@authentication_required
 def dashboard(request):
     is_specialist = Curadoria.objects.filter(Q(specialists=request.user)).exists()
     is_curator = Curadoria.objects.filter(Q(curators=request.user)).exists()
@@ -53,6 +54,7 @@ def dashboard(request):
 
 
 @never_cache
+@author_required
 def upload_media_step1(request):
 
     if request.method == 'POST':
@@ -142,6 +144,7 @@ def upload_media_step1(request):
 
 
 @never_cache
+@author_required
 def upload_media_step2(request):
     medias = Media.objects.filter(user=request.user, status='loaded')
     user_person = Person.objects.get(user_cifonauta=request.user)
@@ -305,6 +308,7 @@ def synchronize_fields(request):
 
 
 @never_cache
+@media_specialist_required
 def editing_media_details(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     
@@ -320,27 +324,27 @@ def editing_media_details(request, media_id):
                 except:
                     keywords[tag.category.name] = [tag.name]
             authors = [str(author.name) for author in media.authors.all()]
-            # metadata =  {
-            # 'headline': str(form.cleaned_data['title_pt_br']),#
-            # 'license': {
-            #     'license_type': str(form.cleaned_data['license']), # TODO: get license value, not the key
-            #     'authors': authors,
-            #     },
-            # 'credit': str(form.cleaned_data['license']),
-            # 'description_pt': str(form.cleaned_data['caption_pt_br']),#
-            # 'description_en': '',
-            # 'gps': str(form.cleaned_data['geolocation']),#
-            # 'datetime': str(form.cleaned_data['date_created']),#
-            # 'title_pt': str(form.cleaned_data['title_pt_br']),
-            # 'title_en': '',
-            # 'country': str(form.cleaned_data['country']),#
-            # 'state': str(form.cleaned_data['state']),#
-            # 'city': str(form.cleaned_data['city']),#
-            # 'sublocation': str(form.cleaned_data['location']),
-            # 'keywords': keywords
-            #     }
-            # meta = Metadata(file=f'./site_media/{str(media.file)}')
-            # meta.edit_metadata(metadata)
+            metadata =  {
+            'headline': str(form.cleaned_data['title_pt_br']),#
+            'license': {
+                'license_type': str(form.cleaned_data['license']), # TODO: get license value, not the key
+                'authors': authors,
+                },
+            'credit': str(form.cleaned_data['license']),
+            'description_pt': str(form.cleaned_data['caption_pt_br']),#
+            'description_en': '',
+            'gps': str(form.cleaned_data['geolocation']),#
+            'datetime': str(form.cleaned_data['date_created']),#
+            'title_pt': str(form.cleaned_data['title_pt_br']),
+            'title_en': '',
+            'country': str(form.cleaned_data['country']),#
+            'state': str(form.cleaned_data['state']),#
+            'city': str(form.cleaned_data['city']),#
+            'sublocation': str(form.cleaned_data['location']),
+            'keywords': keywords
+                }
+            meta = Metadata(file=f'./site_media/{str(media.file)}')
+            meta.edit_metadata(metadata)
 
             action = request.POST.get('action')
             
@@ -391,6 +395,7 @@ def editing_media_details(request, media_id):
 
 
 @never_cache
+@specialist_required
 def editing_media_list(request):
     records_number = number_of_entries_per_page(request, 'entries_curadoria_media_list')
 
@@ -499,6 +504,7 @@ def editing_media_list(request):
     
 
 @never_cache
+@media_owner_required
 def my_media_details(request, pk):
     media = get_object_or_404(Media, pk=pk)
     modified_media = ModifiedMedia.objects.filter(media=media).first()
@@ -604,6 +610,7 @@ def my_media_details(request, pk):
     
 
 @never_cache
+@author_required
 def my_media_list(request):
     records_number = number_of_entries_per_page(request, 'entries_my_medias')
 
@@ -695,6 +702,7 @@ def my_media_list(request):
 
 
 @never_cache
+@curator_required
 def manage_users(request):
     users_queryset = UserCifonauta.objects.all().exclude(id=request.user.id)
 
@@ -762,6 +770,7 @@ def manage_users(request):
 
 
 @never_cache
+@curator_required
 def revision_media_list(request):
     records_number = number_of_entries_per_page(request, 'entries_revision_media')
 
@@ -875,6 +884,7 @@ def revision_media_list(request):
 
 
 @never_cache
+@media_curator_required
 def revision_modified_media(request, pk):
     media = get_object_or_404(Media, pk=pk)
     modified_media = ModifiedMedia.objects.filter(media=media).first() 
@@ -916,6 +926,7 @@ def revision_modified_media(request, pk):
 
 
 @never_cache
+@media_curator_required
 def revision_media_details(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     if request.method == 'POST':
@@ -1011,6 +1022,7 @@ def revision_media_details(request, media_id):
 
 
 @never_cache
+@specialist_or_curator_required
 def my_curations_media_list(request):
     records_number = number_of_entries_per_page(request, 'entries_media_from_curation')
 
@@ -1121,6 +1133,7 @@ def my_curations_media_list(request):
 
 
 @never_cache
+@curations_media_required
 def my_curations_media_details(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     modified_media = ModifiedMedia.objects.filter(media=media).first()
@@ -1219,6 +1232,7 @@ def my_curations_media_details(request, media_id):
     return render(request, 'my_curations_media_details.html', context) 
 
 @never_cache
+@curator_required
 def tour_list(request):
     tours = Tour.objects.filter(creator=request.user)
     is_specialist = request.user.curatorship_specialist.exists()
@@ -1235,6 +1249,7 @@ def tour_list(request):
 
 
 @never_cache
+@curator_required
 def tour_add(request):
     if request.method == 'POST':
         form = TourForm(request.POST)
@@ -1278,6 +1293,7 @@ def tour_add(request):
 
 
 @never_cache
+@tour_owner_required
 def tour_details(request, pk):
     tour = get_object_or_404(Tour, pk=pk)
 

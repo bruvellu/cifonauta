@@ -68,6 +68,7 @@ class UploadMediaForm(forms.ModelForm):
         self.media_author = kwargs.pop('media_author', None)
         super().__init__(*args, **kwargs)
 
+        self.fields['license'].required = True
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
 
     def clean_authors(self):
@@ -122,6 +123,7 @@ class UpdateMyMediaForm(forms.ModelForm):
             self.fields['title_pt_br'].required = True
             self.fields['title_en'].required = True
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
+        self.fields['license'].required = True
     
     def clean_authors(self):
         authors = self.cleaned_data['authors']
@@ -227,6 +229,7 @@ class ModifiedMediaForm(forms.ModelForm):
         if author_form:
             self.fields.pop('tags')
             self.fields.pop('scale')
+            self.fields['license'].required = True
         else:
             self.fields.pop('authors')
             self.fields.pop('license')

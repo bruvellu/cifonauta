@@ -257,7 +257,7 @@ def upload_media_step2(request):
                 'country': country,
                 'geolocation': read_metadata['gps'],
                 'location': location,
-                'license': read_metadata['source'],
+                # 'license': read_metadata['source'],
                 'co_author': co_authors,
                 'geolocation': read_metadata['gps']
             })

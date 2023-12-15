@@ -623,9 +623,9 @@ def my_media_list(request):
         if action == 'entries_number':
             records_number = number_of_entries_per_page(request, 'entries_my_medias', request.POST['entries_number'])
         else:
-            if media_ids:
-                media_ids = request.POST.getlist('selected_media_ids')
+            media_ids = request.POST.getlist('selected_media_ids')
 
+            if media_ids:
                 form = MyMediasActionForm(request.POST)
 
                 if form.is_valid():

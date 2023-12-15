@@ -196,7 +196,7 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
             'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"}),
-            'date_created': forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date', 'readonly': 'readonly', 'disabled': 'disabled'})
+            'date_created': forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date', 'readonly': 'readonly'})
         }
     
     def __init__(self, *args, **kwargs):

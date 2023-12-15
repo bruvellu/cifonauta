@@ -516,7 +516,11 @@ def my_media_details(request, pk):
         if action == 'discard':
             modified_media.delete()
             messages.success(request, "Alterações discartadas com sucesso")
-            return redirect('my_media_details', media.pk)
+            return redirect('my_media_details', pk)
+        
+        if media.status == 'submitted':
+            messages.error(request, f'Não foi possível fazer alteração')
+            return redirect('my_media_details', pk)
 
         if modified_media and not modified_media.altered_by_author:
             messages.error(request, "Esta mídia tem alterações pendentes de um especialista. Não é possível fazer mudanças até que elas sejam revisadas pelo curador")
@@ -578,6 +582,8 @@ def my_media_details(request, pk):
             messages.warning(request, "Esta mídia tem alterações pendentes. Clique no botão abaixo para ver as alterações. Se você fizer outras alterações, as anteriores serão sobrepostas")
         elif not modified_media.altered_by_author and not messages.get_messages(request):
             messages.warning(request, "Esta mídia tem alterações pendentes de um especialista. Não é possível realizar alterações até que elas sejam revisadas pelo curador")
+    elif media.status == 'submitted':
+        messages.warning(request, "Não é possível fazer alteração em mídias que estão submetidas para revisão")
 
     if media.state:
         form.fields['city'].queryset = City.objects.filter(state=media.state.id)

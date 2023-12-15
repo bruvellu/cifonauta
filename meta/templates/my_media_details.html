@@ -172,7 +172,15 @@
     {% endif %}
     {% endfor %}
     <div class="buttons-div">
-        <button class='primary-button submit-button' {% if modified_media and not modified_media.altered_by_author%}disabled{% endif %} type="submit">Atualizar</button>
+        <button 
+            type="submit"
+            class='primary-button submit-button' 
+            {% if modified_media and not modified_media.altered_by_author%}disabled
+            {% elif media.status == 'submitted' %}disabled
+            {% endif %} 
+        >
+            Atualizar
+        </button>
     </div>
 </form>
 

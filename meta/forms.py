@@ -63,12 +63,16 @@ class UploadMediaForm(forms.ModelForm):
             'date_created': forms.DateInput(attrs={'type': 'date'}),
             'terms': forms.CheckboxInput(attrs={'class': 'dashboard-input'})
         }
+        help_texts = {
+            'date_created': 'Data em que a mídia foi produzida. Caso a data seja desconhecida, preencher com "01/01/0001"',
+        }
 
     def __init__(self, *args, **kwargs):
         self.media_author = kwargs.pop('media_author', None)
         super().__init__(*args, **kwargs)
 
         self.fields['license'].required = True
+        self.fields['date_created'].required = True
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
 
     def clean_authors(self):
@@ -113,6 +117,9 @@ class UpdateMyMediaForm(forms.ModelForm):
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
         }
+        help_texts = {
+            'date_created': 'Data em que a mídia foi produzida. Caso a data seja desconhecida, preencher com "01/01/0001"',
+        }
     
     def __init__(self, *args, **kwargs):
         self.media_author = kwargs.pop('media_author', None)
@@ -124,6 +131,7 @@ class UpdateMyMediaForm(forms.ModelForm):
             self.fields['title_en'].required = True
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
         self.fields['license'].required = True
+        self.fields['date_created'].required = True
     
     def clean_authors(self):
         authors = self.cleaned_data['authors']
@@ -188,7 +196,7 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
             'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"}),
-            'date_created': forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date'})
+            'date_created': forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date', 'readonly': 'readonly', 'disabled': 'disabled'})
         }
     
     def __init__(self, *args, **kwargs):
@@ -196,9 +204,21 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
 
         self.fields['title_pt_br'].required = True
         self.fields['title_en'].required = True
+        self.fields['date_created'].required = True
         self.fields['tags'].queryset = self.fields['tags'].queryset.order_by('category')
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
     
+    def clean_date_created(self):
+        date_created = self.cleaned_data['date_created']
+
+        if self.instance.date_created != date_created:
+            self.add_error('date_created', forms.ValidationError(
+                _(f"A data de criação não pode ser alterada."), 
+                code="invalid"
+            ))
+
+        return date_created
+
     def clean_taxa(self):
         taxa = self.cleaned_data['taxa']
 
@@ -236,6 +256,7 @@ class ModifiedMediaForm(forms.ModelForm):
 
         self.fields['title_pt_br'].required = True
         self.fields['title_en'].required = True
+        self.fields['date_created'].required = True
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
     
     def clean_taxa(self):

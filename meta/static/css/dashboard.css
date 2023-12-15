@@ -989,6 +989,9 @@ textarea {
 
 .update-media-comparison-label-row {
     padding: 0.5rem 0.5rem 0.5rem 1rem !important;
+    display: flex;
+    gap: 0.2rem;
+    align-items: center;
 }
 
 .discard-pending-changes {

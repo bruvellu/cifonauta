@@ -97,6 +97,8 @@ def upload_media_step1(request):
                 # Create empty Media instance for new UUID
                 media = Media()
                 # Rename file name with UUID and lowercase extension
+                _, extension = os.path.splitext(file.name.lower())
+                print(extension)
                 file.name = f'{media.uuid}{extension}'
 
                 # Define file field of Media instance

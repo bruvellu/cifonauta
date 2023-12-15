@@ -486,6 +486,25 @@ def my_media_details(request, pk):
     if request.method == 'POST':
         action = request.POST.get('action', None)
 
+        if action == 'coauthor':
+            form = CoauthorRegistrationForm(request.POST)
+            if form.is_valid():
+                coauthor_instance = form.save()
+
+                split_name = coauthor_instance.name.lower().split(' ')
+
+                preps = ('de', 'da', 'do', 'das', 'dos', 'e')
+                name = [name.capitalize() if name not in preps else name for name in split_name]
+                name = ' '.join(name)
+                coauthor_instance.name = name
+                
+                coauthor_instance.save()
+                messages.success(request, f'Coautor ({name}) adicionado com sucesso')
+            else:
+                messages.error(request, 'Houve um erro ao tentar salvar coautor')
+
+            return redirect('my_media_details', pk)
+
         if action == 'discard':
             modified_media.delete()
             messages.success(request, "Alterações discartadas com sucesso")
@@ -574,6 +593,7 @@ def my_media_details(request, pk):
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
+    registration_form = CoauthorRegistrationForm()
     modified_media_form = ModifiedMediaForm(instance=media, author_form=True)
 
     context = {
@@ -581,6 +601,7 @@ def my_media_details(request, pk):
         'modified_media': modified_media,
         'modified_media_form': modified_media_form,
         'form': form,
+        'registration_form': registration_form,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }

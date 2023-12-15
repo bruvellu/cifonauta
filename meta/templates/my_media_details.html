@@ -4,6 +4,7 @@
 {% block extra_head %}
 <script src="{% static 'js/adm_popup.js' %}" defer></script>
 <script src="{% static 'js/my_media_details.js' %}" defer></script>
+<script src="{% static 'js/adm_sync_location_fields.js' %}" defer></script>
 {% endblock %}
 
 {% block title %}Editar Mídia{% endblock %}
@@ -101,7 +102,30 @@
     </div>
 
     {% for field in form %}
-    {% if field == form.country %}
+    {% if field == form.authors %}
+    <div class="field-container">
+        <div class="label-div">
+            {{ field.label_tag }}
+        </div>
+        <div class="field-div authors-field-div">
+            {% if form.authors.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {{ field }}
+            {% if field.help_text %}
+            <span class="help-text">{{ field.help_text }}</span>
+            {% endif %}
+            <div>
+                <p>Coautor não está na lista?</p>
+                <button id="coauthor-modal-open-btn" class="pre-registration-button" type="button">Registrar coautor</button>
+            </div>
+        </div>
+    </div>
+    {% elif field == form.country %}
     <div class="field-container country-container">
         <div class="label-div">
             {{ field.label_tag }}
@@ -182,5 +206,30 @@
         </button>
     </div>
 </form>
+
+<div id="coauthor-modal-container" class="list-modal-container modal-container">
+    <div class="modal-header">
+        <p>Registre o coautor</p>
+        <button id="coauthor-modal-close-btn" class="close-modal-button">
+            <div class='line1'></div>
+            <div class='line2'></div>
+        </button>
+    </div>
+    <form class="modal-body" method="post">
+        {% csrf_token %}
+        {% for field2 in registration_form %}
+        <div class="field2-container">
+            {{ field2.label_tag }}
+            <div class="field-div field2-div">
+                {{ field2 }}
+                {% if field2.help_text %}
+                <span class="help-text">{{ field2.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        <button class="secondary-button" type="submit" name="action" value="coauthor">Cadastrar</button>
+    </form>
+</div>
 
 {% endblock %}

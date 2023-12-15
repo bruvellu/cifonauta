@@ -317,34 +317,6 @@ def editing_media_details(request, media_id):
         
         if form.is_valid():
             media_instance = form.save()
-            keywords = {}
-            for tag in form.cleaned_data['tags']:
-                try:
-                    keywords[tag.category.name].append(tag.name)
-                except:
-                    keywords[tag.category.name] = [tag.name]
-            authors = [str(author.name) for author in media.authors.all()]
-            metadata =  {
-            'headline': str(form.cleaned_data['title_pt_br']),#
-            'license': {
-                'license_type': str(form.cleaned_data['license']), # TODO: get license value, not the key
-                'authors': authors,
-                },
-            'credit': str(form.cleaned_data['license']),
-            'description_pt': str(form.cleaned_data['caption_pt_br']),#
-            'description_en': '',
-            'gps': str(form.cleaned_data['geolocation']),#
-            'datetime': str(form.cleaned_data['date_created']),#
-            'title_pt': str(form.cleaned_data['title_pt_br']),
-            'title_en': '',
-            'country': str(form.cleaned_data['country']),#
-            'state': str(form.cleaned_data['state']),#
-            'city': str(form.cleaned_data['city']),#
-            'sublocation': str(form.cleaned_data['location']),
-            'keywords': keywords
-                }
-            meta = Metadata(file=f'./site_media/{str(media.file)}')
-            meta.edit_metadata(metadata)
 
             action = request.POST.get('action')
             

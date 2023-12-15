@@ -2,8 +2,8 @@
 {% load static custom_filters %}
 
 {% block extra_head %}
-<script src="{% static 'js/my_media_details.js' %}" defer></script>
 <script src="{% static 'js/adm_popup.js' %}" defer></script>
+<script src="{% static 'js/my_media_details.js' %}" defer></script>
 {% endblock %}
 
 {% block title %}Editar Mídia{% endblock %}
@@ -11,11 +11,10 @@
 {% block dashboard_content %}
 
 {% if modified_media.altered_by_author %}
-<div id="behind-modal-container" class="behind-modal-container"></div>
 <div id="modal-container" class="media-changes-modal">
     <div class="modal-header media-changes-modal-header">
         <p>Alterações da mídia</p>
-        <button id="close-modal-button" class="close-modal-button media-changes-close-modal-button" onclick="closeModal()">
+        <button id="close-modal-button" class="close-modal-button media-changes-close-modal-button">
             <div class='line1'></div>
             <div class='line2'></div>
         </button>

@@ -207,17 +207,6 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
         self.fields['date_created'].required = True
         self.fields['tags'].queryset = self.fields['tags'].queryset.order_by('category')
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
-    
-    def clean_date_created(self):
-        date_created = self.cleaned_data['date_created']
-
-        if self.instance.date_created != date_created:
-            self.add_error('date_created', forms.ValidationError(
-                _(f"A data de criação não pode ser alterada."), 
-                code="invalid"
-            ))
-
-        return date_created
 
     def clean_taxa(self):
         taxa = self.cleaned_data['taxa']

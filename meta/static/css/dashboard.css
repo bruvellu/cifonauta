@@ -223,7 +223,8 @@ p {
 
 
 /* POPUP */
-#behind-modal-container {
+.modal-overlay {
+    background-color: rgba(0, 0, 0, 0.3);
     position: fixed;
     top: 0;
     right: 0;

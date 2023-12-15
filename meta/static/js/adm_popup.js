@@ -1,41 +1,43 @@
-// NEEDS 4 TAGS IN THE HTML WITH THE IDs: "behind-modal-container", "modal-container", "open-modal-button", "close-modal-button"
-function showModal() {
-    const behindModalContainer = document.querySelector('#behind-modal-container')
-    behindModalContainer?.classList.add('opened-behind-modal')
-
-    modalContainer.classList.add('opened-modal')
-    modalContainer.style.transition = '.3s'
-
-    document.documentElement.style.overflow = 'hidden'
-    isModalOpened = true
-}
-
-function closeModal() {
-    const behindModalContainer = document.querySelector('#behind-modal-container')
-    behindModalContainer?.classList.remove('opened-behind-modal')
-
-    modalContainer.classList.remove('opened-modal')
-    modalContainer.style.transition = '0s'
-
-    document.documentElement.style.removeProperty('overflow') 
+class ModalHandler {
+    modalTrigger
+    modalClose
+    modalOverlay
+    modalContent
     isModalOpened = false
+
+    constructor({ modalContent, modalTrigger, modalClose}) {
+        this.modalTrigger = modalTrigger
+        this.modalClose = modalClose
+        this.modalContent = modalContent
+
+        this.modalOverlay = document.createElement('div')
+        this.modalOverlay.classList.add('modal-overlay')
+        document.body.append(this.modalOverlay)
+
+        this.modalTrigger?.addEventListener('click', this.showModal.bind(this));
+        this.modalClose?.addEventListener('click', this.closeModal.bind(this));
+        this.modalOverlay.addEventListener('click', (event) => {
+            if (!this.modalContent?.contains(event.target) && 
+                !this.modalTrigger?.contains(event.target) &&
+                this.isModalOpened) {
+                    this.closeModal()
+            }
+        })
+    }
+
+    showModal() {
+        this.modalOverlay.classList.add('opened-behind-modal');
+        this.modalContent.classList.add('opened-modal');
+        this.modalContent.style.transition = '.3s';
+        document.documentElement.style.overflow = 'hidden';
+        this.isModalOpened = true;
+    }
+
+    closeModal() {
+        this.modalOverlay.classList.remove('opened-behind-modal');
+        this.modalContent.classList.remove('opened-modal');
+        this.modalContent.style.transition = '0s';
+        document.documentElement.style.removeProperty('overflow');
+        this.isModalOpened = false;
+    }
 }
-
-var isModalOpened = false
-let modalContainer = document.querySelector('#modal-container')
-let openModalButton = document.querySelector('#open-modal-button')
-let closeModalButton = document.querySelector('#close-modal-button')
-
-
-openModalButton?.addEventListener('click', showModal)
-
-closeModalButton?.addEventListener('click', closeModal)
-
-// Popup closes without clicking on #close-modal-button
-// document.addEventListener('click', (event)=>{
-//     if (!modalContainer?.contains(event.target) && 
-//         !openModalButton?.contains(event.target) &&
-//         isModalOpened) {
-//             closeModal()
-//     }
-// })

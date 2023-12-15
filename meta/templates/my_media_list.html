@@ -131,7 +131,9 @@
                         </div>
                     </td>
                     <td class="text-cedule">
+                        {% if media.title_pt_br %}
                         {{ media.title_pt_br }}
+                        {% endif %}
                     </td>
                     <td>
                         {% if media.datatype == 'video' %}

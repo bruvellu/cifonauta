@@ -5,7 +5,7 @@
 <script src="{% static 'js/adm_select_all_records.js' %}" defer></script>
 <script src="{% static 'js/adm_popup.js' %}" defer></script>
 <script src="{% static 'js/adm_actions.js' %}" defer></script>
-<script src="{% static 'js/curadoria_media_list.js' %}" defer></script>
+<script src="{% static 'js/editing_media_list.js' %}" defer></script>
 {% endblock %}
 
 {% block title %}Lista de Mídias{% endblock %}
@@ -116,7 +116,7 @@
                     </td>
                     <td class="image-cedule">
                         <div class="media-wrapper-td">
-                            <a href="{% url 'edit_metadata' media.id %}">
+                            <a href="{% url 'editing_media_details' media.id %}">
                                 {% if media.datatype == 'video' %}
                                 <video src="{{ media.coverpath.url }}"></video>
                                 {% else %}

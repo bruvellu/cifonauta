@@ -2,19 +2,24 @@
 {% load static custom_filters %}
 
 {% block extra_head %}
-<script src="{% static 'js/update_media.js' %}" defer></script>
+<script src="{% static 'js/my_media_details.js' %}" defer></script>
+<script src="{% static 'js/adm_popup.js' %}" defer></script>
 {% endblock %}
 
-{% block title %}Revisar Mídia{% endblock %}
+{% block title %}Editar Mídia{% endblock %}
 
 {% block dashboard_content %}
 
-<h2>Revisar informações da mídia</h2>
+<h2>Edição de mídia</h2>
+
 {% if messages %}
+<div class="messages-div">
 {% for message in messages %}
 <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
 {% endfor %}
+</div>
 {% endif %}
+
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="media-infos">
@@ -66,14 +71,23 @@
             {% endif %}
         </div>
         <div class="field-div">
-            {% if field.errors %}
-            <ul class="field-error">
-                {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
             {{ field }}
+            {% if field.help_text %}
+            <span class="help-text">{{ field.help_text }}</span>
+            {% endif %}
+        </div>
+    </div>
+    {% elif field == form.terms %}
+    <div class="field-container">
+        <div class='label-div'>
+            {{ field.label_tag }}
+            <span class='required'>*</span>
+        </div>
+        <div class="field-div terms-div">
+            <div class="term-wrapper">
+                {{ field }}
+                Declaro...
+            </div>
             {% if field.help_text %}
             <span class="help-text">{{ field.help_text }}</span>
             {% endif %}
@@ -103,8 +117,8 @@
     </div>
     {% endif %}
     {% endfor %}
-    <div class='buttons-div'>
-        <button class='primary-button submit-button' type="submit" name="action" value="publish">Publicar</button>
+    <div class="buttons-div">
+        <button class='primary-button submit-button' type="submit" name="action" value="submit">Salvar e enviar para revisão</button>
         <button class='primary-button neutral-button' type="submit" name="action" value="save_only">Apenas salvar</button>
     </div>
 </form>

@@ -201,7 +201,7 @@ def upload_media_step2(request):
                         sitepath.save(media.sitepath.path)
 
                 messages.success(request, 'Suas mídias foram salvas com sucesso')
-                return redirect('my_medias')
+                return redirect('my_media_list')
 
             messages.error(request, 'Houve um erro ao tentar salvar mídia(s)')
 
@@ -305,7 +305,7 @@ def synchronize_fields(request):
 
 
 @never_cache
-def edit_metadata(request, media_id):
+def editing_media_details(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     
     if request.method == 'POST':
@@ -320,27 +320,27 @@ def edit_metadata(request, media_id):
                 except:
                     keywords[tag.category.name] = [tag.name]
             authors = [str(author.name) for author in media.authors.all()]
-            metadata =  {
-            'headline': str(form.cleaned_data['title_pt_br']),#
-            'license': {
-                'license_type': str(form.cleaned_data['license']), # TODO: get license value, not the key
-                'authors': authors,
-                },
-            'credit': str(form.cleaned_data['license']),
-            'description_pt': str(form.cleaned_data['caption_pt_br']),#
-            'description_en': '',
-            'gps': str(form.cleaned_data['geolocation']),#
-            'datetime': str(form.cleaned_data['date_created']),#
-            'title_pt': str(form.cleaned_data['title_pt_br']),
-            'title_en': '',
-            'country': str(form.cleaned_data['country']),#
-            'state': str(form.cleaned_data['state']),#
-            'city': str(form.cleaned_data['city']),#
-            'sublocation': str(form.cleaned_data['location']),
-            'keywords': keywords
-                }
-            meta = Metadata(file=f'./site_media/{str(media.file)}')
-            meta.edit_metadata(metadata)
+            # metadata =  {
+            # 'headline': str(form.cleaned_data['title_pt_br']),#
+            # 'license': {
+            #     'license_type': str(form.cleaned_data['license']), # TODO: get license value, not the key
+            #     'authors': authors,
+            #     },
+            # 'credit': str(form.cleaned_data['license']),
+            # 'description_pt': str(form.cleaned_data['caption_pt_br']),#
+            # 'description_en': '',
+            # 'gps': str(form.cleaned_data['geolocation']),#
+            # 'datetime': str(form.cleaned_data['date_created']),#
+            # 'title_pt': str(form.cleaned_data['title_pt_br']),
+            # 'title_en': '',
+            # 'country': str(form.cleaned_data['country']),#
+            # 'state': str(form.cleaned_data['state']),#
+            # 'city': str(form.cleaned_data['city']),#
+            # 'sublocation': str(form.cleaned_data['location']),
+            # 'keywords': keywords
+            #     }
+            # meta = Metadata(file=f'./site_media/{str(media.file)}')
+            # meta.edit_metadata(metadata)
 
             action = request.POST.get('action')
             
@@ -355,9 +355,13 @@ def edit_metadata(request, media_id):
             if action == 'submit':
                 form.send_mail(request.user, [media], 'Edição de mídia do Cifonauta', 'edited_media_email.html')
 
-            messages.success(request, 'Edição de mídia realizado com sucesso')
+            if action == 'submit':
+                messages.success(request, f'A mídia ({media.title}) foi enviada para revisão com sucesso')
+            else:
+                messages.success(request, f'A mídia ({media.title}) foi salva com sucesso')
+                messages.warning(request, f'Você ainda não a enviou para revisão')
 
-            return redirect('curadory_medias')
+            return redirect('editing_media_list')
         else:
             messages.error(request, 'Houve um erro ao tentar salvar mídia')
     else:
@@ -383,11 +387,11 @@ def edit_metadata(request, media_id):
         'is_curator': is_curator,
     }
 
-    return render(request, 'media_editing.html', context) 
+    return render(request, 'editing_media_details.html', context) 
 
 
 @never_cache
-def curadoria_media_list(request):
+def editing_media_list(request):
     records_number = number_of_entries_per_page(request, 'entries_curadoria_media_list')
 
     user = request.user
@@ -491,11 +495,11 @@ def curadoria_media_list(request):
         'list_page': True
     }
 
-    return render(request, 'curadoria_media_list.html', context)
+    return render(request, 'editing_media_list.html', context)
     
 
 @never_cache
-def update_my_medias(request, pk):
+def my_media_details(request, pk):
     media = get_object_or_404(Media, pk=pk)
     modified_media = ModifiedMedia.objects.filter(media=media).first()
     user_person = Person.objects.get(user_cifonauta=request.user)
@@ -506,12 +510,12 @@ def update_my_medias(request, pk):
         if action == 'discard':
             modified_media.delete()
             messages.success(request, "Alterações discartadas com sucesso")
-            return redirect('update_media', media.pk)
+            return redirect('my_media_details', media.pk)
 
         if modified_media and not modified_media.altered_by_author:
             messages.error(request, "Esta mídia tem alterações pendentes de um especialista. Não é possível fazer mudanças até que elas sejam revisadas pelo curador")
 
-            return redirect('update_media', pk)
+            return redirect('my_media_details', pk)
 
         form = UpdateMyMediaForm(request.POST, instance=media, media_author=user_person, media_status=media.status)
         if form.is_valid():
@@ -526,10 +530,10 @@ def update_my_medias(request, pk):
                         else:
                             messages.error(request, 'Mudança igual à versão publicada no site')
                             messages.warning(request, 'Descarte a alteração pendente ou efetue uma alteração válida')
-                            return redirect('update_media', media.pk)
+                            return redirect('my_media_details', media.pk)
                     else:
                         messages.warning(request, "Esta mídia tem alterações pendentes de um especialista. Não é possível realizar alterações até que elas sejam revisadas pelo curador")
-                        return redirect('update_media', pk)
+                        return redirect('my_media_details', pk)
 
                 else:
                     if form.has_changed():
@@ -540,14 +544,14 @@ def update_my_medias(request, pk):
 
                     else:
                         messages.error(request, 'Nenhuma alteração identificada')
-                        return redirect('update_media', media.pk)
+                        return redirect('my_media_details', media.pk)
                 
                 messages.success(request, 'Informações alteradas com sucesso')
                 messages.warning(request, 'As alterações serão avaliadas e podem ou não serem aceitas')
             else:
                 if media.status == 'submitted' and not form.has_changed():
                     messages.error(request, 'Nenhuma alteração identificada')
-                    return redirect('update_media', media.pk)
+                    return redirect('my_media_details', media.pk)
 
                 media_instance = form.save()
 
@@ -557,7 +561,7 @@ def update_my_medias(request, pk):
 
                 messages.success(request, 'Informações alteradas com sucesso')
             
-            return redirect('update_media', pk)
+            return redirect('my_media_details', pk)
 
         messages.error(request, 'Houve um erro com as alterações feitas')
     else:
@@ -596,11 +600,11 @@ def update_my_medias(request, pk):
         'is_curator': is_curator,
     }
 
-    return render(request, 'update_media.html', context)
+    return render(request, 'my_media_details.html', context)
     
 
 @never_cache
-def my_medias(request):
+def my_media_list(request):
     records_number = number_of_entries_per_page(request, 'entries_my_medias')
 
     user = request.user
@@ -621,7 +625,7 @@ def my_medias(request):
                     has_published_media = Media.objects.filter(id__in=media_ids, status='published').exists()
                     if has_published_media:
                         messages.error(request, _('Não é possível aplicar ações em mídias já publicadas'))
-                        return redirect('my_medias')
+                        return redirect('my_media_list')
                     
                     medias = Media.objects.filter(id__in=media_ids)
                     
@@ -687,7 +691,7 @@ def my_medias(request):
         'list_page': True
     }
 
-    return render(request, 'my_medias.html', context)
+    return render(request, 'my_media_list.html', context)
 
 
 @never_cache
@@ -758,7 +762,7 @@ def manage_users(request):
 
 
 @never_cache
-def revision_media(request):
+def revision_media_list(request):
     records_number = number_of_entries_per_page(request, 'entries_revision_media')
 
     user = request.user
@@ -867,11 +871,11 @@ def revision_media(request):
         'list_page': True
     }
 
-    return render(request, 'media_revision.html', context)
+    return render(request, 'revision_media_list.html', context)
 
 
 @never_cache
-def modified_media_revision(request, pk):
+def revision_modified_media(request, pk):
     media = get_object_or_404(Media, pk=pk)
     modified_media = ModifiedMedia.objects.filter(media=media).first() 
 
@@ -880,7 +884,7 @@ def modified_media_revision(request, pk):
         if action == 'discard':
             modified_media.delete()
             messages.success(request, 'Alteração descartada com sucesso')
-            return redirect('media_revision')
+            return redirect('revision_media_list')
 
         form = ModifiedMediaForm(request.POST)
         if form.is_valid():
@@ -890,7 +894,7 @@ def modified_media_revision(request, pk):
             modified_media.delete()
 
             messages.success(request, 'Alterações aceitas com sucesso')
-            return redirect('media_revision')
+            return redirect('revision_media_list')
         else:
             messages.error(request, 'Houve um erro ao tentar realizar a ação')
 
@@ -908,11 +912,11 @@ def modified_media_revision(request, pk):
         'is_curator': is_curator
     }
 
-    return render(request, 'modified_media_revision.html', context)
+    return render(request, 'revision_modified_media.html', context)
 
 
 @never_cache
-def revision_media_detail(request, media_id):
+def revision_media_details(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     if request.method == 'POST':
         form = EditMetadataForm(request.POST, instance=media)
@@ -977,7 +981,7 @@ def revision_media_detail(request, media_id):
                 messages.success(request, f'A mídia ({media.title}) foi salva com sucesso')
                 messages.warning(request, f'Você ainda não a publicou')
 
-            return redirect('media_revision')
+            return redirect('revision_media_list')
         else:
             messages.error(request, f'Houve um erro ao tentar salvar a mídia')
 
@@ -1003,11 +1007,11 @@ def revision_media_detail(request, media_id):
         'is_curator': is_curator,
     }
 
-    return render(request, 'media_revision_detail.html', context) 
+    return render(request, 'revision_media_details.html', context) 
 
 
 @never_cache
-def media_from_my_curation_list(request):
+def my_curations_media_list(request):
     records_number = number_of_entries_per_page(request, 'entries_media_from_curation')
 
     user = request.user
@@ -1113,11 +1117,11 @@ def media_from_my_curation_list(request):
         'list_page': True
     }
 
-    return render(request, 'media_from_my_curation_list.html', context)
+    return render(request, 'my_curations_media_list.html', context)
 
 
 @never_cache
-def media_from_my_curation_edit(request, media_id):
+def my_curations_media_details(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     modified_media = ModifiedMedia.objects.filter(media=media).first()
     user_person = Person.objects.filter(user_cifonauta=request.user.id).first()
@@ -1132,15 +1136,15 @@ def media_from_my_curation_edit(request, media_id):
         if action == 'discard':
             modified_media.delete()
             messages.success(request, "Alterações discartadas com sucesso")
-            return redirect('media_from_my_curation_edit', media_id)
+            return redirect('my_curations_media_details', media_id)
 
         if media.status != 'published':
             messages.error(request, f'Não foi possível fazer alteração')
-            return redirect('media_from_my_curation_edit', media_id)
+            return redirect('my_curations_media_details', media_id)
 
         if modified_media and modified_media.altered_by_author:
             messages.error(request, "Esta mídia tem alterações pendentes do autor. Não é possível fazer mudanças até que elas sejam revisadas pelo curador")
-            return redirect('media_from_my_curation_edit', media_id)
+            return redirect('my_curations_media_details', media_id)
         
         form = EditMetadataForm(request.POST, instance=media)
 
@@ -1173,7 +1177,7 @@ def media_from_my_curation_edit(request, media_id):
                 form.save()
                 messages.success(request, f'A mídia ({media.title}) foi alterada com sucesso')
             
-            return redirect('media_from_my_curation_edit', media.id)
+            return redirect('my_curations_media_details', media.id)
         else:
             messages.error(request, 'Houve um erro com as alterações feitas')
     else:
@@ -1212,10 +1216,10 @@ def media_from_my_curation_edit(request, media_id):
         'is_curator': is_curator,
     }
 
-    return render(request, 'media_from_my_curation_edit.html', context) 
+    return render(request, 'my_curations_media_details.html', context) 
 
 @never_cache
-def dashboard_tour_list(request):
+def tour_list(request):
     tours = Tour.objects.filter(creator=request.user)
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
@@ -1227,11 +1231,11 @@ def dashboard_tour_list(request):
         'list_page': True
     }
 
-    return render(request, 'dashboard_tour_list.html', context)
+    return render(request, 'tour_list.html', context)
 
 
 @never_cache
-def dashboard_tour_add(request):
+def tour_add(request):
     if request.method == 'POST':
         form = TourForm(request.POST)
         if form.is_valid():
@@ -1244,7 +1248,7 @@ def dashboard_tour_add(request):
             tour_instance.media.set(medias)
 
             messages.success(request, 'Tour temático criado com sucesso')
-            return redirect('dashboard_tour_list')
+            return redirect('tour_list')
         
         messages.error(request, 'Houve um erro ao tentar criar o tour temático')
 
@@ -1270,11 +1274,11 @@ def dashboard_tour_add(request):
         'is_curator': is_curator
     }
 
-    return render(request, 'dashboard_tour_add.html', context)
+    return render(request, 'tour_add.html', context)
 
 
 @never_cache
-def dashboard_tour_edit(request, pk):
+def tour_details(request, pk):
     tour = get_object_or_404(Tour, pk=pk)
 
     if request.method == 'POST':
@@ -1282,7 +1286,7 @@ def dashboard_tour_edit(request, pk):
         if action == 'delete':
             tour.delete()
             messages.success(request, "Tour excluído com sucesso")
-            return redirect('dashboard_tour_list')
+            return redirect('tour_list')
 
         form = TourForm(request.POST, instance=tour)
         if form.is_valid():
@@ -1324,7 +1328,7 @@ def dashboard_tour_edit(request, pk):
         'is_curator': is_curator
     }
 
-    return render(request, 'dashboard_tour_edit.html', context)
+    return render(request, 'tour_details.html', context)
 
 
 @never_cache

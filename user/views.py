@@ -2,8 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import UserCifonautaCreationForm, LoginForm, PasswordResetForm, ForgotUsernameForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.views import PasswordResetView
-from django.contrib.auth.views import PasswordResetConfirmView
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
@@ -63,6 +62,7 @@ class PasswordResetView(PasswordResetView):
     template_name = 'users/password_reset.html'
     email_template_name = 'users/password_reset_email.html'
     success_url = '/user/login'
+
     def post(self, request, *args, **keyargs):
         form = self.form_class(request.POST)
         if form.is_valid():
@@ -70,14 +70,12 @@ class PasswordResetView(PasswordResetView):
             return super().form_valid(form)
         
 class PasswordResetConfirmView(PasswordResetConfirmView):
-    success_url = '/user/login'
+    success_url = reverse_lazy("custom_password_reset_complete")
     template_name = 'users/password_reset_confirm.html'
-    def post(self, request, *args, **keyargs):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            messages.sucess(request, "Senha redefinida com sucesso")
-            return super().form_valid(form)
-        
+
+class PasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'users/password_reset_complete.html'
+
 class ForgotUsernameView(FormView):
     form_class = ForgotUsernameForm 
     success_url = '/user/login'

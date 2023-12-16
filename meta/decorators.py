@@ -47,7 +47,9 @@ def media_specialist_required(view_func):
     @wraps(view_func)
     @authentication_required
     @specialist_required
-    def _wrapped_view(request, media_id, *args, **kwargs):
+    def _wrapped_view(request, *args, **kwargs):
+        media_id = kwargs.get('media_id')
+
         user = request.user
         curations = user.curatorship_specialist.all()
         curations_taxons = set()
@@ -59,7 +61,7 @@ def media_specialist_required(view_func):
         queryset_ids = Media.objects.filter(status='draft').filter(taxa__in=curations_taxons).values_list('id', flat=True)
 
         if media_id in queryset_ids:
-            return view_func(request, media_id, *args, **kwargs)
+            return view_func(request, *args, **kwargs)
         
         return redirect('editing_media_list')
 
@@ -84,7 +86,9 @@ def media_curator_required(view_func):
     @wraps(view_func)
     @authentication_required
     @curator_required
-    def _wrapped_view(request, media_id, *args, **kwargs):
+    def _wrapped_view(request, *args, **kwargs):
+        media_id = kwargs.get('media_id')
+
         user = request.user
         curations = user.curatorship_curator.all()
         curations_taxons = set()
@@ -99,7 +103,7 @@ def media_curator_required(view_func):
         ).values_list('id', flat=True)
         
         if media_id in queryset_ids:
-            return view_func(request, media_id, *args, **kwargs)
+            return view_func(request, *args, **kwargs)
         
         return redirect('revision_media_list')
 
@@ -139,6 +143,7 @@ def tour_owner_required(view_func):
 
     return _wrapped_view
 
+
 def specialist_or_curator_required(view_func):
     @wraps(view_func)
     @authentication_required
@@ -154,11 +159,13 @@ def specialist_or_curator_required(view_func):
 
     return _wrapped_view
 
+
 def curations_media_required(view_func):
     @wraps(view_func)
     @authentication_required
     @specialist_or_curator_required
-    def _wrapped_view(request, media_id, *args, **kwargs):
+    def _wrapped_view(request, *args, **kwargs):
+        media_id = kwargs.get('media_id')
         user = request.user
 
         curations_as_specialist = user.curatorship_specialist.all()
@@ -190,7 +197,7 @@ def curations_media_required(view_func):
         queryset_ids = (curator_queryset_ids | specialist_queryset_ids).distinct()
         
         if media_id in queryset_ids:
-            return view_func(request, media_id, *args, **kwargs)
+            return view_func(request, *args, **kwargs)
         
         return redirect('my_curations_media_list')
 

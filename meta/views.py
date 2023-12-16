@@ -885,8 +885,8 @@ def revision_media_list(request):
 
 @never_cache
 @media_curator_required
-def revision_modified_media(request, pk):
-    media = get_object_or_404(Media, pk=pk)
+def revision_modified_media(request, media_id):
+    media = get_object_or_404(Media, pk=media_id)
     modified_media = ModifiedMedia.objects.filter(media=media).first() 
 
     if request.method == 'POST':

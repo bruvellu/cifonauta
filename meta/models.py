@@ -124,7 +124,8 @@ class Media(models.Model):
     license = models.CharField(_('Licença'),
                                max_length=60,
                                choices=LICENSE_CHOICES,
-                               default='cc0',
+                               null=True,
+                               blank=True,
                                help_text=_('Tipo de licença da mídia.'))
 
     # Fields related to media status

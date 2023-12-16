@@ -18,7 +18,7 @@
 
 <div class='table-top'>
   <button type="button" class="primary-button submit-button list-page-add-btn">
-    <a href="{% url 'dashboard_tour_add' %}">Criar novo tour</a>
+    <a href="{% url 'tour_add' %}">Criar novo tour</a>
   </button>
 </div>
 
@@ -35,7 +35,7 @@
       {% for tour in tours %}
       <tr>
           <td class="text-cedule">
-            <a href="{% url 'dashboard_tour_edit' pk=tour.pk %}">
+            <a href="{% url 'tour_details' pk=tour.pk %}">
               {{ tour.name }}
             </a>
           </td>

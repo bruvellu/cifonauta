@@ -223,7 +223,8 @@ p {
 
 
 /* POPUP */
-#behind-modal-container {
+.modal-overlay {
+    background-color: rgba(0, 0, 0, 0.3);
     position: fixed;
     top: 0;
     right: 0;
@@ -233,7 +234,8 @@ p {
     display: none;
 }
 
-#modal-container {
+#modal-container,
+.modal-container {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -779,7 +781,7 @@ textarea {
 .steps-container {
     display: flex;
     align-items: center;
-    max-width: 20rem;
+    max-width: 16rem;
     margin: 2rem 0 4rem 2.6rem;
 }
 
@@ -989,6 +991,9 @@ textarea {
 
 .update-media-comparison-label-row {
     padding: 0.5rem 0.5rem 0.5rem 1rem !important;
+    display: flex;
+    gap: 0.2rem;
+    align-items: center;
 }
 
 .discard-pending-changes {

@@ -5,10 +5,10 @@
 <script src="{% static 'js/adm_select_all_records.js' %}" defer></script>
 <script src="{% static 'js/adm_popup.js' %}" defer></script>
 <script src="{% static 'js/adm_actions.js' %}" defer></script>
-<script src="{% static 'js/media_revision.js' %}" defer></script>
+<script src="{% static 'js/revision_media_list.js' %}" defer></script>
 {% endblock %}
 
-{% block title %}Revisão de Mídias{% endblock %}
+{% block title %}Mídias da minha curadoria{% endblock %}
 
 {% block dashboard_content %}
     <h2>Lista de mídias para revisão</h2>
@@ -48,7 +48,6 @@
 
         <form class="post-form-wrapper" method="post">
             {% csrf_token %}
-            <div id="behind-modal-container" class="behind-modal-container"></div>
             <div id="modal-container" class="list-modal-container">
                 <div>
                     <div class="modal-header">
@@ -100,7 +99,7 @@
             <table class="dashboard-table">
                 <thead class="table-head">
                     <tr>
-                        <th class="checkbox-column"><input type="checkbox" id="select-all-records" class='dashboard-input'></th>
+                        <th class="checkbox-column"><input type="checkbox" id="select-all-records" class="dashboard-input"></th>
                         <th class="image-column">Mídia</th>
                         <th class="title-column">Título</th>
                         <th>Curadorias</th>
@@ -116,7 +115,7 @@
                         </td>
                         <td class="image-cedule">
                             <div class="media-wrapper-td">
-                                <a href="{% if media.modified_media.first != None %}{% url 'modified_media_revision' media.pk %}{% else %}{% url 'media_revision_detail' media.id %}{% endif %}">
+                                <a href="{% url 'my_curations_media_details' media.id %}">
                                     {% if media.datatype == 'video' %}
                                     <video src="{{ media.coverpath.url }}"></video>
                                     {% else %}
@@ -126,7 +125,9 @@
                             </div>
                         </td>
                         <td class="text-cedule">
+                            {% if media.title_pt_br %}
                             {{ media.title_pt_br }}
+                            {% endif %}
                         </td>
                         <td>
                             <ul class="curations-list">

@@ -2,8 +2,9 @@
 {% load static custom_filters %}
 
 {% block extra_head %}
-<script src="{% static 'js/update_media.js' %}" defer></script>
 <script src="{% static 'js/adm_popup.js' %}" defer></script>
+<script src="{% static 'js/my_media_details.js' %}" defer></script>
+<script src="{% static 'js/adm_sync_location_fields.js' %}" defer></script>
 {% endblock %}
 
 {% block title %}Editar Mídia{% endblock %}
@@ -11,11 +12,10 @@
 {% block dashboard_content %}
 
 {% if modified_media.altered_by_author %}
-<div id="behind-modal-container" class="behind-modal-container"></div>
 <div id="modal-container" class="media-changes-modal">
     <div class="modal-header media-changes-modal-header">
         <p>Alterações da mídia</p>
-        <button id="close-modal-button" class="close-modal-button media-changes-close-modal-button" onclick="closeModal()">
+        <button id="close-modal-button" class="close-modal-button media-changes-close-modal-button">
             <div class='line1'></div>
             <div class='line2'></div>
         </button>
@@ -102,7 +102,30 @@
     </div>
 
     {% for field in form %}
-    {% if field == form.country %}
+    {% if field == form.authors %}
+    <div class="field-container">
+        <div class="label-div">
+            {{ field.label_tag }}
+        </div>
+        <div class="field-div authors-field-div">
+            {% if form.authors.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {{ field }}
+            {% if field.help_text %}
+            <span class="help-text">{{ field.help_text }}</span>
+            {% endif %}
+            <div>
+                <p>Coautor não está na lista?</p>
+                <button id="coauthor-modal-open-btn" class="pre-registration-button" type="button">Registrar coautor</button>
+            </div>
+        </div>
+    </div>
+    {% elif field == form.country %}
     <div class="field-container country-container">
         <div class="label-div">
             {{ field.label_tag }}
@@ -172,8 +195,41 @@
     {% endif %}
     {% endfor %}
     <div class="buttons-div">
-        <button class='primary-button submit-button' {% if modified_media and not modified_media.altered_by_author%}disabled{% endif %} type="submit">Atualizar</button>
+        <button 
+            type="submit"
+            class='primary-button submit-button' 
+            {% if modified_media and not modified_media.altered_by_author%}disabled
+            {% elif media.status == 'submitted' %}disabled
+            {% endif %} 
+        >
+            Atualizar
+        </button>
     </div>
 </form>
+
+<div id="coauthor-modal-container" class="list-modal-container modal-container">
+    <div class="modal-header">
+        <p>Registre o coautor</p>
+        <button id="coauthor-modal-close-btn" class="close-modal-button">
+            <div class='line1'></div>
+            <div class='line2'></div>
+        </button>
+    </div>
+    <form class="modal-body" method="post">
+        {% csrf_token %}
+        {% for field2 in registration_form %}
+        <div class="field2-container">
+            {{ field2.label_tag }}
+            <div class="field-div field2-div">
+                {{ field2 }}
+                {% if field2.help_text %}
+                <span class="help-text">{{ field2.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        <button class="secondary-button" type="submit" name="action" value="coauthor">Cadastrar</button>
+    </form>
+</div>
 
 {% endblock %}

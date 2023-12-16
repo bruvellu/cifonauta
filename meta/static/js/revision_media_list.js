@@ -12,6 +12,16 @@ curationsListArray.forEach(curationList => {
 })
 
 let entriesNumberButton = document.querySelector('#entries-number-button')
-entriesNumberButton.addEventListener('click', () => {
+entriesNumberButton?.addEventListener('click', () => {
   entriesNumberButton.querySelector('img').classList.add('rotate-animation')
+})
+
+let modalContainer = document.querySelector('#modal-container')
+let openModalButton = document.querySelector('#open-modal-button')
+let closeModalButton = document.querySelector('#close-modal-button')
+
+const modalHandler = new ModalHandler({ 
+    modalContent: modalContainer,
+    modalTrigger: openModalButton,
+    modalClose: closeModalButton
 })

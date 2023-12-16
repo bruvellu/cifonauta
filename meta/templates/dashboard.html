@@ -32,34 +32,34 @@
             <li>
                 <a 
                     href="{% url 'upload_media_step1' %}" 
-                    {% if fullpath == '/administrative-module/add/load-media' or fullpath == '/administrative-module/add/fulfill-metadata' %}class='current-page'{% endif %}
+                    {% if '/dashboard/upload/' in fullpath %}class='current-page'{% endif %}
                 >
                     Adicionar mídia
                 </a>
             </li>
             {% if is_specialist %}
             <li>
-                <a href="{% url 'curadory_medias' %}" {% if '/administrative-module/curadory-medias/' in fullpath or '/administrative-module/edit-metadata/' in fullpath %}class='current-page'{% endif %}>Edição de metadados</a>
+                <a href="{% url 'editing_media_list' %}" {% if '/dashboard/editing/' in fullpath %}class='current-page'{% endif %}>Edição de metadados</a>
             </li>
             {% endif %}
             {% if is_curator %}
             <li>
-                <a href="{% url 'media_revision' %}" {% if '/administrative-module/revision' in fullpath or '/administrative-module/revision/detail/' in fullpath or '/administrative-module/revision/changes/' in fullpath %}class='current-page'{% endif %}>Revisão de mídias</a>
+                <a href="{% url 'revision_media_list' %}" {% if '/dashboard/revision/' in fullpath %}class='current-page'{% endif %}>Revisão de mídias</a>
             </li>
             <li>
-                <a href="{% url 'manage_users' %}" {% if '/administrative-module/manage-users' in fullpath %}class='current-page'{% endif %}>Gerenciar Usuários</a>
+                <a href="{% url 'manage_users' %}" {% if '/dashboard/manage-users/' in fullpath %}class='current-page'{% endif %}>Gerenciar Usuários</a>
             </li>
             <li>
-                <a href="{% url 'dashboard_tour_list' %}" {% if 'administrative-module/tours' in fullpath %}class='current-page'{% endif %}>Tours</a>
+                <a href="{% url 'tour_list' %}" {% if '/dashboard/tours/' in fullpath %}class='current-page'{% endif %}>Tours</a>
             </li>
             {% endif %}
             {% if is_specialist or is_curator %}
             <li>
-                <a href="{% url 'media_from_my_curations_list' %}" {% if 'administrative-module/media-from-my-curations/' in fullpath %}class='current-page'{% endif %}>Mídias da minha curadoria</a>
+                <a href="{% url 'my_curations_media_list' %}" {% if '/dashboard/curations/' in fullpath %}class='current-page'{% endif %}>Mídias da minha curadoria</a>
             </li>
             {% endif %}
             <li>
-                <a href="{% url 'my_medias' %}" {% if '/administrative-module/my-medias/' in fullpath or '/administrative-module/update/' in fullpath %}class='current-page'{% endif %}>Minhas mídias</a>
+                <a href="{% url 'my_media_list' %}" {% if '/dashboard/medias/' in fullpath %}class='current-page'{% endif %}>Minhas mídias</a>
             </li>
         </ul>
         {% endwith %}

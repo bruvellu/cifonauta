@@ -56,18 +56,23 @@ OPERATORS = (
 class UploadMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license', 'terms')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license', 'terms')
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'date_created': forms.DateInput(attrs={'type': 'date'}),
             'terms': forms.CheckboxInput(attrs={'class': 'dashboard-input'})
         }
+        help_texts = {
+            'date_created': 'Data em que a mídia foi produzida. Caso a data seja desconhecida, preencher com "01/01/0001"',
+        }
 
     def __init__(self, *args, **kwargs):
         self.media_author = kwargs.pop('media_author', None)
         super().__init__(*args, **kwargs)
 
+        self.fields['license'].required = True
+        self.fields['date_created'].required = True
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
 
     def clean_authors(self):
@@ -106,11 +111,14 @@ class UploadMediaForm(forms.ModelForm):
 class UpdateMyMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
         widgets = {
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
+        }
+        help_texts = {
+            'date_created': 'Data em que a mídia foi produzida. Caso a data seja desconhecida, preencher com "01/01/0001"',
         }
     
     def __init__(self, *args, **kwargs):
@@ -122,6 +130,8 @@ class UpdateMyMediaForm(forms.ModelForm):
             self.fields['title_pt_br'].required = True
             self.fields['title_en'].required = True
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
+        self.fields['license'].required = True
+        self.fields['date_created'].required = True
     
     def clean_authors(self):
         authors = self.cleaned_data['authors']
@@ -181,12 +191,12 @@ class SendEmailForm(forms.Form):
 class EditMetadataForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = Media
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'date_created', 'taxa', 'tags', 'country', 'state', 'city', 'location', 'geolocation')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'date_created', 'taxa', 'tags', 'scale', 'country', 'state', 'city', 'location', 'latitude', 'longitude')
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
             'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"}),
-            'date_created': forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date'})
+            'date_created': forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date', 'readonly': 'readonly'})
         }
     
     def __init__(self, *args, **kwargs):
@@ -194,9 +204,10 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
 
         self.fields['title_pt_br'].required = True
         self.fields['title_en'].required = True
+        self.fields['date_created'].required = True
         self.fields['tags'].queryset = self.fields['tags'].queryset.order_by('category')
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
-    
+
     def clean_taxa(self):
         taxa = self.cleaned_data['taxa']
 
@@ -215,7 +226,7 @@ class CoauthorRegistrationForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm):
     class Meta:
         model = ModifiedMedia
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'tags', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'geolocation', 'license')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'tags', 'scale', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
         widgets = {
             'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
         }
@@ -226,12 +237,15 @@ class ModifiedMediaForm(forms.ModelForm):
 
         if author_form:
             self.fields.pop('tags')
+            self.fields.pop('scale')
+            self.fields['license'].required = True
         else:
             self.fields.pop('authors')
             self.fields.pop('license')
 
         self.fields['title_pt_br'].required = True
         self.fields['title_en'].required = True
+        self.fields['date_created'].required = True
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
     
     def clean_taxa(self):

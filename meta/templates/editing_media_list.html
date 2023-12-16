@@ -5,15 +5,14 @@
 <script src="{% static 'js/adm_select_all_records.js' %}" defer></script>
 <script src="{% static 'js/adm_popup.js' %}" defer></script>
 <script src="{% static 'js/adm_actions.js' %}" defer></script>
-<script src="{% static 'js/my_medias.js' %}" defer></script>
+<script src="{% static 'js/editing_media_list.js' %}" defer></script>
 {% endblock %}
 
 {% block title %}Lista de Mídias{% endblock %}
 
 {% block dashboard_content %}
 
-<h2>Lista de suas mídias</h2>
-
+<h2>Lista de mídias para edição</h2>
 {% if messages %}
 <div class="messages-div hide-messages-animation">
     {% for message in messages %}
@@ -21,7 +20,6 @@
     {% endfor %}
 </div>
 {% endif %}
-
 {% if object_exists %}
 <section class="table-section">
     <aside class='filter-aside'>
@@ -49,10 +47,8 @@
         </form>
     </aside>
 
-    <form method="post" class="post-form-wrapper">
+    <form class="post-form-wrapper" method="post">
         {% csrf_token %}
-
-        <div id="behind-modal-container" class="behind-modal-container"></div>
         <div id="modal-container" class="list-modal-container">
             <div>
                 <div class="modal-header">
@@ -63,26 +59,26 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    {% for field in form %}
-                    {% if field == form.taxa_action %}
-                    <div class="modal-field-div">
-                        {{ field.label_tag }}
-                        {{ field }}
-                        <div id="taxa-wrapper" class="hide-div">
-                            {{ form.taxa }}
+                        {% for field in form %}
+                        {% if field == form.taxa_action %}
+                        <div class="modal-field-div">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            <div id="taxa-wrapper" class="hide-div">
+                                {{ form.taxa }}
+                            </div>
                         </div>
-                    </div>
-                    {% elif field == form.taxa %}
-                    {% else %}
-                    <div class="modal-field-div">
-                        {{ field.label_tag }}
-                        {{ field }}
-                    </div>
-                    {% endif %}
-                    {% endfor %}
+                        {% elif field == form.taxa %}
+                        {% else %}
+                        <div class="modal-field-div">
+                            {{ field.label_tag }}
+                            {{ field }}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
                 </div>
             </div>
-            <button type="submit" class="secondary-button" name='action' value='{{ records_number }}'>Processar</button>
+            <button type="submit" class="secondary-button" name="action" value="submit">Processar</button>
         </div>
 
         {% if entries.object_list %}
@@ -94,23 +90,21 @@
             <div class="entries-number-div">
                 <span>Mostrar</span>
                 <input type="number" name="entries_number" id="entries-number" value="{{ records_number }}" min="1">
-                    <span>registros</span>
-                    <button type="submit" name="action" value="entries_number" id="entries-number-button">
-                        <img src="{{ STATIC_URL }}img/reload.svg" alt="">
-                    </button>
+                <span>registros</span>
+                <button type="submit" name="action" value="entries_number" id="entries-number-button">
+                    <img src="{{ STATIC_URL }}img/reload.svg" alt="">
+                </button>
             </div>
         </div>
-
+        
         <table class="dashboard-table">
             <thead class="table-head">
                 <tr>
                     <th><input type="checkbox" id="select-all-records" class="dashboard-input"></th>
-                    <th class="title-column">Mídia</th>
+                    <th class="image-column">Mídia</th>
                     <th class="title-column">Título</th>
-                    <th class="">Tipo de mídia</th>
-                    <th class="status-column">Status</th>
-                    <th>Curadorias</th>
-                    <th class="modification-date">Data de Modificação</th>
+                    <th class="">Curadorias</th>
+                    <th>Autor</th>
                 </tr>
             </thead>
             <tbody class="table-body">
@@ -121,7 +115,7 @@
                     </td>
                     <td class="image-cedule">
                         <div class="media-wrapper-td">
-                            <a href="{% url 'update_media' pk=media.pk %}">
+                            <a href="{% url 'editing_media_details' media.id %}">
                                 {% if media.datatype == 'video' %}
                                 <video src="{{ media.coverpath.url }}"></video>
                                 {% else %}
@@ -131,19 +125,9 @@
                         </div>
                     </td>
                     <td class="text-cedule">
+                        {% if media.title_pt_br %}
                         {{ media.title_pt_br }}
-                    </td>
-                    <td>
-                        {% if media.datatype == 'video' %}
-                        Vídeo
-                        {% else %}
-                        Imagem
                         {% endif %}
-                    </td>
-                    <td class="text-cedule">
-                        <span class="media-status {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}">
-                            {{ media.get_status_display }}
-                        </span>
                     </td>
                     <td>
                         <ul class="curations-list">
@@ -155,7 +139,7 @@
                             {% endfor %}
                         </ul>
                     </td>
-                    <td>{{ media.date_modified }}</td>
+                    <td>{{media.user}}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -174,7 +158,7 @@
     </form>
 </section>
 {% else %}
-<p>Não há mídias</p>
+    <p>Não há imagens</p>
 {% endif %}
 
 {% endblock %}

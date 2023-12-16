@@ -41,6 +41,11 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, 'Login realizado com sucesso')
+                
+                next = request.GET.get('next', None)
+                if next:
+                    return redirect(next)
+                
                 return redirect('home')
         else:
             if not form['captcha'].errors:

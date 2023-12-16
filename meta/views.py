@@ -1379,14 +1379,15 @@ def get_tour_medias(request):
                     'datatype': media.datatype,
                     'isRelated': True if Tour.objects.filter(creator=request.user.id, media=media) else False,
                     'coverpath': media.coverpath.url,
-                    'size': media.size,
+                    'size': media.scale,
                     } for media in query
             ],
         }
 
         return JsonResponse(response)
     
-    except:
+    except Exception as e:
+        print('Error: ', e)
         return JsonResponse({})
 
 

@@ -12,7 +12,7 @@ curationsListArray.forEach(curationList => {
 })
 
 let entriesNumberButton = document.querySelector('#entries-number-button')
-entriesNumberButton.addEventListener('click', () => {
+entriesNumberButton?.addEventListener('click', () => {
   entriesNumberButton.querySelector('img').classList.add('rotate-animation')
 })
 

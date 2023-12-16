@@ -14,7 +14,7 @@ selectedRecordAll.forEach(record => {
   })
 })
 
-selectAllRecords.addEventListener('click', () => {
+selectAllRecords?.addEventListener('click', () => {
   if (selectAllRecords.checked) {
     selectedRecordAll.forEach(record => record.checked = true)
   } else {

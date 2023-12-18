@@ -483,6 +483,11 @@ def editing_media_list(request):
         filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
     
 
+    status = request.GET.get('status')
+    if status:
+        filtered_queryset = filtered_queryset.filter(status=status)
+
+
     alphabetical_order = request.GET.get('alphabetical_order')
     if alphabetical_order:
         filtered_queryset = filtered_queryset.order_by('title')
@@ -491,6 +496,7 @@ def editing_media_list(request):
         'search': search,
         'curations': curation_ids,
         'alphabetical_order': alphabetical_order,
+        'status': status,
     }, user_curations=curations)
     
 
@@ -678,7 +684,13 @@ def my_media_list(request):
                     
                     if form.cleaned_data['taxa_action'] != 'maintain':
                         for media in medias:
+                            if form.cleaned_data['taxa_action']:
+                                media.taxa.exclude(name='Sem táxon')
+                            else:
+                                media.taxa = Taxon.objects.filter(name='Sem táxon')
+
                             media.taxa.set(form.cleaned_data['taxa'])
+
                     medias.update(status='draft')
                     
                     messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
@@ -703,7 +715,12 @@ def my_media_list(request):
             taxons.update(curation.taxons.all())
 
         filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
-    
+
+
+    status = request.GET.get('status')
+    if status:
+        filtered_queryset = filtered_queryset.filter(status=status)
+
 
     alphabetical_order = request.GET.get('alphabetical_order')
     if alphabetical_order:
@@ -713,6 +730,7 @@ def my_media_list(request):
         'search': search,
         'curations': curation_ids,
         'alphabetical_order': alphabetical_order,
+        'status': status,
     })
 
     user = request.user
@@ -913,6 +931,11 @@ def revision_media_list(request):
         filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
     
 
+    status = request.GET.get('status')
+    if status:
+        filtered_queryset = filtered_queryset.filter(status=status)
+
+
     alphabetical_order = request.GET.get('alphabetical_order')
     if alphabetical_order:
         filtered_queryset = filtered_queryset.order_by('title')
@@ -921,6 +944,7 @@ def revision_media_list(request):
         'search': search,
         'curations': curation_ids,
         'alphabetical_order': alphabetical_order,
+        'status': status,
     }, user_curations=curations)
     
     queryset_paginator = Paginator(filtered_queryset, records_number)
@@ -1184,6 +1208,11 @@ def my_curations_media_list(request):
         filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
     
 
+    status = request.GET.get('status')
+    if status:
+        filtered_queryset = filtered_queryset.filter(status=status)
+
+
     alphabetical_order = request.GET.get('alphabetical_order')
     if alphabetical_order:
         filtered_queryset = filtered_queryset.order_by('title')
@@ -1192,6 +1221,7 @@ def my_curations_media_list(request):
         'search': search,
         'curations': curation_ids,
         'alphabetical_order': alphabetical_order,
+        'status': status,
     }, user_curations=curations)
 
 

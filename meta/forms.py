@@ -357,6 +357,14 @@ class DashboardFilterForm(forms.Form):
         widget=forms.SelectMultiple(attrs={"class": "select2-curations", "multiple": "multiple"}),
         label=_('Curadorias')
     )
+
+    status = forms.MultipleChoiceField(
+        required=False,
+        label=_('Status'),
+        choices=Media.STATUS_CHOICES[1:],
+        widget=forms.SelectMultiple(attrs={"class": "select2-status", "multiple": "multiple"})
+    )
+
     alphabetical_order = forms.BooleanField(required=False,
                                    initial=False,
                                    label=_('Ordem alfabética'),

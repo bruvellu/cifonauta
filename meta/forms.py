@@ -7,6 +7,8 @@ from .models import Media, Curadoria, ModifiedMedia, Person, Taxon, Tour
 from user.models import UserCifonauta
 from django.template import loader 
 from django.core.mail import EmailMultiAlternatives
+from django.db.models.query import QuerySet
+from django.db import models
 
 
 METAS = (
@@ -58,22 +60,46 @@ class SendEmailForm(forms.Form):
     def send_mail(
             self,
             sender,
-            receiver,
+            receivers,
             medias,
             subject_template_name,
             email_template_name,
-            modification_accepted=True,
+            modification_accepted=False,
+            modified_media_specialists_message=False,
             from_email=None,
             html_email_template_name=None,
         ):
-            email = receiver.email
+            # TODO: Improve it
+            if isinstance(receivers, models.Model):
+                receivers = [receivers]
+            elif isinstance(receivers, QuerySet):
+                receivers = list(receivers)
+            elif isinstance(receivers, (list, set)):
+                receivers = list(receivers)
+            else:
+                print('Não foi possível converter receivers')
+                return
+
+            if isinstance(medias, models.Model):
+                medias = [medias]
+            elif isinstance(medias, QuerySet):
+                medias = list(medias)
+            elif isinstance(medias, (list, set)):
+                medias = list(medias)
+            else:
+                print('Não foi possível converter medias')
+                return
+
+            email = [receiver.email for receiver in receivers]
+
             context = {
                 "single_media": True if len(medias) == 1 else False,
                 "media_names": [media.title_pt_br for media in medias],
                 "sender_name": sender.get_full_name(),
                 "timestamp": medias[0].date_modified,
                 "modified_media": medias[0].modified_media.first(),
-                "modification_accepted": modification_accepted
+                "modification_accepted": modification_accepted,
+                "modified_media_specialists_message": modified_media_specialists_message
             }
 
             subject = subject_template_name
@@ -81,7 +107,7 @@ class SendEmailForm(forms.Form):
             subject = "".join(subject.splitlines())
             body = loader.render_to_string(email_template_name, context)
 
-            email_message = EmailMultiAlternatives(subject, body, from_email, [email])
+            email_message = EmailMultiAlternatives(subject, body, from_email, email)
             if html_email_template_name is not None:
                 html_email = loader.render_to_string(html_email_template_name, context)
                 email_message.attach_alternative(html_email, "text/html")

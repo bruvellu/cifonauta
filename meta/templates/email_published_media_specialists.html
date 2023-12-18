@@ -1,9 +1,7 @@
 {% if single_media %}
-A mídia que você editou {% for media_name in media_names %}({{ media_name }}){% endfor %} foi revisada e já está disponível no site Cifonauta.
+Uma mídia que você editou (como Especialista) foi revisada e já está disponível no site Cifonauta!
 {% else %}
-As seguintes mídias que você editou foram revisadas e já estão disponíveis no site do Cifonauta:
-{% for media_name in media_names %}
-  - {{ media_name }}
-{% endfor %}
+Algumas mídias que você editou (como Especialista) foram revisadas e já estão disponíveis no site do Cifonauta!
 {% endif %}
-O curador responsável pela edição foi o(a): {{ sender_name }}.
+O curador responsável pela revisão foi o(a): {{ sender_name }}.
+Acesse o site para conferir.

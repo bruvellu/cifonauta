@@ -53,7 +53,41 @@ OPERATORS = (
         ('and', _('E')),
         )
 
-class UploadMediaForm(forms.ModelForm):
+
+class SendEmailForm(forms.Form):
+    def send_mail(
+            self,
+            sender,
+            receiver,
+            medias,
+            subject_template_name,
+            email_template_name,
+            modification_accepted=True,
+            from_email=None,
+            html_email_template_name=None,
+        ):
+            email = receiver.email
+            context = {
+                "single_media": True if len(medias) == 1 else False,
+                "media_names": [media.title_pt_br for media in medias],
+                "sender_name": sender.get_full_name(),
+                "timestamp": medias[0].date_modified,
+                "modified_media": medias[0].modified_media.first(),
+                "modification_accepted": modification_accepted
+            }
+
+            subject = subject_template_name
+            # Email subject must not contain newlines
+            subject = "".join(subject.splitlines())
+            body = loader.render_to_string(email_template_name, context)
+
+            email_message = EmailMultiAlternatives(subject, body, from_email, [email])
+            if html_email_template_name is not None:
+                html_email = loader.render_to_string(html_email_template_name, context)
+                email_message.attach_alternative(html_email, "text/html")
+            email_message.send()
+
+class UploadMediaForm(forms.ModelForm,  SendEmailForm):
     class Meta:
         model = Media
         fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license', 'terms')
@@ -154,39 +188,6 @@ class UpdateMyMediaForm(forms.ModelForm):
             taxa = Taxon.objects.filter(name='Sem táxon')
 
         return taxa
-        
-
-class SendEmailForm(forms.Form):
-    def send_mail(
-            self,
-            sender,
-            medias,
-            subject_template_name,
-            email_template_name,
-            from_email=None,
-            html_email_template_name=None,
-        ):
-            receiver = UserCifonauta.objects.filter(id=medias[0].user.id).first()
-
-            email = receiver.email
-
-            context = {
-                "single_media": True if len(medias) == 1 else False,
-                "media_names": [media.title for media in medias],
-                "sender_name": sender.get_full_name(),
-                "timestamp": medias[0].date_modified,
-            }
-
-            subject = subject_template_name
-            # Email subject must not contain newlines
-            subject = "".join(subject.splitlines())
-            body = loader.render_to_string(email_template_name, context)
-
-            email_message = EmailMultiAlternatives(subject, body, from_email, [email])
-            if html_email_template_name is not None:
-                html_email = loader.render_to_string(html_email_template_name, context)
-                email_message.attach_alternative(html_email, "text/html")
-            email_message.send()
 
 class EditMetadataForm(forms.ModelForm, SendEmailForm):
     class Meta:
@@ -223,7 +224,7 @@ class CoauthorRegistrationForm(forms.ModelForm):
         model = Person
         fields = ('name',)
 
-class ModifiedMediaForm(forms.ModelForm):
+class ModifiedMediaForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = ModifiedMedia
         fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'tags', 'scale', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
@@ -279,7 +280,6 @@ class TourForm(forms.ModelForm):
         super(TourForm, self).__init__(*args, **kwargs)
         
         self.fields['media'].label_from_instance = lambda obj: obj.title
-
 
 class SpecialistActionForm(forms.ModelForm, SendEmailForm):
     STATUS_CHOICES = [

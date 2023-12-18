@@ -695,3 +695,10 @@ def number_of_entries_per_page(request, session_name, value=None):
         return request.session[session_name]
     except:
         return 12
+
+def validate_specialist_action_form(request, medias):
+    for media in medias:
+        if not media.title_pt_br:
+            return ['Título [pt-br]', 'Este campo é obrigatório.']
+        if not media.title_en:
+            return ['Título [en]', 'Este campo é obrigatório.']

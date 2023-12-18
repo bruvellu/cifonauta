@@ -1,9 +1,0 @@
-{% if single_media %}
-A sua mídia: {% for media_name in media_names %}{{ media_name }}{% endfor %}  foi revisada e já está disponível no site Cifonauta.
-{% else %}
-As seguintes mídias foram revisadas e já estão disponíveis no site do Cifonauta:
-{% for media_name in media_names %}
-  - {{ media_name }}
-{% endfor %}
-{% endif %}
-O curador responsável pela edição foi o(a): {{ sender_name }}.

@@ -378,7 +378,7 @@ p {
 }
 
 .filter-aside .select2-container {
-    width: 14rem;
+    width: 14rem !important;
 }
 
 .dashboard-filter-form > input[type='submit'] {

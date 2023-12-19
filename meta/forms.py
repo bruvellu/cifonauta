@@ -7,6 +7,8 @@ from .models import Media, Curadoria, ModifiedMedia, Person, Taxon, Tour
 from user.models import UserCifonauta
 from django.template import loader 
 from django.core.mail import EmailMultiAlternatives
+from django.db.models.query import QuerySet
+from django.db import models
 
 
 METAS = (
@@ -53,7 +55,65 @@ OPERATORS = (
         ('and', _('E')),
         )
 
-class UploadMediaForm(forms.ModelForm):
+
+class SendEmailForm(forms.Form):
+    def send_mail(
+            self,
+            sender,
+            receivers,
+            medias,
+            subject_template_name,
+            email_template_name,
+            modification_accepted=False,
+            modified_media_specialists_message=False,
+            from_email=None,
+            html_email_template_name=None,
+        ):
+            # TODO: Improve it
+            if isinstance(receivers, models.Model):
+                receivers = [receivers]
+            elif isinstance(receivers, QuerySet):
+                receivers = list(receivers)
+            elif isinstance(receivers, (list, set)):
+                receivers = list(receivers)
+            else:
+                print('Não foi possível converter receivers')
+                return
+
+            if isinstance(medias, models.Model):
+                medias = [medias]
+            elif isinstance(medias, QuerySet):
+                medias = list(medias)
+            elif isinstance(medias, (list, set)):
+                medias = list(medias)
+            else:
+                print('Não foi possível converter medias')
+                return
+
+            email = [receiver.email for receiver in receivers]
+
+            context = {
+                "single_media": True if len(medias) == 1 else False,
+                "media_names": [media.title_pt_br for media in medias],
+                "sender_name": sender.get_full_name(),
+                "timestamp": medias[0].date_modified,
+                "modified_media": medias[0].modified_media.first(),
+                "modification_accepted": modification_accepted,
+                "modified_media_specialists_message": modified_media_specialists_message
+            }
+
+            subject = subject_template_name
+            # Email subject must not contain newlines
+            subject = "".join(subject.splitlines())
+            body = loader.render_to_string(email_template_name, context)
+
+            email_message = EmailMultiAlternatives(subject, body, from_email, email)
+            if html_email_template_name is not None:
+                html_email = loader.render_to_string(html_email_template_name, context)
+                email_message.attach_alternative(html_email, "text/html")
+            email_message.send()
+
+class UploadMediaForm(forms.ModelForm,  SendEmailForm):
     class Meta:
         model = Media
         fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license', 'terms')
@@ -154,39 +214,6 @@ class UpdateMyMediaForm(forms.ModelForm):
             taxa = Taxon.objects.filter(name='Sem táxon')
 
         return taxa
-        
-
-class SendEmailForm(forms.Form):
-    def send_mail(
-            self,
-            sender,
-            medias,
-            subject_template_name,
-            email_template_name,
-            from_email=None,
-            html_email_template_name=None,
-        ):
-            receiver = UserCifonauta.objects.filter(id=medias[0].user.id).first()
-
-            email = receiver.email
-
-            context = {
-                "single_media": True if len(medias) == 1 else False,
-                "media_names": [media.title for media in medias],
-                "sender_name": sender.get_full_name(),
-                "timestamp": medias[0].date_modified,
-            }
-
-            subject = subject_template_name
-            # Email subject must not contain newlines
-            subject = "".join(subject.splitlines())
-            body = loader.render_to_string(email_template_name, context)
-
-            email_message = EmailMultiAlternatives(subject, body, from_email, [email])
-            if html_email_template_name is not None:
-                html_email = loader.render_to_string(html_email_template_name, context)
-                email_message.attach_alternative(html_email, "text/html")
-            email_message.send()
 
 class EditMetadataForm(forms.ModelForm, SendEmailForm):
     class Meta:
@@ -223,7 +250,7 @@ class CoauthorRegistrationForm(forms.ModelForm):
         model = Person
         fields = ('name',)
 
-class ModifiedMediaForm(forms.ModelForm):
+class ModifiedMediaForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = ModifiedMedia
         fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'tags', 'scale', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
@@ -280,7 +307,6 @@ class TourForm(forms.ModelForm):
         
         self.fields['media'].label_from_instance = lambda obj: obj.title
 
-
 class SpecialistActionForm(forms.ModelForm, SendEmailForm):
     STATUS_CHOICES = [
         ('maintain', _('Manter status')),
@@ -331,6 +357,14 @@ class DashboardFilterForm(forms.Form):
         widget=forms.SelectMultiple(attrs={"class": "select2-curations", "multiple": "multiple"}),
         label=_('Curadorias')
     )
+
+    status = forms.MultipleChoiceField(
+        required=False,
+        label=_('Status'),
+        choices=Media.STATUS_CHOICES[1:],
+        widget=forms.SelectMultiple(attrs={"class": "select2-status", "multiple": "multiple"})
+    )
+
     alphabetical_order = forms.BooleanField(required=False,
                                    initial=False,
                                    label=_('Ordem alfabética'),

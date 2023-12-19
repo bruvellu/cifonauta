@@ -185,14 +185,9 @@ def curations_media_required(view_func):
         for curation in curations:
             curations_taxons.update(curation.taxons.all())
 
-        queryset = None
-        user_person = Person.objects.filter(user_cifonauta=user.id).first()
-        
-        queryset = Media.objects.filter(Q(specialists=user_person) | Q(curators=user_person))
+        curator_queryset_ids = Media.objects.filter(Q(taxa__in=curations_as_curator_taxons)).values_list('id', flat=True)
 
-        curator_queryset_ids = queryset.filter(Q(curators=user_person) & Q(taxa__in=curations_as_curator_taxons)).values_list('id', flat=True)
-
-        specialist_queryset_ids = queryset.filter(Q(specialists=user_person) & Q(taxa__in=curations_as_specialist_taxons)) .values_list('id', flat=True)   
+        specialist_queryset_ids = Media.objects.filter(Q(taxa__in=curations_as_specialist_taxons)) .values_list('id', flat=True)   
 
         queryset_ids = (curator_queryset_ids | specialist_queryset_ids).distinct()
         

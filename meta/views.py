@@ -425,12 +425,11 @@ def editing_media_list(request):
 
                     if form.cleaned_data['taxa_action'] != 'maintain':
                         for media in medias:
-                            if form.cleaned_data['taxa_action']:
+                            if form.cleaned_data['taxa']:
                                 media.taxa.exclude(name='Sem táxon')
+                                media.taxa.set(form.cleaned_data['taxa'])
                             else:
-                                media.taxa = Taxon.objects.filter(name='Sem táxon')
-
-                            media.taxa.set(form.cleaned_data['taxa'])
+                                media.taxa.set(Taxon.objects.filter(name='Sem táxon'))
 
                     specialist_person = Person.objects.filter(user_cifonauta=request.user.id).first()
                     
@@ -684,12 +683,11 @@ def my_media_list(request):
                     
                     if form.cleaned_data['taxa_action'] != 'maintain':
                         for media in medias:
-                            if form.cleaned_data['taxa_action']:
+                            if form.cleaned_data['taxa']:
                                 media.taxa.exclude(name='Sem táxon')
+                                media.taxa.set(form.cleaned_data['taxa'])
                             else:
-                                media.taxa = Taxon.objects.filter(name='Sem táxon')
-
-                            media.taxa.set(form.cleaned_data['taxa'])
+                                media.taxa.set(Taxon.objects.filter(name='Sem táxon'))
 
                     medias.update(status='draft')
                     
@@ -879,12 +877,11 @@ def revision_media_list(request):
                         
                     if form.cleaned_data['taxa_action'] != 'maintain':
                         for media in medias:
-                            if form.cleaned_data['taxa_action']:
+                            if form.cleaned_data['taxa']:
                                 media.taxa.exclude(name='Sem táxon')
+                                media.taxa.set(form.cleaned_data['taxa'])
                             else:
-                                media.taxa = Taxon.objects.filter(name='Sem táxon')
-
-                            media.taxa.set(form.cleaned_data['taxa'])
+                                media.taxa.set(Taxon.objects.filter(name='Sem táxon'))
                     
                     curator_person = Person.objects.filter(user_cifonauta=request.user.id).first()
 
@@ -998,6 +995,8 @@ def revision_modified_media(request, media_id):
         if form.is_valid():
             form = ModifiedMediaForm(request.POST, instance=media, author_form=True) if modified_media.altered_by_author else ModifiedMediaForm(request.POST, instance=media)
             form.save()
+
+            media.specialists.add(modified_media.specialist_person)
 
             form.send_mail(request.user, media.user, media, 'Alteração de mídia no Cifonauta', 'email_modified_media.html', modification_accepted=True)
 
@@ -1153,14 +1152,9 @@ def my_curations_media_list(request):
     for curation in curations:
         curations_taxons.update(curation.taxons.all())
 
-    queryset = None
-    user_person = Person.objects.filter(user_cifonauta=user.id).first()
-    
-    queryset = Media.objects.filter(Q(specialists=user_person) | Q(curators=user_person))
+    curator_queryset = Media.objects.filter(Q(taxa__in=curations_as_curator_taxons))
 
-    curator_queryset = queryset.filter(Q(curators=user_person) & Q(taxa__in=curations_as_curator_taxons))
-
-    specialist_queryset = queryset.filter(Q(specialists=user_person) & Q(taxa__in=curations_as_specialist_taxons))    
+    specialist_queryset = Media.objects.filter(Q(taxa__in=curations_as_specialist_taxons))    
 
     queryset = (curator_queryset | specialist_queryset).distinct()
     filtered_queryset = queryset
@@ -1180,9 +1174,31 @@ def my_curations_media_list(request):
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
                     
+                    for media in medias:
+                        if media.status != 'published':
+                            messages.error(request, 'Não é possível realizar ação em lotes de mídias não publicadas')
+                            return redirect('my_curations_media_list')
+                        
+                        is_media_curator = False
+                        for taxa in media.taxa.all():
+                            if taxa in curations_as_curator_taxons:
+                                is_media_curator = True
+                                break
+                        
+                        if not is_media_curator:
+                            messages.error(request, 'Não é possível realizar ação em lotes de mídias que você não é curador')
+                            return redirect('my_curations_media_list')
+
+                    curator_person = Person.objects.filter(user_cifonauta=request.user.id).first()
                     if form.cleaned_data['taxa_action'] != 'maintain':
                         for media in medias:
-                            media.taxa.set(form.cleaned_data['taxa'])
+                            if form.cleaned_data['taxa']:
+                                media.taxa.exclude(name='Sem táxon')
+                                media.taxa.set(form.cleaned_data['taxa'])
+                            else:
+                                media.taxa.set(Taxon.objects.filter(name='Sem táxon'))
+
+                            media.curators.add(curator_person)
                     
                     messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
                 else:
@@ -1252,9 +1268,14 @@ def my_curations_media_details(request, media_id):
     modified_media = ModifiedMedia.objects.filter(media=media).first()
     user_person = Person.objects.filter(user_cifonauta=request.user.id).first()
 
-    is_only_media_specialist = False
-    if user_person in media.specialists.all() and not user_person in media.curators.all():
-        is_only_media_specialist = True
+    curations = Curadoria.objects.filter(taxons__in=media.taxa.all()).distinct()
+    curations_as_curator = request.user.curatorship_curator.all()
+
+    is_only_media_specialist = True
+    for curation in curations_as_curator:
+        if curation in curations:
+            is_only_media_specialist = False
+            break
 
     if request.method == 'POST':
         action = request.POST.get('action', None)
@@ -1301,6 +1322,7 @@ def my_curations_media_details(request, media_id):
                 messages.warning(request, 'As alterações serão avaliadas e podem ou não serem aceitas')
             else:
                 form.save()
+                media.curators.add(user_person)
                 messages.success(request, f'A mídia ({media.title}) foi alterada com sucesso')
             
             return redirect('my_curations_media_details', media.id)

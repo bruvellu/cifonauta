@@ -385,6 +385,41 @@ def editing_media_details(request, media_id):
     return render(request, 'editing_media_details.html', context) 
 
 
+def filter_medias(queryset, query_dict, curations=''):
+    filtered_queryset = queryset
+
+    search_value = query_dict.get('search', None)
+    if 'search' in query_dict and search_value != '':
+        filtered_queryset = filtered_queryset.filter(title__icontains=search_value)
+    
+
+    curation_ids = query_dict.getlist('curations', None)
+    if curation_ids:
+        if curations:
+            filtered_curations = curations.filter(id__in=curation_ids).distinct()
+        else:
+            filtered_curations = Curadoria.objects.filter(id__in=curation_ids).distinct()
+
+        taxons = set()
+        for curation in filtered_curations:
+            taxons.update(curation.taxons.all())
+
+        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
+
+
+    status = query_dict.getlist('status', None)
+    if status:
+        filtered_queryset = filtered_queryset.filter(status__in=status)
+
+
+    alphabetical_order = query_dict.get('alphabetical_order', None)
+    if alphabetical_order:
+        filtered_queryset = filtered_queryset.order_by('title')
+
+    print(query_dict)
+    return filtered_queryset
+
+
 @never_cache
 @specialist_required
 def editing_media_list(request):
@@ -464,39 +499,10 @@ def editing_media_list(request):
             else:
                 messages.warning(request, _('Nenhum registro foi selecionado'))
 
-    filtered_queryset = queryset
-
-    search = request.GET.get('search')
-    if search:
-        filtered_queryset = filtered_queryset.filter(title__icontains=search)
+    query_dict = request.GET.copy()
+    filtered_queryset = filter_medias(queryset, query_dict, curations)
     
-
-    curation_ids = request.GET.getlist('curations')
-    if curation_ids:
-        filtered_curations = curations.filter(id__in=curation_ids).distinct()
-
-        taxons = set()
-        for curation in filtered_curations:
-            taxons.update(curation.taxons.all())
-
-        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
-    
-
-    status = request.GET.get('status')
-    if status:
-        filtered_queryset = filtered_queryset.filter(status=status)
-
-
-    alphabetical_order = request.GET.get('alphabetical_order')
-    if alphabetical_order:
-        filtered_queryset = filtered_queryset.order_by('title')
-    
-    filter_form = DashboardFilterForm({
-        'search': search,
-        'curations': curation_ids,
-        'alphabetical_order': alphabetical_order,
-        'status': status,
-    }, user_curations=curations)
+    filter_form = DashboardFilterForm(query_dict, user_curations=curations)
     
 
     queryset_paginator = Paginator(filtered_queryset, records_number)
@@ -697,39 +703,10 @@ def my_media_list(request):
             else:
                 messages.warning(request, _('Nenhum registro foi selecionado'))
 
-    filtered_queryset = queryset
-
-    search = request.GET.get('search')
-    if search:
-        filtered_queryset = filtered_queryset.filter(title__icontains=search)
+    query_dict = request.GET.copy()
+    filtered_queryset = filter_medias(queryset, query_dict)
     
-
-    curation_ids = request.GET.getlist('curations')
-    if curation_ids:
-        filtered_curations = Curadoria.objects.filter(id__in=curation_ids)
-
-        taxons = set()
-        for curation in filtered_curations:
-            taxons.update(curation.taxons.all())
-
-        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
-
-
-    status = request.GET.get('status')
-    if status:
-        filtered_queryset = filtered_queryset.filter(status=status)
-
-
-    alphabetical_order = request.GET.get('alphabetical_order')
-    if alphabetical_order:
-        filtered_queryset = filtered_queryset.order_by('title')
-    
-    filter_form = DashboardFilterForm({
-        'search': search,
-        'curations': curation_ids,
-        'alphabetical_order': alphabetical_order,
-        'status': status,
-    })
+    filter_form = DashboardFilterForm(query_dict)
 
     user = request.user
     queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
@@ -909,40 +886,11 @@ def revision_media_list(request):
                     messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
             else:
                 messages.warning(request, _('Nenhum registro foi selecionado'))
+
+    query_dict = request.GET.copy()
+    filtered_queryset = filter_medias(queryset, query_dict, curations)
     
-    filtered_queryset = queryset
-
-    search = request.GET.get('search')
-    if search:
-        filtered_queryset = filtered_queryset.filter(title__icontains=search)
-    
-
-    curation_ids = request.GET.getlist('curations')
-    if curation_ids:
-        filtered_curations = curations.filter(id__in=curation_ids)
-
-        taxons = set()
-        for curation in filtered_curations:
-            taxons.update(curation.taxons.all())
-
-        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
-    
-
-    status = request.GET.get('status')
-    if status:
-        filtered_queryset = filtered_queryset.filter(status=status)
-
-
-    alphabetical_order = request.GET.get('alphabetical_order')
-    if alphabetical_order:
-        filtered_queryset = filtered_queryset.order_by('title')
-    
-    filter_form = DashboardFilterForm({
-        'search': search,
-        'curations': curation_ids,
-        'alphabetical_order': alphabetical_order,
-        'status': status,
-    }, user_curations=curations)
+    filter_form = DashboardFilterForm(query_dict, user_curations=curations)
     
     queryset_paginator = Paginator(filtered_queryset, records_number)
     page_num = request.GET.get('page')
@@ -1206,39 +1154,10 @@ def my_curations_media_list(request):
             else:
                 messages.warning(request, _('Nenhum registro foi selecionado'))
     
-    filtered_queryset = queryset
-
-    search = request.GET.get('search')
-    if search:
-        filtered_queryset = filtered_queryset.filter(title__icontains=search)
+    query_dict = request.GET.copy()
+    filtered_queryset = filter_medias(queryset, query_dict, curations)
     
-
-    curation_ids = request.GET.getlist('curations')
-    if curation_ids:
-        filtered_curations = curations.filter(id__in=curation_ids)
-
-        taxons = set()
-        for curation in filtered_curations:
-            taxons.update(curation.taxons.all())
-
-        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
-    
-
-    status = request.GET.get('status')
-    if status:
-        filtered_queryset = filtered_queryset.filter(status=status)
-
-
-    alphabetical_order = request.GET.get('alphabetical_order')
-    if alphabetical_order:
-        filtered_queryset = filtered_queryset.order_by('title')
-    
-    filter_form = DashboardFilterForm({
-        'search': search,
-        'curations': curation_ids,
-        'alphabetical_order': alphabetical_order,
-        'status': status,
-    }, user_curations=curations)
+    filter_form = DashboardFilterForm(query_dict, user_curations=curations)
 
 
     queryset_paginator = Paginator(filtered_queryset, records_number)

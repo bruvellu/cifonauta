@@ -15,7 +15,7 @@ from datetime import datetime
 from django.utils import timezone
 from shutil import copy2, move
 from PIL import Image
-import piexiv2
+import pyexiv2
 from iptcinfo3 import IPTCInfo
 """
 The "python-xmp-toolkit" library can cause problems if the "Exempi" tool cannot be found.
@@ -419,8 +419,130 @@ def fix_filename(root, filename):
     return filepath
 
 class Metadata():
-
     
+    CONSTANTES = {
+        'headline': {
+            'iptc': 'Iptc.Application2.Headline'
+        },
+        'instructions': {
+            'iptc': 'Iptc.Application2.SpecialInstructions',
+        },
+        'source': {
+            'iptc': 'Iptc.Application2.Source',
+            'xmp': 'Xmp.photoshop.Source'
+        },
+        'credit': {
+            'iptc': 'Iptc.Application2.Credit',
+            'xmp': 'Xmp.photoshop.Credit'
+        },
+        'license': {
+            'xmp': {
+                'name': 'Xmp.cc.AttributionName',
+                'url': 'Xmp.cc.AttributionURL',
+                'license': 'Xmp.cc.License'
+            }
+        },
+        'keywords': {
+            'iptc': 'Iptc.Application2.Keywords'
+        },
+        'description_pt': {
+            'exif': 'Exif.Image.ImageDescription',
+            'xmp': 'Xmp.dc.Description-pt'
+        },
+        'description_en': {
+            'xmp': 'Xmp.dc.Description-en'
+        },
+        'title_pt': {
+            'xmp': 'Xmp.dc.Title-pt'
+        },
+        'title_en': {
+            'xmp': 'Xmp.dc.Title-en'
+        },
+        'gps': {
+            'exif': {
+                'latitude_ref': 'Exif.GPSInfo.GPSLatitudeRef', 
+                'latitude': 'Exif.GPSInfo.GPSLatitude',
+                'longitude_ref': 'Exif.GPSInfo.GPSLongitudeRef',
+                'longitude': 'Exif.GPSInfo.GPSLongitude'
+                }
+        },
+        'datetime': {
+            'exif': 'Exif.Image.DateTime'
+        },
+        'country': {
+            'iptc': 'Iptc.Application2.CountryName'
+        },
+        'state': {
+            'iptc': 'Iptc.Application2.ProvinceState'
+        },
+        'city': {
+            'iptc': 'Iptc.Application2.City'
+        },
+        'sublocation': {
+            'iptc': 'Iptc.Application2.SubLocation'
+        },
+        'software': {
+            'exif': 'Exif.Image.Software'
+        },
+    }
+
+    def __init__(self, file):
+        self.media = pyexiv2.ImageMetadata(file)
+        self.media.read()
+
+    def insert_xmp(self, key, value):
+        tag = self.CONSTANTES[key]['xmp']
+        self.media[tag] = pyexiv2.XmpTag(tag, value)
+    
+    def insert_exif(self, key, value):
+        tag = self.CONSTANTES[key]['exif']
+        self.media[tag] = value
+    
+    def insert_iptc(self, key, value:list):
+        tag = self.CONSTANTES[key]['iptc']
+        self.media[tag] = value
+    
+    def insert_metadata(self, metadata:dict):
+        metadata_keys = metadata.keys()
+
+        self.insert_exif('software', 'Cifonauta - CEBIMar/USP')
+
+        if 'headline' in metadata_keys:
+            self.insert_iptc('headline', [metadata['headline']])
+
+        if 'instructions' in metadata_keys:
+            self.insert_iptc('instructions', [metadata['instructions']])
+        
+        if 'source' in metadata_keys:
+            self.insert_iptc('source', [metadata['source']])
+            self.insert_xmp('source', metadata['source'])
+
+        if 'credit' in metadata_keys:
+            self.insert_iptc('credit', [metadata['credit']])
+            self.insert_xmp('credit', metadata['credit'])
+
+        if 'license' in metadata_keys:
+            pass
+
+        if 'keywords' in metadata_keys:
+            self.insert_iptc('keywords', metadata['keywords'])
+
+        if 'description_pt' in metadata_keys:
+            self.insert_exif('description_pt', metadata['description_pt'])
+            self.insert_xmp('description_pt', metadata['description_pt'])
+
+        if 'description_en' in metadata_keys:
+            self.insert_xmp('description_en', metadata['description_en'])
+
+        if 'title_pt' in metadata_keys:
+            self.insert_xmp('title_pt', metadata['title_pt'])
+
+        if 'title_en' in metadata_keys:
+            self.insert_xmp('title_en', metadata['title_en'])
+        
+        self.media.write()
+
+
     
 def number_of_entries_per_page(request, session_name, value=None):
     if value and int(value) > 0:
@@ -437,3 +559,18 @@ def validate_specialist_action_form(request, medias):
             return ['Título [pt-br]', 'Este campo é obrigatório.']
         if not media.title_en:
             return ['Título [en]', 'Este campo é obrigatório.']
+        
+if __name__ == '__main__':
+    meta = Metadata(r"/home/joao/Documentos/projetos/cifona_vi/cifonauta/Sem título.jpeg")
+    metadata = {
+        'title_pt': 'Rapadura',
+        'description_pt': 'É doce, mas não é mole',
+        'title_en': 'Hipedure',
+        'description_en': 'It is sweet, but it is not soft',
+        'headline': 'Animalia',
+        'instructions': '10mm',
+        'source': 'Barbie',
+        'credit': 'Vozes da minha cabeça e datafodase',
+        'keywords': ['Caldo de cana', 'Odeio django', 'Amendoim', 'Paçoca']
+        }
+    meta.insert_metadata(metadata)

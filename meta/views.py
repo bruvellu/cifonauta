@@ -256,14 +256,22 @@ def upload_media_step2(request):
                 datetime = read_metadata['datetime']
             else:
                 datetime = '1900:01:01'
+
+            if not read_metadata['gps']:
+                latitude = ''
+                longitude = ''
+            else:
+                latitude = read_metadata['gps']['latitude']
+                longitude = read_metadata['gps']['longitude']
+
             form = UploadMediaForm(initial={
                 'authors': authors,
                 'title_pt_br': read_metadata['title_pt'],
                 'title_en': read_metadata['title_en'],
                 'caption_pt_br': read_metadata['description_pt'],
                 'caption_en': read_metadata['description_en'],
-                'latitude': read_metadata['gps']['latitude'],
-                'longitude': read_metadata['gps']['longitude'],
+                'latitude': latitude,
+                'longitude': longitude,
             })
 
     form.fields['state'].queryset = State.objects.none()

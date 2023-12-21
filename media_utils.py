@@ -495,6 +495,7 @@ class Metadata():
     def __init__(self, file):
         self.file = file
         
+    #TODO: Confusing to use media here, it's only the metadata
     def read_media(self):
         self.media = pyexiv2.ImageMetadata(self.file)
         self.media.read()
@@ -732,3 +733,4 @@ def validate_specialist_action_form(request, medias):
             return ['Título [pt-br]', 'Este campo é obrigatório.']
         if not media.title_en:
             return ['Título [en]', 'Este campo é obrigatório.']
+

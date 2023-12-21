@@ -735,21 +735,3 @@ def validate_specialist_action_form(request, medias):
             return ['Título [pt-br]', 'Este campo é obrigatório.']
         if not media.title_en:
             return ['Título [en]', 'Este campo é obrigatório.']
-        
-if __name__ == '__main__':
-    meta = Metadata(r"/home/joao/Documentos/projetos/cifona_vi/cifonauta/site_media/aem_0TOzDI.jpg")
-    metadata = {
-        'title_pt': 'Rapadura',
-        'description_pt': 'É doce, mas não é mole',
-        'title_en': 'Hipedure',
-        'description_en': 'It is sweet, but it is not soft',
-        'headline': 'Animalia',
-        'instructions': 'tiny',
-        'source': 'Barbie',
-        'credit': 'Vozes da minha cabeça e datafodase',
-        'keywords': ['Caldo de cana', 'Odeio django', 'Amendoim', 'Paçoca'],
-        'gps': "S 23°48\u005c'45\u0022 W 45°24\u005c'27\u0022",
-        'license': 'cc0',
-        'authors': 'João, Vitória'
-        }
-    print(meta.read_metadata())

@@ -20,6 +20,8 @@ from media_utils import Metadata, number_of_entries_per_page, validate_specialis
 from operator import or_, and_
 from PIL import Image
 
+import datetime as date
+
 from .models import *
 from .forms import *
 
@@ -212,7 +214,7 @@ def upload_media_step2(request):
                         specialists_user.add(specialist)
                 
                 form.send_mail(request.user, specialists_user, medias, 'Nova mídia para edição no Cifonauta', 'email_media_to_editing_specialists.html')
-
+                print(form.cleaned_data['date_created'])
                 messages.success(request, 'Suas mídias foram salvas com sucesso')
                 return redirect('my_media_list')
 
@@ -239,36 +241,26 @@ def upload_media_step2(request):
         
         if metadata:
             print(read_metadata)
-            co_authors = []
-            co_authors_meta = read_metadata['source'].split(',')
-            for co_author in co_authors_meta:
-                if co_author.strip() != '':
+            authors = []
+            authors_meta = read_metadata['authors'].split(',')
+            for author in authors_meta:
+                if author.strip() != '':
                     try:
-                        co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
+                        authors.append(Person.objects.filter(name=author.strip()).get().id)
                     except:
-                        messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
-            try:
-                location = Location.objects.filter(name=read_metadata['sublocation'].strip()).get().id
-            except:
-                location = ''
-            try:
-                country = Country.objects.filter(name=read_metadata['country'].strip()).get().id
-            except:
-                country = ''
+                        messages.error(request, f'O Co-Autor {author.strip()} não está cadastrado.')
+            if user_person.id not in authors:
+                authors.append(user_person.id)
+        
             if read_metadata['datetime'] != '':
                 datetime = read_metadata['datetime']
             else:
-                datetime = '1900:01:01 00:00:00'
+                datetime = '1900:01:01'
             form = UploadMediaForm(initial={
-                'authors': user_person.id,
-                'title': read_metadata['headline'],
-                'caption': read_metadata['description_pt'],
-                'date': datetime,
-                'country': country,
-                'geolocation': read_metadata['gps'],
+                'authors': authors,
+                'title_pt_br': read_metadata['title_pt'],
+                'caption_pt_br': read_metadata['description_pt'],
                 'location': location,
-                # 'license': read_metadata['source'],
-                'co_author': co_authors,
                 'geolocation': read_metadata['gps']
             })
 
@@ -350,11 +342,13 @@ def editing_media_details(request, media_id):
 
                 form.send_mail(request.user, curators_user, media, 'Fluxo da mídia no Cifonauta', 'email_media_to_revision_curators.html')
 
+            media_instance.update_metadata()
             if action == 'submit':
                 messages.success(request, f'A mídia ({media.title}) foi enviada para revisão com sucesso')
             else:
                 messages.success(request, f'A mídia ({media.title}) foi salva com sucesso')
                 messages.warning(request, f'Você ainda não a enviou para revisão')
+
 
             return redirect('editing_media_list')
         else:

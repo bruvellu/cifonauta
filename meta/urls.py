@@ -25,6 +25,8 @@ urlpatterns = [
         path('dashboard/medias/', views.my_media_list, name='my_media_list'),
         path('dashboard/medias/<int:pk>/', views.my_media_details, name='my_media_details'),
 
+        path('download_media/<int:media_id>/', views.download_media, name='download_media'),
+
         path('synchronize-fields', views.synchronize_fields, name='synchronize_fields'),
         path('get-tour-medias', views.get_tour_medias, name='get_tour_medias'),
 

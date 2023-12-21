@@ -6,7 +6,7 @@ import os
 import re
 import json
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q, F
 from django.db.models.functions import Lower
@@ -19,6 +19,8 @@ from functools import reduce
 from media_utils import Metadata, number_of_entries_per_page, validate_specialist_action_form
 from operator import or_, and_
 from PIL import Image
+
+import datetime as date
 
 from .models import *
 from .forms import *
@@ -212,7 +214,7 @@ def upload_media_step2(request):
                         specialists_user.add(specialist)
                 
                 form.send_mail(request.user, specialists_user, medias, 'Nova mídia para edição no Cifonauta', 'email_media_to_editing_specialists.html')
-
+                print(form.cleaned_data['date_created'])
                 messages.success(request, 'Suas mídias foram salvas com sucesso')
                 return redirect('my_media_list')
 
@@ -239,37 +241,29 @@ def upload_media_step2(request):
         
         if metadata:
             print(read_metadata)
-            co_authors = []
-            co_authors_meta = read_metadata['source'].split(',')
-            for co_author in co_authors_meta:
-                if co_author.strip() != '':
+            authors = []
+            authors_meta = read_metadata['authors'].split(',')
+            for author in authors_meta:
+                if author.strip() != '':
                     try:
-                        co_authors.append(Person.objects.filter(name=co_author.strip()).get().id)
+                        authors.append(Person.objects.filter(name=author.strip()).get().id)
                     except:
-                        messages.error(request, f'O Co-Autor {co_author.strip()} não está cadastrado.')
-            try:
-                location = Location.objects.filter(name=read_metadata['sublocation'].strip()).get().id
-            except:
-                location = ''
-            try:
-                country = Country.objects.filter(name=read_metadata['country'].strip()).get().id
-            except:
-                country = ''
+                        messages.error(request, f'O Co-Autor {author.strip()} não está cadastrado.')
+            if user_person.id not in authors:
+                authors.append(user_person.id)
+        
             if read_metadata['datetime'] != '':
                 datetime = read_metadata['datetime']
             else:
-                datetime = '1900:01:01 00:00:00'
+                datetime = '1900:01:01'
             form = UploadMediaForm(initial={
-                'authors': user_person.id,
-                'title': read_metadata['headline'],
-                'caption': read_metadata['description_pt'],
-                'date': datetime,
-                'country': country,
-                'geolocation': read_metadata['gps'],
-                'location': location,
-                # 'license': read_metadata['source'],
-                'co_author': co_authors,
-                'geolocation': read_metadata['gps']
+                'authors': authors,
+                'title_pt_br': read_metadata['title_pt'],
+                'title_en': read_metadata['title_en'],
+                'caption_pt_br': read_metadata['description_pt'],
+                'caption_en': read_metadata['description_en'],
+                'latitude': read_metadata['gps']['latitude'],
+                'longitude': read_metadata['gps']['longitude'],
             })
 
     form.fields['state'].queryset = State.objects.none()
@@ -355,6 +349,7 @@ def editing_media_details(request, media_id):
             else:
                 messages.success(request, f'A mídia ({media.title}) foi salva com sucesso')
                 messages.warning(request, f'Você ainda não a enviou para revisão')
+
 
             return redirect('editing_media_list')
         else:
@@ -1035,44 +1030,7 @@ def revision_media_details(request, media_id):
         
         if form.is_valid():
             media_instance = form.save()
-            try:
-                author = str(form.cleaned_data['author'])
-                co_authors = str(form.cleaned_data['co_author']).split(';')
-                metadata =  {
-                'software': str(form.cleaned_data['software']),
-                'headline': str(form.cleaned_data['title']),
-                'instructions': str(form.cleaned_data['size']),
-                'license': {
-                    'license_type': str(form.cleaned_data['license']),
-                    'author': author,
-                    'co_authors': co_authors,
-                    },
-                'keywords': {
-                    'Estágio de vida': str(form.cleaned_data['life_stage']),
-                    'Habitat': str(form.cleaned_data['habitat']),
-                    'Microscopia': str(form.cleaned_data['microscopy']),
-                    'Modo de vida': str(form.cleaned_data['life_style']),
-                    'Técnica fotográfica': str(form.cleaned_data['photographic_technique']),
-                    'Diversos': str(form.cleaned_data['several'])
-                },
-                'source': str(form.cleaned_data['specialist']),
-                'credit': str(form.cleaned_data['credit']),
-                'description_pt': str(form.cleaned_data['caption']),
-                'description_en': '',
-                'gps': str(form.cleaned_data['geolocation']),
-                'datetime': str(form.cleaned_data['date_created']),
-                'title_pt': str(form.cleaned_data['title']),
-                'title_en': '',
-                'country': str(form.cleaned_data['country']),
-                'state': str(form.cleaned_data['state']),
-                'city': str(form.cleaned_data['city']),
-                'sublocation': str(form.cleaned_data['location'])
-                    }
-                if media.datatype == 'photo':
-                    Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
-            except:
-                pass
-            
+
             action = request.POST.get('action')
             if action == 'publish':
                 media_instance.status = 'published'
@@ -1093,6 +1051,7 @@ def revision_media_details(request, media_id):
                 form.send_mail(request.user, specialists_user, media, 'Fluxo da mídia no Cifonauta', 'email_published_media_specialists.html')
 
             if action == 'publish':
+                media_instance.update_metadata()
                 messages.success(request, f'A mídia ({media.title}) foi publicada com sucesso')
             else:
                 messages.success(request, f'A mídia ({media.title}) foi salva com sucesso')
@@ -1365,6 +1324,12 @@ def my_curations_media_details(request, media_id):
     }
 
     return render(request, 'my_curations_media_details.html', context) 
+
+@never_cache
+def download_media(request, media_id):
+    media = get_object_or_404(Media, id=media_id)
+    media_file = media.file
+    return FileResponse(open(f'site_media/{media_file}', 'rb'), as_attachment=True, filename=f'{media.title}.jpg')
 
 @never_cache
 @curator_required

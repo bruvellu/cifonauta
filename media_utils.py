@@ -15,6 +15,7 @@ from datetime import datetime
 from django.utils import timezone
 from shutil import copy2, move
 from PIL import Image
+import pyexiv2
 import piexif
 from iptcinfo3 import IPTCInfo
 """
@@ -419,79 +420,152 @@ def fix_filename(root, filename):
     return filepath
 
 class Metadata():
+    
+    CONSTANTES = {
+        'headline': {
+            'iptc': 'Iptc.Application2.Headline'
+        },
+        'instructions': {
+            'iptc': 'Iptc.Application2.SpecialInstructions',
+        },
+        'source': {
+            'iptc': 'Iptc.Application2.Source',
+            'xmp': 'Xmp.photoshop.Source'
+        },
+        'credit': {
+            'iptc': 'Iptc.Application2.Credit',
+            'xmp': 'Xmp.photoshop.Credit'
+        },
+        'license': {
+            'xmp': {
+                'name': 'Xmp.cc.AttributionName',
+                'url': 'Xmp.cc.AttributionURL',
+                'text': 'Xmp.cc.License'
+            }
+        },
+        'keywords': {
+            'iptc': 'Iptc.Application2.Keywords'
+        },
+        'description_pt': {
+            'exif': 'Exif.Image.ImageDescription',
+            'xmp': 'Xmp.dc.Description-pt-BR'
+        },
+        'description_en': {
+            'xmp': 'Xmp.dc.Description-en-US'
+        },
+        'title_pt': {
+            'xmp': 'Xmp.dc.Title-pt-BR',
+            'iptc': 'Iptc.Application2.ObjectName'
+        },
+        'title_en': {
+            'xmp': 'Xmp.dc.Title-en-US'
+        },
+        'datetime': {
+            'exif': 'Exif.Image.DateTime',
+            'iptc': 'Iptc.Application2.ReleaseDate'
+        },
+        'country': {
+            'iptc': 'Iptc.Application2.CountryName'
+        },
+        'state': {
+            'iptc': 'Iptc.Application2.ProvinceState'
+        },
+        'city': {
+            'iptc': 'Iptc.Application2.City'
+        },
+        'sublocation': {
+            'iptc': 'Iptc.Application2.SubLocation'
+        },
+        'software': {
+            'exif': 'Exif.Image.Software'
+        },
+        'authors': {
+            'exif': 'Exif.Image.Artist'
+        },
+        'datetime_original': {
+            'exif': 'Exif.Image.DateTimeOriginal'
+        },
+        'created_date': {
+            'exif': 'Exif.Image.CreateDate',
+            'iptc': 'Iptc.Application2.DateCreated'
+        },
+
+    }
 
     def __init__(self, file):
-
         self.file = file
-
-    def _insert_metadata_exif(self, field, val):
-        image = Image.open(self.file)
-
-        #Software
-        try:
-            exif_dict = piexif.load(image.info['exif'])
-        except KeyError:
-            exif_dict = {'0th': {}, 'GPS': {}}
-            
-        finally:
-            if field == 'software':
-                exif_dict['0th'][piexif.ImageIFD.Software] = val
-            elif field == 'image_description':
-                exif_dict['0th'][piexif.ImageIFD.ImageDescription] = val
-            elif field == 'gps':
-                gps = {}
-                gps[1] = val[0].encode()
-                gps[2] = ((int(val[2:4]), 1), (int(val[5:7]), 1), (int(val[8:10]), 1))
-                gps[3] = val[12].encode()
-                gps[4] = ((int(val[14:16]), 1), (int(val[17:19]), 1), (int(val[20:22]), 1))
-                exif_dict['GPS'] = gps
-            elif field == 'datetime':
-                exif_dict['0th'][piexif.ImageIFD.DateTime] = val
-            elif field == 'copyright':
-                exif_dict['0th'][piexif.ImageIFD.Copyright] = val
-            elif field == 'creators':
-                exif_dict['0th'][piexif.ImageIFD.Artist] = val
-            elif field == 'keywords':
-                exif_dict['0th'][piexif.ImageIFD.XPKeywords] = val
-            exif_dict.pop('thumbnail', None)
-            exif_bytes = piexif.dump(exif_dict)
-
-            #Saving EXIF
-            image.save(self.file, exif=exif_bytes)
-
-    def _insert_metadata_iptc(self, field, val=None, clear=False):
-
-        info = IPTCInfo(self.file, force=True)
-
-        info[field] = val
         
-        # Saving IPTC
-        info.save_as(self.file)
-        os.remove(f'{self.file}~')
+    def read_media(self):
+        self.media = pyexiv2.ImageMetadata(self.file)
+        self.media.read()
 
-
-    def _insert_metadata_xmp(self, field, val, license=False):
+    def insert_xmp(self, key, value):
+        if value != None:
+            tag = self.CONSTANTES[key]['xmp']
+            self.media[tag] = value
     
-        #XMP Config
+    def insert_xmp_license(self, key, value):
         try:
-            self.xmpfile = XMPFiles( file_path=self.file, open_forupdate=True)
-            xmp = self.xmpfile.get_xmp()
-            if license:
-                xmp.register_namespace('http://creativecommons.org/ns#', 'cc')
-                xmp.set_property(consts.XMP_NS_CC, field, val)
-            else:
-                xmp.set_property(consts.XMP_NS_DC, field, val)
-
-            #Saving metadata
-            if self.xmpfile.can_put_xmp(xmp):
-                self.xmpfile.put_xmp(xmp)
-            self.xmpfile.close_file()
-        except:
+            pyexiv2.xmp.register_namespace('http://creativecommons.org/ns/', 'cc')
+        except KeyError:
             pass
-
-    def edit_metadata(self, metadata:dict):
+        tag = self.CONSTANTES['license']['xmp'][key]
+        self.media[tag] = value
     
-        self._RIGHTS = {
+    def insert_exif(self, key, value):
+        if value != None:
+            tag = self.CONSTANTES[key]['exif']
+            self.media[tag] = value
+    
+    def insert_exif_gps(self, value):
+        if value != '':
+            gps = {}
+            gps[1] = value[0].encode()
+            gps[2] = ((int(value[2:4]), 1), (int(value[5:7]), 1), (int(value[9:11]), 1))
+            gps[3] = value[13].encode()
+            gps[4] = ((int(value[15:17]), 1), (int(value[18:20]), 1), (int(value[22:24]), 1))
+            exif_dict = {'GPS': gps}
+
+            exif_bytes = piexif.dump(exif_dict)
+            piexif.insert(exif_bytes, self.file)
+
+    
+    def insert_iptc(self, key, value:list):
+        if value != None:
+            tag = self.CONSTANTES[key]['iptc']
+            self.media[tag] = value
+    
+    def insert_metadata(self, metadata:dict):
+        metadata_keys = metadata.keys()
+
+        if 'gps' in metadata_keys:
+            gps = metadata['gps']
+            self.insert_exif_gps(gps)
+        
+        self.read_media()
+        self.insert_exif('software', 'Cifonauta - CEBIMar/USP')
+
+        if 'headline' in metadata_keys:
+            self.insert_iptc('headline', [metadata['headline']])
+
+        if 'instructions' in metadata_keys:
+            SCALE_CHOICES = {'micro': '<0,1 mm',
+                     'tiny': '0,1–1,0 mm',
+                     'visible': '1,0–10 mm',
+                     'large': '10–100 mm',
+                     'huge': '>100 mm'}
+            self.insert_iptc('instructions', [SCALE_CHOICES[metadata['instructions']]])
+        
+        if 'source' in metadata_keys:
+            self.insert_iptc('source', [metadata['source']])
+            self.insert_xmp('source', metadata['source'])
+
+        if 'credit' in metadata_keys:
+            self.insert_iptc('credit', [metadata['credit']])
+            self.insert_xmp('credit', metadata['credit'])
+
+        if 'license' in metadata_keys:
+            RIGHTS = {
             "cc0": {
                 "license_link": "https://creativecommons.org/publicdomain/zero/1.0/deed.pt_BR",
                 "license_name": "CC0",
@@ -528,165 +602,121 @@ class Metadata():
                 "license_text": "Você é livre para: compartilhar e editar. Devendo-se dar o devido crédito, fornecer um link para a licença e indicar se foram feitas alterações. Você pode fazê-lo de qualquer maneira razoável, mas não de forma que sugira que o licenciante endossa você ou seu uso, além de não poder usar o material para fins comerciais. Se você remixar, transformar ou desenvolver o material, deverá distribuir suas contribuições sob a mesma licença do original. Sem restrições adicionais, logo, não pode aplicar termos legais ou medidas tecnológicas que restrinjam legalmente outras pessoas de fazer qualquer coisa que a licença permita."
                 }
             }
+            license_name = RIGHTS[metadata['license']]['license_name']
+            license_link = RIGHTS[metadata['license']]['license_link']
+            license_text = RIGHTS[metadata['license']]['license_text']
+
+            self.insert_xmp_license('name', license_name)
+            self.insert_xmp_license('url', license_link)
+            self.insert_xmp_license('text', license_text)
+
+        if 'keywords' in metadata_keys:
+            self.insert_iptc('keywords', metadata['keywords'])
+
+        if 'description_pt' in metadata_keys:
+            self.insert_exif('description_pt', metadata['description_pt'])
+            self.insert_xmp('description_pt', metadata['description_pt'])
+
+        if 'description_en' in metadata_keys:
+            self.insert_xmp('description_en', metadata['description_en'])
+
+        if 'title_pt' in metadata_keys:
+            self.insert_xmp('title_pt', metadata['title_pt'])
+
+        if 'authors' in metadata_keys:
+            self.insert_exif('authors', metadata['authors'])
+        if 'title_en' in metadata_keys:
+            self.insert_xmp('title_en', metadata['title_en'])
         
-        self.xmp_erro = False
         
-        self.metadata = metadata
+        self.media.write()
 
-        self._insert_metadata_exif('software', 'Cifonauta - CEBIMar/USP')
+    def read_metadata(self):
+        metadata = {}
 
-        for k, v in self.metadata.items():
-            if v != '' and v != ' ' and v != None:
-                match k:
-                    case "headline":
-                        self._insert_metadata_xmp(k.capitalize(), v)
-                        self._insert_metadata_iptc(k, v)
-                    case "instructions":
-                        self._insert_metadata_iptc('special instructions', v)
-                        self._insert_metadata_xmp('Instructions', v)
-                    case "source":
-                        self._insert_metadata_iptc(k, v)
-                    case "credit":
-                        self._insert_metadata_iptc('credit', v)
-                    case 'license':
-                        license_type = v['license_type']
-                        creators = ", ".join(v["authors"])
-                        self._insert_metadata_xmp('License', self._RIGHTS[license_type]["license_name"], license=True)
-                        self._insert_metadata_xmp('AttributionURL', self._RIGHTS[license_type]["license_link"], license=True)
-                        self._insert_metadata_xmp('Rights', self._RIGHTS[license_type]["license_text"], license=True)
-                        self._insert_metadata_xmp('Creators', creators)
-                        license_exif = f'{self._RIGHTS[license_type]["license_name"]}: {self._RIGHTS[license_type]["license_text"]}. {self._RIGHTS[license_type]["license_link"]}'
-                        self._insert_metadata_exif('copyright', license_exif.encode())
-                        self._insert_metadata_exif('creators', creators.encode())
+        keys = [('title_pt', 'xmp'),
+                ('title_en', 'xmp'),
+                ('description_pt', 'xmp'),
+                ('description_en', 'xmp'),
+                ('authors', 'exif')]
+        
+        metadata['gps'] = self.read_exif_gps()
 
-                    case 'keywords':
-                        if len(v) > 0:
-                            keywords = []
-                            subject = []
-                            for k1, v2 in v.items():
-                                keywords.append(f'{k1}: {", ".join(v2)}')
-                                subject.append(f'{k1}: {", ".join(v2)}')
-                            subject = '; '.join(subject)
-                            self._insert_metadata_xmp('Subject', subject)
-                            self._insert_metadata_iptc(k, keywords)
-                    case 'description_pt':
-                        self._insert_metadata_exif('image_description', v.encode())
-                        self._insert_metadata_xmp('DescriptionPT', v)
-                        self._insert_metadata_iptc('caption/abstract', v)
-                        
-                    case 'title_pt':
-                        self._insert_metadata_xmp('TitlePT', v)
-                        self._insert_metadata_iptc('object name', v)
-                    case 'gps':
-                        self._insert_metadata_exif('gps', v)
-                        self._insert_metadata_iptc('content location name', f'GPScoordinates: {v}')
-                    case 'datetime':
-                        self._insert_metadata_iptc('date created', v)
-                        self._insert_metadata_xmp('DateCreated', v)
-                        self._insert_metadata_exif('datetime', v.encode())
-                    case 'country':
-                        self._insert_metadata_xmp('Country', v)
-                        self._insert_metadata_iptc('country/primary location name', v)
-                    case 'state':
-                        self._insert_metadata_xmp('State', v)
-                        self._insert_metadata_iptc('province/state', v)
-                    case 'city':
-                        self._insert_metadata_xmp('City', v)
-                        self._insert_metadata_iptc('city', v)
-                    case 'sublocation':
-                        self._insert_metadata_iptc('sub-location', v)
+        self.read_media()
 
-    def _read_iptc(self, field):
-        info = IPTCInfo(self.file, force=True)
-        meta = info[field]
-        if meta == None:
-            meta = ''
-        return meta
-    
-    def _read_xmp(self, field):
+        date = self.read_exif('datetime')
+        if date == '':
+            date = self.read_exif('datetime_original')
+        if date == '':
+            date = self.read_exif('create_date')
+        if date == '':
+            date = self.read_iptc('datetime')
+        if date == '':
+            date = self.read_iptc('create_date')
+
+        metadata['datetime'] = date
+
+        for key in keys:
+            if key[1] == 'xmp':
+                metadata[key[0]] = self.read_xmp(key[0])
+            elif key[1] == 'exif':
+                metadata[key[0]] = self.read_exif(key[0])
+        
+        if metadata['title_pt'] == '':
+            metadata['title_pt'] = self.read_exif('title_pt')
+        if metadata['title_pt'] == '':
+            metadata['title_pt'] = self.read_iptc('title_pt')
+        
+        return metadata
+
+    def read_xmp(self, key):
         try:
-            xmpfile = XMPFiles( file_path=self.file)
-            xmp = xmpfile.get_xmp()
-            if field in 'License AttributionURL':
-                meta = xmp.get_property(consts.XMP_NS_CC, field)
-            else:
-                meta = xmp.get_property(consts.XMP_NS_DC, field)
+            value = self.media[self.CONSTANTES[key]['xmp']].raw_value
         except:
-            meta = ''
-        return meta
+            value = ''
+        return value
 
-    def _read_exif(self, field):
+    def read_exif(self, key):
+        try:
+            value = self.media[self.CONSTANTES[key]['exif']].raw_value
+        except:
+            value = ''
+        return value
+
+    def read_iptc(self, key):
+        try:
+            value = self.media[self.CONSTANTES[key]['iptc']].raw_value
+        except:
+            value = ''
+        if type(value) == list:
+            value = value[0]
+        return value
+
+    def read_exif_gps(self):
         image = Image.open(self.file)
         try:
             exif_dict = piexif.load(image.info['exif'])
         except:
             return ''
+        try:
+            gps = exif_dict['GPS']
+        except KeyError:
+            return ''
         else:
-            if field == 'datetime':
-                meta = exif_dict['Exif'][piexif.ExifIFD.DateTimeOriginal]
-                if meta == '':
-                    meta = exif_dict['Exif'][piexif.ExifIFD.DateTimeDigitized]
-                return meta
-            try:
-                meta = exif_dict[field]
-            except:
-                meta = ''
-            finally:
-                if field == 'GPS':
-                    gps = meta
-                    meta = f"{gps[1].decode()} {gps[2][0][0]}\u00ba{int(gps[2][1][0])}'{int(gps[2][2][0])}\u0022 {gps[3].decode()} {gps[4][0][0]}\u00ba{int(gps[4][1][0])}'{int(gps[4][2][0])}\u0022"
-                return meta
-            
-         
-    def read_metadata(self):
-        keys_metadata = {
-            'software': {'exif': piexif.ImageIFD.Software},
-            'headline': {'xmp': 'headline', 'iptc': 'headline'},
-            'instructions': {'xmp': 'Instructions', 'iptc': 'special instructions'},
-            'source': {'iptc': 'source'},
-            'credit': {'iptc': 'source'},
-            'license_name': {'xmp': 'License'},
-            'license_link': {'xmp': 'AttributionURL'},
-            'license_text': {'xmp': 'Rights'},
-            'copyright': {'exif': piexif.ImageIFD.Copyright},
-            'keywords': {'xmp': 'subject', 'iptc': 'keywords'},
-            'creator': {'exif': piexif.ImageIFD.Artist, 'xmp': 'Creator', 'iptc': 'Creator'},
-            'title_pt': {'xmp': 'TitlePT', 'iptc': 'object name'},
-            'description_pt': {'exif': piexif.ImageIFD.ImageDescription,'xmp': 'DescriptionPT', 'iptc': 'caption/abstract'},
-            'gps': {'exif': 'GPS', 'iptc': 'content location name'},
-            'datetime': {'xmp': 'date_created', 'iptc': 'DateCreated', 'exif': 'datetime'},
-            'country': {'xmp': 'Country', 'iptc': 'country/primary location name'},
-            'state': {'xmp': 'State', 'iptc': 'province/state'},
-            'city': {'xmp': 'City', 'iptc': 'city'},
-            'sublocation': {'iptc': 'sub-location'}
-        }
-        
-        metadata = {k: '' for k in keys_metadata.keys()}
-        for meta_type in ['xmp', 'iptc', 'exif']:
-            for k, v in keys_metadata.items():
-                if metadata[k] == '' or metadata[k] == None:
-                    try:
-                        if meta_type == 'xmp':
-                            meta = self._read_xmp(v[meta_type])
-                        elif meta_type == 'iptc':
-                            meta = self._read_iptc(v[meta_type])
-                        elif meta_type == 'exif':
-                            meta = self._read_exif(v[meta_type])
-                        
-                        try:
-                            if type(meta) == list:
-                                for i, m in enumerate(meta):
-                                    meta[i] = m.decode(errors='ignore')
-                            else:
-                                meta = meta.decode(errors='ignore')
-                        except AttributeError:
-                            pass
-                        metadata[k] = met
-                        
-                    except KeyError:
-                        pass
-        return metadata
-    
+            gps_hexa = f"{gps[1].decode()} {gps[2][0][0]}\u00ba{int(gps[2][1][0])}'{int(gps[2][2][0])}\u0022 {gps[3].decode()} {gps[4][0][0]}\u00ba{int(gps[4][1][0])}'{int(gps[4][2][0])}\u0022"
+            latitude = gps[2][0][0] + gps[2][1][0]/60 + gps[2][2][0]/3600
+            if gps[1] == 'S':
+                latitude = -latitude
+            longitude = gps[4][0][0] + gps[4][1][0]/60 + gps[4][2][0]/3600
+            if gps[3] == 'W':
+                longitude = -longitude
+            latitude = f"{latitude:.11f}"
+            longitude = f"{longitude:.11f}"
+            return {
+                'geolocation': gps_hexa,
+                'latitude': latitude,
+                'longitude': longitude}
+
 def number_of_entries_per_page(request, session_name, value=None):
     if value and int(value) > 0:
         request.session[session_name] = value

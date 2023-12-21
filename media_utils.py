@@ -448,18 +448,17 @@ class Metadata():
         },
         'description_pt': {
             'exif': 'Exif.Image.ImageDescription',
-            'xmp': 'Xmp.dc.Description-pt'
+            'xmp': 'Xmp.dc.Description-pt-BR'
         },
         'description_en': {
-            'xmp': 'Xmp.dc.Description-en'
+            'xmp': 'Xmp.dc.Description-en-US'
         },
         'title_pt': {
-            'xmp': 'Xmp.dc.Title-pt',
-            'exif': 'Exif.Image.ExifTag',
+            'xmp': 'Xmp.dc.Title-pt-BR',
             'iptc': 'Iptc.Application2.ObjectName'
         },
         'title_en': {
-            'xmp': 'Xmp.dc.Title-en'
+            'xmp': 'Xmp.dc.Title-en-US'
         },
         'datetime': {
             'exif': 'Exif.Image.DateTime',
@@ -489,7 +488,7 @@ class Metadata():
         'created_date': {
             'exif': 'Exif.Image.CreateDate',
             'iptc': 'Iptc.Application2.DateCreated'
-        }
+        },
 
     }
 
@@ -519,16 +518,16 @@ class Metadata():
             self.media[tag] = value
     
     def insert_exif_gps(self, value):
+        if value != '':
+            gps = {}
+            gps[1] = value[0].encode()
+            gps[2] = ((int(value[2:4]), 1), (int(value[5:7]), 1), (int(value[9:11]), 1))
+            gps[3] = value[13].encode()
+            gps[4] = ((int(value[15:17]), 1), (int(value[18:20]), 1), (int(value[22:24]), 1))
+            exif_dict = {'GPS': gps}
 
-        gps = {}
-        gps[1] = value[0].encode()
-        gps[2] = ((int(value[2:4]), 1), (int(value[5:7]), 1), (int(value[9:11]), 1))
-        gps[3] = value[13].encode()
-        gps[4] = ((int(value[15:17]), 1), (int(value[18:20]), 1), (int(value[22:24]), 1))
-        exif_dict = {'GPS': gps}
-
-        exif_bytes = piexif.dump(exif_dict)
-        piexif.insert(exif_bytes, self.file)
+            exif_bytes = piexif.dump(exif_dict)
+            piexif.insert(exif_bytes, self.file)
 
     
     def insert_iptc(self, key, value:list):
@@ -644,7 +643,7 @@ class Metadata():
         metadata['gps'] = self.read_exif_gps()
 
         self.read_media()
-        print(self.media.exif_keys)
+        print(self.media.xmp_keys)
 
         date = self.read_exif('datetime')
         if date == '':
@@ -692,6 +691,8 @@ class Metadata():
         except Exception as error:
             print(error)
             value = ''
+        if type(value) == list:
+            value = value[0]
         return value
 
     def read_exif_gps(self):

@@ -378,9 +378,12 @@ class Media(models.Model):
             'gps': self.geolocation
 
         }
-        #File path
-
+        #Filepath
         meta = Metadata(f"site_media/{self.file}")
+        meta.insert_metadata(metadata)
+
+        #Coverpath
+        meta = Metadata(f"site_media/{self.coverpath}")
         meta.insert_metadata(metadata)
 
     class Meta:

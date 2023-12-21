@@ -30,6 +30,7 @@
                 </a>
             </div>
         </div>
+        <a href="{% url 'download_media' media.id %}">Baixar imagem</a>
         <div>
             <p>Status:</p>
             <span class="media-status {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}">

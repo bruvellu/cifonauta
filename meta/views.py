@@ -6,7 +6,7 @@ import os
 import re
 import json
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q, F
 from django.db.models.functions import Lower
@@ -259,9 +259,11 @@ def upload_media_step2(request):
             form = UploadMediaForm(initial={
                 'authors': authors,
                 'title_pt_br': read_metadata['title_pt'],
+                'title_en': read_metadata['title_en'],
                 'caption_pt_br': read_metadata['description_pt'],
-                'location': location,
-                'geolocation': read_metadata['gps']
+                'caption_en': read_metadata['description_en'],
+                'latitude': read_metadata['gps']['latitude'],
+                'longitude': read_metadata['gps']['longitude'],
             })
 
     form.fields['state'].queryset = State.objects.none()
@@ -342,7 +344,6 @@ def editing_media_details(request, media_id):
 
                 form.send_mail(request.user, curators_user, media, 'Fluxo da mídia no Cifonauta', 'email_media_to_revision_curators.html')
 
-            media_instance.update_metadata()
             if action == 'submit':
                 messages.success(request, f'A mídia ({media.title}) foi enviada para revisão com sucesso')
             else:
@@ -1029,44 +1030,7 @@ def revision_media_details(request, media_id):
         
         if form.is_valid():
             media_instance = form.save()
-            try:
-                author = str(form.cleaned_data['author'])
-                co_authors = str(form.cleaned_data['co_author']).split(';')
-                metadata =  {
-                'software': str(form.cleaned_data['software']),
-                'headline': str(form.cleaned_data['title']),
-                'instructions': str(form.cleaned_data['size']),
-                'license': {
-                    'license_type': str(form.cleaned_data['license']),
-                    'author': author,
-                    'co_authors': co_authors,
-                    },
-                'keywords': {
-                    'Estágio de vida': str(form.cleaned_data['life_stage']),
-                    'Habitat': str(form.cleaned_data['habitat']),
-                    'Microscopia': str(form.cleaned_data['microscopy']),
-                    'Modo de vida': str(form.cleaned_data['life_style']),
-                    'Técnica fotográfica': str(form.cleaned_data['photographic_technique']),
-                    'Diversos': str(form.cleaned_data['several'])
-                },
-                'source': str(form.cleaned_data['specialist']),
-                'credit': str(form.cleaned_data['credit']),
-                'description_pt': str(form.cleaned_data['caption']),
-                'description_en': '',
-                'gps': str(form.cleaned_data['geolocation']),
-                'datetime': str(form.cleaned_data['date_created']),
-                'title_pt': str(form.cleaned_data['title']),
-                'title_en': '',
-                'country': str(form.cleaned_data['country']),
-                'state': str(form.cleaned_data['state']),
-                'city': str(form.cleaned_data['city']),
-                'sublocation': str(form.cleaned_data['location'])
-                    }
-                if media.datatype == 'photo':
-                    Metadata(file=f'./site_media/{str(media.file)}', metadata=metadata)
-            except:
-                pass
-            
+
             action = request.POST.get('action')
             if action == 'publish':
                 media_instance.status = 'published'
@@ -1087,6 +1051,7 @@ def revision_media_details(request, media_id):
                 form.send_mail(request.user, specialists_user, media, 'Fluxo da mídia no Cifonauta', 'email_published_media_specialists.html')
 
             if action == 'publish':
+                media_instance.update_metadata()
                 messages.success(request, f'A mídia ({media.title}) foi publicada com sucesso')
             else:
                 messages.success(request, f'A mídia ({media.title}) foi salva com sucesso')
@@ -1359,6 +1324,12 @@ def my_curations_media_details(request, media_id):
     }
 
     return render(request, 'my_curations_media_details.html', context) 
+
+@never_cache
+def download_media(request, media_id):
+    media = get_object_or_404(Media, id=media_id)
+    media_file = media.file
+    return FileResponse(open(f'site_media/{media_file}', 'rb'), as_attachment=True, filename=f'{media.title}.jpg')
 
 @never_cache
 @curator_required

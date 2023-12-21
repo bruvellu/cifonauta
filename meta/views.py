@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
-from media_utils import Metadata, number_of_entries_per_page, validate_specialist_action_form
+from media_utils import Metadata, number_of_entries_per_page, validate_specialist_action_form, normalize_object_name
 from operator import or_, and_
 from PIL import Image
 
@@ -161,21 +161,30 @@ def upload_media_step2(request):
             if form.is_valid():
                 coauthor_instance = form.save(commit=False)
 
-                split_name = coauthor_instance.name.lower().split(' ')
-
-                preps = ('de', 'da', 'do', 'das', 'dos', 'e')
-                name = [name.capitalize() if name not in preps else name for name in split_name]
-                name = ' '.join(name)
+                name = normalize_object_name(coauthor_instance.name)
                 coauthor_instance.name = name
                 
-                form.save()
+                coauthor_instance.save()
                 messages.success(request, f'Coautor {name} adicionado com sucesso')
                 return redirect('upload_media_step2')
             else:
                 messages.error(request, 'Houve um erro ao tentar salvar coautor')
                 return redirect('upload_media_step2')
-        
-        if request.method == 'POST':
+        elif action == 'location':
+            form = AddLocationForm(request.POST)
+            if form.is_valid():
+                location_instance = form.save()
+
+                name = normalize_object_name(location_instance.name)
+                location_instance.name = name
+
+                location_instance.save()
+                messages.success(request, f'Local ({name}) adicionado com sucesso')
+            else:
+                messages.error(request, f'Houve um erro ao tentar adicionar local')
+
+            return redirect('upload_media_step2')
+        else:
             form = UploadMediaForm(request.POST, request.FILES, media_author=user_person)
             
             if form.is_valid():
@@ -276,6 +285,7 @@ def upload_media_step2(request):
     form.fields['city'].queryset = City.objects.none()
 
     registration_form = CoauthorRegistrationForm()
+    location_form = AddLocationForm()
     
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
@@ -283,6 +293,7 @@ def upload_media_step2(request):
     context = {
         'form': form,
         'registration_form': registration_form,
+        'location_form': location_form,
         'medias': medias,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
@@ -323,6 +334,23 @@ def editing_media_details(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     
     if request.method == 'POST':
+        action = request.POST.get('action', None)
+        
+        if action == 'location':
+            form = AddLocationForm(request.POST)
+            if form.is_valid():
+                location_instance = form.save()
+
+                name = normalize_object_name(location_instance.name)
+                location_instance.name = name
+
+                location_instance.save()
+                messages.success(request, f'Local ({name}) adicionado com sucesso')
+            else:
+                messages.error(request, f'Houve um erro ao tentar adicionar local')
+
+            return redirect('editing_media_details', media_id)
+
         form = EditMetadataForm(request.POST, instance=media)
         
         if form.is_valid():
@@ -371,12 +399,15 @@ def editing_media_details(request, media_id):
     else:
         form.fields['state'].queryset = State.objects.none()
 
+    location_form = AddLocationForm()
+
     # media = get_object_or_404(Media, pk=media_id)
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     context = {
         'form': form,
+        'location_form': location_form,
         'media': media,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
@@ -555,8 +586,21 @@ def my_media_details(request, pk):
                 messages.error(request, 'Houve um erro ao tentar salvar coautor')
 
             return redirect('my_media_details', pk)
+        elif action == 'location':
+            form = AddLocationForm(request.POST)
+            if form.is_valid():
+                location_instance = form.save()
 
-        if action == 'discard':
+                name = normalize_object_name(location_instance.name)
+                location_instance.name = name
+
+                location_instance.save()
+                messages.success(request, f'Local ({name}) adicionado com sucesso')
+            else:
+                messages.error(request, f'Houve um erro ao tentar adicionar local')
+
+            return redirect('my_media_details', pk)
+        elif action == 'discard':
             modified_media.delete()
             messages.success(request, "Alterações discartadas com sucesso")
             return redirect('my_media_details', pk)
@@ -645,6 +689,7 @@ def my_media_details(request, pk):
     is_curator = request.user.curatorship_curator.exists()
 
     registration_form = CoauthorRegistrationForm()
+    location_form = AddLocationForm()
     modified_media_form = ModifiedMediaForm(instance=media, author_form=True)
 
     context = {
@@ -653,6 +698,7 @@ def my_media_details(request, pk):
         'modified_media_form': modified_media_form,
         'form': form,
         'registration_form': registration_form,
+        'location_form': location_form,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }

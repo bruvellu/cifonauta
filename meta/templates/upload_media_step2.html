@@ -4,6 +4,7 @@
 {% block extra_head %}
 <script src="{% static 'js/adm_popup.js' %}" defer></script>
 <script src="{% static 'js/upload_media_step2.js' %}" defer></script>
+<script src="{% static 'js/adm_sync_location_fields.js' %}" defer></script>
 {% endblock %}
 {% block title %}Enviar Mídia{% endblock %}
 
@@ -32,6 +33,8 @@
         <button class="secondary-button" type="submit" name="action" value="coauthor">Cadastrar</button>
     </form>
 </div>
+
+{% include 'dashboard_location_modal.html' %}
 
 <h2>Adicionar nova mídia</h2>
 {% if messages %}
@@ -116,6 +119,44 @@
             </ul>
             {% endif %}
             {{ field }}
+            {% if field.help_text %}
+            <span class="help-text">{{ field.help_text }}</span>
+            {% endif %}
+        </div>
+    </div>
+    {% elif field == form.location %}
+    <div class="field-container">
+        <div class="label-div">
+            {{ field.label_tag }}
+            {% if field.field.required %}
+            <span class='required'>*</span>
+            {% endif %}
+        </div>
+        <div class="field-div">
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <div class="add-new-object-div">
+                {{ field }}
+                <button type="button" id="open-location-modal-btn" class="add-new-object-btn">
+                    <?xml version="1.0" ?>
+                    <svg width="800px" height="800px" viewBox="0 0 24 24">
+                    <title/>
+                    <g id="Complete">
+                        <g data-name="add" id="add-2">
+                        <g>
+                            <line fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="12" x2="12" y1="19" y2="5"/>
+                            <line fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="5" x2="19" y1="12" y2="12"/>
+                        </g>
+                        </g>
+                    </g>
+                    </svg>
+                </button>
+            </div>
             {% if field.help_text %}
             <span class="help-text">{{ field.help_text }}</span>
             {% endif %}

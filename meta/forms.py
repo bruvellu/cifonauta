@@ -3,7 +3,7 @@
 from django import forms
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
-from .models import Media, Curadoria, ModifiedMedia, Person, Taxon, Tour
+from .models import Media, Curadoria, ModifiedMedia, Person, Taxon, Tour, Location
 from user.models import UserCifonauta
 from django.template import loader 
 from django.core.mail import EmailMultiAlternatives
@@ -248,6 +248,11 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
 class CoauthorRegistrationForm(forms.ModelForm):
     class Meta:
         model = Person
+        fields = ('name',)
+
+class AddLocationForm(forms.ModelForm):
+    class Meta:
+        model = Location
         fields = ('name',)
 
 class ModifiedMediaForm(forms.ModelForm, SendEmailForm):

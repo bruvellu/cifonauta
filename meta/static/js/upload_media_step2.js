@@ -43,6 +43,16 @@ const locationModalHandler = new ModalHandler({
     modalClose: closeLocationModalBtn
 })
 
+let taxaModal = document.querySelector('#taxa-modal')
+let openTaxaModalBtn = document.querySelector('#open-taxa-modal-btn')
+let closeTaxaModalBtn = document.querySelector('#close-taxa-modal-btn')
+
+const taxaModalHandler = new ModalHandler({
+    modalContent: taxaModal,
+    modalTrigger: openTaxaModalBtn,
+    modalClose: closeTaxaModalBtn
+})
+
 
 let stateContainer = document.querySelector('.country-container').nextElementSibling
 let cityContainer = document.querySelector('.country-container').nextElementSibling.nextElementSibling

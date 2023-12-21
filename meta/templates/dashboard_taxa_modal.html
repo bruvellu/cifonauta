@@ -1,0 +1,24 @@
+<div id="taxa-modal" class="modal-container list-modal-container">
+  <div class="modal-header">
+      <p>Adicione um novo táxon</p>
+      <button id="close-taxa-modal-btn" class="close-modal-button">
+          <div class='line1'></div>
+          <div class='line2'></div>
+      </button>
+  </div>
+  <form class="modal-body" method="post">
+      {% csrf_token %}
+      {% for field2 in taxa_form %}
+      <div class="field2-container">
+          {{ field2.label_tag }}
+          <div class="field-div field2-div">
+              {{ field2 }}
+              {% if field2.help_text %}
+              <span class="help-text">{{ field2.help_text }}</span>
+              {% endif %}
+          </div>
+      </div>
+      {% endfor %}
+      <button class="secondary-button" type="submit" name="action" value="taxa">Adicionar</button>
+  </form>
+</div>

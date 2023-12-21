@@ -38,6 +38,29 @@ from django.views.decorators.cache import never_cache
 from dotenv import load_dotenv
 load_dotenv()
 
+def handle_add_form(request, form, success_msg, error_msg, redirect_url_name, pk=None):
+    if form.is_valid():
+        form_instance = form.save(commit=False)
+
+        preps = ('de', 'da', 'do', 'das', 'dos', 'e', 'no', 'na')
+        split_name = form_instance.name.lower().split(' ')
+
+        name = [name.capitalize() if name not in preps else name for name in split_name]
+        name = ' '.join(name)
+
+        form_instance.name = name
+        
+        form_instance.save()
+        messages.success(request, success_msg.format(name))
+    else:
+        messages.error(request, error_msg)
+    
+    print('PK', pk)
+    if pk:
+        return redirect(redirect_url_name, pk)
+    else:
+        return redirect(redirect_url_name)
+
 
 @never_cache
 @authentication_required
@@ -158,32 +181,31 @@ def upload_media_step2(request):
             return redirect('upload_media_step1')
         elif action == 'coauthor':
             form = CoauthorRegistrationForm(request.POST)
-            if form.is_valid():
-                coauthor_instance = form.save(commit=False)
-
-                name = normalize_object_name(coauthor_instance.name)
-                coauthor_instance.name = name
-                
-                coauthor_instance.save()
-                messages.success(request, f'Coautor {name} adicionado com sucesso')
-                return redirect('upload_media_step2')
-            else:
-                messages.error(request, 'Houve um erro ao tentar salvar coautor')
-                return redirect('upload_media_step2')
+            return handle_add_form(
+                request,
+                form,
+                'Coautor ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar coautor',
+                'upload_media_step2'
+            )
         elif action == 'location':
             form = AddLocationForm(request.POST)
-            if form.is_valid():
-                location_instance = form.save()
-
-                name = normalize_object_name(location_instance.name)
-                location_instance.name = name
-
-                location_instance.save()
-                messages.success(request, f'Local ({name}) adicionado com sucesso')
-            else:
-                messages.error(request, f'Houve um erro ao tentar adicionar local')
-
-            return redirect('upload_media_step2')
+            return handle_add_form(
+                request,
+                form,
+                'Local ({}) adicionado com sucesso',
+                'Houve um erro ao tentar adicionar local',
+                'upload_media_step2'
+            )
+        elif action == 'taxa':
+            form = AddTaxaForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Táxon ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar táxon',
+                'upload_media_step2'
+            )
         else:
             form = UploadMediaForm(request.POST, request.FILES, media_author=user_person)
             
@@ -286,6 +308,7 @@ def upload_media_step2(request):
 
     registration_form = CoauthorRegistrationForm()
     location_form = AddLocationForm()
+    taxa_form = AddTaxaForm()
     
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
@@ -294,6 +317,7 @@ def upload_media_step2(request):
         'form': form,
         'registration_form': registration_form,
         'location_form': location_form,
+        'taxa_form': taxa_form,
         'medias': medias,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
@@ -570,36 +594,34 @@ def my_media_details(request, pk):
 
         if action == 'coauthor':
             form = CoauthorRegistrationForm(request.POST)
-            if form.is_valid():
-                coauthor_instance = form.save()
-
-                split_name = coauthor_instance.name.lower().split(' ')
-
-                preps = ('de', 'da', 'do', 'das', 'dos', 'e')
-                name = [name.capitalize() if name not in preps else name for name in split_name]
-                name = ' '.join(name)
-                coauthor_instance.name = name
-                
-                coauthor_instance.save()
-                messages.success(request, f'Coautor ({name}) adicionado com sucesso')
-            else:
-                messages.error(request, 'Houve um erro ao tentar salvar coautor')
-
-            return redirect('my_media_details', pk)
+            return handle_add_form(
+                request,
+                form,
+                'Coautor ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar coautor',
+                'my_media_details',
+                pk=pk
+            )
         elif action == 'location':
             form = AddLocationForm(request.POST)
-            if form.is_valid():
-                location_instance = form.save()
-
-                name = normalize_object_name(location_instance.name)
-                location_instance.name = name
-
-                location_instance.save()
-                messages.success(request, f'Local ({name}) adicionado com sucesso')
-            else:
-                messages.error(request, f'Houve um erro ao tentar adicionar local')
-
-            return redirect('my_media_details', pk)
+            return handle_add_form(
+                request,
+                form,
+                'Local ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar local',
+                'my_media_details',
+                pk=pk
+            )
+        elif action == 'taxa':
+            form = AddTaxaForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Táxon ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar táxon',
+                'my_media_details',
+                pk=pk
+            )
         elif action == 'discard':
             modified_media.delete()
             messages.success(request, "Alterações discartadas com sucesso")
@@ -690,6 +712,7 @@ def my_media_details(request, pk):
 
     registration_form = CoauthorRegistrationForm()
     location_form = AddLocationForm()
+    taxa_form = AddTaxaForm()
     modified_media_form = ModifiedMediaForm(instance=media, author_form=True)
 
     context = {
@@ -699,6 +722,7 @@ def my_media_details(request, pk):
         'form': form,
         'registration_form': registration_form,
         'location_form': location_form,
+        'taxa_form': taxa_form,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }

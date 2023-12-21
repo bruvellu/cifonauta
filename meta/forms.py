@@ -255,6 +255,11 @@ class AddLocationForm(forms.ModelForm):
         model = Location
         fields = ('name',)
 
+class AddTaxaForm(forms.ModelForm):
+    class Meta:
+        model = Taxon
+        fields = ('name',)
+
 class ModifiedMediaForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = ModifiedMedia

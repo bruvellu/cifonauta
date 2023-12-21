@@ -27,3 +27,13 @@ const locationModalHandler = new ModalHandler({
     modalTrigger: openLocationModalBtn,
     modalClose: closeLocationModalBtn
 })
+
+let taxaModal = document.querySelector('#taxa-modal')
+let openTaxaModalBtn = document.querySelector('#open-taxa-modal-btn')
+let closeTaxaModalBtn = document.querySelector('#close-taxa-modal-btn')
+
+const taxaModalHandler = new ModalHandler({
+    modalContent: taxaModal,
+    modalTrigger: openTaxaModalBtn,
+    modalClose: closeTaxaModalBtn
+})

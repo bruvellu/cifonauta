@@ -643,7 +643,6 @@ class Metadata():
         metadata['gps'] = self.read_exif_gps()
 
         self.read_media()
-        print(self.media.xmp_keys)
 
         date = self.read_exif('datetime')
         if date == '':
@@ -680,16 +679,14 @@ class Metadata():
     def read_exif(self, key):
         try:
             value = self.media[self.CONSTANTES[key]['exif']].raw_value
-        except Exception as error:
-            print(error)
+        except:
             value = ''
         return value
 
     def read_iptc(self, key):
         try:
             value = self.media[self.CONSTANTES[key]['iptc']].raw_value
-        except Exception as error:
-            print(error)
+        except:
             value = ''
         if type(value) == list:
             value = value[0]

@@ -15,3 +15,5 @@ piexif
 suds
 django-simple-captcha
 python-dotenv
+pyexiv2
+py3exiv2

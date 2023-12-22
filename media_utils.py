@@ -17,18 +17,6 @@ from shutil import copy2, move
 from PIL import Image
 import pyexiv2
 import piexif
-from iptcinfo3 import IPTCInfo
-"""
-The "python-xmp-toolkit" library can cause problems if the "Exempi" tool cannot be found.
-In this case the metadata will not be saved in XMP format
-"""
-try:
-    from libxmp import XMPFiles, consts, XMPError
-    from libxmp.utils import file_to_dict
-except:
-    print('Warning: python-xmp-toolkit not imported')
-    pass
-
 
 """import gi
 gi.require_version('GExiv2', '0.10')
@@ -45,17 +33,6 @@ def read_photo_metadata(filepath):
         return None
     else:
         return metadata
-
-
-def read_iptc(abspath, charset='utf-8', new=False):
-    '''Parses IPTC metadata from a photo with iptcinfo.py'''
-
-    info = IPTCInfo(abspath, True, charset)
-    if len(info.data) < 4:
-        print('IPTC is empty for %s' % abspath)
-        return None
-
-    return info
 
 
 def create_thumb(filepath, destination):

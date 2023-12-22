@@ -57,6 +57,16 @@
             {% get_field_value media 'license' as license %}
             <div>{{ media.get_license_display }}</div>
         </div>
+        <div>
+            <p>Data de Criação:</p>
+            <div>
+                {% if media.date_created.date|date:"d/m/Y" == '01/01/0001' %}
+                Data desconhecida
+                {% else %}
+                {{ media.date_created.date }}
+                {% endif %}
+            </div>
+        </div>
     </div>
     {% for field in form %}
     {% if field == form.country %}

@@ -381,11 +381,16 @@ def editing_media_details(request, media_id):
                 pk=media_id
             )
         
-        form = EditMetadataForm(request.POST, instance=media)
+        form = EditMetadataForm(request.POST, instance=media, editing_media_details=True)
+
+        action = request.POST.get('action')
+
+        if action == 'submit':
+            form.fields['title_pt_br'].required = True
+            form.fields['title_en'].required = True
+            
         if form.is_valid():
             media_instance = form.save()
-
-            action = request.POST.get('action')
             
             if action == 'submit':
                 media_instance.status = 'submitted'
@@ -416,8 +421,9 @@ def editing_media_details(request, media_id):
             return redirect('editing_media_list')
         else:
             messages.error(request, 'Houve um erro ao tentar salvar mídia')
+
     else:
-        form = EditMetadataForm(instance=media)    
+        form = EditMetadataForm(instance=media, editing_media_details=True)    
     
     if media.state:
         form.fields['city'].queryset = City.objects.filter(state=media.state.id)
@@ -427,6 +433,8 @@ def editing_media_details(request, media_id):
         form.fields['state'].queryset = State.objects.filter(country=media.country.id)
     else:
         form.fields['state'].queryset = State.objects.none()
+    form.fields['title_pt_br'].required = False
+    form.fields['title_en'].required = False
 
     location_form = AddLocationForm()
     taxa_form = AddTaxaForm()

@@ -136,7 +136,7 @@
     <div class="field-container">
         <div class="label-div">
             {{ field.label_tag }}
-            {% if field.field.required %}
+            {% if field.field.required or field == form.title_pt_br or field == form.title_en %}
             <span class='required'>*</span>
             {% endif %}
         </div>

@@ -227,10 +227,12 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
         }
     
     def __init__(self, *args, **kwargs):
+        editing_media_details = kwargs.pop('editing_media_details', None)
         super().__init__(*args, **kwargs)
 
-        self.fields['title_pt_br'].required = True
-        self.fields['title_en'].required = True
+        if not editing_media_details:
+            self.fields['title_pt_br'].required = True
+            self.fields['title_en'].required = True
         self.fields['date_created'].required = True
         self.fields['tags'].queryset = self.fields['tags'].queryset.order_by('category')
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')

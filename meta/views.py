@@ -362,21 +362,26 @@ def editing_media_details(request, media_id):
         
         if action == 'location':
             form = AddLocationForm(request.POST)
-            if form.is_valid():
-                location_instance = form.save()
-
-                name = normalize_object_name(location_instance.name)
-                location_instance.name = name
-
-                location_instance.save()
-                messages.success(request, f'Local ({name}) adicionado com sucesso')
-            else:
-                messages.error(request, f'Houve um erro ao tentar adicionar local')
-
-            return redirect('editing_media_details', media_id)
-
-        form = EditMetadataForm(request.POST, instance=media)
+            return handle_add_form(
+                request,
+                form,
+                'Local ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar local',
+                'editing_media_details',
+                pk=media_id
+            )
+        elif action == 'taxa':
+            form = AddTaxaForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Táxon ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar táxon',
+                'editing_media_details',
+                pk=media_id
+            )
         
+        form = EditMetadataForm(request.POST, instance=media)
         if form.is_valid():
             media_instance = form.save()
 
@@ -424,6 +429,7 @@ def editing_media_details(request, media_id):
         form.fields['state'].queryset = State.objects.none()
 
     location_form = AddLocationForm()
+    taxa_form = AddTaxaForm()
 
     # media = get_object_or_404(Media, pk=media_id)
     is_specialist = request.user.curatorship_specialist.exists()
@@ -432,6 +438,7 @@ def editing_media_details(request, media_id):
     context = {
         'form': form,
         'location_form': location_form,
+        'taxa_form': taxa_form,
         'media': media,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
@@ -1049,6 +1056,29 @@ def revision_modified_media(request, media_id):
 def revision_media_details(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     if request.method == 'POST':
+        action = request.POST.get('action', None)
+
+        if action == 'location':
+            form = AddLocationForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Local ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar local',
+                'revision_media_details',
+                pk=media_id
+            )
+        elif action == 'taxa':
+            form = AddTaxaForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Táxon ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar táxon',
+                'revision_media_details',
+                pk=media_id
+            )
+        
         form = EditMetadataForm(request.POST, instance=media)
         
         if form.is_valid():
@@ -1132,11 +1162,16 @@ def revision_media_details(request, media_id):
     else:
         form.fields['state'].queryset = State.objects.none()
     
+    location_form = AddLocationForm()
+    taxa_form = AddTaxaForm()
+
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     context = {
         'form': form,
+        'location_form': location_form,
+        'taxa_form': taxa_form,
         'media': media,
         'is_specialist': is_specialist,
         'is_curator': is_curator,

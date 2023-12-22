@@ -78,7 +78,7 @@
             {% endif %}
         </div>
     </div>
-    {% elif field == form.location %}
+    {% elif field == form.location or field == form.taxa %}
     <div class="field-container">
         <div class="label-div">
             {{ field.label_tag }}
@@ -96,18 +96,18 @@
             {% endif %}
             <div class="add-new-object-div">
                 {{ field }}
-                <button type="button" id="open-location-modal-btn" class="add-new-object-btn">
-                    <?xml version="1.0" ?>
-                    <svg width="800px" height="800px" viewBox="0 0 24 24">
-                    <title/>
-                    <g id="Complete">
-                        <g data-name="add" id="add-2">
-                        <g>
-                            <line fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="12" x2="12" y1="19" y2="5"/>
-                            <line fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="5" x2="19" y1="12" y2="12"/>
-                        </g>
-                        </g>
-                    </g>
+                <button 
+                    type="button"
+                    {% if field == form.location %}
+                    id="open-location-modal-btn" 
+                    {% elif field == form.taxa %}
+                    id="open-taxa-modal-btn"
+                    {% endif %}
+                    class="add-new-object-btn"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="19" x2="12" y2="5"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
                     </svg>
                 </button>
             </div>
@@ -163,5 +163,7 @@
 </form>
 
 {% include 'dashboard_location_modal.html' %}
+
+{% include 'dashboard_taxa_modal.html' %}
 
 {% endblock %}

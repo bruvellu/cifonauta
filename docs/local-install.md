@@ -5,7 +5,7 @@
 First, open a terminal and install the required system packages (needs admin privileges):
 
 ```
-sudo apt install git python3 python3-dev python3-pip python3-venv python3-gi postgresql postgresql-server-dev-all libpq-dev yui-compressor ffmpeg imagemagick gettext language-pack-pt gir1.2-gexiv2-0.10 libjpeg-dev zlib1g-dev
+sudo apt install git python3 python3-all-dev python3-pip python3-venv python3-gi postgresql postgresql-server-dev-all libpq-dev yui-compressor ffmpeg imagemagick gettext language-pack-pt gir1.2-gexiv2-0.10 libjpeg-dev zlib1g-dev libexiv2-dev libboost-python-dev g++
 ```
 
 ## Clone the repository

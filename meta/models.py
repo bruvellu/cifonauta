@@ -19,15 +19,19 @@ from django.utils import timezone
 from mptt.models import MPTTModel
 
 
-
-
 class Curadoria(models.Model):
     name = models.CharField(max_length=50)
     taxons = models.ManyToManyField('Taxon', blank=True)
-    specialists = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='curatorship_specialist', 
-            blank=True, verbose_name=_('especialistas'), help_text=_('Especialistas da curadoria.'))
-    curators = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='curatorship_curator',
-            blank=True, verbose_name=_('curadores'), help_text=_('Curadores da curadoria.'))
+    specialists = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                         related_name='curatorship_specialist',
+                                         blank=True,
+                                         verbose_name=_('especialistas'),
+                                         help_text=_('Especialistas da curadoria.'))
+    curators = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                      related_name='curatorship_curator',
+                                      blank=True,
+                                      verbose_name=_('curadores'),
+                                      help_text=_('Curadores da curadoria.'))
 
     def __str__(self):
         return self.name

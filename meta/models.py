@@ -39,7 +39,7 @@ class Curadoria(models.Model):
 # Function that defines path for user upload directory
 # See: https://docs.djangoproject.com/en/4.2/ref/models/fields/#django.db.models.FileField.upload_to
 def save_file(instance, filename):
-    return f'uploads/{instance.user.username}/{filename}'
+    return f'{settings.UPLOAD_ROOT}/{instance.user.username}/{filename}'
 
 def save_cover(instance, filename):
     return f'{instance.user.username}/{filename}'

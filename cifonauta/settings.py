@@ -158,6 +158,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'site_media')
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = '/site_media/'
 
+# Defines subdirectory of MEDIA_ROOT to store user uploads
+UPLOAD_ROOT = 'uploads'
+
 # [deprecated] Absolute path to the directory that holds source media.
 SOURCE_ROOT = os.path.join(BASE_DIR, 'source_media')
 

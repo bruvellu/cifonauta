@@ -27,7 +27,7 @@ def resize_image(filepath, format, dimension, quality):
     image = Image.open(filepath)
     image.thumbnail((dimension, dimension))
     try:
-        image.save(filepath, format=format, quality=quality)
+        image.convert('RGB').save(filepath, format=format, quality=quality)
         return True
     except OSError as error:
         logger.critical(f'Could not save {filepath}: {error}')

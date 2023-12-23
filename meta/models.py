@@ -91,27 +91,46 @@ class Media(models.Model):
     file_large = models.FileField(upload_to=user_upload_directory,
                                   default=None,
                                   null=True,
-                                  help_text=_('Arquivo processado em tamanho grande.'))
+                                  help_text=_('Arquivo processado tamanho grande.'))
 
-    sitepath = models.FileField(_('arquivo web'),
-                                upload_to=save_cover,
-                                default=None,
-                                help_text=_('Arquivo processado para a web.'))
-
-    coverpath = models.ImageField(_('imagem de capa'),
-                                  upload_to=save_cover,
+    file_medium = models.FileField(upload_to=user_upload_directory,
                                   default=None,
-                                  help_text=_('Imagem de capa para o arquivo processado.'))
+                                  null=True,
+                                  help_text=_('Arquivo processado tamanho médio.'))
 
-    filepath = models.CharField(_('arquivo original'),
-                                max_length=200,
-                                blank=True,
-                                help_text=_('Caminho único para o arquivo original.'))
+    file_small = models.FileField(upload_to=user_upload_directory,
+                                  default=None,
+                                  null=True,
+                                  help_text=_('Arquivo processado tamanho pequeno.'))
+
+    file_cover = models.FileField(upload_to=user_upload_directory,
+                                  default=None,
+                                  null=True,
+                                  help_text=_('Imagem de capa do arquivo.'))
 
     datatype = models.CharField(_('tipo de mídia'),
                                 max_length=15,
                                 choices=DATATYPE_CHOICES,
                                 help_text=_('Foto ou vídeo.'))
+
+    #TODO: Field to be deprecated
+    sitepath = models.FileField(_('arquivo web'),
+                                upload_to=save_cover,
+                                default=None,
+                                help_text=_('Arquivo processado para a web.'))
+
+    #TODO: Field to be deprecated
+    coverpath = models.ImageField(_('imagem de capa'),
+                                  upload_to=save_cover,
+                                  default=None,
+                                  help_text=_('Imagem de capa para o arquivo processado.'))
+
+    #TODO: Field to be deprecated
+    filepath = models.CharField(_('arquivo original'),
+                                max_length=200,
+                                blank=True,
+                                help_text=_('Caminho único para o arquivo original.'))
+
 
     # Fields related to authorship
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -326,7 +345,6 @@ class Media(models.Model):
         # self.create_resized_image('small')
         #TODO: Cover files
         # self.create_resized_image('cover')
-
 
     def create_resized_image(self, size):
         '''Resize image files to different pre-defined dimensions.

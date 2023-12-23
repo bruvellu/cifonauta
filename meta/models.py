@@ -36,16 +36,20 @@ class Curadoria(models.Model):
     def __str__(self):
         return self.name
 
+
 # Function that defines path for user upload directory
 # See: https://docs.djangoproject.com/en/4.2/ref/models/fields/#django.db.models.FileField.upload_to
 def user_upload_directory(instance, filename):
     return f'{settings.UPLOAD_ROOT}/{instance.user.username}/{filename}'
 
+
 def save_file(instance, filename):
     return f'{settings.UPLOAD_ROOT}/{instance.user.username}/{filename}'
 
+
 def save_cover(instance, filename):
     return f'{instance.user.username}/{filename}'
+
 
 class Media(models.Model):
     '''Table with metadata for photo and video files.'''

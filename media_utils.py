@@ -18,10 +18,6 @@ from PIL import Image
 import pyexiv2
 import piexif
 
-"""import gi
-gi.require_version('GExiv2', '0.10')
-from gi.repository import GExiv2"""
-
 # Get logger.
 logger = logging.getLogger('cifonauta.utils')
 

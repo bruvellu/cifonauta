@@ -215,20 +215,31 @@ def upload_media_step2(request):
                 for media in medias:
                     specific_form = UploadMediaForm(request.POST, request.FILES, media_author=user_person, instance=media)
                     
+                    # File name and extension for sitepath/coverpath
+                    #TODO: Remove when fields become deprecated
                     file = media.file.name.split('/')[-1]
                     ext = file.split('.')[-1]
                     filename = file.split('.')[0]
 
+                    # Renaming and resetting sitepath/coverpath
+                    #TODO: Remove when fields become deprecated
                     media_file = File(media.file, name=f'{filename}.{ext}')
                     media.sitepath = media_file
                     media_file = File(media.file, name=f'{filename}_cover.{ext}')
                     media.coverpath = media_file
 
-                    media_instance = specific_form.save()
+                    # Create media instance from form and set status to draft
+                    media_instance = specific_form.save() #TODO: Move up
                     media_instance.status = 'draft'
-                    media_instance.save()
+                    media_instance.save() #TODO: Move down (last)
 
+                    # Create media files with different dimensions
+                    #TODO: Use media_instance here?
                     if media.datatype == 'photo':
+
+                        # Resize and process images
+                        media_instance.process_images()
+
                         coverpath = Image.open(media.coverpath.path)
                         coverpath.thumbnail((1280, 720))
                         coverpath.save(media.coverpath.path, quality=40)
@@ -236,6 +247,13 @@ def upload_media_step2(request):
                         sitepath = Image.open(media.sitepath.path)
                         sitepath.thumbnail((1280, 720))
                         sitepath.save(media.sitepath.path)
+
+                    #TODO: Implement video processing
+                    # elif media.datatype == 'video':
+
+                        #TODO: Resize and process videos
+                        # media_instance.process_videos()
+
 
                 # Send email 
                 curations = Curadoria.objects.filter(taxons__in=form.cleaned_data['taxa'])

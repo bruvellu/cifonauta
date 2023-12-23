@@ -34,6 +34,16 @@
                 <div>{{ media.user }}</div>
             </div>
             <div>
+                <p>Data de Criação:</p>
+                <div>
+                    {% if media.date_created.date|date:"d/m/Y" == '01/01/0001' %}
+                    Data desconhecida
+                    {% else %}
+                    {{ media.date_created.date }}
+                    {% endif %}
+                </div>
+            </div>
+            <div>
                 <p>Data de modificação:</p>
                 <div>{{ media.date_modified }}</div>
             </div>

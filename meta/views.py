@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
-from media_utils import Metadata, number_of_entries_per_page, validate_specialist_action_form
+from media_utils import Metadata, number_of_entries_per_page, validate_specialist_action_form, normalize_object_name
 from operator import or_, and_
 from PIL import Image
 
@@ -39,6 +39,29 @@ from django.views.decorators.cache import never_cache
 
 from dotenv import load_dotenv
 load_dotenv()
+
+def handle_add_form(request, form, success_msg, error_msg, redirect_url_name, pk=None):
+    if form.is_valid():
+        form_instance = form.save(commit=False)
+
+        preps = ('de', 'da', 'do', 'das', 'dos', 'e', 'no', 'na')
+        split_name = form_instance.name.lower().split(' ')
+
+        name = [name.capitalize() if name not in preps else name for name in split_name]
+        name = ' '.join(name)
+
+        form_instance.name = name
+        
+        form_instance.save()
+        messages.success(request, success_msg.format(name))
+    else:
+        messages.error(request, error_msg)
+    
+    print('PK', pk)
+    if pk:
+        return redirect(redirect_url_name, pk)
+    else:
+        return redirect(redirect_url_name)
 
 
 @never_cache
@@ -160,24 +183,32 @@ def upload_media_step2(request):
             return redirect('upload_media_step1')
         elif action == 'coauthor':
             form = CoauthorRegistrationForm(request.POST)
-            if form.is_valid():
-                coauthor_instance = form.save(commit=False)
-
-                split_name = coauthor_instance.name.lower().split(' ')
-
-                preps = ('de', 'da', 'do', 'das', 'dos', 'e')
-                name = [name.capitalize() if name not in preps else name for name in split_name]
-                name = ' '.join(name)
-                coauthor_instance.name = name
-                
-                form.save()
-                messages.success(request, f'Coautor {name} adicionado com sucesso')
-                return redirect('upload_media_step2')
-            else:
-                messages.error(request, 'Houve um erro ao tentar salvar coautor')
-                return redirect('upload_media_step2')
-        
-        if request.method == 'POST':
+            return handle_add_form(
+                request,
+                form,
+                'Coautor ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar coautor',
+                'upload_media_step2'
+            )
+        elif action == 'location':
+            form = AddLocationForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Local ({}) adicionado com sucesso',
+                'Houve um erro ao tentar adicionar local',
+                'upload_media_step2'
+            )
+        elif action == 'taxa':
+            form = AddTaxaForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Táxon ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar táxon',
+                'upload_media_step2'
+            )
+        else:
             form = UploadMediaForm(request.POST, request.FILES, media_author=user_person)
             
             if form.is_valid():
@@ -278,6 +309,8 @@ def upload_media_step2(request):
     form.fields['city'].queryset = City.objects.none()
 
     registration_form = CoauthorRegistrationForm()
+    location_form = AddLocationForm()
+    taxa_form = AddTaxaForm()
     
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
@@ -285,6 +318,8 @@ def upload_media_step2(request):
     context = {
         'form': form,
         'registration_form': registration_form,
+        'location_form': location_form,
+        'taxa_form': taxa_form,
         'medias': medias,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
@@ -325,12 +360,39 @@ def editing_media_details(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     
     if request.method == 'POST':
-        form = EditMetadataForm(request.POST, instance=media)
+        action = request.POST.get('action', None)
         
+        if action == 'location':
+            form = AddLocationForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Local ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar local',
+                'editing_media_details',
+                pk=media_id
+            )
+        elif action == 'taxa':
+            form = AddTaxaForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Táxon ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar táxon',
+                'editing_media_details',
+                pk=media_id
+            )
+        
+        form = EditMetadataForm(request.POST, instance=media, editing_media_details=True)
+
+        action = request.POST.get('action')
+
+        if action == 'submit':
+            form.fields['title_pt_br'].required = True
+            form.fields['title_en'].required = True
+            
         if form.is_valid():
             media_instance = form.save()
-
-            action = request.POST.get('action')
             
             if action == 'submit':
                 media_instance.status = 'submitted'
@@ -362,8 +424,9 @@ def editing_media_details(request, media_id):
             return redirect('editing_media_list')
         else:
             messages.error(request, 'Houve um erro ao tentar salvar mídia')
+
     else:
-        form = EditMetadataForm(instance=media)    
+        form = EditMetadataForm(instance=media, editing_media_details=True)    
     
     if media.state:
         form.fields['city'].queryset = City.objects.filter(state=media.state.id)
@@ -373,6 +436,11 @@ def editing_media_details(request, media_id):
         form.fields['state'].queryset = State.objects.filter(country=media.country.id)
     else:
         form.fields['state'].queryset = State.objects.none()
+    form.fields['title_pt_br'].required = False
+    form.fields['title_en'].required = False
+
+    location_form = AddLocationForm()
+    taxa_form = AddTaxaForm()
 
     # media = get_object_or_404(Media, pk=media_id)
     is_specialist = request.user.curatorship_specialist.exists()
@@ -380,12 +448,49 @@ def editing_media_details(request, media_id):
 
     context = {
         'form': form,
+        'location_form': location_form,
+        'taxa_form': taxa_form,
         'media': media,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }
 
     return render(request, 'editing_media_details.html', context) 
+
+
+def filter_medias(queryset, query_dict, curations=''):
+    filtered_queryset = queryset
+
+    search_value = query_dict.get('search', None)
+    if 'search' in query_dict and search_value != '':
+        filtered_queryset = filtered_queryset.filter(title__icontains=search_value)
+    
+
+    curation_ids = query_dict.getlist('curations', None)
+    if curation_ids:
+        if curations:
+            filtered_curations = curations.filter(id__in=curation_ids).distinct()
+        else:
+            filtered_curations = Curadoria.objects.filter(id__in=curation_ids).distinct()
+
+        taxons = set()
+        for curation in filtered_curations:
+            taxons.update(curation.taxons.all())
+
+        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
+
+
+    status = query_dict.getlist('status', None)
+    if status:
+        filtered_queryset = filtered_queryset.filter(status__in=status)
+
+
+    alphabetical_order = query_dict.get('alphabetical_order', None)
+    if alphabetical_order:
+        filtered_queryset = filtered_queryset.order_by('title')
+
+    print(query_dict)
+    return filtered_queryset
 
 
 @never_cache
@@ -467,39 +572,10 @@ def editing_media_list(request):
             else:
                 messages.warning(request, _('Nenhum registro foi selecionado'))
 
-    filtered_queryset = queryset
-
-    search = request.GET.get('search')
-    if search:
-        filtered_queryset = filtered_queryset.filter(title__icontains=search)
+    query_dict = request.GET.copy()
+    filtered_queryset = filter_medias(queryset, query_dict, curations)
     
-
-    curation_ids = request.GET.getlist('curations')
-    if curation_ids:
-        filtered_curations = curations.filter(id__in=curation_ids).distinct()
-
-        taxons = set()
-        for curation in filtered_curations:
-            taxons.update(curation.taxons.all())
-
-        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
-    
-
-    status = request.GET.get('status')
-    if status:
-        filtered_queryset = filtered_queryset.filter(status=status)
-
-
-    alphabetical_order = request.GET.get('alphabetical_order')
-    if alphabetical_order:
-        filtered_queryset = filtered_queryset.order_by('title')
-    
-    filter_form = DashboardFilterForm({
-        'search': search,
-        'curations': curation_ids,
-        'alphabetical_order': alphabetical_order,
-        'status': status,
-    }, user_curations=curations)
+    filter_form = DashboardFilterForm(query_dict, user_curations=curations)
     
 
     queryset_paginator = Paginator(filtered_queryset, records_number)
@@ -536,24 +612,35 @@ def my_media_details(request, pk):
 
         if action == 'coauthor':
             form = CoauthorRegistrationForm(request.POST)
-            if form.is_valid():
-                coauthor_instance = form.save()
-
-                split_name = coauthor_instance.name.lower().split(' ')
-
-                preps = ('de', 'da', 'do', 'das', 'dos', 'e')
-                name = [name.capitalize() if name not in preps else name for name in split_name]
-                name = ' '.join(name)
-                coauthor_instance.name = name
-                
-                coauthor_instance.save()
-                messages.success(request, f'Coautor ({name}) adicionado com sucesso')
-            else:
-                messages.error(request, 'Houve um erro ao tentar salvar coautor')
-
-            return redirect('my_media_details', pk)
-
-        if action == 'discard':
+            return handle_add_form(
+                request,
+                form,
+                'Coautor ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar coautor',
+                'my_media_details',
+                pk=pk
+            )
+        elif action == 'location':
+            form = AddLocationForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Local ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar local',
+                'my_media_details',
+                pk=pk
+            )
+        elif action == 'taxa':
+            form = AddTaxaForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Táxon ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar táxon',
+                'my_media_details',
+                pk=pk
+            )
+        elif action == 'discard':
             modified_media.delete()
             messages.success(request, "Alterações discartadas com sucesso")
             return redirect('my_media_details', pk)
@@ -642,6 +729,8 @@ def my_media_details(request, pk):
     is_curator = request.user.curatorship_curator.exists()
 
     registration_form = CoauthorRegistrationForm()
+    location_form = AddLocationForm()
+    taxa_form = AddTaxaForm()
     modified_media_form = ModifiedMediaForm(instance=media, author_form=True)
 
     context = {
@@ -650,6 +739,8 @@ def my_media_details(request, pk):
         'modified_media_form': modified_media_form,
         'form': form,
         'registration_form': registration_form,
+        'location_form': location_form,
+        'taxa_form': taxa_form,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }
@@ -700,39 +791,10 @@ def my_media_list(request):
             else:
                 messages.warning(request, _('Nenhum registro foi selecionado'))
 
-    filtered_queryset = queryset
-
-    search = request.GET.get('search')
-    if search:
-        filtered_queryset = filtered_queryset.filter(title__icontains=search)
+    query_dict = request.GET.copy()
+    filtered_queryset = filter_medias(queryset, query_dict)
     
-
-    curation_ids = request.GET.getlist('curations')
-    if curation_ids:
-        filtered_curations = Curadoria.objects.filter(id__in=curation_ids)
-
-        taxons = set()
-        for curation in filtered_curations:
-            taxons.update(curation.taxons.all())
-
-        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
-
-
-    status = request.GET.get('status')
-    if status:
-        filtered_queryset = filtered_queryset.filter(status=status)
-
-
-    alphabetical_order = request.GET.get('alphabetical_order')
-    if alphabetical_order:
-        filtered_queryset = filtered_queryset.order_by('title')
-    
-    filter_form = DashboardFilterForm({
-        'search': search,
-        'curations': curation_ids,
-        'alphabetical_order': alphabetical_order,
-        'status': status,
-    })
+    filter_form = DashboardFilterForm(query_dict)
 
     user = request.user
     queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
@@ -912,40 +974,11 @@ def revision_media_list(request):
                     messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
             else:
                 messages.warning(request, _('Nenhum registro foi selecionado'))
+
+    query_dict = request.GET.copy()
+    filtered_queryset = filter_medias(queryset, query_dict, curations)
     
-    filtered_queryset = queryset
-
-    search = request.GET.get('search')
-    if search:
-        filtered_queryset = filtered_queryset.filter(title__icontains=search)
-    
-
-    curation_ids = request.GET.getlist('curations')
-    if curation_ids:
-        filtered_curations = curations.filter(id__in=curation_ids)
-
-        taxons = set()
-        for curation in filtered_curations:
-            taxons.update(curation.taxons.all())
-
-        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
-    
-
-    status = request.GET.get('status')
-    if status:
-        filtered_queryset = filtered_queryset.filter(status=status)
-
-
-    alphabetical_order = request.GET.get('alphabetical_order')
-    if alphabetical_order:
-        filtered_queryset = filtered_queryset.order_by('title')
-    
-    filter_form = DashboardFilterForm({
-        'search': search,
-        'curations': curation_ids,
-        'alphabetical_order': alphabetical_order,
-        'status': status,
-    }, user_curations=curations)
+    filter_form = DashboardFilterForm(query_dict, user_curations=curations)
     
     queryset_paginator = Paginator(filtered_queryset, records_number)
     page_num = request.GET.get('page')
@@ -1034,6 +1067,29 @@ def revision_modified_media(request, media_id):
 def revision_media_details(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     if request.method == 'POST':
+        action = request.POST.get('action', None)
+
+        if action == 'location':
+            form = AddLocationForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Local ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar local',
+                'revision_media_details',
+                pk=media_id
+            )
+        elif action == 'taxa':
+            form = AddTaxaForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Táxon ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar táxon',
+                'revision_media_details',
+                pk=media_id
+            )
+        
         form = EditMetadataForm(request.POST, instance=media)
         
         if form.is_valid():
@@ -1081,11 +1137,16 @@ def revision_media_details(request, media_id):
     else:
         form.fields['state'].queryset = State.objects.none()
     
+    location_form = AddLocationForm()
+    taxa_form = AddTaxaForm()
+
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     context = {
         'form': form,
+        'location_form': location_form,
+        'taxa_form': taxa_form,
         'media': media,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
@@ -1123,8 +1184,7 @@ def my_curations_media_list(request):
 
     specialist_queryset = Media.objects.filter(Q(taxa__in=curations_as_specialist_taxons))    
 
-    queryset = (curator_queryset | specialist_queryset).distinct()
-    filtered_queryset = queryset
+    queryset = (curator_queryset | specialist_queryset).exclude(status='loaded').distinct()
 
 
     if request.method == 'POST':
@@ -1173,39 +1233,10 @@ def my_curations_media_list(request):
             else:
                 messages.warning(request, _('Nenhum registro foi selecionado'))
     
-    filtered_queryset = queryset
-
-    search = request.GET.get('search')
-    if search:
-        filtered_queryset = filtered_queryset.filter(title__icontains=search)
+    query_dict = request.GET.copy()
+    filtered_queryset = filter_medias(queryset, query_dict, curations)
     
-
-    curation_ids = request.GET.getlist('curations')
-    if curation_ids:
-        filtered_curations = curations.filter(id__in=curation_ids)
-
-        taxons = set()
-        for curation in filtered_curations:
-            taxons.update(curation.taxons.all())
-
-        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
-    
-
-    status = request.GET.get('status')
-    if status:
-        filtered_queryset = filtered_queryset.filter(status=status)
-
-
-    alphabetical_order = request.GET.get('alphabetical_order')
-    if alphabetical_order:
-        filtered_queryset = filtered_queryset.order_by('title')
-    
-    filter_form = DashboardFilterForm({
-        'search': search,
-        'curations': curation_ids,
-        'alphabetical_order': alphabetical_order,
-        'status': status,
-    }, user_curations=curations)
+    filter_form = DashboardFilterForm(query_dict, user_curations=curations)
 
 
     queryset_paginator = Paginator(filtered_queryset, records_number)

@@ -189,7 +189,7 @@ def curations_media_required(view_func):
 
         specialist_queryset_ids = Media.objects.filter(Q(taxa__in=curations_as_specialist_taxons)) .values_list('id', flat=True)   
 
-        queryset_ids = (curator_queryset_ids | specialist_queryset_ids).distinct()
+        queryset_ids = (curator_queryset_ids | specialist_queryset_ids).exclude(status='loaded').distinct()
         
         if media_id in queryset_ids:
             return view_func(request, *args, **kwargs)

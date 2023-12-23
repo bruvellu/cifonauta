@@ -4,6 +4,8 @@ import os
 import shutil
 import uuid
 
+from media_utils import Metadata
+
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.postgres.aggregates import StringAgg
@@ -20,10 +22,16 @@ from mptt.models import MPTTModel
 class Curadoria(models.Model):
     name = models.CharField(max_length=50)
     taxons = models.ManyToManyField('Taxon', blank=True)
-    specialists = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='curatorship_specialist', 
-            blank=True, verbose_name=_('especialistas'), help_text=_('Especialistas da curadoria.'))
-    curators = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='curatorship_curator',
-            blank=True, verbose_name=_('curadores'), help_text=_('Curadores da curadoria.'))
+    specialists = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                         related_name='curatorship_specialist',
+                                         blank=True,
+                                         verbose_name=_('especialistas'),
+                                         help_text=_('Especialistas da curadoria.'))
+    curators = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                      related_name='curatorship_curator',
+                                      blank=True,
+                                      verbose_name=_('curadores'),
+                                      help_text=_('Curadores da curadoria.'))
 
     def __str__(self):
         return self.name
@@ -322,6 +330,66 @@ class Media(models.Model):
                              # SearchVector('state__name', weight='D') + \
                              # SearchVector('country__name', weight='D')
 
+    def update_metadata(self):
+
+        tags = []
+        for tag in self.tags.all():
+            tags.append(tag.name)
+
+        sources = []
+        for source in self.specialists.all():
+            sources.append(source.name)
+
+        authors = []
+        for author in self.authors.all():
+            authors.append(author.name)
+
+        headlines = []
+        for headline in self.taxa.all():
+            headlines.append(headline.name)
+
+        credits = []
+        for credit in self.references.all():
+            credits.append(credit.name)
+
+        city = self.city
+        if city != None:
+            city = city.name
+        
+        state = self.state
+        if state != None:
+            state = state.name
+        
+        country = self.country
+        if country != None:
+            country = country.name
+
+        metadata = {
+            'headline': ', '.join(headlines),
+            'instructions': self.scale,
+            'source': ', '.join(sources),
+            'credit': ', '.join(credits),
+            'license': self.license,
+            'authors': ', '.join(authors),
+            'keywords': tags,
+            'description_pt': self.caption_pt_br,
+            'description_en': self.caption_en,
+            'title_pt': self.title_pt_br,
+            'title_en': self.title_en,
+            'city': city,
+            'state': state,
+            'country': country,
+            'gps': self.geolocation
+
+        }
+
+        #Filepath
+        meta = Metadata(f"site_media/{self.file}")
+        meta.insert_metadata(metadata)
+
+        #Coverpath
+        meta = Metadata(f"site_media/{self.coverpath}")
+        meta.insert_metadata(metadata)
 
     class Meta:
         verbose_name = _('arquivo')

@@ -9,9 +9,8 @@ sorl-thumbnail
 requests
 pillow
 fabric
-IPTCInfo3
-python-xmp-toolkit
-piexif
 suds
 django-simple-captcha
 python-dotenv
+py3exiv2
+piexif

@@ -695,14 +695,15 @@ class Metadata():
                 'latitude': latitude,
                 'longitude': longitude}
 
+
 def number_of_entries_per_page(request, session_name, value=None):
     if value and int(value) > 0:
         request.session[session_name] = value
-    
     try:
         return request.session[session_name]
     except:
         return 12
+
 
 def validate_specialist_action_form(request, medias):
     for media in medias:
@@ -711,3 +712,10 @@ def validate_specialist_action_form(request, medias):
         if not media.title_en:
             return ['Título [en]', 'Este campo é obrigatório.']
 
+
+def normalize_object_name(name):
+    preps = ('de', 'da', 'do', 'das', 'dos', 'e', 'no', 'na')
+    split_name = name.lower().split(' ')
+    name = [name.capitalize() if name not in preps else name for name in split_name]
+    name = ' '.join(name)
+    return name

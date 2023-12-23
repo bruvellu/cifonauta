@@ -3,7 +3,7 @@
 from django import forms
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
-from .models import Media, Curadoria, ModifiedMedia, Person, Taxon, Tour
+from .models import Media, Curadoria, ModifiedMedia, Person, Taxon, Tour, Location
 from user.models import UserCifonauta
 from django.template import loader 
 from django.core.mail import EmailMultiAlternatives
@@ -218,7 +218,7 @@ class UpdateMyMediaForm(forms.ModelForm):
 class EditMetadataForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = Media
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'date_created', 'taxa', 'tags', 'scale', 'country', 'state', 'city', 'location', 'latitude', 'longitude')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'tags', 'scale', 'country', 'state', 'city', 'location', 'latitude', 'longitude')
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
@@ -227,11 +227,12 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
         }
     
     def __init__(self, *args, **kwargs):
+        editing_media_details = kwargs.pop('editing_media_details', None)
         super().__init__(*args, **kwargs)
 
-        self.fields['title_pt_br'].required = True
-        self.fields['title_en'].required = True
-        self.fields['date_created'].required = True
+        if not editing_media_details:
+            self.fields['title_pt_br'].required = True
+            self.fields['title_en'].required = True
         self.fields['tags'].queryset = self.fields['tags'].queryset.order_by('category')
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
 
@@ -250,6 +251,16 @@ class CoauthorRegistrationForm(forms.ModelForm):
         model = Person
         fields = ('name',)
 
+class AddLocationForm(forms.ModelForm):
+    class Meta:
+        model = Location
+        fields = ('name',)
+
+class AddTaxaForm(forms.ModelForm):
+    class Meta:
+        model = Taxon
+        fields = ('name',)
+
 class ModifiedMediaForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = ModifiedMedia
@@ -266,13 +277,14 @@ class ModifiedMediaForm(forms.ModelForm, SendEmailForm):
             self.fields.pop('tags')
             self.fields.pop('scale')
             self.fields['license'].required = True
+            self.fields['date_created'].required = True
         else:
             self.fields.pop('authors')
             self.fields.pop('license')
+            self.fields.pop('date_created')
 
         self.fields['title_pt_br'].required = True
         self.fields['title_en'].required = True
-        self.fields['date_created'].required = True
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
     
     def clean_taxa(self):

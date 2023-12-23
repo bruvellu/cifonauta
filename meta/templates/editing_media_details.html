@@ -3,6 +3,8 @@
 
 {% block extra_head %}
 <script src="{% static 'js/adm_sync_location_fields.js' %}" defer></script>
+<script src="{% static 'js/adm_popup.js' %}" defer></script>
+<script src="{% static 'js/editing_media_details.js' %}" defer></script>
 {% endblock %}
 
 {% block title %}Editar Mídia{% endblock %}
@@ -59,6 +61,16 @@
             {% get_field_value media 'license' as license %}
             <div>{{ media.get_license_display }}</div>
         </div>
+        <div>
+            <p>Data de Criação:</p>
+            <div>
+                {% if media.date_created.date|date:"d/m/Y" == '01/01/0001' %}
+                Data desconhecida
+                {% else %}
+                {{ media.date_created.date }}
+                {% endif %}
+            </div>
+        </div>
     </div>
     {% for field in form %}
     {% if field == form.country %}
@@ -71,6 +83,44 @@
         </div>
         <div class="field-div">
             {{ field }}
+            {% if field.help_text %}
+            <span class="help-text">{{ field.help_text }}</span>
+            {% endif %}
+        </div>
+    </div>
+    {% elif field == form.location or field == form.taxa %}
+    <div class="field-container">
+        <div class="label-div">
+            {{ field.label_tag }}
+            {% if field.field.required %}
+            <span class='required'>*</span>
+            {% endif %}
+        </div>
+        <div class="field-div">
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <div class="add-new-object-div">
+                {{ field }}
+                <button 
+                    type="button"
+                    {% if field == form.location %}
+                    id="open-location-modal-btn" 
+                    {% elif field == form.taxa %}
+                    id="open-taxa-modal-btn"
+                    {% endif %}
+                    class="add-new-object-btn"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="19" x2="12" y2="5"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                </button>
+            </div>
             {% if field.help_text %}
             <span class="help-text">{{ field.help_text }}</span>
             {% endif %}
@@ -96,7 +146,7 @@
     <div class="field-container">
         <div class="label-div">
             {{ field.label_tag }}
-            {% if field.field.required %}
+            {% if field.field.required or field == form.title_pt_br or field == form.title_en %}
             <span class='required'>*</span>
             {% endif %}
         </div>
@@ -121,5 +171,9 @@
         <button class='primary-button neutral-button' type="submit" name="action" value="save_only">Apenas salvar</button>
     </div>
 </form>
+
+{% include 'dashboard_location_modal.html' %}
+
+{% include 'dashboard_taxa_modal.html' %}
 
 {% endblock %}

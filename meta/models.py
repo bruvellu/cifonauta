@@ -339,12 +339,12 @@ class Media(models.Model):
         '''Controls resizing and processing of images.'''
         # Large files
         self.create_resized_image('large')
-        #TODO: Medium files
-        # self.create_resized_image('medium')
-        #TODO: Small files
-        # self.create_resized_image('small')
-        #TODO: Cover files
-        # self.create_resized_image('cover')
+        # Medium files
+        self.create_resized_image('medium')
+        # Small files
+        self.create_resized_image('small')
+        # Cover files
+        self.create_resized_image('cover')
 
     def create_resized_image(self, size):
         '''Resize image files to different pre-defined dimensions.
@@ -353,7 +353,6 @@ class Media(models.Model):
 
         See MEDIA_DEFAULTS for details.
         '''
-
         # Only allow pre-defined size values
         if size not in settings.MEDIA_DEFAULTS['photo'].keys():
             return False
@@ -365,11 +364,15 @@ class Media(models.Model):
         # Save original file to resized field using new name
         field.save(content=self.file, name=f'{self.uuid}_{size}.jpg')
 
+        # Get format, dimension, and quality for convenience
+        format = settings.MEDIA_DEFAULTS['photo'][size]['format']
+        dimension = settings.MEDIA_DEFAULTS['photo'][size]['dimension']
+        quality = settings.MEDIA_DEFAULTS['photo'][size]['quality']
+
         # Resize image
-        resized = resize_image(filepath=self.file_large.path,
-                               format=settings.MEDIA_DEFAULTS['photo'][size]['format'],
-                               dimension=settings.MEDIA_DEFAULTS['photo'][size]['dimension'],
-                               quality=settings.MEDIA_DEFAULTS['photo'][size]['quality'])
+        resized = resize_image(field.path, format, dimension, quality)
+
+        # Return something, if needed
         if resized:
             return True
         else:

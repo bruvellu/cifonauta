@@ -4,8 +4,9 @@ import os
 import shutil
 import uuid
 
-from media_utils import Metadata
+from media_utils import Metadata, resize_image
 
+from django.core.files import File
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.postgres.aggregates import StringAgg
@@ -85,7 +86,12 @@ class Media(models.Model):
     file = models.FileField(upload_to=user_upload_directory,
                             default=None,
                             null=True,
-                            help_text=_('Arquivo carregado pelo usuário.'))
+                            help_text=_('Arquivo original carregado pelo usuário.'))
+
+    file_large = models.FileField(upload_to=user_upload_directory,
+                                  default=None,
+                                  null=True,
+                                  help_text=_('Arquivo processado em tamanho grande.'))
 
     sitepath = models.FileField(_('arquivo web'),
                                 upload_to=save_cover,
@@ -304,12 +310,23 @@ class Media(models.Model):
                                             blank=True,
                                             help_text=_('ID do vídeo no antigo modelo.'))
 
-
     def __str__(self):
         return 'ID={} {} ({}) {}'.format(self.id, self.title, self.datatype, self.status)
 
     def get_absolute_url(self):
         return reverse('media_url', args=[str(self.id)])
+
+    def generate_file_large_image(self):
+        '''Create file version with large size.'''
+        # Copy original file with new name
+        self.file_large = File(self.file, f'{self.uuid}_large.jpg')
+        # Save model to set the path properly
+        self.save()
+        # Resize image
+        resize_image(filepath=self.file_large.path,
+                     format=settings.MEDIA_DEFAULTS['photo']['large']['format'],
+                     maxsize=settings.MEDIA_DEFAULTS['photo']['large']['maxsize'],
+                     quality=settings.MEDIA_DEFAULTS['photo']['large']['quality'])
 
     def update_search_vector(self):
         '''Collect metadata and update the search vector field.'''

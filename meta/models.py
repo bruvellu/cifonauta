@@ -337,13 +337,9 @@ class Media(models.Model):
 
     def process_images(self):
         '''Controls resizing and processing of images.'''
-        # Large files
         self.create_resized_image('large')
-        # Medium files
         self.create_resized_image('medium')
-        # Small files
         self.create_resized_image('small')
-        # Cover files
         self.create_resized_image('cover')
 
     def create_resized_image(self, size):

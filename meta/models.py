@@ -316,17 +316,34 @@ class Media(models.Model):
     def get_absolute_url(self):
         return reverse('media_url', args=[str(self.id)])
 
-    def generate_file_large_image(self):
-        '''Create file version with large size.'''
-        # Copy original file with new name
-        self.file_large = File(self.file, f'{self.uuid}_large.jpg')
-        # Save model to set the path properly
-        self.save()
+    def create_resized_image(self, size):
+        '''Resize image files to different pre-defined dimensions.
+
+        Options: large, medium, small, cover.
+
+        See MEDIA_DEFAULTS for details.
+        '''
+
+        # Only allow pre-defined size values
+        if size not in settings.MEDIA_DEFAULTS['photo'].keys():
+            return False
+
+        # Delete file from resized field
+        field = getattr(self, f'file_{size}')
+        field.delete()
+
+        # Save original file to resized field using new name
+        field.save(content=self.file, name=f'{self.uuid}_{size}.jpg')
+
         # Resize image
-        resize_image(filepath=self.file_large.path,
-                     format=settings.MEDIA_DEFAULTS['photo']['large']['format'],
-                     maxsize=settings.MEDIA_DEFAULTS['photo']['large']['maxsize'],
-                     quality=settings.MEDIA_DEFAULTS['photo']['large']['quality'])
+        resized = resize_image(filepath=self.file_large.path,
+                               format=settings.MEDIA_DEFAULTS['photo'][size]['format'],
+                               dimension=settings.MEDIA_DEFAULTS['photo'][size]['dimension'],
+                               quality=settings.MEDIA_DEFAULTS['photo'][size]['quality'])
+        if resized:
+            return True
+        else:
+            return False
 
     def update_search_vector(self):
         '''Collect metadata and update the search vector field.'''

@@ -26,14 +26,16 @@ from gi.repository import GExiv2"""
 logger = logging.getLogger('cifonauta.utils')
 
 
-def resize_image(filepath, format, maxsize, quality):
+def resize_image(filepath, format, dimension, quality):
     '''Uses Pillow's thumbnail method to scale images.'''
     image = Image.open(filepath)
-    image.thumbnail((maxsize, maxsize))
+    image.thumbnail((dimension, dimension))
     try:
         image.save(filepath, format=format, quality=quality)
+        return True
     except OSError as error:
         logger.critical(f'Could not save {filepath}: {error}')
+        return False
 
 
 def read_photo_metadata(filepath):

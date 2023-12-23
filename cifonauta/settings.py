@@ -188,6 +188,14 @@ PHOTO_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.gif')
 VIDEO_EXTENSIONS = ('.mp4',)
 MEDIA_EXTENSIONS = PHOTO_EXTENSIONS + VIDEO_EXTENSIONS
 
+# Default resolutions for media files
+MEDIA_DEFAULTS = {'photo': {'large': {'format': 'jpg', 'width': 2000, 'quality': 90},
+                            'medium': {'format': 'jpg', 'width': 1000, 'quality': 70},
+                            'small': {'format': 'jpg', 'width': 500, 'quality': 70}},
+                  'video': {'large': {'format': 'mp4', 'width': 1920, 'bitrate': 1200},
+                            'medium': {'format': 'mp4', 'width': 1280, 'bitrate': 600},
+                            'small': {'format': 'mp4', 'width': 640, 'bitrate': 600}},}
+
 # Regex for filename of uploaded files
 FILENAME_REGEX = fr'{os.environ["FILENAME_REGEX"]}'
 

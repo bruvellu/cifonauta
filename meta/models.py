@@ -6,7 +6,6 @@ import uuid
 
 from media_utils import Metadata, resize_image
 
-from django.core.files import File
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.postgres.aggregates import StringAgg

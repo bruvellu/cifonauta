@@ -1913,6 +1913,7 @@ def media_page(request, media_id):
     tags = media.tags.all()
     authors = media.authors.all()
     specialists = media.specialists.all()
+    curators = media.curators.all()
     taxa = media.taxa.all()
     references = media.references.all()
     filename, file_extension = os.path.splitext(str(media.coverpath))
@@ -1926,6 +1927,7 @@ def media_page(request, media_id):
         'authors': authors,
         'taxa': taxa,
         'specialists': specialists,
+        'curators': curators,
         'references': references,
         'file_extension': file_extension
         }

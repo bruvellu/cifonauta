@@ -1,4 +1,4 @@
-class ModalHandler {
+class Modal {
     modalTrigger
     modalClose
     modalOverlay

@@ -26,35 +26,34 @@ dashboardForm.addEventListener('submit', (event) => {
 let modalContainer = document.querySelector('#modal-container')
 let openModalButton = document.querySelector('#open-modal-button')
 let closeModalButton = document.querySelector('#close-modal-button')
-
-const modalHandler = new ModalHandler({ 
+const modalHandler = new Modal({ 
     modalContent: modalContainer,
     modalTrigger: openModalButton,
     modalClose: closeModalButton
 })
 
+
 let locationModal = document.querySelector('#location-modal')
 let openLocationModalBtn = document.querySelector('#open-location-modal-btn')
 let closeLocationModalBtn = document.querySelector('#close-location-modal-btn')
-
-const locationModalHandler = new ModalHandler({
+const locationModalHandler = new Modal({
     modalContent: locationModal,
     modalTrigger: openLocationModalBtn,
     modalClose: closeLocationModalBtn
 })
 
+
 let taxaModal = document.querySelector('#taxa-modal')
 let openTaxaModalBtn = document.querySelector('#open-taxa-modal-btn')
 let closeTaxaModalBtn = document.querySelector('#close-taxa-modal-btn')
-
-const taxaModalHandler = new ModalHandler({
+const taxaModalHandler = new Modal({
     modalContent: taxaModal,
     modalTrigger: openTaxaModalBtn,
     modalClose: closeTaxaModalBtn
 })
 
 
-let stateContainer = document.querySelector('.country-container').nextElementSibling
-let cityContainer = document.querySelector('.country-container').nextElementSibling.nextElementSibling
-stateContainer.classList.add('hide-div')
-cityContainer.classList.add('hide-div')
+let stateContainerStep2 = document.querySelector('.country-container').nextElementSibling
+let cityContainerStep2 = document.querySelector('.country-container').nextElementSibling.nextElementSibling
+stateContainerStep2.classList.add('hide-div')
+cityContainerStep2.classList.add('hide-div')

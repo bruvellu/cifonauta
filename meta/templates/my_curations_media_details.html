@@ -11,7 +11,7 @@
 
 {% block dashboard_content %}
 
-{% if modified_media and not modified_media.altered_by_author %}
+{% if modified_media and is_modification_owner and not modified_media.altered_by_author %}
 <div id="modal-container" class="media-changes-modal">
     <div class="modal-header media-changes-modal-header">
         <p>Alterações da mídia</p>
@@ -69,13 +69,13 @@
 {% if messages %}
 <div class="messages-div">
     {% for message in messages %}
-    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message|safe }} </span>
     {% endfor %}
 </div>
 {% endif %}
 
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
-    {% if modified_media and not modified_media.altered_by_author %}
+    {% if modified_media and is_modification_owner and not modified_media.altered_by_author %}
     <button id="open-modal-button" class='primary-button neutral-button modifications-button' type="button">Ver alterações</button>
     {% endif %}
 
@@ -176,7 +176,7 @@
     {% endif %}
     {% endfor %}
     <div class='buttons-div'>
-        <button class='primary-button submit-button' {% if media.status != 'published' or modified_media and modified_media.altered_by_author%}disabled{% endif %} type="submit">Alterar</button>
+        <button class='primary-button submit-button' {% if media.status != 'published' or modified_media and not is_modification_owner or modified_media and modified_media.altered_by_author %}disabled{% endif %} type="submit">Alterar</button>
     </div>
 </form>
 

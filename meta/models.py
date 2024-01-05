@@ -404,8 +404,8 @@ class ModifiedMedia(Media):
     altered_by_author = models.BooleanField(_('alterada pelo autor'),
             default=True,
             help_text=_('Flag indicando quem fez a alteração na mídia.'))
-    specialist_person = models.OneToOneField('Person', null=True, blank=True, on_delete=models.CASCADE,
-            verbose_name=_('Especialista da mídia modificada'), help_text=_('Especialista que realizou alterações na mídia publicada'))
+    modification_person = models.ForeignKey('Person', null=True, on_delete=models.CASCADE, related_name='modified_medias',
+            verbose_name=_('Pessoa da mídia modificada'), help_text=_('Pessoa que realizou alterações na mídia publicada'))
 
     class Meta:
         verbose_name = _("mídia modificada")

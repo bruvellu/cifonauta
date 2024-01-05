@@ -382,7 +382,7 @@ def editing_media_details(request, media_id):
                 'editing_media_details',
                 pk=media_id
             )
-        
+
         form = EditMetadataForm(request.POST, instance=media, editing_media_details=True)
 
         action = request.POST.get('action')
@@ -607,6 +607,10 @@ def my_media_details(request, pk):
     modified_media = ModifiedMedia.objects.filter(media=media).first()
     user_person = Person.objects.get(user_cifonauta=request.user)
 
+    is_modification_owner = False
+    if modified_media and modified_media.modification_person == user_person:
+        is_modification_owner = True
+    
     if request.method == 'POST':
         action = request.POST.get('action', None)
 
@@ -650,7 +654,7 @@ def my_media_details(request, pk):
             return redirect('my_media_details', pk)
 
         if modified_media and not modified_media.altered_by_author:
-            messages.error(request, "Esta mídia tem alterações pendentes de um especialista. Não é possível fazer mudanças até que elas sejam revisadas pelo curador")
+            messages.error(request, "Não é possível realizar mudanças em uma mídia com alterações pendentes.")
 
             return redirect('my_media_details', pk)
 
@@ -674,7 +678,7 @@ def my_media_details(request, pk):
 
                 else:
                     if form.has_changed():
-                        new_modified_media = ModifiedMedia(media=media)
+                        new_modified_media = ModifiedMedia(media=media, modification_person=user_person)
                         form = UpdateMyMediaForm(request.POST, instance=new_modified_media, media_author=user_person, media_status=media.status)
 
                         form.save()
@@ -705,10 +709,14 @@ def my_media_details(request, pk):
         form = UpdateMyMediaForm(instance=media, media_status=media.status)
 
     if modified_media:
-        if modified_media.altered_by_author and not messages.get_messages(request):
-            messages.warning(request, "Esta mídia tem alterações pendentes. Clique no botão abaixo para ver as alterações. Se você fizer outras alterações, as anteriores serão sobrepostas")
-        elif not modified_media.altered_by_author and not messages.get_messages(request):
-            messages.warning(request, "Esta mídia tem alterações pendentes de um especialista. Não é possível realizar alterações até que elas sejam revisadas pelo curador")
+        if not messages.get_messages(request):
+            if modified_media.altered_by_author:
+                messages.warning(request, "Esta mídia tem alterações pendentes. Clique no botão abaixo para ver as alterações. Se você fizer novas alterações, as anteriores serão sobrepostas")
+            elif not is_modification_owner:
+                messages.warning(request, "Esta mídia tem alterações pendentes de um especialista. Não é possível realizar alterações até que elas sejam revisadas pelo curador")
+        if is_modification_owner and not modified_media.altered_by_author:
+            url = reverse('my_curations_media_details', args=[pk])
+            messages.info(request, f'Esta mídia tem alterações sua como especialista. Para vê-las, <a href={url}>Clique aqui</a>')
     elif media.status == 'submitted':
         messages.warning(request, "Não é possível fazer alteração em mídias que estão submetidas para revisão")
 
@@ -741,6 +749,7 @@ def my_media_details(request, pk):
         'registration_form': registration_form,
         'location_form': location_form,
         'taxa_form': taxa_form,
+        'is_modification_owner': is_modification_owner,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }
@@ -1032,7 +1041,8 @@ def revision_modified_media(request, media_id):
             form = ModifiedMediaForm(request.POST, instance=media, author_form=True) if modified_media.altered_by_author else ModifiedMediaForm(request.POST, instance=media)
             form.save()
 
-            media.specialists.add(modified_media.specialist_person)
+            if not modified_media.altered_by_author:
+                media.specialists.add(modified_media.modification_person)
 
             form.send_mail(request.user, media.user, media, 'Alteração de mídia no Cifonauta', 'email_modified_media.html', modification_accepted=True)
 
@@ -1265,15 +1275,19 @@ def my_curations_media_details(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     modified_media = ModifiedMedia.objects.filter(media=media).first()
     user_person = Person.objects.filter(user_cifonauta=request.user.id).first()
-
     curations = Curadoria.objects.filter(taxons__in=media.taxa.all()).distinct()
     curations_as_curator = request.user.curatorship_curator.all()
-
+    
     is_only_media_specialist = True
     for curation in curations_as_curator:
         if curation in curations:
             is_only_media_specialist = False
             break
+
+    is_modification_owner = False
+    if modified_media and modified_media.modification_person == user_person:
+        is_modification_owner = True
+
 
     if request.method == 'POST':
         action = request.POST.get('action', None)
@@ -1287,8 +1301,8 @@ def my_curations_media_details(request, media_id):
             messages.error(request, f'Não foi possível fazer alteração')
             return redirect('my_curations_media_details', media_id)
 
-        if modified_media and modified_media.altered_by_author:
-            messages.error(request, "Esta mídia tem alterações pendentes do autor. Não é possível fazer mudanças até que elas sejam revisadas pelo curador")
+        if modified_media and (not is_modification_owner or modified_media.altered_by_author):
+            messages.error(request, "Não é possível realizar mudanças em uma mídia com alterações pendentes.")
             return redirect('my_curations_media_details', media_id)
         
         form = EditMetadataForm(request.POST, instance=media)
@@ -1305,14 +1319,15 @@ def my_curations_media_details(request, media_id):
                         messages.warning(request, 'Descarte a alteração pendente ou efetue uma alteração válida')
                 else:
                     if form.has_changed():
-                        new_modified_media = ModifiedMedia(media=media)
+                        new_modified_media = ModifiedMedia(
+                            media=media, 
+                            modification_person=user_person, 
+                            altered_by_author=False
+                        )
 
                         form = EditMetadataForm(request.POST, instance=new_modified_media)
 
-                        modified_media_instance = form.save()
-                        modified_media_instance.altered_by_author = False
-                        modified_media_instance.specialist_person = user_person
-                        modified_media_instance.save()
+                        form.save()
                     else:
                         messages.error(request, 'Nenhuma alteração identificada')
                 
@@ -1330,10 +1345,19 @@ def my_curations_media_details(request, media_id):
         form = EditMetadataForm(instance=media)
 
     if modified_media:
-        if not modified_media.altered_by_author and not messages.get_messages(request):
-            messages.warning(request, "Esta mídia tem alterações suas. Clique no botão abaixo para ver as alterações. Se você fizer outras alterações, as anteriores serão sobrepostas")
-        elif modified_media.altered_by_author and not messages.get_messages(request):
-            messages.warning(request, "Esta mídia tem alterações pendentes do autor. Não é possível realizar alterações até que elas sejam revisadas pelo curador")
+        if not messages.get_messages(request): # if it's not right after make changes to the media
+            if is_modification_owner and not modified_media.altered_by_author:
+                messages.warning(request, "Esta mídia tem alterações suas. Clique no botão abaixo para ver as alterações. Se você fizer novas alterações, as anteriores serão sobrepostas")
+            elif modified_media and not is_modification_owner:
+                messages.warning(request, "Esta mídia tem alterações pendentes. Não é possível fazer novas mudanças até que ela seja revisada")
+        
+        if is_modification_owner and modified_media.altered_by_author:
+            url = reverse('my_media_details', args=[media_id])
+            messages.info(request, f'Esta mídia tem alterações suas como autor. Para vê-las, <a href="{url}">Clique aqui</a>')
+            
+        if not is_only_media_specialist:
+            url = reverse('revision_modified_media', args=[media_id])
+            messages.info(request, f'Para revisar as alterações, <a href="{url}">Clique aqui</a>')
 
     if media.status != 'published':
         messages.warning(request, 'Esta mídia ainda não pode ser alterada por aqui, apenas depois de publicada')
@@ -1358,6 +1382,7 @@ def my_curations_media_details(request, media_id):
         'media': media,
         'modified_media': modified_media,
         'is_only_specialist': is_only_media_specialist,
+        'is_modification_owner': is_modification_owner,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }

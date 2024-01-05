@@ -72,9 +72,9 @@
 
 {% if messages %}
 <div class="messages-div">
-{% for message in messages %}
-<span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
-{% endfor %}
+  {% for message in messages %}
+  <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message|safe }} </span>
+  {% endfor %}
 </div>
 {% endif %}
 

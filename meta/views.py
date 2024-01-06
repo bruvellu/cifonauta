@@ -240,14 +240,6 @@ def upload_media_step2(request):
                         # Resize and process images
                         media_instance.process_images()
 
-                        coverpath = Image.open(media.coverpath.path)
-                        coverpath.thumbnail((1280, 720))
-                        coverpath.save(media.coverpath.path, quality=40)
-
-                        sitepath = Image.open(media.sitepath.path)
-                        sitepath.thumbnail((1280, 720))
-                        sitepath.save(media.sitepath.path)
-
                     #TODO: Implement video processing
                     # elif media.datatype == 'video':
 

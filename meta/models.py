@@ -114,13 +114,11 @@ class Media(models.Model):
 
     #TODO: Field to be deprecated
     sitepath = models.FileField(_('arquivo web'),
-                                upload_to=save_cover,
                                 default=None,
                                 help_text=_('Arquivo processado para a web.'))
 
     #TODO: Field to be deprecated
     coverpath = models.ImageField(_('imagem de capa'),
-                                  upload_to=save_cover,
                                   default=None,
                                   help_text=_('Imagem de capa para o arquivo processado.'))
 

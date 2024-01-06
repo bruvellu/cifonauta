@@ -335,7 +335,7 @@ class Media(models.Model):
         return reverse('media_url', args=[str(self.id)])
 
     def process_images(self):
-        '''Controls resizing and processing of images.'''
+        '''Controls the creation of resized images.'''
         self.create_resized_image('large')
         self.create_resized_image('medium')
         self.create_resized_image('small')
@@ -356,13 +356,14 @@ class Media(models.Model):
         field = getattr(self, f'file_{size}')
         field.delete()
 
-        # Save original file to resized field using new name
-        field.save(content=self.file, name=f'{self.uuid}_{size}.jpg')
-
         # Get format, dimension, and quality for convenience
         format = settings.MEDIA_DEFAULTS['photo'][size]['format']
         dimension = settings.MEDIA_DEFAULTS['photo'][size]['dimension']
         quality = settings.MEDIA_DEFAULTS['photo'][size]['quality']
+        extension = format.replace('jpeg', 'jpg')
+
+        # Save original file to resized field using new name
+        field.save(content=self.file, name=f'{self.uuid}_{size}.{extension}')
 
         # Resize image
         resized = resize_image(field.path, format, dimension, quality)
@@ -372,6 +373,7 @@ class Media(models.Model):
             return True
         else:
             return False
+
 
     def update_search_vector(self):
         '''Collect metadata and update the search vector field.'''

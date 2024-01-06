@@ -247,7 +247,7 @@ def upload_media_step2(request):
                         specialists_user.add(specialist)
                 
                 form.send_mail(request.user, specialists_user, medias, 'Nova mídia para edição no Cifonauta', 'email_media_to_editing_specialists.html')
-                print(form.cleaned_data['date_created'])
+                # print(form.cleaned_data['date_created'])
                 messages.success(request, 'Suas mídias foram salvas com sucesso')
                 return redirect('my_media_list')
 
@@ -258,7 +258,7 @@ def upload_media_step2(request):
 
         metadata = None
         for media in medias:
-            print(media.file.name)
+            # print(media.file.name)
             try:
                 metadata = Metadata(f'site_media/{media.file.name}')
                 try:
@@ -273,7 +273,7 @@ def upload_media_step2(request):
                 pass        
         
         if metadata:
-            print(read_metadata)
+            # print(read_metadata)
             authors = []
             authors_meta = read_metadata['authors'].split(',')
             for author in authors_meta:
@@ -491,7 +491,7 @@ def filter_medias(queryset, query_dict, curations=''):
     if alphabetical_order:
         filtered_queryset = filtered_queryset.order_by('title')
 
-    print(query_dict)
+    # print(query_dict)
     return filtered_queryset
 
 

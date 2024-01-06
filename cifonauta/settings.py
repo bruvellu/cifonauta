@@ -201,7 +201,8 @@ MEDIA_DEFAULTS = {
             'extension': 'mp4',
             'large': {'format': 'mp4', 'dimension': 1920, 'bitrate': 1200},
             'medium': {'format': 'mp4', 'dimension': 1280, 'bitrate': 600},
-            'small': {'format': 'mp4', 'dimension': 640, 'bitrate': 600}
+            'small': {'format': 'mp4', 'dimension': 640, 'bitrate': 600},
+            'cover': {'format': 'jpeg', 'dimension': 750, 'quality': 70}
             },
         }
 

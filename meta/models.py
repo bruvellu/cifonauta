@@ -43,14 +43,6 @@ def user_upload_directory(instance, filename):
     return f'{settings.UPLOAD_ROOT}/{instance.user.username}/{filename}'
 
 
-def save_file(instance, filename):
-    return f'{settings.UPLOAD_ROOT}/{instance.user.username}/{filename}'
-
-
-def save_cover(instance, filename):
-    return f'{instance.user.username}/{filename}'
-
-
 class Media(models.Model):
     '''Table with metadata for photo and video files.'''
 

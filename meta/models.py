@@ -360,7 +360,7 @@ class Media(models.Model):
         format = settings.MEDIA_DEFAULTS['photo'][size]['format']
         dimension = settings.MEDIA_DEFAULTS['photo'][size]['dimension']
         quality = settings.MEDIA_DEFAULTS['photo'][size]['quality']
-        extension = format.replace('jpeg', 'jpg')
+        extension = settings.MEDIA_DEFAULTS['photo']['extension']
 
         # Save original file to resized field using new name
         field.save(content=self.file, name=f'{self.uuid}_{size}.{extension}')

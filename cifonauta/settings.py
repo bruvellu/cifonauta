@@ -191,12 +191,14 @@ MEDIA_EXTENSIONS = PHOTO_EXTENSIONS + VIDEO_EXTENSIONS
 # Default resolutions for media files
 MEDIA_DEFAULTS = {
         'photo': {
+            'extension': 'jpg',
             'large': {'format': 'jpeg', 'dimension': 2000, 'quality': 90},
             'medium': {'format': 'jpeg', 'dimension': 1000, 'quality': 70},
             'small': {'format': 'jpeg', 'dimension': 500, 'quality': 70},
             'cover': {'format': 'jpeg', 'dimension': 750, 'quality': 70}
             },
         'video': {
+            'extension': 'mp4',
             'large': {'format': 'mp4', 'dimension': 1920, 'bitrate': 1200},
             'medium': {'format': 'mp4', 'dimension': 1280, 'bitrate': 600},
             'small': {'format': 'mp4', 'dimension': 640, 'bitrate': 600}

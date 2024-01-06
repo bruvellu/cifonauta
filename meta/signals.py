@@ -32,17 +32,15 @@ def update_search_vector(sender, instance, created, *args, **kwargs):
     sender.objects.filter(id=instance.id).update(search_vector=instance.update_search_vector())
 
 
+# Delete file from folder when the media is deleted on website
 @receiver(pre_delete, sender=Media)
-def delete_file_from_folder(sender, instance, **kwargs):
-    if instance.file:
-        if os.path.isfile(instance.file.path):
-            os.remove(instance.file.path)
-    if instance.coverpath:
-        if os.path.isfile(instance.coverpath.path):
-            os.remove(instance.coverpath.path)
-    if instance.sitepath:
-        if os.path.isfile(instance.sitepath.path):
-            os.remove(instance.sitepath.path)  
+def delete_files_from_folder(sender, instance, **kwargs):
+    # There are five media files to be deleted
+    os.remove(instance.file.path)
+    os.remove(instance.file_large.path)
+    os.remove(instance.file_medium.path)
+    os.remove(instance.file_small.path)
+    os.remove(instance.file_cover.path)
 
 
 @receiver(m2m_changed, sender=Curadoria.taxons.through)

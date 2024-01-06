@@ -760,8 +760,5 @@ class Stats(models.Model):
 # # Create citation with bibkey
 # models.signals.pre_save.connect(citation_pre_save, sender=Reference)
 
-# # Delete file from folder when the media is deleted on website
-# models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
-
 # # Get taxons descendents when creating a curatorship
 # models.signals.m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)

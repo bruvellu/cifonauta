@@ -1216,12 +1216,15 @@ def my_curations_media_list(request):
                             messages.error(request, 'Não é possível realizar ação em lotes de mídias não publicadas')
                             return redirect('my_curations_media_list')
                         
+                        if media.modified_media:
+                            messages.error(request, "Não é possível realizar ação em lotes de mídias com alterações pendentes.")
+                            return redirect('my_curations_media_list')
+
                         is_media_curator = False
                         for taxa in media.taxa.all():
                             if taxa in curations_as_curator_taxons:
                                 is_media_curator = True
                                 break
-                        
                         if not is_media_curator:
                             messages.error(request, 'Não é possível realizar ação em lotes de mídias que você não é curador')
                             return redirect('my_curations_media_list')

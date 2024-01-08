@@ -3,6 +3,7 @@ class Modal {
     modalClose
     modalOverlay
     modalContent
+    focusableElements
     isModalOpened = false
 
     constructor({ modalContent, modalTrigger, modalClose}) {
@@ -14,30 +15,51 @@ class Modal {
         this.modalOverlay.classList.add('modal-overlay')
         document.body.append(this.modalOverlay)
 
-        this.modalTrigger?.addEventListener('click', this.showModal.bind(this));
-        this.modalClose?.addEventListener('click', this.closeModal.bind(this));
-        this.modalOverlay.addEventListener('click', (event) => {
-            if (!this.modalContent?.contains(event.target) && 
-                !this.modalTrigger?.contains(event.target) &&
-                this.isModalOpened) {
-                    this.closeModal()
-            }
+        this.focusableElements = Array.from(
+          this.modalContent.querySelectorAll('button, input, select, textarea, [tabindex]:not([tabindex="-1"])')
+        )
+
+        this.modalTrigger?.addEventListener('click', this.showModal.bind(this))
+        this.modalClose?.addEventListener('click', this.closeModal.bind(this))
+        this.modalOverlay.addEventListener('click', () => {
+            this.closeModal()
         })
     }
 
     showModal() {
-        this.modalOverlay.classList.add('opened-behind-modal');
-        this.modalContent.classList.add('opened-modal');
-        this.modalContent.style.transition = '.3s';
-        document.documentElement.style.overflow = 'hidden';
-        this.isModalOpened = true;
+        this.modalOverlay.classList.add('opened-behind-modal')
+        this.modalContent.classList.add('opened-modal')
+        this.modalContent.style.transition = '.3s'
+        document.documentElement.style.overflow = 'hidden'
+        this.isModalOpened = true
+
+        this.modalContent.addEventListener('keydown', this.handleTabKey.bind(this))
+
+        this.modalClose.focus()
     }
 
     closeModal() {
-        this.modalOverlay.classList.remove('opened-behind-modal');
-        this.modalContent.classList.remove('opened-modal');
-        this.modalContent.style.transition = '0s';
-        document.documentElement.style.removeProperty('overflow');
-        this.isModalOpened = false;
+        this.modalOverlay.classList.remove('opened-behind-modal')
+        this.modalContent.classList.remove('opened-modal')
+        this.modalContent.style.transition = '0s'
+        document.documentElement.style.removeProperty('overflow')
+        this.isModalOpened = false
+
+        this.modalContent.removeEventListener('keydown', this.handleTabKey.bind(this))
+    }
+
+    handleTabKey(event) {
+        const firstElement = this.focusableElements[0];
+        const lastElement = this.focusableElements[this.focusableElements.length - 1];
+    
+        if (event.key.toLowerCase() === 'tab') {
+            if (event.shiftKey && document.activeElement === firstElement) {
+                event.preventDefault()
+                lastElement.focus()
+            } else if (!event.shiftKey && document.activeElement === lastElement) {
+                event.preventDefault()
+                firstElement.focus()
+            }
+        }
     }
 }

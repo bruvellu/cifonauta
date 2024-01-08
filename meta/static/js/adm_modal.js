@@ -11,12 +11,15 @@ class Modal {
         this.modalClose = modalClose
         this.modalContent = modalContent
 
+        // TODO: improve this
         this.modalOverlay = document.createElement('div')
         this.modalOverlay.classList.add('modal-overlay')
         document.body.append(this.modalOverlay)
 
         this.focusableElements = Array.from(
-          this.modalContent.querySelectorAll('button, input, select, textarea, [tabindex]:not([tabindex="-1"])')
+            this.modalContent.querySelectorAll(
+                'button, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
+            )
         )
 
         this.modalTrigger?.addEventListener('click', this.showModal.bind(this))
@@ -51,7 +54,7 @@ class Modal {
     handleTabKey(event) {
         const firstElement = this.focusableElements[0];
         const lastElement = this.focusableElements[this.focusableElements.length - 1];
-    
+
         if (event.key.toLowerCase() === 'tab') {
             if (event.shiftKey && document.activeElement === firstElement) {
                 event.preventDefault()

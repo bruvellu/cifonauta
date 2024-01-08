@@ -12,10 +12,10 @@
 {% block dashboard_content %}
 
 {% if modified_media and is_modification_owner and not modified_media.altered_by_author %}
-<div id="modal-container" class="media-changes-modal">
+<div data-modal="media-changes" id="modal-container" class="media-changes-modal">
     <div class="modal-header media-changes-modal-header">
         <p>Alterações da mídia</p>
-        <button id="close-modal-button" class="close-modal-button media-changes-close-modal-button" onclick="closeModal()">
+        <button data-close-modal="media-changes" id="close-modal-button" class="close-modal-button media-changes-close-modal-button" onclick="closeModal()">
             <div class='line1'></div>
             <div class='line2'></div>
         </button>
@@ -76,7 +76,7 @@
 
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
     {% if modified_media and is_modification_owner and not modified_media.altered_by_author %}
-    <button id="open-modal-button" class='primary-button neutral-button modifications-button' type="button">Ver alterações</button>
+    <button data-open-modal="media-changes" id="open-modal-button" class='primary-button neutral-button modifications-button' type="button">Ver alterações</button>
     {% endif %}
 
     {% csrf_token %}

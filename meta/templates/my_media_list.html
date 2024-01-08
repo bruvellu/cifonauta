@@ -52,11 +52,11 @@
     <form method="post" class="post-form-wrapper">
         {% csrf_token %}
 
-        <div id="modal-container" class="list-modal-container">
+        <div data-modal="group-action" id="modal-container" class="list-modal-container">
             <div>
                 <div class="modal-header">
                     <p>Processar em lote as mídias selecionadas</p>
-                    <button type="button" id="close-modal-button" class="close-modal-button">
+                    <button data-close-modal="group-action" type="button" id="close-modal-button" class="close-modal-button">
                         <div class='line1'></div>
                         <div class='line2'></div>
                     </button>
@@ -86,7 +86,7 @@
 
         {% if entries.object_list %}
         <div class='table-top'>
-            <button type="button" id="open-modal-button" class="primary-button action-button">Ações em lotes</button>
+            <button data-open-modal="group-action" type="button" id="open-modal-button" class="primary-button action-button">Ações em lotes</button>
             {% if entries.paginator.num_pages > 1 %}
             {% include 'pagination.html' %}
             {% endif %}

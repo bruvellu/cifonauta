@@ -112,11 +112,7 @@
                 {{ field }}
                 <button 
                     type="button"
-                    {% if field == form.location %}
-                    id="open-location-modal-btn" 
-                    {% elif field == form.taxa %}
-                    id="open-taxa-modal-btn"
-                    {% endif %}
+                    data-open-modal="{{ field.name }}"
                     class="add-new-object-btn"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

@@ -1196,7 +1196,6 @@ def my_curations_media_list(request):
 
     queryset = (curator_queryset | specialist_queryset).exclude(status='loaded').distinct()
 
-
     if request.method == 'POST':
         action = request.POST['action']
 

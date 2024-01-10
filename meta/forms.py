@@ -116,10 +116,11 @@ class SendEmailForm(forms.Form):
 class UploadMediaForm(forms.ModelForm,  SendEmailForm):
     class Meta:
         model = Media
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license', 'terms')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'references', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license', 'terms')
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
+            'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
             'date_created': forms.DateInput(attrs={'type': 'date'}),
             'terms': forms.CheckboxInput(attrs={'class': 'dashboard-input'})
         }
@@ -355,7 +356,6 @@ class MyMediasActionForm(forms.ModelForm):
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
         }
-
 
 class DashboardFilterForm(forms.Form):
     Curadoria = apps.get_model('meta', 'Curadoria')

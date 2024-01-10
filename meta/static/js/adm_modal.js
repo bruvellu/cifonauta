@@ -49,11 +49,12 @@ class Modal {
         this.isModalOpened = false
 
         this.modalContent.removeEventListener('keydown', this.handleTabKey.bind(this))
+        this.modalTrigger.focus()
     }
 
     handleTabKey(event) {
-        const firstElement = this.focusableElements[0];
-        const lastElement = this.focusableElements[this.focusableElements.length - 1];
+        const firstElement = this.focusableElements[0]
+        const lastElement = this.focusableElements[this.focusableElements.length - 1]
 
         if (event.key.toLowerCase() === 'tab') {
             if (event.shiftKey && document.activeElement === firstElement) {

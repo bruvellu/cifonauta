@@ -1,12 +1,20 @@
-<div data-modal="reference" class="modal-container list-modal-container">
+<div data-modal="references" class="modal-container list-modal-container">
     <header class="modal-header">
         <p>Procurar referências bibliográficas</p>
-        <button data-close-modal="reference" class="close-modal-button">
+        <button data-close-modal="references" class="close-modal-button">
             <div class='line1'></div>
             <div class='line2'></div>
         </button>
     </header>
-    <form action="" class="modal-body">
-        {% csrf_token %}
-    </form>
+    <div class="modal-body">
+        <form data-form="doi">
+            <label for="doi-input">Buscar por DOI</label>
+            <div>
+                <button type="submit">B</button>
+                <input id="doi-input" name="doi-input" type="text" placeholder="xx.xxxx/x...">
+            </div>
+        </form>
+        <div data-result="doi"></div>
+        <button data-submit="doi" class="secondary-button" type="submit" name="action" value="reference" disabled>Adicionar</button>
+    </div>
 </div>

@@ -618,6 +618,8 @@ class Reference(models.Model):
             help_text=_('Slug do identificar da referência.'))
     citation = models.TextField(_('citação'), blank=True,
             help_text=_('Citação formatada da referência.'))
+    doi = models.CharField('doi', max_length=40, blank=True, help_text=_('DOI da referência'))
+    metadata = models.JSONField(_('Metadados'), blank=True, null=True, help_text=_('Metadados da referência'))
 
     def __str__(self):
         return self.name

@@ -5,6 +5,7 @@
 <script src="{% static 'js/adm_modal.js' %}" defer></script>
 <script src="{% static 'js/upload_media_step2.js' %}" defer></script>
 <script src="{% static 'js/adm_sync_location_fields.js' %}" defer></script>
+<script src="{% static 'js/adm_fetch_reference.js' %}" defer></script>
 {% endblock %}
 {% block title %}Enviar Mídia{% endblock %}
 
@@ -126,7 +127,7 @@
             {% endif %}
         </div>
     </div>
-    {% elif field == form.location or field == form.taxa %}
+    {% elif field == form.location or field == form.taxa or field == form.references %}
     <div class="field-container">
         <div class="label-div">
             {{ field.label_tag }}
@@ -207,7 +208,6 @@
     </div>
     {% endif %}
     {% endfor %}
-    <button type="button" data-open-modal="reference">Referências</button>
     <div class="buttons-div">
         <button class="primary-button submit-button" type="submit" name="action" value="add">Adicionar</button>
         <button class="primary-button cancel-button" type="submit" name="action" value="cancel" formnovalidate>Cancelar</button>

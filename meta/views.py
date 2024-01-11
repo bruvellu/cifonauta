@@ -36,6 +36,10 @@ from django.core.files import File
 from django.utils.translation import get_language, get_language_info
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import never_cache
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import ReferenceSerializer
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -62,6 +66,16 @@ def handle_add_form(request, form, success_msg, error_msg, redirect_url_name, pk
         return redirect(redirect_url_name, pk)
     else:
         return redirect(redirect_url_name)
+
+
+@api_view(['POST'])
+def create_reference(request):
+    serializer = ReferenceSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+    else:
+        return Response('Referência já existe', status=status.HTTP_409_CONFLICT)
+    return Response(serializer.data)
 
 
 @never_cache

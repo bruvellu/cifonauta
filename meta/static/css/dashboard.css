@@ -37,6 +37,11 @@ p {
     padding: 0;
 }
 
+button:disabled {
+    opacity: .7;
+    cursor: default;
+}
+
 .dashboard-input {
     appearance: none;
     width: 1.25rem;
@@ -208,7 +213,7 @@ p {
     width: fit-content;
 }
  
-.secondary-button:hover {
+.secondary-button:not(:disabled):hover {
     /* background: linear-gradient(to bottom, #7edc75 0%, #46bf51 100%); */
     background: linear-gradient(to bottom, #c5d87a 0%, #aac153 100%);
 }

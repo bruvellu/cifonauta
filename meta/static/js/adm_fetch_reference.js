@@ -15,7 +15,7 @@
         return cookieValue;
     }
 
-    const displayDOIResponse = (data) => {
+    const formatDoiResponse = (data) => {
         const authors = data.author?.flatMap((author, index) => {
           return ` ${author.given}`
         })
@@ -27,12 +27,7 @@
 
         const formattedCitation = `<strong>${data.published?.['date-parts']?.[0][0]}</strong>. ${authors ? `${authors}.` : ''}<em>${data.title?.[0]}</em>. ${data['container-title']?.[0]}, ${pagesInfo} doi: <a href=${data.URL}>${data.DOI}</a>`
 
-        const paragraph = document.createElement('p')
-        paragraph.innerHTML = formattedCitation
-
-        const result = document.querySelector('[data-result="doi"]')
-        result.innerHTML = ''
-        result.append(paragraph)
+        displayResult(formattedCitation)
         doiSubmit.disabled = false
 
         referenceData.name = data.DOI
@@ -42,25 +37,16 @@
         referenceData.metadata = data
     }
 
-    const displayNotFound = () => {
+    const displayResult = (message) => {
         result.innerHTML = ''
                 
         const paragraph = document.createElement('p')
-        paragraph.innerText = 'Referência não encontrada'
+        paragraph.innerHTML = message
         result.append(paragraph)
         doiSubmit.disabled = true
     }
 
-    const displayConflict = () => {
-        result.innerHTML = ''
-                
-        const paragraph = document.createElement('p')
-        paragraph.innerText = 'Referência já existe no banco de dados'
-        result.append(paragraph)
-        doiSubmit.disabled = true
-    }
-
-    const displaySuccess = (data) => {
+    const onSuccess = (data) => {
         result.innerHTML = ''
 
         const option = document.createElement('option')
@@ -120,6 +106,7 @@
     const result = document.querySelector('[data-result="doi"]')
     const doiSubmit = document.querySelector('[data-submit="doi"]')
     const referenceSelect = document.querySelector('#id_references')
+
     const referenceModal = new Modal({
         modalContent: document.querySelector('[data-modal="references"]'),
         modalTrigger: document.querySelector('[data-open-modal="references"]'),
@@ -128,18 +115,18 @@
 
     doiForm.addEventListener('submit', (e) => {
         e.preventDefault()
-        result.innerHTML = ''
-
+        // result.innerHTML = ''
+        
         const isValid = validateDoi(doiInput.value)
         if (!isValid) return
-
+        
         result.innerHTML = 'Carregando...'
 
         fetch(`https://api.crossref.org/works/${doiInput.value}`)
             .then(response => {
               if (!response.ok) {
                 if (response.status == 404) {
-                  displayNotFound()
+                  displayResult('Referência não encontrada')
                 }
 
                 throw new Error(response.statusText)
@@ -148,7 +135,7 @@
               return response.json()
             })
             .then(data => {
-              displayDOIResponse(data.message)
+              formatDoiResponse(data.message)
             })
             .catch(error => {
               console.log(error)
@@ -157,6 +144,11 @@
     })
 
     doiSubmit.addEventListener('click', () => {
+        if (referenceData.doi == '') {
+            displayResult('Ocorreu um erro')
+            return
+        }
+
         fetch(`${window.location.origin}/api/reference/`, {
           method: 'POST',
           headers: {
@@ -169,7 +161,7 @@
             .then(response => {
                 if (!response.ok) {
                   if (response.status == 409) {
-                    displayConflict()
+                    displayResult('Referência já existe no banco de dados')
                   }
 
                   throw new Error(response.statusText)
@@ -178,7 +170,7 @@
                 return response.json()
             })
             .then(data => {
-                displaySuccess(data)
+                onSuccess(data)
             })
             .catch(error => {
                 console.log(error)

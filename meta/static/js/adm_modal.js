@@ -3,7 +3,6 @@ class Modal {
     modalClose
     modalOverlay
     modalContent
-    focusableElements
     isModalOpened = false
 
     constructor({ modalContent, modalTrigger, modalClose}) {
@@ -16,12 +15,7 @@ class Modal {
         this.modalOverlay.classList.add('modal-overlay')
         document.body.append(this.modalOverlay)
 
-        this.focusableElements = Array.from(
-            this.modalContent.querySelectorAll(
-                'button, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])'
-            )
-        )
-
+        this.modalContent?.addEventListener('keydown', this.handleTabKey.bind(this))
         this.modalTrigger?.addEventListener('click', this.showModal.bind(this))
         this.modalClose?.addEventListener('click', this.closeModal.bind(this))
         this.modalOverlay.addEventListener('click', () => {
@@ -36,8 +30,6 @@ class Modal {
         document.documentElement.style.overflow = 'hidden'
         this.isModalOpened = true
 
-        this.modalContent.addEventListener('keydown', this.handleTabKey.bind(this))
-
         this.modalClose.focus()
     }
 
@@ -48,22 +40,33 @@ class Modal {
         document.documentElement.style.removeProperty('overflow')
         this.isModalOpened = false
 
-        this.modalContent.removeEventListener('keydown', this.handleTabKey.bind(this))
         this.modalTrigger.focus()
     }
 
     handleTabKey(event) {
-        const firstElement = this.focusableElements[0]
-        const lastElement = this.focusableElements[this.focusableElements.length - 1]
+        const focusableElements = this.getFocusables()
 
-        if (event.key.toLowerCase() === 'tab') {
-            if (event.shiftKey && document.activeElement === firstElement) {
+        const firstFocusable = focusableElements[0]
+        const lastFocusable = focusableElements[focusableElements.length - 1]
+
+        if (event.key === 'Tab') {
+            if (event.shiftKey && document.activeElement === firstFocusable) {
                 event.preventDefault()
-                lastElement.focus()
-            } else if (!event.shiftKey && document.activeElement === lastElement) {
+                lastFocusable.focus()
+            } else if (!event.shiftKey && document.activeElement === lastFocusable) {
                 event.preventDefault()
-                firstElement.focus()
+                firstFocusable.focus()
             }
         }
+    }
+
+    getFocusables() {
+        return (
+          [...this.modalContent.querySelectorAll(
+              'a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])')
+          ].filter(elem => {
+              if(!elem.hasAttribute('disabled') && !elem.hasAttribute('hidden') && elem.type != 'hidden') return elem
+          })
+        )
     }
 }

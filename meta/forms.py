@@ -172,10 +172,11 @@ class UploadMediaForm(forms.ModelForm,  SendEmailForm):
 class UpdateMyMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'references', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
         widgets = {
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
+            'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
             'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
         }
         help_texts = {
@@ -219,9 +220,10 @@ class UpdateMyMediaForm(forms.ModelForm):
 class EditMetadataForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = Media
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'tags', 'scale', 'country', 'state', 'city', 'location', 'latitude', 'longitude')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'references', 'tags', 'scale', 'country', 'state', 'city', 'location', 'latitude', 'longitude')
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
+            'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
             'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
             'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"}),
             'date_created': forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date', 'readonly': 'readonly'})
@@ -265,9 +267,10 @@ class AddTaxaForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = ModifiedMedia
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'tags', 'scale', 'authors', 'date_created', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'tags', 'scale', 'authors', 'date_created', 'references', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
         widgets = {
-            'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
+            'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'}),
+            'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
         }
 
     def __init__(self, *args, **kwargs):

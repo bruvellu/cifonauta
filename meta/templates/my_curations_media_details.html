@@ -3,6 +3,7 @@
 
 {% block extra_head %}
 <script src="{% static 'js/adm_modal.js' %}" defer></script>
+<script src="{% static 'js/adm_references.js' %}" defer></script>
 <script src="{% static 'js/adm_sync_location_fields.js' %}" defer></script>
 <script src="{% static 'js/my_curations_media_details.js' %}" defer></script>
 {% endblock %}
@@ -41,7 +42,7 @@
                     {% endif %}
                 </td>
                 <td>
-                    {% if field.name == 'authors' or field.name == 'taxa' or field.name == 'tags' %}
+                    {% if field.name == 'authors' or field.name == 'taxa' or field.name == 'tags' or field.name == 'references' %}
                     <ul>
                         {% for item in value2 %}
                         <li>
@@ -151,6 +152,40 @@
             {% endif %}
         </div>
     </div>
+    {% elif field == form.references %}
+    <div class="field-container">
+        <div class="label-div">
+            {{ field.label_tag }}
+            {% if field.field.required %}
+            <span class='required'>*</span>
+            {% endif %}
+        </div>
+        <div class="field-div">
+            {% if field.errors %}
+            <ul class="field-error">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <div class="add-new-object-div">
+                {{ field }}
+                <button 
+                    type="button"
+                    data-open-modal="{{ field.name }}"
+                    class="add-new-object-btn"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="19" x2="12" y2="5"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                </button>
+            </div>
+            {% if field.help_text %}
+            <span class="help-text">{{ field.help_text }}</span>
+            {% endif %}
+        </div>
+    </div>
     {% else %}
     <div class="field-container">
         <div class="label-div">
@@ -179,5 +214,7 @@
         <button class='primary-button submit-button' {% if media.status != 'published' or modified_media and not is_modification_owner or modified_media and modified_media.altered_by_author %}disabled{% endif %} type="submit">Alterar</button>
     </div>
 </form>
+
+{% include 'dashboard_references_modal.html' %}
 
 {% endblock %}

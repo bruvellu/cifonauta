@@ -4,6 +4,7 @@
 {% block extra_head %}
 <script src="{% static 'js/adm_sync_location_fields.js' %}" defer></script>
 <script src="{% static 'js/adm_modal.js' %}" defer></script>
+<script src="{% static 'js/adm_references.js' %}" defer></script>
 <script src="{% static 'js/editing_media_details.js' %}" defer></script>
 {% endblock %}
 
@@ -92,7 +93,7 @@
             {% endif %}
         </div>
     </div>
-    {% elif field == form.location or field == form.taxa %}
+    {% elif field == form.location or field == form.taxa or field == form.references %}
     <div class="field-container">
         <div class="label-div">
             {{ field.label_tag }}
@@ -159,5 +160,7 @@
 {% include 'dashboard_location_modal.html' %}
 
 {% include 'dashboard_taxa_modal.html' %}
+
+{% include 'dashboard_references_modal.html' %}
 
 {% endblock %}

@@ -14,7 +14,7 @@ def get_media_curations(media):
   
 @register.simple_tag
 def get_field_value(obj, field_name):
-  if field_name == "authors" or field_name == "taxa" or field_name == "tags":
+  if field_name == "authors" or field_name == "taxa" or field_name == "tags" or field_name == 'references':
     return list(getattr(obj, field_name, '').all())
 
   field = obj._meta.get_field(field_name)

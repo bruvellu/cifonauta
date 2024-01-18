@@ -79,6 +79,7 @@ class TaxonAdmin(TranslationAdmin):
 
 class ReferenceAdmin(admin.ModelAdmin):
     filter_horizontal = ['media']
+    search_fields = ['name']
 
 
 class TourAdmin(TranslationAdmin):

@@ -18,6 +18,7 @@ var mapProp= {
     zoom:10,
     gestureHandling: "greedy",
     streetViewControl: false,
+    fullscreenControl: false,
 };
 var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
 window.marker = new google.maps.Marker({

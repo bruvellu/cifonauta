@@ -116,7 +116,7 @@ class SendEmailForm(forms.Form):
 class UploadMediaForm(forms.ModelForm,  SendEmailForm):
     class Meta:
         model = Media
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'references', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license', 'terms')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'references', 'scale', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license', 'terms')
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
@@ -172,7 +172,7 @@ class UploadMediaForm(forms.ModelForm,  SendEmailForm):
 class UpdateMyMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'references', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'references', 'scale', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
         widgets = {
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
@@ -279,7 +279,6 @@ class ModifiedMediaForm(forms.ModelForm, SendEmailForm):
 
         if author_form:
             self.fields.pop('tags')
-            self.fields.pop('scale')
             self.fields['license'].required = True
             self.fields['date_created'].required = True
         else:

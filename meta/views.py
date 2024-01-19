@@ -730,7 +730,7 @@ def my_media_details(request, pk):
                 messages.warning(request, "Esta mídia tem alterações pendentes de um especialista. Não é possível realizar alterações até que elas sejam revisadas pelo curador")
         if is_modification_owner and not modified_media.altered_by_author:
             url = reverse('my_curations_media_details', args=[pk])
-            messages.info(request, f'Esta mídia tem alterações sua como especialista. Para vê-las, <a href={url}>Clique aqui</a>')
+            messages.warning(request, f'Esta mídia tem alterações sua como especialista. Para vê-las, <a href={url}>Clique aqui</a>')
     elif media.status == 'submitted':
         messages.warning(request, "Não é possível fazer alteração em mídias que estão submetidas para revisão")
 
@@ -1369,7 +1369,7 @@ def my_curations_media_details(request, media_id):
         
         if is_modification_owner and modified_media.altered_by_author:
             url = reverse('my_media_details', args=[media_id])
-            messages.info(request, f'Esta mídia tem alterações suas como autor. Para vê-las, <a href="{url}">Clique aqui</a>')
+            messages.warning(request, f'Esta mídia tem alterações suas como autor. Para vê-las, <a href="{url}">Clique aqui</a>')
             
         if not is_only_media_specialist:
             url = reverse('revision_modified_media', args=[media_id])

@@ -101,6 +101,9 @@
             </div>
           </div>
         </div>
+        <div id='download_media'>
+        <a href="{% url 'download_media' media.id %}"><button>Baixar Imagem</button></a>
+        </div>
     
           {% if media.notes %}
           <div id="notes">

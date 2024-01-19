@@ -14,3 +14,4 @@ django-simple-captcha
 python-dotenv
 py3exiv2
 piexif
+djangorestframework

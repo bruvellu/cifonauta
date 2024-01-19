@@ -420,6 +420,10 @@ class Media(models.Model):
         meta = Metadata(f"site_media/{self.coverpath}")
         meta.insert_metadata(metadata)
 
+        #Sitepath
+        meta = Metadata(f"site_media/{self.sitepath}")
+        meta.insert_metadata(metadata)
+
     class Meta:
         verbose_name = _('arquivo')
         verbose_name_plural = _('arquivos')

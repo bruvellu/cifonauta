@@ -330,7 +330,36 @@ class Media(models.Model):
                              # SearchVector('state__name', weight='D') + \
                              # SearchVector('country__name', weight='D')
 
+    def latlng_to_geo(self):
+        latitude_dec = str(self.latitude)
+        latitude_ref = 'N'
+        longitude_dec = str(self.longitude)
+        longitude_ref = 'E'
+        if float(latitude_dec) < 0:
+                latitude_ref = 'S'
+        if float(longitude_dec) < 0:
+                longitude_ref = 'W'
+
+        latitude = float(latitude_dec.replace('-', ''))
+        graus = int(latitude)
+        minutos_decimais = (latitude - graus) * 60
+        minutos = int(minutos_decimais)
+        segundos = (minutos_decimais - minutos) * 60
+        latitude_deg = f"{latitude_ref} {graus:02}\u00ba{minutos:02}'{int(segundos):02}\u0022"
+
+        longitude = float(longitude_dec.replace('-', ''))
+        graus = int(longitude)
+        minutos_decimais = (longitude - graus) * 60
+        minutos = int(minutos_decimais)
+        segundos = (minutos_decimais - minutos) * 60
+        longitude_deg = f"{longitude_ref} {graus:02}\u00ba{minutos:02}'{int(segundos):02}\u0022"
+
+        self.geolocation = f'{latitude_deg } {longitude_deg}'
+
     def update_metadata(self):
+
+
+        self.latlng_to_geo()
 
         tags = []
         for tag in self.tags.all():

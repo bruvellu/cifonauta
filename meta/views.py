@@ -1064,6 +1064,8 @@ def revision_modified_media(request, media_id):
 
             modified_media.delete()
 
+            media.update_metadata()
+
             messages.success(request, 'Alterações aceitas com sucesso')
             return redirect('revision_media_list')
         else:

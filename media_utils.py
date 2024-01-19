@@ -499,9 +499,9 @@ class Metadata():
         if value != '':
             gps = {}
             gps[1] = value[0].encode()
-            gps[2] = ((int(value[2:4]), 1), (int(value[5:7]), 1), (int(value[9:11]), 1))
-            gps[3] = value[13].encode()
-            gps[4] = ((int(value[15:17]), 1), (int(value[18:20]), 1), (int(value[22:24]), 1))
+            gps[2] = ((int(value[2:4]), 1), (int(value[5:7]), 1), (int(value[8:10]), 1))
+            gps[3] = value[12].encode()
+            gps[4] = ((int(value[14:16]), 1), (int(value[17:19]), 1), (int(value[20:22]), 1))
             exif_dict = {'GPS': gps}
 
             exif_bytes = piexif.dump(exif_dict)
@@ -532,7 +532,8 @@ class Metadata():
                      'visible': '1,0–10 mm',
                      'large': '10–100 mm',
                      'huge': '>100 mm'}
-            self.insert_iptc('instructions', [SCALE_CHOICES[metadata['instructions']]])
+            if metadata['instructions'] in SCALE_CHOICES.keys():
+                self.insert_iptc('instructions', [SCALE_CHOICES[metadata['instructions']]])
         
         if 'source' in metadata_keys:
             self.insert_iptc('source', [metadata['source']])

@@ -413,7 +413,7 @@ class ModifiedMedia(Media):
         verbose_name_plural = _("mídias modificadas")
 
 class Person(models.Model):
-    name = models.CharField(_('nome'), max_length=200, unique=True, blank=True,
+    name = models.CharField(_('nome'), max_length=200, blank=True,
             help_text=_('Nome do autor.'))
     slug = models.SlugField(_('slug'), max_length=200, unique=True, blank=True,
             help_text=_('Slug do nome do autor.'))
@@ -422,6 +422,21 @@ class Person(models.Model):
     email = models.EmailField(verbose_name='Email', blank=True, null=True)
     user_cifonauta = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
             verbose_name=_('Usuário relacionado'))
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            if self.name and Person.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+                base_slug = slugify(self.name)
+                slug = base_slug
+                counter = 1
+
+                while Person.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                    slug = f"{base_slug}-{counter}"
+                    counter += 1
+
+                self.slug = slug
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -620,10 +635,6 @@ class Reference(models.Model):
     citation = models.TextField(_('citação'), blank=True,
             help_text=_('Citação formatada da referência.'))
     doi = models.CharField('doi', max_length=40, blank=True, help_text=_('DOI da referência'))
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

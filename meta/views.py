@@ -46,7 +46,7 @@ load_dotenv()
 
 def handle_add_form(request, form, success_msg, error_msg, redirect_url_name, pk=None):
     if form.is_valid():
-        form_instance = form.save(commit=False)
+        form_instance = form.save()
 
         preps = ('de', 'da', 'do', 'das', 'dos', 'e', 'no', 'na')
         split_name = form_instance.name.lower().split(' ')
@@ -61,7 +61,6 @@ def handle_add_form(request, form, success_msg, error_msg, redirect_url_name, pk
     else:
         messages.error(request, error_msg)
     
-    print('PK', pk)
     if pk:
         return redirect(redirect_url_name, pk)
     else:

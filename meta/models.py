@@ -15,6 +15,7 @@ from django.db import models
 from django.db.models import Q, Value
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.utils.text import slugify
 from django.utils import timezone
 from mptt.models import MPTTModel
 
@@ -619,7 +620,10 @@ class Reference(models.Model):
     citation = models.TextField(_('citação'), blank=True,
             help_text=_('Citação formatada da referência.'))
     doi = models.CharField('doi', max_length=40, blank=True, help_text=_('DOI da referência'))
-    metadata = models.JSONField(_('Metadados'), blank=True, null=True, help_text=_('Metadados da referência'))
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

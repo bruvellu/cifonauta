@@ -15,28 +15,6 @@
         return cookieValue;
     }
 
-    const formatDoiResponse = (data) => {
-        const authors = data.author?.flatMap((author, index) => {
-          return ` ${author.given}`
-        })
-
-        let pagesInfo = ''
-        if (data.volume && data.issue && data.page) {
-          pagesInfo = `${data.volume}(${data.issue}) ${data.page},`
-        }
-
-        const formattedCitation = `<strong>${data.published?.['date-parts']?.[0][0]}</strong>. ${authors ? `${authors}.` : ''}<em>${data.title?.[0]}</em>. ${data['container-title']?.[0]}, ${pagesInfo} doi: <a href=${data.URL}>${data.DOI}</a>`
-
-        displayResult(formattedCitation)
-        doiSubmit.disabled = false
-
-        referenceData.name = data.DOI
-        referenceData.slug = (Math.floor(Math.random() * 99999) + 1).toString()
-        referenceData.citation = formattedCitation
-        referenceData.doi = data.DOI
-        referenceData.metadata = data
-    }
-
     const displayResult = (message) => {
         result.innerHTML = ''
                 
@@ -87,18 +65,14 @@
 
     const clearReferenceData = () => {
         referenceData.name = ''
-        referenceData.slug = ''
         referenceData.citation = ''
         referenceData.doi = ''
-        referenceData.metadata = {}
     }
 
     let referenceData = {
         name: '',
-        slug: '',
         citation: '',
-        doi: '',
-        metadata: {}
+        doi: ''
     }
 
     const doiForm = document.querySelector('[data-form="doi"]')
@@ -121,8 +95,13 @@
         if (!isValid) return
         
         result.innerHTML = 'Carregando...'
+        const doi = doiInput.value
 
-        fetch(`https://api.crossref.org/works/${doiInput.value}`)
+        fetch(`https://doi.org/${doi}`, {
+            headers: {
+                'Accept': 'text/x-bibliography; style=apa',
+            }
+        })
             .then(response => {
               if (!response.ok) {
                 if (response.status == 404) {
@@ -132,13 +111,17 @@
                 throw new Error(response.statusText)
               }
 
-              return response.json()
+              return response.text()
             })
             .then(data => {
-              formatDoiResponse(data.message)
+                displayResult(data)
+                doiSubmit.disabled = false
+
+                referenceData.name = doi
+                referenceData.citation = data
+                referenceData.doi = doi
             })
             .catch(error => {
-              console.log(error)
               clearReferenceData()
             })
     })

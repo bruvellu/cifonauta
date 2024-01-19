@@ -259,7 +259,6 @@ def upload_media_step2(request):
                         specialists_user.add(specialist)
                 
                 form.send_mail(request.user, specialists_user, medias, 'Nova mídia para edição no Cifonauta', 'email_media_to_editing_specialists.html')
-                print(form.cleaned_data['date_created'])
                 messages.success(request, 'Suas mídias foram salvas com sucesso')
                 return redirect('my_media_list')
 

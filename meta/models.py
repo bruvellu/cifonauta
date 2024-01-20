@@ -407,30 +407,44 @@ class Media(models.Model):
                              # SearchVector('country__name', weight='D')
 
     def latlng_to_geo(self):
-        latitude_dec = str(self.latitude)
-        latitude_ref = 'N'
-        longitude_dec = str(self.longitude)
-        longitude_ref = 'E'
-        if float(latitude_dec) < 0:
+        # Blank fields if partial missing data
+        # Avoids convert string to float error
+        if not self.latitude or not self.longitude:
+            self.latitude = ''
+            self.longitude = ''
+            self.geolocation = ''
+        else:
+            # Convert values to float
+            latitude_dec = float(self.latitude)
+            longitude_dec = float(self.longitude)
+
+            # Set default references
+            latitude_ref = 'N'
+            longitude_ref = 'E'
+            if latitude_dec < 0:
                 latitude_ref = 'S'
-        if float(longitude_dec) < 0:
+            if longitude_dec < 0:
                 longitude_ref = 'W'
 
-        latitude = float(latitude_dec.replace('-', ''))
-        graus = int(latitude)
-        minutos_decimais = (latitude - graus) * 60
-        minutos = int(minutos_decimais)
-        segundos = (minutos_decimais - minutos) * 60
-        latitude_deg = f"{latitude_ref} {graus:02}\u00ba{minutos:02}'{int(segundos):02}\u0022"
+            # Get absolute latitude and longitude values
+            latitude_dec = abs(latitude_dec)
+            longitude_dec = abs(longitude_dec)
 
-        longitude = float(longitude_dec.replace('-', ''))
-        graus = int(longitude)
-        minutos_decimais = (longitude - graus) * 60
-        minutos = int(minutos_decimais)
-        segundos = (minutos_decimais - minutos) * 60
-        longitude_deg = f"{longitude_ref} {graus:02}\u00ba{minutos:02}'{int(segundos):02}\u0022"
+            # Define latitude degrees, minutes, and seconds
+            lat_deg = int(latitude_dec)
+            lat_min_dec = (latitude_dec - lat_deg) * 60
+            lat_min = int(lat_min_dec)
+            lat_sec = int((lat_min_dec - lat_min) * 60)
+            latitude_str = f'{latitude_ref} {lat_deg:02}°{lat_min:02}\'{lat_sec:02}"'
 
-        self.geolocation = f'{latitude_deg } {longitude_deg}'
+            # Define longitude degrees, minutes, and seconds
+            lon_deg = int(longitude_dec)
+            lon_min_dec = (longitude_dec - lon_deg) * 60
+            lon_min = int(lon_min_dec)
+            lon_sec = int((lon_min_dec - lon_min) * 60)
+            longitude_str = f'{longitude_ref} {lon_deg:02}°{lon_min:02}\'{lon_sec:02}"'
+
+            self.geolocation = f'{latitude_str} {longitude_str}'
 
     def update_metadata(self):
 

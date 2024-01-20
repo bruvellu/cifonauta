@@ -88,11 +88,7 @@
             <p>Mídia:</p>
             <div class='media-wrapper'>
                 <a href="{{ media.file.url }}" target="_blank">
-                    {% if media.datatype == 'video' %}
-                    <video class="media-cover" src="{{ media.coverpath.url }}"></video>
-                    {% else %}
-                    <img class="media-cover" src="{{ media.coverpath.url }}">
-                    {% endif %}
+                  <img class="media-cover" src="{{ media.coverpath.url }}">
                 </a>
             </div>
         </div>

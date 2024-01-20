@@ -4,7 +4,7 @@ import os
 import shutil
 import uuid
 
-from media_utils import Metadata
+from media_utils import Metadata, resize_image, resize_video, extract_video_cover
 
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -36,12 +36,22 @@ class Curadoria(models.Model):
     def __str__(self):
         return self.name
 
-    
-def save_file(instance, filename):
-    return os.path.join(f'uploads/{instance.user.username}', filename)
 
+# Function that defines path for user upload directory
+# See: https://docs.djangoproject.com/en/4.2/ref/models/fields/#django.db.models.FileField.upload_to
+def user_upload_directory(instance, filename):
+    return f'{settings.UPLOAD_ROOT}/{instance.user.username}/{filename}'
+
+
+#TODO: Remove after the official migration
+def save_file(instance, filename):
+    return f'{settings.UPLOAD_ROOT}/{instance.user.username}/{filename}'
+
+
+#TODO: Remove after the official migration
 def save_cover(instance, filename):
-    return os.path.join(f'{instance.user.username}', filename)
+    return f'{instance.user.username}/{filename}'
+
 
 class Media(models.Model):
     '''Table with metadata for photo and video files.'''
@@ -74,30 +84,52 @@ class Media(models.Model):
                             default=uuid.uuid4,
                             help_text=_('Identificador único universal do arquivo.'))
 
-    file = models.FileField(upload_to=save_file,
+    file = models.FileField(upload_to=user_upload_directory,
                             default=None,
                             null=True,
-                            help_text=_('Arquivo carregado pelo usuário.'))
+                            help_text=_('Arquivo original carregado pelo usuário.'))
 
-    sitepath = models.FileField(_('arquivo web'),
-                                upload_to=save_cover,
-                                default=None,
-                                help_text=_('Arquivo processado para a web.'))
-
-    coverpath = models.ImageField(_('imagem de capa'),
-                                  upload_to=save_cover,
+    file_large = models.FileField(upload_to=user_upload_directory,
                                   default=None,
-                                  help_text=_('Imagem de capa para o arquivo processado.'))
+                                  null=True,
+                                  help_text=_('Arquivo processado tamanho grande.'))
 
-    filepath = models.CharField(_('arquivo original'),
-                                max_length=200,
-                                blank=True,
-                                help_text=_('Caminho único para o arquivo original.'))
+    file_medium = models.FileField(upload_to=user_upload_directory,
+                                  default=None,
+                                  null=True,
+                                  help_text=_('Arquivo processado tamanho médio.'))
+
+    file_small = models.FileField(upload_to=user_upload_directory,
+                                  default=None,
+                                  null=True,
+                                  help_text=_('Arquivo processado tamanho pequeno.'))
+
+    file_cover = models.FileField(upload_to=user_upload_directory,
+                                  default=None,
+                                  null=True,
+                                  help_text=_('Imagem de capa do arquivo.'))
 
     datatype = models.CharField(_('tipo de mídia'),
                                 max_length=15,
                                 choices=DATATYPE_CHOICES,
                                 help_text=_('Foto ou vídeo.'))
+
+    #TODO: Field to be deprecated
+    sitepath = models.FileField(_('arquivo web'),
+                                default=None,
+                                help_text=_('Arquivo processado para a web.'))
+
+    #TODO: Field to be deprecated
+    coverpath = models.ImageField(_('imagem de capa'),
+                                  default=None,
+                                  help_text=_('Imagem de capa para o arquivo processado.'))
+
+    #TODO: Field to be deprecated
+    filepath = models.CharField(_('arquivo original'),
+                                max_length=200,
+                                blank=True,
+                                help_text=_('Caminho único para o arquivo original.'))
+
 
     # Fields related to authorship
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -296,12 +328,56 @@ class Media(models.Model):
                                             blank=True,
                                             help_text=_('ID do vídeo no antigo modelo.'))
 
-
     def __str__(self):
         return 'ID={} {} ({}) {}'.format(self.id, self.title, self.datatype, self.status)
 
     def get_absolute_url(self):
         return reverse('media_url', args=[str(self.id)])
+
+    def resize_files(self):
+        '''Calls for the resizing of media files.'''
+        self.create_resized_files('cover')
+        self.create_resized_files('large')
+        self.create_resized_files('medium')
+        self.create_resized_files('small')
+
+    def create_resized_files(self, size):
+        '''Resize media files to a pre-defined dimension.
+
+        Options: large, medium, small, cover.
+
+        See MEDIA_DEFAULTS for details.
+        '''
+
+        # Delete file from resized field
+        field = getattr(self, f'file_{size}')
+        field.delete()
+
+        # Get dimension and quality values
+        dimension = settings.MEDIA_DEFAULTS[self.datatype][size]['dimension']
+        quality = settings.MEDIA_DEFAULTS[self.datatype][size]['quality']
+        extension = settings.MEDIA_DEFAULTS[self.datatype]['extension']
+
+        # Force photo extension for video cover image
+        if size == 'cover':
+            extension = settings.MEDIA_DEFAULTS['photo']['extension']
+
+        # Save original file to resized field using new name
+        field.save(content=self.file, name=f'{self.uuid}_{size}.{extension}')
+
+        # Resize media
+        if self.datatype == 'photo':
+            resized = resize_image(field.path, dimension, quality)
+        elif self.datatype == 'video':
+            if size == 'cover':
+                resized = extract_video_cover(self.file.path, dimension,
+                                              field.path)
+            else:
+                resized = resize_video(self.file.path, dimension,
+                                       quality, field.path)
+
+        # Return True/False for convenience
+        return resized
 
     def update_search_vector(self):
         '''Collect metadata and update the search vector field.'''
@@ -724,9 +800,6 @@ class Stats(models.Model):
 
 # # Create citation with bibkey
 # models.signals.pre_save.connect(citation_pre_save, sender=Reference)
-
-# # Delete file from folder when the media is deleted on website
-# models.signals.pre_delete.connect(delete_file_from_folder, sender=Media)
 
 # # Get taxons descendents when creating a curatorship
 # models.signals.m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)

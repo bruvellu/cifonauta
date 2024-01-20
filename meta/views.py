@@ -229,27 +229,20 @@ def upload_media_step2(request):
                 for media in medias:
                     specific_form = UploadMediaForm(request.POST, request.FILES, media_author=user_person, instance=media)
                     
-                    file = media.file.name.split('/')[-1]
-                    ext = file.split('.')[-1]
-                    filename = file.split('.')[0]
-
-                    media_file = File(media.file, name=f'{filename}.{ext}')
-                    media.sitepath = media_file
-                    media_file = File(media.file, name=f'{filename}_cover.{ext}')
-                    media.coverpath = media_file
-
+                    # Create media instance from form and set status to draft
                     media_instance = specific_form.save()
                     media_instance.status = 'draft'
-                    media_instance.save()
 
-                    if media.datatype == 'photo':
-                        coverpath = Image.open(media.coverpath.path)
-                        coverpath.thumbnail((1280, 720))
-                        coverpath.save(media.coverpath.path, quality=40)
+                    # Create media files with different dimensions
+                    media_instance.resize_files()
 
-                        sitepath = Image.open(media.sitepath.path)
-                        sitepath.thumbnail((1280, 720))
-                        sitepath.save(media.sitepath.path)
+                    # Set sitepath and coverpath from new fields
+                    #TODO: Temporary workaround until fields are removed
+                    media_instance.sitepath = media_instance.file_medium
+                    media_instance.coverpath = media_instance.file_cover
+
+                    # Save media instance
+                    media_instance.save() #TODO: Move down (last)
 
                 # Send email 
                 curations = Curadoria.objects.filter(taxons__in=form.cleaned_data['taxa'])
@@ -259,7 +252,7 @@ def upload_media_step2(request):
                         specialists_user.add(specialist)
                 
                 form.send_mail(request.user, specialists_user, medias, 'Nova mídia para edição no Cifonauta', 'email_media_to_editing_specialists.html')
-                print(form.cleaned_data['date_created'])
+                # print(form.cleaned_data['date_created'])
                 messages.success(request, 'Suas mídias foram salvas com sucesso')
                 return redirect('my_media_list')
 
@@ -270,7 +263,7 @@ def upload_media_step2(request):
 
         metadata = None
         for media in medias:
-            print(media.file.name)
+            # print(media.file.name)
             try:
                 metadata = Metadata(f'site_media/{media.file.name}')
                 try:
@@ -285,7 +278,7 @@ def upload_media_step2(request):
                 pass        
         
         if metadata:
-            print(read_metadata)
+            # print(read_metadata)
             authors = []
             authors_meta = read_metadata['authors'].split(',')
             for author in authors_meta:
@@ -503,7 +496,7 @@ def filter_medias(queryset, query_dict, curations=''):
     if alphabetical_order:
         filtered_queryset = filtered_queryset.order_by('title')
 
-    print(query_dict)
+    # print(query_dict)
     return filtered_queryset
 
 
@@ -1410,8 +1403,9 @@ def my_curations_media_details(request, media_id):
 @never_cache
 def download_media(request, media_id):
     media = get_object_or_404(Media, id=media_id)
-    media_file = media.file
-    return FileResponse(open(f'site_media/{media_file}', 'rb'), as_attachment=True, filename=f'{media.title}.jpg')
+    root, extension = os.path.splitext(media.file.name)
+    filename = f'Cifonauta_{media.datatype}_{media.id}{extension}'
+    return FileResponse(open(media.file.path, 'rb'), as_attachment=True, filename=filename)
 
 @never_cache
 @curator_required

@@ -18,10 +18,11 @@ class FlatPageAdmin(TranslationAdmin):
 class MediaAdmin(TranslationAdmin):
     list_display = ['id', 'user', 'title', 'is_public', 'status', 'highlight',
                     'date_created', 'date_modified']
-    list_filter = ['status', 'highlight', 'date_modified', 'scale', 'authors', 'tags']
+    list_filter = ['status', 'datatype', 'highlight', 'date_modified', 'scale',
+                   'authors', 'tags']
     search_fields = ['title', 'taxa__name']
-    readonly_fields = ['uuid', 'date_uploaded', 'date_modified', 'search_vector']
-
+    readonly_fields = ['uuid', 'date_uploaded', 'date_modified',
+                       'search_vector']
 
 
 class TagAdmin(TranslationAdmin):
@@ -53,7 +54,7 @@ class PersonAdmin(admin.ModelAdmin):
     def delete_queryset(self, request, queryset):
         for person in queryset:
             if Media.objects.filter(authors=person).exists():
-                message = f"Não foi possível efetuar a exclusão porque a pessoa {person} está relacionada a uma mídia."
+                message = f'Não foi possível efetuar a exclusão porque a pessoa {person} está relacionada a uma mídia.'
                 messages.error(request, message)
                 return 
         
@@ -62,7 +63,7 @@ class PersonAdmin(admin.ModelAdmin):
 
     def delete_model(self, request, obj):
         if Media.objects.filter(authors=obj).exists():
-            message = "Não foi possível efetuar a exclusão porque esta pessoa está relacionada a uma mídia."
+            message = 'Não foi possível efetuar a exclusão porque esta pessoa está relacionada a uma mídia.'
             self.message_user(request, message, messages.ERROR)
             return 
         
@@ -70,7 +71,8 @@ class PersonAdmin(admin.ModelAdmin):
 
 
 class TaxonAdmin(TranslationAdmin):
-    list_display = ['name', 'aphia', 'rank', 'authority', 'status', 'is_valid', 'valid_taxon', 'parent', 'timestamp']
+    list_display = ['name', 'aphia', 'rank', 'authority', 'status', 'is_valid',
+                    'valid_taxon', 'parent', 'timestamp']
     list_filter = ['is_valid', 'timestamp', 'rank']
     filter_horizontal = ['media']
     search_fields = ['name', 'authority']
@@ -107,3 +109,4 @@ admin.site.register(Person, PersonAdmin)
 admin.site.register(Taxon, TaxonAdmin)
 admin.site.register(Reference, ReferenceAdmin)
 admin.site.register(Curadoria, CuradoriaAdmin)
+

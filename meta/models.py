@@ -334,12 +334,47 @@ class Media(models.Model):
     def get_absolute_url(self):
         return reverse('media_url', args=[str(self.id)])
 
-    def process_images(self):
-        '''Controls the creation of resized images.'''
-        self.create_resized_image('large')
-        self.create_resized_image('medium')
-        self.create_resized_image('small')
-        self.create_resized_image('cover')
+    def resize_files(self):
+        '''Calls the resizing of media files.'''
+        self.create_resized_files('large')
+        self.create_resized_files('medium')
+        self.create_resized_files('small')
+        self.create_resized_files('cover')
+
+    def create_resized_files(self, size):
+        '''Resize media files to a pre-defined dimension.
+
+        Options: large, medium, small, cover.
+
+        See MEDIA_DEFAULTS for details.
+        '''
+
+        # Delete file from resized field
+        field = getattr(self, f'file_{size}')
+        field.delete()
+
+        # Get format, dimension, and quality for convenience
+        format = settings.MEDIA_DEFAULTS[self.datatype][size]['format']
+        dimension = settings.MEDIA_DEFAULTS[self.datatype][size]['dimension']
+        quality = settings.MEDIA_DEFAULTS[self.datatype][size]['quality']
+        extension = settings.MEDIA_DEFAULTS[self.datatype]['extension']
+
+        # Save original file to resized field using new name
+        field.save(content=self.file, name=f'{self.uuid}_{size}.{extension}')
+
+        # Resize media
+        if self.datatype == 'photo':
+            resized = resize_image(field.path, format, dimension, quality)
+        elif self.datatype == 'video' and size == 'cover':
+            resized = resize_image(field.path, format, dimension, quality)
+        elif self.datatype == 'video':
+            resized = resize_video(field.path, format, dimension, quality)
+
+        # Return something, if needed
+        if resized:
+            return True
+        else:
+            return False
 
     def create_resized_image(self, size):
         '''Resize image files to different pre-defined dimensions.
@@ -380,6 +415,10 @@ class Media(models.Model):
         self.create_resized_image('medium')
         self.create_resized_image('small')
         self.create_cover_video()
+
+    def create_cover_video(self):
+        '''Call function to extract a cover image from video.'''
+        extract_video_cover()
 
     #TODO: Merge with image function
     def create_resized_video(self, size):

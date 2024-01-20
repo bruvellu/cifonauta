@@ -220,16 +220,7 @@ def upload_media_step2(request):
                     media_instance.status = 'draft'
 
                     # Create media files with different dimensions
-                    if media_instance.datatype == 'photo':
-
-                        # Resize and process images
-                        media_instance.process_images()
-
-                    #TODO: Implement video processing
-                    # elif media.datatype == 'video':
-
-                        #TODO: Resize and process videos
-                        # media_instance.process_videos()
+                    media_instance.resize_files()
 
                     # Set sitepath and coverpath from new fields
                     #TODO: Temporary workaround until fields are removed

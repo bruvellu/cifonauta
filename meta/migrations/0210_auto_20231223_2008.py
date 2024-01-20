@@ -15,10 +15,6 @@ def create_resized_files(model, size):
     PHOTO_EXTENSIONS = ('tif', 'tiff', 'jpg', 'jpeg', 'png', 'gif')
     VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogv', 'dv', 'mpg', 'mpeg', 'flv', 'm2ts', 'wmv')
 
-    print(model.file.name)
-    print(model.sitepath.name)
-    print(size, model.datatype)
-
     # Delete file from resized field
     field = getattr(model, f'file_{size}')
     field.delete()

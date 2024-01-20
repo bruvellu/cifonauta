@@ -21,9 +21,9 @@ def create_resized_files(model, size):
 
     # Deal with no datatype
     if not model.datatype:
-        if model.sitepath.endswith('jpg'):
+        if model.sitepath.name.endswith('jpg'):
             model.datatype = 'photo'
-        elif model.sitepath.endswith('mp4'):
+        elif model.sitepath.name.endswith('mp4'):
             model.datatype = 'video'
 
     # Get dimension and quality values

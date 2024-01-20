@@ -12,12 +12,19 @@ def create_resized_files(model, size):
 
     See MEDIA_DEFAULTS for details.
     '''
-    print(model, size)
+    print(model, size, model.datatype)
     print(settings.MEDIA_DEFAULTS)
 
     # Delete file from resized field
     field = getattr(model, f'file_{size}')
     field.delete()
+
+    # Deal with no datatype
+    if not model.datatype:
+        if model.sitepath.endswith('jpg'):
+            model.datatype = 'photo'
+        elif model.sitepath.endswith('mp4'):
+            model.datatype = 'video'
 
     # Get dimension and quality values
     dimension = settings.MEDIA_DEFAULTS[model.datatype][size]['dimension']

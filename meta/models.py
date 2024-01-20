@@ -335,11 +335,11 @@ class Media(models.Model):
         return reverse('media_url', args=[str(self.id)])
 
     def resize_files(self):
-        '''Calls the resizing of media files.'''
+        '''Calls for the resizing of media files.'''
+        self.create_resized_files('cover')
         self.create_resized_files('large')
         self.create_resized_files('medium')
         self.create_resized_files('small')
-        self.create_resized_files('cover')
 
     def create_resized_files(self, size):
         '''Resize media files to a pre-defined dimension.
@@ -378,53 +378,6 @@ class Media(models.Model):
 
         # Return True/False for convenience
         return resized
-
-
-    def process_videos(self):
-        '''Controls the creation of resized videos.'''
-        self.create_resized_image('large')
-        self.create_resized_image('medium')
-        self.create_resized_image('small')
-        self.create_cover_video()
-
-    def create_cover_video(self):
-        '''Call function to extract a cover image from video.'''
-        extract_video_cover()
-
-    #TODO: Merge with image function
-    def create_resized_video(self, size):
-        '''Resize video files to different pre-defined dimensions.
-
-        Options: large, medium, small.
-
-        See MEDIA_DEFAULTS for details.
-        '''
-        # Only allow pre-defined size values
-        if size not in settings.MEDIA_DEFAULTS['video'].keys():
-            return False
-
-        # Delete file from resized field
-        field = getattr(self, f'file_{size}')
-        field.delete()
-
-        # Get format, dimension, and quality for convenience
-        format = settings.MEDIA_DEFAULTS['video'][size]['format']
-        dimension = settings.MEDIA_DEFAULTS['video'][size]['dimension']
-        bitrate = settings.MEDIA_DEFAULTS['video'][size]['bitrate']
-        extension = settings.MEDIA_DEFAULTS['video']['extension']
-        #TODO: Deal with cover extension for videos
-
-        # Save original file to resized field using new name
-        field.save(content=self.file, name=f'{self.uuid}_{size}.{extension}')
-
-        # Resize image
-        resized = resize_video(field.path, format, dimension, bitrate)
-
-        # Return something, if needed
-        if resized:
-            return True
-        else:
-            return False
 
     def update_search_vector(self):
         '''Collect metadata and update the search vector field.'''

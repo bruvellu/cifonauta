@@ -4,7 +4,7 @@ import os
 import shutil
 import uuid
 
-from media_utils import Metadata, resize_image
+from media_utils import Metadata, resize_image, resize_video, extract_video_cover
 
 from django.conf import settings
 from django.contrib.auth.models import Group
@@ -358,6 +358,10 @@ class Media(models.Model):
         quality = settings.MEDIA_DEFAULTS[self.datatype][size]['quality']
         extension = settings.MEDIA_DEFAULTS[self.datatype]['extension']
 
+        # Force photo extension for video cover image
+        if size == 'cover':
+            extension = settings.MEDIA_DEFAULTS['photo']['extension']
+
         # Save original file to resized field using new name
         field.save(content=self.file, name=f'{self.uuid}_{size}.{extension}')
 
@@ -366,45 +370,15 @@ class Media(models.Model):
             resized = resize_image(field.path, dimension, quality)
         elif self.datatype == 'video':
             if size == 'cover':
-                resized = resize_image(field.path, dimension, quality)
+                resized = extract_video_cover(self.file.path, dimension,
+                                              field.path)
             else:
-                resized = resize_video(field.path, dimension, quality)
+                resized = resize_video(self.file.path, dimension,
+                                       quality, field.path)
 
         # Return True/False for convenience
         return resized
 
-    def create_resized_image(self, size):
-        '''Resize image files to different pre-defined dimensions.
-
-        Options: large, medium, small, cover.
-
-        See MEDIA_DEFAULTS for details.
-        '''
-        # Only allow pre-defined size values
-        if size not in settings.MEDIA_DEFAULTS['photo'].keys():
-            return False
-
-        # Delete file from resized field
-        field = getattr(self, f'file_{size}')
-        field.delete()
-
-        # Get format, dimension, and quality for convenience
-        format = settings.MEDIA_DEFAULTS['photo'][size]['format']
-        dimension = settings.MEDIA_DEFAULTS['photo'][size]['dimension']
-        quality = settings.MEDIA_DEFAULTS['photo'][size]['quality']
-        extension = settings.MEDIA_DEFAULTS['photo']['extension']
-
-        # Save original file to resized field using new name
-        field.save(content=self.file, name=f'{self.uuid}_{size}.{extension}')
-
-        # Resize image
-        resized = resize_image(field.path, format, dimension, quality)
-
-        # Return something, if needed
-        if resized:
-            return True
-        else:
-            return False
 
     def process_videos(self):
         '''Controls the creation of resized videos.'''

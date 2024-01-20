@@ -18,7 +18,7 @@ from PIL import Image
 import pyexiv2
 import piexif
 
-# Get logger.
+# Get logger
 logger = logging.getLogger('cifonauta.utils')
 
 
@@ -34,40 +34,37 @@ def resize_image(filepath, dimension, quality):
         return False
 
 
-#TODO: Basic is working, but needs full implementation
-def resize_video(input_path, format, dimension, bitrate, output_path):
+def resize_video(input_path, dimension, bitrate, output_path):
     '''Uses FFmpeg to scale and convert videos.'''
-
+    # min(width, iw) prevents upscaling
+    # lanczos is a better resizing algorithm
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
                    '-threads', '0', '-i', input_path,
-                   '-b:v', f'{bitrate}k',
-                   '-filter:v', f'scale={dimension}:-2',
+                   '-b:v', f'{bitrate}k', '-filter:v',
+                   f'scale=\'min({dimension},iw)\':-2:flags=lanczos',
                    output_path]
 
     try:
-        #TODO: Subprocess is not catching errors in ffmpeg, change oserror?
         subprocess.call(ffmpeg_call)
         return True
-    except OSError as error:
-        logger.critical(f'Could not save {filepath}: {error}')
+    except:
+        logger.critical(f'Could not save {filepath}!')
         return False
 
 
-def extract_video_cover(input_path, format, dimension, bitrate, output_path):
+def extract_video_cover(input_path, dimension, output_path):
     '''Uses FFmpeg to scale and convert videos.'''
 
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
-                   '-threads', '0', '-i', input_path,
-                   '-b:v', f'{bitrate}k',
+                   '-i', input_path, '-vframes', '1',
                    '-filter:v', f'scale={dimension}:-2',
-                   output_path]
+                   '-ss', '1', '-f', 'image2', output_path]
 
     try:
-        #TODO: Subprocess is not catching errors in ffmpeg, change oserror?
         subprocess.call(ffmpeg_call)
         return True
-    except OSError as error:
-        logger.critical(f'Could not save {filepath}: {error}')
+    except:
+        logger.critical(f'Could not save {filepath}!')
         return False
 
 

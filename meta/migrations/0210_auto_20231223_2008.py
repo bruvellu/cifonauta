@@ -12,8 +12,12 @@ def create_resized_files(model, size):
 
     See MEDIA_DEFAULTS for details.
     '''
-    print(model, size, model.datatype)
-    print(settings.MEDIA_DEFAULTS)
+    PHOTO_EXTENSIONS = ('tif', 'tiff', 'jpg', 'jpeg', 'png', 'gif')
+    VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogv', 'dv', 'mpg', 'mpeg', 'flv', 'm2ts', 'wmv')
+
+    print(model.file.name)
+    print(model.sitepath.name)
+    print(size, model.datatype)
 
     # Delete file from resized field
     field = getattr(model, f'file_{size}')
@@ -21,14 +25,12 @@ def create_resized_files(model, size):
 
     # Deal with no datatype
     if not model.datatype:
-        if model.sitepath.name.endswith('jpg'):
-            datatype = 'photo'
-        elif model.sitepath.name.endswith('mp4'):
-            datatype = 'video'
-        elif model.file.name.endswith('jpg'):
-            datatype = 'photo'
-        elif model.file.name.endswith('mp4'):
-            datatype = 'video'
+        names = [model.sitepath.name, model.file.name]
+        for name in names:
+            if name.endswith(PHOTO_EXTENSIONS):
+                datatype = 'photo'
+            elif name.endswith(VIDEO_EXTENSIONS):
+                datatype = 'video'
     else:
         datatype = model.datatype
 

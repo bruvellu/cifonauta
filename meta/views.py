@@ -1401,8 +1401,9 @@ def my_curations_media_details(request, media_id):
 @never_cache
 def download_media(request, media_id):
     media = get_object_or_404(Media, id=media_id)
-    media_file = media.file
-    return FileResponse(open(f'site_media/{media_file}', 'rb'), as_attachment=True, filename=f'{media.title}.jpg')
+    root, extension = os.path.splitext(media.file.name)
+    filename = f'Cifonauta_{media.datatype}_{media.id}{extension}'
+    return FileResponse(open(media.file.path, 'rb'), as_attachment=True, filename=filename)
 
 @never_cache
 @curator_required

@@ -35,12 +35,19 @@ def update_search_vector(sender, instance, created, *args, **kwargs):
 # Delete file from folder when the media is deleted on website
 @receiver(pre_delete, sender=Media)
 def delete_files_from_folder(sender, instance, **kwargs):
-    # There are five media files to be deleted
-    os.remove(instance.file.path)
-    os.remove(instance.file_large.path)
-    os.remove(instance.file_medium.path)
-    os.remove(instance.file_small.path)
-    os.remove(instance.file_cover.path)
+    # List of files to be deleted
+    to_delete = [instance.file,
+                 instance.file_large,
+                 instance.file_medium,
+                 instance.file_small,
+                 instance.file_cover]
+    # Loop over and delete, if file exists
+    for file in to_delete:
+        if file:
+            try:
+                os.remove(file.path)
+            except FileNotFoundError:
+                print('{file} not found. Probably already deleted.')
 
 
 @receiver(m2m_changed, sender=Curadoria.taxons.through)

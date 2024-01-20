@@ -201,8 +201,8 @@ MEDIA_DEFAULTS = {
             },
         'video': {
             'extension': 'mp4',
-            'large': {'dimension': 1920, 'quality': 1200},
-            'medium': {'dimension': 1280, 'quality': 600},
+            'large': {'dimension': 1920, 'quality': 2000},
+            'medium': {'dimension': 1280, 'quality': 1000},
             'small': {'dimension': 640, 'quality': 600},
             'cover': {'dimension': 750, 'quality': 70}
             },

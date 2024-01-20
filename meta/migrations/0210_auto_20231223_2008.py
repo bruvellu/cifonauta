@@ -25,6 +25,10 @@ def create_resized_files(model, size):
             datatype = 'photo'
         elif model.sitepath.name.endswith('mp4'):
             datatype = 'video'
+        elif model.file.name.endswith('jpg'):
+            datatype = 'photo'
+        elif model.file.name.endswith('mp4'):
+            datatype = 'video'
     else:
         datatype = model.datatype
 

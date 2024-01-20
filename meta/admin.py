@@ -16,7 +16,7 @@ class FlatPageAdmin(TranslationAdmin):
 
 
 class MediaAdmin(TranslationAdmin):
-    list_display = ['id', 'user', 'title', 'is_public', 'status', 'highlight',
+    list_display = ['id', 'user', 'datatype', 'title', 'is_public', 'status', 'highlight',
                     'date_created', 'date_modified']
     list_filter = ['status', 'datatype', 'highlight', 'date_modified', 'scale',
                    'authors', 'tags']

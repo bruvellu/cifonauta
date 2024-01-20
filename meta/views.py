@@ -1114,27 +1114,26 @@ def revision_media_details(request, media_id):
         if form.is_valid():
             media_instance = form.save()
 
+            # Set user as curator (?)
+            person = Person.objects.filter(user_cifonauta=request.user.id).first()
+            media_instance.curators.add(person)
+
             action = request.POST.get('action')
             if action == 'publish':
                 media_instance.status = 'published'
                 media_instance.is_public = True
+                media_instance.update_metadata()
                 
-
-            person = Person.objects.filter(user_cifonauta=request.user.id).first()
-            media_instance.curators.add(person)
-            
+            # Save instance
             media_instance.save()
 
             if action == 'publish':
+                # TODO: Move to its own method?
                 form.send_mail(request.user, media.user, media, 'Mídia publicada no Cifonauta', 'email_published_media_author.html')
-
                 specialists_user = set()
                 for specialist in media.specialists.all():
                     specialists_user.add(specialist.user_cifonauta)
                 form.send_mail(request.user, specialists_user, media, 'Fluxo da mídia no Cifonauta', 'email_published_media_specialists.html')
-
-            if action == 'publish':
-                media_instance.update_metadata()
                 messages.success(request, f'A mídia ({media.title}) foi publicada com sucesso')
             else:
                 messages.success(request, f'A mídia ({media.title}) foi salva com sucesso')

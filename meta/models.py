@@ -364,16 +364,14 @@ class Media(models.Model):
         # Resize media
         if self.datatype == 'photo':
             resized = resize_image(field.path, dimension, quality)
-        elif self.datatype == 'video' and size == 'cover':
-            resized = resize_image(field.path, dimension, quality)
         elif self.datatype == 'video':
-            resized = resize_video(field.path, dimension, quality)
+            if size == 'cover':
+                resized = resize_image(field.path, dimension, quality)
+            else:
+                resized = resize_video(field.path, dimension, quality)
 
-        # Return something, if needed
-        if resized:
-            return True
-        else:
-            return False
+        # Return True/False for convenience
+        return resized
 
     def create_resized_image(self, size):
         '''Resize image files to different pre-defined dimensions.

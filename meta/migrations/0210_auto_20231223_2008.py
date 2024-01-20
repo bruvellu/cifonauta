@@ -5,8 +5,8 @@ from django.conf import settings
 from media_utils import resize_image
 
 
-def create_resized_image(model, size):
-    '''Resize image files to different pre-defined dimensions.
+def create_resized_files(model, size):
+    '''Resize media files to a pre-defined dimension.
 
     Options: large, medium, small, cover.
 
@@ -16,16 +16,31 @@ def create_resized_image(model, size):
     field = getattr(model, f'file_{size}')
     field.delete()
 
+    # Get dimension and quality values
+    dimension = settings.MEDIA_DEFAULTS[model.datatype][size]['dimension']
+    quality = settings.MEDIA_DEFAULTS[model.datatype][size]['quality']
+    extension = settings.MEDIA_DEFAULTS[model.datatype]['extension']
+
+    # Force photo extension for video cover image
+    if size == 'cover':
+        extension = settings.MEDIA_DEFAULTS['photo']['extension']
+
     # Save original file to resized field using new name
-    field.save(content=model.file, name=f'{model.uuid}_{size}.jpg')
+    field.save(content=model.file, name=f'{model.uuid}_{size}.{extension}')
 
-    # Get format, dimension, and quality for convenience
-    format = settings.MEDIA_DEFAULTS['photo'][size]['format']
-    dimension = settings.MEDIA_DEFAULTS['photo'][size]['dimension']
-    quality = settings.MEDIA_DEFAULTS['photo'][size]['quality']
+    # Resize media
+    if model.datatype == 'photo':
+        resized = resize_image(field.path, dimension, quality)
+    elif model.datatype == 'video':
+        if size == 'cover':
+            resized = extract_video_cover(model.file.path, dimension,
+                                          field.path)
+        else:
+            resized = resize_video(model.file.path, dimension,
+                                   quality, field.path)
 
-    # Resize image
-    resized = resize_image(field.path, format, dimension, quality)
+    # Return True/False for convenience
+    return resized
 
 
 def regenerate_resized_image_fields(apps, schema_editor):
@@ -35,10 +50,10 @@ def regenerate_resized_image_fields(apps, schema_editor):
 
     for m in Media.objects.all():
         if m.file:
-            create_resized_image(m, 'large')
-            create_resized_image(m, 'medium')
-            create_resized_image(m, 'small')
-            create_resized_image(m, 'cover')
+            create_resized_files(m, 'cover')
+            create_resized_files(m, 'large')
+            create_resized_files(m, 'medium')
+            create_resized_files(m, 'small')
 
 
 class Migration(migrations.Migration):

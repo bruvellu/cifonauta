@@ -47,7 +47,7 @@ def resize_video(input_path, dimension, bitrate, output_path):
         subprocess.call(ffmpeg_call)
         return True
     except:
-        logger.critical(f'Could not save {filepath}!')
+        logger.critical(f'Could not save {output_path}!')
         return False
 
 
@@ -61,7 +61,7 @@ def extract_video_cover(input_path, dimension, output_path):
         subprocess.call(ffmpeg_call)
         return True
     except:
-        logger.critical(f'Could not save {filepath}!')
+        logger.critical(f'Could not save {output_path}!')
         return False
 
 

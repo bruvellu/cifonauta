@@ -12,6 +12,9 @@ def create_resized_files(model, size):
 
     See MEDIA_DEFAULTS for details.
     '''
+    print(model, size)
+    print(settings.MEDIA_DEFAULTS)
+
     # Delete file from resized field
     field = getattr(model, f'file_{size}')
     field.delete()

@@ -188,7 +188,9 @@ PHOTO_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.gif')
 VIDEO_EXTENSIONS = ('.mp4',)
 MEDIA_EXTENSIONS = PHOTO_EXTENSIONS + VIDEO_EXTENSIONS
 
-# Default resolutions for media files
+# Default dimensions and quality for different media files
+# Image quality in percentage (0-100%)
+# Video quality in bitrate (0-infinite kbits/s)
 MEDIA_DEFAULTS = {
         'photo': {
             'extension': 'jpg',
@@ -199,9 +201,9 @@ MEDIA_DEFAULTS = {
             },
         'video': {
             'extension': 'mp4',
-            'large': {'format': 'mp4', 'dimension': 1920, 'bitrate': 1200},
-            'medium': {'format': 'mp4', 'dimension': 1280, 'bitrate': 600},
-            'small': {'format': 'mp4', 'dimension': 640, 'bitrate': 600},
+            'large': {'format': 'mp4', 'dimension': 1920, 'quality': 1200},
+            'medium': {'format': 'mp4', 'dimension': 1280, 'quality': 600},
+            'small': {'format': 'mp4', 'dimension': 640, 'quality': 600},
             'cover': {'format': 'jpeg', 'dimension': 750, 'quality': 70}
             },
         }

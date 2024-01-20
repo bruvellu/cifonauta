@@ -22,13 +22,12 @@ import piexif
 logger = logging.getLogger('cifonauta.utils')
 
 
-def resize_image(filepath, format, dimension, quality):
+def resize_image(filepath, dimension, quality):
     '''Uses Pillow's thumbnail method to scale images.'''
     image = Image.open(filepath)
     image.thumbnail((dimension, dimension))
-    #TODO: Keep jpg in settings, rename format here to jpeg for PIL compatibility
     try:
-        image.convert('RGB').save(filepath, format=format, quality=quality)
+        image.convert('RGB').save(filepath, format='jpeg', quality=quality)
         return True
     except OSError as error:
         logger.critical(f'Could not save {filepath}: {error}')
@@ -37,6 +36,24 @@ def resize_image(filepath, format, dimension, quality):
 
 #TODO: Basic is working, but needs full implementation
 def resize_video(input_path, format, dimension, bitrate, output_path):
+    '''Uses FFmpeg to scale and convert videos.'''
+
+    ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
+                   '-threads', '0', '-i', input_path,
+                   '-b:v', f'{bitrate}k',
+                   '-filter:v', f'scale={dimension}:-2',
+                   output_path]
+
+    try:
+        #TODO: Subprocess is not catching errors in ffmpeg, change oserror?
+        subprocess.call(ffmpeg_call)
+        return True
+    except OSError as error:
+        logger.critical(f'Could not save {filepath}: {error}')
+        return False
+
+
+def extract_video_cover(input_path, format, dimension, bitrate, output_path):
     '''Uses FFmpeg to scale and convert videos.'''
 
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',

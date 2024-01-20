@@ -194,17 +194,17 @@ MEDIA_EXTENSIONS = PHOTO_EXTENSIONS + VIDEO_EXTENSIONS
 MEDIA_DEFAULTS = {
         'photo': {
             'extension': 'jpg',
-            'large': {'format': 'jpeg', 'dimension': 2000, 'quality': 90},
-            'medium': {'format': 'jpeg', 'dimension': 1000, 'quality': 70},
-            'small': {'format': 'jpeg', 'dimension': 500, 'quality': 70},
-            'cover': {'format': 'jpeg', 'dimension': 750, 'quality': 70}
+            'large': {'dimension': 2000, 'quality': 90},
+            'medium': {'dimension': 1000, 'quality': 70},
+            'small': {'dimension': 500, 'quality': 70},
+            'cover': {'dimension': 750, 'quality': 70}
             },
         'video': {
             'extension': 'mp4',
-            'large': {'format': 'mp4', 'dimension': 1920, 'quality': 1200},
-            'medium': {'format': 'mp4', 'dimension': 1280, 'quality': 600},
-            'small': {'format': 'mp4', 'dimension': 640, 'quality': 600},
-            'cover': {'format': 'jpeg', 'dimension': 750, 'quality': 70}
+            'large': {'dimension': 1920, 'quality': 1200},
+            'medium': {'dimension': 1280, 'quality': 600},
+            'small': {'dimension': 640, 'quality': 600},
+            'cover': {'dimension': 750, 'quality': 70}
             },
         }
 

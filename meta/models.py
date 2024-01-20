@@ -353,8 +353,7 @@ class Media(models.Model):
         field = getattr(self, f'file_{size}')
         field.delete()
 
-        # Get format, dimension, and quality for convenience
-        format = settings.MEDIA_DEFAULTS[self.datatype][size]['format']
+        # Get dimension and quality values
         dimension = settings.MEDIA_DEFAULTS[self.datatype][size]['dimension']
         quality = settings.MEDIA_DEFAULTS[self.datatype][size]['quality']
         extension = settings.MEDIA_DEFAULTS[self.datatype]['extension']
@@ -364,11 +363,11 @@ class Media(models.Model):
 
         # Resize media
         if self.datatype == 'photo':
-            resized = resize_image(field.path, format, dimension, quality)
+            resized = resize_image(field.path, dimension, quality)
         elif self.datatype == 'video' and size == 'cover':
-            resized = resize_image(field.path, format, dimension, quality)
+            resized = resize_image(field.path, dimension, quality)
         elif self.datatype == 'video':
-            resized = resize_video(field.path, format, dimension, quality)
+            resized = resize_video(field.path, dimension, quality)
 
         # Return something, if needed
         if resized:

@@ -448,7 +448,6 @@ class Media(models.Model):
 
     def update_metadata(self):
 
-
         self.latlng_to_geo()
 
         tags = []
@@ -502,17 +501,19 @@ class Media(models.Model):
 
         }
 
-        #Filepath
-        meta = Metadata(f"site_media/{self.file}")
-        meta.insert_metadata(metadata)
-
-        #Coverpath
-        meta = Metadata(f"site_media/{self.coverpath}")
-        meta.insert_metadata(metadata)
-
-        #Sitepath
-        meta = Metadata(f"site_media/{self.sitepath}")
-        meta.insert_metadata(metadata)
+        #TODO: Fix writing the metadata to videos
+        # Workaround logic to prevent errors on publishing videos
+        if self.datatype == 'photo':
+            to_write = [self.file_large, self.file_medium, self.file_small,
+                        self.file_cover, self.sitepath, self.coverpath]
+            for file in to_write:
+                meta_instance = Metadata(file.path)
+                meta_instance.insert_metadata(metadata)
+        elif self.datatype == 'video':
+            to_write = [self.file_cover, self.coverpath]
+            for file in to_write:
+                meta_instance = Metadata(file.path)
+                meta_instance.insert_metadata(metadata)
 
     class Meta:
         verbose_name = _('arquivo')

@@ -116,11 +116,7 @@
                     <td class="image-cedule">
                         <div class="media-wrapper-td">
                             <a href="{% url 'editing_media_details' media.id %}">
-                                {% if media.datatype == 'video' %}
-                                <video src="{{ media.coverpath.url }}"></video>
-                                {% else %}
-                                <img src="{{ media.coverpath.url }}">
-                                {% endif %}
+                              <img src="{{ media.coverpath.url }}">
                             </a>
                         </div>
                     </td>

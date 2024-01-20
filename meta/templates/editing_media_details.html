@@ -15,161 +15,155 @@
 
 {% if messages %}
 <div class="messages-div">
-{% for message in messages %}
-<span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
-{% endfor %}
+  {% for message in messages %}
+  <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+  {% endfor %}
 </div>
 {% endif %}
 
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="media-infos">
-        <div>
-            <p>Mídia:</p>
-            <div class='media-wrapper'>
-                <a href="{{ media.file.url }}" target="_blank">
-                    {% if media.datatype == 'video' %}
-                    <video class="media-cover" src="{{ media.coverpath.url }}"></video>
-                    {% else %}
-                    <img class="media-cover" src="{{ media.coverpath.url }}">
-                    {% endif %}
-                </a>
-            </div>
-        </div>
-        <div>
-            <p>Status:</p>
-            <span class="media-status {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}">
-                {{ media.get_status_display }}
-            </span>
-        </div>
-        <div>
-            <p>Autores:</p>
-            {{ media.get_authors_display }}
-            {% get_field_value media 'authors' as authors %}
-            <div>
-                <ul>
-                    {% for author in authors %}
-                    <li>
-                        {{ author }}
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-        <div>
-            <p>Licença:</p>
-            {% get_field_value media 'license' as license %}
-            <div>{{ media.get_license_display }}</div>
-        </div>
-        <div>
-            <p>Data de Criação:</p>
-            <div>
-                {% if media.date_created.date|date:"d/m/Y" == '01/01/0001' %}
-                Data desconhecida
-                {% else %}
-                {{ media.date_created.date }}
-                {% endif %}
-            </div>
-        </div>
+  {% csrf_token %}
+  <div class="media-infos">
+    <div>
+      <p>Mídia:</p>
+      <div class='media-wrapper'>
+        <a href="{{ media.file.url }}" target="_blank">
+          <img class="media-cover" src="{{ media.coverpath.url }}">
+        </a>
+      </div>
     </div>
-    {% for field in form %}
-    {% if field == form.country %}
-    <div class="field-container country-container">
-        <div class="label-div">
-            {{ field.label_tag }}
-            {% if field.field.required %}
-            <span class='required'>*</span>
-            {% endif %}
-        </div>
-        <div class="field-div">
-            {{ field }}
-            {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
-            {% endif %}
-        </div>
+    <div>
+      <p>Status:</p>
+      <span class="media-status {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}">
+        {{ media.get_status_display }}
+      </span>
     </div>
-    {% elif field == form.location or field == form.taxa %}
-    <div class="field-container">
-        <div class="label-div">
-            {{ field.label_tag }}
-            {% if field.field.required %}
-            <span class='required'>*</span>
-            {% endif %}
-        </div>
-        <div class="field-div">
-            {% if field.errors %}
-            <ul class="field-error">
-                {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            <div class="add-new-object-div">
-                {{ field }}
-                <button 
-                    type="button"
-                    {% if field == form.location %}
-                    id="open-location-modal-btn" 
-                    {% elif field == form.taxa %}
-                    id="open-taxa-modal-btn"
-                    {% endif %}
-                    class="add-new-object-btn"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="12" y1="19" x2="12" y2="5"/>
-                        <line x1="5" y1="12" x2="19" y2="12"/>
-                    </svg>
-                </button>
-            </div>
-            {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
-            {% endif %}
-        </div>
+    <div>
+      <p>Autores:</p>
+      {{ media.get_authors_display }}
+      {% get_field_value media 'authors' as authors %}
+      <div>
+        <ul>
+          {% for author in authors %}
+          <li> {{ author }} </li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
-    {% elif field == form.terms %}
-    <div class="field-container">
-        <div class='label-div'>
-            {{ field.label_tag }}
-            <span class='required'>*</span>
-        </div>
-        <div class="field-div terms-div">
-            <div class="term-wrapper">
-                {{ field }}
-                Declaro...
-            </div>
-            {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
-            {% endif %}
-        </div>
+    <div>
+      <p>Licença:</p>
+      {% get_field_value media 'license' as license %}
+      <div>{{ media.get_license_display }}</div>
     </div>
-    {% else %}
-    <div class="field-container">
-        <div class="label-div">
-            {{ field.label_tag }}
-            {% if field.field.required or field == form.title_pt_br or field == form.title_en %}
-            <span class='required'>*</span>
-            {% endif %}
-        </div>
-        <div class="field-div">
-            {% if field.errors %}
-            <ul class="field-error">
-                {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            {{ field }}
-            {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
-            {% endif %}
-        </div>
+    <div>
+      <p>Data de Criação:</p>
+      <div>
+        {% if media.date_created.date|date:"d/m/Y" == '01/01/0001' %}
+        Data desconhecida
+        {% else %}
+        {{ media.date_created.date }}
+        {% endif %}
+      </div>
     </div>
-    {% endif %}
-    {% endfor %}
-    <div class="buttons-div">
-        <button class='primary-button submit-button' type="submit" name="action" value="submit">Salvar e enviar para revisão</button>
-        <button class='primary-button neutral-button' type="submit" name="action" value="save_only">Apenas salvar</button>
+  </div>
+
+  {% for field in form %}
+  {% if field == form.country %}
+  <div class="field-container country-container">
+    <div class="label-div">
+      {{ field.label_tag }}
+      {% if field.field.required %}
+      <span class='required'>*</span>
+      {% endif %}
     </div>
+    <div class="field-div">
+      {{ field }}
+      {% if field.help_text %}
+      <span class="help-text">{{ field.help_text }}</span>
+      {% endif %}
+    </div>
+  </div>
+  {% elif field == form.location or field == form.taxa %}
+  <div class="field-container">
+    <div class="label-div">
+      {{ field.label_tag }}
+      {% if field.field.required %}
+      <span class='required'>*</span>
+      {% endif %}
+    </div>
+    <div class="field-div">
+      {% if field.errors %}
+      <ul class="field-error">
+        {% for error in field.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      <div class="add-new-object-div">
+        {{ field }}
+        <button 
+           type="button"
+           {% if field == form.location %}
+           id="open-location-modal-btn" 
+           {% elif field == form.taxa %}
+           id="open-taxa-modal-btn"
+           {% endif %}
+           class="add-new-object-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="19" x2="12" y2="5"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </button>
+      </div>
+      {% if field.help_text %}
+      <span class="help-text">{{ field.help_text }}</span>
+      {% endif %}
+    </div>
+  </div>
+  {% elif field == form.terms %}
+  <div class="field-container">
+    <div class='label-div'>
+      {{ field.label_tag }}
+      <span class='required'>*</span>
+    </div>
+    <div class="field-div terms-div">
+      <div class="term-wrapper">
+        {{ field }}
+        Declaro...
+      </div>
+      {% if field.help_text %}
+      <span class="help-text">{{ field.help_text }}</span>
+      {% endif %}
+    </div>
+  </div>
+  {% else %}
+  <div class="field-container">
+    <div class="label-div">
+      {{ field.label_tag }}
+      {% if field.field.required or field == form.title_pt_br or field == form.title_en %}
+      <span class='required'>*</span>
+      {% endif %}
+    </div>
+    <div class="field-div">
+      {% if field.errors %}
+      <ul class="field-error">
+        {% for error in field.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {{ field }}
+      {% if field.help_text %}
+      <span class="help-text">{{ field.help_text }}</span>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+  {% endfor %}
+  <div class="buttons-div">
+    <button class='primary-button submit-button' type="submit" name="action" value="submit">Salvar e enviar para revisão</button>
+    <button class='primary-button neutral-button' type="submit" name="action" value="save_only">Apenas salvar</button>
+  </div>
 </form>
 
 {% include 'dashboard_location_modal.html' %}

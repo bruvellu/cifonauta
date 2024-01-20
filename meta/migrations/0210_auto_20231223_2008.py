@@ -22,14 +22,16 @@ def create_resized_files(model, size):
     # Deal with no datatype
     if not model.datatype:
         if model.sitepath.name.endswith('jpg'):
-            model.datatype = 'photo'
+            datatype = 'photo'
         elif model.sitepath.name.endswith('mp4'):
-            model.datatype = 'video'
+            datatype = 'video'
+    else:
+        datatype = model.datatype
 
     # Get dimension and quality values
-    dimension = settings.MEDIA_DEFAULTS[model.datatype][size]['dimension']
-    quality = settings.MEDIA_DEFAULTS[model.datatype][size]['quality']
-    extension = settings.MEDIA_DEFAULTS[model.datatype]['extension']
+    dimension = settings.MEDIA_DEFAULTS[datatype][size]['dimension']
+    quality = settings.MEDIA_DEFAULTS[datatype][size]['quality']
+    extension = settings.MEDIA_DEFAULTS[datatype]['extension']
 
     # Force photo extension for video cover image
     if size == 'cover':
@@ -39,9 +41,9 @@ def create_resized_files(model, size):
     field.save(content=model.file, name=f'{model.uuid}_{size}.{extension}')
 
     # Resize media
-    if model.datatype == 'photo':
+    if datatype == 'photo':
         resized = resize_image(field.path, dimension, quality)
-    elif model.datatype == 'video':
+    elif datatype == 'video':
         if size == 'cover':
             resized = extract_video_cover(model.file.path, dimension,
                                           field.path)

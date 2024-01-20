@@ -29,8 +29,8 @@ def resize_image(filepath, dimension, quality):
     try:
         image.convert('RGB').save(filepath, format='jpeg', quality=quality)
         return True
-    except OSError as error:
-        logger.critical(f'Could not save {filepath}: {error}')
+    except:
+        logger.critical(f'Could not save {filepath}!')
         return False
 
 

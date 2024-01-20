@@ -18,14 +18,54 @@ from PIL import Image
 import pyexiv2
 import piexif
 
-"""import gi
-gi.require_version('GExiv2', '0.10')
-from gi.repository import GExiv2"""
-
-# Get logger.
+# Get logger
 logger = logging.getLogger('cifonauta.utils')
 
 
+def resize_image(filepath, dimension, quality):
+    '''Uses Pillow's thumbnail method to scale images.'''
+    image = Image.open(filepath)
+    image.thumbnail((dimension, dimension))
+    try:
+        image.convert('RGB').save(filepath, format='jpeg', quality=quality)
+        return True
+    except:
+        logger.critical(f'Could not save {filepath}!')
+        return False
+
+
+def resize_video(input_path, dimension, bitrate, output_path):
+    '''Uses FFmpeg to scale and convert videos.'''
+    # min(width, iw) prevents upscaling
+    # lanczos is a better resizing algorithm
+    ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
+                   '-threads', '0', '-i', input_path,
+                   '-b:v', f'{bitrate}k', '-filter:v',
+                   f'scale=\'min({dimension},iw)\':-2:flags=lanczos',
+                   output_path]
+    try:
+        subprocess.call(ffmpeg_call)
+        return True
+    except:
+        logger.critical(f'Could not save {filepath}!')
+        return False
+
+
+def extract_video_cover(input_path, dimension, output_path):
+    '''Uses FFmpeg to scale and convert videos.'''
+    ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
+                   '-i', input_path, '-vframes', '1',
+                   '-filter:v', f'scale={dimension}:-2',
+                   '-ss', '1', '-f', 'image2', output_path]
+    try:
+        subprocess.call(ffmpeg_call)
+        return True
+    except:
+        logger.critical(f'Could not save {filepath}!')
+        return False
+
+
+#TODO: Remove?
 def read_photo_metadata(filepath):
     '''Parses image metadata using GExiv2.'''
     metadata = GExiv2.Metadata(filepath)
@@ -35,42 +75,7 @@ def read_photo_metadata(filepath):
         return metadata
 
 
-def create_thumb(filepath, destination):
-    '''Cria thumbnail para foto.'''
-    # Confere argumentos.
-    if not os.path.isfile(filepath):
-        logger.critical('%s não é um arquivo válido.', filepath)
-    if not os.path.isdir(destination):
-        logger.critical('%s não é um destino válido.', destination)
-
-    # Define nome do thumbnail.
-    filename = os.path.basename(filepath)
-
-    # Checa se nome do arquivo tem pontos.
-    if filename.count('.') > 1:
-        logger.critical('Mais de um "." em %s', filename)
-    else:
-        filename = filename.split('.')[0] + '.jpg'
-
-    # Define caminho para pasta local.
-    localpath = os.path.join(destination, filename)
-
-    # Define comando a ser executado.
-    magick_call = [
-            'convert', '-define', 'jpeg:size=200x150', filepath, '-thumbnail',
-            '120x90^', '-gravity', 'center', '-extent', '120x90', localpath
-            ]
-
-    # Executando o ImageMagick
-    try:
-        subprocess.call(magick_call)
-        logger.debug('Thumb criado em %s', localpath)
-        return localpath
-    except IOError:
-        logger.warning('Erro ao criar thumb %s', localpath)
-        return None
-
-
+#TODO: Keep for the watermark
 def video_to_web(filepath, sitepath, metadata):
     '''Convert video for web using FFmpeg.
 
@@ -112,94 +117,7 @@ def video_to_web(filepath, sitepath, metadata):
     # Execute.
     subprocess.call(video_call)
 
-
-def grab_still(filepath, coverpath):
-    '''Grab video's first frame.'''
-
-    # Command to be called.
-    ffmpeg_call = [
-            'ffmpeg', '-y',
-            '-hide_banner',
-            '-loglevel', 'error',
-            '-i', filepath,
-            '-vframes', '1',
-            '-filter_complex', 'scale=512:-2',
-            '-ss', '1',
-            '-f', 'image2',
-            coverpath
-            ]
-
-    # Executing ffmpeg.
-    try:
-        subprocess.call(ffmpeg_call)
-        logger.debug('Still criado em %s', coverpath)
-        return coverpath
-    except IOError:
-        logger.warning('Erro ao criar still %s', coverpath)
-        return None
-
-
-def create_still(filepath, destination):
-    '''Cria still para o vídeo e thumbnail em seguida.'''
-    # Confere argumentos.
-    if not os.path.isfile(filepath):
-        logger.critical('%s não é um arquivo válido.', filepath)
-    if not os.path.isdir(destination):
-        logger.critical('%s não é um destino válido.', destination)
-
-    # Define nome do thumbnail.
-    filename = os.path.basename(filepath)
-
-    # Checa se nome do arquivo tem pontos.
-    if filename.count('.') > 1:
-        logger.critical('Mais de um "." em %s', filename)
-    else:
-        thumbname = filename.split('.')[0] + '.jpg'
-        stillname = filename.split('.')[0] + '_still.jpg'
-
-    # Define caminho para pasta local.
-    thumbpath = os.path.join(destination, thumbname)
-    stillpath = os.path.join(destination, stillname)
-
-    # Define comando a ser executado.
-    if filepath.endswith('m2ts'):
-        ffmpeg_call = [
-                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-filter_complex',
-                'scale=512:288', '-aspect', '16:9', '-ss', '1', '-f', 'image2',
-                stillpath
-                ]
-    else:
-        ffmpeg_call = [
-                'ffmpeg', '-y', '-i', filepath, '-vframes', '1', '-filter_complex',
-                'scale=512:384', '-ss', '1', '-f', 'image2', stillpath
-                ]
-
-    # Executando o ffmpeg
-    try:
-        subprocess.call(ffmpeg_call)
-        logger.debug('Still criado em %s', stillpath)
-        # Copia still para servir de template para thumb.
-        copy2(stillpath, thumbpath)
-        # Cria thumbnail normal.
-        thumbpath = create_thumb(thumbpath, destination)
-        return thumbpath, stillpath
-    except IOError:
-        logger.warning('Erro ao criar still %s', stillpath)
-        return None, None
-
-def photo_to_web(filepath, sitepath, size=800):
-    '''Resizes and optimizes the photo for the web.'''
-    sitepath_jpg = '{}.jpg'.format(os.path.splitext(sitepath)[0])
-    convert_call = ['convert', filepath, '-density', '72', '-format', 'jpg',
-            '-quality', '70', '-resize', '{}x{}>'.format(size, size), sitepath_jpg]
-    try:
-        subprocess.call(convert_call)
-        watermarker(sitepath_jpg)
-        logger.debug('%s processed.', sitepath)
-        return sitepath
-    except:
-        logger.critical('Error converting %s', filepath)
-        return None
+#TODO: Clean up from here
 
 def watermarker(filepath):
     '''Insert watermark.'''
@@ -216,6 +134,7 @@ def watermarker(filepath):
         logger.warning('Error to add watermark on %s', filepath)
         return False
 
+
 def get_exif_date(info):
     '''Extract creation date from GExiv2 object.'''
     try:
@@ -230,6 +149,7 @@ def get_exif_date(info):
                 return False
     return date
 
+
 def get_date(info):
     '''Return the creation data ready for media metadata.'''
     # Extract date from EXIF.
@@ -239,6 +159,7 @@ def get_date(info):
     else:
         tz_date = timezone.make_aware(datetime.strptime('1900:01:01 01:01:01', '%Y:%m:%d %H:%M:%S'))
     return tz_date
+
 
 def get_gps(info):
     '''Extract GPS coordinates from GExiv2 object.'''
@@ -287,6 +208,7 @@ def get_gps(info):
         gps_data['latitude'] = ''
         gps_data['longitude'] = ''
     return gps_data
+
 
 def get_decimal(ref, deg, min, sec):
     '''Descobre o valor decimal das coordenadas.'''

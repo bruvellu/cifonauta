@@ -56,6 +56,11 @@
     
               {% if specialists %}
               <strong>{% blocktrans count counter=specialists.count %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set specialists '' '' ', ' '' %}</span>
+              <br>
+              {% endif %}
+
+              {% if curators %}
+              <strong>{% blocktrans count counter=curators.count %}Curador{% plural %}Curadores{% endblocktrans %}:</strong> <span id="source">{% show_set curators '' '' ', ' '' %}</span>
               {% endif %}
             </div>
     
@@ -90,6 +95,9 @@
             </div>
             <div class="align-right quiet">
               {% blocktrans %}Conheça os <a href="/terms/">termos de uso</a>.{% endblocktrans %}
+              <span>
+                {{ media.get_license_display }}
+              </span>
             </div>
           </div>
         </div>

@@ -1,9 +1,12 @@
-let modalContainer = document.querySelector('#modal-container')
-let openModalButton = document.querySelector('#open-modal-button')
-let closeModalButton = document.querySelector('#close-modal-button')
-
-const modalHandler = new ModalHandler({ 
-    modalContent: modalContainer,
-    modalTrigger: openModalButton,
-    modalClose: closeModalButton
-})
+(() => {
+    const modals = document.querySelectorAll('[data-modal]:not([data-modal="references"])')
+    modals.forEach(modal => {
+        const modalName = modal.dataset.modal
+        
+        new Modal({
+            modalContent: document.querySelector(`[data-modal='${modalName}']`),
+            modalTrigger: document.querySelector(`[data-open-modal='${modalName}']`),
+            modalClose: document.querySelector(`[data-close-modal='${modalName}']`)
+        })
+    })
+})()

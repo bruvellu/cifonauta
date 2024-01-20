@@ -2,17 +2,18 @@
 {% load static %}
 
 {% block extra_head %}
-<script src="{% static 'js/adm_popup.js' %}" defer></script>
+<script src="{% static 'js/adm_modal.js' %}" defer></script>
 <script src="{% static 'js/upload_media_step2.js' %}" defer></script>
 <script src="{% static 'js/adm_sync_location_fields.js' %}" defer></script>
+<script src="{% static 'js/adm_references.js' %}" defer></script>
 {% endblock %}
 {% block title %}Enviar Mídia{% endblock %}
 
 {% block dashboard_content %}
-<div id="modal-container" class="list-modal-container">
+<div data-modal="co-author" id="modal-container" class="list-modal-container">
     <div class="modal-header">
         <p>Registre o coautor</p>
-        <button id="close-modal-button" class="close-modal-button">
+        <button data-close-modal="co-author" id="close-modal-button" class="close-modal-button">
             <div class='line1'></div>
             <div class='line2'></div>
         </button>
@@ -100,7 +101,7 @@
             {% endif %}
             <div>
                 <p>Coautor não está na lista?</p>
-                <button id="open-modal-button" class="pre-registration-button" type="button">Registrar coautor</button>
+                <button data-open-modal="co-author" id="open-modal-button" class="pre-registration-button" type="button">Registrar coautor</button>
             </div>
         </div>
     </div>
@@ -126,7 +127,7 @@
             {% endif %}
         </div>
     </div>
-    {% elif field == form.location or field == form.taxa %}
+    {% elif field == form.location or field == form.taxa or field == form.references %}
     <div class="field-container">
         <div class="label-div">
             {{ field.label_tag }}
@@ -146,11 +147,7 @@
                 {{ field }}
                 <button 
                     type="button"
-                    {% if field == form.location %}
-                    id="open-location-modal-btn" 
-                    {% elif field == form.taxa %}
-                    id="open-taxa-modal-btn"
-                    {% endif %}
+                    data-open-modal="{{ field.name }}"
                     class="add-new-object-btn"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -218,5 +215,7 @@
     <p>Adicionar às minhas mídias e enviar para revisão</p>
 
 </form>
+
+{% include 'dashboard_references_modal.html' %}
 
 {% endblock %}

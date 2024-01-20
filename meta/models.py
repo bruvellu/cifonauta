@@ -480,8 +480,8 @@ class ModifiedMedia(Media):
     altered_by_author = models.BooleanField(_('alterada pelo autor'),
             default=True,
             help_text=_('Flag indicando quem fez a alteração na mídia.'))
-    specialist_person = models.OneToOneField('Person', null=True, blank=True, on_delete=models.CASCADE,
-            verbose_name=_('Especialista da mídia modificada'), help_text=_('Especialista que realizou alterações na mídia publicada'))
+    modification_person = models.ForeignKey('Person', null=True, on_delete=models.CASCADE, related_name='modified_medias',
+            verbose_name=_('Pessoa da mídia modificada'), help_text=_('Pessoa que realizou alterações na mídia publicada'))
 
     class Meta:
         verbose_name = _("mídia modificada")
@@ -694,6 +694,8 @@ class Reference(models.Model):
             help_text=_('Slug do identificar da referência.'))
     citation = models.TextField(_('citação'), blank=True,
             help_text=_('Citação formatada da referência.'))
+    doi = models.CharField('doi', max_length=40, blank=True, help_text=_('DOI da referência'))
+    metadata = models.JSONField(_('Metadados'), blank=True, null=True, help_text=_('Metadados da referência'))
 
     def __str__(self):
         return self.name

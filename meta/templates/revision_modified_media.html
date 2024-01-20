@@ -79,7 +79,7 @@
                         <span class='required'>*</span>
                         {% endif %}
                     </td>
-                    {% if field.name == 'authors' or field.name == 'taxa' or field.name == 'tags' %}
+                    {% if field.name == 'authors' or field.name == 'taxa' or field.name == 'tags' or field.name == 'references' %}
                     <td>
                         <ul>
                             {% for item in media_value %}

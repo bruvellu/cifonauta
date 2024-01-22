@@ -37,10 +37,6 @@
     </form>
 </div>
 
-{% include 'dashboard_location_modal.html' %}
-
-{% include 'dashboard_taxa_modal.html' %}
-
 <h2>Adicionar nova mídia</h2>
 {% if messages %}
 <div class="messages-div">
@@ -221,6 +217,11 @@
     <p>Adicionar às minhas mídias e enviar para revisão</p>
 
 </form>
+
+
+{% include 'dashboard_location_modal.html' %}
+
+{% include 'dashboard_taxa_modal.html' %}
 
 {% include 'dashboard_references_modal.html' %}
 

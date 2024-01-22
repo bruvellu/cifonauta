@@ -1301,16 +1301,38 @@ def my_curations_media_details(request, media_id):
     if request.method == 'POST':
         action = request.POST.get('action', None)
 
-        if action == 'discard':
+        if action == 'location':
+            form = AddLocationForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Local ({}) adicionado com sucesso',
+                'Houve um erro ao tentar adicionar local',
+                'my_curations_media_details',
+                pk=media_id
+            )
+        
+        elif action == 'taxa':
+            form = AddTaxaForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Táxon ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar táxon',
+                'my_curations_media_details',
+                pk=media_id
+            )
+    
+        elif action == 'discard':
             modified_media.delete()
             messages.success(request, "Alterações discartadas com sucesso")
             return redirect('my_curations_media_details', media_id)
 
-        if media.status != 'published':
+        elif media.status != 'published':
             messages.error(request, f'Não foi possível fazer alteração')
             return redirect('my_curations_media_details', media_id)
 
-        if modified_media and (not is_modification_owner or modified_media.altered_by_author):
+        elif modified_media and (not is_modification_owner or modified_media.altered_by_author):
             messages.error(request, "Não é possível realizar mudanças em uma mídia com alterações pendentes.")
             return redirect('my_curations_media_details', media_id)
         
@@ -1383,11 +1405,16 @@ def my_curations_media_details(request, media_id):
     
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
+
     modified_media_form = ModifiedMediaForm(instance=media)
+    location_form = AddLocationForm()
+    taxa_form = AddTaxaForm()
 
     context = {
         'form': form,
         'modified_media_form': modified_media_form,
+        'location_form': location_form,
+        'taxa_form': taxa_form,
         'media': media,
         'modified_media': modified_media,
         'is_only_specialist': is_only_media_specialist,

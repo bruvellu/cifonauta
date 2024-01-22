@@ -150,7 +150,7 @@
             {% endif %}
         </div>
     </div>
-    {% elif field == form.references %}
+    {% elif field == form.location or field == form.taxa or field == form.references or field == form.latitude %}
     <div class="field-container">
         <div class="label-div">
             {{ field.label_tag }}
@@ -216,6 +216,10 @@
         <button class='primary-button submit-button' {% if media.status != 'published' or modified_media and not is_modification_owner or modified_media and modified_media.altered_by_author %}disabled{% endif %} type="submit">Alterar</button>
     </div>
 </form>
+
+{% include 'dashboard_location_modal.html' %}
+
+{% include 'dashboard_taxa_modal.html' %}
 
 {% include 'dashboard_references_modal.html' %}
 

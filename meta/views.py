@@ -46,7 +46,7 @@ load_dotenv()
 
 def handle_add_form(request, form, success_msg, error_msg, redirect_url_name, pk=None):
     if form.is_valid():
-        form_instance = form.save(commit=False)
+        form_instance = form.save()
 
         preps = ('de', 'da', 'do', 'das', 'dos', 'e', 'no', 'na')
         split_name = form_instance.name.lower().split(' ')
@@ -61,7 +61,6 @@ def handle_add_form(request, form, success_msg, error_msg, redirect_url_name, pk
     else:
         messages.error(request, error_msg)
     
-    print('PK', pk)
     if pk:
         return redirect(redirect_url_name, pk)
     else:
@@ -252,8 +251,8 @@ def upload_media_step2(request):
                         specialists_user.add(specialist)
                 
                 form.send_mail(request.user, specialists_user, medias, 'Nova mídia para edição no Cifonauta', 'email_media_to_editing_specialists.html')
-                # print(form.cleaned_data['date_created'])
-                messages.success(request, 'Suas mídias foram salvas com sucesso')
+                messages.success(request, 'As mídias foram enviadas para o especialista editar.')
+                messages.info(request, 'Você ainda pode editá-las antes de serem submetidas para o curador.')
                 return redirect('my_media_list')
 
             messages.error(request, 'Houve um erro ao tentar salvar mídia(s)')
@@ -723,7 +722,7 @@ def my_media_details(request, pk):
                 messages.warning(request, "Esta mídia tem alterações pendentes de um especialista. Não é possível realizar alterações até que elas sejam revisadas pelo curador")
         if is_modification_owner and not modified_media.altered_by_author:
             url = reverse('my_curations_media_details', args=[pk])
-            messages.info(request, f'Esta mídia tem alterações sua como especialista. Para vê-las, <a href={url}>Clique aqui</a>')
+            messages.warning(request, f'Esta mídia tem alterações sua como especialista. Para vê-las, <a href={url}>Clique aqui</a>')
     elif media.status == 'submitted':
         messages.warning(request, "Não é possível fazer alteração em mídias que estão submetidas para revisão")
 
@@ -1302,6 +1301,28 @@ def my_curations_media_details(request, media_id):
     if request.method == 'POST':
         action = request.POST.get('action', None)
 
+        if action == 'location':
+            form = AddLocationForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Local ({}) adicionado com sucesso',
+                'Houve um erro ao tentar adicionar local',
+                'my_curations_media_details',
+                pk=media_id
+            )
+        
+        if action == 'taxa':
+            form = AddTaxaForm(request.POST)
+            return handle_add_form(
+                request,
+                form,
+                'Táxon ({}) adicionado com sucesso',
+                'Houve um erro ao tentar salvar táxon',
+                'my_curations_media_details',
+                pk=media_id
+            )
+    
         if action == 'discard':
             modified_media.delete()
             messages.success(request, "Alterações discartadas com sucesso")
@@ -1363,7 +1384,7 @@ def my_curations_media_details(request, media_id):
         
         if is_modification_owner and modified_media.altered_by_author:
             url = reverse('my_media_details', args=[media_id])
-            messages.info(request, f'Esta mídia tem alterações suas como autor. Para vê-las, <a href="{url}">Clique aqui</a>')
+            messages.warning(request, f'Esta mídia tem alterações suas como autor. Para vê-las, <a href="{url}">Clique aqui</a>')
             
         if not is_only_media_specialist:
             url = reverse('revision_modified_media', args=[media_id])
@@ -1384,11 +1405,16 @@ def my_curations_media_details(request, media_id):
     
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
+
     modified_media_form = ModifiedMediaForm(instance=media)
+    location_form = AddLocationForm()
+    taxa_form = AddTaxaForm()
 
     context = {
         'form': form,
         'modified_media_form': modified_media_form,
+        'location_form': location_form,
+        'taxa_form': taxa_form,
         'media': media,
         'modified_media': modified_media,
         'is_only_specialist': is_only_media_specialist,

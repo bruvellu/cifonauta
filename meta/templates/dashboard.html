@@ -37,6 +37,9 @@
                     Adicionar mídia
                 </a>
             </li>
+            <li>
+                <a href="{% url 'my_media_list' %}" {% if '/dashboard/medias/' in fullpath %}class='current-page'{% endif %}>Minhas mídias</a>
+            </li>
             {% if is_specialist %}
             <li>
                 <a href="{% url 'editing_media_list' %}" {% if '/dashboard/editing/' in fullpath %}class='current-page'{% endif %}>Edição de metadados</a>
@@ -58,9 +61,6 @@
                 <a href="{% url 'my_curations_media_list' %}" {% if '/dashboard/curations/' in fullpath %}class='current-page'{% endif %}>Mídias da minha curadoria</a>
             </li>
             {% endif %}
-            <li>
-                <a href="{% url 'my_media_list' %}" {% if '/dashboard/medias/' in fullpath %}class='current-page'{% endif %}>Minhas mídias</a>
-            </li>
         </ul>
         {% endwith %}
     </aside>

@@ -251,7 +251,8 @@ def upload_media_step2(request):
                         specialists_user.add(specialist)
                 
                 form.send_mail(request.user, specialists_user, medias, 'Nova mídia para edição no Cifonauta', 'email_media_to_editing_specialists.html')
-                messages.success(request, 'Suas mídias foram salvas com sucesso')
+                messages.success(request, 'As mídias foram enviadas para o especialista editar.')
+                messages.info(request, 'Você ainda pode editá-las antes de serem submetidas para o curador.')
                 return redirect('my_media_list')
 
             messages.error(request, 'Houve um erro ao tentar salvar mídia(s)')

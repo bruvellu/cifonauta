@@ -1,5 +1,5 @@
 (() => {
-    const modals = document.querySelectorAll('[data-modal]:not([data-modal="references"])')
+    const modals = document.querySelectorAll('[data-modal]:not([data-modal="references"]):not([data-modal="latitude"])')
     modals.forEach(modal => {
         const modalName = modal.dataset.modal
         

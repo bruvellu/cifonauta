@@ -6,6 +6,8 @@
 <script src="{% static 'js/adm_references.js' %}" defer></script>
 <script src="{% static 'js/my_media_details.js' %}" defer></script>
 <script src="{% static 'js/adm_sync_location_fields.js' %}" defer></script>
+<script src="{% static 'js/adm_latitude.js' %}" defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDq5WeIQ9PnSdEBvgtaykW5oB034cbpyak&callback=myMap" defer></script>
 {% endblock %}
 
 {% block title %}Editar Mídia{% endblock %}
@@ -86,11 +88,7 @@
             <p>Mídia:</p>
             <div class='media-wrapper'>
                 <a href="{{ media.file.url }}" target="_blank">
-                    {% if media.datatype == 'video' %}
-                    <video class="media-cover" src="{{ media.coverpath.url }}"></video>
-                    {% else %}
-                    <img class="media-cover" src="{{ media.coverpath.url }}">
-                    {% endif %}
+                  <img class="media-cover" src="{{ media.coverpath.url }}">
                 </a>
             </div>
         </div>
@@ -148,7 +146,7 @@
             {% endif %}
         </div>
     </div>
-    {% elif field == form.location or field == form.taxa or field == form.references %}
+    {% elif field == form.location or field == form.taxa or field == form.references or field == form.latitude %}
     <div class="field-container">
         <div class="label-div">
             {{ field.label_tag }}
@@ -171,10 +169,14 @@
                     data-open-modal="{{ field.name }}"
                     class="add-new-object-btn"
                 >
+                {% if field == form.latitude%}
+                    mapinha
+                {% else %}
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="12" y1="19" x2="12" y2="5"/>
                         <line x1="5" y1="12" x2="19" y2="12"/>
                     </svg>
+                {% endif %}
                 </button>
             </div>
             {% if field.help_text %}
@@ -272,5 +274,7 @@
 {% include 'dashboard_taxa_modal.html' %}
 
 {% include 'dashboard_references_modal.html' %}
+
+{% include 'dashboard_latitude_modal.html' %}
 
 {% endblock %}

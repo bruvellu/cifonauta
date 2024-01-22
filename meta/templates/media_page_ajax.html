@@ -135,6 +135,7 @@
       <div>
         {% for ref in references %}
         <div class="citation">
+          <a href="https://doi.org/{{ ref.doi }}" target='_blank' class='citation__doi-link'>doi></a>
           {% autoescape off %}{{ ref.citation }}{% endautoescape %}
         </div>
         {% endfor %}

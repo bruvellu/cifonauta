@@ -839,6 +839,17 @@ div#meta {
 #references {
 }
 
+.citation__doi-link {
+  background-color: hsl(208, 32%, 39%);
+  color: white !important;
+  font-weight: 600;
+  padding: 0.05rem 0.1rem;
+}
+
+.citation__doi-link:hover {
+  background-color: hsl(208, 32%, 32%);
+}
+
 div#notes {
   margin: 2em 0;
   padding: 0 10px;

@@ -1312,7 +1312,7 @@ def my_curations_media_details(request, media_id):
                 pk=media_id
             )
         
-        elif action == 'taxa':
+        if action == 'taxa':
             form = AddTaxaForm(request.POST)
             return handle_add_form(
                 request,
@@ -1323,16 +1323,16 @@ def my_curations_media_details(request, media_id):
                 pk=media_id
             )
     
-        elif action == 'discard':
+        if action == 'discard':
             modified_media.delete()
             messages.success(request, "Alterações discartadas com sucesso")
             return redirect('my_curations_media_details', media_id)
 
-        elif media.status != 'published':
+        if media.status != 'published':
             messages.error(request, f'Não foi possível fazer alteração')
             return redirect('my_curations_media_details', media_id)
 
-        elif modified_media and (not is_modification_owner or modified_media.altered_by_author):
+        if modified_media and (not is_modification_owner or modified_media.altered_by_author):
             messages.error(request, "Não é possível realizar mudanças em uma mídia com alterações pendentes.")
             return redirect('my_curations_media_details', media_id)
         

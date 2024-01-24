@@ -45,18 +45,25 @@ class Command(BaseCommand):
     help = 'Update taxonomic records in batch.'
 
     def add_arguments(self, parser):
+
         parser.add_argument('-n', '--number', type=int, default=10,
-                help='Set number of taxa to update (default=10).')
+                            help='Set number of taxa to update (default=10).')
+
         parser.add_argument('-d', '--days', type=int, default=None,
                 help='Only update taxa not updated for this number of days.')
+
         parser.add_argument('-r', '--rank', default='',
                 help='Limit the updates to taxa of a specific rank (English).')
+
         parser.add_argument('--only-aphia', action='store_true', dest='only_aphia',
                 help='Only search for taxa with AphiaID.')
+
         parser.add_argument('--only-orphans', action='store_true', dest='only_orphans',
                 help='Only update taxa without parents.')
+
         parser.add_argument('--only-new', action='store_true', dest='only_new',
                 help='Only update new taxa (without timestamp).')
+
         parser.add_argument('--force', action='store_true', dest='force',
                 help='Force taxon search and update.')
 
@@ -78,68 +85,68 @@ class Command(BaseCommand):
 
         # Get all taxa
         taxa = Taxon.objects.all()
+
         # Ignore recently updated taxa
         if days:
             datelimit = timezone.now() - timezone.timedelta(days=days)
             taxa = taxa.filter(timestamp__lt=datelimit)
+
         # Only update taxa of a specific rank
         if rank:
             taxa = taxa.filter(rank_en=rank)
-        # Filter only taxa without AphiaID
+
+        # Filter only taxa with AphiaID (update existing)
         if only_aphia:
             taxa = taxa.filter(aphia__isnull=False)
+
         # Filter only taxa without parents
         if only_orphans:
             taxa = taxa.filter(parent__isnull=True)
+
         # Filter only taxa without timestamp
         if only_new:
             taxa = taxa.filter(timestamp__isnull=True)
+
+        # Filter only taxa without AphiaID, unless forced
+        if not force:
+            taxa = taxa.filter(aphia__isnull=True)
+
         # Limit the total number of taxa
         taxa = taxa[:n]
 
         # Connect to WoRMS webservice
         if taxa:
             self.aphia = Aphia()
+        else:
+            print('No taxa to search.''')
 
         # Loop over taxon queryset
         for taxon in taxa:
-            # Skip over taxa already with an AphiaID
-            if not taxon.aphia or force:
-                # Temporary skip
-                # if taxon.status:
-                    # continue
-                # Search taxon name in WoRMS
-                record = self.search_worms(taxon.name)
-                # Skip taxon without record (but update timestamp)
-                if not record:
-                    taxon.save()
-                    continue
-                # Skip match without proper name (but update timestamp)
-                if taxon.name != record['scientificname']:
-                    # print("{taxon.name} != {record['scientificname']}")
-                    print('{} != {}'.format(taxon.name, record['scientificname']))
-                    taxon.save()
-                    continue
 
-                # Update database entry with new informations
-                taxon = self.update_taxon(taxon, record)
-                # Add/get and link parent taxa
-                self.save_ancestors(taxon, record)
-                # Get valid taxon
-                if not taxon.is_valid and record['valid_AphiaID']:
-                    # Get valid record and taxon and save instance
-                    valid_record = self.aphia.get_aphia_record_by_id(record['valid_AphiaID'])
-                    valid_taxon, new = Taxon.objects.get_or_create(name=valid_record['scientificname'])
-                    valid_taxon = self.update_taxon(valid_taxon, valid_record)
-                    # Save ancestors for valid taxon
-                    self.save_ancestors(valid_taxon, valid_record)
-                    # Add valid_taxon reference to invalid taxon
-                    taxon.valid_taxon = valid_taxon
-                    taxon.save()
-                    # Mirror associated images
-                    valid_taxon.media.add(*taxon.media.all())
-                    valid_taxon.save()
+            print(taxon.name)
 
+            # Search taxon name in WoRMS
+            record = self.search_worms(taxon.name)
+
+            # Skip taxon without record (but update timestamp)
+            if not record:
+                taxon.save()
+                continue
+
+            # Skip match without proper name (but update timestamp)
+            if taxon.name != record['scientificname']:
+                print('{} != {}'.format(taxon.name, record['scientificname']))
+                taxon.save()
+                continue
+
+            # Update database entry with new record data 
+            taxon = self.update_taxon(taxon, record)
+
+            # Add or get, and link parent taxa
+            self.save_ancestors(taxon, record)
+
+            # Get valid taxon if needed
+            self.get_valid_taxon(taxon, record)
 
     def search_worms(self, taxon_name):
         '''Search WoRMS for taxon name.'''
@@ -210,6 +217,23 @@ class Command(BaseCommand):
             if record:
                 taxon = self.update_taxon(taxon, record)
         return taxon
+
+    def get_valid_taxon(self, taxon, record):
+        '''Get valid taxon and ancestors, if needed.'''
+        # Get valid taxon
+        if not taxon.is_valid and record['valid_AphiaID']:
+            # Get valid record and taxon and save instance
+            valid_record = self.aphia.get_aphia_record_by_id(record['valid_AphiaID'])
+            valid_taxon, new = Taxon.objects.get_or_create(name=valid_record['scientificname'])
+            valid_taxon = self.update_taxon(valid_taxon, valid_record)
+            # Save ancestors for valid taxon
+            self.save_ancestors(valid_taxon, valid_record)
+            # Add valid_taxon reference to invalid taxon
+            taxon.valid_taxon = valid_taxon
+            taxon.save()
+            # Mirror associated images
+            valid_taxon.media.add(*taxon.media.all())
+            valid_taxon.save()
 
 # Dictionary of taxonomic ranks for translations
 EN2PT = {

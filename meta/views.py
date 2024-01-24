@@ -39,7 +39,8 @@ from django.views.decorators.cache import never_cache
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import ReferenceSerializer
+from .serializers import ReferenceSerializer, TaxonSerializer, LocationSerializer, CoauthorSerializer
+from media_utils import format_name
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -53,6 +54,42 @@ def create_reference(request):
     else:
         return Response('Referência já existe', status=status.HTTP_409_CONFLICT)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def create_taxa(request):
+    request_data = request.data.copy()
+    request_data['name'] = format_name(request_data['name'])
+
+    serializer = TaxonSerializer(data=request_data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({ "message": 'Táxon adicionado com sucesso', "data": serializer.data })
+
+    return Response('Táxon com esse nome já existe.', status=status.HTTP_409_CONFLICT)
+
+@api_view(['POST'])
+def create_location(request):
+    request_data = request.data.copy()
+    request_data['name'] = format_name(request_data['name'])
+
+    serializer = LocationSerializer(data=request_data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({ "message": 'Local adicionado com sucesso', "data": serializer.data })
+
+    return Response('Local com esse nome já existe.', status=status.HTTP_409_CONFLICT)
+
+@api_view(['POST'])
+def create_coauthor(request):
+    request_data = request.data.copy()
+    request_data['name'] = format_name(request_data['name'])
+
+    serializer = CoauthorSerializer(data=request_data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({ "message": 'Coautor registrado com sucesso', "data": serializer.data })
+    
+    return Response('Coautor com esse nome já existe.', status=status.HTTP_409_CONFLICT)
 
 
 @never_cache
@@ -169,37 +206,37 @@ def upload_media_step2(request):
     if request.method == 'POST':
         action = request.POST.get('action')
         
-        if action == 'coauthor':
-            form = CoauthorRegistrationForm(request.POST)
-            if form.is_valid():
-                form_instance = form.save()
-                messages.success(request, f'Coautor ({form_instance.name}) adicionado com sucesso')
-            else:
-                for errors in form.errors.values():
-                    for error in errors:
-                        messages.error(request, error)
+        # if action == 'coauthor':
+        #     form = CoauthorRegistrationForm(request.POST)
+        #     if form.is_valid():
+        #         form_instance = form.save()
+        #         messages.success(request, f'Coautor ({form_instance.name}) adicionado com sucesso')
+        #     else:
+        #         for errors in form.errors.values():
+        #             for error in errors:
+        #                 messages.error(request, error)
         
-        elif action == 'location':
-            form = AddLocationForm(request.POST)
-            if form.is_valid():
-                form_instance = form.save()
-                messages.success(request, f'Local ({form_instance.name}) adicionado com sucesso')
-            else:
-                for errors in form.errors.values():
-                    for error in errors:
-                        messages.error(request, error)
+        # elif action == 'location':
+        #     form = AddLocationForm(request.POST)
+        #     if form.is_valid():
+        #         form_instance = form.save()
+        #         messages.success(request, f'Local ({form_instance.name}) adicionado com sucesso')
+        #     else:
+        #         for errors in form.errors.values():
+        #             for error in errors:
+        #                 messages.error(request, error)
 
-        elif action == 'taxa':
-            add_form = AddTaxaForm(request.POST)
-            if add_form.is_valid():
-                form_instance = add_form.save()
-                messages.success(request, f'Táxon ({form_instance.name}) adicionado com sucesso')
-            else:
-                for errors in add_form.errors.values():
-                    for error in errors:
-                        messages.error(request, error)
+        # elif action == 'taxa':
+        #     add_form = AddTaxaForm(request.POST)
+        #     if add_form.is_valid():
+        #         form_instance = add_form.save()
+        #         messages.success(request, f'Táxon ({form_instance.name}) adicionado com sucesso')
+        #     else:
+        #         for errors in add_form.errors.values():
+        #             for error in errors:
+        #                 messages.error(request, error)
 
-        elif action == 'cancel':
+        if action == 'cancel':
             medias.delete()
             messages.success(request, 'Upload de mídias cancelado com sucesso')
             return redirect('upload_media_step1')

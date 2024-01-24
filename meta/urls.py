@@ -30,6 +30,9 @@ urlpatterns = [
         path('synchronize-fields', views.synchronize_fields, name='synchronize_fields'),
         path('get-tour-medias', views.get_tour_medias, name='get_tour_medias'),
         path('api/reference/', views.create_reference, name='create_reference'),
+        path('api/taxa/', views.create_taxa, name='create_taxa'),
+        path('api/location/', views.create_location, name='create_location'),
+        path('api/authors/', views.create_coauthor, name='create_coauthor'),
 
         # Menu
         path('search/', views.search_page, name='search_url'),

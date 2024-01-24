@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
-from media_utils import Metadata, number_of_entries_per_page, validate_specialist_action_form, normalize_object_name
+from media_utils import Metadata, number_of_entries_per_page, validate_specialist_action_form
 from operator import or_, and_
 from PIL import Image
 
@@ -43,28 +43,6 @@ from .serializers import ReferenceSerializer
 
 from dotenv import load_dotenv
 load_dotenv()
-
-def handle_add_form(request, form, success_msg, error_msg, redirect_url_name, pk=None):
-    if form.is_valid():
-        form_instance = form.save()
-
-        preps = ('de', 'da', 'do', 'das', 'dos', 'e', 'no', 'na')
-        split_name = form_instance.name.lower().split(' ')
-
-        name = [name.capitalize() if name not in preps else name for name in split_name]
-        name = ' '.join(name)
-
-        form_instance.name = name
-        
-        form_instance.save()
-        messages.success(request, success_msg.format(name))
-    else:
-        messages.error(request, error_msg)
-    
-    if pk:
-        return redirect(redirect_url_name, pk)
-    else:
-        return redirect(redirect_url_name)
 
 
 @api_view(['POST'])
@@ -190,37 +168,41 @@ def upload_media_step2(request):
     
     if request.method == 'POST':
         action = request.POST.get('action')
-        if action == 'cancel':
+        
+        if action == 'coauthor':
+            form = CoauthorRegistrationForm(request.POST)
+            if form.is_valid():
+                form_instance = form.save()
+                messages.success(request, f'Coautor ({form_instance.name}) adicionado com sucesso')
+            else:
+                for errors in form.errors.values():
+                    for error in errors:
+                        messages.error(request, error)
+        
+        elif action == 'location':
+            form = AddLocationForm(request.POST)
+            if form.is_valid():
+                form_instance = form.save()
+                messages.success(request, f'Local ({form_instance.name}) adicionado com sucesso')
+            else:
+                for errors in form.errors.values():
+                    for error in errors:
+                        messages.error(request, error)
+
+        elif action == 'taxa':
+            add_form = AddTaxaForm(request.POST)
+            if add_form.is_valid():
+                form_instance = add_form.save()
+                messages.success(request, f'Táxon ({form_instance.name}) adicionado com sucesso')
+            else:
+                for errors in add_form.errors.values():
+                    for error in errors:
+                        messages.error(request, error)
+
+        elif action == 'cancel':
             medias.delete()
             messages.success(request, 'Upload de mídias cancelado com sucesso')
             return redirect('upload_media_step1')
-        elif action == 'coauthor':
-            form = CoauthorRegistrationForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Coautor ({}) adicionado com sucesso',
-                'Houve um erro ao tentar salvar coautor',
-                'upload_media_step2'
-            )
-        elif action == 'location':
-            form = AddLocationForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Local ({}) adicionado com sucesso',
-                'Houve um erro ao tentar adicionar local',
-                'upload_media_step2'
-            )
-        elif action == 'taxa':
-            form = AddTaxaForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Táxon ({}) adicionado com sucesso',
-                'Houve um erro ao tentar salvar táxon',
-                'upload_media_step2'
-            )
         else:
             form = UploadMediaForm(request.POST, request.FILES, media_author=user_person)
             
@@ -259,6 +241,8 @@ def upload_media_step2(request):
 
     else:
         form = UploadMediaForm(initial={'authors': user_person.id})
+        form.fields['state'].queryset = State.objects.none()
+        form.fields['city'].queryset = City.objects.none()
 
         metadata = None
         for media in medias:
@@ -310,9 +294,6 @@ def upload_media_step2(request):
                 'latitude': latitude,
                 'longitude': longitude,
             })
-
-    form.fields['state'].queryset = State.objects.none()
-    form.fields['city'].queryset = City.objects.none()
 
     registration_form = CoauthorRegistrationForm()
     location_form = AddLocationForm()

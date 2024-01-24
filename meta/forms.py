@@ -9,6 +9,7 @@ from django.template import loader
 from django.core.mail import EmailMultiAlternatives
 from django.db.models.query import QuerySet
 from django.db import models
+from media_utils import format_name
 
 
 METAS = (
@@ -259,15 +260,33 @@ class CoauthorRegistrationForm(forms.ModelForm):
 
         self.fields['name'].required = True
 
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        name = format_name(name)
+        
+        return name
+
 class AddLocationForm(forms.ModelForm):
     class Meta:
         model = Location
         fields = ('name',)
+    
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        name = format_name(name)
+        
+        return name
 
 class AddTaxaForm(forms.ModelForm):
     class Meta:
         model = Taxon
         fields = ('name',)
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        name = format_name(name)
+        
+        return name
 
 class ModifiedMediaForm(forms.ModelForm, SendEmailForm):
     class Meta:

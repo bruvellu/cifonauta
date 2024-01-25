@@ -599,7 +599,7 @@ def editing_media_list(request):
     query_dict = request.GET.copy()
     filtered_queryset = filter_medias(queryset, query_dict, curations)
     
-    filter_form = DashboardFilterForm(query_dict, user_curations=curations)
+    filter_form = DashboardFilterForm(query_dict, user_curations=curations, is_editing_media_list=True)
     
 
     queryset_paginator = Paginator(filtered_queryset, records_number)

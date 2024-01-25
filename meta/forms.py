@@ -410,11 +410,14 @@ class DashboardFilterForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         user_curations = kwargs.pop('user_curations', None)
+        is_editing_media_list = kwargs.pop('is_editing_media_list', None)
         super().__init__(*args, **kwargs)
 
         if user_curations:
             if not user_curations.filter(name='Sem táxon').exists():
                 self.fields['curations'].queryset = self.fields['curations'].queryset.exclude(name='Sem táxon')
+        if is_editing_media_list:
+            del self.fields['status']
             
 
 class SearchForm(forms.Form):

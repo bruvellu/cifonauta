@@ -13,11 +13,11 @@ class CreateEntry {
   }
 
   initModal() {
-      new Modal({
+      this.modalClass = new Modal({
           modalContent: this.fieldModalDiv,
           modalTrigger: document.querySelector(`[data-open-modal="${this.fieldName}"]`),
           modalClose: this.fieldModalDiv.querySelector(`[data-close-modal="${this.fieldName}"]`),
-          onCloseCallback: this.onClose.bind(this)
+          onCloseCallback: this.clearFields.bind(this)
       })
   }
 
@@ -74,12 +74,10 @@ class CreateEntry {
       const option = document.createElement('option')
       option.value = data.id
       option.innerText = data.name
+      option.selected = true
       this.fieldSelect.append(option)
 
-      const p = document.createElement('p')
-      p.classList.add('response-success')
-      p.innerText = message
-      this.responseMessage.append(p)
+      this.modalClass.closeModal()
   }
 
   onError(message) {
@@ -90,7 +88,7 @@ class CreateEntry {
       this.responseMessage.append(p)
   }
 
-  onClose() {
+  clearFields() {
       this.nameInput.value = ''
       this.responseMessage.innerHTML = ''
       this.formSubmitter.disabled = false

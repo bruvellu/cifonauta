@@ -15,6 +15,8 @@
     {% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endcomment %}
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 
+    <script src="{% static 'js/dashboard.js' %}" defer></script>
+
     {% block extra_head %}{% endblock %}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
@@ -23,8 +25,12 @@
     </title>
 </head>
 <body>
-    <aside class="dashboard-aside">
+    <nav data-navigation data-state="close" id="navigation">
         {% with fullpath=request.get_full_path %}
+        <button data-close-navigation id="close-navigation">
+            <span class="close-navigation__line"></span>
+            <span class="close-navigation__line"></span>
+        </button>
         <ul>
             <li class='initial-page-li'>
                 <a href="{% url 'home' %}">Voltar à Página Inicial</a>
@@ -63,8 +69,13 @@
             {% endif %}
         </ul>
         {% endwith %}
-    </aside>
+    </nav>
     <div class="dashboard-view {% if list_page %}dark-background{% else %}light-background{% endif %}">
+        <button data-hamburger id="hamburger">
+          <span class="hamburger__lines"></span>
+          <span class="hamburger__lines"></span>
+          <span class="hamburger__lines"></span>
+        </button>
         <h1>Módulo Administrativo</h1>
 
         {% block dashboard_content %}{% endblock %}

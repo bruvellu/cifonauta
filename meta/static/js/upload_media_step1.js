@@ -24,7 +24,7 @@ filesInput.addEventListener('change', (e) => {
                 ul.appendChild(li)
             })
 
-            let fileDiv = document.querySelector('.file-div')
+            let fileDiv = document.querySelector('[data-file-div]')
             fileDiv.append(ul)
         }
         

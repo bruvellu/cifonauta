@@ -36,8 +36,8 @@
 
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="field-container">
-        <div class="label-div">
+    <div class="field">
+        <div class="field__label">
             <label>Mídias:</label>
         </div>
         <div class="medias-div">
@@ -57,13 +57,13 @@
     </div>
     {% for field in form %}
     {% if field == form.authors %}
-    <div class="field-container">
-        <div class="label-div">
+    <div class="field">
+        <div class="field__label">
             {{ field.label_tag }}
         </div>
-        <div class="field-div authors-field-div">
+        <div class="field__input-container authors-field-div">
             {% if form.authors.errors %}
-            <ul class="field-error">
+            <ul class="field__errors">
                 {% for error in field.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -71,7 +71,7 @@
             {% endif %}
             {{ field }}
             {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            <span class="field__help-text">{{ field.help_text }}</span>
             {% endif %}
             <div>
                 <p>Coautor não está na lista?</p>
@@ -80,16 +80,16 @@
         </div>
     </div>
     {% elif field == form.country %}
-    <div class="field-container country-container">
-        <div class="label-div">
+    <div class="field country-container">
+        <div class="field__label">
             {{ field.label_tag }}
             {% if field.field.required %}
             <span class='required'>*</span>
             {% endif %}
         </div>
-        <div class="field-div">
+        <div class="field__input-container">
             {% if field.errors %}
-            <ul class="field-error">
+            <ul class="field__errors">
                 {% for error in field.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -97,21 +97,21 @@
             {% endif %}
             {{ field }}
             {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            <span class="field__help-text">{{ field.help_text }}</span>
             {% endif %}
         </div>
     </div>
     {% elif field == form.location or field == form.taxa or field == form.references or field == form.latitude %}
-    <div class="field-container">
-        <div class="label-div">
+    <div class="field">
+        <div class="field__label">
             {{ field.label_tag }}
             {% if field.field.required %}
             <span class='required'>*</span>
             {% endif %}
         </div>
-        <div class="field-div">
+        <div class="field__input-container">
             {% if field.errors %}
-            <ul class="field-error">
+            <ul class="field__errors">
                 {% for error in field.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -135,19 +135,19 @@
                 </button>
             </div>
             {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            <span class="field__help-text">{{ field.help_text }}</span>
             {% endif %}
         </div>
     </div>
     {% elif field == form.terms %}
-    <div class="field-container">
-        <div class='label-div'>
+    <div class="field">
+        <div class='field__label'>
             {{ field.label_tag }}
             <span class='required'>*</span>
         </div>
-        <div class="field-div terms-div">
+        <div class="field__input-container terms-div">
             {% if field.errors %}
-            <ul class="field-error">
+            <ul class="field__errors">
                 {% for error in field.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -158,21 +158,21 @@
                 Declaro...
             </div>
             {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            <span class="field__help-text">{{ field.help_text }}</span>
             {% endif %}
         </div>
     </div>
     {% else %}
-    <div class="field-container">
-        <div class="label-div">
+    <div class="field">
+        <div class="field__label">
             {{ field.label_tag }}
             {% if field.field.required %}
             <span class='required'>*</span>
             {% endif %}
         </div>
-        <div class="field-div">
+        <div class="field__input-container">
             {% if field.errors %}
-            <ul class="field-error">
+            <ul class="field__errors">
                 {% for error in field.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -180,7 +180,7 @@
             {% endif %}
             {{ field }}
             {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            <span class="field__help-text">{{ field.help_text }}</span>
             {% endif %}
         </div>
     </div>

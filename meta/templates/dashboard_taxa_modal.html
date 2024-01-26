@@ -1,4 +1,4 @@
-<div data-modal="taxa" id="taxa-modal" class="modal-container list-modal-container">
+<div data-modal="taxa" id="taxa-modal" class="modal-container modal modal--small">
     <header class="modal-header">
         <p>Adicione um novo táxon</p>
         <button data-close-modal="taxa" id="close-taxa-modal-btn" class="close-modal-button">
@@ -10,12 +10,12 @@
         <form method="post" data-form="taxa" class="modal-form">
             {% csrf_token %}
             {% for field2 in taxa_form %}
-            <div class="field2-container">
+            <div class="field field--modal">
                 {{ field2.label_tag }}
-                <div class="field-div field2-div">
+                <div class="field__input-container">
                     {{ field2 }}
                     {% if field2.help_text %}
-                    <span class="help-text">{{ field2.help_text }}</span>
+                    <span class="field__help-text">{{ field2.help_text }}</span>
                     {% endif %}
                 </div>
             </div>

@@ -3,6 +3,7 @@
 
 {% block extra_head %}
 <script src="{% static 'js/adm_modal.js' %}" defer></script>
+<script src="{% static 'js/adm_create_entry.js' %}" defer></script>
 <script src="{% static 'js/upload_media_step2.js' %}" defer></script>
 <script src="{% static 'js/adm_sync_location_fields.js' %}" defer></script>
 <script src="{% static 'js/adm_references.js' %}" defer></script>
@@ -12,31 +13,6 @@
 {% block title %}Enviar Mídia{% endblock %}
 
 {% block dashboard_content %}
-<div data-modal="co-author" id="modal-container" class="list-modal-container">
-    <div class="modal-header">
-        <p>Registre o coautor</p>
-        <button data-close-modal="co-author" id="close-modal-button" class="close-modal-button">
-            <div class='line1'></div>
-            <div class='line2'></div>
-        </button>
-    </div>
-    <form class="modal-body" method="post">
-        {% csrf_token %}
-        {% for field2 in registration_form %}
-        <div class="field2-container">
-            {{ field2.label_tag }}
-            <div class="field-div field2-div">
-                {{ field2 }}
-                {% if field2.help_text %}
-                <span class="help-text">{{ field2.help_text }}</span>
-                {% endif %}
-            </div>
-        </div>
-        {% endfor %}
-        <button class="secondary-button" type="submit" name="action" value="coauthor">Cadastrar</button>
-    </form>
-</div>
-
 <h2>Adicionar nova mídia</h2>
 {% if messages %}
 <div class="messages-div">
@@ -99,7 +75,7 @@
             {% endif %}
             <div>
                 <p>Coautor não está na lista?</p>
-                <button data-open-modal="co-author" id="open-modal-button" class="pre-registration-button" type="button">Registrar coautor</button>
+                <button data-open-modal="authors" id="open-modal-button" class="pre-registration-button" type="button">Registrar coautor</button>
             </div>
         </div>
     </div>
@@ -218,6 +194,7 @@
 
 </form>
 
+{% include 'dashboard_coauthor_modal.html' %}
 
 {% include 'dashboard_location_modal.html' %}
 

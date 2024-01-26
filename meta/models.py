@@ -549,16 +549,15 @@ class Person(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            if self.name and Person.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
-                base_slug = slugify(self.name)
-                slug = base_slug
-                counter = 1
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
 
-                while Person.objects.filter(slug=slug).exclude(pk=self.pk).exists():
-                    slug = f"{base_slug}-{counter}"
-                    counter += 1
-
-                self.slug = slug
+            while Person.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            
+            self.slug = slug
 
         super().save(*args, **kwargs)
 

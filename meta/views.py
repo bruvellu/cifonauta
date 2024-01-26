@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
-from media_utils import Metadata, number_of_entries_per_page, validate_specialist_action_form, normalize_object_name
+from media_utils import Metadata, number_of_entries_per_page, validate_specialist_action_form
 from operator import or_, and_
 from PIL import Image
 
@@ -39,32 +39,11 @@ from django.views.decorators.cache import never_cache
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import ReferenceSerializer
+from .serializers import ReferenceSerializer, TaxonSerializer, LocationSerializer, CoauthorSerializer
+from media_utils import format_name
 
 from dotenv import load_dotenv
 load_dotenv()
-
-def handle_add_form(request, form, success_msg, error_msg, redirect_url_name, pk=None):
-    if form.is_valid():
-        form_instance = form.save()
-
-        preps = ('de', 'da', 'do', 'das', 'dos', 'e', 'no', 'na')
-        split_name = form_instance.name.lower().split(' ')
-
-        name = [name.capitalize() if name not in preps else name for name in split_name]
-        name = ' '.join(name)
-
-        form_instance.name = name
-        
-        form_instance.save()
-        messages.success(request, success_msg.format(name))
-    else:
-        messages.error(request, error_msg)
-    
-    if pk:
-        return redirect(redirect_url_name, pk)
-    else:
-        return redirect(redirect_url_name)
 
 
 @api_view(['POST'])
@@ -75,6 +54,42 @@ def create_reference(request):
     else:
         return Response('Referência já existe', status=status.HTTP_409_CONFLICT)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def create_taxa(request):
+    request_data = request.data.copy()
+    request_data['name'] = format_name(request_data['name'])
+
+    serializer = TaxonSerializer(data=request_data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({ "message": 'Táxon adicionado com sucesso', "data": serializer.data })
+
+    return Response('Táxon com esse nome já existe.', status=status.HTTP_409_CONFLICT)
+
+@api_view(['POST'])
+def create_location(request):
+    request_data = request.data.copy()
+    request_data['name'] = format_name(request_data['name'])
+
+    serializer = LocationSerializer(data=request_data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({ "message": 'Local adicionado com sucesso', "data": serializer.data })
+
+    return Response('Local com esse nome já existe.', status=status.HTTP_409_CONFLICT)
+
+@api_view(['POST'])
+def create_coauthor(request):
+    request_data = request.data.copy()
+    request_data['name'] = format_name(request_data['name'])
+
+    serializer = CoauthorSerializer(data=request_data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({ "message": 'Coautor registrado com sucesso', "data": serializer.data })
+    
+    return Response('Coautor com esse nome já existe.', status=status.HTTP_409_CONFLICT)
 
 
 @never_cache
@@ -190,37 +205,11 @@ def upload_media_step2(request):
     
     if request.method == 'POST':
         action = request.POST.get('action')
+
         if action == 'cancel':
             medias.delete()
             messages.success(request, 'Upload de mídias cancelado com sucesso')
             return redirect('upload_media_step1')
-        elif action == 'coauthor':
-            form = CoauthorRegistrationForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Coautor ({}) adicionado com sucesso',
-                'Houve um erro ao tentar salvar coautor',
-                'upload_media_step2'
-            )
-        elif action == 'location':
-            form = AddLocationForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Local ({}) adicionado com sucesso',
-                'Houve um erro ao tentar adicionar local',
-                'upload_media_step2'
-            )
-        elif action == 'taxa':
-            form = AddTaxaForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Táxon ({}) adicionado com sucesso',
-                'Houve um erro ao tentar salvar táxon',
-                'upload_media_step2'
-            )
         else:
             form = UploadMediaForm(request.POST, request.FILES, media_author=user_person)
             
@@ -259,6 +248,8 @@ def upload_media_step2(request):
 
     else:
         form = UploadMediaForm(initial={'authors': user_person.id})
+        form.fields['state'].queryset = State.objects.none()
+        form.fields['city'].queryset = City.objects.none()
 
         metadata = None
         for media in medias:
@@ -310,9 +301,6 @@ def upload_media_step2(request):
                 'latitude': latitude,
                 'longitude': longitude,
             })
-
-    form.fields['state'].queryset = State.objects.none()
-    form.fields['city'].queryset = City.objects.none()
 
     registration_form = CoauthorRegistrationForm()
     location_form = AddLocationForm()
@@ -367,27 +355,6 @@ def editing_media_details(request, media_id):
     
     if request.method == 'POST':
         action = request.POST.get('action', None)
-        
-        if action == 'location':
-            form = AddLocationForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Local ({}) adicionado com sucesso',
-                'Houve um erro ao tentar salvar local',
-                'editing_media_details',
-                pk=media_id
-            )
-        elif action == 'taxa':
-            form = AddTaxaForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Táxon ({}) adicionado com sucesso',
-                'Houve um erro ao tentar salvar táxon',
-                'editing_media_details',
-                pk=media_id
-            )
 
         form = EditMetadataForm(request.POST, instance=media, editing_media_details=True)
 
@@ -581,7 +548,7 @@ def editing_media_list(request):
     query_dict = request.GET.copy()
     filtered_queryset = filter_medias(queryset, query_dict, curations)
     
-    filter_form = DashboardFilterForm(query_dict, user_curations=curations)
+    filter_form = DashboardFilterForm(query_dict, user_curations=curations, is_editing_media_list=True)
     
 
     queryset_paginator = Paginator(filtered_queryset, records_number)
@@ -620,37 +587,7 @@ def my_media_details(request, pk):
     if request.method == 'POST':
         action = request.POST.get('action', None)
 
-        if action == 'coauthor':
-            form = CoauthorRegistrationForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Coautor ({}) adicionado com sucesso',
-                'Houve um erro ao tentar salvar coautor',
-                'my_media_details',
-                pk=pk
-            )
-        elif action == 'location':
-            form = AddLocationForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Local ({}) adicionado com sucesso',
-                'Houve um erro ao tentar salvar local',
-                'my_media_details',
-                pk=pk
-            )
-        elif action == 'taxa':
-            form = AddTaxaForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Táxon ({}) adicionado com sucesso',
-                'Houve um erro ao tentar salvar táxon',
-                'my_media_details',
-                pk=pk
-            )
-        elif action == 'discard':
+        if action == 'discard':
             modified_media.delete()
             messages.success(request, "Alterações discartadas com sucesso")
             return redirect('my_media_details', pk)
@@ -1086,27 +1023,6 @@ def revision_media_details(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     if request.method == 'POST':
         action = request.POST.get('action', None)
-
-        if action == 'location':
-            form = AddLocationForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Local ({}) adicionado com sucesso',
-                'Houve um erro ao tentar salvar local',
-                'revision_media_details',
-                pk=media_id
-            )
-        elif action == 'taxa':
-            form = AddTaxaForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Táxon ({}) adicionado com sucesso',
-                'Houve um erro ao tentar salvar táxon',
-                'revision_media_details',
-                pk=media_id
-            )
         
         form = EditMetadataForm(request.POST, instance=media)
         
@@ -1300,28 +1216,6 @@ def my_curations_media_details(request, media_id):
 
     if request.method == 'POST':
         action = request.POST.get('action', None)
-
-        if action == 'location':
-            form = AddLocationForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Local ({}) adicionado com sucesso',
-                'Houve um erro ao tentar adicionar local',
-                'my_curations_media_details',
-                pk=media_id
-            )
-        
-        if action == 'taxa':
-            form = AddTaxaForm(request.POST)
-            return handle_add_form(
-                request,
-                form,
-                'Táxon ({}) adicionado com sucesso',
-                'Houve um erro ao tentar salvar táxon',
-                'my_curations_media_details',
-                pk=media_id
-            )
     
         if action == 'discard':
             modified_media.delete()

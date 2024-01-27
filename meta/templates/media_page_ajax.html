@@ -43,6 +43,9 @@
             <span class="quiet" id="media-duration">{{ media.duration|slice:'3:' }}</span>
             {% endif %}
           </div>
+          <div id='download_media'>
+            <a href="{% url 'download_media' media.id %}"><button>Baixar Imagem</button></a>
+          </div>    
           {% endif %}
         </figure>
 
@@ -101,10 +104,23 @@
             </div>
           </div>
         </div>
-        <div id='download_media'>
-        <a href="{% url 'download_media' media.id %}"><button>Baixar Imagem</button></a>
-        </div>
-    
+        <div id="googleMap" style="width:100%;height:400px;"></div>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDq5WeIQ9PnSdEBvgtaykW5oB034cbpyak&callback=myMap" defer></script>
+        <script>function myMap() {
+          var latLngInitial = new google.maps.LatLng({{media.latitude}},{{media.longitude}})
+          var mapProp= {
+              center:latLngInitial,
+              zoom:10,
+              streetViewControl: false,
+              fullscreenControl: false,
+          };
+          var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+          window.marker = new google.maps.Marker({
+              position: latLngInitial,
+              map: map,
+              });
+            }
+          </script>
           {% if media.notes %}
           <div id="notes">
             <h2>{% trans 'Notas' %}</h2>

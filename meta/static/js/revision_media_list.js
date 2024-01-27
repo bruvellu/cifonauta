@@ -29,4 +29,21 @@
         })
     })
 
+    const moreFieldsButton = document.querySelector('[data-more-fields-button]')
+    moreFieldsButton.addEventListener('click', () => {
+        const moreFieldsDiv = moreFieldsButton.nextElementSibling
+        
+        const moreFieldsState = moreFieldsButton.dataset.state
+
+        if (moreFieldsState == 'close') {
+            moreFieldsDiv.style.display = 'flex'
+            
+            moreFieldsButton.setAttribute('data-state', 'open')
+        }
+        else {
+            moreFieldsDiv.style.display = ''
+
+            moreFieldsButton.setAttribute('data-state', 'close')
+        }
+    })
 })()

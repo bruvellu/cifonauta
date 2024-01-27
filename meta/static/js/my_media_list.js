@@ -32,7 +32,6 @@
 
     const moreFieldsButton = document.querySelector('[data-more-fields-button]')
     moreFieldsButton.addEventListener('click', () => {
-        const dropdownArrow = moreFieldsButton.children[1]
         const moreFieldsDiv = moreFieldsButton.nextElementSibling
         
         const moreFieldsState = moreFieldsButton.dataset.state

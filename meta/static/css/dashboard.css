@@ -155,7 +155,8 @@ button:disabled {
     gap: 1rem;
     padding-block: 1rem;
     width: 16rem;
-    height: 100vh;
+    top: 0;
+    bottom: 0;
     position: fixed;
     font-weight: bold;
     z-index: 5;

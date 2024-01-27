@@ -32,16 +32,16 @@
 
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="field-container">
-        <div class="label-div">
+    <div class="field">
+        <div class="field__label">
             <label for="">Arquivos:</label>
             <span class='required'>*</span>
         </div>
-        <div class="field-div">
+        <div class="field__input-container">
             <input type="file" name="files" id="files" multiple>
-            <div class="file-div"></div>
-            <span class="help-text">Arquivos aceitos: {{ media_extensions }}</span>
-            <span class="help-text">Tamanho máximo: 3MB</span>
+            <div data-file-div class="file-div"></div>
+            <span class="field__help-text">Arquivos aceitos: {{ media_extensions }}</span>
+            <span class="field__help-text">Tamanho máximo: 3MB</span>
         </div>
     </div>
     

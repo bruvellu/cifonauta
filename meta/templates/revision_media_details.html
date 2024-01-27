@@ -25,21 +25,19 @@
     {% csrf_token %}
     <div class="media-infos">
         <div>
-            <p>Mídia:</p>
-            <div class='media-wrapper'>
-                <a href="{{ media.file.url }}" target="_blank">
-                  <img class="media-cover" src="{{ media.coverpath.url }}">
-                </a>
-            </div>
+            <p class="media-infos__label">Mídia:</p>
+            <a href="{{ media.file.url }}" target="_blank" class='media-wrapper'>
+              <img class="media-cover" src="{{ media.coverpath.url }}">
+            </a>
         </div>
         <div>
-            <p>Status:</p>
+            <p class="media-infos__label">Status:</p>
             <span class="media-status {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}">
                 {{ media.get_status_display }}
             </span>
         </div>
         <div>
-            <p>Autores:</p>
+            <p class="media-infos__label">Autores:</p>
             {{ media.get_authors_display }}
             {% get_field_value media 'authors' as authors %}
             <div>
@@ -53,12 +51,12 @@
             </div>
         </div>
         <div>
-            <p>Licença:</p>
+            <p class="media-infos__label">Licença:</p>
             {% get_field_value media 'license' as license %}
             <div>{{ media.get_license_display }}</div>
         </div>
         <div>
-            <p>Data de Criação:</p>
+            <p class="media-infos__label">Data de Criação:</p>
             <div>
                 {% if media.date_created.date|date:"d/m/Y" == '01/01/0001' %}
                 Data desconhecida
@@ -70,16 +68,16 @@
     </div>
     {% for field in form %}
     {% if field == form.country %}
-    <div class="field-container country-container">
-        <div class="label-div">
+    <div class="field country-container">
+        <div class="field__label">
             {{ field.label_tag }}
             {% if field.field.required %}
             <span class='required'>*</span>
             {% endif %}
         </div>
-        <div class="field-div">
+        <div class="field__input-container">
             {% if field.errors %}
-            <ul class="field-error">
+            <ul class="field__errors">
                 {% for error in field.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -87,21 +85,21 @@
             {% endif %}
             {{ field }}
             {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            <span class="field__help-text">{{ field.help_text }}</span>
             {% endif %}
         </div>
     </div>
     {% elif field == form.location or field == form.taxa or field == form.references  or field == form.latitude  %}
-    <div class="field-container">
-        <div class="label-div">
+    <div class="field">
+        <div class="field__label">
             {{ field.label_tag }}
             {% if field.field.required %}
             <span class='required'>*</span>
             {% endif %}
         </div>
-        <div class="field-div">
+        <div class="field__input-container">
             {% if field.errors %}
-            <ul class="field-error">
+            <ul class="field__errors">
                 {% for error in field.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -115,7 +113,11 @@
                     class="add-new-object-btn"
                 >
                 {% if field == form.latitude%}
-                    mapinha
+                    <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+                        <g id="SVGRepo_iconCarrier"> <path d="M5.7 15C4.03377 15.6353 3 16.5205 3 17.4997C3 19.4329 7.02944 21 12 21C16.9706 21 21 19.4329 21 17.4997C21 16.5205 19.9662 15.6353 18.3 15M12 9H12.01M18 9C18 13.0637 13.5 15 12 18C10.5 15 6 13.0637 6 9C6 5.68629 8.68629 3 12 3C15.3137 3 18 5.68629 18 9ZM13 9C13 9.55228 12.5523 10 12 10C11.4477 10 11 9.55228 11 9C11 8.44772 11.4477 8 12 8C12.5523 8 13 8.44772 13 9Z" stroke="#000000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/> </g>
+                    </svg>
                 {% else %}
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="19" x2="12" y2="5"/>
@@ -125,21 +127,21 @@
                 </button>
             </div>
             {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            <span class="field__help-text">{{ field.help_text }}</span>
             {% endif %}
         </div>
     </div>
     {% else %}
-    <div class="field-container">
-        <div class="label-div">
+    <div class="field">
+        <div class="field__label">
             {{ field.label_tag }}
             {% if field.field.required %}
             <span class='required'>*</span>
             {% endif %}
         </div>
-        <div class="field-div">
+        <div class="field__input-container">
             {% if field.errors %}
-            <ul class="field-error">
+            <ul class="field__errors">
                 {% for error in field.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -147,7 +149,7 @@
             {% endif %}
             {{ field }}
             {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            <span class="field__help-text">{{ field.help_text }}</span>
             {% endif %}
         </div>
     </div>

@@ -1,0 +1,31 @@
+<div data-modal="group-action" id="modal-container" class="modal modal--small">
+    <header class="modal-header">
+        <p>Processar em lote as mídias selecionadas</p>
+        <button data-close-modal="group-action" type="button" id="close-modal-button" class="close-modal-button">
+            <div class='line1'></div>
+            <div class='line2'></div>
+        </button>
+    </header>
+    <main class="modal-body">
+        {% for field in form %}
+        {% if field == form.taxa_action %}
+        <div class="action-field">
+            {{ field.label_tag }}
+            <div class="action-field__field-container">
+                {{ field }}
+                <div class="hide-div">
+                    {{ form.taxa }}
+                </div>
+            </div>
+        </div>
+        {% elif field == form.taxa %}
+        {% else %}
+        <div class="action-field">
+            {{ field.label_tag }}
+            {{ field }}
+        </div>
+        {% endif %}
+        {% endfor %}
+        <button type="submit" class="secondary-button" name='action' value='{{ records_number }}'>Processar</button>
+    </main>
+</div>

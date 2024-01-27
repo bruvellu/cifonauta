@@ -12,8 +12,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endcomment %}
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+    <script src="{% static 'js/dashboard.js' %}" defer></script>
 
     {% block extra_head %}{% endblock %}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -23,8 +25,12 @@
     </title>
 </head>
 <body>
-    <aside class="dashboard-aside">
+    <nav data-navigation data-state="close" id="navigation">
         {% with fullpath=request.get_full_path %}
+        <button data-close-navigation id="close-navigation">
+            <span class="close-navigation__line"></span>
+            <span class="close-navigation__line"></span>
+        </button>
         <ul>
             <li class='initial-page-li'>
                 <a href="{% url 'home' %}">Voltar à Página Inicial</a>
@@ -63,12 +69,21 @@
             {% endif %}
         </ul>
         {% endwith %}
-    </aside>
-    <div class="dashboard-view {% if list_page %}dark-background{% else %}light-background{% endif %}">
+        <div id="user">
+            <span>{{ request.user }}</span>
+            <a href="{% url 'Logout' %}">Sair</a>
+        </div>
+    </nav>
+    <main class="dashboard-view {% if list_page %}dark-background{% else %}light-background{% endif %}">
+        <button data-hamburger id="hamburger">
+          <span class="hamburger__lines"></span>
+          <span class="hamburger__lines"></span>
+          <span class="hamburger__lines"></span>
+        </button>
         <h1>Módulo Administrativo</h1>
 
         {% block dashboard_content %}{% endblock %}
-    </div>
+    <mainv>
     
     <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

@@ -12,9 +12,9 @@ class Modal {
         this.modalContent = modalContent
         this.onCloseCallback = onCloseCallback
 
-        this.modalContent.addEventListener('keydown', this.handleTabKey.bind(this))
-        this.modalTrigger.addEventListener('click', this.showModal.bind(this))
-        this.modalClose.addEventListener('click', this.closeModal.bind(this))
+        this.modalContent?.addEventListener('keydown', this.handleTabKey.bind(this))
+        this.modalTrigger?.addEventListener('click', this.showModal.bind(this))
+        this.modalClose?.addEventListener('click', this.closeModal.bind(this))
     }
 
     showModal() {

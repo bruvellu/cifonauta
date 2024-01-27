@@ -1,7 +1,7 @@
 (() => {
     let idTerms = document.querySelector('#id_terms')
     idTerms.addEventListener('click', () => {
-        let errorMessage = document.querySelector('.field-error')
+        let errorMessage = document.querySelector('.field__errors')
         if (idTerms.checked && errorMessage) {
             errorMessage.remove()
         }
@@ -15,10 +15,10 @@
             event.preventDefault()
             
             let termsDiv = document.querySelector('.terms-div')
-            if (!termsDiv.contains(document.querySelector('.field-error'))) {
+            if (!termsDiv.contains(document.querySelector('.field__errors'))) {
                 let errorMessage = document.createElement('span')
                 errorMessage.innerText = 'Você deve aceitar os termos'
-                errorMessage.classList.add('field-error')
+                errorMessage.classList.add('field__errors')
                 termsDiv.prepend(errorMessage)
             }
         }

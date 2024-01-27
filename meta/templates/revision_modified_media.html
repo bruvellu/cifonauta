@@ -14,23 +14,21 @@
     {% endfor %}
     </div>
     {% endif %}
-    <form class="modified-media-form" method="post" enctype="multipart/form-data">
+    <form class="margin-top--2" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="media-infos">
             <div>
-                <p>Mídia:</p>
-                <div class='media-wrapper'>
-                    <a href="{{ media.file.url }}" target="_blank">
-                      <img class="media-cover" src="{{ media.coverpath.url }}">
-                    </a>
-                </div>
+                <p class="media-infos__label">Mídia:</p>
+                <a href="{{ media.file.url }}" target="_blank" class='media-wrapper'>
+                    <img class="media-cover" src="{{ media.coverpath.url }}">
+                </a>
             </div>
             <div>
-                <p>Autor:</p>
+                <p class="media-infos__label">Autor:</p>
                 <div>{{ media.user }}</div>
             </div>
             <div>
-                <p>Data de Criação:</p>
+                <p class="media-infos__label">Data de Criação:</p>
                 <div>
                     {% if media.date_created.date|date:"d/m/Y" == '01/01/0001' %}
                     Data desconhecida
@@ -40,11 +38,11 @@
                 </div>
             </div>
             <div>
-                <p>Data de modificação:</p>
+                <p class="media-infos__label">Data de modificação:</p>
                 <div>{{ media.date_modified }}</div>
             </div>
             <div>
-                <p>Alterações feitas pelo:</p>
+                <p class="media-infos__label">Alterações feitas pelo:</p>
                 <div>
                     {% if modified_media.altered_by_author %}
                     {{ media.user }} (Autor)
@@ -54,55 +52,58 @@
                 </div>
             </div>
         </div>
-        <table class="comparison-table">
-            <thead class="comparison-table-head">
-                <tr>
-                    <th class='comparison-label-column'></th>
-                    <th>Original</th>
-                    <th>Novo</th>
-                </tr>
-            </thead>
-            <tbody class="comparison-table-body">
-                {% for field in modified_media_form %}
 
-                {% get_field_value media field.name as media_value %}
-                {% get_field_value modified_media field.name as modified_value %}
+        <div class="table-wrapper">
+            <table class="comparison-table modified-media-table">
+                <thead class="comparison-table-head">
+                    <tr>
+                        <th class='comparison-label-column no-shrink-cell--large'></th>
+                        <th class="no-shrink-cell">Original</th>
+                        <th class="no-shrink-cell">Novo</th>
+                    </tr>
+                </thead>
+                <tbody class="comparison-table-body">
+                    {% for field in modified_media_form %}
 
-                <tr class="comparison-row {% if media_value != modified_value %}highlight-difference{% endif %}">
-                    <td class="comparison-label-row">
-                        {{ field.label_tag }}
-                        {% if field.field.required %}
-                        <span class='required'>*</span>
+                    {% get_field_value media field.name as media_value %}
+                    {% get_field_value modified_media field.name as modified_value %}
+
+                    <tr class="comparison-row {% if media_value != modified_value %}highlight-difference{% endif %}">
+                        <td class="comparison-label-row">
+                            {{ field.label_tag }}
+                            {% if field.field.required %}
+                            <span class='required'>*</span>
+                            {% endif %}
+                        </td>
+                        {% if field.name == 'authors' or field.name == 'taxa' or field.name == 'tags' or field.name == 'references' %}
+                        <td>
+                            <ul>
+                                {% for item in media_value %}
+                                <li>
+                                    {{ item }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                {% for item in modified_value %}
+                                <li>
+                                    {{ item }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        {% else %}
+                        <td>{{ media_value }}</td>
+                        <td>{{ modified_value }}</td>
                         {% endif %}
-                    </td>
-                    {% if field.name == 'authors' or field.name == 'taxa' or field.name == 'tags' or field.name == 'references' %}
-                    <td>
-                        <ul>
-                            {% for item in media_value %}
-                            <li>
-                                {{ item }}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </td>
-                    <td>
-                        <ul>
-                            {% for item in modified_value %}
-                            <li>
-                                {{ item }}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </td>
-                    {% else %}
-                    <td>{{ media_value }}</td>
-                    <td>{{ modified_value }}</td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
         <div class='buttons-div'>
             <button class='primary-button submit-button' type="submit" name="action" value="accept">Aceitar alterações</button>
             <button class='primary-button cancel-button' type="submit" name="action" value="discard" formnovalidate>Descartar alterações</button>

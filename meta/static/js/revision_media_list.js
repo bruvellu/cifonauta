@@ -12,9 +12,9 @@
     })
 
 
-    let entriesNumberButton = document.querySelector('#entries-number-button')
-    entriesNumberButton?.addEventListener('click', () => {
-        entriesNumberButton.querySelector('img').classList.add('rotate-animation')
+    let entriesNumberSubmit = document.querySelector('[data-entries-number-form-submit]')
+    entriesNumberSubmit.addEventListener('click', () => {
+        entriesNumberSubmit.querySelector('img').classList.add('rotate-animation')
     })
 
   
@@ -29,4 +29,34 @@
         })
     })
 
+    let fieldStatusAll = document.querySelectorAll('[data-field-action]')
+    fieldStatusAll.forEach(fieldStatus => {
+        const fieldWrapper = fieldStatus.nextElementSibling
+
+        fieldStatus.addEventListener('change', (e) => {
+            if (e.target.value == 'maintain') {
+                fieldWrapper.classList.add('hide-div')
+            } else {
+                fieldWrapper.classList.remove('hide-div')
+            }
+        })
+    })
+
+    const moreFieldsButton = document.querySelector('[data-more-fields-button]')
+    moreFieldsButton.addEventListener('click', () => {
+        const moreFieldsDiv = moreFieldsButton.nextElementSibling
+        
+        const moreFieldsState = moreFieldsButton.dataset.state
+
+        if (moreFieldsState == 'close') {
+            moreFieldsDiv.style.display = 'flex'
+            
+            moreFieldsButton.setAttribute('data-state', 'open')
+        }
+        else {
+            moreFieldsDiv.style.display = ''
+
+            moreFieldsButton.setAttribute('data-state', 'close')
+        }
+    })
 })()

@@ -16,15 +16,15 @@
 {% block dashboard_content %}
 
 {% if modified_media.altered_by_author %}
-<div data-modal="media-changes" id="modal-container" class="media-changes-modal">
-    <header class="modal-header media-changes-modal-header">
+<div data-modal="media-changes" id="modal-container" class="modal modal--large-2 modal--media-changes">
+    <header class="modal-header">
         <p>Alterações da mídia</p>
-        <button data-close-modal="media-changes" id="close-modal-button" class="close-modal-button media-changes-close-modal-button">
+        <button data-close-modal="media-changes" id="close-modal-button" class="close-modal-button close-modal-button--large">
             <div class='line1'></div>
             <div class='line2'></div>
         </button>
     </header>
-    <main class="modal-body margin-top--2">
+    <main class="modal-body">
         <table class="comparison-table">
             <thead class="comparison-table-head">
                 <tr>
@@ -39,7 +39,7 @@
                 {% get_field_value modified_media field.name as value2 %}
                 
                 <tr class="comparison-row {% if value1 != value2 %}highlight-difference{% endif %}">
-                    <td class="comparison-label-row update-media-comparison-label-row">
+                    <td class="comparison-label-row comparison-row--modal">
                         {{ field.label_tag }}
                         {% if field.field.required %}
                         <span class='required'>*</span>

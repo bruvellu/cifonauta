@@ -1434,7 +1434,7 @@ textarea {
     border: .1px solid black;
     border-radius: 4px;
     padding: .4rem;
-    width: 24rem;
+    width: min(24rem, 100%);
 }
 
 #selected-options-container {
@@ -1470,6 +1470,7 @@ textarea {
 
 .option-infos-wrapper {
     display: flex;
+    align-items: center;
     gap: .5rem;
     padding: .2rem .5rem;
 }
@@ -1511,6 +1512,7 @@ textarea {
     flex-direction: column;
     border: 1px solid black;
     border-radius: 3px;
+    width: min(24rem, 100%);
     max-height: 15rem;
     overflow-y: auto;
 }

@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
-from media_utils import Metadata, number_of_entries_per_page, validate_specialist_action_form
+from utils.media import Metadata, number_of_entries_per_page, validate_specialist_action_form, format_name
 from operator import or_, and_
 from PIL import Image
 
@@ -40,7 +40,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import ReferenceSerializer, TaxonSerializer, LocationSerializer, CoauthorSerializer
-from media_utils import format_name
 
 from dotenv import load_dotenv
 load_dotenv()

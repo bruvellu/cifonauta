@@ -4,7 +4,7 @@ import os
 import shutil
 import uuid
 
-from media_utils import Metadata, resize_image, resize_video, extract_video_cover
+from utils.media import Metadata, resize_image, resize_video, extract_video_cover
 
 from django.conf import settings
 from django.contrib.auth.models import Group

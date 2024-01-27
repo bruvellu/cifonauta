@@ -9,7 +9,7 @@ from django.template import loader
 from django.core.mail import EmailMultiAlternatives
 from django.db.models.query import QuerySet
 from django.db import models
-from media_utils import format_name
+from utils.media import format_name
 
 
 METAS = (

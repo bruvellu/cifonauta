@@ -110,7 +110,7 @@ button:disabled {
     gap: 0.3rem;
     padding: 0.35rem;
     border-radius: 0.25rem;
-    background-color: var(--blue-800);
+    background-color: var(--blue-700);
     margin-bottom: 1rem;
 }
 
@@ -1083,8 +1083,11 @@ tr, th {
 .field__errors {
     font-size: 90%;
     margin-bottom: 0.25rem;
-    color: var(--red-400);
     font-weight: 500;
+}
+
+.field__errors * {
+    color: var(--red-400);
 }
 
 .field__input-container {
@@ -1113,11 +1116,11 @@ textarea {
     width: min(25rem, 100%);
 }
 
-.field__errors + input,
-.field__errors + textarea,
-.field__errors + select,
-.field__errors ~ .select2-container .select2-selection--multiple {
-    border: 2px solid #e92134;
+.field__input-container:has(.field__errors) input,
+.field__input-container:has(.field__errors) textarea,
+.field__input-container:has(.field__errors) select,
+.field__input-container:has(.field__errors) .select2-selection--multiple {
+    border: 2px solid var(--red-400);
 }
 
 .add-new-object-div {
@@ -1129,14 +1132,21 @@ textarea {
 
 .add-new-object-btn {
     display: flex;
-    padding: .1rem;
+    padding: 0.05rem;
     height: fit-content;
-    border-radius: 0.1rem;
+    border-radius: 0.25rem;
     border: 1px solid black;
+    background-color: transparent;
+    transition: scale .1s;
+}
+
+.add-new-object-btn:hover {
+    scale: 1.075;
+    /* background-color: #c5d8e9; */
 }
 
 .add-new-object-btn > svg {
-    width: 1rem;
+    width: 1.25rem;
     height: fit-content;
 }
 
@@ -1145,6 +1155,15 @@ textarea {
     color: #5b5b5b;
 }
 
+.pre-registration-button {
+    font-size: 1rem;
+    font-weight: 500;
+    padding-inline: 0.5rem;
+}
+
+.pre-registration-button:hover {
+    scale: 1.05;
+}
 
 
 .media-div img, .media-div video {
@@ -1346,6 +1365,7 @@ textarea {
 
 .authors-field-div > div:last-of-type {
     display: flex;
+    align-items: center;
     gap: 0.7rem;
     margin-top: 1.5rem;
 }

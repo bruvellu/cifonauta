@@ -87,11 +87,11 @@
             {% if entries.paginator.num_pages > 1 %}
             {% include 'pagination.html' %}
             {% endif %}
-            <div class="entries-number-div">
+            <div class="entries-number-form">
                 <span>Mostrar</span>
-                <input type="number" name="entries_number" id="entries-number" value="{{ records_number }}" min="1">
+                <input type="number" name="entries_number" value="{{ records_number }}" min="1" class="entries-number-form__input">
                 <span>registros</span>
-                <button type="submit" name="action" value="entries_number" id="entries-number-button">
+                <button type="submit" name="action" value="entries_number" data-entries-number-form-submit class="entries-number-form__submit">
                     <img src="{{ STATIC_URL }}img/reload.svg" alt="">
                 </button>
             </div>

@@ -370,6 +370,9 @@ button:disabled {
 
 
 
+
+
+
 .doi-form {
     display: flex;
     flex-direction: column;
@@ -405,6 +408,10 @@ button:disabled {
 .doi-form__button g {
     fill: white;
 }
+
+
+
+
 
 
 
@@ -685,6 +692,15 @@ button:disabled {
     gap: 1rem;
 }
 
+
+
+
+
+
+
+
+
+
 .entries-number-form {
     color: #222;
     display: flex;
@@ -722,6 +738,7 @@ button:disabled {
 
 .entries-number-form__submit img {
     width: 1.1rem;
+    height: 1.1rem;
 }
 
 .rotate-animation {
@@ -733,6 +750,13 @@ button:disabled {
         rotate: 360deg;
     }
 }
+
+
+
+
+
+
+
 
 
 
@@ -1727,6 +1751,7 @@ textarea {
 
     .filter-form__more-fields {
         display: none;
+        flex-direction: column;
     }
 }
 
@@ -1752,10 +1777,6 @@ textarea {
 
     .filter-form__fields-container {
         margin-top: 1rem;
-    }
-
-    .filter-form__more-fields {
-        flex-direction: column;
     }
 
     .filter-form__submit {

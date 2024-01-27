@@ -99,11 +99,12 @@
             {% if entries.paginator.num_pages > 1 %}
             {% include 'pagination.html' %}
             {% endif %}
+            {% comment %} TODO: make it a form {% endcomment %}
             <div class="entries-number-form">
                 <span>Mostrar</span>
                 <input type="number" name="entries_number" class="entries-number-form__input" id="entries-number" value="{{ records_number }}" min="1">
                 <span>registros</span>
-                <button type="submit" name="action" value="entries_number" class="entries-number-form__submit">
+                <button type="submit" name="action" value="entries_number" data-entries-number-form-submit class="entries-number-form__submit">
                     <img src="{{ STATIC_URL }}img/reload.svg" alt="">
                 </button>
             </div>

@@ -12,9 +12,9 @@
     })
 
 
-    let entriesNumberButton = document.querySelector('#entries-number-button')
-    entriesNumberButton?.addEventListener('click', () => {
-        entriesNumberButton.querySelector('img').classList.add('rotate-animation')
+    let entriesNumberSubmit = document.querySelector('[data-entries-number-form-submit]')
+    entriesNumberSubmit.addEventListener('click', () => {
+        entriesNumberSubmit.querySelector('img').classList.add('rotate-animation')
     })
 
   

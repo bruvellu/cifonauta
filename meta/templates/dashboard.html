@@ -69,8 +69,12 @@
             {% endif %}
         </ul>
         {% endwith %}
+        <div id="user">
+            <span>{{ request.user }}</span>
+            <a href="{% url 'Logout' %}">Sair</a>
+        </div>
     </nav>
-    <div class="dashboard-view {% if list_page %}dark-background{% else %}light-background{% endif %}">
+    <main class="dashboard-view {% if list_page %}dark-background{% else %}light-background{% endif %}">
         <button data-hamburger id="hamburger">
           <span class="hamburger__lines"></span>
           <span class="hamburger__lines"></span>
@@ -79,7 +83,7 @@
         <h1>Módulo Administrativo</h1>
 
         {% block dashboard_content %}{% endblock %}
-    </div>
+    <mainv>
     
     <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

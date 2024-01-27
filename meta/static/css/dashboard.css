@@ -220,6 +220,32 @@ button:disabled {
     background-color: var(--red-500);
 }
 
+#user {
+    font-weight: 400;
+    display: flex;
+    justify-content: space-between;
+    margin-block: auto 1rem;
+    align-items: center;
+    padding-inline: 1.5rem 1rem;
+}
+
+#user * {
+    color: var(--white);
+}
+
+#user span {
+    font-weight: 600;
+}
+
+#user a {
+    opacity: .9;
+    padding: 0 0.5rem;
+}
+
+#user a:hover {
+    text-decoration: underline;
+}
+
 
 .dashboard-view {
     /* background-color: var(--gray-300); */

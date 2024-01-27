@@ -4,7 +4,6 @@
 {% block extra_head %}
 <script src="{% static 'js/adm_select_all_records.js' %}" defer></script>
 <script src="{% static 'js/adm_modal.js' %}" defer></script>
-<script src="{% static 'js/adm_actions.js' %}" defer></script>
 <script src="{% static 'js/revision_media_list.js' %}" defer></script>
 {% endblock %}
 
@@ -25,37 +24,7 @@
 
         <form class="post-form-wrapper" method="post">
             {% csrf_token %}
-            <div data-modal="group-action" id="modal-container" class="list-modal-container">
-                <div>
-                    <div class="modal-header">
-                        <p>Processar em lote as mídias selecionadas</p>
-                        <button data-close-modal="group-action" type="button" id="close-modal-button" class="close-modal-button">
-                            <div class='line1'></div>
-                            <div class='line2'></div>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        {% for field in form %}
-                        {% if field == form.taxa_action %}
-                        <div class="modal-field-div">
-                            {{ field.label_tag }}
-                            {{ field }}
-                            <div id="taxa-wrapper" class="hide-div">
-                                {{ form.taxa }}
-                            </div>
-                        </div>
-                        {% elif field == form.taxa %}
-                        {% else %}
-                        <div class="modal-field-div">
-                            {{ field.label_tag }}
-                            {{ field }}
-                        </div>
-                        {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-                <button type="submit" class="secondary-button" name='action' value='{{ records_number }}'>Processar</button>
-            </div>
+            {% include 'dashboard_actions_modal.html' %}
             
             {% if entries.object_list %}
             <div class='table-top'>

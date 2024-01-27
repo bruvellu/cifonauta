@@ -29,6 +29,19 @@
             modalClose: document.querySelector(`[data-close-modal='${modalName}']`)
         })
     })
+    
+    let fieldStatusAll = document.querySelectorAll('[data-field-action]')
+    fieldStatusAll.forEach(fieldStatus => {
+        const fieldWrapper = fieldStatus.nextElementSibling
+
+        fieldStatus.addEventListener('change', (e) => {
+            if (e.target.value == 'maintain') {
+                fieldWrapper.classList.add('hide-div')
+            } else {
+                fieldWrapper.classList.remove('hide-div')
+            }
+        })
+    })
 
     const moreFieldsButton = document.querySelector('[data-more-fields-button]')
     moreFieldsButton.addEventListener('click', () => {

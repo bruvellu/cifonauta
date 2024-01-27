@@ -663,29 +663,6 @@ button:disabled {
 
 .post-form-wrapper {
     margin-top: 2rem;
-} 
-
-.list-modal-container {
-    background: #fafafa;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 100%;
-    max-width: 25rem;
-    height: auto;
-    max-height: 60%;
-    padding: 1rem;
-    border: 0;
-    border-radius: .3rem;
-}
-
-.modal-field-div {
-    display: flex;
-    flex-direction: column;
-}
-
-#taxa-wrapper > span {
-    width: 100% !important;
 }
 
 .table-top, .table-bottom {
@@ -696,6 +673,29 @@ button:disabled {
     gap: 1rem;
     margin-bottom: 2rem;
     min-height: 2rem;
+}
+
+.table-bottom {
+    justify-content: center;
+}
+
+.action-field {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+.action-field__field-container {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+}
+
+.action-field input:not([type="checkbox"]),
+.action-field select,
+.action-field .select2-container {
+    width: 100% !important;
+    min-height: 1.8rem;
 }
 
 .paginator {

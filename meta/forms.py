@@ -353,17 +353,18 @@ class SpecialistActionForm(forms.ModelForm, SendEmailForm):
         ('publish', _('Publicar')),
     ]
 
-    TAXA_CHOICES = (
+    TAXA_CHOICES = [
         ('maintain', _('Manter táxons')),
         ('overwrite', _('Sobrescrever táxons')),
-    )
+    ]
 
     status_action = forms.ChoiceField(label=_('Status'), choices=STATUS_CHOICES, initial='maintain')
-    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain')
+    # Added data-field-action so javascript can find it
+    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "taxa_action"}))
 
     class Meta:
         model = Media
-        fields = ( 'status_action', 'taxa_action', 'taxa',)
+        fields = ('status_action', 'taxa_action', 'taxa',)
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
         }
@@ -374,7 +375,7 @@ class MyMediasActionForm(forms.ModelForm):
         ('overwrite', _('Sobrescrever táxons')),
     )
 
-    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain')
+    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "taxa_action"}))
 
     class Meta:
         model = Media

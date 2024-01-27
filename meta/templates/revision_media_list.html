@@ -42,56 +42,56 @@
               </div>
             </div>
     
-            <table class="dashboard-table">
-                <thead class="table-head">
-                    <tr>
-                        <th class="checkbox-column"><input type="checkbox" id="select-all-records" class='dashboard-input'></th>
-                        <th class="image-column">Mídia</th>
-                        <th class="title-column">Título</th>
-                        <th>Curadorias</th>
-                        <th class="status-column">Status</th>
-                        <th>Autor</th>
-                    </tr>
-                </thead>
-                <tbody class="table-body">
-                    {% for media in entries.object_list %}
-                    <tr>
-                        <td>
-                            <input type="checkbox" class="selected-record dashboard-input" name="selected_media_ids" value="{{ media.id }}">
-                        </td>
-                        <td class="image-cedule">
-                            <div class="media-wrapper-td">
-                                <a href="{% if media.modified_media.first != None %}{% url 'revision_modified_media' media.id %}{% else %}{% url 'revision_media_details' media.id %}{% endif %}">
-                                  <img src="{{ media.coverpath.url }}">
+            <div class="table-wrapper">
+                <table class="dashboard-table">
+                    <thead class="table-head">
+                        <tr>
+                            <th class="checkbox-column"><input type="checkbox" id="select-all-records" class='dashboard-input'></th>
+                            <th class="no-shrink-cell">Mídia</th>
+                            <th class="no-shrink-cell">Título</th>
+                            <th class="no-shrink-cell">Curadorias</th>
+                            <th>Status</th>
+                            <th class="no-shrink-cell">Autor</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-body">
+                        {% for media in entries.object_list %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="selected-record dashboard-input" name="selected_media_ids" value="{{ media.id }}">
+                            </td>
+                            <td class="image-cedule">
+                                <a href="{% if media.modified_media.first != None %}{% url 'revision_modified_media' media.id %}{% else %}{% url 'revision_media_details' media.id %}{% endif %}" class="media-wrapper-td">
+                                    <img src="{{ media.coverpath.url }}">
                                 </a>
-                            </div>
-                        </td>
-                        <td class="text-cedule">
-                            {% if media.title_pt_br %}
-                            {{ media.title_pt_br }}
-                            {% endif %}
-                        </td>
-                        <td>
-                            <ul class="curations-list">
-                                {% get_media_curations media as curations %}
-                                {% for curation in curations %}
-                                <li>
-                                    {{ curation }}
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </td>
-                        <td class="text-cedule">
-                            <span class="media-status {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}">
-                                {{ media.get_status_display }}
-                            </span>
-                        </td>
-                        <td>{{media.user}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-    
+                            </td>
+                            <td class="text-cedule">
+                                {% if media.title_pt_br %}
+                                {{ media.title_pt_br }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                <ul class="curations-list">
+                                    {% get_media_curations media as curations %}
+                                    {% for curation in curations %}
+                                    <li>
+                                        {{ curation }}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td class="text-cedule">
+                                <span class="media-status {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}">
+                                    {{ media.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{media.user}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
             <div class="table-bottom">
                 {% if entries.paginator.num_pages > 1 %}
                 {% include 'pagination.html' %}

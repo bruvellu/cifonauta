@@ -16,46 +16,48 @@
 {% endif %}
 {% if tours %}
 
-<div class='table-top'>
+<div class='table-top margin-top'>
   <button type="button" class="primary-button submit-button list-page-add-btn">
     <a href="{% url 'tour_add' %}">Criar novo tour</a>
   </button>
 </div>
 
-<table class="dashboard-table list-form">
-  <thead class="table-head">
-    <tr>
-        <th class="title-column">Nome</th>
-        <th class="title-column">Está visível</th>
-        <th class="modification-date">Data de Modificação</th>
-        <th class="">Data de publicação</th>
-    </tr>
-  </thead>
-  <tbody class="table-body">
-      {% for tour in tours %}
-      <tr>
-          <td class="text-cedule">
-            <a href="{% url 'tour_details' pk=tour.pk %}">
-              {{ tour.name }}
-            </a>
-          </td>
-          <td class="text-cedule">
-            {% if tour.is_public %}
-            Sim
-            {% else %}
-            Não
-            {% endif %}
-          </td>
-          <td class="text-cedule">
-              {{ tour.timestamp }}
-          </td>
-          <td class="text-cedule">
-              {{ tour.pub_date }}
-          </td>
-      </tr>
-      {% endfor %}
-  </tbody>
-</table>
+<div class="table-wrapper">
+    <table class="dashboard-table list-form">
+        <thead class="table-head">
+            <tr>
+                <th class="no-shrink-cell">Nome</th>
+                <th class="">Está visível</th>
+                <th class="no-shrink-cell">Data de Modificação</th>
+                <th class="no-shrink-cell">Data de publicação</th>
+            </tr>
+        </thead>
+        <tbody class="table-body">
+            {% for tour in tours %}
+            <tr>
+                <td class="text-cedule">
+                  <a href="{% url 'tour_details' pk=tour.pk %}">
+                    {{ tour.name }}
+                  </a>
+                </td>
+                <td class="text-cedule">
+                  {% if tour.is_public %}
+                  Sim
+                  {% else %}
+                  Não
+                  {% endif %}
+                </td>
+                <td class="text-cedule">
+                    {{ tour.timestamp }}
+                </td>
+                <td class="text-cedule">
+                    {{ tour.pub_date }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% else %}
 <p>Não há tours</p>
 {% endif %}

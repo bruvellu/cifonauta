@@ -67,11 +67,9 @@
                             <input type="checkbox" class="selected-record dashboard-input" name="selected_media_ids" value="{{ media.id }}">
                         </td>
                         <td class="image-cedule">
-                            <div class="media-wrapper-td">
-                                <a href="{% url 'my_media_details' pk=media.pk %}">
-                                  <img src="{{ media.coverpath.url }}">
-                                </a>
-                            </div>
+                            <a href="{% url 'my_media_details' pk=media.pk %}" class="media-wrapper-td">
+                              <img src="{{ media.coverpath.url }}">
+                            </a>
                         </td>
                         <td class="text-cedule">
                             {% if media.title_pt_br %}

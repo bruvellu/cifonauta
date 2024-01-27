@@ -44,49 +44,49 @@
             </div>
         </div>
         
-        <table class="dashboard-table">
-            <thead class="table-head">
-                <tr>
-                    <th><input type="checkbox" id="select-all-records" class="dashboard-input"></th>
-                    <th class="image-column">Mídia</th>
-                    <th class="title-column">Título</th>
-                    <th class="">Curadorias</th>
-                    <th>Autor</th>
-                </tr>
-            </thead>
-            <tbody class="table-body">
-                {% for media in entries.object_list %}
-                <tr>
-                    <td>
-                        <input type="checkbox" class="selected-record dashboard-input" name="selected_media_ids" value="{{ media.id }}">
-                    </td>
-                    <td class="image-cedule">
-                        <div class="media-wrapper-td">
-                            <a href="{% url 'editing_media_details' media.id %}">
+        <div class="table-wrapper">
+            <table class="dashboard-table">
+                <thead class="table-head">
+                    <tr>
+                        <th><input type="checkbox" id="select-all-records" class="dashboard-input"></th>
+                        <th class="no-shrink-cell">Mídia</th>
+                        <th class="no-shrink-cell">Título</th>
+                        <th class="no-shrink-cell">Curadorias</th>
+                        <th class="no-shrink-cell">Autor</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body">
+                    {% for media in entries.object_list %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="selected-record dashboard-input" name="selected_media_ids" value="{{ media.id }}">
+                        </td>
+                        <td class="image-cedule">
+                            <a href="{% url 'editing_media_details' media.id %}" class="media-wrapper-td">
                               <img src="{{ media.coverpath.url }}">
                             </a>
-                        </div>
-                    </td>
-                    <td class="text-cedule">
-                        {% if media.title_pt_br %}
-                        {{ media.title_pt_br }}
-                        {% endif %}
-                    </td>
-                    <td>
-                        <ul class="curations-list">
-                            {% get_media_curations media as curations %}
-                            {% for curation in curations %}
-                            <li>
-                                {{ curation }}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </td>
-                    <td>{{media.user}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        </td>
+                        <td class="text-cedule">
+                            {% if media.title_pt_br %}
+                            {{ media.title_pt_br }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <ul class="curations-list">
+                                {% get_media_curations media as curations %}
+                                {% for curation in curations %}
+                                <li>
+                                    {{ curation }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>{{media.user}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
         <div class="table-bottom">
             {% if entries.paginator.num_pages > 1 %}

@@ -34,12 +34,6 @@
     color: var(--gray-700);
 }
 
-@media (max-width: 450px) {
-    html {
-        font-size: 85%;
-    }
-}
-
 h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
   color: var(--gray-800);
@@ -677,6 +671,7 @@ button:disabled {
 
 .table-bottom {
     justify-content: center;
+    margin-top: 2rem;
 }
 
 .action-field {
@@ -840,18 +835,11 @@ tr, th {
     padding: .5rem;
 }
 
-/* .media-wrapper-td {
-    width: fit-content;
-    height: 6rem;
+.media-wrapper-td {
+    display: flex;
+    aspect-ratio: 16/10;
     overflow: hidden;
     border: 1px solid #0000005e;
-} */
-
-.media-wrapper-td {
-  /* width: clamp(8rem, 100%, 11rem); */
-  width: 11rem;
-  overflow: hidden;
-  border: 1px solid #0000005e;
 }
 
 .media-wrapper {
@@ -1439,12 +1427,11 @@ textarea {
 
 /* MY SELECT2 FOR TOURS */
 .list-page-add-btn {
-    position: absolute;
-    right: 0;
+    margin-left: auto;
 }
 
 .list-page-add-btn > a {
-    color: #fff !important;
+    color: var(--white);
 }
 
 #input-container {
@@ -1772,13 +1759,13 @@ textarea {
       flex-direction: column;
       gap: .25rem;
   }
-
-  .media-wrapper-td {
-      width: 9rem;
-  }
 }
 
 @media (max-width: 450px) {
+    html {
+        font-size: 90%;
+    }
+
     .dashboard-view {
         padding: 2rem 1rem 4rem 1rem;
     }
@@ -1795,9 +1782,5 @@ textarea {
         padding: .25rem 1rem;
         position: absolute;
         right: 1rem;
-    }
-
-    .media-wrapper-td {
-        width: 8rem;
     }
 }

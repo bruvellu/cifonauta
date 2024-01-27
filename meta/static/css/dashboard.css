@@ -1561,6 +1561,7 @@ textarea {
 .users-table-container {
     display: flex;
     justify-content: space-between;
+    gap: 1rem;
     max-width: 43rem;
     margin-top: .5rem;
     margin-bottom: 1.5rem;

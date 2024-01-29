@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.utils import translation
 from django.template.defaultfilters import slugify
 from meta.models import Taxon
-from worms import Aphia
+from utils.worms import Aphia
 
 '''
 Example Aphia record:

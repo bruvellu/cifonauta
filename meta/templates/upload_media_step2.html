@@ -3,6 +3,7 @@
 
 {% block extra_head %}
 <script src="{% static 'js/adm_modal.js' %}" defer></script>
+<script src="{% static 'js/adm_create_entry.js' %}" defer></script>
 <script src="{% static 'js/upload_media_step2.js' %}" defer></script>
 <script src="{% static 'js/adm_sync_location_fields.js' %}" defer></script>
 <script src="{% static 'js/adm_references.js' %}" defer></script>
@@ -12,31 +13,6 @@
 {% block title %}Enviar Mídia{% endblock %}
 
 {% block dashboard_content %}
-<div data-modal="co-author" id="modal-container" class="list-modal-container">
-    <div class="modal-header">
-        <p>Registre o coautor</p>
-        <button data-close-modal="co-author" id="close-modal-button" class="close-modal-button">
-            <div class='line1'></div>
-            <div class='line2'></div>
-        </button>
-    </div>
-    <form class="modal-body" method="post">
-        {% csrf_token %}
-        {% for field2 in registration_form %}
-        <div class="field2-container">
-            {{ field2.label_tag }}
-            <div class="field-div field2-div">
-                {{ field2 }}
-                {% if field2.help_text %}
-                <span class="help-text">{{ field2.help_text }}</span>
-                {% endif %}
-            </div>
-        </div>
-        {% endfor %}
-        <button class="secondary-button" type="submit" name="action" value="coauthor">Cadastrar</button>
-    </form>
-</div>
-
 <h2>Adicionar nova mídia</h2>
 {% if messages %}
 <div class="messages-div">
@@ -60,8 +36,8 @@
 
 <form class="dashboard-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="field-container">
-        <div class="label-div">
+    <div class="field">
+        <div class="field__label">
             <label>Mídias:</label>
         </div>
         <div class="medias-div">
@@ -81,13 +57,13 @@
     </div>
     {% for field in form %}
     {% if field == form.authors %}
-    <div class="field-container">
-        <div class="label-div">
+    <div class="field">
+        <div class="field__label">
             {{ field.label_tag }}
         </div>
-        <div class="field-div authors-field-div">
+        <div class="field__input-container authors-field-div">
             {% if form.authors.errors %}
-            <ul class="field-error">
+            <ul class="field__errors">
                 {% for error in field.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -95,25 +71,25 @@
             {% endif %}
             {{ field }}
             {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            <span class="field__help-text">{{ field.help_text }}</span>
             {% endif %}
             <div>
                 <p>Coautor não está na lista?</p>
-                <button data-open-modal="co-author" id="open-modal-button" class="pre-registration-button" type="button">Registrar coautor</button>
+                <button data-open-modal="authors" id="open-modal-button" class="pre-registration-button add-new-object-btn" type="button">Registrar coautor</button>
             </div>
         </div>
     </div>
     {% elif field == form.country %}
-    <div class="field-container country-container">
-        <div class="label-div">
+    <div class="field country-container">
+        <div class="field__label">
             {{ field.label_tag }}
             {% if field.field.required %}
             <span class='required'>*</span>
             {% endif %}
         </div>
-        <div class="field-div">
+        <div class="field__input-container">
             {% if field.errors %}
-            <ul class="field-error">
+            <ul class="field__errors">
                 {% for error in field.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -121,21 +97,21 @@
             {% endif %}
             {{ field }}
             {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            <span class="field__help-text">{{ field.help_text }}</span>
             {% endif %}
         </div>
     </div>
     {% elif field == form.location or field == form.taxa or field == form.references or field == form.latitude %}
-    <div class="field-container">
-        <div class="label-div">
+    <div class="field">
+        <div class="field__label">
             {{ field.label_tag }}
             {% if field.field.required %}
             <span class='required'>*</span>
             {% endif %}
         </div>
-        <div class="field-div">
+        <div class="field__input-container">
             {% if field.errors %}
-            <ul class="field-error">
+            <ul class="field__errors">
                 {% for error in field.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -149,7 +125,11 @@
                     class="add-new-object-btn"
                 >
                 {% if field == form.latitude%}
-                    mapinha
+                    <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"/>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+                        <g id="SVGRepo_iconCarrier"> <path d="M5.7 15C4.03377 15.6353 3 16.5205 3 17.4997C3 19.4329 7.02944 21 12 21C16.9706 21 21 19.4329 21 17.4997C21 16.5205 19.9662 15.6353 18.3 15M12 9H12.01M18 9C18 13.0637 13.5 15 12 18C10.5 15 6 13.0637 6 9C6 5.68629 8.68629 3 12 3C15.3137 3 18 5.68629 18 9ZM13 9C13 9.55228 12.5523 10 12 10C11.4477 10 11 9.55228 11 9C11 8.44772 11.4477 8 12 8C12.5523 8 13 8.44772 13 9Z" stroke="#000000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/> </g>
+                    </svg>
                 {% else %}
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="12" y1="19" x2="12" y2="5"/>
@@ -159,19 +139,19 @@
                 </button>
             </div>
             {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            <span class="field__help-text">{{ field.help_text }}</span>
             {% endif %}
         </div>
     </div>
     {% elif field == form.terms %}
-    <div class="field-container">
-        <div class='label-div'>
+    <div class="field">
+        <div class='field__label'>
             {{ field.label_tag }}
             <span class='required'>*</span>
         </div>
-        <div class="field-div terms-div">
+        <div class="field__input-container terms-div">
             {% if field.errors %}
-            <ul class="field-error">
+            <ul class="field__errors">
                 {% for error in field.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -182,21 +162,21 @@
                 Declaro...
             </div>
             {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            <span class="field__help-text">{{ field.help_text }}</span>
             {% endif %}
         </div>
     </div>
     {% else %}
-    <div class="field-container">
-        <div class="label-div">
+    <div class="field">
+        <div class="field__label">
             {{ field.label_tag }}
             {% if field.field.required %}
             <span class='required'>*</span>
             {% endif %}
         </div>
-        <div class="field-div">
+        <div class="field__input-container">
             {% if field.errors %}
-            <ul class="field-error">
+            <ul class="field__errors">
                 {% for error in field.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}
@@ -204,7 +184,7 @@
             {% endif %}
             {{ field }}
             {% if field.help_text %}
-            <span class="help-text">{{ field.help_text }}</span>
+            <span class="field__help-text">{{ field.help_text }}</span>
             {% endif %}
         </div>
     </div>
@@ -218,6 +198,7 @@
 
 </form>
 
+{% include 'dashboard_coauthor_modal.html' %}
 
 {% include 'dashboard_location_modal.html' %}
 

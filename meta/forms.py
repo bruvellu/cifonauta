@@ -9,6 +9,7 @@ from django.template import loader
 from django.core.mail import EmailMultiAlternatives
 from django.db.models.query import QuerySet
 from django.db import models
+from utils.media import format_name
 
 
 METAS = (
@@ -259,15 +260,33 @@ class CoauthorRegistrationForm(forms.ModelForm):
 
         self.fields['name'].required = True
 
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        name = format_name(name)
+        
+        return name
+
 class AddLocationForm(forms.ModelForm):
     class Meta:
         model = Location
         fields = ('name',)
+    
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        name = format_name(name)
+        
+        return name
 
 class AddTaxaForm(forms.ModelForm):
     class Meta:
         model = Taxon
         fields = ('name',)
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        name = format_name(name)
+        
+        return name
 
 class ModifiedMediaForm(forms.ModelForm, SendEmailForm):
     class Meta:
@@ -334,17 +353,18 @@ class SpecialistActionForm(forms.ModelForm, SendEmailForm):
         ('publish', _('Publicar')),
     ]
 
-    TAXA_CHOICES = (
+    TAXA_CHOICES = [
         ('maintain', _('Manter táxons')),
         ('overwrite', _('Sobrescrever táxons')),
-    )
+    ]
 
     status_action = forms.ChoiceField(label=_('Status'), choices=STATUS_CHOICES, initial='maintain')
-    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain')
+    # Added data-field-action so javascript can find it
+    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "taxa_action"}))
 
     class Meta:
         model = Media
-        fields = ( 'status_action', 'taxa_action', 'taxa',)
+        fields = ('status_action', 'taxa_action', 'taxa',)
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
         }
@@ -355,7 +375,7 @@ class MyMediasActionForm(forms.ModelForm):
         ('overwrite', _('Sobrescrever táxons')),
     )
 
-    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain')
+    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "taxa_action"}))
 
     class Meta:
         model = Media
@@ -391,11 +411,14 @@ class DashboardFilterForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         user_curations = kwargs.pop('user_curations', None)
+        is_editing_media_list = kwargs.pop('is_editing_media_list', None)
         super().__init__(*args, **kwargs)
 
         if user_curations:
             if not user_curations.filter(name='Sem táxon').exists():
                 self.fields['curations'].queryset = self.fields['curations'].queryset.exclude(name='Sem táxon')
+        if is_editing_media_list:
+            del self.fields['status']
             
 
 class SearchForm(forms.Form):

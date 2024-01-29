@@ -1,4 +1,4 @@
-const referenceModal = new Modal({
+const latitudeModal = new Modal({
     modalContent: document.querySelector('[data-modal="latitude"]'),
     modalTrigger: document.querySelector('[data-open-modal="latitude"]'),
     modalClose: document.querySelector('[data-close-modal="latitude"]')
@@ -41,6 +41,6 @@ function placeMarkerAndPanTo(latLng, map) {
     document.getElementById("id_longitude").value = latLng.lng();
 
     map.panTo(latLng);
-    referenceModal.closeModal()
+    latitudeModal.closeModal()
 }
     

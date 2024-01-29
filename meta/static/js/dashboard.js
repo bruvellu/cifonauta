@@ -2,14 +2,14 @@
     function openMenu() {
         document.body.append(overlay)
 
-        hamburgerMenu.setAttribute('data-state', 'open')
+        nav.setAttribute('data-state', 'open')
         closeNav.focus()
     }
-
+    
     function closeMenu() {
         overlay.remove()
 
-        hamburgerMenu.setAttribute('data-state', 'close')
+        nav.setAttribute('data-state', 'close')
         hamburger.focus()
     }
 
@@ -27,15 +27,15 @@
             }
         }
     }
-
+    
     const hamburger = document.querySelector('[data-hamburger]')
-    const hamburgerMenu = document.querySelector('[data-hamburger-menu]')
-    const closeNav = hamburgerMenu.querySelector('[data-hamburger-menu-close]')
+    const nav = document.querySelector('[data-navigation]')
+    const closeNav = nav.querySelector('[data-close-navigation]')
 
     const overlay = document.createElement('div')
     overlay.classList.add('overlay')
 
-    const focusableElements = [...hamburgerMenu.querySelectorAll(
+    const focusableElements = [...nav.querySelectorAll(
         'a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])')
     ].filter(elem => {
         if(!elem.hasAttribute('disabled') && !elem.hasAttribute('hidden') && elem.type != 'hidden') return elem
@@ -43,12 +43,13 @@
 
     hamburger.addEventListener('click', openMenu)
     closeNav.addEventListener('click', closeMenu)
-    hamburgerMenu.addEventListener('keydown', trapFocus)
+    nav.addEventListener('keydown', trapFocus)
     overlay.addEventListener('click', closeMenu)
-
+    
     window.addEventListener('resize', ()=>{
-        if (window.innerWidth > 590) {
+        if (window.innerWidth > 1024) {
             closeMenu()
         }
     })
+    
 })()

@@ -80,7 +80,7 @@
     border-width: 0 2px 5px 5px;
 }
 
-#hamburger-button {
+#hamburger {
     background: transparent; 
     display: none;
     flex-direction: column;
@@ -91,7 +91,7 @@
     border: none;
 }
 
-#hamburger-button div {
+#hamburger div {
     background-color: #6B92B2;
     height: 0.42rem;
     width: 100%;
@@ -100,50 +100,59 @@
     outline: 0.1rem solid #e4e4e4;
 }
 
-#hamburger-menu-container {
-    background-color: /* #475D6F */#4d7494; 
-    display: none;
+#hamburger-menu {
+    background-color: /* #475D6F */#4d7494;
+    display: flex;
     flex-direction: column;
     gap: .5rem;
     /* padding: 1.2rem 0.5rem 1rem .5rem; */
     width: 11rem;
     position: fixed;
-    top: 0;
-    right: 0;
     z-index: 10;
-    margin-right: 2.5rem;
+    top: -110%;
+    right: 2.3rem;
+    transition: top .3s;
+}
+
+#hamburger-menu[data-state="open"] {
+    top: 0;
 }
 
 .show-hamburger-menu {
     display: flex !important;
 }
 
-#close-hamburger-menu {
+#hamburger-menu__close-button {
     background-color: transparent;
-    width: 2.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     height: 2.2rem;
     position: absolute;
     top: 0.3rem;
-    right: 0rem;
+    right: 0.5rem;
     border: none;
+    padding: 0;
 }
 
-#close-hamburger-menu div {
+#hamburger-menu__close-button div {
     background-color: white;
     height: .35rem;
-    width: 2.6rem;
+    width: 2.5rem;
     border-radius: 15px;
 }
 
-#close-hamburger-menu div:first-child {
-    transform: rotate(43deg) translate(-7px, 11px);
+#hamburger-menu__close-button div:first-child {
+    transform: rotate(43deg);
+    translate: 0 50%;
 }
 
-#close-hamburger-menu div:last-child {
-    transform: rotate(138deg) translate(7px, 10px);
+#hamburger-menu__close-button div:last-child {
+    transform: rotate(138deg);
+    translate: 0 -50%;
 }
 
-#media-hamburger {
+#hamburger-menu__media {
     display: flex;
     flex-direction: column;
     gap: .5rem;
@@ -151,13 +160,22 @@
     padding: 1.2rem .5rem .25rem .5rem; 
 }
 
-#about-hamburger {
+#hamburger-menu__about {
     background-color: #6B92B2; 
     display: flex; 
     flex-direction: column;
     padding: .25rem .5rem 1rem .5rem; 
     text-align: left; 
     gap: .5rem;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
 }
 
 @media (max-width: 910px) {
@@ -184,13 +202,13 @@
         display: none;
     }
 
-    #hamburger-button {
+    #hamburger {
         display: flex;
     }
 }
 
 @media (max-width: 350px) {
-    #hamburger-menu-container {
+    #hamburger-menu {
         margin-right: 1rem;
     }
 }

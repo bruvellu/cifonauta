@@ -4,11 +4,13 @@ class Modal {
     modalOverlay
     modalContent
     isModalOpened = false
+    onCloseCallback
 
-    constructor({ modalContent, modalTrigger, modalClose}) {
+    constructor({ modalContent, modalTrigger, modalClose, onCloseCallback = null}) {
         this.modalTrigger = modalTrigger
         this.modalClose = modalClose
         this.modalContent = modalContent
+        this.onCloseCallback = onCloseCallback
 
         this.modalContent?.addEventListener('keydown', this.handleTabKey.bind(this))
         this.modalTrigger?.addEventListener('click', this.showModal.bind(this))
@@ -43,6 +45,10 @@ class Modal {
         this.modalOverlay.remove()
 
         this.modalTrigger?.focus()
+
+        if (typeof this.onCloseCallback === 'function') {
+            this.onCloseCallback();
+        }
     }
 
     handleTabKey(event) {

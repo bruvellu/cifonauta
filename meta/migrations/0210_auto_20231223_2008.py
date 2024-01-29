@@ -2,7 +2,7 @@
 
 from django.db import migrations
 from django.conf import settings
-from media_utils import resize_image
+from utils.media import resize_image
 
 
 def create_resized_files(model, size):

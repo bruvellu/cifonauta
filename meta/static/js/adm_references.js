@@ -49,7 +49,7 @@
         if (!regex.test(doi)) {
           const span = document.createElement('span')
           span.setAttribute('data-error', 'doi')
-          span.classList.add('field-error')
+          span.classList.add('field__errors')
           span.innerText = 'Formato do DOI inválido'
           span.style.color = 'red'
           doiForm.append(span)

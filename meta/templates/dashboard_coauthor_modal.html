@@ -1,15 +1,15 @@
-<div data-modal="taxa" id="taxa-modal" class="modal-container modal modal--small">
+<div data-modal="authors" id="modal-container" class="modal modal--small">
     <header class="modal-header">
-        <p>Adicione um novo táxon</p>
-        <button data-close-modal="taxa" id="close-taxa-modal-btn" class="close-modal-button">
+        <p>Registre o coautor</p>
+        <button data-close-modal="authors" id="close-modal-button" class="close-modal-button">
             <div class='line1'></div>
             <div class='line2'></div>
         </button>
     </header>
     <main class="modal-body">
-        <form method="post" data-form="taxa" class="modal-form">
+        <form method="post" data-form="authors" class="modal-form">
             {% csrf_token %}
-            {% for field2 in taxa_form %}
+            {% for field2 in registration_form %}
             <div class="field field--modal">
                 {{ field2.label_tag }}
                 <div class="field__input-container">
@@ -20,8 +20,8 @@
                 </div>
             </div>
             {% endfor %}
-            <div data-response-message="taxa"></div>
-            <button type="submit" name="action" value="taxa" data-submitter="taxa" class="secondary-button">Adicionar</button>
+            <div data-response-message="authors"></div>
+            <button class="secondary-button" type="submit" name="action" value="authors" data-submitter="authors">Cadastrar</button>
         </form>
     </main>
 </div>

@@ -606,10 +606,10 @@ class Metadata():
         else:
             gps_hexa = f"{gps[1].decode()} {gps[2][0][0]}\u00ba{int(gps[2][1][0])}'{int(gps[2][2][0])}\u0022 {gps[3].decode()} {gps[4][0][0]}\u00ba{int(gps[4][1][0])}'{int(gps[4][2][0])}\u0022"
             latitude = gps[2][0][0] + gps[2][1][0]/60 + gps[2][2][0]/3600
-            if gps[1] == 'S':
+            if gps[1] == b'S':
                 latitude = -latitude
             longitude = gps[4][0][0] + gps[4][1][0]/60 + gps[4][2][0]/3600
-            if gps[3] == 'W':
+            if gps[3] == b'W':
                 longitude = -longitude
             latitude = f"{latitude:.11f}"
             longitude = f"{longitude:.11f}"

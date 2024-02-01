@@ -722,12 +722,17 @@ def my_media_list(request):
                 form = MyMediasActionForm(request.POST)
 
                 if form.is_valid():
-                    has_published_media = Media.objects.filter(id__in=media_ids, status='published').exists()
+                    medias = Media.objects.filter(id__in=media_ids)
+
+                    has_published_media = medias.filter(status='published').exists()
                     if has_published_media:
-                        messages.error(request, _('Não é possível aplicar ações em mídias já publicadas'))
+                        messages.error(request, _('Não é possível realizar ação em lotes de mídia já publicada'))
                         return redirect('my_media_list')
                     
-                    medias = Media.objects.filter(id__in=media_ids)
+                    has_submitted_media = medias.filter(status='submitted').exists()
+                    if has_submitted_media:
+                        messages.error(request, _('Não é possível realizar ação em lotes de mídia submetida para revisão'))
+                        return redirect('my_media_list')
                     
                     if form.cleaned_data['taxa_action'] != 'maintain':
                         for media in medias:

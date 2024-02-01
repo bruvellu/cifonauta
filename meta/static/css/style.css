@@ -628,10 +628,12 @@ Based on work by Jørgen Arnor Gårdsø Lom [http://twistedintellect.com/] */
 /* HEADER */
 
 #admin {
-  padding:0 4px;
-  position:fixed;
-  left:0;
-  text-align:left;
+  padding: 0 4px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  text-align: left;
+  pointer-events: none;
 }
 #admin ul {
   list-style-type:none;
@@ -640,7 +642,8 @@ Based on work by Jørgen Arnor Gårdsø Lom [http://twistedintellect.com/] */
 }
 
 #admin a {
-  color:#eee;
+  color:hsl(207.04deg 31.56% 44.12% / 80%);
+  pointer-events: auto;
 }
 
 #admin a:hover {

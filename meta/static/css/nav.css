@@ -1,6 +1,6 @@
 #nav-header {
     display: flex;
-    /*flex-direction: row-reverse;*/
+    justify-content: space-between;
     gap: .1rem;
     margin-bottom: 1rem;
     text-align: initial; 
@@ -10,18 +10,18 @@
 #nav-languages {
     display: flex;
     justify-content: space-between;
-    width: 100%;
 }
 
 #nav-menus {
     display: flex;
-    justify-content: center;
-    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap-reverse;
 }
 
 
 .menu { 
-    float: none;
+    display: flex;
+    align-items: center;
     font-size: .92rem; 
     list-style: none;
     margin: 0;
@@ -49,9 +49,7 @@
 }
 
 #media.menu {
-    min-width: 30rem;
-    height: 25px;
-    padding: 0.2rem .625rem 0.08rem !important; 
+    padding: .4rem .5rem .3rem .5rem;
     background:#4d7494;
     background: -moz-linear-gradient(center top , #4d7494 0%, #475D6F 100%) repeat scroll 0 0 transparent; /* firefox */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4d7494), color-stop(100%,#475D6F)); /* webkit */
@@ -65,9 +63,7 @@
 }
 
 #about.menu {
-    min-width: 7rem;
-    height: 25px;
-    padding: 0.2rem 0.625rem 0.08rem 1.25rem !important; 
+    padding: .4rem .5rem .3rem 1.25rem;
     background:#94B1CA;
     background: -moz-linear-gradient(center top , #94B1CA 0%, #6B92B2 100%) repeat scroll 0 0 transparent; /* firefox */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#6B92B2), color-stop(100%,#7296B3)); /* webkit */
@@ -155,8 +151,8 @@
 #hamburger-menu__media {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: .5rem;
-    text-align: left; 
     padding: 1.2rem .5rem .25rem .5rem; 
 }
 
@@ -164,9 +160,9 @@
     background-color: #6B92B2; 
     display: flex; 
     flex-direction: column;
-    padding: .25rem .5rem 1rem .5rem; 
-    text-align: left; 
+    align-items: flex-start;
     gap: .5rem;
+    padding: .25rem .5rem 1rem .5rem; 
 }
 
 .overlay {
@@ -178,24 +174,18 @@
     z-index: 3;
 }
 
-@media (max-width: 910px) {
-
-    #nav-languages {
-	    display:none;
+@media (max-width: 1100px) {
+    #nav-header {
+        flex-direction: column-reverse;
+        align-items: flex-end;
     }
 }
 
 /*Hamburger menu here*/
-@media (max-width: 680px) {
+@media (max-width: 700px) {
     #nav-header {
-        flex-direction: row;
-        justify-content: space-between;
-        gap: 3rem;
-        margin-top: .5rem;
-    }
-
-    #nav-languages {
-        justify-content: flex-start;
+        gap: 0.25rem;
+        margin-top: 0.5rem;
     }
 
     #media, #about {

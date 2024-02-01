@@ -1124,7 +1124,7 @@ def my_curations_media_list(request):
 
     specialist_queryset = Media.objects.filter(Q(taxa__in=curations_as_specialist_taxons))    
 
-    queryset = (curator_queryset | specialist_queryset).exclude(status='loaded').distinct()
+    queryset = (curator_queryset | specialist_queryset).exclude(status='loaded').distinct().order_by('-pk')
 
     if request.method == 'POST':
         action = request.POST['action']

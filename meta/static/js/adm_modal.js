@@ -3,45 +3,44 @@ class Modal {
     modalClose
     modalOverlay
     modalContent
-    isModalOpened = false
+    modalZIndex
     onCloseCallback
 
-    constructor({ modalContent, modalTrigger, modalClose, onCloseCallback = null}) {
+    constructor({ modalContent, modalTrigger, modalClose, onCloseCallback = null, modalZIndex = 5}) {
         this.modalTrigger = modalTrigger
         this.modalClose = modalClose
         this.modalContent = modalContent
         this.onCloseCallback = onCloseCallback
+        this.modalZIndex = modalZIndex
 
+        this.modalContent.classList.add('modal-container')
+        this.modalContent.style.zIndex = this.modalZIndex
+
+        this.modalOverlay = document.createElement('div')
+        this.modalOverlay.classList.add('overlay', 'overlay--dark')
+        this.modalOverlay.style.zIndex = this.modalZIndex - 1
+        
         this.modalContent?.addEventListener('keydown', this.handleTabKey.bind(this))
         this.modalTrigger?.addEventListener('click', this.showModal.bind(this))
         this.modalClose?.addEventListener('click', this.closeModal.bind(this))
+        this.modalOverlay.addEventListener('click', this.closeModal.bind(this))
     }
 
     showModal() {
-        this.modalContent.classList.add('opened-modal')
+        this.modalContent.classList.add('opened-modal-container')
         this.modalContent.style.transition = '.3s'
         document.documentElement.style.overflow = 'hidden'
-        this.isModalOpened = true
 
-        this.modalOverlay = document.createElement('div')
-        this.modalOverlay.classList.add('modal-overlay', 'opened-behind-modal')
-        this.modalOverlay.addEventListener('click', () => {
-            this.closeModal()
-        })
         document.body.append(this.modalOverlay)
 
         this.modalClose?.focus()
     }
 
     closeModal() {
-        this.modalContent.classList.remove('opened-modal')
+        this.modalContent.classList.remove('opened-modal-container')
         this.modalContent.style.transition = '0s'
         document.documentElement.style.removeProperty('overflow')
-        this.isModalOpened = false
 
-        this.modalOverlay.removeEventListener('click', () => {
-            this.closeModal()
-        })
         this.modalOverlay.remove()
 
         this.modalTrigger?.focus()

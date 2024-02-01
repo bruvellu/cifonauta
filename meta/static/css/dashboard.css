@@ -89,7 +89,6 @@ button:disabled {
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 3;
 }
 
 .overlay--lighter {
@@ -440,18 +439,6 @@ button:disabled {
 
 
 /* POPUP */
-.modal-overlay {
-    background-color: rgba(0, 0, 0, 0.3);
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 3;
-    display: none;
-}
-
-#modal-container,
 .modal-container {
     position: fixed;
     top: 50%;
@@ -461,6 +448,10 @@ button:disabled {
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 5;
+}
+
+.opened-modal-container {
+    scale: 1 !important;
 }
 
 .modal {
@@ -495,14 +486,6 @@ button:disabled {
 
 .modal--media-changes header {
     padding: 1rem 1rem 0 1rem;
-}
-
-.opened-behind-modal {
-    display: block !important;
-}
-
-.opened-modal {
-    scale: 1 !important;
 }
 
 .behind-modal-container {

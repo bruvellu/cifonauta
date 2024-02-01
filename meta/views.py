@@ -197,7 +197,7 @@ def upload_media_step1(request):
 
 
 @never_cache
-@author_required
+@loaded_media_required
 def upload_media_step2(request):
     medias = Media.objects.filter(user=request.user, status='loaded')
     user_person = Person.objects.get(user_cifonauta=request.user)

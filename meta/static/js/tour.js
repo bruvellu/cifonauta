@@ -13,7 +13,6 @@ function closeOptionsContainer() {
 function fetchToSearch() {
   const url = window.location.origin
   inputValue = searchOptionsInput.value.toLowerCase()
-  console.log('inputValue', inputValue)
 
   let loadingMessage
   if (!fetchLoading) {
@@ -58,7 +57,6 @@ function fetchToLoadMore() {
   const url = window.location.origin
 
   inputValue = searchOptionsInput.value.toLowerCase()
-  console.log('inputValue', inputValue)
 
   let loadingMessage
   if (!fetchLoading) {
@@ -205,9 +203,11 @@ let optionsContainer = document.querySelector('#options-container')
 let optionsUl = document.querySelector('#options-ul')
 let fetchLoading = false
 let delayFetch
-let offset = 20
+let offset = 0
 let limit = 20
 let isOptionsContainerOpened = false
+let isTheFirstClickOnInput = true
+
 
 // Get the IDs of the medias initially selected
 let selectedMediaIds = new Set()
@@ -219,6 +219,10 @@ selectedOptions.forEach(selectedOption => {
 
 
 inputContainer.addEventListener('click', () => {
+  if (isTheFirstClickOnInput) {
+    fetchToSearch()
+    isTheFirstClickOnInput = false
+  }
   isOptionsContainerOpened = true
   optionsContainer.classList.remove('hide-div')
   optionsContainer.scrollIntoView({ block: 'center'})
@@ -246,7 +250,7 @@ searchOptionsInput.addEventListener('input', () => {
 })
 
 optionsContainer.addEventListener('scroll', () => {
-  if (optionsContainer.scrollTop + optionsContainer.clientHeight >= optionsContainer.scrollHeight) {
+  if (optionsContainer.scrollHeight - optionsContainer.clientHeight <= optionsContainer.scrollTop + 1) {
     fetchToLoadMore()
   }
 })

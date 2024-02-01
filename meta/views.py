@@ -1363,22 +1363,13 @@ def tour_add(request):
 
     form = TourForm(initial={'creator': request.user.id})
 
-    curatorships = Curadoria.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
-    taxon_ids = []
-    for curatorship in curatorships:
-        taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
-    medias = Media.objects.filter(taxa__id__in=taxon_ids, status='published').distinct()
-    
     form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
-    initial_medias = [*medias][:20]
-    
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     context = {
         'form': form,
-        'initial_medias': initial_medias,
         'is_specialist': is_specialist,
         'is_curator': is_curator
     }
@@ -1414,17 +1405,9 @@ def tour_details(request, pk):
     else:
         form = TourForm(instance=tour)
 
-    curatorships = Curadoria.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
-    taxon_ids = []
-    for curatorship in curatorships:
-        taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
-    medias = Media.objects.filter(taxa__id__in=taxon_ids, status='published').distinct()
-    
     form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
     medias_related = tour.media.all()
-
-    initial_medias = [*medias][:20]
 
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
@@ -1432,7 +1415,6 @@ def tour_details(request, pk):
     context = {
         'form': form,
         'tour': tour,
-        'initial_medias': initial_medias,
         'medias_related': medias_related,
         'is_specialist': is_specialist,
         'is_curator': is_curator

@@ -1473,15 +1473,19 @@ textarea {
     color: var(--white);
 }
 
+.input-and-options-wrapper {
+    width: 100%;
+}
+
 #input-container {
     display: flex;
     align-items: center;
     gap: .4rem;
     flex-wrap: wrap;
-    border: .1px solid black;
+    border: 1px solid hsla(0, 0%, 0%, 0.32);
     border-radius: 4px;
     padding: .4rem;
-    width: min(24rem, 100%);
+    width: min(25rem, 100%);
 }
 
 #selected-options-container {
@@ -1557,9 +1561,9 @@ textarea {
 #options-container {
     display: flex;
     flex-direction: column;
-    border: 1px solid black;
+    border: 1px solid hsla(0, 0%, 0%, 0.32);
     border-radius: 3px;
-    width: min(24rem, 100%);
+    width: min(25rem, 100%);
     max-height: 15rem;
     overflow-y: auto;
 }

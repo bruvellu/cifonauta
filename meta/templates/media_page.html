@@ -47,7 +47,7 @@
 	  {% show_tree taxa %}
 	</div>
 
-	{% if user.is_authenticated %}
+	{% if user.is_staff %}
 	<div class="borders block shadow" id="admin-controls">
 	  {% include 'admin_tools.html' %}
 	</div>

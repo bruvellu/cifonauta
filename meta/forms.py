@@ -118,12 +118,15 @@ class UploadMediaForm(forms.ModelForm,  SendEmailForm):
     class Meta:
         model = Media
         fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'references', 'scale', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license', 'terms')
+    
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
             'date_created': forms.DateInput(attrs={'type': 'date'}),
-            'terms': forms.CheckboxInput(attrs={'class': 'dashboard-input'})
+            'terms': forms.CheckboxInput(attrs={'class': 'dashboard-input'}),
+            'latitude': forms.TextInput(attrs={'onchange': 'myMap()'}),
+            'longitude': forms.TextInput(attrs={'onchange': 'myMap()'})
         }
         help_texts = {
             'date_created': 'Data em que a mídia foi produzida. Caso a data seja desconhecida, preencher com "01/01/0001"',

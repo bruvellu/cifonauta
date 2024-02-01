@@ -555,6 +555,8 @@ def editing_media_list(request):
     page = queryset_paginator.get_page(page_num)
 
     form = SpecialistActionForm()
+    taxa_form = AddTaxaForm()
+
     # Options are: mantain status or send to revision
     form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[1])
 
@@ -562,6 +564,7 @@ def editing_media_list(request):
         'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
+        'taxa_form': taxa_form,
         'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
@@ -751,6 +754,7 @@ def my_media_list(request):
     queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
     
     form = MyMediasActionForm()
+    taxa_form = AddTaxaForm()
 
     is_specialist = user.curatorship_specialist.exists()
     is_curator = user.curatorship_curator.exists()
@@ -763,6 +767,7 @@ def my_media_list(request):
         'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
+        'taxa_form': taxa_form,
         'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': is_specialist,
@@ -939,10 +944,13 @@ def revision_media_list(request):
     # Options are: mantain status or publish media
     form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[2])
 
+    taxa_form = AddTaxaForm()
+
     context = {
         'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
+        'taxa_form': taxa_form,
         'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
@@ -1178,11 +1186,14 @@ def my_curations_media_list(request):
     page = queryset_paginator.get_page(page_num)
 
     form = MyMediasActionForm()
+    taxa_form = AddTaxaForm()
+
 
     context = {
         'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
+        'taxa_form': taxa_form,
         'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),

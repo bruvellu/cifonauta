@@ -4,6 +4,7 @@
 {% block extra_head %}
 <script src="{% static 'js/adm_select_all_records.js' %}" defer></script>
 <script src="{% static 'js/adm_modal.js' %}" defer></script>
+<script src="{% static 'js/adm_create_entry.js' %}" defer></script>
 <script src="{% static 'js/editing_media_list.js' %}" defer></script>
 {% endblock %}
 
@@ -102,6 +103,10 @@
 </section>
 {% else %}
     <p>Não há imagens</p>
+{% endif %}
+
+{% if object_exists and entries.object_list %}
+    {% include 'dashboard_taxa_modal.html' %}
 {% endif %}
 
 {% endblock %}

@@ -590,9 +590,9 @@ button:disabled {
     -moz-border-radius: 1rem;
     -webkit-border-radius: 1rem;
     border-radius: 1rem;
-    -webkit-box-shadow: 2px 2px 5px #aaa;
-    -moz-box-shadow: 2px 2px 5px #aaa;
-    box-shadow: 0 4px 12px 2px #00000012;
+    -webkit-box-shadow: 0 0.125rem .5rem 0 hsl(0deg 0% 0% / 7%);
+    -moz-box-shadow: 0 0.125rem .5rem 0 hsl(0deg 0% 0% / 7%);
+    box-shadow: 0 0.125rem .5rem 0 hsl(0deg 0% 0% / 7%);
     font-size: 80%;
     margin-top: 1.5rem;
     position: relative;

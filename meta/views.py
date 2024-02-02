@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
-from utils.media import Metadata, number_of_entries_per_page, validate_specialist_action_form, format_name
+from utils.media import Metadata, number_of_entries_per_page, format_name
 from operator import or_, and_
 from PIL import Image
 
@@ -40,6 +40,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import ReferenceSerializer, TaxonSerializer, LocationSerializer, CoauthorSerializer
+from utils.views import execute_bath_action
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -494,31 +495,20 @@ def editing_media_list(request):
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
 
-                    if form.cleaned_data['status_action'] != 'maintain':
-                        error = validate_specialist_action_form(request, medias)
-                        if error:
-                            messages.error(request, 'Não foi possível realizar ação em lotes')
-                            messages.warning(request, f'{error[0]}: {error[1]}')
-                            return redirect('editing_media_list')
-                        
-                        medias.update(status='submitted')
+                    has_submitted_media = medias.filter(status='submitted')
+                    if has_submitted_media:
+                        messages.error(request, 'Não é possível realizar ação em lotes de mídia já submetida para revisão')
+                        return redirect('editing_media_list')
 
-                    if form.cleaned_data['taxa_action'] != 'maintain':
-                        for media in medias:
-                            if form.cleaned_data['taxa']:
-                                media.taxa.exclude(name='Sem táxon')
-                                media.taxa.set(form.cleaned_data['taxa'])
-                            else:
-                                media.taxa.set(Taxon.objects.filter(name='Sem táxon'))
-
-                    specialist_person = Person.objects.filter(user_cifonauta=request.user.id).first()
+                    error = execute_bath_action(user, form, medias, 'editing_media_list')
+                    if error:
+                        messages.error(request, error)
+                        return redirect('editing_media_list')
                     
                     # Send email
                     if form.cleaned_data['status_action'] != 'maintain':
                         authors = set()
                         for media in medias:
-                            media.specialists.add(specialist_person)
-                            
                             authors.add(media.user)
 
                         form.send_mail(request.user, authors, medias, 'Mídia publicada no Cifonauta', 'email_media_to_revision_author.html')
@@ -733,16 +723,11 @@ def my_media_list(request):
                     if has_submitted_media:
                         messages.error(request, _('Não é possível realizar ação em lotes de mídia submetida para revisão'))
                         return redirect('my_media_list')
-                    
-                    if form.cleaned_data['taxa_action'] != 'maintain':
-                        for media in medias:
-                            if form.cleaned_data['taxa']:
-                                media.taxa.exclude(name='Sem táxon')
-                                media.taxa.set(form.cleaned_data['taxa'])
-                            else:
-                                media.taxa.set(Taxon.objects.filter(name='Sem táxon'))
 
-                    medias.update(status='draft')
+                    error = execute_bath_action(user, form, medias, 'my_media_list')
+                    if error:
+                        messages.error(request, error)
+                        return redirect('my_media_list')
                     
                     messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
                 else:
@@ -889,34 +874,19 @@ def revision_media_list(request):
 
                     is_published = medias.filter(status='published')
                     if is_published:
-                        messages.error(request, 'Não é possível realizar ação em lotes de mídias já publicadas')
+                        messages.error(request, 'Não é possível realizar ação em lotes de mídia já publicada')
                         return redirect('revision_media_list')
                     
-                    if form.cleaned_data['status_action'] != 'maintain':
-                        error = validate_specialist_action_form(request, medias)
-                        if error:
-                            messages.error(request, 'Não foi possível realizar ação em lotes')
-                            messages.warning(request, f'{error[0]}: {error[1]}')
-                            return redirect('revision_media_list')
-                        
-                        medias.update(status='published', date_published=timezone.now(), is_public=True) #TODO: Remove is_public
-                        
-                    if form.cleaned_data['taxa_action'] != 'maintain':
-                        for media in medias:
-                            if form.cleaned_data['taxa']:
-                                media.taxa.exclude(name='Sem táxon')
-                                media.taxa.set(form.cleaned_data['taxa'])
-                            else:
-                                media.taxa.set(Taxon.objects.filter(name='Sem táxon'))
-                    
-                    curator_person = Person.objects.filter(user_cifonauta=request.user.id).first()
+                    error = execute_bath_action(user, form, medias, 'revision_media_list')
+                    if error:
+                        messages.error(request, error)
+                        return redirect('revision_media_list')
 
                     # Send email
                     if form.cleaned_data['status_action'] != 'maintain':
                         authors = set()
                         specialists = set()
                         for media in medias:
-                            media.curators.add(curator_person)
                             authors.add(media.user)
 
                             for specialist in media.specialists.all():
@@ -1163,16 +1133,10 @@ def my_curations_media_list(request):
                             messages.error(request, 'Não é possível realizar ação em lotes de mídias que você não é curador')
                             return redirect('my_curations_media_list')
 
-                    curator_person = Person.objects.filter(user_cifonauta=request.user.id).first()
-                    if form.cleaned_data['taxa_action'] != 'maintain':
-                        for media in medias:
-                            if form.cleaned_data['taxa']:
-                                media.taxa.exclude(name='Sem táxon')
-                                media.taxa.set(form.cleaned_data['taxa'])
-                            else:
-                                media.taxa.set(Taxon.objects.filter(name='Sem táxon'))
-
-                            media.curators.add(curator_person)
+                    error = execute_bath_action(user, form, medias, 'my_curations_media_list')
+                    if error:
+                        messages.error(request, error)
+                        return redirect('my_curations_media_list')
                     
                     messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
                 else:

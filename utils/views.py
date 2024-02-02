@@ -18,8 +18,6 @@ def execute_bath_action(user, form, medias, view_name):
                         elif view_name == 'my_media_list':
                             media.status = 'draft'
                         elif view_name == 'editing_media_list':
-                            if not media.title_pt_br or not media.title_en:
-                                raise ValueError('Não é possível submeter mídia com campos obrigatórios faltando')
                             media.status = 'submitted'
 
                 if 'taxa_action' in form.cleaned_data:

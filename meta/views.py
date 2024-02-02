@@ -495,10 +495,14 @@ def editing_media_list(request):
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
 
-                    has_submitted_media = medias.filter(status='submitted')
-                    if has_submitted_media:
-                        messages.error(request, 'Não é possível realizar ação em lotes de mídia já submetida para revisão')
-                        return redirect('editing_media_list')
+                    for media in medias:
+                        if media.status == 'submitted':
+                            messages.error(request, 'Não é possível realizar ação em lotes de mídia já submetida para revisão')
+                            return redirect('editing_media_list')
+
+                        if not media.title_pt_br or not media.title_en:
+                            messages.error(request, 'Não é possível submeter mídia com campos obrigatórios faltando')
+                            return redirect('editing_media_list')
 
                     error = execute_bath_action(user, form, medias, 'editing_media_list')
                     if error:

@@ -1124,7 +1124,7 @@ def my_curations_media_list(request):
                             messages.error(request, 'Não é possível realizar ação em lotes de mídias não publicadas')
                             return redirect('my_curations_media_list')
                         
-                        if media.modified_media:
+                        if media.modified_media.all().exists():
                             messages.error(request, "Não é possível realizar ação em lotes de mídias com alterações pendentes.")
                             return redirect('my_curations_media_list')
 

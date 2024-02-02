@@ -17,6 +17,7 @@ from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
 from utils.media import Metadata, number_of_entries_per_page, validate_specialist_action_form, format_name
+from utils.worms import Aphia
 from operator import or_, and_
 from PIL import Image
 
@@ -61,6 +62,8 @@ def create_taxa(request):
 
     serializer = TaxonSerializer(data=request_data)
     if serializer.is_valid():
+        taxon_name = serializer.validated_data['name']
+        serializer.validated_data['aphia'] = Aphia().get_aphia_id(taxon_name)
         serializer.save()
         return Response({ "message": 'Táxon adicionado com sucesso', "data": serializer.data })
 

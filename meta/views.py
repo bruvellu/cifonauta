@@ -80,7 +80,7 @@ def create_location(request):
     return Response('Local com esse nome já existe.', status=status.HTTP_409_CONFLICT)
 
 @api_view(['POST'])
-def create_coauthor(request):
+def create_authors(request):
     request_data = request.data.copy()
     request_data['name'] = format_name(request_data['name'])
 
@@ -302,7 +302,7 @@ def upload_media_step2(request):
                 'longitude': longitude,
             })
 
-    registration_form = CoauthorRegistrationForm()
+    authors_form = AddAuthorsForm()
     location_form = AddLocationForm()
     taxa_form = AddTaxaForm()
     
@@ -311,7 +311,7 @@ def upload_media_step2(request):
 
     context = {
         'form': form,
-        'registration_form': registration_form,
+        'authors_form': authors_form,
         'location_form': location_form,
         'taxa_form': taxa_form,
         'medias': medias,
@@ -673,7 +673,7 @@ def my_media_details(request, pk):
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
-    registration_form = CoauthorRegistrationForm()
+    authors_form = AddAuthorsForm()
     location_form = AddLocationForm()
     taxa_form = AddTaxaForm()
     modified_media_form = ModifiedMediaForm(instance=media, author_form=True)
@@ -683,7 +683,7 @@ def my_media_details(request, pk):
         'modified_media': modified_media,
         'modified_media_form': modified_media_form,
         'form': form,
-        'registration_form': registration_form,
+        'authors_form': authors_form,
         'location_form': location_form,
         'taxa_form': taxa_form,
         'is_modification_owner': is_modification_owner,
@@ -747,7 +747,7 @@ def my_media_list(request):
     
     form = BashActionsForm(view_name='my_media_list', user_person=user_person)
     taxa_form = AddTaxaForm()
-    registration_form = CoauthorRegistrationForm()
+    authors_form = AddAuthorsForm()
     location_form = AddLocationForm()
 
     is_specialist = user.curatorship_specialist.exists()
@@ -763,7 +763,7 @@ def my_media_list(request):
         'filter_form': filter_form,
         'taxa_form': taxa_form,
         'location_form': location_form,
-        'registration_form': registration_form,
+        'authors_form': authors_form,
         'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': is_specialist,

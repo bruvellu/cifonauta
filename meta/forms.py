@@ -252,7 +252,7 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
 
         return taxa
 
-class CoauthorRegistrationForm(forms.ModelForm):
+class AddAuthorsForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = ('name',)
@@ -262,33 +262,15 @@ class CoauthorRegistrationForm(forms.ModelForm):
 
         self.fields['name'].required = True
 
-    def clean_name(self):
-        name = self.cleaned_data['name']
-        name = format_name(name)
-        
-        return name
-
 class AddLocationForm(forms.ModelForm):
     class Meta:
         model = Location
         fields = ('name',)
-    
-    def clean_name(self):
-        name = self.cleaned_data['name']
-        name = format_name(name)
-        
-        return name
 
 class AddTaxaForm(forms.ModelForm):
     class Meta:
         model = Taxon
         fields = ('name',)
-
-    def clean_name(self):
-        name = self.cleaned_data['name']
-        name = format_name(name)
-        
-        return name
 
 class ModifiedMediaForm(forms.ModelForm, SendEmailForm):
     class Meta:

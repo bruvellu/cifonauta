@@ -9,13 +9,13 @@
     <main class="modal-body">
         <form method="post" data-form="taxa" class="modal-form">
             {% csrf_token %}
-            {% for field2 in taxa_form %}
+            {% for field in taxa_form %}
             <div class="field field--modal">
-                {{ field2.label_tag }}
+                {{ field.label_tag }}
                 <div class="field__input-container">
-                    {{ field2 }}
-                    {% if field2.help_text %}
-                    <span class="field__help-text">{{ field2.help_text }}</span>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <span class="field__help-text">{{ field.help_text }}</span>
                     {% endif %}
                 </div>
             </div>

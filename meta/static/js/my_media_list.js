@@ -19,6 +19,8 @@
 
 
     new CreateEntry({ fieldName: 'taxa' })
+    new CreateEntry({ fieldName: 'location' })
+    new CreateEntry({ fieldName: 'authors' })
 
     new Modal({
         modalContent: document.querySelector('[data-modal="group-action"]'),

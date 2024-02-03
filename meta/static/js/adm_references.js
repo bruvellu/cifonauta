@@ -84,7 +84,8 @@
     const referenceModal = new Modal({
         modalContent: document.querySelector('[data-modal="references"]'),
         modalTrigger: document.querySelector('[data-open-modal="references"]'),
-        modalClose: document.querySelector('[data-close-modal="references"]')
+        modalClose: document.querySelector('[data-close-modal="references"]'),
+        modalZIndex: 8
     })
 
     doiForm.addEventListener('submit', (e) => {

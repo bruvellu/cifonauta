@@ -1,7 +1,8 @@
 const latitudeModal = new Modal({
     modalContent: document.querySelector('[data-modal="latitude"]'),
     modalTrigger: document.querySelector('[data-open-modal="latitude"]'),
-    modalClose: document.querySelector('[data-close-modal="latitude"]')
+    modalClose: document.querySelector('[data-close-modal="latitude"]'),
+    modalZIndex: 8
 })
 function myMap() {
 

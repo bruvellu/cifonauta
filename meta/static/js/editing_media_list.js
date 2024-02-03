@@ -20,6 +20,7 @@
 
 
     new CreateEntry({ fieldName: 'taxa' })
+    new CreateEntry({ fieldName: 'location' })
 
     new Modal({
         modalContent: document.querySelector('[data-modal="group-action"]'),

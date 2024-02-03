@@ -356,6 +356,7 @@ class BashActionsForm(forms.ModelForm, SendEmailForm):
         ('publish', _('Publicar')),
     ]
     ACTION_CHOICES = [('maintain', _('Manter')), ('override', _('Sobrescrever'))]
+    FIELDS_WITH_BUTTON = ['authors', 'taxa', 'references', 'location', 'latitude']
 
     status_action = forms.ChoiceField(label=_('Status'), choices=STATUS_CHOICES, initial='maintain')
     title_pt_br_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "title_pt_br_action"}))
@@ -393,9 +394,8 @@ class BashActionsForm(forms.ModelForm, SendEmailForm):
         self.view_name = kwargs.pop('view_name', None)
         super().__init__(*args, **kwargs)
 
-        # If there is a required field and I delete it from cleaned_data in the clean method, it doesn't work, this is why I make all of the fields not required
         for field_name in self.fields:
-            self.fields[field_name].required = False
+            self.fields[field_name].required = False # If there is a required field and I delete it from cleaned_data in the clean method, it doesn't work, this is why I make all of the fields not required
 
             if field_name[-7:] == '_action': 
                 if field_name[:-7] in self.fields:

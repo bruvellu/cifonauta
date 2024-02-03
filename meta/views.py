@@ -549,12 +549,14 @@ def editing_media_list(request):
 
     form = BashActionsForm(view_name='editing_media_list')
     taxa_form = AddTaxaForm()
+    location_form = AddLocationForm()
 
     context = {
         'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
         'taxa_form': taxa_form,
+        'location_form': location_form,
         'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
@@ -745,6 +747,8 @@ def my_media_list(request):
     
     form = BashActionsForm(view_name='my_media_list', user_person=user_person)
     taxa_form = AddTaxaForm()
+    registration_form = CoauthorRegistrationForm()
+    location_form = AddLocationForm()
 
     is_specialist = user.curatorship_specialist.exists()
     is_curator = user.curatorship_curator.exists()
@@ -758,6 +762,8 @@ def my_media_list(request):
         'form': form,
         'filter_form': filter_form,
         'taxa_form': taxa_form,
+        'location_form': location_form,
+        'registration_form': registration_form,
         'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': is_specialist,
@@ -916,12 +922,14 @@ def revision_media_list(request):
 
     form = BashActionsForm(view_name='revision_media_list')
     taxa_form = AddTaxaForm()
+    location_form = AddLocationForm()
 
     context = {
         'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
         'taxa_form': taxa_form,
+        'location_form': location_form,
         'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
@@ -1151,13 +1159,14 @@ def my_curations_media_list(request):
 
     form = BashActionsForm(view_name='my_curations_media_list')
     taxa_form = AddTaxaForm()
-
+    location_form = AddLocationForm()
 
     context = {
         'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
         'taxa_form': taxa_form,
+        'location_form': location_form,
         'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),

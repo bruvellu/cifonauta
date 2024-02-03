@@ -11,4 +11,6 @@
     new CreateEntry({ fieldName: 'taxa' })
     new CreateEntry({ fieldName: 'location' })
     new CreateEntry({ fieldName: 'authors' })
+
+    sync_location_fields(false)
 })()

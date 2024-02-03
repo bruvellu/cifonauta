@@ -14,7 +14,7 @@
         {% get_action_field form field.name as fieldd %}
 
         {% if fieldd.is_action %}
-        <div class="action-field">
+        <div {% if fieldd.field.name == 'country' %}data-country-field-container{% endif %} class="action-field">
             <div class="action-field__label-wrapper">
                 {{ fieldd.field_action.label_tag }}
                 {% if fieldd.field_action.field.required %}

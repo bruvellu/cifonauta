@@ -28,6 +28,8 @@
     new CreateEntry({ fieldName: 'location' })
     new CreateEntry({ fieldName: 'authors' })
 
+    sync_location_fields(false)
+
     let stateContainer = document.querySelector('.country-container').nextElementSibling
     let cityContainer = document.querySelector('.country-container').nextElementSibling.nextElementSibling
     stateContainer.classList.add('hide-div')

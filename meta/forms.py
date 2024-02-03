@@ -368,6 +368,9 @@ class BashActionsForm(forms.ModelForm, SendEmailForm):
     tags_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "tags_action"}))
     scale_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "scale_action"}))
     references_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "references_action"}))
+    country_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "country_action"}))
+    state_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "state_action"}))
+    city_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "city_action"}))
     location_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "location_action"}))
     latitude_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "latitude_action"}))
     longitude_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "longitude_action"}))
@@ -376,7 +379,7 @@ class BashActionsForm(forms.ModelForm, SendEmailForm):
     # Missing country, state and city fields
     class Meta:
         model = Media
-        fields = ('status_action', 'title_pt_br_action', 'title_en_action', 'caption_pt_br_action', 'caption_en_action', 'taxa_action', 'authors_action', 'date_created_action', 'tags_action', 'scale_action', 'references_action', 'location_action', 'latitude_action', 'longitude_action', 'license_action', 'title_pt_br', 'title_en',  'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'tags', 'scale', 'references', 'location', 'latitude', 'longitude', 'license')
+        fields = ('status_action', 'title_pt_br_action', 'title_en_action', 'caption_pt_br_action', 'caption_en_action', 'taxa_action', 'authors_action', 'date_created_action', 'tags_action', 'scale_action', 'references_action', 'country_action', 'state_action', 'city_action', 'location_action', 'latitude_action', 'longitude_action', 'license_action', 'title_pt_br', 'title_en',  'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'tags', 'scale', 'references', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
@@ -431,7 +434,6 @@ class BashActionsForm(forms.ModelForm, SendEmailForm):
             else:
                 self.fields.pop('status_action', None)
                 self.fields.pop('status', None)
-                
                 
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
         if 'tags' in self.fields:

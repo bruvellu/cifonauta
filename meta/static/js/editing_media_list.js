@@ -40,6 +40,8 @@
         })
     })
 
+    sync_location_fields(true)
+
     const moreFieldsButton = document.querySelector('[data-more-fields-button]')
     moreFieldsButton.addEventListener('click', () => {
         const moreFieldsDiv = moreFieldsButton.nextElementSibling

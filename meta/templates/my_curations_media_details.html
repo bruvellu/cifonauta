@@ -129,29 +129,7 @@
         </div>
     </div>
     {% for field in form %}
-    {% if field == form.country %}
-    <div class="field country-container">
-        <div class="field__label">
-            {{ field.label_tag }}
-            {% if field.field.required %}
-            <span class='required'>*</span>
-            {% endif %}
-        </div>
-        <div class="field__input-container">
-            {% if field.errors %}
-            <ul class="field__errors">
-                {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            {{ field }}
-            {% if field.help_text %}
-            <span class="field__help-text">{{ field.help_text }}</span>
-            {% endif %}
-        </div>
-    </div>
-    {% elif field == form.location or field == form.taxa or field == form.references or field == form.latitude %}
+    {% if field == form.location or field == form.taxa or field == form.references or field == form.latitude %}
     <div class="field">
         <div class="field__label">
             {{ field.label_tag }}
@@ -194,7 +172,7 @@
         </div>
     </div>
     {% else %}
-    <div class="field">
+    <div {% if field.name == 'country' %}data-country-field-container{% endif %} class="field">
         <div class="field__label">
             {{ field.label_tag }}
             {% if field.field.required %}

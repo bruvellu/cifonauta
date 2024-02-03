@@ -347,32 +347,7 @@ class TourForm(forms.ModelForm):
         super(TourForm, self).__init__(*args, **kwargs)
         
         self.fields['media'].label_from_instance = lambda obj: obj.title
-
-class SpecialistActionForm(forms.ModelForm, SendEmailForm):
-    STATUS_CHOICES = [
-        ('maintain', _('Manter status')),
-        ('submitted', _('Enviar para revisão')),
-        ('publish', _('Publicar')),
-    ]
-
-    TAXA_CHOICES = [
-        ('maintain', _('Manter táxons')),
-        ('overwrite', _('Sobrescrever táxons')),
-    ]
-
-    status_action = forms.ChoiceField(label=_('Status'), choices=STATUS_CHOICES, initial='maintain')
-    # Added data-field-action so javascript can find it
-    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "taxa_action"}))
-
-    class Meta:
-        model = Media
-        fields = ('status_action', 'taxa_action', 'taxa',)
-        widgets = {
-            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
-        }
-
-
-        
+     
         
 class BashActionsForm(forms.ModelForm, SendEmailForm):
     STATUS_CHOICES = [
@@ -530,24 +505,6 @@ class BashActionsForm(forms.ModelForm, SendEmailForm):
 
         return media_instance
             
-
-        
-
-
-class MyMediasActionForm(forms.ModelForm):
-    TAXA_CHOICES = (
-        ('maintain', _('Manter táxons')),
-        ('overwrite', _('Sobrescrever táxons')),
-    )
-
-    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "taxa_action"}))
-
-    class Meta:
-        model = Media
-        fields = ('taxa_action', 'taxa',)
-        widgets = {
-            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
-        }
 
 class DashboardFilterForm(forms.Form):
     Curadoria = apps.get_model('meta', 'Curadoria')

@@ -9,41 +9,83 @@ from utils.worms import Aphia
 Library for updating taxonomic information in the Cifonauta database using the
 worms.py library.
 
+Usage:
 
-Example Aphia record:
-
-(AphiaRecord){
-  AphiaID = 422499
-  url = "https://www.marinespecies.org/aphia.php?p=taxdetails&id=422499"
-  scientificname = "Clypeaster subdepressus"
-  authority = "(Gray, 1825)"
-  taxonRankID = 220
-  rank = "Species"
-  status = "accepted"
-  unacceptreason = None
-  valid_AphiaID = 422499
-  valid_name = "Clypeaster subdepressus"
-  valid_authority = "(Gray, 1825)"
-  parentNameUsageID = 205242
-  kingdom = "Animalia"
-  phylum = "Echinodermata"
-  cls = "Echinoidea"
-  order = "Clypeasteroida"
-  family = "Clypeasteridae"
-  genus = "Clypeaster"
-  citation = "Kroh, A.; Mooi, R. (2023). World Echinoidea Database. Clypeaster subdepressus (Gray, 1825). Accessed through: World Register of Marine Species at: https://www.marinespecies.org/aphia.php?p=taxdetails&id=422499 on 2023-03-02"
-  lsid = "urn:lsid:marinespecies.org:taxname:422499"
-  isMarine = 1
-  isBrackish = 0
-  isFreshwater = 0
-  isTerrestrial = 0
-  isExtinct = 0
-  match_type = "like"
-  modified = "2013-08-26T18:24:18.240Z"
-}
+    >>> from utils.taxa import TaxonUpdater
+    >>> taxon_updater = TaxonUpdater('Acanthostracion polygonius')
+    >>> taxon_updater.name
+    'Acanthostracion polygonius'
+    >>> taxon_updater.taxon
+    <Taxon: Acanthostracion polygonius [id=1335]>
+    >>> taxon_updater.record
+    (AphiaRecord){
+       AphiaID = 158919
+       url = "https://www.marinespecies.org/aphia.php?p=taxdetails&id=158919"
+       scientificname = "Acanthostracion polygonius"
+       authority = "Poey, 1876"
+       taxonRankID = 220
+       rank = "Species"
+       status = "unaccepted"
+       unacceptreason = None
+       valid_AphiaID = 1577312
+       valid_name = "Acanthostracion polygonium"
+       valid_authority = "Poey, 1876"
+       parentNameUsageID = 126237
+       kingdom = "Animalia"
+       phylum = "Chordata"
+       cls = "Teleostei"
+       order = "Tetraodontiformes"
+       family = "Ostraciidae"
+       genus = "Acanthostracion"
+       citation = "Froese, R. and D. Pauly. Editors. (2024). FishBase. Acanthostracion polygonius Poey, 1876. Accessed through: World Register of Marine Species at: https://www.marinespecies.org/aphia.php?p=taxdetails&id=158919 on 2024-02-03"
+       lsid = "urn:lsid:marinespecies.org:taxname:158919"
+       isMarine = 1
+       isBrackish = 0
+       isFreshwater = 0
+       isTerrestrial = 0
+       isExtinct = None
+       match_type = "like"
+       modified = "2023-01-11T08:59:53.383Z"
+     }
+    >>> taxon_updater.lineage
+    [<Taxon: Animalia [id=2494]>, <Taxon: Chordata [id=2581]>, <Taxon: Teleostei [id=1200]>, <Taxon: Tetraodontiformes [id=2593]>, <Taxon: Ostraciidae [id=3230]>, <Taxon: Acanthostracion [id=3229]>, <Taxon: Acanthostracion polygonius [id=1335]>]
+    >>> taxon_updater.valid_taxon
+    <Taxon: Acanthostracion polygonium [id=3373]>
+    >>> taxon_updater.valid_record
+    (AphiaRecord){
+       AphiaID = 1577312
+       url = "https://www.marinespecies.org/aphia.php?p=taxdetails&id=1577312"
+       scientificname = "Acanthostracion polygonium"
+       authority = "Poey, 1876"
+       taxonRankID = 220
+       rank = "Species"
+       status = "accepted"
+       unacceptreason = None
+       valid_AphiaID = 1577312
+       valid_name = "Acanthostracion polygonium"
+       valid_authority = "Poey, 1876"
+       parentNameUsageID = 126237
+       kingdom = "Animalia"
+       phylum = "Chordata"
+       cls = "Teleostei"
+       order = "Tetraodontiformes"
+       family = "Ostraciidae"
+       genus = "Acanthostracion"
+       citation = "WoRMS (2024). Acanthostracion polygonium Poey, 1876. Accessed at: https://www.marinespecies.org/aphia.php?p=taxdetails&id=1577312 on 2024-02-03"
+       lsid = "urn:lsid:marinespecies.org:taxname:1577312"
+       isMarine = 1
+       isBrackish = None
+       isFreshwater = None
+       isTerrestrial = 0
+       isExtinct = None
+       match_type = "exact"
+       modified = "2022-04-12T05:48:37.857Z"
+     }
+    >>> taxon_updater.valid_lineage
+    [<Taxon: Animalia [id=2494]>, <Taxon: Chordata [id=2581]>, <Taxon: Teleostei [id=1200]>, <Taxon: Tetraodontiformes [id=2593]>, <Taxon: Ostraciidae [id=3230]>, <Taxon: Acanthostracion [id=3229]>, <Taxon: Acanthostracion polygonium [id=3373]>]
 '''
 
-class TaxonUpdate:
+class TaxonUpdater:
     '''Update taxonomic records for a taxon.'''
 
     def __init__(self, name):
@@ -76,7 +118,7 @@ class TaxonUpdate:
         self.lineage = self.save_taxon_lineage(self.taxon, self.record)
 
         # Get valid taxon if needed
-        self.get_valid_taxon(self.taxon, self.record)
+        self.valid_taxon, self.valid_record, self.valid_lineage = self.get_valid_taxon(self.taxon, self.record)
 
     def sanitize_name(self, name):
         '''Trim spaces and standardize case for input names.'''
@@ -248,7 +290,7 @@ class TaxonUpdate:
             valid_taxon = self.get_taxon(valid_record['scientificname'])
             valid_taxon = self.update_taxon_metadata(valid_taxon, valid_record)
             # Save lineage for valid taxon
-            valid_taxon_lineage = self.save_taxon_lineage(valid_taxon, valid_record)
+            valid_lineage = self.save_taxon_lineage(valid_taxon, valid_record)
             # Add valid_taxon reference to invalid taxon
             taxon.valid_taxon = valid_taxon
             taxon.save()
@@ -256,4 +298,5 @@ class TaxonUpdate:
             valid_taxon.media.add(*taxon.media.all())
             valid_taxon.save()
             print(f'Saved valid taxon: {valid_taxon} (replaces {taxon})')
+            return valid_taxon, valid_record, valid_lineage
 

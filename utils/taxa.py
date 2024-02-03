@@ -6,6 +6,10 @@ from meta.models import Taxon
 from utils.worms import Aphia
 
 '''
+Library for updating taxonomic information in the Cifonauta database using the
+worms.py library.
+
+
 Example Aphia record:
 
 (AphiaRecord){
@@ -39,114 +43,53 @@ Example Aphia record:
 }
 '''
 
+class TaxonUpdate:
+    '''Update taxonomic records for a taxon.'''
 
-class Command(BaseCommand):
-    args = ''
-    help = 'Update taxonomic records in batch.'
+    def __init__(self, name):
 
-    def add_arguments(self, parser):
+        # Clean input name
+        self.name = self.sanitize_name(name)
 
-        parser.add_argument('-n', '--number', type=int, default=10,
-                            help='Set number of taxa to update (default=10).')
-
-        parser.add_argument('-d', '--days', type=int, default=None,
-                help='Only update taxa not updated for this number of days.')
-
-        parser.add_argument('-r', '--rank', default='',
-                help='Limit the updates to taxa of a specific rank (English).')
-
-        parser.add_argument('--only-aphia', action='store_true', dest='only_aphia',
-                help='Only search for taxa with AphiaID.')
-
-        parser.add_argument('--only-orphans', action='store_true', dest='only_orphans',
-                help='Only update taxa without parents.')
-
-        parser.add_argument('--only-new', action='store_true', dest='only_new',
-                help='Only update new taxa (without timestamp).')
-
-        parser.add_argument('--force', action='store_true', dest='force',
-                help='Force taxon search and update.')
-
-    def handle(self, *args, **options):
-
-        # TODO: Also fetch non-marine species
-
-        # Set language to Portuguese by default
-        translation.activate('pt-br')
-
-        # Parse options
-        n = options['number']
-        days = options['days']
-        rank = options['rank']
-        only_aphia = options['only_aphia']
-        only_orphans = options['only_orphans']
-        only_new = options['only_new']
-        force = options['force']
-
-        # Get all taxa
-        taxa = Taxon.objects.all()
-
-        # Ignore recently updated taxa
-        if days:
-            datelimit = timezone.now() - timezone.timedelta(days=days)
-            taxa = taxa.filter(timestamp__lt=datelimit)
-
-        # Only update taxa of a specific rank
-        if rank:
-            taxa = taxa.filter(rank_en=rank)
-
-        # Filter only taxa with AphiaID (update existing)
-        if only_aphia:
-            taxa = taxa.filter(aphia__isnull=False)
-
-        # Filter only taxa without parents
-        if only_orphans:
-            taxa = taxa.filter(parent__isnull=True)
-
-        # Filter only taxa without timestamp
-        if only_new:
-            taxa = taxa.filter(timestamp__isnull=True)
-
-        # Filter only taxa without AphiaID, unless forced
-        if not force:
-            taxa = taxa.filter(aphia__isnull=True)
-
-        # Limit the total number of taxa
-        taxa = taxa[:n]
+        # Get or create Taxon instance
+        self.taxon = self.get_taxon(self.name)
 
         # Connect to WoRMS webservice
-        if taxa:
-            self.aphia = Aphia()
-        else:
-            print('No taxa to search.''')
+        self.aphia = Aphia()
 
-        # Loop over taxon queryset
-        for taxon in taxa:
+        # Search taxon name in WoRMS
+        self.record = self.search_worms(self.taxon.name)
 
-            print(taxon.name)
+        # Check WoRMS record before continuing
+        self.check = self.check_record(self.taxon.name, self.record)
 
-            # Search taxon name in WoRMS
-            record = self.search_worms(taxon.name)
+        # Stop update in case of missing record or mismatch
+        if not self.check:
+            self.taxon.save()
+            print(f'Saved without WoRMS metadata: {self.taxon}')
+            return None
 
-            # Skip taxon without record (but update timestamp)
-            if not record:
-                taxon.save()
-                continue
+        # Update database entry with new record data 
+        self.taxon = self.update_taxon_metadata(self.taxon, self.record)
 
-            # Skip match without proper name (but update timestamp)
-            if taxon.name != record['scientificname']:
-                print('{} != {}'.format(taxon.name, record['scientificname']))
-                taxon.save()
-                continue
+        # Get or create parent taxa
+        self.lineage = self.save_taxon_lineage(self.taxon, self.record)
 
-            # Update database entry with new record data 
-            taxon = self.update_taxon(taxon, record)
+        # Get valid taxon if needed
+        self.get_valid_taxon(self.taxon, self.record)
 
-            # Add or get, and link parent taxa
-            self.save_ancestors(taxon, record)
+    def sanitize_name(self, name):
+        '''Trim spaces and standardize case for input names.'''
+        sanitized = name.strip().lower().capitalize()
+        if sanitized != name:
+            print(f'Sanitized: "{name}" to "{sanitized}"')
+        return sanitized
 
-            # Get valid taxon if needed
-            self.get_valid_taxon(taxon, record)
+    def get_taxon(self, name):
+        '''Get or create Taxon instance passing default name.'''
+        taxon, is_new = Taxon.objects.get_or_create(name__iexact=name, defaults={'name': name})
+        print(f'Taxon: {taxon} (new={is_new})')
+        return taxon
 
     def search_worms(self, taxon_name):
         '''Search WoRMS for taxon name.'''
@@ -159,126 +102,158 @@ class Command(BaseCommand):
         else:
             return None
 
-    def update_taxon(self, taxon, record):
+    def check_record(self, taxon_name, record):
+        '''Check WoRMS record against Taxon name.'''
+
+        # Skip taxon without WoRMS record (but update timestamp)
+        if not record:
+            print(f'Record not found: No WoRMS record for "{taxon_name}"')
+            return False
+
+        # Skip taxon without exact name match (but update timestamp)
+        if record['scientificname'] != taxon_name:
+            print(f'Record name mismatch: "{record["scientificname"]}" (WoRMS) not identical to "{taxon_name}" (Taxon name)')
+            return False
+
+        # If not caught above
+        return True
+
+    def update_taxon_metadata(self, taxon, record):
         '''Update taxon entry in the database.'''
         # Convert status string to boolean
         if record['status'] == 'accepted':
             is_valid = True
         else:
             is_valid = False
-        # Set new data for individual fields
+        # Set new medadata for individual fields
         taxon.name = record['scientificname']
         taxon.authority = record['authority']
         taxon.status = record['status']
         taxon.is_valid = is_valid
         taxon.slug = slugify(record['scientificname'])
         taxon.rank_en = record['rank']
-        taxon.rank_pt_br = EN2PT[record['rank']]
+        taxon.rank_pt_br = self.translate_rank(record['rank'])
         taxon.aphia = record['AphiaID']
         taxon.save()
-        self.aphia.print_record(record, pre='Saved: ')
+        print(f'Saved with WoRMS metadata: {taxon}')
         return taxon
 
-    def save_ancestors(self, taxon, record):
-        '''Get and link all parents of a taxon.'''
+    def translate_rank(self, rank_en):
+        '''Translate rank from English to Portuguese.'''
+
+        # Dictionary of taxonomic ranks for translations
+        en2pt_ranks = {'Subform': 'Subforma',
+                       'Superorder': 'Superordem',
+                       'Variety': 'Variedade',
+                       'Infraorder': 'Infraordem',
+                       'Section': 'Seção',
+                       'Subclass': 'Subclasse',
+                       'Subsection': 'Subseção',
+                       'Kingdom': 'Reino',
+                       'Infrakingdom': 'Infrareino',
+                       'Division': 'Divisão',
+                       'Subtribe': 'Subtribo',
+                       'Aberration': 'Aberração',
+                       'InfraOrder': 'Infraordem',
+                       'Subkingdom': 'Subreino',
+                       'Infraclass': 'Infraclasse',
+                       'Subfamily': 'Subfamília',
+                       'Class': 'Classe',
+                       'Gigaclass': 'Gigaclasse',
+                       'Superfamily': 'Superfamília',
+                       'Subdivision': 'Subdivisão',
+                       'Morph': 'Morfotipo',
+                       'Race': 'Raça',
+                       'Unspecified': 'Não especificado',
+                       'Suborder': 'Subordem',
+                       'Genus': 'Gênero',
+                       'Order': 'Ordem',
+                       'Subvariety': 'Subvariedade',
+                       'Tribe': 'Tribo',
+                       'Subgenus': 'Subgênero',
+                       'Form': 'Forma',
+                       'Family': 'Família',
+                       'Subphylum': 'Subfilo',
+                       'Stirp': 'Estirpe',
+                       'Phylum': 'Filo',
+                       'Superclass': 'Superclasse',
+                       'Subspecies': 'Subespécie',
+                       'Species': 'Espécie',
+                       'Parvphylum': 'Parvfilo',
+                       'Subterclass': 'Subterclasse',
+                       'Infraphylum': 'Infrafilo',
+                       'Phylum (Division)': 'Filo (Divisão)',
+                       'Subphylum (Subdivision)': 'Subfilo (Subdivisão)',
+                       'Parvorder': 'Parvordem',
+                       'Megaclass': 'Megaclasse',}
+
+        rank_pt = en2pt_ranks[rank_en]
+        return rank_pt
+
+    def get_parent_taxon(self, parent_name):
+        '''Get parent taxon using its name.'''
+        taxon = self.get_taxon(parent_name)
+        record = self.search_worms(taxon.name)
+        check = self.check_record(parent_name, record)
+        if check:
+            taxon = self.update_taxon_metadata(taxon, record)
+        else:
+            taxon.save()
+        return taxon
+
+    def save_taxon_lineage(self, taxon, record):
+        '''Get or create parent taxa and set tree relationship.'''
+        # Initial list for lineage tree
         lineage = [taxon]
-        ancestor_names = [
-                record['genus'],
-                record['family'],
-                record['order'],
-                record['cls'],
-                record['phylum'],
-                record['kingdom'],
-                ]
-        for name in ancestor_names:
-            if name:
-                name = name.replace('[unassigned] ', '')
-                ancestor = self.get_ancestor(name)
-                lineage.append(ancestor)
+        # Only get standard ranks from WoRMS
+        parent_names = [record['genus'],
+                        record['family'],
+                        record['order'],
+                        record['cls'],
+                        record['phylum'],
+                        record['kingdom'],]
+        # Loop over parent names and get or create taxon instances
+        for parent_name in parent_names:
+            if parent_name:
+                parent_name = parent_name.replace('[unassigned] ', '')
+                parent_taxon = self.get_parent_taxon(parent_name)
+                lineage.append(parent_taxon)
+
+        # Reverse list to start with higher ranks
         lineage.reverse()
+
+        # Establish parent > child relationships
+        print(f'Tree relationships:')
         for count, parent in enumerate(lineage):
+            print(f'[{parent.timestamp}] {parent} ({parent.rank_en})')
             # Last node has no parent, break the loop
-            if count == len(lineage)-1:
+            if count == len(lineage) - 1:
                 break
-            child = lineage[count+1]
+            child = lineage[count + 1]
             # When not species, skip setting itself as parent
             if parent.name == child.name:
                 continue
-            #print(f'{parent}::{child}')
-            print('{}::{}'.format(parent, child))
             child.parent = parent
             child.save()
 
-    def get_ancestor(self, name):
-        '''Get one parent of a taxon.'''
-        taxon, new = Taxon.objects.get_or_create(name=name)
-        if new or not taxon.aphia:
-            record = self.search_worms(name)
-            if record:
-                taxon = self.update_taxon(taxon, record)
-        return taxon
+        return lineage
 
     def get_valid_taxon(self, taxon, record):
-        '''Get valid taxon and ancestors, if needed.'''
-        # Get valid taxon
+        '''Get valid taxon name and ancestors, if needed.'''
         if not taxon.is_valid and record['valid_AphiaID']:
+            print(f'Invalid taxon: {taxon}')
+            print(f'Searching for the valid equivalent...')
             # Get valid record and taxon and save instance
             valid_record = self.aphia.get_aphia_record_by_id(record['valid_AphiaID'])
-            valid_taxon, new = Taxon.objects.get_or_create(name=valid_record['scientificname'])
-            valid_taxon = self.update_taxon(valid_taxon, valid_record)
-            # Save ancestors for valid taxon
-            self.save_ancestors(valid_taxon, valid_record)
+            valid_taxon = self.get_taxon(valid_record['scientificname'])
+            valid_taxon = self.update_taxon_metadata(valid_taxon, valid_record)
+            # Save lineage for valid taxon
+            valid_taxon_lineage = self.save_taxon_lineage(valid_taxon, valid_record)
             # Add valid_taxon reference to invalid taxon
             taxon.valid_taxon = valid_taxon
             taxon.save()
             # Mirror associated images
             valid_taxon.media.add(*taxon.media.all())
             valid_taxon.save()
+            print(f'Saved valid taxon: {valid_taxon} (replaces {taxon})')
 
-# Dictionary of taxonomic ranks for translations
-EN2PT = {
-        'Subform': 'Subforma',
-        'Superorder': 'Superordem',
-        'Variety': 'Variedade',
-        'Infraorder': 'Infraordem',
-        'Section': 'Seção',
-        'Subclass': 'Subclasse',
-        'Subsection': 'Subseção',
-        'Kingdom': 'Reino',
-        'Infrakingdom': 'Infrareino',
-        'Division': 'Divisão',
-        'Subtribe': 'Subtribo',
-        'Aberration': 'Aberração',
-        'InfraOrder': 'Infraordem',
-        'Subkingdom': 'Subreino',
-        'Infraclass': 'Infraclasse',
-        'Subfamily': 'Subfamília',
-        'Class': 'Classe',
-        'Gigaclass': 'Gigaclasse',
-        'Superfamily': 'Superfamília',
-        'Subdivision': 'Subdivisão',
-        'Morph': 'Morfotipo',
-        'Race': 'Raça',
-        'Unspecified': 'Não especificado',
-        'Suborder': 'Subordem',
-        'Genus': 'Gênero',
-        'Order': 'Ordem',
-        'Subvariety': 'Subvariedade',
-        'Tribe': 'Tribo',
-        'Subgenus': 'Subgênero',
-        'Form': 'Forma',
-        'Family': 'Família',
-        'Subphylum': 'Subfilo',
-        'Stirp': 'Estirpe',
-        'Phylum': 'Filo',
-        'Superclass': 'Superclasse',
-        'Subspecies': 'Subespécie',
-        'Species': 'Espécie',
-        'Parvphylum': 'Parvfilo',
-        'Subterclass': 'Subterclasse',
-        'Infraphylum': 'Infrafilo',
-        'Phylum (Division)': 'Filo (Divisão)',
-        'Subphylum (Subdivision)': 'Subfilo (Subdivisão)',
-        'Parvorder': 'Parvordem',
-        'Megaclass': 'Megaclasse',
-        }

@@ -40,7 +40,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import ReferenceSerializer, TaxonSerializer, LocationSerializer, CoauthorSerializer
-from utils.views import execute_bath_action
+from utils.views import execute_bash_action
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -490,7 +490,7 @@ def editing_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = SpecialistActionForm(request.POST)
+                form = BashActionsForm(request.POST, view_name='editing_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
@@ -500,16 +500,15 @@ def editing_media_list(request):
                             messages.error(request, 'Não é possível realizar ação em lotes de mídia já submetida para revisão')
                             return redirect('editing_media_list')
 
-                        if not media.title_pt_br or not media.title_en:
-                            messages.error(request, 'Não é possível submeter mídia com campos obrigatórios faltando')
-                            return redirect('editing_media_list')
+                        if form.cleaned_data['status_action'] != 'maintain':
+                            if not media.title_pt_br or not media.title_en:
+                                messages.error(request, 'Não é possível submeter mídia com campos obrigatórios faltando')
+                                return redirect('editing_media_list')
 
-                    error = execute_bath_action(user, form, medias, 'editing_media_list')
+                    error = execute_bash_action(request, medias, user, 'editing_media_list')
                     if error:
-                        messages.error(request, error)
                         return redirect('editing_media_list')
-                    
-                    # Send email
+
                     if form.cleaned_data['status_action'] != 'maintain':
                         authors = set()
                         for media in medias:
@@ -548,11 +547,8 @@ def editing_media_list(request):
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
-    form = SpecialistActionForm()
+    form = BashActionsForm(view_name='editing_media_list')
     taxa_form = AddTaxaForm()
-
-    # Options are: mantain status or send to revision
-    form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[1])
 
     context = {
         'records_number': records_number,
@@ -702,6 +698,7 @@ def my_media_list(request):
     records_number = number_of_entries_per_page(request, 'entries_my_medias')
 
     user = request.user
+    user_person = Person.objects.filter(user_cifonauta=user).first()
     queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
 
     if request.method == "POST":
@@ -713,7 +710,7 @@ def my_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = MyMediasActionForm(request.POST)
+                form = BashActionsForm(request.POST, view_name='my_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
@@ -728,11 +725,10 @@ def my_media_list(request):
                         messages.error(request, _('Não é possível realizar ação em lotes de mídia submetida para revisão'))
                         return redirect('my_media_list')
 
-                    error = execute_bath_action(user, form, medias, 'my_media_list')
+                    error = execute_bash_action(request, medias, user, 'my_media_list')
                     if error:
-                        messages.error(request, error)
                         return redirect('my_media_list')
-                    
+
                     messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
                 else:
                     messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
@@ -747,7 +743,7 @@ def my_media_list(request):
     user = request.user
     queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
     
-    form = MyMediasActionForm()
+    form = BashActionsForm(view_name='my_media_list', user_person=user_person)
     taxa_form = AddTaxaForm()
 
     is_specialist = user.curatorship_specialist.exists()
@@ -871,7 +867,7 @@ def revision_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = SpecialistActionForm(request.POST)
+                form = BashActionsForm(request.POST, view_name='revision_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
@@ -881,9 +877,8 @@ def revision_media_list(request):
                         messages.error(request, 'Não é possível realizar ação em lotes de mídia já publicada')
                         return redirect('revision_media_list')
                     
-                    error = execute_bath_action(user, form, medias, 'revision_media_list')
+                    error = execute_bash_action(request, medias, user, 'revision_media_list')
                     if error:
-                        messages.error(request, error)
                         return redirect('revision_media_list')
 
                     # Send email
@@ -919,10 +914,7 @@ def revision_media_list(request):
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
-    form = SpecialistActionForm()
-    # Options are: mantain status or publish media
-    form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[2])
-
+    form = BashActionsForm(view_name='revision_media_list')
     taxa_form = AddTaxaForm()
 
     context = {
@@ -1114,7 +1106,7 @@ def my_curations_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = MyMediasActionForm(request.POST)
+                form = BashActionsForm(request.POST, view_name='my_curations_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
@@ -1137,9 +1129,8 @@ def my_curations_media_list(request):
                             messages.error(request, 'Não é possível realizar ação em lotes de mídias que você não é curador')
                             return redirect('my_curations_media_list')
 
-                    error = execute_bath_action(user, form, medias, 'my_curations_media_list')
+                    error = execute_bash_action(request, medias, user, 'my_curations_media_list')
                     if error:
-                        messages.error(request, error)
                         return redirect('my_curations_media_list')
                     
                     messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
@@ -1158,7 +1149,7 @@ def my_curations_media_list(request):
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
-    form = MyMediasActionForm()
+    form = BashActionsForm(view_name='my_curations_media_list')
     taxa_form = AddTaxaForm()
 
 

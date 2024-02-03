@@ -25,7 +25,7 @@
     {% include 'dashboard_filter_aside.html' %}
 
 
-    <form class="post-form-wrapper" method="post">
+    <form class="post-form-wrapper" method="post" novalidate>
         {% csrf_token %}
         {% include 'dashboard_actions_modal.html' %}
 

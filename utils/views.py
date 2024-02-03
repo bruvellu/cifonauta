@@ -1,39 +1,20 @@
-from meta.models import Taxon, Person
-from django.utils import timezone
 from django.db import transaction
+from django.forms import ValidationError
+from django.contrib import messages
+from meta.forms import BashActionsForm
+from meta.models import Person
 
 @transaction.atomic
-def execute_bath_action(user, form, medias, view_name):
+def execute_bash_action(request, medias, user, view_name):
+    user_person = Person.objects.filter(user_cifonauta=user).first()
+
     try:
         with transaction.atomic():
-            user_person = Person.objects.filter(user_cifonauta=user).first()
-                                
             for media in medias:
-                if 'status_action' in form.cleaned_data:
-                    if form.cleaned_data['status_action'] != 'maintain':
-                        if view_name == 'revision_media_list':
-                            media.status = 'published'
-                            media.date_published = timezone.now()
-                            media.is_public = True
-                        elif view_name == 'my_media_list':
-                            media.status = 'draft'
-                        elif view_name == 'editing_media_list':
-                            media.status = 'submitted'
-
-                if 'taxa_action' in form.cleaned_data:
-                    if form.cleaned_data['taxa_action'] != 'maintain':
-                        if form.cleaned_data['taxa']:
-                            media.taxa.set(form.cleaned_data['taxa'])
-                        else: 
-                            media.taxa.set(Taxon.objects.filter(name='Sem táxon'))
-                
-                if view_name != 'my_media_list':
-                    if view_name == 'editing_media_list':
-                        media.specialists.add(user_person)
-                    elif view_name == 'my_curations_media_list' or view_name == 'revision_media_list':
-                        media.curators.add(user_person)
-                
-                media.save()
-
-    except Exception as e:
-        return str(e)
+                form = BashActionsForm(request.POST, instance=media, user_person=user_person, view_name=view_name)
+                form.save()
+    except Exception as error:
+        messages.error(request, 'Houve um erro ao tentar aplicar as ações em lote')
+        if isinstance(error, ValidationError):
+            messages.error(request, *error)
+        return True

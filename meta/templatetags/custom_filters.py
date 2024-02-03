@@ -31,3 +31,20 @@ def get_field_value(obj, field_name):
     return ""
 
   return getattr(obj, field_name, '')
+
+
+@register.simple_tag
+def get_action_field(form, field_name):
+    if field_name[-7:] != '_action':
+        return { "is_action": False }
+    
+    has_field = field_name[:-7] in form.fields.keys()
+
+    field = {
+        "is_action": True,
+        "field_action": form[field_name],
+        "field": form[field_name[:-7]] if has_field else None
+    }
+
+    return field
+

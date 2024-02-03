@@ -1,4 +1,6 @@
-<div data-modal="group-action" class="modal modal--small">
+{% load custom_filters %}
+
+<div data-modal="group-action" class="modal">
     <header class="modal-header">
         <p>Processar em lote as mídias selecionadas</p>
         <button data-close-modal="group-action" type="button"  class="close-modal-button">
@@ -7,30 +9,29 @@
         </button>
     </header>
     <main class="modal-body">
+        <p class="actions-modal-message">Os campos obrigatórios só são obrigatórios se a opção sobrescrever estiver selecionada</p>
         {% for field in form %}
-        {% if field == form.taxa_action %}
+        {% get_action_field form field.name as fieldd %}
+
+        {% if fieldd.is_action %}
         <div class="action-field">
-            {{ field.label_tag }}
+            <div class="action-field__label-wrapper">
+                {{ fieldd.field_action.label_tag }}
+                {% if fieldd.field_action.field.required %}
+                <span class='required'>*</span>
+                {% endif %}
+            </div>
             <div class="action-field__field-container">
-                {{ field }}
-                <div class="hide-div add-new-object-div">
-                    {{ form.taxa }}
-                    <button type="button" data-open-modal="taxa" class="add-new-object-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="19" x2="12" y2="5"/>
-                            <line x1="5" y1="12" x2="19" y2="12"/>
-                        </svg>
-                    </button>
+                {{ fieldd.field_action }}
+                {% if fieldd.field %}
+                <div class="hide-div action-field__field-wrapper">
+                    {{ fieldd.field }}
                 </div>
+                {% endif %}
             </div>
         </div>
-        {% elif field == form.taxa %}
-        {% else %}
-        <div class="action-field">
-            {{ field.label_tag }}
-            {{ field }}
-        </div>
         {% endif %}
+
         {% endfor %}
         <button type="submit" class="secondary-button" name='action' value='{{ records_number }}'>Processar</button>
     </main>

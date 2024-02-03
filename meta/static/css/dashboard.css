@@ -696,15 +696,31 @@ button:disabled {
     margin-top: 2rem;
 }
 
+.actions-modal-message {
+    font-size: .9rem;
+    font-weight: 500;
+    line-height: 1.25;
+}
+
 .action-field {
   display: flex;
   flex-direction: column;
   gap: .25rem;
 }
 
+.action-field__label-wrapper {
+    display: flex;
+    gap: .25rem;
+}
+
 .action-field__field-container {
     display: flex;
     flex-direction: column;
+    gap: .25rem;
+}
+
+.action-field__field-wrapper {
+    display: grid;
     gap: .25rem;
 }
 
@@ -714,6 +730,12 @@ button:disabled {
     width: 100% !important;
     min-height: 1.8rem;
 }
+
+.action-field input:not([type="checkbox"]) {
+    font-size: .9rem;
+    padding-left: .25rem;
+}
+
 
 .paginator {
     display: flex;

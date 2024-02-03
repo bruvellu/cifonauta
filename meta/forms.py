@@ -495,15 +495,11 @@ class BashActionsForm(forms.ModelForm, SendEmailForm):
                 elif self.view_name == 'editing_media_list':
                     media_instance.status = 'submitted'
 
-        if 'title_pt_br_action' in self.cleaned_data:
-            if self.cleaned_data['title_pt_br_action'] != 'maintain':
-                if not self.cleaned_data['title_pt_br']:
-                    raise ValidationError(f'O campo {self.fields["title_pt_br"].label} é obrigatório')
-
-        if 'title_en_action' in self.cleaned_data:
-            if self.cleaned_data['title_en_action'] != 'maintain':
-                if not self.cleaned_data['title_en']:
-                    raise ValidationError(f'O campo {self.fields["title_en"].label} é obrigatório')
+        author_person = Person.objects.filter(user_cifonauta=media_instance.user).first()
+        if 'authors_action' in self.cleaned_data:
+            if self.cleaned_data['authors'] != 'maintain':
+                if author_person not in self.cleaned_data['authors']:
+                    raise ValidationError(f"Você ({media_instance.user}) deve ser incluído como autor")
 
         if 'taxa_action' in self.cleaned_data:
             if self.cleaned_data['taxa_action'] != 'maintain':
@@ -511,23 +507,17 @@ class BashActionsForm(forms.ModelForm, SendEmailForm):
                     media_instance.taxa.set(self.cleaned_data['taxa'])
                 else: 
                     media_instance.taxa.set(Taxon.objects.filter(name='Sem táxon'))
-        
-        if 'license_action' in self.cleaned_data:
-            if self.cleaned_data['license_action'] != 'maintain':
-                if not self.cleaned_data['license']:
-                    raise ValidationError(f'O campo {self.fields["license"].label} é obrigatório')
 
-        if 'date_created_action' in self.cleaned_data:
-            if self.cleaned_data['date_created_action'] != 'maintain':
-                if not self.cleaned_data['date_created']:
-                    raise ValidationError(f'O campo {self.fields["date_created"].label} é obrigatório')
-        
-        author_person = Person.objects.filter(user_cifonauta=media_instance.user).first()
-        if 'authors_action' in self.cleaned_data:
-            if self.cleaned_data['authors'] != 'maintain':
-                if author_person not in self.cleaned_data['authors']:
-                    raise ValidationError(f"Você ({media_instance.user}) deve ser incluído como autor")
+        # Logic for required fields that were selected to override, but don't have a value
+        required_fields = ['title_pt_br', 'title_en', 'license', 'date_created']
+        for field in required_fields:
+            action_field = f'{field}_action'
 
+            if action_field in self.cleaned_data:
+                if self.cleaned_data[action_field] != 'maintain':
+                    if not self.cleaned_data[field]:
+                        raise ValidationError(f'O campo {self.fields[field].label} é obrigatório')
+        
 
         if self.view_name != 'my_media_list':
             if self.view_name == 'editing_media_list':

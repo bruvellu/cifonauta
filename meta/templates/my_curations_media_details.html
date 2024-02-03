@@ -7,8 +7,8 @@
 <script src="{% static 'js/adm_references.js' %}" defer></script>
 <script src="{% static 'js/adm_sync_location_fields.js' %}" defer></script>
 <script src="{% static 'js/adm_latitude.js' %}" defer></script>
-<script src="{% static 'js/my_curations_media_details.js' %}" defer></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDq5WeIQ9PnSdEBvgtaykW5oB034cbpyak&callback=myMap" defer></script>
+<script src="{% static 'js/my_curations_media_details.js' %}" defer></script>
 {% endblock %}
 
 {% block title %}Alterar Mídia{% endblock %}
@@ -16,10 +16,10 @@
 {% block dashboard_content %}
 
 {% if modified_media and is_modification_owner and not modified_media.altered_by_author %}
-<div data-modal="media-changes" id="modal-container" class="modal modal--large-2 modal--media-changes">
+<div data-modal="media-changes" class="modal-container modal modal--large-2 modal--media-changes">
     <header class="modal-header">
         <p>Alterações da mídia</p>
-        <button data-close-modal="media-changes" id="close-modal-button" class="close-modal-button close-modal-button--large">
+        <button data-close-modal="media-changes" class="close-modal-button close-modal-button--large">
             <div class='line1'></div>
             <div class='line2'></div>
         </button>
@@ -129,29 +129,7 @@
         </div>
     </div>
     {% for field in form %}
-    {% if field == form.country %}
-    <div class="field country-container">
-        <div class="field__label">
-            {{ field.label_tag }}
-            {% if field.field.required %}
-            <span class='required'>*</span>
-            {% endif %}
-        </div>
-        <div class="field__input-container">
-            {% if field.errors %}
-            <ul class="field__errors">
-                {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            {{ field }}
-            {% if field.help_text %}
-            <span class="field__help-text">{{ field.help_text }}</span>
-            {% endif %}
-        </div>
-    </div>
-    {% elif field == form.location or field == form.taxa or field == form.references or field == form.latitude %}
+    {% if field == form.location or field == form.taxa or field == form.references or field == form.latitude %}
     <div class="field">
         <div class="field__label">
             {{ field.label_tag }}
@@ -194,7 +172,7 @@
         </div>
     </div>
     {% else %}
-    <div class="field">
+    <div {% if field.name == 'country' %}data-country-field-container{% endif %} class="field">
         <div class="field__label">
             {{ field.label_tag }}
             {% if field.field.required %}

@@ -19,15 +19,13 @@
     })
 
 
-    const modals = document.querySelectorAll('[data-modal]')
-    modals.forEach(modal => {
-        const modalName = modal.dataset.modal
-        
-        new Modal({
-            modalContent: document.querySelector(`[data-modal='${modalName}']`),
-            modalTrigger: document.querySelector(`[data-open-modal='${modalName}']`),
-            modalClose: document.querySelector(`[data-close-modal='${modalName}']`)
-        })
+    new CreateEntry({ fieldName: 'taxa' })
+    new CreateEntry({ fieldName: 'location' })
+
+    new Modal({
+        modalContent: document.querySelector('[data-modal="group-action"]'),
+        modalTrigger: document.querySelector('[data-open-modal="group-action"]'),
+        modalClose: document.querySelector('[data-close-modal="group-action"]')
     })
     
     let fieldStatusAll = document.querySelectorAll('[data-field-action]')
@@ -42,6 +40,8 @@
             }
         })
     })
+
+    sync_location_fields(true)
 
     const moreFieldsButton = document.querySelector('[data-more-fields-button]')
     moreFieldsButton.addEventListener('click', () => {

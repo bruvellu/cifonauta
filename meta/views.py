@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
-from utils.media import Metadata, number_of_entries_per_page, validate_specialist_action_form, format_name
+from utils.media import Metadata, number_of_entries_per_page, format_name
 from operator import or_, and_
 from PIL import Image
 
@@ -40,6 +40,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import ReferenceSerializer, TaxonSerializer, LocationSerializer, CoauthorSerializer
+from utils.views import execute_bash_action
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -79,7 +80,7 @@ def create_location(request):
     return Response('Local com esse nome já existe.', status=status.HTTP_409_CONFLICT)
 
 @api_view(['POST'])
-def create_coauthor(request):
+def create_authors(request):
     request_data = request.data.copy()
     request_data['name'] = format_name(request_data['name'])
 
@@ -197,7 +198,7 @@ def upload_media_step1(request):
 
 
 @never_cache
-@author_required
+@loaded_media_required
 def upload_media_step2(request):
     medias = Media.objects.filter(user=request.user, status='loaded')
     user_person = Person.objects.get(user_cifonauta=request.user)
@@ -301,7 +302,7 @@ def upload_media_step2(request):
                 'longitude': longitude,
             })
 
-    registration_form = CoauthorRegistrationForm()
+    authors_form = AddAuthorsForm()
     location_form = AddLocationForm()
     taxa_form = AddTaxaForm()
     
@@ -310,7 +311,7 @@ def upload_media_step2(request):
 
     context = {
         'form': form,
-        'registration_form': registration_form,
+        'authors_form': authors_form,
         'location_form': location_form,
         'taxa_form': taxa_form,
         'medias': medias,
@@ -489,36 +490,28 @@ def editing_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = SpecialistActionForm(request.POST)
+                form = BashActionsForm(request.POST, view_name='editing_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
 
-                    if form.cleaned_data['status_action'] != 'maintain':
-                        error = validate_specialist_action_form(request, medias)
-                        if error:
-                            messages.error(request, 'Não foi possível realizar ação em lotes')
-                            messages.warning(request, f'{error[0]}: {error[1]}')
+                    for media in medias:
+                        if media.status == 'submitted':
+                            messages.error(request, 'Não é possível realizar ação em lotes de mídia já submetida para revisão')
                             return redirect('editing_media_list')
-                        
-                        medias.update(status='submitted')
 
-                    if form.cleaned_data['taxa_action'] != 'maintain':
-                        for media in medias:
-                            if form.cleaned_data['taxa']:
-                                media.taxa.exclude(name='Sem táxon')
-                                media.taxa.set(form.cleaned_data['taxa'])
-                            else:
-                                media.taxa.set(Taxon.objects.filter(name='Sem táxon'))
+                        if form.cleaned_data['status_action'] != 'maintain':
+                            if not media.title_pt_br or not media.title_en:
+                                messages.error(request, 'Não é possível submeter mídia com campos obrigatórios faltando')
+                                return redirect('editing_media_list')
 
-                    specialist_person = Person.objects.filter(user_cifonauta=request.user.id).first()
-                    
-                    # Send email
+                    error = execute_bash_action(request, medias, user, 'editing_media_list')
+                    if error:
+                        return redirect('editing_media_list')
+
                     if form.cleaned_data['status_action'] != 'maintain':
                         authors = set()
                         for media in medias:
-                            media.specialists.add(specialist_person)
-                            
                             authors.add(media.user)
 
                         form.send_mail(request.user, authors, medias, 'Mídia publicada no Cifonauta', 'email_media_to_revision_author.html')
@@ -554,14 +547,16 @@ def editing_media_list(request):
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
-    form = SpecialistActionForm()
-    # Options are: mantain status or send to revision
-    form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[1])
+    form = BashActionsForm(view_name='editing_media_list')
+    taxa_form = AddTaxaForm()
+    location_form = AddLocationForm()
 
     context = {
         'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
+        'taxa_form': taxa_form,
+        'location_form': location_form,
         'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
@@ -678,7 +673,7 @@ def my_media_details(request, pk):
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
-    registration_form = CoauthorRegistrationForm()
+    authors_form = AddAuthorsForm()
     location_form = AddLocationForm()
     taxa_form = AddTaxaForm()
     modified_media_form = ModifiedMediaForm(instance=media, author_form=True)
@@ -688,7 +683,7 @@ def my_media_details(request, pk):
         'modified_media': modified_media,
         'modified_media_form': modified_media_form,
         'form': form,
-        'registration_form': registration_form,
+        'authors_form': authors_form,
         'location_form': location_form,
         'taxa_form': taxa_form,
         'is_modification_owner': is_modification_owner,
@@ -705,6 +700,7 @@ def my_media_list(request):
     records_number = number_of_entries_per_page(request, 'entries_my_medias')
 
     user = request.user
+    user_person = Person.objects.filter(user_cifonauta=user).first()
     queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
 
     if request.method == "POST":
@@ -716,26 +712,25 @@ def my_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = MyMediasActionForm(request.POST)
+                form = BashActionsForm(request.POST, view_name='my_media_list')
 
                 if form.is_valid():
-                    has_published_media = Media.objects.filter(id__in=media_ids, status='published').exists()
+                    medias = Media.objects.filter(id__in=media_ids)
+
+                    has_published_media = medias.filter(status='published').exists()
                     if has_published_media:
-                        messages.error(request, _('Não é possível aplicar ações em mídias já publicadas'))
+                        messages.error(request, _('Não é possível realizar ação em lotes de mídia já publicada'))
                         return redirect('my_media_list')
                     
-                    medias = Media.objects.filter(id__in=media_ids)
-                    
-                    if form.cleaned_data['taxa_action'] != 'maintain':
-                        for media in medias:
-                            if form.cleaned_data['taxa']:
-                                media.taxa.exclude(name='Sem táxon')
-                                media.taxa.set(form.cleaned_data['taxa'])
-                            else:
-                                media.taxa.set(Taxon.objects.filter(name='Sem táxon'))
+                    has_submitted_media = medias.filter(status='submitted').exists()
+                    if has_submitted_media:
+                        messages.error(request, _('Não é possível realizar ação em lotes de mídia submetida para revisão'))
+                        return redirect('my_media_list')
 
-                    medias.update(status='draft')
-                    
+                    error = execute_bash_action(request, medias, user, 'my_media_list')
+                    if error:
+                        return redirect('my_media_list')
+
                     messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
                 else:
                     messages.error(request, _('Houve um erro ao tentar aplicar as ações em lote'))
@@ -750,7 +745,10 @@ def my_media_list(request):
     user = request.user
     queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
     
-    form = MyMediasActionForm()
+    form = BashActionsForm(view_name='my_media_list', user_person=user_person)
+    taxa_form = AddTaxaForm()
+    authors_form = AddAuthorsForm()
+    location_form = AddLocationForm()
 
     is_specialist = user.curatorship_specialist.exists()
     is_curator = user.curatorship_curator.exists()
@@ -763,6 +761,9 @@ def my_media_list(request):
         'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
+        'taxa_form': taxa_form,
+        'location_form': location_form,
+        'authors_form': authors_form,
         'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': is_specialist,
@@ -872,41 +873,25 @@ def revision_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = SpecialistActionForm(request.POST)
+                form = BashActionsForm(request.POST, view_name='revision_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
 
                     is_published = medias.filter(status='published')
                     if is_published:
-                        messages.error(request, 'Não é possível realizar ação em lotes de mídias já publicadas')
+                        messages.error(request, 'Não é possível realizar ação em lotes de mídia já publicada')
                         return redirect('revision_media_list')
                     
-                    if form.cleaned_data['status_action'] != 'maintain':
-                        error = validate_specialist_action_form(request, medias)
-                        if error:
-                            messages.error(request, 'Não foi possível realizar ação em lotes')
-                            messages.warning(request, f'{error[0]}: {error[1]}')
-                            return redirect('revision_media_list')
-                        
-                        medias.update(status='published', date_published=timezone.now(), is_public=True) #TODO: Remove is_public
-                        
-                    if form.cleaned_data['taxa_action'] != 'maintain':
-                        for media in medias:
-                            if form.cleaned_data['taxa']:
-                                media.taxa.exclude(name='Sem táxon')
-                                media.taxa.set(form.cleaned_data['taxa'])
-                            else:
-                                media.taxa.set(Taxon.objects.filter(name='Sem táxon'))
-                    
-                    curator_person = Person.objects.filter(user_cifonauta=request.user.id).first()
+                    error = execute_bash_action(request, medias, user, 'revision_media_list')
+                    if error:
+                        return redirect('revision_media_list')
 
                     # Send email
                     if form.cleaned_data['status_action'] != 'maintain':
                         authors = set()
                         specialists = set()
                         for media in medias:
-                            media.curators.add(curator_person)
                             authors.add(media.user)
 
                             for specialist in media.specialists.all():
@@ -935,14 +920,16 @@ def revision_media_list(request):
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
-    form = SpecialistActionForm()
-    # Options are: mantain status or publish media
-    form.fields['status_action'].choices = (form.fields['status_action'].choices[0], form.fields['status_action'].choices[2])
+    form = BashActionsForm(view_name='revision_media_list')
+    taxa_form = AddTaxaForm()
+    location_form = AddLocationForm()
 
     context = {
         'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
+        'taxa_form': taxa_form,
+        'location_form': location_form,
         'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
@@ -1116,7 +1103,7 @@ def my_curations_media_list(request):
 
     specialist_queryset = Media.objects.filter(Q(taxa__in=curations_as_specialist_taxons))    
 
-    queryset = (curator_queryset | specialist_queryset).exclude(status='loaded').distinct()
+    queryset = (curator_queryset | specialist_queryset).exclude(status='loaded').distinct().order_by('-pk')
 
     if request.method == 'POST':
         action = request.POST['action']
@@ -1127,7 +1114,7 @@ def my_curations_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = MyMediasActionForm(request.POST)
+                form = BashActionsForm(request.POST, view_name='my_curations_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
@@ -1137,7 +1124,7 @@ def my_curations_media_list(request):
                             messages.error(request, 'Não é possível realizar ação em lotes de mídias não publicadas')
                             return redirect('my_curations_media_list')
                         
-                        if media.modified_media:
+                        if media.modified_media.all().exists():
                             messages.error(request, "Não é possível realizar ação em lotes de mídias com alterações pendentes.")
                             return redirect('my_curations_media_list')
 
@@ -1150,16 +1137,9 @@ def my_curations_media_list(request):
                             messages.error(request, 'Não é possível realizar ação em lotes de mídias que você não é curador')
                             return redirect('my_curations_media_list')
 
-                    curator_person = Person.objects.filter(user_cifonauta=request.user.id).first()
-                    if form.cleaned_data['taxa_action'] != 'maintain':
-                        for media in medias:
-                            if form.cleaned_data['taxa']:
-                                media.taxa.exclude(name='Sem táxon')
-                                media.taxa.set(form.cleaned_data['taxa'])
-                            else:
-                                media.taxa.set(Taxon.objects.filter(name='Sem táxon'))
-
-                            media.curators.add(curator_person)
+                    error = execute_bash_action(request, medias, user, 'my_curations_media_list')
+                    if error:
+                        return redirect('my_curations_media_list')
                     
                     messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
                 else:
@@ -1177,12 +1157,16 @@ def my_curations_media_list(request):
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
-    form = MyMediasActionForm()
+    form = BashActionsForm(view_name='my_curations_media_list')
+    taxa_form = AddTaxaForm()
+    location_form = AddLocationForm()
 
     context = {
         'records_number': records_number,
         'form': form,
         'filter_form': filter_form,
+        'taxa_form': taxa_form,
+        'location_form': location_form,
         'object_exists': queryset.exists(),
         'entries': page,
         'is_specialist': user.curatorship_specialist.exists(),
@@ -1363,22 +1347,13 @@ def tour_add(request):
 
     form = TourForm(initial={'creator': request.user.id})
 
-    curatorships = Curadoria.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
-    taxon_ids = []
-    for curatorship in curatorships:
-        taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
-    medias = Media.objects.filter(taxa__id__in=taxon_ids, status='published').distinct()
-    
     form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
-    initial_medias = [*medias][:20]
-    
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     context = {
         'form': form,
-        'initial_medias': initial_medias,
         'is_specialist': is_specialist,
         'is_curator': is_curator
     }
@@ -1414,17 +1389,9 @@ def tour_details(request, pk):
     else:
         form = TourForm(instance=tour)
 
-    curatorships = Curadoria.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
-    taxon_ids = []
-    for curatorship in curatorships:
-        taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
-    medias = Media.objects.filter(taxa__id__in=taxon_ids, status='published').distinct()
-    
     form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
     medias_related = tour.media.all()
-
-    initial_medias = [*medias][:20]
 
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
@@ -1432,7 +1399,6 @@ def tour_details(request, pk):
     context = {
         'form': form,
         'tour': tour,
-        'initial_medias': initial_medias,
         'medias_related': medias_related,
         'is_specialist': is_specialist,
         'is_curator': is_curator

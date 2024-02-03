@@ -10,6 +10,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.db.models.query import QuerySet
 from django.db import models
 from utils.media import format_name
+from django.utils import timezone
+from django.forms import ValidationError
 
 
 METAS = (
@@ -250,7 +252,7 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
 
         return taxa
 
-class CoauthorRegistrationForm(forms.ModelForm):
+class AddAuthorsForm(forms.ModelForm):
     class Meta:
         model = Person
         fields = ('name',)
@@ -260,33 +262,15 @@ class CoauthorRegistrationForm(forms.ModelForm):
 
         self.fields['name'].required = True
 
-    def clean_name(self):
-        name = self.cleaned_data['name']
-        name = format_name(name)
-        
-        return name
-
 class AddLocationForm(forms.ModelForm):
     class Meta:
         model = Location
         fields = ('name',)
-    
-    def clean_name(self):
-        name = self.cleaned_data['name']
-        name = format_name(name)
-        
-        return name
 
 class AddTaxaForm(forms.ModelForm):
     class Meta:
         model = Taxon
         fields = ('name',)
-
-    def clean_name(self):
-        name = self.cleaned_data['name']
-        name = format_name(name)
-        
-        return name
 
 class ModifiedMediaForm(forms.ModelForm, SendEmailForm):
     class Meta:
@@ -345,44 +329,166 @@ class TourForm(forms.ModelForm):
         super(TourForm, self).__init__(*args, **kwargs)
         
         self.fields['media'].label_from_instance = lambda obj: obj.title
-
-class SpecialistActionForm(forms.ModelForm, SendEmailForm):
+     
+        
+class BashActionsForm(forms.ModelForm, SendEmailForm):
     STATUS_CHOICES = [
         ('maintain', _('Manter status')),
         ('submitted', _('Enviar para revisão')),
         ('publish', _('Publicar')),
     ]
-
-    TAXA_CHOICES = [
-        ('maintain', _('Manter táxons')),
-        ('overwrite', _('Sobrescrever táxons')),
-    ]
+    ACTION_CHOICES = [('maintain', _('Manter')), ('override', _('Sobrescrever'))]
+    FIELDS_WITH_BUTTON = ['authors', 'taxa', 'references', 'location', 'latitude']
 
     status_action = forms.ChoiceField(label=_('Status'), choices=STATUS_CHOICES, initial='maintain')
-    # Added data-field-action so javascript can find it
-    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "taxa_action"}))
+    title_pt_br_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "title_pt_br_action"}))
+    title_en_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "title_en_action"}))
+    caption_pt_br_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "caption_pt_br_action"}))
+    caption_en_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "caption_en_action"}))
+    authors_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "authors_action"}))
+    date_created_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "date_created_action"}))
+    taxa_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "taxa_action"}))
+    tags_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "tags_action"}))
+    scale_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "scale_action"}))
+    references_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "references_action"}))
+    country_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "country_action"}))
+    state_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "state_action"}))
+    city_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "city_action"}))
+    location_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "location_action"}))
+    latitude_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "latitude_action"}))
+    longitude_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "longitude_action"}))
+    license_action = forms.ChoiceField(choices=ACTION_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "license_action"}))
 
+    # Missing country, state and city fields
     class Meta:
         model = Media
-        fields = ('status_action', 'taxa_action', 'taxa',)
+        fields = ('status_action', 'title_pt_br_action', 'title_en_action', 'caption_pt_br_action', 'caption_en_action', 'taxa_action', 'authors_action', 'date_created_action', 'tags_action', 'scale_action', 'references_action', 'country_action', 'state_action', 'city_action', 'location_action', 'latitude_action', 'longitude_action', 'license_action', 'title_pt_br', 'title_en',  'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'tags', 'scale', 'references', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
         widgets = {
-            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
+            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
+            'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
+            'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
+            'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
+            'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'}),
         }
+    
+    def __init__(self, *args, **kwargs):
+        self.user_person = kwargs.pop('user_person', None)
+        self.view_name = kwargs.pop('view_name', None)
+        super().__init__(*args, **kwargs)
 
-class MyMediasActionForm(forms.ModelForm):
-    TAXA_CHOICES = (
-        ('maintain', _('Manter táxons')),
-        ('overwrite', _('Sobrescrever táxons')),
-    )
+        for field_name in self.fields:
+            self.fields[field_name].required = False # If there is a required field and I delete it from cleaned_data in the clean method, it doesn't work, this is why I make all of the fields not required
 
-    taxa_action = forms.ChoiceField(label=_('Táxons'), choices=TAXA_CHOICES, initial='maintain', widget=forms.Select(attrs={"data-field-action": "taxa_action"}))
+            if field_name[-7:] == '_action': 
+                if field_name[:-7] in self.fields:
+                    # Addind the actual field's label to <field>_action so I don't have to rewrite the labels
+                    self.fields[field_name].label = self.fields[field_name[:-7]].label
 
-    class Meta:
-        model = Media
-        fields = ('taxa_action', 'taxa',)
-        widgets = {
-            'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"})
-        }
+        # If there is a field that is required, add the required in the <field>_action
+        self.fields['title_pt_br_action'].required = True
+        self.fields['title_en_action'].required = True
+
+
+        # To remove a field, remove also its <field>_action
+        if self.view_name == 'my_media_list':
+            self.fields.pop('status_action', None)
+            self.fields.pop('status', None)
+            self.fields.pop('scale_action', None)
+            self.fields.pop('scale', None)
+            self.fields.pop('tags_action', None)
+            self.fields.pop('tags', None)
+            self.fields['date_created_action'].required = True
+            self.fields['license_action'].required = True
+            self.fields['authors_action'].required = True
+            self.fields['authors'].initial = self.user_person
+        elif self.view_name == 'editing_media_list' or self.view_name == 'revision_media_list' or self.view_name == 'my_curations_media_list':
+            self.fields.pop('date_created_action', None)
+            self.fields.pop('date_created', None)
+            self.fields.pop('license_action', None)
+            self.fields.pop('license', None)
+            self.fields.pop('authors_action', None)
+            self.fields.pop('authors', None)
+
+            if self.view_name == 'editing_media_list':
+                self.fields['status_action'].choices = (self.STATUS_CHOICES[0], self.STATUS_CHOICES[1])
+            elif self.view_name == 'revision_media_list':
+                self.fields['status_action'].choices = (self.STATUS_CHOICES[0], self.STATUS_CHOICES[2])
+            else:
+                self.fields.pop('status_action', None)
+                self.fields.pop('status', None)
+                
+        self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
+        if 'tags' in self.fields:
+            self.fields['tags'].queryset = self.fields['tags'].queryset.order_by('category')
+
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        
+        fields_to_remove = []
+        # Removing field from cleaned_data so it will not save the data to the entry
+        for field_name in cleaned_data:
+            if field_name[-7:] == '_action':
+                if field_name[:-7] in cleaned_data:
+                    if cleaned_data.get(field_name) == 'maintain':
+                        fields_to_remove.append(field_name)
+                        fields_to_remove.append(field_name[:-7])
+        for field in fields_to_remove:
+            cleaned_data.pop(field, None)
+
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        media_instance = super().save()
+
+        # Using save method to make custom changes to media fields before saving
+        if 'status_action' in self.cleaned_data:
+            if self.cleaned_data['status_action'] != 'maintain':
+                if self.view_name == 'revision_media_list':
+                    media_instance.status = 'published'
+                    media_instance.date_published = timezone.now()
+                    media_instance.is_public = True
+                elif self.view_name == 'my_media_list':
+                    media_instance.status = 'draft'
+                elif self.view_name == 'editing_media_list':
+                    media_instance.status = 'submitted'
+
+        author_person = Person.objects.filter(user_cifonauta=media_instance.user).first()
+        if 'authors_action' in self.cleaned_data:
+            if self.cleaned_data['authors'] != 'maintain':
+                if author_person not in self.cleaned_data['authors']:
+                    raise ValidationError(f"Você ({media_instance.user}) deve ser incluído como autor")
+
+        if 'taxa_action' in self.cleaned_data:
+            if self.cleaned_data['taxa_action'] != 'maintain':
+                if self.cleaned_data['taxa']:
+                    media_instance.taxa.set(self.cleaned_data['taxa'])
+                else: 
+                    media_instance.taxa.set(Taxon.objects.filter(name='Sem táxon'))
+
+        # Logic for required fields that were selected to override, but don't have a value
+        required_fields = ['title_pt_br', 'title_en', 'license', 'date_created']
+        for field in required_fields:
+            action_field = f'{field}_action'
+
+            if action_field in self.cleaned_data:
+                if self.cleaned_data[action_field] != 'maintain':
+                    if not self.cleaned_data[field]:
+                        raise ValidationError(f'O campo {self.fields[field].label} é obrigatório')
+        
+
+        if self.view_name != 'my_media_list':
+            if self.view_name == 'editing_media_list':
+                media_instance.specialists.add(self.user_person.id)
+            elif self.view_name == 'my_curations_media_list' or self.view_name == 'revision_media_list':
+                media_instance.curators.add(self.user_person.id)
+        
+        if commit:
+            media_instance.save()
+
+        return media_instance
+            
 
 class DashboardFilterForm(forms.Form):
     Curadoria = apps.get_model('meta', 'Curadoria')

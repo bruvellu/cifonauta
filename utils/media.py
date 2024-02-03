@@ -628,14 +628,6 @@ def number_of_entries_per_page(request, session_name, value=None):
         return 12
 
 
-def validate_specialist_action_form(request, medias):
-    for media in medias:
-        if not media.title_pt_br:
-            return ['Título [pt-br]', 'Este campo é obrigatório.']
-        if not media.title_en:
-            return ['Título [en]', 'Este campo é obrigatório.']
-
-
 def format_name(name):
     preps = ('de', 'da', 'do', 'das', 'dos', 'e', 'no', 'na')
     split_name = name.lower().split(' ')

@@ -29,34 +29,14 @@
                 {% endif %}
             </div>
             <div class="field__input-container">
-                <div>
+                <div class='input-and-options-wrapper'>
                     <div id="input-container">
                         <div id="selected-options-container"></div>
                         <input id="search-options-input" type="text" placeholder="Selecione as mídias" autocomplete="off">
                     </div>
 
                     <div id="options-container" class="hide-div">
-                        <ul id="options-ul">
-                            {% for initial_media in initial_medias %}
-                            <li tabindex="0" id="option_{{ initial_media.id }}" class="media-option {% if initial_media in medias_related %}media-option-selected{% endif %}"  onclick='selectOption(event, this)'>
-                                {% if initial_media.datatype == 'video' %}
-                                <video class="option-cover scale-{{ initial_media.scale }}" src="{{initial_media.coverpath.url}}"></video>
-                                {% else %}
-                                <img class="option-cover scale-{{ initial_media.scale }}" src="{{initial_media.coverpath.url}}">
-                                {% endif %}
-                                <div class="option-infos">
-                                    <a class="option-title" href="{{ initial_media.coverpath.url }}" tabindex="-1" target="_blank">{{initial_media.title}}</a>
-                                    <span>
-                                        {% if initial_media.datatype == 'video' %}
-                                        Vídeo
-                                        {% else %}
-                                        Foto
-                                        {% endif %}
-                                    </span>
-                                </div>
-                            </li>
-                            {% endfor %}
-                        </ul>
+                        <ul id="options-ul"></ul>
                     </div>
                 </div>
                 {% if field.help_text %}

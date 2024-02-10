@@ -1162,6 +1162,26 @@ textarea {
     color: #5b5b5b;
 }
 
+.checkbox-multiple {
+    display: flex;
+    gap: 1rem 2rem;
+    flex-wrap: wrap;
+}
+
+
+.checkbox-multiple__category {
+    display: grid;
+    height: fit-content;
+}
+
+.checkbox-multiple__category-name {
+    font-weight: 500;
+}
+
+.checkbox-label {
+    font-weight: 400;
+}
+
 .pre-registration-button {
     font-size: 1rem;
     font-weight: 500;

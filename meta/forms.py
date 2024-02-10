@@ -3,7 +3,7 @@
 from django import forms
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
-from .models import Media, Curadoria, ModifiedMedia, Person, Taxon, Tour, Location
+from .models import Media, Curadoria, ModifiedMedia, Person, Taxon, Tour, Location, Tag
 from user.models import UserCifonauta
 from django.template import loader 
 from django.core.mail import EmailMultiAlternatives
@@ -12,6 +12,7 @@ from django.db import models
 from utils.media import format_name
 from django.utils import timezone
 from django.forms import ValidationError
+from django.template.loader import render_to_string
 
 
 METAS = (
@@ -220,6 +221,24 @@ class UpdateMyMediaForm(forms.ModelForm):
 
         return taxa
 
+class CustomCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
+    template_name = 'custom_checkbox_select_multiple.html'
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        return context
+
+    def render(self, name, value, attrs=None, renderer=None):
+        context = self.get_context(name, value, attrs)
+
+        categories = {}
+        for tag in Tag.objects.all():
+            if tag.category: #There are 2 tags that don't have categories
+                categories.setdefault(tag.category, []).append(tag)
+        
+        context['options'] = categories
+        return render_to_string(self.template_name, context)
+    
 class EditMetadataForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = Media
@@ -227,7 +246,7 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
-            'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
+            'tags': CustomCheckboxSelectMultiple(),
             'specialists': forms.SelectMultiple(attrs={"class": "select2-specialists", "multiple": "multiple"}),
             'date_created': forms.DateInput(format=('%Y-%m-%d'),attrs={'type': 'date', 'readonly': 'readonly'})
         }
@@ -239,7 +258,6 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
         if not editing_media_details:
             self.fields['title_pt_br'].required = True
             self.fields['title_en'].required = True
-        self.fields['tags'].queryset = self.fields['tags'].queryset.order_by('category')
         self.fields['taxa'].queryset = self.fields['taxa'].queryset.exclude(name='Sem táxon')
 
     def clean_taxa(self):

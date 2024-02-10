@@ -1,0 +1,18 @@
+{% load static custom_filters %}
+
+<div id="id_{{widget.name}}" class="checkbox-multiple">
+    {% for category, options in options.items %}
+    <div class="checkbox-multiple__category">
+        <p class="checkbox-multiple__category-name">{{category}}</p>
+        {% for option in options %}
+        <label for="id_tags_{{option.id}}" class="checkbox-label checkbox-multiple__label">
+            <input 
+              type="checkbox" name="{{widget.name}}" value="{{option.id}}" id="id_tags_{{option.id}}" 
+              {% if option.id|stringformat:"s" in widget.value %}checked{% endif %}
+            >
+            <span>{{option.name}}</span>
+        </label>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>

@@ -117,10 +117,11 @@ class SendEmailForm(forms.Form):
                 email_message.attach_alternative(html_email, "text/html")
             email_message.send()
 
-class UploadMediaForm(forms.ModelForm,  SendEmailForm):
+class UploadMediaForm(forms.ModelForm, SendEmailForm):
+    '''Form to add metadata during media upload.''' 
     class Meta:
         model = Media
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'references', 'scale', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license', 'terms')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'acknowledgments_pt_br', 'acknowledgments_en', 'taxa', 'authors', 'date_created', 'references', 'scale', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license', 'terms')
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
@@ -174,9 +175,10 @@ class UploadMediaForm(forms.ModelForm,  SendEmailForm):
         return taxa
 
 class UpdateMyMediaForm(forms.ModelForm):
+    '''Form to update metadata of all my uploaded media.'''
     class Meta:
         model = Media
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'authors', 'date_created', 'references', 'scale', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'acknowledgments_pt_br', 'acknowledgments_en', 'taxa', 'authors', 'date_created', 'references', 'scale', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
         widgets = {
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
@@ -240,9 +242,10 @@ class CustomCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
         return render_to_string(self.template_name, context)
     
 class EditMetadataForm(forms.ModelForm, SendEmailForm):
+    '''Form to edit metadata of unpublished media and submit it.'''
     class Meta:
         model = Media
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'references', 'tags', 'scale', 'country', 'state', 'city', 'location', 'latitude', 'longitude')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'acknowledgments_pt_br', 'acknowledgments_en', 'taxa', 'references', 'tags', 'scale', 'country', 'state', 'city', 'location', 'latitude', 'longitude')
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
@@ -293,7 +296,7 @@ class AddTaxaForm(forms.ModelForm):
 class ModifiedMediaForm(forms.ModelForm, SendEmailForm):
     class Meta:
         model = ModifiedMedia
-        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'taxa', 'tags', 'scale', 'authors', 'date_created', 'references', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
+        fields = ('title_pt_br', 'title_en', 'caption_pt_br', 'caption_en', 'acknowledgments_pt_br', 'acknowledgments_en', 'taxa', 'tags', 'scale', 'authors', 'date_created', 'references', 'country', 'state', 'city', 'location', 'latitude', 'longitude', 'license')
         widgets = {
             'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'}),
             'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),

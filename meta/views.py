@@ -1714,8 +1714,9 @@ def org_page(request):
 
     Além de buscar as descrições de cada categoria, mostra exemplos aleatórios de imagens.
     '''
+    # TODO: Replace sizes tags by a Scale model
     # Tamanhos
-    sizes = Category.objects.get(name_en='Size')
+    # sizes = Category.objects.get(name_en='Size')
     # Técnicas
     technique = Category.objects.get(name_en='Imaging technique')
     microscopy = Category.objects.get(name_en='Microscopy')
@@ -1729,7 +1730,7 @@ def org_page(request):
     # Diversos
     assorted = Category.objects.get(name_en='Miscellaneous')
     context = {
-        'sizes': sizes,
+        # 'sizes': sizes,
         'microscopy': microscopy,
         'technique': technique,
         'stages': stages,

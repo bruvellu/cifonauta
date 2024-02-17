@@ -231,6 +231,11 @@ class Media(models.Model):
                                blank=True,
                                help_text=_('Legenda da imagem.'))
 
+    acknowledgments = models.TextField(_('agradecimentos'),
+                               default='',
+                               blank=True,
+                               help_text=_('Agradecimentos da imagem.'))
+
     scale = models.CharField(_('escala da imagem'),
                              max_length=12,
                              blank=True,

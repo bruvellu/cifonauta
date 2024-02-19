@@ -103,6 +103,8 @@ button:disabled {
 
 .margin-top--2 { margin-top: 2rem; }
 
+.flex-direction--column { flex-direction: column; }
+
 #hamburger {
     display: none;
     flex-direction: column;

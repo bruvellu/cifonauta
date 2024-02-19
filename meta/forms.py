@@ -387,7 +387,7 @@ class BashActionsForm(forms.ModelForm, SendEmailForm):
         widgets = {
             'taxa': forms.SelectMultiple(attrs={"class": "select2-taxons", "multiple": "multiple"}),
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
-            'tags': forms.SelectMultiple(attrs={"class": "select2-tags", "multiple": "multiple"}),
+            'tags': CustomCheckboxSelectMultiple(attrs={"class": "flex-direction--column"}),
             'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
             'date_created': forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'}),
         }

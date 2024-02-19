@@ -1,6 +1,6 @@
 {% load static custom_filters %}
 
-<div id="id_{{widget.name}}" class="checkbox-multiple">
+<div id="id_{{widget.name}}" class="checkbox-multiple {% if widget.attrs.class %}{{ widget.attrs.class }}{% endif %}">
     {% for category, options in options.items %}
     <div class="checkbox-multiple__category">
         <p class="checkbox-multiple__category-name">{{category}}</p>

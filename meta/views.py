@@ -55,7 +55,7 @@ def create_reference(request):
         return Response('Referência já existe', status=status.HTTP_409_CONFLICT)
     return Response(serializer.data)
 
-@api_view(['POST'])
+@api_view(['POST']) 
 def create_taxa(request):
     request_data = request.data.copy()
     request_data['name'] = format_name(request_data['name'])
@@ -63,8 +63,68 @@ def create_taxa(request):
     serializer = TaxonSerializer(data=request_data)
     if serializer.is_valid():
         taxon_name = serializer.validated_data['name']
-        serializer.validated_data['aphia'] = Aphia().get_aphia_id(taxon_name)
-        serializer.save()
+        taxon_parent_name = serializer.save()
+        taxon = Taxon.objects.get(name=taxon_name)
+        if taxon_parent_name == "Sem Aphia":
+            curadory = Curadoria.objects.get(name='Sem Aphia')
+            curadory.taxons.add(taxon)
+        else:
+            RANKS_NAMES = {
+                    'Kingdom': 'Reino',
+                    'Subkingdom': 'Subreino',
+                    'Phylum': 'Filo',
+                    'Subphylum': 'Subfilo',
+                    'Infraphylum': 'Infrafilo',
+                    'Megaclass': 'Megaclasse',
+                    'Superclass': 'Superclasse',
+                    'Class': 'Classe',
+                    'Subclass': 'Subclasse',
+                    'Infraclass': 'Infraclasse',
+                    'Superorder': 'Superordem',
+                    'Order': 'Ordem',
+                    'Suborder': 'Subordem',
+                    'Infraorder': 'Infraordem',
+                    'Section': 'Seção',
+                    'Subsection': 'Subseção',
+                    'Superfamily': 'Superfamília',
+                    'Family': 'Família',
+                    'Subfamily': 'Subfamília',
+                    'Tribe': 'Tribo',
+                    'Genus': 'Gênero',
+                    'Species': 'Espécie',
+                    'Subspecies': 'Subespécie',
+                    'Forma': 'Forma'
+                    }
+            aphia = Aphia()
+            record_taxon = aphia.get_aphia_records(taxon_name)[0]
+            taxon.aphia = record_taxon.AphiaID
+            taxon.authority = record_taxon.authority
+            if record_taxon.rank in RANKS_NAMES.keys():
+                taxon.rank = RANKS_NAMES[record_taxon.rank]
+            else:
+                parent_taxon.rank = record_taxon.rank
+            taxon.status = record_taxon.status
+            if record_taxon.valid_name:
+                taxon.is_valid = True
+            synonyms = Aphia().get_aphia_synonyms_by_id(record_taxon.AphiaID)
+            for synonym in synonyms:
+                if synonym.status == 'accepted':
+                    syn, created_syn = Taxon.objects.get_or_create(name=synonym.scientificname)
+                    if created_syn:
+                        syn.aphia = synonym.AphiaID
+                        syn.authority = synonym.authority
+                        if synonym.rank in RANKS_NAMES.keys():
+                            syn.rank = RANKS_NAMES[synonym.rank]
+                        else:
+                            syn.rank = synonym.rank
+                        syn.status = synonym.status
+                        if synonym.valid_name:
+                            syn.is_valid = True
+                        syn.valid_taxon = taxon
+            taxon.valid_taxon = taxon
+            parent_taxon = Taxon.objects.get(name=taxon_parent_name)
+            taxon.parent = parent_taxon
+            taxon.save()
         return Response({ "message": 'Táxon adicionado com sucesso', "data": serializer.data })
 
     return Response('Táxon com esse nome já existe.', status=status.HTTP_409_CONFLICT)

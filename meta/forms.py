@@ -284,7 +284,7 @@ class AddLocationForm(forms.ModelForm):
 class AddTaxaForm(forms.ModelForm):
     class Meta:
         model = Taxon
-        fields = ('name', 'aphia')
+        fields = ('name',)
 
     def clean_name(self):
         name = self.cleaned_data['name']

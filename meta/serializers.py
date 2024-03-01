@@ -20,47 +20,7 @@ class TaxonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Taxon
         fields = '__all__'
-
-    def save(self):
-
-        self._RANKS_NAMES = {
-                    'Kingdom': 'Reino',
-                    'Subkingdom': 'Subreino',
-                    'Phylum': 'Filo',
-                    'Subphylum': 'Subfilo',
-                    'Infraphylum': 'Infrafilo',
-                    'Megaclass': 'Megaclasse',
-                    'Superclass': 'Superclasse',
-                    'Class': 'Classe',
-                    'Subclass': 'Subclasse',
-                    'Infraclass': 'Infraclasse',
-                    'Superorder': 'Superordem',
-                    'Order': 'Ordem',
-                    'Suborder': 'Subordem',
-                    'Infraorder': 'Infraordem',
-                    'Section': 'Seção',
-                    'Subsection': 'Subseção',
-                    'Superfamily': 'Superfamília',
-                    'Family': 'Família',
-                    'Subfamily': 'Subfamília',
-                    'Tribe': 'Tribo',
-                    'Genus': 'Gênero',
-                    'Species': 'Espécie',
-                    'Subspecies': 'Subespécie',
-                    'Forma': 'Forma'
-                    }
-        taxon_name = self.validated_data['name']
-        records = Aphia().get_aphia_records(taxon_name)
-
-        if len(records)==0:
-            Curadoria.objects.get_or_create(name='Sem Aphia')
-            parent_taxon_name = "Sem Aphia"
-        else:
-            parent_taxon_name = self._update_parents_taxon(taxon_name)
-            Taxon.objects.rebuild()
-        super().save()
-        return parent_taxon_name
-
+        
     def _update_parents_taxon(self, taxon_name):
         #Trecho referente à taxon base
         aphia = Aphia()

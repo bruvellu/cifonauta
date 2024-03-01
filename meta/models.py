@@ -687,56 +687,66 @@ class Taxon(MPTTModel):
         else:
             for rank in RANKS_NAMES.keys():
                 if rank != records['rank'].lower():
+                    #creation of the ancestral taxa of the current
                     if rank == 'class':
                         rank = 'cls'
                     parent_name = records[rank]
-                    parent_taxon, created = Taxon.objects.get_or_create(name=parent_name)
-                    if created:
-                        record_parent_taxon = aphia.get_aphia_records(parent_taxon)[0]
-                        with Taxon.objects.disable_mptt_updates():
-                            parent_taxon.aphia = record_parent_taxon.AphiaID
-                            parent_taxon.authority = record_parent_taxon.authority
-                            if record_parent_taxon.rank.lower() in RANKS_NAMES.keys():
-                                parent_taxon.rank = RANKS_NAMES[record_parent_taxon['rank'].lower()]
-                            else:
-                                parent_taxon.rank = record_parent_taxon.rank
-                            parent_taxon.status = record_parent_taxon.status
-                            if parent_taxon.status == 'accepted':
-                                parent_taxon.is_valid = True
-                            synonyms = aphia.get_aphia_synonyms_by_id(record_parent_taxon.AphiaID)
-                            syn = False
-                            for synonym in synonyms:
-                                if synonym.status == 'accepted':
-                                    syn, created_syn = Taxon.objects.get_or_create(name=synonym.scientificname)
-                                    if created_syn:
-                                        syn.aphia = synonym.AphiaID
-                                        syn.authority = synonym.authority
-                                        if synonym.rank in RANKS_NAMES.keys():
-                                            syn.rank = RANKS_NAMES[synonym.rank]
-                                        else:
-                                            syn.rank = synonym.rank
-                                        syn.status = synonym.status
-                                        if synonym.valid_name:
-                                            syn.is_valid = True
-                                    break
-                            if record_parent_taxon.status == 'accepted':
-                                parent_taxon.is_valid = True
-                                parent_taxon.valid_taxon = parent_taxon
-                            else:
-                                parent_taxon.is_valid = False
-                                taxon_valid, created = Taxon.objects.get_or_create(name=record_parent_taxon.valid_name.capitalize())
-                                if created:
-                                    taxon_valid.update_taxonomic_tree()
-                            if rank != 'kingdom':
-                                if rank == 'cls':
-                                    index_rank = list(RANKS_NAMES.keys()).index('class')
+                    if parent_name:
+                        parent_taxon, created = Taxon.objects.get_or_create(name=parent_name)
+                        if created:
+                            record_parent_taxon = aphia.get_aphia_records(parent_taxon)[0]
+                            with Taxon.objects.disable_mptt_updates():
+                                parent_taxon.aphia = record_parent_taxon.AphiaID
+                                parent_taxon.authority = record_parent_taxon.authority
+                                if record_parent_taxon.rank.lower() in RANKS_NAMES.keys():
+                                    parent_taxon.rank = RANKS_NAMES[record_parent_taxon['rank'].lower()]
                                 else:
-                                    index_rank = list(RANKS_NAMES.keys()).index('class')
-                                granpa_taxon_name = records[list(RANKS_NAMES.keys())[index_rank-1]]
-                                parent_taxon.parent = Taxon.objects.get(name=granpa_taxon_name)
-                            parent_taxon.save()
+                                    parent_taxon.rank = record_parent_taxon.rank
+                                parent_taxon.status = record_parent_taxon.status
+                                if parent_taxon.status == 'accepted':
+                                    parent_taxon.is_valid = True
+                                synonyms = aphia.get_aphia_synonyms_by_id(record_parent_taxon.AphiaID)
+                                syn = False
+                                for synonym in synonyms:
+                                    if synonym.status == 'accepted':
+                                        syn, created_syn = Taxon.objects.get_or_create(name=synonym.scientificname)
+                                        if created_syn:
+                                            syn.aphia = synonym.AphiaID
+                                            syn.authority = synonym.authority
+                                            if synonym.rank in RANKS_NAMES.keys():
+                                                syn.rank = RANKS_NAMES[synonym.rank]
+                                            else:
+                                                syn.rank = synonym.rank
+                                            syn.status = synonym.status
+                                            if synonym.valid_name:
+                                                syn.is_valid = True
+                                        break
+                                if record_parent_taxon.status == 'accepted':
+                                    parent_taxon.is_valid = True
+                                    parent_taxon.valid_taxon = parent_taxon
+                                else:
+                                    parent_taxon.is_valid = False
+                                    taxon_valid, created = Taxon.objects.get_or_create(name=record_parent_taxon.valid_name.capitalize())
+                                    if created:
+                                        taxon_valid.update_taxonomic_tree()
+                                if rank != 'kingdom':
+                                    if rank == 'cls':
+                                        index_rank = list(RANKS_NAMES.keys()).index('class')
+                                    else:
+                                        index_rank = list(RANKS_NAMES.keys()).index(rank)
+                                    for i in range(1, 7):
+                                        granpa_rank = list(RANKS_NAMES.keys())[index_rank-i]
+                                        if granpa_rank == "class":
+                                            granpa_rank = "cls"
+                                        granpa_taxon_name = records[granpa_rank]
+                                        
+                                        if granpa_taxon_name:
+                                            parent_taxon.parent = Taxon.objects.get(name=granpa_taxon_name)
+                                            break
+                                parent_taxon.save()
 
                 else:
+                    #current taxon update
                     with Taxon.objects.disable_mptt_updates():
                         record_taxon = aphia.get_aphia_records(taxon_name)[0]
                         self.aphia = record_taxon.AphiaID
@@ -773,11 +783,21 @@ class Taxon(MPTTModel):
                         if rank == 'cls':
                             index_rank = list(RANKS_NAMES.keys()).index('class')
                         else:
-                            index_rank = list(RANKS_NAMES.keys()).index('class')
-                        taxon_parent_name = record_taxon[list(RANKS_NAMES.keys())[index_rank-1]]
-                        parent_taxon = Taxon.objects.get(name=taxon_parent_name)
-                        self.parent = parent_taxon
+                            index_rank = list(RANKS_NAMES.keys()).index(rank)
+                        granpa_rank = list(RANKS_NAMES.keys())[index_rank-1]
+                        if granpa_rank == "class":
+                            granpa_rank = "cls"
+                        for i in range(1, 7):
+                            granpa_rank = list(RANKS_NAMES.keys())[index_rank-i]
+                            if granpa_rank == "class":
+                                granpa_rank = "cls"
+                            granpa_taxon_name = records[granpa_rank]
+                            
+                            if granpa_taxon_name:
+                                self.parent = Taxon.objects.get(name=granpa_taxon_name)
+                                break
                         self.save()
+                    break
 
 
             Taxon.objects.rebuild()

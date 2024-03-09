@@ -16,7 +16,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
-from utils.media import Metadata, number_of_entries_per_page, format_name
+from utils.media import Metadata, number_of_entries_per_page, validate_specialist_action_form, format_name
+from utils.worms import Aphia
 from operator import or_, and_
 from PIL import Image
 
@@ -55,14 +56,17 @@ def create_reference(request):
         return Response('Referência já existe', status=status.HTTP_409_CONFLICT)
     return Response(serializer.data)
 
-@api_view(['POST'])
+@api_view(['POST']) 
 def create_taxa(request):
     request_data = request.data.copy()
     request_data['name'] = format_name(request_data['name'])
 
     serializer = TaxonSerializer(data=request_data)
     if serializer.is_valid():
+        taxon_name = serializer.validated_data['name']
         serializer.save()
+        taxon = Taxon.objects.get(name=taxon_name)
+        taxon.update_taxonomic_tree()
         return Response({ "message": 'Táxon adicionado com sucesso', "data": serializer.data })
 
     return Response('Táxon com esse nome já existe.', status=status.HTTP_409_CONFLICT)
@@ -1895,7 +1899,7 @@ def taxa_page(request):
 
     Species list is a genus list to show undefined species as well.
     '''
-    genera = Taxon.objects.filter(rank_en='Genus').order_by('name')
+    genera = Taxon.objects.filter(rank='Gênero').order_by('name')
     context = {
         'genera': genera,
         }

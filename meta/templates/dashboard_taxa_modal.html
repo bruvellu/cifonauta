@@ -21,7 +21,14 @@
             </div>
             {% endfor %}
             <div data-response-message="taxa"></div>
-            <button type="submit" name="action" value="taxa" data-submitter="taxa" class="secondary-button">Adicionar</button>
+            <button type="submit" name="action" value="taxa" data-submitter="taxa" class="secondary-button" onclick="message_add_taxa()">Adicionar</button>
+            <p id="message_add_taxa"></p>
+            <script>
+                function message_add_taxa() {
+                    var message = document.getElementById("message_add_taxa");
+                    message.innerHTML = "Atualizando árvore taxonômica. Essa ação pode levar alguns segundos. Você pode fechar essa janela enquanto atualizamos"
+                }
+            </script>
         </form>
     </main>
 </div>

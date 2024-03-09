@@ -127,7 +127,9 @@ class UploadMediaForm(forms.ModelForm, SendEmailForm):
             'authors': forms.SelectMultiple(attrs={"class": "select2-authors", "multiple": "multiple"}),
             'references': forms.SelectMultiple(attrs={"class": "select2-references", "multiple": "multiple"}),
             'date_created': forms.DateInput(attrs={'type': 'date'}),
-            'terms': forms.CheckboxInput(attrs={'class': 'dashboard-input'})
+            'terms': forms.CheckboxInput(attrs={'class': 'dashboard-input'}),
+            'latitude': forms.TextInput(attrs={'onchange': 'myMap()'}),
+            'longitude': forms.TextInput(attrs={'onchange': 'myMap()'})
         }
         help_texts = {
             'date_created': 'Data em que a mídia foi produzida. Caso a data seja desconhecida, preencher com "01/01/0001"',

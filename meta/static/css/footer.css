@@ -52,7 +52,14 @@
     flex-wrap: wrap;
     box-sizing: border-box;
     padding: 2rem;
-    border-top:#eee solid 1px;
+}
+
+.cebimar img {
+	height: 80px;
+}
+
+.prceu img, .cnpq img {
+	height: 50px;
 }
 
 @media (max-width: 780px) {
@@ -71,3 +78,9 @@
         padding-left: .6rem;
     }
 }
+
+#copyright {
+	text-align: center;
+	padding: 2em;
+}
+

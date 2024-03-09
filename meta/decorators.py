@@ -43,6 +43,22 @@ def specialist_required(view_func):
     return _wrapped_view
 
     
+def loaded_media_required(view_func):
+    @wraps(view_func)
+    @authentication_required
+    @author_required
+    def _wrapped_view(request, *args, **kwargs):
+        user = request.user
+        medias = Media.objects.filter(user=user, status='loaded')
+
+        if medias:
+            return view_func(request, *args, **kwargs)
+        
+        return redirect('upload_media_step1')
+
+    return _wrapped_view
+
+    
 def media_specialist_required(view_func):
     @wraps(view_func)
     @authentication_required

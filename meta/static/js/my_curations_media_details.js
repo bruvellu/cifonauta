@@ -11,6 +11,8 @@
     new CreateEntry({ fieldName: 'taxa' })
     new CreateEntry({ fieldName: 'location' })
 
+    sync_location_fields(false)
+
     const moreFieldsButton = document.querySelector('[data-more-fields-button]')
     moreFieldsButton.addEventListener('click', () => {
         const moreFieldsDiv = moreFieldsButton.nextElementSibling

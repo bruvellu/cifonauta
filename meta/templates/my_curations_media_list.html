@@ -3,7 +3,12 @@
 
 {% block extra_head %}
 <script src="{% static 'js/adm_select_all_records.js' %}" defer></script>
+<script src="{% static 'js/adm_sync_location_fields.js' %}" defer></script>
 <script src="{% static 'js/adm_modal.js' %}" defer></script>
+<script src="{% static 'js/adm_create_entry.js' %}" defer></script>
+<script src="{% static 'js/adm_references.js' %}" defer></script>
+<script src="{% static 'js/adm_latitude.js' %}" defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDq5WeIQ9PnSdEBvgtaykW5oB034cbpyak&callback=myMap" defer></script>
 <script src="{% static 'js/revision_media_list.js' %}" defer></script>
 {% endblock %}
 
@@ -106,6 +111,16 @@
     </section>
     {% else %}
         <p class="margin-top">Não há imagens</p>
+    {% endif %}
+
+    {% if object_exists and entries.object_list %}
+        {% include 'dashboard_taxa_modal.html' %}
+
+        {% include 'dashboard_location_modal.html' %}
+
+        {% include 'dashboard_references_modal.html' %}
+
+        {% include 'dashboard_latitude_modal.html' %}
     {% endif %}
 
 {% endblock %}

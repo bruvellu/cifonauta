@@ -9,12 +9,11 @@ class FlatPageTranslation(TranslationOptions):
 
 @register(Media)
 class MediaTranslation(TranslationOptions):
-    fields = ('title', 'caption',)
+    fields = ('title', 'caption', 'acknowledgments')
 
 @register(ModifiedMedia)
 class ModifiedMedia2Translation(TranslationOptions):
     fields = ()
-
 
 @register(Taxon)
 class TaxonTranslation(TranslationOptions):
@@ -45,3 +44,4 @@ class CountryTranslation(TranslationOptions):
 @register(Tour)
 class TourTranslation(TranslationOptions):
     fields = ('name', 'description',)
+

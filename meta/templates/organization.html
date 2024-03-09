@@ -27,25 +27,25 @@
 
 <p>{% blocktrans %}A classificação biológica utilizada não adota nenhuma proposta em particular e é construída automaticamente a partir do banco de dados do <a href="http://www.itis.gov/">ITIS</a>. Usando o nome do táxon (contido na imagem) conseguimos recuperar sua hierarquia taxonômica completa e construir uma árvore simples para navegação. Portanto, nem sempre a classificação estará de acordo com os últimos avanços de cada área; ela reflete quase estritamente os dados do ITIS. Somente em alguns casos, editamos manualmente a hierarquia para a proposta de classificação seguida pelo autor (ou especialista) que identificou a espécie.{% endblocktrans %}</p>
 
-<h2>{% trans 'Tamanho' %}</h2>
+<h2>{% trans 'Escala' %}</h2>
 
 <p>{% blocktrans %}Para dar uma ideia das dimensões dos organismos, criamos 5 classes de tamanho arbitrariamente. A fauna bentônica recebeu uma classificação adicional de tamanho: macrofauna, meiofauna e microfauna (ver item Modo de Vida, abaixo). Fotos dos ambientes não contêm informações de tamanho, mas caso estejam ilustrando algum organismo (por exemplo, cracas no costão), podem vir acompanhadas da escala relativa a esse organismo. As classes de tamanho são:{% endblocktrans %}</p>
 
-<table>
-    <tr>
-        <th>{% trans 'Descrição' %}</th>
-        <th>{% trans 'Exemplo' %}</th>
-    </tr>
-    {% for tag in sizes.tags.all %}
-    <tr>
-        <td class="bold">
-            {{ tag }}
-            <p class="description-text">{% if tag.description %}{{ tag.description }}{% endif %}</p>
-        </td>
-        <td>{% print_thumb 'tags' tag %}</td>
-    </tr>
-    {% endfor %}
-</table>
+{% comment %}<table>{% endcomment %}
+    {% comment %}<tr>{% endcomment %}
+        {% comment %}<th>{% trans 'Descrição' %}</th>{% endcomment %}
+        {% comment %}<th>{% trans 'Exemplo' %}</th>{% endcomment %}
+    {% comment %}</tr>{% endcomment %}
+    {% comment %}{% for tag in sizes.tags.all %}{% endcomment %}
+    {% comment %}<tr>{% endcomment %}
+        {% comment %}<td class="bold">{% endcomment %}
+            {% comment %}{{ tag }}{% endcomment %}
+            {% comment %}<p class="description-text">{% if tag.description %}{{ tag.description }}{% endif %}</p>{% endcomment %}
+        {% comment %}</td>{% endcomment %}
+        {% comment %}<td>{% print_thumb 'tags' tag %}</td>{% endcomment %}
+    {% comment %}</tr>{% endcomment %}
+    {% comment %}{% endfor %}{% endcomment %}
+{% comment %}</table>{% endcomment %}
 
 <h2>{% trans 'Técnicas fotográficas' %}</h2>
 <p>{% blocktrans %}As diferentes técnicas utilizadas para capturar as imagens do banco foram divididas em 4 categorias: <strong>submersa</strong>, <strong>macrofotografia</strong>, <strong>paisagem</strong> e <strong>microscopia</strong>. Para abarcar a variedade de técnicas de microscopia este último foi subdividido. Segue então a lista dos marcadores referentes às técnicas fotográficas:{% endblocktrans %}</p>

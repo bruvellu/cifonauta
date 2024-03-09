@@ -5,10 +5,10 @@
   <ul>
     {% if user.is_superuser %}
     <li><a href="/admin/">admin</a></li>
+    <li><a href="/rosetta/">tradução</a></li>
     {% endif %}
-    <li><a href="/rosetta/">traduzir</a></li>
     {% if user.is_author %}
-    <li><a href="{% url 'upload_media_step1' %}">módulo administrativo</a></li>
+    <li><a href="{% url 'upload_media_step1' %}">dashboard</a></li>
     {% endif %}
     <li><a href="{% url 'Logout' %}">logout</a></li>
   </ul>

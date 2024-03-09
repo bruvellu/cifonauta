@@ -1,7 +1,7 @@
-<div data-modal="authors" id="modal-container" class="modal modal--small">
+<div data-modal="authors" class="modal modal--small">
     <header class="modal-header">
         <p>Registre o coautor</p>
-        <button data-close-modal="authors" id="close-modal-button" class="close-modal-button">
+        <button data-close-modal="authors" class="close-modal-button">
             <div class='line1'></div>
             <div class='line2'></div>
         </button>
@@ -9,13 +9,13 @@
     <main class="modal-body">
         <form method="post" data-form="authors" class="modal-form">
             {% csrf_token %}
-            {% for field2 in registration_form %}
+            {% for field in authors_form %}
             <div class="field field--modal">
-                {{ field2.label_tag }}
+                {{ field.label_tag }}
                 <div class="field__input-container">
-                    {{ field2 }}
-                    {% if field2.help_text %}
-                    <span class="field__help-text">{{ field2.help_text }}</span>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <span class="field__help-text">{{ field.help_text }}</span>
                     {% endif %}
                 </div>
             </div>

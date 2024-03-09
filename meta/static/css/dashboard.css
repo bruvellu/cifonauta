@@ -89,7 +89,6 @@ button:disabled {
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 3;
 }
 
 .overlay--lighter {
@@ -103,6 +102,8 @@ button:disabled {
 .margin-top { margin-top: 1rem; }
 
 .margin-top--2 { margin-top: 2rem; }
+
+.flex-direction--column { flex-direction: column; }
 
 #hamburger {
     display: none;
@@ -159,7 +160,7 @@ button:disabled {
     bottom: 0;
     position: fixed;
     font-weight: bold;
-    z-index: 5;
+    z-index: 3;
     transition: translate .3s ease-in;
 }
 
@@ -440,18 +441,6 @@ button:disabled {
 
 
 /* POPUP */
-.modal-overlay {
-    background-color: rgba(0, 0, 0, 0.3);
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 3;
-    display: none;
-}
-
-#modal-container,
 .modal-container {
     position: fixed;
     top: 50%;
@@ -461,6 +450,10 @@ button:disabled {
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 5;
+}
+
+.opened-modal-container {
+    scale: 1 !important;
 }
 
 .modal {
@@ -495,14 +488,6 @@ button:disabled {
 
 .modal--media-changes header {
     padding: 1rem 1rem 0 1rem;
-}
-
-.opened-behind-modal {
-    display: block !important;
-}
-
-.opened-modal {
-    scale: 1 !important;
 }
 
 .behind-modal-container {
@@ -590,9 +575,9 @@ button:disabled {
     -moz-border-radius: 1rem;
     -webkit-border-radius: 1rem;
     border-radius: 1rem;
-    -webkit-box-shadow: 2px 2px 5px #aaa;
-    -moz-box-shadow: 2px 2px 5px #aaa;
-    box-shadow: 0 4px 12px 2px #00000012;
+    -webkit-box-shadow: 0 0.125rem .5rem 0 hsl(0deg 0% 0% / 7%);
+    -moz-box-shadow: 0 0.125rem .5rem 0 hsl(0deg 0% 0% / 7%);
+    box-shadow: 0 0.125rem .5rem 0 hsl(0deg 0% 0% / 7%);
     font-size: 80%;
     margin-top: 1.5rem;
     position: relative;
@@ -713,10 +698,21 @@ button:disabled {
     margin-top: 2rem;
 }
 
+.actions-modal-message {
+    font-size: .9rem;
+    font-weight: 500;
+    line-height: 1.25;
+}
+
 .action-field {
   display: flex;
   flex-direction: column;
   gap: .25rem;
+}
+
+.action-field__label-wrapper {
+    display: flex;
+    gap: .25rem;
 }
 
 .action-field__field-container {
@@ -725,12 +721,24 @@ button:disabled {
     gap: .25rem;
 }
 
+.action-field__field-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
 .action-field input:not([type="checkbox"]),
 .action-field select,
 .action-field .select2-container {
     width: 100% !important;
     min-height: 1.8rem;
 }
+
+.action-field input:not([type="checkbox"]) {
+    font-size: .9rem;
+    padding-left: .25rem;
+}
+
 
 .paginator {
     display: flex;
@@ -1156,6 +1164,26 @@ textarea {
     color: #5b5b5b;
 }
 
+.checkbox-multiple {
+    display: flex;
+    gap: 1rem 2rem;
+    flex-wrap: wrap;
+}
+
+
+.checkbox-multiple__category {
+    display: grid;
+    height: fit-content;
+}
+
+.checkbox-multiple__category-name {
+    font-weight: 500;
+}
+
+.checkbox-label {
+    font-weight: 400;
+}
+
 .pre-registration-button {
     font-size: 1rem;
     font-weight: 500;
@@ -1473,15 +1501,19 @@ textarea {
     color: var(--white);
 }
 
+.input-and-options-wrapper {
+    width: 100%;
+}
+
 #input-container {
     display: flex;
     align-items: center;
     gap: .4rem;
     flex-wrap: wrap;
-    border: .1px solid black;
+    border: 1px solid hsla(0, 0%, 0%, 0.32);
     border-radius: 4px;
     padding: .4rem;
-    width: min(24rem, 100%);
+    width: min(25rem, 100%);
 }
 
 #selected-options-container {
@@ -1557,9 +1589,9 @@ textarea {
 #options-container {
     display: flex;
     flex-direction: column;
-    border: 1px solid black;
+    border: 1px solid hsla(0, 0%, 0%, 0.32);
     border-radius: 3px;
-    width: min(24rem, 100%);
+    width: min(25rem, 100%);
     max-height: 15rem;
     overflow-y: auto;
 }

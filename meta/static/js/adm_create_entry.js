@@ -17,6 +17,7 @@ class CreateEntry {
           modalContent: this.fieldModalDiv,
           modalTrigger: document.querySelector(`[data-open-modal="${this.fieldName}"]`),
           modalClose: this.fieldModalDiv.querySelector(`[data-close-modal="${this.fieldName}"]`),
+          modalZIndex: 8,
           onCloseCallback: this.clearFields.bind(this)
       })
   }

@@ -32,7 +32,7 @@ urlpatterns = [
         path('api/reference/', views.create_reference, name='create_reference'),
         path('api/taxa/', views.create_taxa, name='create_taxa'),
         path('api/location/', views.create_location, name='create_location'),
-        path('api/authors/', views.create_coauthor, name='create_coauthor'),
+        path('api/authors/', views.create_authors, name='create_authors'),
 
         # Menu
         path('search/', views.search_page, name='search_url'),

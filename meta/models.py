@@ -232,6 +232,11 @@ class Media(models.Model):
                                blank=True,
                                help_text=_('Legenda da imagem.'))
 
+    acknowledgments = models.TextField(_('agradecimentos'),
+                               default='',
+                               blank=True,
+                               help_text=_('Agradecimentos da imagem.'))
+
     scale = models.CharField(_('escala da imagem'),
                              max_length=12,
                              blank=True,
@@ -640,7 +645,7 @@ class Taxon(MPTTModel):
             blank=True, null=True, help_text=_('Data da última modificação do arquivo.'))
 
     def __str__(self):
-        return self.name
+        return f'{self.name} [id={self.id}]'
 
     def get_absolute_url(self):
         return reverse('taxon_url', args=[self.slug])

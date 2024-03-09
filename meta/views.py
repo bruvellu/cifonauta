@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
-from utils.media import Metadata, number_of_entries_per_page, validate_specialist_action_form, format_name
+from utils.media import Metadata, number_of_entries_per_page, format_name
 from utils.worms import Aphia
 from operator import or_, and_
 from PIL import Image

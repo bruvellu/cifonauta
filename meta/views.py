@@ -17,7 +17,7 @@ from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.aggregates import StringAgg
 from functools import reduce
 from utils.media import Metadata, number_of_entries_per_page, format_name
-from utils.worms import Aphia
+from utils.taxa import TaxonUpdater
 from operator import or_, and_
 from PIL import Image
 
@@ -60,13 +60,31 @@ def create_reference(request):
 def create_taxa(request):
     request_data = request.data.copy()
     request_data['name'] = format_name(request_data['name'])
-
+    
     serializer = TaxonSerializer(data=request_data)
     if serializer.is_valid():
+        try:
+            taxon = Taxon.objects.get(name=serializer.validated_data['name'].capitalize())
+            if taxon:
+                return Response('Táxon com esse nome já existe.', status=status.HTTP_409_CONFLICT)
+        except:
+            pass
         taxon_name = serializer.validated_data['name']
         serializer.save()
-        taxon = Taxon.objects.get(name=taxon_name)
-        taxon.update_taxonomic_tree()
+        with Taxon.objects.disable_mptt_updates():
+            taxon_update = TaxonUpdater(taxon_name)
+        Taxon.objects.rebuild()
+        match taxon_update.status:
+            case 'accepted':
+                curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                curadory.taxons.add(taxon_update.taxon)
+            case 'invalid':
+                curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                curadory.taxons.add(taxon_update.taxon)
+            case 'not_exist':
+                curadory, _ = Curadoria.objects.get_or_create(name='Não está na Worms')
+                curadory.taxons.add(taxon_update.taxon)
+
         return Response({ "message": 'Táxon adicionado com sucesso', "data": serializer.data })
 
     return Response('Táxon com esse nome já existe.', status=status.HTTP_409_CONFLICT)

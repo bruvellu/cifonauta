@@ -156,7 +156,7 @@ class TaxonUpdater:
             return False
 
         # Skip taxon without exact name match (but update timestamp)
-        if record['scientificname'].strip().capitalize() != taxon_name.strip().capitalize():
+        if record['scientificname'] != taxon_name:
             print(f'Record name mismatch: "{record["scientificname"]}" (WoRMS) not identical to "{taxon_name}" (Taxon name)')
             self.status = 'not_exist'
             return False

@@ -59,17 +59,19 @@ def create_reference(request):
 @api_view(['POST']) 
 def create_taxa(request):
     request_data = request.data.copy()
-    request_data['name'] = format_name(request_data['name'])
+    #TODO: format_name function is tailored for people's names. Species' names have a different formatting, see TaxonUpdater.sanitize_name() method (applied below). Either call sanitize_name here or get sanitized taxon name from TaxonUpdater below and save to the serializer object.
+    #request_data['name'] = format_name(request_data['name'])
+    request_data['name'] = request_data['name'].strip().lower().capitalize()
     
     serializer = TaxonSerializer(data=request_data)
     if serializer.is_valid():
+        taxon_name = serializer.validated_data['name']
         try:
-            taxon = Taxon.objects.get(name=serializer.validated_data['name'].capitalize())
+            taxon = Taxon.objects.get(name_iexact=taxon_name)
             if taxon:
                 return Response('Táxon com esse nome já existe.', status=status.HTTP_409_CONFLICT)
         except:
             pass
-        taxon_name = serializer.validated_data['name']
         serializer.save()
         with Taxon.objects.disable_mptt_updates():
             taxon_update = TaxonUpdater(taxon_name)

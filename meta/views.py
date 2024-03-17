@@ -78,13 +78,13 @@ def create_taxa(request):
         Taxon.objects.rebuild()
         match taxon_update.status:
             case 'accepted':
-                curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
                 curadory.taxons.add(taxon_update.taxon)
             case 'invalid':
-                curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
                 curadory.taxons.add(taxon_update.taxon)
             case 'not_exist':
-                curadory, _ = Curadoria.objects.get_or_create(name='Não está na Worms')
+                curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
                 curadory.taxons.add(taxon_update.taxon)
 
         return Response({ "message": 'Táxon adicionado com sucesso', "data": serializer.data })

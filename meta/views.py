@@ -69,21 +69,7 @@ def create_taxa(request):
                 return Response('Táxon com esse nome já existe.', status=status.HTTP_409_CONFLICT)
         except:
             pass
-        taxon_name = serializer.validated_data['name']
         serializer.save()
-        with Taxon.objects.disable_mptt_updates():
-            taxon_update = TaxonUpdater(taxon_name)
-        Taxon.objects.rebuild()
-        match taxon_update.status:
-            case 'accepted':
-                curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
-                curadory.taxons.add(taxon_update.taxon)
-            case 'invalid':
-                curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
-                curadory.taxons.add(taxon_update.taxon)
-            case 'not_exist':
-                curadory, _ = Curadoria.objects.get_or_create(name='Não está na Worms')
-                curadory.taxons.add(taxon_update.taxon)
 
         return Response({ "message": 'Táxon adicionado com sucesso', "data": serializer.data })
 
@@ -251,9 +237,27 @@ def upload_media_step2(request):
                     media_instance.sitepath = media_instance.file_medium
                     media_instance.coverpath = media_instance.file_cover
 
+                    #Update taxons
+                    not_worms_curatory = Curadoria.objects.get(name='Não está na Worms')
+                    for taxon in form.cleaned_data['taxa']:
+                        if taxon.rank == '' and taxon not in not_worms_curatory.taxons.all():
+                            with Taxon.objects.disable_mptt_updates():
+                                taxon_update = TaxonUpdater(taxon.name)
+                            Taxon.objects.rebuild()
+                            match taxon_update.status:
+                                case 'accepted':
+                                    curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                                    curadory.taxons.add(taxon)
+                                case 'invalid':
+                                    curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                                    curadory.taxons.add(taxon)
+                                case 'not_exist':
+                                    curadory, _ = Curadoria.objects.get_or_create(name='Não está na Worms')
+                                    curadory.taxons.add(taxon)
+
                     # Save media instance
                     media_instance.save() #TODO: Move down (last)
-
+                    
                 # Send email 
                 curations = Curadoria.objects.filter(taxons__in=form.cleaned_data['taxa'])
                 specialists_user = set()

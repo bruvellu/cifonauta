@@ -254,6 +254,8 @@ def upload_media_step2(request):
                                 case 'not_exist':
                                     curadory, _ = Curadoria.objects.get_or_create(name='Não está na Worms')
                                     curadory.taxons.add(taxon)
+                        if taxon.valid_taxon != None:
+                            media_instance.taxa.add(taxon.valid_taxon)
 
                     # Save media instance
                     media_instance.save() #TODO: Move down (last)

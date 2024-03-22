@@ -237,13 +237,20 @@ def upload_media_step2(request):
                     media_instance.sitepath = media_instance.file_medium
                     media_instance.coverpath = media_instance.file_cover
 
-                    #Update taxons
                     not_worms_curatory = Curadoria.objects.get(name='Não está na Worms')
+                    #Update taxons
                     for taxon in form.cleaned_data['taxa']:
+                        update_curatory_taxa = []
                         if taxon.rank == '' and taxon not in not_worms_curatory.taxons.all():
                             with Taxon.objects.disable_mptt_updates():
-                                taxon_update = TaxonUpdater(taxon.name)
+                                update = TaxonUpdater(taxon.name)
                             Taxon.objects.rebuild()
+                            update_curatory_taxa.append(update)
+                        if taxon.valid_taxon != None:
+                            media_instance.taxa.add(taxon.valid_taxon)
+                            media_instance.taxa.remove(taxon)
+                            update_curatory_taxa.append(taxon.valid_taxon)
+                        for taxon_update in update_curatory_taxa:
                             match taxon_update.status:
                                 case 'accepted':
                                     curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
@@ -254,9 +261,7 @@ def upload_media_step2(request):
                                 case 'not_exist':
                                     curadory, _ = Curadoria.objects.get_or_create(name='Não está na Worms')
                                     curadory.taxons.add(taxon)
-                        if taxon.valid_taxon != None:
-                            media_instance.taxa.add(taxon.valid_taxon)
-
+                        
                     # Save media instance
                     media_instance.save() #TODO: Move down (last)
                     

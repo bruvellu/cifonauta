@@ -232,7 +232,8 @@ def show_tree(current=None):
     Usar o selected_related para pegar o 'parent' diminuiu 100 queries!
     '''
     Taxon = apps.get_model('meta', 'Taxon')
-    taxa = Taxon.objects.select_related('parent').filter(media__status='published')
+    taxa = Taxon.objects.filter(media__status='published').get_ancestors(include_self=True)
+
     return {'taxa': taxa, 'current': current}
 
 @register.inclusion_tag('search_box.html')

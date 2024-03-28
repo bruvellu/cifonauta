@@ -261,7 +261,7 @@ def upload_media_step2(request):
                                 case 'not_exist':
                                     curadory, _ = Curadoria.objects.get_or_create(name='Não está na Worms')
                                     curadory.taxons.add(taxon)
-                        
+                                    
                     # Save media instance
                     media_instance.save() #TODO: Move down (last)
                     
@@ -333,6 +333,7 @@ def upload_media_step2(request):
                 'caption_en': read_metadata['description_en'],
                 'latitude': latitude,
                 'longitude': longitude,
+                'date_created': datetime
             })
 
     authors_form = AddAuthorsForm()
@@ -537,6 +538,11 @@ def editing_media_list(request):
                             if not media.title_pt_br or not media.title_en:
                                 messages.error(request, 'Não é possível submeter mídia com campos obrigatórios faltando')
                                 return redirect('editing_media_list')
+                        
+                        for taxon in form.cleaned_data['taxa']:
+                            if taxon.valid_taxon != None:
+                                media.taxa.add(taxon.valid_taxon)
+                                media.taxa.remove(taxon)
 
                     error = execute_bash_action(request, medias, user, 'editing_media_list')
                     if error:
@@ -1006,6 +1012,12 @@ def revision_modified_media(request, media_id):
             if not modified_media.altered_by_author:
                 media.specialists.add(modified_media.modification_person)
 
+            for taxon in form.cleaned_data['taxa']:
+                if taxon.valid_taxon != None:
+                    modified_media.taxa.add(taxon.valid_taxon)
+                    modified_media.taxa.remove(taxon)
+
+
             form.send_mail(request.user, media.user, media, 'Alteração de mídia no Cifonauta', 'email_modified_media.html', modification_accepted=True)
 
             form.send_mail(request.user, specialists_user, media, 'Alteração de mídia no Cifonauta', 'email_modified_media.html', modification_accepted=True, modified_media_specialists_message=True)
@@ -1057,7 +1069,11 @@ def revision_media_details(request, media_id):
                 media_instance.status = 'published'
                 media_instance.is_public = True
                 media_instance.update_metadata()
-                
+            for taxon in form.cleaned_data['taxa']:
+                if taxon.valid_taxon != None:
+                    media_instance.taxa.add(taxon.valid_taxon)
+                    media_instance.taxa.remove(taxon)
+
             # Save instance
             media_instance.save()
 

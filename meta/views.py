@@ -1928,8 +1928,9 @@ def taxa_page(request):
 
     Species list is a genus list to show undefined species as well.
     '''
-    genera = Taxon.objects.filter(rank='Gênero', media__status='published').order_by('name')
-
+    query = Q(rank='Gênero')
+    query.add(Q(rank='Espécie'), Q.OR)
+    genera = Taxon.objects.filter(media__status='published').get_ancestors(include_self=True).filter(query)
     context = {
         'genera': genera,
         }

@@ -1,5 +1,5 @@
 wheel
-django==4.2.10
+django==4.2.11
 psycopg2==2.9.6
 django-mptt
 django-rosetta

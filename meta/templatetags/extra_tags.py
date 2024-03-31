@@ -228,11 +228,9 @@ def show_tree(current=None):
     '''Passa objeto para gerar árvore.
 
     Usa o recursetree do MPTT no template para gerar a árvore. Aceita argumento opcional para pré-expandir os nós mostrando os táxons da imagem aberta.
-
-    Usar o selected_related para pegar o 'parent' diminuiu 100 queries!
     '''
     Taxon = apps.get_model('meta', 'Taxon')
-    taxa = Taxon.objects.filter(media__status='published').get_ancestors(include_self=True)
+    taxa = Taxon.objects.filter(media__status='published').distinct().get_ancestors(include_self=True)
 
     return {'taxa': taxa, 'current': current}
 

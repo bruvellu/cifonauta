@@ -1949,7 +1949,7 @@ def taxa_page(request):
     '''
     query = Q(rank='Gênero')
     query.add(Q(rank='Espécie'), Q.OR)
-    genera = Taxon.objects.filter(media__status='published').get_ancestors(include_self=True).filter(query)
+    genera = Taxon.objects.filter(media__status='published').distinct().get_ancestors(include_self=True).filter(query)
     context = {
         'genera': genera,
         }

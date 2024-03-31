@@ -240,7 +240,7 @@ def upload_media_step2(request):
                     media_instance.sitepath = media_instance.file_medium
                     media_instance.coverpath = media_instance.file_cover
 
-                    not_worms_curatory = Curadoria.objects.get(name='Não está na Worms')
+                    not_worms_curatory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
                     #Update taxons
                     for taxon in form.cleaned_data['taxa']:
                         update_curatory_taxa = []

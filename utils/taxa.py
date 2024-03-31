@@ -91,7 +91,7 @@ class TaxonUpdater:
     def __init__(self, name):
 
         # Taxon status, ends in string: accepted, invalid or not_exist
-        self._status = None
+        self.status = None
         self.status = 'not_exist'
 
         # Clean input name
@@ -117,7 +117,6 @@ class TaxonUpdater:
 
         # Update database entry with new record data
         self.taxon = self.update_taxon_metadata(self.taxon, self.record)
-        self.status = self._status
         # Get or create parent taxa
         self.lineage = self.save_taxon_lineage(self.taxon, self.record)
 
@@ -154,13 +153,13 @@ class TaxonUpdater:
         # Skip taxon without WoRMS record (but update timestamp)
         if not record:
             print(f'Record not found: No WoRMS record for "{taxon_name}"')
-            self._status = 'not_exist'
+            self.status = 'not_exist'
             return False
 
         # Skip taxon without exact name match (but update timestamp)
-        if record['scientificname'].strip().capitalize() != taxon_name.strip().capitalize():
+        if record['scientificname'] != taxon_name:
             print(f'Record name mismatch: "{record["scientificname"]}" (WoRMS) not identical to "{taxon_name}" (Taxon name)')
-            self._status = 'not_exist'
+            self.status = 'not_exist'
             return False
 
         # If not caught above
@@ -170,10 +169,10 @@ class TaxonUpdater:
         '''Update taxon entry in the database.'''
         # Convert status string to boolean
         if record['status'] == 'accepted':
-            self._status = 'accepted'
+            self.status = 'accepted'
             is_valid = True
         else:
-            self._status = 'invalid'
+            self.status = 'invalid'
             is_valid = False
         # Set new medadata for individual fields
         taxon.name = record['scientificname']

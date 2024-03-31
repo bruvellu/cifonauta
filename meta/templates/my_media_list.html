@@ -73,7 +73,7 @@
                         </td>
                         <td class="image-cedule">
                             <a href="{% url 'my_media_details' pk=media.pk %}" class="media-wrapper-td">
-                              <img src="{{ media.coverpath.url }}">
+                              <img src="{{ MEDIA_URL }}{{ media.coverpath }}">
                             </a>
                         </td>
                         <td class="text-cedule">

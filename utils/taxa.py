@@ -92,6 +92,7 @@ class TaxonUpdater:
 
         # Taxon status, ends in string: accepted, invalid or not_exist
         self.status = None
+        self.status = 'not_exist'
 
         # Clean input name
         self.name = self.sanitize_name(name)
@@ -114,7 +115,7 @@ class TaxonUpdater:
             print(f'Saved without WoRMS metadata: {self.taxon}')
             return None
 
-        # Update database entry with new record data 
+        # Update database entry with new record data
         self.taxon = self.update_taxon_metadata(self.taxon, self.record)
         # Get or create parent taxa
         self.lineage = self.save_taxon_lineage(self.taxon, self.record)

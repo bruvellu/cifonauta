@@ -73,19 +73,6 @@ def create_taxa(request):
         except:
             pass
         serializer.save()
-        with Taxon.objects.disable_mptt_updates():
-            taxon_update = TaxonUpdater(taxon_name)
-        Taxon.objects.rebuild()
-        match taxon_update.status:
-            case 'accepted':
-                curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
-                curadory.taxons.add(taxon_update.taxon)
-            case 'invalid':
-                curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
-                curadory.taxons.add(taxon_update.taxon)
-            case 'not_exist':
-                curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
-                curadory.taxons.add(taxon_update.taxon)
 
         return Response({ "message": 'Táxon adicionado com sucesso', "data": serializer.data })
 
@@ -253,9 +240,34 @@ def upload_media_step2(request):
                     media_instance.sitepath = media_instance.file_medium
                     media_instance.coverpath = media_instance.file_cover
 
+                    not_worms_curatory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
+                    #Update taxons
+                    for taxon in form.cleaned_data['taxa']:
+                        update_curatory_taxa = []
+                        if taxon.rank == '' and taxon not in not_worms_curatory.taxons.all():
+                            with Taxon.objects.disable_mptt_updates():
+                                update = TaxonUpdater(taxon.name)
+                            Taxon.objects.rebuild()
+                            update_curatory_taxa.append(update)
+                        if taxon.valid_taxon != None:
+                            media_instance.taxa.add(taxon.valid_taxon)
+                            media_instance.taxa.remove(taxon)
+                            update_curatory_taxa.append(taxon.valid_taxon)
+                        for taxon_update in update_curatory_taxa:
+                            match taxon_update.status:
+                                case 'accepted':
+                                    curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                                    curadory.taxons.add(taxon)
+                                case 'invalid':
+                                    curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                                    curadory.taxons.add(taxon)
+                                case 'not_exist':
+                                    curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
+                                    curadory.taxons.add(taxon)
+                                    
                     # Save media instance
                     media_instance.save() #TODO: Move down (last)
-
+                    
                 # Send email 
                 curations = Curadoria.objects.filter(taxons__in=form.cleaned_data['taxa'])
                 specialists_user = set()
@@ -324,6 +336,7 @@ def upload_media_step2(request):
                 'caption_en': read_metadata['description_en'],
                 'latitude': latitude,
                 'longitude': longitude,
+                'date_created': datetime
             })
 
     authors_form = AddAuthorsForm()
@@ -528,6 +541,11 @@ def editing_media_list(request):
                             if not media.title_pt_br or not media.title_en:
                                 messages.error(request, 'Não é possível submeter mídia com campos obrigatórios faltando')
                                 return redirect('editing_media_list')
+                        
+                        for taxon in form.cleaned_data['taxa']:
+                            if taxon.valid_taxon != None:
+                                media.taxa.add(taxon.valid_taxon)
+                                media.taxa.remove(taxon)
 
                     error = execute_bash_action(request, medias, user, 'editing_media_list')
                     if error:
@@ -997,6 +1015,12 @@ def revision_modified_media(request, media_id):
             if not modified_media.altered_by_author:
                 media.specialists.add(modified_media.modification_person)
 
+            for taxon in form.cleaned_data['taxa']:
+                if taxon.valid_taxon != None:
+                    modified_media.taxa.add(taxon.valid_taxon)
+                    modified_media.taxa.remove(taxon)
+
+
             form.send_mail(request.user, media.user, media, 'Alteração de mídia no Cifonauta', 'email_modified_media.html', modification_accepted=True)
 
             form.send_mail(request.user, specialists_user, media, 'Alteração de mídia no Cifonauta', 'email_modified_media.html', modification_accepted=True, modified_media_specialists_message=True)
@@ -1048,7 +1072,11 @@ def revision_media_details(request, media_id):
                 media_instance.status = 'published'
                 media_instance.is_public = True
                 media_instance.update_metadata()
-                
+            for taxon in form.cleaned_data['taxa']:
+                if taxon.valid_taxon != None:
+                    media_instance.taxa.add(taxon.valid_taxon)
+                    media_instance.taxa.remove(taxon)
+
             # Save instance
             media_instance.save()
 
@@ -1919,7 +1947,9 @@ def taxa_page(request):
 
     Species list is a genus list to show undefined species as well.
     '''
-    genera = Taxon.objects.filter(rank='Gênero').order_by('name')
+    query = Q(rank='Gênero')
+    query.add(Q(rank='Espécie'), Q.OR)
+    genera = Taxon.objects.filter(media__status='published').get_ancestors(include_self=True).filter(query)
     context = {
         'genera': genera,
         }

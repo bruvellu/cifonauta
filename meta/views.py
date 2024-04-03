@@ -426,13 +426,13 @@ def editing_media_details(request, media_id):
                 for taxon_update in update_curatory_taxa:
                     match taxon_update.status:
                         case 'accepted':
-                            curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                            curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
                             curadory.taxons.add(taxon)
                         case 'invalid':
-                            curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                            curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
                             curadory.taxons.add(taxon)
                         case 'not_exist':
-                            curadory, _ = Curadoria.objects.get_or_create(name='Não está na Worms')
+                            curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
                             curadory.taxons.add(taxon)
 
             media_instance.save()
@@ -583,13 +583,13 @@ def editing_media_list(request):
                             for taxon_update in update_curatory_taxa:
                                 match taxon_update.status:
                                     case 'accepted':
-                                        curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                                        curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
                                         curadory.taxons.add(taxon)
                                     case 'invalid':
-                                        curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                                        curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
                                         curadory.taxons.add(taxon)
                                     case 'not_exist':
-                                        curadory, _ = Curadoria.objects.get_or_create(name='Não está na Worms')
+                                        curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
                                         curadory.taxons.add(taxon)
 
                     error = execute_bash_action(request, medias, user, 'editing_media_list')
@@ -742,13 +742,13 @@ def my_media_details(request, pk):
                 for taxon_update in update_curatory_taxa:
                     match taxon_update.status:
                         case 'accepted':
-                            curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                            curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
                             curadory.taxons.add(taxon)
                         case 'invalid':
-                            curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                            curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
                             curadory.taxons.add(taxon)
                         case 'not_exist':
-                            curadory, _ = Curadoria.objects.get_or_create(name='Não está na Worms')
+                            curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
                             curadory.taxons.add(taxon)
             media.save()
 
@@ -1165,13 +1165,13 @@ def revision_media_details(request, media_id):
                 for taxon_update in update_curatory_taxa:
                     match taxon_update.status:
                         case 'accepted':
-                            curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                            curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
                             curadory.taxons.add(taxon)
                         case 'invalid':
-                            curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                            curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
                             curadory.taxons.add(taxon)
                         case 'not_exist':
-                            curadory, _ = Curadoria.objects.get_or_create(name='Não está na Worms')
+                            curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
                             curadory.taxons.add(taxon)
 
             # Save instance
@@ -1388,13 +1388,13 @@ def my_curations_media_details(request, media_id):
                             for taxon_update in update_curatory_taxa:
                                 match taxon_update.status:
                                     case 'accepted':
-                                        curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                                        curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
                                         curadory.taxons.add(taxon)
                                     case 'invalid':
-                                        curadory, _ = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                                        curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
                                         curadory.taxons.add(taxon)
                                     case 'not_exist':
-                                        curadory, _ = Curadoria.objects.get_or_create(name='Não está na Worms')
+                                        curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
                                         curadory.taxons.add(taxon)
 
                         media.save()

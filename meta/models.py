@@ -696,7 +696,7 @@ class Location(models.Model):
 
 
 class City(models.Model):
-    name = models.CharField(_('nome'), max_length=64, unique=True,
+    name = models.CharField(_('nome'), max_length=64,
             help_text=_('Nome da cidade.'))
     slug = models.SlugField(_('slug'), max_length=64, blank=True,
             help_text=_('Slug do nome da cidade.'))

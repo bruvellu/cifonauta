@@ -738,7 +738,7 @@ class State(models.Model):
 
 
 class Country(models.Model):
-    name = models.CharField(_('nome'), max_length=64, unique=True,
+    name = models.CharField(_('nome'), max_length=64,
             help_text=_('Nome do país.'))
     slug = models.SlugField(_('slug'), max_length=64, blank=True,
             help_text=_('Slug do nome do país.'))

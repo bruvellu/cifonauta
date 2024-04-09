@@ -41,7 +41,7 @@ class Curadoria(models.Model):
 # Function that defines path for user upload directory
 # See: https://docs.djangoproject.com/en/4.2/ref/models/fields/#django.db.models.FileField.upload_to
 def user_upload_directory(instance, filename):
-    return f'{settings.UPLOAD_ROOT}/{instance.user.username}/{filename}'
+    return f'{settings.UPLOAD_ROOT}/{instance.user.id}/{filename}'
 
 
 #TODO: Remove after the official migration

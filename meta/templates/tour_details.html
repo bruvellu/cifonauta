@@ -40,13 +40,13 @@
 
                                 <div class='option-infos-wrapper'>
                                     {% if media_related.datatype == 'video' %}
-                                    <video class="option-cover scale-{{ media.scale }}" src="{{media_related.coverpath.url}}"></video>
+                                    <video class="option-cover scale-{{ media.scale }}" src="{{ media_related.file_cover }}"></video>
                                     {% else %}
-                                    <img class="option-cover scale-{{ media.scale }}" src="{{media_related.coverpath.url}}">
+                                    <img class="option-cover scale-{{ media.scale }}" src="{{ media_related.file_cover }}">
                                     {% endif %}
                                     
                                     <div class="option-infos">
-                                        <a class="selected-option-cover-link" href="{{ media_related.coverpath.url }}" target="_blank">{{media_related.title}}</a>
+                                        <a class="selected-option-cover-link" href="{{ media_related.file_cover }}" target="_blank">{{media_related.title}}</a>
                                         <span>
                                             {% if media_related.datatype == 'video' %}
                                             Vídeo

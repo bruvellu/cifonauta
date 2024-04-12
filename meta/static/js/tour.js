@@ -107,14 +107,14 @@ function loadOptions(medias) {
       optionCover = document.createElement('img')
     }
     optionCover.classList.add('option-cover', `scale-${media.scale}`)
-    optionCover.setAttribute('src', media.coverpath)
+    optionCover.setAttribute('src', media.file_cover)
 
     let optionInfos = document.createElement('div')
     optionInfos.setAttribute('class', 'option-infos')
 
     let optionTitle = document.createElement('a')
     optionTitle.setAttribute('class', 'option-title')
-    optionTitle.setAttribute('href', media.coverpath)
+    optionTitle.setAttribute('href', media.file_cover)
     optionTitle.setAttribute('tabindex', '-1')
     optionTitle.setAttribute('target', '_blank')
     optionTitle.innerText = media.title

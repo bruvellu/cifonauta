@@ -67,7 +67,7 @@
                             </td>
                             <td class="image-cedule">
                                 <a href="{% if media.modified_media.first != None %}{% url 'revision_modified_media' media.id %}{% else %}{% url 'revision_media_details' media.id %}{% endif %}" class="media-wrapper-td">
-                                    <img src="{{ media.coverpath.url }}">
+                                  <img src="{{ MEDIA_URL }}{{ media.file_cover }}">
                                 </a>
                             </td>
                             <td class="text-cedule">

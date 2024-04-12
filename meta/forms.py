@@ -334,7 +334,7 @@ class ModifiedMediaForm(forms.ModelForm, SendEmailForm):
 class MyMediaForm(forms.ModelForm):
     class Meta:
         model = Media
-        fields = ('title', 'coverpath', 'file', 'status')
+        fields = ('title', 'file_cover', 'file', 'status')
         widgets = {
             'taxons': forms.CheckboxSelectMultiple()
         }

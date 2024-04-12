@@ -1585,7 +1585,7 @@ def get_tour_medias(request):
                     'title': media.title,
                     'datatype': media.datatype,
                     'isRelated': True if Tour.objects.filter(creator=request.user.id, media=media) else False,
-                    'coverpath': media.coverpath.url,
+                    'coverpath': media.file_cover.url,
                     'size': media.scale,
                     } for media in query
             ],
@@ -1985,7 +1985,7 @@ def media_page(request, media_id):
     curators = media.curators.all()
     taxa = media.taxa.all()
     references = media.references.all()
-    filename, file_extension = os.path.splitext(str(media.coverpath))
+    filename, file_extension = os.path.splitext(str(media.file_cover))
 
     context = {
         'media': media,
@@ -2016,7 +2016,7 @@ def tour_page(request, slug):
 
     # Get first thumbnail.
     try:
-        thumb = entries.values_list('coverpath', flat=True)[0]
+        thumb = entries.values_list('file_cover', flat=True)[0]
     except:
         thumb = ''
 

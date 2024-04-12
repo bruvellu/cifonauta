@@ -20,7 +20,7 @@
             <div>
                 <p class="media-infos__label">Mídia:</p>
                 <a href="{{ media.file.url }}" target="_blank" class='media-wrapper'>
-                    <img class="media-cover" src="{{ media.coverpath.url }}">
+                  <img class="media-cover" src="{{ MEDIA_URL }}{{ media.file_cover }}">
                 </a>
             </div>
             <div>

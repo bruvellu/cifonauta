@@ -24,13 +24,16 @@ logger = logging.getLogger('cifonauta.utils')
 
 def resize_image(filepath, dimension, quality):
     '''Uses Pillow's thumbnail method to scale images.'''
+    #TODO: Use "with" approach? See https://pillow.readthedocs.io/en/latest/reference/open_files.html#file-handling
     image = Image.open(filepath)
     image.thumbnail((dimension, dimension))
     try:
         image.convert('RGB').save(filepath, format='jpeg', quality=quality)
+        image.close()
         return True
     except:
         logger.critical(f'Could not save {filepath}!')
+        image.close()
         return False
 
 

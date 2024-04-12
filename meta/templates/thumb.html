@@ -2,14 +2,14 @@
 
 <a href="{{ media.get_absolute_url }}">
 
-  {% thumbnail media.coverpath "120x90" crop="center" as im %}
+  {% thumbnail media.file_cover "120x90" crop="center" as im %}
   <img src="{{ im.url }}" alt="{{ media.title }}" title="{{ media.title }}" />
   {% endthumbnail %}
 
   {% if media.datatype == 'video' %}<span class="thumb-duration">{{ media.duration|slice:'3:' }}</span>{% endif %}
 </a>
 
-<a class="lupa highslide scale-{{ media.scale }}" onclick="return hs.expand(this)" href="{{ MEDIA_URL }}{{ media.coverpath }}">+</a>
+<a class="lupa highslide scale-{{ media.scale }}" onclick="return hs.expand(this)" href="{{ MEDIA_URL }}{{ media.file_cover }}">+</a>
 
 {% if media.title %}
 <div class="highslide-heading">{{ media.title }}</div>

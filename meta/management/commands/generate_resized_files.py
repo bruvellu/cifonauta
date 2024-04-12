@@ -51,7 +51,7 @@ class Command(BaseCommand):
 
         # Ignore recently updated files
         if skip_recent:
-            datelimit = timezone.now() - timezone.timedelta(days=1)
+            datelimit = timezone.now() - timezone.timedelta(days=3)
             files = files.filter(date_modified__lt=datelimit)
 
         # Limit the total number of taxa

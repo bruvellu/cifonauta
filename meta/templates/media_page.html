@@ -13,12 +13,12 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}css/photo.css">
 <meta property="og:title" content="{{ media.title }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.sitepath }}" />
+<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.file_medium }}" />
 <meta property="og:description" content="{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %}; {% show_set authors '' '' ', ' '' %}" />
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 
 {% if media.datatype == 'video' %}
-<meta property="og:video" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.sitepath }}" />
+<meta property="og:video" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.file_medium }}" />
 <meta property="og:video:height" content="{{ media.dimensions|slice:"4:" }}" />
 <meta property="og:video:width" content="512" />
 <meta property="og:video:type" content="application/x-shockwave-flash" />

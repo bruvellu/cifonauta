@@ -5,13 +5,13 @@
 
     <video id="cifovideo" class="video-js" tabindex="0" height="{{ media.dimensions|slice:"4:" }}" poster="{{ MEDIA_URL }}{{ media.file_cover }}" controls preload loop>
 
-    <source src="{{ MEDIA_URL }}{{ media.sitepath }}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+    <source src="{{ MEDIA_URL }}{{ media.file_medium }}" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
 
     <object id="cifovideo-flash" class="vjs-flash-fallback" width="512" height="{{ media.dimensions|slice:"4:" }}" type="application/x-shockwave-flash" data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">
         <param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />
         <param name="wmode" value="opaque" />
         <param name="allowfullscreen" value="true" />
-        <param name="flashvars" value='config={"playlist":["{{ MEDIA_URL }}{{ media.file_cover }}", {"url": "{{ MEDIA_URL }}{{ media.sitepath }}","autoPlay":false,"autoBuffering":true}]}' />
+        <param name="flashvars" value='config={"playlist":["{{ MEDIA_URL }}{{ media.file_cover }}", {"url": "{{ MEDIA_URL }}{{ media.file_medium }}","autoPlay":false,"autoBuffering":true}]}' />
         <img src="{{ MEDIA_URL }}{{ media.file_cover }}" width="512" height="{{ media.dimensions|slice:"4:" }}" alt="{% trans 'Cover do vídeo' %}" title="{% trans 'Playback de vídeo indisponível' %}" />
     </object>
 

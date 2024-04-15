@@ -32,7 +32,7 @@ from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
-from cifonauta.settings import MEDIA_EXTENSIONS, FILENAME_REGEX
+from cifonauta.settings import MEDIA_EXTENSIONS, FILENAME_REGEX, MEDIA_ROOT
 from django.core.files import File
 from django.utils.translation import get_language, get_language_info
 from django.utils.translation import gettext_lazy as _
@@ -286,7 +286,7 @@ def upload_media_step2(request):
         for media in medias:
             # print(media.file.name)
             try:
-                metadata = Metadata(f'site_media/{media.file.name}')
+                metadata = Metadata(f'{MEDIA_ROOT}/{media.file.name}')
                 try:
                     read_metadata = metadata.read_metadata()
                 except Exception as error:

@@ -4,7 +4,7 @@ tasks.py
 fabfile.py
 static/*
 virtual/*
-site_media/*
+media/*
 source_media/*
 logs/*
 wiki/*

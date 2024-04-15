@@ -152,12 +152,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 SITE_ID = 1
 
 # Absolute path to the directory that holds site media
-MEDIA_ROOT = os.path.join(BASE_DIR, 'site_media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = '/site_media/'
+MEDIA_URL = '/media/'
 
 # Defines subdirectory of MEDIA_ROOT to store user uploads
 UPLOAD_ROOT = 'uploads'

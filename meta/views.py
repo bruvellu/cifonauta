@@ -557,23 +557,26 @@ def editing_media_list(request):
                                 return redirect('editing_media_list')
                         
                         #Update taxons
-                        not_worms_curatory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
-                        for taxon in form.cleaned_data['taxa']:
-                            if taxon.rank == '' and taxon not in not_worms_curatory.taxons.all():
-                                with Taxon.objects.disable_mptt_updates():
-                                    update = TaxonUpdater(taxon.name)
-                                Taxon.objects.rebuild()
-                                if update.status == 'not_exist':
-                                    curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
-                                    curadory.taxons.add(taxon)
-                                else:
+                        #TODO: Revise this code, it breaks when batch updating without taxa
+                        # A quick fix is below.
+                        if 'taxa' in form.cleaned_data.keys():
+                            not_worms_curatory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
+                            for taxon in form.cleaned_data['taxa']:
+                                if taxon.rank == '' and taxon not in not_worms_curatory.taxons.all():
+                                    with Taxon.objects.disable_mptt_updates():
+                                        update = TaxonUpdater(taxon.name)
+                                    Taxon.objects.rebuild()
+                                    if update.status == 'not_exist':
+                                        curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
+                                        curadory.taxons.add(taxon)
+                                    else:
+                                        curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
+                                        curadory.taxons.add(taxon)
+                                if taxon.valid_taxon != None:
+                                    media.taxa.add(taxon.valid_taxon)
+                                    media.taxa.remove(taxon)
                                     curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
-                                    curadory.taxons.add(taxon)
-                            if taxon.valid_taxon != None:
-                                media.taxa.add(taxon.valid_taxon)
-                                media.taxa.remove(taxon)
-                                curadory, created = Curadoria.objects.get_or_create(name='Todos os Táxons')
-                                curadory.taxons.add(taxon.valid_taxon)
+                                    curadory.taxons.add(taxon.valid_taxon)
                     media.save()
 
                     error = execute_bash_action(request, medias, user, 'editing_media_list')

@@ -108,6 +108,7 @@
             </div>
           </div>
         </div>
+
         <div id="googleMap" style="width:100%;height:400px;"></div>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDq5WeIQ9PnSdEBvgtaykW5oB034cbpyak&callback=myMap" defer></script>
         <script>function myMap() {
@@ -125,12 +126,6 @@
               });
             }
           </script>
-          {% if media.notes %}
-          <div id="notes">
-            <h2>{% trans 'Notas' %}</h2>
-            {{ media.notes }}
-          </div>
-          {% endif %}
     
           {% show_related media form related %}
       </div>

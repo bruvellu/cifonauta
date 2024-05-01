@@ -1,220 +1,145 @@
 <ul class="biodb">
-  <li> 
-  GBIF
-  <div class="external shadow">
-    <h3>Global Biodiversity Information Facility</h3>
-    <ul>
-      {% for taxon in taxa %}
-      <li>
-      <span class="quiet">{{ taxon.rank }}</span> 
-      {% if taxon.rank == 'Gênero' %}
-      <a href="http://data.gbif.org/species/genus/{{ taxon.name }}" title="{{ taxon.name }} no Global Biodiversity Information Facility" target="_blank">
-        {% else %}
-        {% if taxon.rank == 'Espécie' %}
-        <a href="http://data.gbif.org/species/species/{{ taxon.name|wordsplit|first }}_{{ taxon.name|wordsplit|last }}" title="{{ taxon.name }} no Global Biodiversity Information Facility" target="_blank">
-          {% else %}
-          <a href="http://data.gbif.org/search/{{ taxon.name }}" title="{{ taxon.name }} no Global Biodiversity Information Facility" target="_blank">
-            {% endif %}
-            {% endif %}
-            {{ taxon|sp_em }}</a>
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
-      </li>
 
-      <li>
-      EoL
+  <li>GBIF
+    <div class="external shadow">
+      <h3>Global Biodiversity Information Facility</h3>
+      <ul>
+        {% for taxon in taxa %}
+        <li>
+          <span class="quiet">{{ taxon.rank }}</span>
+          <a href="https://www.gbif.org/search?q={{ taxon.name }}" title="{{ taxon.name }} no Global Biodiversity Information Facility" target="_blank">{{ taxon|sp_em }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </li>
 
-      <div class="external shadow">
-        <h3>Encyclopedia of Life</h3>
-        <ul>
-          {% for taxon in taxa %}
-          <li>
-          <span class="quiet">{{ taxon.rank }}</span> 
+  <li>EoL
+    <div class="external shadow">
+      <h3>Encyclopedia of Life</h3>
+      <ul>
+        {% for taxon in taxa %}
+        <li>
+          <span class="quiet">{{ taxon.rank }}</span>
           <a href="http://www.eol.org/search?q={{ taxon.name }}" title="{{ taxon.name }} no Encyclopedia of Life" target="_blank">{{ taxon|sp_em }}</a>
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
-      </li>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </li>
 
-      <li>
-      ITIS
-      <div class="external shadow">
-        <h3>Integrated Taxonomic Information System</h3>
-        <ul>
-          {% for taxon in taxa %}
-          <li>
-          <span class="quiet">{{ taxon.rank }}</span> 
+  <li>ITIS
+    <div class="external shadow">
+      <h3>Integrated Taxonomic Information System</h3>
+      <ul>
+        {% for taxon in taxa %}
+        <li>
+          <span class="quiet">{{ taxon.rank }}</span>
           <a href="http://www.itis.gov/servlet/SingleRpt/SingleRpt?search_topic=Scientific_Name&search_value={{ taxon.name }}&search_kingdom=every&search_span=exactly_for&categories=All&source=html&search_credRating=All" title="{{ taxon.name }} no Integrated Taxonomic Information System" target="_blank">{{ taxon|sp_em }}</a>
-          </li>
-          {% endfor %}
-        </ul>
-      </div> 
-      </li>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </li>
 
-      <li>
-      BHL
-      <div class="external shadow">
-        <h3>Biodiversity Heritage Library</h3>
-        <ul>
-          {% for taxon in taxa %}
-          <li>
-          <span class="quiet">{{ taxon.rank }}</span> 
+  <li>BHL
+    <div class="external shadow">
+      <h3>Biodiversity Heritage Library</h3>
+      <ul>
+        {% for taxon in taxa %}
+        <li>
+          <span class="quiet">{{ taxon.rank }}</span>
           <a href="http://www.biodiversitylibrary.org/name/{{ taxon.name }}" title="{{ taxon.name }} no Biodiversity Heritage Library" target="_blank">{{ taxon|sp_em }}</a>
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
-      </li>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </li>
 
-      <li>
-      OBIS
-      <div class="external shadow">
-        <h3>Ocean Biogeographic Information System</h3>
-        <ul>
-          {% for taxon in taxa %}
-          <li>
-          <span class="quiet">{{ taxon.rank }}</span> 
+  {% comment %} This isn't working anymore, the link needs to be updated.
+  <li>OBIS
+    <div class="external shadow">
+      <h3>Ocean Biogeographic Information System</h3>
+      <ul>
+        {% for taxon in taxa %}
+        <li>
+          <span class="quiet">{{ taxon.rank }}</span>
           <a href="http://v2.iobis.org/OBISWEB/ObisControllerServlet?category=all&names=data&tableName=0&searchName={{ taxon.name }}&x=0&y=0" title="{{ taxon.name }} no Ocean Biogeographic Information System" target="_blank">{{ taxon|sp_em }}</a>
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
-      </li>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </li>
+  {% endcomment %}
 
-      <li>
-      WoRMS
-      <div class="external shadow">
-        <h3>World Register of Marine Species</h3>
-        <ul>
-          {% for taxon in taxa %}
-          <li>
-          <span class="quiet">{{ taxon.rank }}</span> 
+  <li>WoRMS
+    <div class="external shadow">
+      <h3>World Register of Marine Species</h3>
+      <ul>
+        {% for taxon in taxa %}
+        <li>
+          <span class="quiet">{{ taxon.rank }}</span>
           <a href="http://www.marinespecies.org/aphia.php?p=taxlist&tName={{ taxon.name }}" title="{{ taxon.name }} no World Register of Marine Species" target="_blank">{{ taxon|sp_em }}</a>
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
-      </li>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </li>
 
-      <li>
-      CoL
-      <div class="external shadow">
-        <h3>Catalogue of Life</h3>
-        <ul>
-          {% for taxon in taxa %}
-          <li>
-          <span class="quiet">{{ taxon.rank }}</span> 
-          {% if taxon.rank == 'Gênero' %}
-          <a href="http://www.catalogueoflife.org/annual-checklist/2006/search_results.php?search_type=search_scientific&genus={{ taxon.name }}&species=" title="{{ taxon.name }} no Catalogue of Life" target="_blank">
-            {% else %}
-            {% if taxon.rank == 'Espécie' %}
-            <a href="http://www.catalogueoflife.org/annual-checklist/2006/search_results.php?search_type=search_scientific&genus={{ taxon.name|wordsplit|first }}&species={{ taxon.name|wordsplit|last }}" title="{{ taxon.name }} no Catalogue of Life" target="_blank">
-              {% else %}
-              <a href="http://www.catalogueoflife.org/annual-checklist/2006/search_results.php?search_string={{ taxon.name }}" title="{{ taxon.name }} no Catalogue of Life" target="_blank">
-                {% endif %}
-                {% endif %}
-                {{ taxon|sp_em }}</a>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-          </li>
+  <li>CoL
+    <div class="external shadow">
+      <h3>Catalogue of Life</h3>
+      <ul>
+        {% for taxon in taxa %}
+        <li>
+          <span class="quiet">{{ taxon.rank }}</span>
+          <a href="https://www.catalogueoflife.org/data/search?facet=rank&facet=issue&facet=status&facet=nomStatus&facet=nameType&facet=field&facet=authorship&facet=extinct&facet=environment&limit=50&offset=0&q={{ taxon.name }}&sortBy=taxonomic" title="{{ taxon.name }} no Catalogue of Life" target="_blank">{{ taxon|sp_em }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </li>
 
-          <li>
-          GenBank
-          <div class="external shadow">
-            <h3>NCBI GenBank</h3>
-            <ul>
-              {% for taxon in taxa %}
-              <li>
-              <span class="quiet">{{ taxon.rank }}</span> 
-              <a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?name={{ taxon.name }}" title="{{ taxon.name }} no NCBI GenBank" target="_blank">{{ taxon|sp_em }}</a>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-          </li>
+  <li>GenBank
+    <div class="external shadow">
+      <h3>NCBI GenBank</h3>
+      <ul>
+        {% for taxon in taxa %}
+        <li>
+          <span class="quiet">{{ taxon.rank }}</span>
+          <a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?name={{ taxon.name }}" title="{{ taxon.name }} no NCBI GenBank" target="_blank">{{ taxon|sp_em }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </li>
 
-          <li>
-          BOLD
-          <div class="external shadow">
-            <h3>Barcode of Life Data Systems</h3>
-            <ul>
-              {% for taxon in taxa %}
-              <li>
-              <span class="quiet">{{ taxon.rank }}</span> 
-              <a href="http://www.co1bank.uoguelph.ca/views/taxbrowser.php?taxon={{ taxon.name }}" title="{{ taxon.name }} no Barcode of Life Data Systems" target="_blank">{{ taxon|sp_em }}</a>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-          </li>
+  <li>BOLD
+    <div class="external shadow">
+      <h3>Barcode of Life Data Systems</h3>
+      <ul>
+        {% for taxon in taxa %}
+        <li>
+          <span class="quiet">{{ taxon.rank }}</span>
+          <a href="https://www.boldsystems.org/index.php/Taxbrowser_Taxonpage?taxon={{ taxon.name }}&searchTax=Search+Taxonomy" title="{{ taxon.name }} no Barcode of Life Data Systems" target="_blank">{{ taxon|sp_em }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </li>
 
-          <li>
-          uBio
-          <div class="external shadow">
-            <h3>Universal Biological Indexer and Organizer</h3>
-            <ul>
-              {% for taxon in taxa %}
-              <li>
-              <span class="quiet">{{ taxon.rank }}</span> 
-              <a href="http://www.ubio.org/browser/search.php?search_all={{ taxon.name }}" title="{{ taxon.name }} no Universal Biological Indexer and Organizer" target="_blank">{{ taxon|sp_em }}</a>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-          </li>
+  <li>Wikispecies
+    <div class="external shadow">
+      <h3>Wikipedia free species directory</h3>
+      <ul>
+        {% for taxon in taxa %}
+        <li>
+          <span class="quiet">{{ taxon.rank }}</span>
+          <a href="https://species.wikimedia.org/w/index.php?search={{ taxon.name }}" title="{{ taxon.name }} no Wikispecies" target="_blank">{{ taxon|sp_em }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </li>
 
-          <li>
-          MSIP
-          <div class="external shadow">
-            <h3>Marine Species Identification Portal</h3>
-            <ul>
-              {% for taxon in taxa %}
-              <li>
-              <span class="quiet">{{ taxon.rank }}</span> 
-              <a href="http://species-identification.org/search.php?search_for={{ taxon.name }}&image.x=0&image.y=0&search_mode=basic" title="{{ taxon.name }} no Marine Species Identification Portal" target="_blank">{{ taxon|sp_em }}</a>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-          </li>
-
-          <li>
-          Wikispecies
-          <div class="external shadow">
-            <h3>Wikipedia free species directory</h3>
-            <ul>
-              {% for taxon in taxa %}
-              <li>
-              <span class="quiet">{{ taxon.rank }}</span> 
-              {% if taxon.rank == 'Espécie' %}
-              <a href="http://species.wikimedia.org/wiki/{{ taxon.name|wordsplit|first }}_{{ taxon.name|wordsplit|last }}" title="{{ taxon.name }} no Wikispecies" target="_blank">{{ taxon|sp_em }}</a>
-              {% else %}
-              <a href="http://species.wikimedia.org/wiki/{{ taxon.name }}" title="{{ taxon.name }} no Wikispecies" target="_blank">{{ taxon|sp_em }}</a>
-              {% endif %}
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-          </li>
-
-          <li>
-          BHL SciELO
-          <div class="external shadow">
-            <h3>Coleção de fontes de informação em biodiversidade</h3>
-            <ul>
-              {% for taxon in taxa %}
-              <li>
-              <span class="quiet">{{ taxon.rank }}</span> 
-              <a href="http://search.biodiversidade.scielo.br/?q={{ taxon.name }}" title="{{ taxon.name }} no BHL SciELO" target="_blank">{{ taxon|sp_em }}</a>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-          </li>
-
-        </ul>
+</ul>

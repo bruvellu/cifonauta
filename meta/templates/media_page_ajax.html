@@ -83,7 +83,7 @@
               {% endif %}
     
               {% if media.geolocation %}
-              <strong>{% trans 'Geolocalização' %}:</strong> <a href="http://maps.google.com/maps?q={{ media.latitude }},{{ media.longitude }}" title="{{ media.geolocation }} no Google Maps">{{ media.geolocation }}</a>
+              <strong>{% trans 'Geolocalização' %}:</strong> <a href="http://maps.google.com/maps?q={{ media.latitude }},{{ media.longitude }}" target="_blank" title="{{ media.geolocation }} no Google Maps">{{ media.geolocation }}</a>
               {% endif %}
             </div>
           </div>

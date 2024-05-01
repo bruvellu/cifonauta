@@ -65,6 +65,10 @@
               {% if curators %}
               <strong>{% blocktrans count counter=curators.count %}Curador{% plural %}Curadores{% endblocktrans %}:</strong> <span id="source">{% show_set curators '' '' ', ' '' %}</span>
               {% endif %}
+
+              {% if media.acknowledgments %}
+              <strong>{% trans 'Agradecimentos' %}:</strong> <span id="source">{{ media.acknowledgments }}</span>
+              {% endif %}
             </div>
     
             <div class="location">

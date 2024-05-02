@@ -65,6 +65,10 @@
               {% if curators %}
               <strong>{% blocktrans count counter=curators.count %}Curador{% plural %}Curadores{% endblocktrans %}:</strong> <span id="source">{% show_set curators '' '' ', ' '' %}</span>
               {% endif %}
+
+              {% if media.acknowledgments %}
+              <strong>{% trans 'Agradecimentos' %}:</strong> <span id="source">{{ media.acknowledgments }}</span>
+              {% endif %}
             </div>
     
             <div class="location">
@@ -83,7 +87,7 @@
               {% endif %}
     
               {% if media.geolocation %}
-              <strong>{% trans 'Geolocalização' %}:</strong> <a href="http://maps.google.com/maps?q={{ media.latitude }},{{ media.longitude }}" title="{{ media.geolocation }} no Google Maps">{{ media.geolocation }}</a>
+              <strong>{% trans 'Geolocalização' %}:</strong> <a href="http://maps.google.com/maps?q={{ media.latitude }},{{ media.longitude }}" target="_blank" title="{{ media.geolocation }} no Google Maps">{{ media.geolocation }}</a>
               {% endif %}
             </div>
           </div>
@@ -104,6 +108,8 @@
             </div>
           </div>
         </div>
+
+        {% comment %}
         <div id="googleMap" style="width:100%;height:400px;"></div>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDq5WeIQ9PnSdEBvgtaykW5oB034cbpyak&callback=myMap" defer></script>
         <script>function myMap() {
@@ -121,12 +127,7 @@
               });
             }
           </script>
-          {% if media.notes %}
-          <div id="notes">
-            <h2>{% trans 'Notas' %}</h2>
-            {{ media.notes }}
-          </div>
-          {% endif %}
+          {% endcomment %}
     
           {% show_related media form related %}
       </div>

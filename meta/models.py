@@ -387,32 +387,58 @@ class Media(models.Model):
         # Return True/False for convenience
         return resized
 
+    def convert_null_foreignkey_to_empty_string(self, field):
+        if field:
+            name = field.name
+        else:
+            name = ''
+        return name
+
     def update_search_vector(self):
         '''Collect metadata and update the search vector field.'''
 
-        # Update search vector field on save
-        #TODO: Make a function to save values to a dictionary, take care of Empty/None/Null values
-        #TODO: Make a function to populate the search_vector with these saved values
-        #TODO: Replace here just with the calls for the functions above
-        self.search_vector = SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') + \
-                             SearchVector('title_en', weight='A', config='english') + \
-                             SearchVector('caption_pt_br', weight='B', config='portuguese_unaccent') + \
-                             SearchVector('caption_en', weight='B', config='english')
+        # Fetch associated authors, taxa, tags, curators, etc
+        authors = ' '.join(self.authors.values_list('name', flat=True))
+        curators = ' '.join(self.curators.values_list('name', flat=True))
+        specialists = ' '.join(self.specialists.values_list('name', flat=True))
+        taxa = ' '.join(self.taxa.values_list('name', flat=True))
+        tags_pt_br = ' '.join(self.tags.values_list('name_pt_br', flat=True))
+        tags_en = ' '.join(self.tags.values_list('name_en', flat=True))
+        location = self.convert_null_foreignkey_to_empty_string(self.location)
+        city = self.convert_null_foreignkey_to_empty_string(self.city)
+        state = self.convert_null_foreignkey_to_empty_string(self.state)
+        country = self.convert_null_foreignkey_to_empty_string(self.country)
+
+        # Build SearchVectorField using Value (StringAgg or other approaches don't work)
+        self.search_vector = (
+                SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') +
+                SearchVector('title_en', weight='A', config='english') +
+                SearchVector('caption_pt_br', weight='A', config='portuguese_unaccent') +
+                SearchVector('caption_en', weight='A', config='english') +
+                SearchVector('acknowledgments_pt_br', weight='B', config='portuguese_unaccent') +
+                SearchVector('acknowledgments_en', weight='B', config='english') +
+                SearchVector(Value(authors), weight='B', config='portuguese_unaccent') +
+                SearchVector(Value(authors), weight='B', config='english') +
+                SearchVector(Value(curators), weight='C', config='portuguese_unaccent') +
+                SearchVector(Value(curators), weight='C', config='english') +
+                SearchVector(Value(specialists), weight='D', config='portuguese_unaccent') +
+                SearchVector(Value(specialists), weight='D', config='english') +
+                SearchVector(Value(taxa), weight='B', config='portuguese_unaccent') +
+                SearchVector(Value(taxa), weight='B', config='english') +
+                SearchVector(Value(tags_pt_br), weight='B', config='portuguese_unaccent') +
+                SearchVector(Value(tags_en), weight='B', config='english') +
+                SearchVector(Value(location), weight='C', config='portuguese_unaccent') +
+                SearchVector(Value(location), weight='C', config='english') +
+                SearchVector(Value(city), weight='D', config='portuguese_unaccent') +
+                SearchVector(Value(city), weight='D', config='english') +
+                SearchVector(Value(state), weight='D', config='portuguese_unaccent') +
+                SearchVector(Value(state), weight='D', config='english') +
+                SearchVector(Value(country), weight='D', config='portuguese_unaccent') +
+                SearchVector(Value(country), weight='D', config='english')
+                )
+
 
         return self.search_vector
-
-        # self.search_vector = SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') + \
-                             # SearchVector('title_en', weight='A', config='english') + \
-                             # SearchVector('caption_pt_br', weight='B', config='portuguese_unaccent') + \
-                             # SearchVector('caption_en', weight='B', config='english')
-                             # SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B') + \
-                             # SearchVector(StringAgg('person__name', delimiter=' '), weight='B') + \
-                             # SearchVector(StringAgg('tag__name_pt_br', delimiter=' '), weight='C', config='portuguese_unaccent') + \
-                             # SearchVector(StringAgg('tag__name_en', delimiter=' '), weight='C', config='english') + \
-                             # SearchVector('location__name', weight='D') + \
-                             # SearchVector('city__name', weight='D') + \
-                             # SearchVector('state__name', weight='D') + \
-                             # SearchVector('country__name', weight='D')
 
     def latlng_to_geo(self):
         # Blank fields if partial missing data

@@ -387,6 +387,13 @@ class Media(models.Model):
         # Return True/False for convenience
         return resized
 
+    def convert_null_foreignkey_to_empty_string(self, field):
+        if field:
+            name = field.name
+        else:
+            name = ''
+        return name
+
     def update_search_vector(self):
         '''Collect metadata and update the search vector field.'''
 
@@ -397,6 +404,10 @@ class Media(models.Model):
         taxa = ' '.join(self.taxa.values_list('name', flat=True))
         tags_pt_br = ' '.join(self.tags.values_list('name_pt_br', flat=True))
         tags_en = ' '.join(self.tags.values_list('name_en', flat=True))
+        location = self.convert_null_foreignkey_to_empty_string(self.location)
+        city = self.convert_null_foreignkey_to_empty_string(self.city)
+        state = self.convert_null_foreignkey_to_empty_string(self.state)
+        country = self.convert_null_foreignkey_to_empty_string(self.country)
 
         # Build SearchVectorField using Value (StringAgg or other approaches don't work)
         self.search_vector = (
@@ -416,14 +427,14 @@ class Media(models.Model):
                 SearchVector(Value(taxa), weight='B', config='english') +
                 SearchVector(Value(tags_pt_br), weight='B', config='portuguese_unaccent') +
                 SearchVector(Value(tags_en), weight='B', config='english') +
-                SearchVector(Value(self.location.name), weight='C', config='portuguese_unaccent') +
-                SearchVector(Value(self.location.name), weight='C', config='english') +
-                SearchVector(Value(self.city.name), weight='D', config='portuguese_unaccent') +
-                SearchVector(Value(self.city.name), weight='D', config='english') +
-                SearchVector(Value(self.state.name), weight='D', config='portuguese_unaccent') +
-                SearchVector(Value(self.state.name), weight='D', config='english') +
-                SearchVector(Value(self.country.name), weight='D', config='portuguese_unaccent') +
-                SearchVector(Value(self.country.name), weight='D', config='english')
+                SearchVector(Value(location), weight='C', config='portuguese_unaccent') +
+                SearchVector(Value(location), weight='C', config='english') +
+                SearchVector(Value(city), weight='D', config='portuguese_unaccent') +
+                SearchVector(Value(city), weight='D', config='english') +
+                SearchVector(Value(state), weight='D', config='portuguese_unaccent') +
+                SearchVector(Value(state), weight='D', config='english') +
+                SearchVector(Value(country), weight='D', config='portuguese_unaccent') +
+                SearchVector(Value(country), weight='D', config='english')
                 )
 
 

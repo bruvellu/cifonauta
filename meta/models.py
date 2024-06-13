@@ -415,8 +415,8 @@ class Media(models.Model):
                 SearchVector('title_en', weight='A', config='english') +
                 SearchVector('caption_pt_br', weight='A', config='portuguese_unaccent') +
                 SearchVector('caption_en', weight='A', config='english') +
-                SearchVector('acknowledgments_pt_br', weight='B', config='portuguese_unaccent') +
-                SearchVector('acknowledgments_en', weight='B', config='english') +
+                SearchVector('acknowledgments_pt_br', weight='D', config='portuguese_unaccent') +
+                SearchVector('acknowledgments_en', weight='D', config='english') +
                 SearchVector(Value(authors), weight='B', config='portuguese_unaccent') +
                 SearchVector(Value(authors), weight='B', config='english') +
                 SearchVector(Value(curators), weight='C', config='portuguese_unaccent') +
@@ -429,8 +429,8 @@ class Media(models.Model):
                 SearchVector(Value(tags_en), weight='B', config='english') +
                 SearchVector(Value(location), weight='C', config='portuguese_unaccent') +
                 SearchVector(Value(location), weight='C', config='english') +
-                SearchVector(Value(city), weight='D', config='portuguese_unaccent') +
-                SearchVector(Value(city), weight='D', config='english') +
+                SearchVector(Value(city), weight='C', config='portuguese_unaccent') +
+                SearchVector(Value(city), weight='C', config='english') +
                 SearchVector(Value(state), weight='D', config='portuguese_unaccent') +
                 SearchVector(Value(state), weight='D', config='english') +
                 SearchVector(Value(country), weight='D', config='portuguese_unaccent') +

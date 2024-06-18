@@ -517,8 +517,8 @@ class DashboardFilterForm(forms.Form):
     Curadoria = apps.get_model('meta', 'Curadoria')
     
     search = forms.CharField(required=False,
-                             label=_('Buscar por'),
-                             widget=forms.TextInput(attrs={'placeholder': _('Digite o título da mídia')}))
+                             label=_('Filtrar por:'),
+                             widget=forms.TextInput(attrs={'placeholder': _('Digite palavra(s)-chave')}))
     curations = forms.ModelMultipleChoiceField(
         required=False,
         queryset=Curadoria.objects.all(),

@@ -481,14 +481,36 @@ def editing_media_details(request, media_id):
 
     return render(request, 'editing_media_details.html', context) 
 
+def search_media(queryset, query):
+    '''Search Media's search vector and return filtered queryset.'''
+
+    # Get language.
+    language = get_language()
+
+    # Change search config based on language
+    if language == 'en':
+        langconfig = 'english'
+    elif language == 'pt-br':
+        langconfig = 'portuguese_unaccent'
+
+    # Create SearchQuery
+    search_query = SearchQuery(query, config=langconfig)
+
+    # Create SearchRank
+    search_rank = SearchRank(F('search_vector'), search_query)
+
+    # Filter media_list by search_query
+    filtered_queryset = queryset.annotate(rank=search_rank).filter(search_vector=search_query)
+
+    return filtered_queryset
+
 
 def filter_medias(queryset, query_dict, curations=''):
     filtered_queryset = queryset
 
     search_value = query_dict.get('search', None)
     if 'search' in query_dict and search_value != '':
-        filtered_queryset = filtered_queryset.filter(title__icontains=search_value)
-    
+        filtered_queryset = search_media(filtered_queryset, search_value)
 
     curation_ids = query_dict.getlist('curations', None)
     if curation_ids:
@@ -1662,41 +1684,8 @@ def search_page(request, model_name='', field='', slug=''):
         query = query_dict.get('query', '').strip()
         if query:
 
-            # Get language.
-            language = get_language()
-
-            # Change search config based on language
-            if language == 'en':
-                langconfig = 'english'
-                # search_vectors = SearchVector('title_en', weight='A', config=langconfig) + \
-                                 # SearchVector('caption_en', weight='B', config=langconfig) + \
-                                 # SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B', config=langconfig) + \
-                                 # SearchVector(StringAgg('person__name', delimiter=' '), weight='B', config=langconfig) + \
-                                 # SearchVector(StringAgg('tag__name_en', delimiter=' '), weight='C', config=langconfig) + \
-                                 # SearchVector('location__name', weight='D', config=langconfig) + \
-                                 # SearchVector('city__name', weight='D', config=langconfig) + \
-                                 # SearchVector('state__name', weight='D', config=langconfig) + \
-                                 # SearchVector('country__name', weight='D', config=langconfig)
-            elif language == 'pt-br':
-                langconfig = 'portuguese_unaccent'
-                # search_vectors = SearchVector('title_pt_br', weight='A', config=langconfig) + \
-                                 # SearchVector('caption_pt_br', weight='B', config=langconfig) + \
-                                 # SearchVector(StringAgg('taxon__name', delimiter=' '), weight='B', config=langconfig) + \
-                                 # SearchVector(StringAgg('person__name', delimiter=' '), weight='B', config=langconfig) + \
-                                 # SearchVector(StringAgg('tag__name_pt_br', delimiter=' '), weight='C', config=langconfig) + \
-                                 # SearchVector('location__name', weight='D', config=langconfig) + \
-                                 # SearchVector('city__name', weight='D', config=langconfig) + \
-                                 # SearchVector('state__name', weight='D', config=langconfig) + \
-                                 # SearchVector('country__name', weight='D', config=langconfig)
-
-            # Create SearchQuery
-            search_query = SearchQuery(query, config=langconfig)
-
-            # Create SearchRank
-            search_rank = SearchRank(F('search_vector'), search_query)
-
             # Filter media_list by search_query
-            media_list = media_list.annotate(rank=search_rank).filter(search_vector=search_query)
+            media_list = search_media(media_list, query)
 
         # Operator
         operator = query_dict.get('operator', 'and')

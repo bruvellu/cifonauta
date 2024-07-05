@@ -1,3 +1,4 @@
+{% load i18n %}
 <aside class='filter-aside'>
     <form method="get" class="dashboard-filter-form filter-form">
         <div class="filter-form-fields-wrapper filter-form__fields-container">
@@ -13,7 +14,7 @@
             {% endif %}
             {% endfor %}
             <button type="button" data-more-fields-button data-state="close" class="filter-form__more-fields-button">
-                <p>Mais filtros</p>
+              <p>{% trans 'Mais filtros' %}</p>
                 <img class="first-dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg" alt="">
             </button>
             <div data-more-fields data-state="close" class="filter-form__more-fields">

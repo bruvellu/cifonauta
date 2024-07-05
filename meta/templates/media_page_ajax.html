@@ -73,7 +73,7 @@
     
             <div class="location">
               {% if media.date_created %} 
-              <strong>{% trans 'Data' %}: </strong> <span id="date"><datetime>{{ media.date_created|date:"DATETIME_FORMAT" }}</datetime></span>
+              <strong>{% trans 'Data' %}: </strong> <span id="date"><datetime>{{ media.date_created|date:"DATE_FORMAT" }}</datetime></span>
               <br>
               {% endif %}
               {% comment %} Retirar o "name" desnecessário... {% endcomment %}

@@ -1,4 +1,5 @@
 {% extends 'dashboard.html' %}
+{% load i18n %}
 
 {% block title %}Habilitar Especialistas e Autores{% endblock %}
 
@@ -11,7 +12,7 @@
                 <option value="specialists" {% if request.GET.select_users_type == "specialists" %}selected{% endif %}>Especialistas</option>
             </select>
             
-            <h3>Escolha uma curadoria</h3>
+            <h3>{% trans 'Escolha uma curadoria' %}</h3>
             <select name="selected_curation_id" id="selected_curation_id_get">
                 {% for curation in curations %}
                     {% if curation.id == selected_curation_id %}

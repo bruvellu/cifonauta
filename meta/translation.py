@@ -27,19 +27,20 @@ class TagTranslation(TranslationOptions):
 class CatTranslation(TranslationOptions):
     fields = ('name', 'description',)
 
-# TODO: Translate locations as well.
-
 @register(City)
 class CityTranslation(TranslationOptions):
-    fields = ('name',)
+    fields = ()
+    # fields = ('name',)
 
 @register(State)
 class StateTranslation(TranslationOptions):
-    fields = ('name',)
+    fields = ()
+    # fields = ('name',)
 
 @register(Country)
 class CountryTranslation(TranslationOptions):
-    fields = ('name',)
+    fields = ()
+    # fields = ('name',)
 
 @register(Tour)
 class TourTranslation(TranslationOptions):

@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-05 17:11-0300\n"
-"PO-Revision-Date: 2023-03-07 01:20-0306\n"
-"Last-Translator: Bruno Vellutini <organelas@gmail.com>\n"
+"POT-Creation-Date: 2024-07-07 10:34-0300\n"
+"PO-Revision-Date: 2024-07-07 10:34-0300\n"
+"Last-Translator: Bruno C.  Vellutini <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Translated-Using: django-rosetta 0.9.8\n"
+"X-Translated-Using: django-rosetta 0.9.9\n"
 
 #: forms.py:19
 msgid "autor"
@@ -55,10 +55,8 @@ msgid "id"
 msgstr "id"
 
 #: forms.py:44 models.py:196
-#, fuzzy
-#| msgid "Data de criação"
 msgid "data de criação"
-msgstr "Creation date"
+msgstr "creation date"
 
 #: forms.py:45 models.py:219 models.py:830
 msgid "data de publicação"
@@ -73,10 +71,8 @@ msgid "aleatório"
 msgstr "random"
 
 #: forms.py:48
-#, fuzzy
-#| msgid "sem ranking"
 msgid "ranking"
-msgstr "no ranking"
+msgstr "ranking"
 
 #: forms.py:52 templates/nav.html:38 templates/nav.html:63
 #: templates/stats.html:3
@@ -110,10 +106,8 @@ msgid "Você precisa aceitar os termos"
 msgstr ""
 
 #: forms.py:359
-#, fuzzy
-#| msgid "status"
 msgid "Manter status"
-msgstr "status"
+msgstr "Keep status"
 
 #: forms.py:360
 msgid "Enviar para revisão"
@@ -124,26 +118,20 @@ msgid "Publicar"
 msgstr ""
 
 #: forms.py:363
-#, fuzzy
-#| msgid "anterior"
 msgid "Manter"
-msgstr "previous"
+msgstr "Keep"
 
 #: forms.py:363
 msgid "Sobrescrever"
 msgstr ""
 
 #: forms.py:366 forms.py:531
-#, fuzzy
-#| msgid "status"
 msgid "Status"
-msgstr "status"
+msgstr "Status"
 
 #: forms.py:520
-#, fuzzy
-#| msgid "Ordenar por"
 msgid "Filtrar por:"
-msgstr "Order by"
+msgstr "Filter by"
 
 #: forms.py:521
 msgid "Digite palavra(s)-chave"

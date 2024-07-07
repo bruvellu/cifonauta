@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-07 10:34-0300\n"
-"PO-Revision-Date: 2024-07-07 10:34-0300\n"
+"POT-Creation-Date: 2024-07-07 17:05-0300\n"
+"PO-Revision-Date: 2024-07-07 17:03-0300\n"
 "Last-Translator: Bruno C.  Vellutini <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -377,10 +377,8 @@ msgid "Foto ou vídeo."
 msgstr "photos and videos"
 
 #: models.py:121
-#, fuzzy
-#| msgid "arquivo web."
 msgid "arquivo web"
-msgstr "web file."
+msgstr "web file"
 
 #: models.py:123
 msgid "Arquivo processado para a web."
@@ -399,10 +397,8 @@ msgid "Imagem de capa para o arquivo processado."
 msgstr "Cover image from media file."
 
 #: models.py:131
-#, fuzzy
-#| msgid "arquivo original."
 msgid "arquivo original"
-msgstr "original file."
+msgstr "original file"
 
 #: models.py:134
 #, fuzzy
@@ -760,7 +756,7 @@ msgstr "Author name slug."
 
 #: models.py:595
 msgid "Usuário relacionado"
-msgstr ""
+msgstr "Related user"
 
 #: models.py:618
 msgid "pessoa"
@@ -1160,7 +1156,7 @@ msgstr "click here to show content"
 
 #: templates/dashboard_filter_aside.html:17 templates/search.html:45
 msgid "Mais filtros"
-msgstr ""
+msgstr "More filters"
 
 #: templates/disqus.html:16
 msgid ""
@@ -1417,7 +1413,7 @@ msgstr[1] "Operator"
 
 #: templates/media_page_ajax.html:71
 msgid "Agradecimentos"
-msgstr ""
+msgstr "Acknowledgments"
 
 #: templates/media_page_ajax.html:77
 msgid "Data"
@@ -1467,7 +1463,7 @@ msgstr "No image found."
 #: templates/media_side_info.html:10 templates/organization.html:30
 #: templates/tour_page.html:96
 msgid "Escala"
-msgstr ""
+msgstr "Scale"
 
 #: templates/messages.html:6
 msgid "encontrado"
@@ -2055,7 +2051,7 @@ msgstr "No files found."
 
 #: views.py:840
 msgid "Não é possível realizar ação em lotes de mídia já publicada"
-msgstr ""
+msgstr "It is not possible to batch edit media that has been already published"
 
 #: views.py:845
 msgid "Não é possível realizar ação em lotes de mídia submetida para revisão"

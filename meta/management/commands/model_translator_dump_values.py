@@ -9,9 +9,9 @@ all_fields = [
         (Taxon, ['rank', 'status']),
         (Tag, ['name', 'description']),
         (Category, ['name', 'description']),
-        (City, ['name']),
-        (State, ['name']),
-        (Country, ['name']),
+        # (City, ['name']),
+        # (State, ['name']),
+        # (Country, ['name']),
         (Tour, ['name', 'description']),
         ]
 

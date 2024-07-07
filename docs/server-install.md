@@ -437,8 +437,11 @@ If you like Certbot, please consider supporting our work by:
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ```
 
+### Additional packages
 
-
+```
+apt install gettext
+```
 
 
 

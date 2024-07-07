@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-07 17:05-0300\n"
-"PO-Revision-Date: 2024-07-07 17:03-0300\n"
+"POT-Creation-Date: 2024-07-07 17:14-0300\n"
+"PO-Revision-Date: 2024-07-07 17:12-0300\n"
 "Last-Translator: Bruno C.  Vellutini <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -247,10 +247,8 @@ msgid "Especialistas da curadoria."
 msgstr "Experts"
 
 #: models.py:34
-#, fuzzy
-#| msgid "Marcadores"
 msgid "curadores"
-msgstr "Tags"
+msgstr "curators"
 
 #: models.py:35
 msgid "Curadores da curadoria."
@@ -441,16 +439,12 @@ msgid "Especialistas associados a este arquivo."
 msgstr "Media linked to this author."
 
 #: models.py:159
-#, fuzzy
-#| msgid "amostra do arquivo."
 msgid "curadores do arquivo"
-msgstr "sample of the file."
+msgstr "media curators"
 
 #: models.py:160
-#, fuzzy
-#| msgid "Arquivos associados a este autor."
 msgid "Curadores associados a este arquivo."
-msgstr "Media linked to this author."
+msgstr "Curators linked to this file."
 
 #: models.py:163
 #, fuzzy
@@ -1404,12 +1398,10 @@ msgstr[0] "Experts"
 msgstr[1] "Expert"
 
 #: templates/media_page_ajax.html:67
-#, fuzzy
-#| msgid "Operador"
 msgid "Curador"
 msgid_plural "Curadores"
-msgstr[0] "Operator"
-msgstr[1] "Operator"
+msgstr[0] "Curator"
+msgstr[1] "Curators"
 
 #: templates/media_page_ajax.html:71
 msgid "Agradecimentos"

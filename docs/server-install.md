@@ -124,7 +124,7 @@ apt install nginx
 Install memcached:
 
 ```
-apt install memcached
+apt install memcached libmemcached-tools
 ```
 
 Check if memcached is running by using telnet:
@@ -148,7 +148,13 @@ If not, start memcached:
 service memcached start
 ```
 
-Another memcached package needs to be installed via pip, see below.
+The second package provides a tool for flushing the cache after an update:
+
+```
+memcflush --servers=127.0.0.1:11211
+```
+
+In addition, another memcached package needs to be installed via pip, see below.
 
 ### Configure and install Cifonauta packages (as user)
 

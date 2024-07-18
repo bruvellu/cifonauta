@@ -1,17 +1,36 @@
+# Requirement for pip
 wheel
+# Django itself, upgrade manually
 django==4.2.11
+#TODO: Update PostgreSQL library?
 psycopg2==2.9.6
+# For taxon hierarchical tree
 django-mptt
+# For template translations
 django-rosetta
+# For model translations
 django-modeltranslation==0.17.3
-django-debug-toolbar
+# Manages most of the site's thumbnails
 sorl-thumbnail
-requests
+# Image processing library
 pillow
-fabric
-suds
-django-simple-captcha
+# Helper for handling different environments
 python-dotenv
+# For local debugging
+django-debug-toolbar
+# Deployment scripts
+fabric
+#TODO: For what?
+requests
+#TODO: For what?
+suds
+#TODO: Revise captcha for login
+django-simple-captcha
+#TODO: Revise Read/Write image metadata
 py3exiv2
+#TODO: Revise Read/Write image metadata
 piexif
+#TODO: Revise API framework (needed?)
 djangorestframework
+# Language detector to help managing translations
+lingua-language-detector

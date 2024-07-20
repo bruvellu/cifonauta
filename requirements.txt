@@ -9,7 +9,7 @@ django-mptt
 # For template translations
 django-rosetta
 # For model translations
-django-modeltranslation==0.17.3
+django-modeltranslation
 # Manages most of the site's thumbnails
 sorl-thumbnail
 # Image processing library

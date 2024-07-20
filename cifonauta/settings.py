@@ -136,14 +136,12 @@ USE_L10N = True
 USE_TZ = True
 
 # Needed for modeltranslation
-ugettext = lambda s: s
-LANGUAGES = (
-   ('pt-br', ugettext('Português')),
-   ('en', ugettext('English')),
-)
+gettext = lambda s: s
+LANGUAGES = (('pt-br', gettext('Português')),
+             ('en', gettext('English')),)
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'pt-br'
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('pt-br', 'en')
-MODELTRANSLATION_AUTO_POPULATE = True
+MODELTRANSLATION_AUTO_POPULATE = False
 
 # Set default value for AutoField
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

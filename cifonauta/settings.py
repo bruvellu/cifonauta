@@ -124,11 +124,6 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'pt-br'
 ADMIN_LANGUAGE_CODE = 'pt-br'
 
-# Rosetta settings
-ROSETTA_MESSAGES_SOURCE_LANGUAGE_CODE = 'pt-br'
-ROSETTA_MESSAGES_SOURCE_LANGUAGE_NAME = 'Português'
-ROSETTA_STORAGE_CLASS = 'rosetta.storage.CacheRosettaStorage'
-
 # Time zones
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
@@ -142,6 +137,12 @@ LANGUAGES = (('pt-br', gettext('Português')),
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'pt-br'
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('pt-br', 'en')
 MODELTRANSLATION_AUTO_POPULATE = False
+
+# Rosetta settings
+ROSETTA_MESSAGES_SOURCE_LANGUAGE_CODE = 'pt-br'
+ROSETTA_MESSAGES_SOURCE_LANGUAGE_NAME = 'Português'
+ROSETTA_STORAGE_CLASS = 'rosetta.storage.CacheRosettaStorage'
+ROSETTA_SHOW_AT_ADMIN_PANEL = True
 
 # Set default value for AutoField
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

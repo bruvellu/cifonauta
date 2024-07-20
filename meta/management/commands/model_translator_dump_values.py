@@ -24,7 +24,7 @@ class Command(BaseCommand):
         translation.activate('pt-br')
         self.stdout.write(f'\nLANGUAGE: {translation.get_language()}')
         # Create python file for output
-        filepath = 'model_translator/values_for_translation.py'
+        filepath = 'meta/values_for_translation.py'
         self.stdout.write(f'FILE: {filepath}')
         # Open file and begin
         trans_file = open(filepath, 'w')

@@ -35,7 +35,10 @@ class Command(BaseCommand):
         resolve_conflicts = options['resolve_conflicts']
 
         # Open .po file
-        filepath = 'model_translator/locale/en/LC_MESSAGES/django.po'
+        #TODO: Check if this code still works with meta/values_for_translation.py
+        # filepath = 'model_translator/locale/en/LC_MESSAGES/django.po'
+        #TODO: This PO file also has other translations
+        filepath = 'meta/locale/en/LC_MESSAGES/django.po'
         po = polib.pofile(filepath)
         self.stdout.write(f'FILE: {filepath}')
 

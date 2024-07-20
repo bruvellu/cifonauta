@@ -1,18 +1,17 @@
 from django.core.management.base import BaseCommand, CommandError
 from meta.models import Media, Tag, Category, Taxon, City, State, Country, Tour
-from django.utils import translation
 
 
 # Model fields that need translation
 all_fields = [
-        (Media, ['title', 'caption', 'acknowledgments']),
-        (Taxon, ['rank', 'status']),
-        (Tag, ['name', 'description']),
-        (Category, ['name', 'description']),
-        # (City, ['name']),
-        # (State, ['name']),
-        # (Country, ['name']),
-        (Tour, ['name', 'description']),
+        (Media, ['title_pt_br', 'caption_pt_br', 'acknowledgments_pt_br']),
+        (Taxon, ['rank_pt_br', 'status_pt_br']),
+        (Tag, ['name_pt_br', 'description_pt_br']),
+        (Category, ['name_pt_br', 'description_pt_br']),
+        # (City, ['name_pt_br']),
+        # (State, ['name_pt_br']),
+        # (Country, ['name_pt_br']),
+        (Tour, ['name_pt_br', 'description_pt_br']),
         ]
 
 
@@ -20,12 +19,11 @@ class Command(BaseCommand):
     help = 'Dump translatable fields to a python file.'
 
     def handle(self, *args, **options):
-        # Make sure all the content is returned in the default language
-        translation.activate('pt-br')
-        self.stdout.write(f'\nLANGUAGE: {translation.get_language()}')
         # Create python file for output
+        #TODO: Add as an option to settings
         filepath = 'meta/values_for_translation.py'
         self.stdout.write(f'FILE: {filepath}')
+
         # Open file and begin
         trans_file = open(filepath, 'w')
         trans_file.write('from django.utils.translation import gettext_lazy as _\n\n')
@@ -52,3 +50,4 @@ class Command(BaseCommand):
 
         # Close file
         trans_file.close()
+

@@ -3,7 +3,7 @@ import socket
 from django.core.management.base import BaseCommand
 from django.db.models import F
 from lingua import Language, LanguageDetectorBuilder
-from meta.models import Media
+from meta.models import Media, Tag
 
 
 class Command(BaseCommand):
@@ -29,7 +29,11 @@ class Command(BaseCommand):
         self.detector = LanguageDetectorBuilder.from_languages(*languages).build()
 
         # Models and fields to check
-        model_field_pairs = [{'model': Media, 'field': 'title'}, ]
+        model_field_pairs = [{'model': Media, 'field': 'title'},
+                             {'model': Media, 'field': 'caption'},
+                             {'model': Media, 'field': 'acknowledgments'},
+                             {'model': Tag, 'field': 'name'},
+                             {'model': Tag, 'field': 'description'},]
 
         # Loop over model-field pairs
         for modelfield in model_field_pairs:
@@ -79,8 +83,8 @@ class Command(BaseCommand):
             # Print diagnostics
             self.stdout.write(f'\n{field.upper()}: {value}')
             self.stdout.write(f'LANGUAGE: {lang.name}')
-            self.stdout.write(f'ENTRIES: {", ".join([str(id) for id in ids])}')
-            self.stdout.write(f'TOTAL: {files.count()} files')
+            self.stdout.write(f'{model_name} ID(s): {", ".join([str(id) for id in ids])}')
+            self.stdout.write(f'TOTAL: {files.count()} entries')
             self.stdout.write(f'SUGGESTED:')
             if lang.name == 'PORTUGUESE':
                 self.stdout.write(f'\t{field_pt_br}: {value}')

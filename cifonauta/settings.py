@@ -132,8 +132,8 @@ USE_TZ = True
 
 # Needed for modeltranslation
 gettext = lambda s: s
-LANGUAGES = (('pt-br', gettext('Português')),
-             ('en', gettext('English')),)
+LANGUAGES = [('pt-br', gettext('Português')),
+             ('en', gettext('English')),]
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'pt-br'
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('pt-br', 'en')
 MODELTRANSLATION_AUTO_POPULATE = False

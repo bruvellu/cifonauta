@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-07 17:14-0300\n"
-"PO-Revision-Date: 2024-07-07 17:12-0300\n"
-"Last-Translator: Bruno C.  Vellutini <organelas@gmail.com>\n"
+"POT-Creation-Date: 2024-07-20 11:41-0300\n"
+"PO-Revision-Date: 2024-07-19 11:02-0300\n"
+"Last-Translator: Virginia Castilho <virginia@usp.br>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -99,11 +99,11 @@ msgstr "AND"
 #: forms.py:152 forms.py:212
 #, python-brace-format
 msgid "Você ({self.media_author}) deve ser incluído como autor"
-msgstr ""
+msgstr "You ({self.media_author}) must be included as author"
 
 #: forms.py:163
 msgid "Você precisa aceitar os termos"
-msgstr ""
+msgstr "You need to accept the license terms"
 
 #: forms.py:359
 msgid "Manter status"
@@ -111,11 +111,11 @@ msgstr "Keep status"
 
 #: forms.py:360
 msgid "Enviar para revisão"
-msgstr ""
+msgstr "Send to review"
 
 #: forms.py:361
 msgid "Publicar"
-msgstr ""
+msgstr "Publish"
 
 #: forms.py:363
 msgid "Manter"
@@ -123,7 +123,7 @@ msgstr "Keep"
 
 #: forms.py:363
 msgid "Sobrescrever"
-msgstr ""
+msgstr "Overwrite"
 
 #: forms.py:366 forms.py:531
 msgid "Status"
@@ -135,17 +135,15 @@ msgstr "Filter by"
 
 #: forms.py:521
 msgid "Digite palavra(s)-chave"
-msgstr ""
+msgstr "Select keywords"
 
 #: forms.py:526
-#, fuzzy
-#| msgid "categorias"
 msgid "Curadorias"
-msgstr "categories"
+msgstr "Categories"
 
 #: forms.py:538
 msgid "Ordem alfabética"
-msgstr ""
+msgstr "Alphabetical order"
 
 #: forms.py:554 forms.py:575
 msgid "Buscar por"
@@ -252,79 +250,79 @@ msgstr "curators"
 
 #: models.py:35
 msgid "Curadores da curadoria."
-msgstr ""
+msgstr "Curatorship curators"
 
 #: models.py:61
 msgid "Carregado"
-msgstr ""
+msgstr "Loading"
 
 #: models.py:62
 msgid "Rascunho"
-msgstr ""
+msgstr "Draft"
 
 #: models.py:63
 msgid "Submetido"
-msgstr ""
+msgstr "Submitted"
 
 #: models.py:64
 msgid "Publicado"
-msgstr ""
+msgstr "Published"
 
 #: models.py:66
 msgid "CC0 (Domínio Público)"
-msgstr ""
+msgstr "CC0 (Public Domain Dedication)"
 
 #: models.py:67
 msgid "CC BY (Atribuição)"
-msgstr ""
+msgstr "CC BY (Attribution)"
 
 #: models.py:68
 msgid "CC BY-SA (Atribuição-CompartilhaIgual)"
-msgstr ""
+msgstr "CC BY-SA (Attribution-ShareALike)"
 
 #: models.py:69
 msgid "CC BY-ND (Atribuição-SemDerivações)"
-msgstr ""
+msgstr "CC BY-ND (Attribution-NoDerivatives)"
 
 #: models.py:70
 msgid "CC BY-NC (Atribuição-NãoComercial)"
-msgstr ""
+msgstr "CC BY-NC (Attribution-NonCommercial)"
 
 #: models.py:71
 msgid "CC BY-NC-SA (AtribuiçãoNãoComercial-CompartilhaIgual)"
-msgstr ""
+msgstr "CC BY-NC-SA (Attribution-NonCommercial-ShareALike)"
 
 #: models.py:72
 msgid "CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)"
-msgstr ""
+msgstr "CC BY-NC-ND (Attribution-NonCommercial-NoDerivatives)"
 
 #: models.py:74
 msgid "photo"
-msgstr ""
+msgstr "photo"
 
 #: models.py:75
 msgid "video"
-msgstr ""
+msgstr "video"
 
 #: models.py:77
 msgid "<0,1 mm"
-msgstr ""
+msgstr "<0.1 mm"
 
 #: models.py:78
 msgid "0,1–1,0 mm"
-msgstr ""
+msgstr "0.1–1.0 mm"
 
 #: models.py:79
 msgid "1,0–10 mm"
-msgstr ""
+msgstr "1.0–10 mm"
 
 #: models.py:80
 msgid "10–100 mm"
-msgstr ""
+msgstr "10–100 mm"
 
 #: models.py:81
 msgid ">100 mm"
-msgstr ""
+msgstr ">100 mm"
 
 #: models.py:84
 #, fuzzy
@@ -510,7 +508,7 @@ msgstr "Media creation date."
 
 #: models.py:203
 msgid "data do upload"
-msgstr ""
+msgstr "Media upload date"
 
 #: models.py:207
 #, fuzzy
@@ -546,7 +544,7 @@ msgstr "Image caption."
 
 #: models.py:236
 msgid "agradecimentos"
-msgstr ""
+msgstr "acknowledgements"
 
 #: models.py:239
 #, fuzzy
@@ -588,7 +586,7 @@ msgstr "geolocation"
 
 #: models.py:263
 msgid "Geolocalização no formato sexagesimal (S 23°48'45\" W 45°24'27\")."
-msgstr ""
+msgstr "coordinates in sexagesimal format"
 
 #: models.py:265
 msgid "latitude"
@@ -708,15 +706,15 @@ msgstr ""
 
 #: models.py:578
 msgid "Flag indicando quem fez a alteração na mídia."
-msgstr ""
+msgstr "Flag indicating who made the change to the media"
 
 #: models.py:580
 msgid "Pessoa da mídia modificada"
-msgstr ""
+msgstr "Modified media person"
 
 #: models.py:580
 msgid "Pessoa que realizou alterações na mídia publicada"
-msgstr ""
+msgstr "Person who made changes to published media"
 
 #: models.py:583
 #, fuzzy
@@ -899,7 +897,7 @@ msgstr "City name slug."
 
 #: models.py:747
 msgid "Estado na qual a cidade pertence."
-msgstr ""
+msgstr "State"
 
 #: models.py:757
 msgid "cidades"
@@ -915,7 +913,7 @@ msgstr "State name slug."
 
 #: models.py:768
 msgid "Pais na qual o estado pertence."
-msgstr ""
+msgstr "Country"
 
 #: models.py:778
 msgid "estados"
@@ -1174,7 +1172,7 @@ msgstr "Something is very wrong with your browser..."
 
 #: templates/enable_specialists.html:15
 msgid "Escolha uma curadoria"
-msgstr ""
+msgstr "Choose a curation"
 
 #: templates/flatpages/default.html:30
 msgid "Comentários"
@@ -1868,7 +1866,7 @@ msgstr[1] "videos"
 
 #: templates/search.html:59
 msgid "Escolha como combinar os campos abaixo"
-msgstr ""
+msgstr "Choose how to combine the fields below"
 
 #: templates/search_box.html:3
 msgid "Buscar"
@@ -1980,7 +1978,7 @@ msgstr "Last updated"
 
 #: templates/tour_page.html:158
 msgid "Autores envolvidos"
-msgstr ""
+msgstr "Authors"
 
 #: templates/tour_page.html:159
 msgid "Táxons representados"
@@ -2029,11 +2027,11 @@ msgstr "Video snapshot"
 
 #: views.py:630 views.py:852 views.py:1026 views.py:1291
 msgid "As ações em lote foram aplicadas com sucesso"
-msgstr ""
+msgstr "Batch actions were applied successfully"
 
 #: views.py:632 views.py:854 views.py:1028 views.py:1293
 msgid "Houve um erro ao tentar aplicar as ações em lote"
-msgstr ""
+msgstr "There was an error trying to apply the batch actions"
 
 #: views.py:634 views.py:856 views.py:1030 views.py:1295
 #, fuzzy
@@ -2047,4 +2045,4 @@ msgstr "It is not possible to batch edit media that has been already published"
 
 #: views.py:845
 msgid "Não é possível realizar ação em lotes de mídia submetida para revisão"
-msgstr ""
+msgstr "Unable to take action on batches of media submitted for review"

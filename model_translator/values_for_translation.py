@@ -73,6 +73,8 @@ _('A vida dupla de Dipurena')
 # Translators: model=Media, field=title.
 _('Badejo-quadrado')
 # Translators: model=Media, field=title.
+_('Badejo-quadrado')
+# Translators: model=Media, field=title.
 _('Baiacu')
 # Translators: model=Media, field=title.
 _('Baiacu-de-espinho')
@@ -169,9 +171,17 @@ _('Briozoário incrustante')
 # Translators: model=Media, field=title.
 _('Budião azul, peixe-papagaio')
 # Translators: model=Media, field=title.
+_('Budião-do-bico-verde')
+# Translators: model=Media, field=title.
+_('Budião-do-bico-verde e juvenil (acima) do Budião-listrado')
+# Translators: model=Media, field=title.
+_('Budião-listrado')
+# Translators: model=Media, field=title.
 _('Budião, peixe-papagaio')
 # Translators: model=Media, field=title.
 _('Budião, Peixe-papagaio')
+# Translators: model=Media, field=title.
+_('Budião-rei')
 # Translators: model=Media, field=title.
 _('Budião, sabonete')
 # Translators: model=Media, field=title.
@@ -235,7 +245,15 @@ _('Caranguejo mitrax')
 # Translators: model=Media, field=title.
 _('Caranguejo-uçá')
 # Translators: model=Media, field=title.
+_('Carapau')
+# Translators: model=Media, field=title.
 _('Caravela-portuguesa')
+# Translators: model=Media, field=title.
+_('Cardume de cocoroca-mulata')
+# Translators: model=Media, field=title.
+_('Cardume misto')
+# Translators: model=Media, field=title.
+_('Cardume misto')
 # Translators: model=Media, field=title.
 _('Celomócitos de uma bolacha-do-mar')
 # Translators: model=Media, field=title.
@@ -269,6 +287,8 @@ _('Células mesenquimais primárias')
 # Translators: model=Media, field=title.
 _('Células no epitélio da larva plúteos de bolacha-do-mar')
 # Translators: model=Media, field=title.
+_('Chapeirão Faca-cega')
+# Translators: model=Media, field=title.
 _('Cifopólipos')
 # Translators: model=Media, field=title.
 _('Cifozoário')
@@ -298,6 +318,8 @@ _('Cirurgião')
 _('Cirurgião-azul')
 # Translators: model=Media, field=title.
 _('Cochonilhas em folhas do mangue-branco')
+# Translators: model=Media, field=title.
+_('Cocoroca')
 # Translators: model=Media, field=title.
 _('Coió ou falso-voador')
 # Translators: model=Media, field=title.
@@ -329,11 +351,15 @@ _('Coral casca-de-jaca')
 # Translators: model=Media, field=title.
 _('Coral casca-de-jaca')
 # Translators: model=Media, field=title.
+_('Coral casca-de-jaca, esmeralda e baba-de-boi')
+# Translators: model=Media, field=title.
 _('Coral-cerebro')
 # Translators: model=Media, field=title.
 _('Coral-cérebro')
 # Translators: model=Media, field=title.
 _('Coral Cérebro')
+# Translators: model=Media, field=title.
+_('Coral-cérebro e hidrocoral-de-fogo')
 # Translators: model=Media, field=title.
 _('Coral-cerebro e zoantídeo')
 # Translators: model=Media, field=title.
@@ -563,15 +589,25 @@ _('Gástrula de bolacha-do-mar')
 # Translators: model=Media, field=title.
 _('Gavião-carcará')
 # Translators: model=Media, field=title.
+_('Góbi-neon sobre coral casca-de-jaca')
+# Translators: model=Media, field=title.
 _('Gonângios com brotos de medusa')
 # Translators: model=Media, field=title.
 _('Gonângios e hidrante')
 # Translators: model=Media, field=title.
 _('Gorgônia')
 # Translators: model=Media, field=title.
+_('Gorgônia orelha-de-elefante')
+# Translators: model=Media, field=title.
 _('Gorgônina-de-fogo')
 # Translators: model=Media, field=title.
 _('Grama-brasileiro')
+# Translators: model=Media, field=title.
+_('Grama-brasileiro')
+# Translators: model=Media, field=title.
+_('Guaiúba')
+# Translators: model=Media, field=title.
+_('Guaiúba e coral-cérebro')
 # Translators: model=Media, field=title.
 _('Heterópode - molusco gastrópode pelágico')
 # Translators: model=Media, field=title.
@@ -867,15 +903,21 @@ _('Peixe-anjo, anjo-rainha')
 # Translators: model=Media, field=title.
 _('Peixe-anjo-rainha')
 # Translators: model=Media, field=title.
+_('Peixe anjo-rainha e coral-cérebro')
+# Translators: model=Media, field=title.
 _('Peixe-borboleta')
 # Translators: model=Media, field=title.
 _('Peixe-borboleta-listrado')
+# Translators: model=Media, field=title.
+_('Peixe cirurgião')
 # Translators: model=Media, field=title.
 _('Peixe cirurgião-barbeiro forrageando')
 # Translators: model=Media, field=title.
 _('Peixe-cofre')
 # Translators: model=Media, field=title.
 _('Peixe-donzela')
+# Translators: model=Media, field=title.
+_('Peixe-frade')
 # Translators: model=Media, field=title.
 _('Peixe-frade')
 # Translators: model=Media, field=title.

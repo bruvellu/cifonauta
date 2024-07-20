@@ -58,3 +58,62 @@ To run:
 ```
 python3 manage.py model_translator_sync_values
 ```
+
+## Duplicates
+
+To identify duplicated translations in `Media` entries, run:
+
+```
+python3 manage.py find_duplicated_translations
+```
+
+This will find entries where the translated fields, `title_pt_br` and `title_en`, for example, have identical values.
+The command will detect the language of the field, and output some diagnostics and a suggested resolution:
+
+```
+TITLE: Vista geral do substrato rochoso
+LANGUAGE: PORTUGUESE
+ENTRIES: 10696
+TOTAL: 1 files
+SUGGESTED:
+	title_pt_br: Vista geral do substrato rochoso
+	title_en: ''
+
+TITLE: "Man-of-war fish"
+LANGUAGE: ENGLISH
+ENTRIES: 9686
+TOTAL: 1 files
+SUGGESTED:
+	title_pt_br: ''
+	title_en: "Man-of-war fish"
+```
+
+Note that the language detection is not 100% accurate, and sometimes entries in Portuguese and English will have the same names.
+But with the provided entry IDs, one can fix the duplicated translations using the admin interface.
+
+To interactively fix these duplicated values, run the command with the `-i` option:
+
+```
+python3 manage.py find_duplicated_translations -i
+```
+
+The output now will ask if you want to apply the suggested change:
+
+```
+TITLE: Anfioxo - região anterior, vista dorsal
+LANGUAGE: PORTUGUESE
+ENTRIES: 7176, 7178, 7179, 7181, 7182, 7183, 7185, 7186, 7188, 7189, 7191
+TOTAL: 11 files
+SUGGESTED:
+	title_pt_br: Anfioxo - região anterior, vista dorsal
+	title_en: ''
+ACCEPT?
+This will apply the suggested changes to all entries above.
+ANSWER (yes/no): yes
+ACTION:
+	title_en cleared in 11 entries
+```
+
+If the choice is `yes`, one of the fields will be set to an empty string in all the entries having this identical value.
+The changes are applied directly to the database, therefore, be careful.
+

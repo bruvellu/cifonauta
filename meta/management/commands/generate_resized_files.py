@@ -4,7 +4,7 @@ from django.template.defaultfilters import slugify
 from meta.models import Media
 
 '''
-Generate resized files.
+Generate resized media files.
 '''
 
 

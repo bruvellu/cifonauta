@@ -3,7 +3,7 @@ import socket
 from django.core.management.base import BaseCommand
 from django.db.models import F
 from lingua import Language, LanguageDetectorBuilder
-from meta.models import Media, Tag
+from meta.models import Media
 
 
 class Command(BaseCommand):
@@ -31,9 +31,7 @@ class Command(BaseCommand):
         # Models and fields to check
         model_field_pairs = [{'model': Media, 'field': 'title'},
                              {'model': Media, 'field': 'caption'},
-                             {'model': Media, 'field': 'acknowledgments'},
-                             {'model': Tag, 'field': 'name'},
-                             {'model': Tag, 'field': 'description'},]
+                             {'model': Media, 'field': 'acknowledgments'},]
 
         # Loop over model-field pairs
         for modelfield in model_field_pairs:

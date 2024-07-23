@@ -629,8 +629,6 @@ _('Hidrozoário colonial flutuante, vista lateral - detalhe dos dactilozoóides'
 # Translators: model=Media, field=title_pt_br.
 _('Hidrozoário colonial flutuante, vista oral')
 # Translators: model=Media, field=title_pt_br.
-_('Hidrozoário colonial flutuante, vista oral')
-# Translators: model=Media, field=title_pt_br.
 _('Hidrozoário colonial flutuante, vista oral - detalhe dos gastro-gonozoóides (cor branca)')
 # Translators: model=Media, field=title_pt_br.
 _('Hidrozoário colonial flutuante, vista oral - detalhe dos gastro-gonozoóides (cor branca) e brotos de medusas')
@@ -719,7 +717,7 @@ _('Litorina')
 # Translators: model=Media, field=title_pt_br.
 _('Lula')
 # Translators: model=Media, field=title_pt_br.
-_('Macho adulto guardando ninho com ovos.')
+_('Macho adulto guardando ninho com ovos')
 # Translators: model=Media, field=title_pt_br.
 _('Mangangá')
 # Translators: model=Media, field=title_pt_br.
@@ -782,8 +780,6 @@ _('Molusco gastrópode parasita de lírio-do-mar')
 _('Molusco nudibrânchio')
 # Translators: model=Media, field=title_pt_br.
 _('Molusco nudibrânquio')
-# Translators: model=Media, field=title_pt_br.
-_('Molusco nudibrânquio.')
 # Translators: model=Media, field=title_pt_br.
 _('Molusco nudibrânquio se alimentando de uma anemona-do-mar')
 # Translators: model=Media, field=title_pt_br.
@@ -1107,7 +1103,7 @@ _('Abertura da gonoteca, 300x.')
 # Translators: model=Media, field=caption_pt_br.
 _('Abertura da hidroteca, 170x.')
 # Translators: model=Media, field=caption_pt_br.
-_('A bolacha-da-praia Encope emarginata vive em sedimentos areno-lodosos ou arenosos na região entremarés ou infralitoral raso')
+_('A bolacha-da-praia Encope emarginata vive em sedimentos areno-lodosos ou arenosos na região entremarés ou infralitoral raso.')
 # Translators: model=Media, field=caption_pt_br.
 _('Acelerado 25x.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1136,8 +1132,6 @@ _('A gastrulação está começando.')
 _('Alga parda - sargaço.')
 # Translators: model=Media, field=caption_pt_br.
 _('Algas pardas intertidais em costa rochosa.')
-# Translators: model=Media, field=caption_pt_br.
-_('Algas verdes intertidais')
 # Translators: model=Media, field=caption_pt_br.
 _('Algas verdes intertidais.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1195,7 +1189,7 @@ _('Aspecto de uma colônia.')
 # Translators: model=Media, field=caption_pt_br.
 _('A sustentação de esponjas e muitas ascídias é possível graças a arranjos de espículas. Nesta ascídia pertencente à família Didemnidae, as espículas de calcário são responsáveis pela cor branca.')
 # Translators: model=Media, field=caption_pt_br.
-_('Baiacu')
+_('Baiacu.')
 # Translators: model=Media, field=caption_pt_br.
 _('Banda ciliada.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1215,11 +1209,11 @@ _('Base da gonoteca, 450x.')
 # Translators: model=Media, field=caption_pt_br.
 _('Base da gonoteca, 500x.')
 # Translators: model=Media, field=caption_pt_br.
-_('Base do hidrante, 200x')
+_('Base do hidrante, 200x.')
 # Translators: model=Media, field=caption_pt_br.
 _('Base do hidrante, 320x.')
 # Translators: model=Media, field=caption_pt_br.
-_('Bivalve invasor')
+_('Bivalve invasor.')
 # Translators: model=Media, field=caption_pt_br.
 _('Bivalves do litoral rochoso.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1251,9 +1245,9 @@ _('Briozoários e outros organismos encrustrantes.')
 # Translators: model=Media, field=caption_pt_br.
 _('Briozoários e outros organismos incrustantes são comuns em seixos e rochas da região entremarés.')
 # Translators: model=Media, field=caption_pt_br.
-_('Broto de medusa, 100x')
+_('Broto de medusa, 100x.')
 # Translators: model=Media, field=caption_pt_br.
-_('Brotos de medusa, 260x')
+_('Brotos de medusa, 260x.')
 # Translators: model=Media, field=caption_pt_br.
 _('Caiçara coletando o berbigão Anomalocardia brasiliana em sedimento areno-lamoso na região entremarés.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1297,9 +1291,7 @@ _('Cifistoma em estrotilização.')
 # Translators: model=Media, field=caption_pt_br.
 _('Cílios epiteliais.')
 # Translators: model=Media, field=caption_pt_br.
-_('Cnidas do tentáculo')
-# Translators: model=Media, field=caption_pt_br.
-_('Cnidocílios, tentáculo, 10000x')
+_('Cnidas do tentáculo.')
 # Translators: model=Media, field=caption_pt_br.
 _('Cnidocílios, tentáculo, 10000x.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1333,13 +1325,13 @@ _('Colônia de Bugula (Cheilostomata) crescendo junto com a angiosperma marinha 
 # Translators: model=Media, field=caption_pt_br.
 _('Colônia de Favia gravida.')
 # Translators: model=Media, field=caption_pt_br.
-_('Colônia de hidroides sobre algas')
+_('Colônia de hidroides sobre algas.')
 # Translators: model=Media, field=caption_pt_br.
 _('Colônia de machos.')
 # Translators: model=Media, field=caption_pt_br.
-_('Colônia de Millepora alcicornis')
+_('Colônia de Millepora alcicornis.')
 # Translators: model=Media, field=caption_pt_br.
-_('Colônia de Montastraea cavernosa')
+_('Colônia de Montastraea cavernosa.')
 # Translators: model=Media, field=caption_pt_br.
 _('Colônia de Mussismilia braziliensis.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1371,19 +1363,19 @@ _('Conchas, rastos e dejetos na superfície do sedimento areno-lamoso.')
 # Translators: model=Media, field=caption_pt_br.
 _('Coônia crescendo sobre o hidróide Sertularia marginata. Hidrantes e gonângios.')
 # Translators: model=Media, field=caption_pt_br.
-_('Coral escleractíneo Mussismilia harttii rodeado por colônias do octocoral Carijoa riisei')
+_('Coral escleractíneo Mussismilia harttii rodeado por colônias do octocoral Carijoa riisei.')
 # Translators: model=Media, field=caption_pt_br.
-_('Coral-estrela com pólipos retraídos')
+_('Coral-estrela com pólipos retraídos.')
 # Translators: model=Media, field=caption_pt_br.
 _('Coral mole com uma espécie invasora de ofiuróide.')
 # Translators: model=Media, field=caption_pt_br.
-_('Coral-sol e o octocoral Carijoa')
+_('Coral-sol e o octocoral Carijoa.')
 # Translators: model=Media, field=caption_pt_br.
 _('Corbula.')
 # Translators: model=Media, field=caption_pt_br.
 _('Corcoroca.')
 # Translators: model=Media, field=caption_pt_br.
-_('Cracas')
+_('Cracas.')
 # Translators: model=Media, field=caption_pt_br.
 _('Cracas do litoral rochoso.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1404,8 +1396,6 @@ _('Detalhe da cabeça de um peixe-lagarto.')
 _('Detalhe da extremidade anterior.')
 # Translators: model=Media, field=caption_pt_br.
 _('Detalhe da invaginação do vestíbulo.')
-# Translators: model=Media, field=caption_pt_br.
-_('Detalhe da margem da umbrela')
 # Translators: model=Media, field=caption_pt_br.
 _('Detalhe da margem da umbrela.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1433,7 +1423,7 @@ _('Detalhe de espinhos e pedicelárias.')
 # Translators: model=Media, field=caption_pt_br.
 _('Detalhe de núcleo de manguezal localizado na parte superior da região entremarés.')
 # Translators: model=Media, field=caption_pt_br.
-_('Detalhe de um autozooide')
+_('Detalhe de um autozooide.')
 # Translators: model=Media, field=caption_pt_br.
 _('Detalhe de um braço, destacando paxilas e espinhos marginais.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1471,7 +1461,7 @@ _('Detalhe dos hidrantes.')
 # Translators: model=Media, field=caption_pt_br.
 _('Detalhe dos pés e dos espinhos.')
 # Translators: model=Media, field=caption_pt_br.
-_('Detalhe dos pólipos de Plexaurella regia')
+_('Detalhe dos pólipos de Plexaurella regia.')
 # Translators: model=Media, field=caption_pt_br.
 _('Detalhe dos setígeros medianos, em vista lateral, destacando oócitos (amarelos).')
 # Translators: model=Media, field=caption_pt_br.
@@ -1491,19 +1481,19 @@ _('Detalhe do urópode e do estatocisto.')
 # Translators: model=Media, field=caption_pt_br.
 _('Detalhe do vestíbulo próximo ao celoma esquerdo e estômago central durante início do estágio com 4 pares de braços.')
 # Translators: model=Media, field=caption_pt_br.
-_('Detalhe mostrando o madreporito')
+_('Detalhe mostrando o madreporito.')
 # Translators: model=Media, field=caption_pt_br.
 _('Detalhe mostrando os pés ambulacrais.')
 # Translators: model=Media, field=caption_pt_br.
 _('Detalhes de pólipos e ramos.')
 # Translators: model=Media, field=caption_pt_br.
-_('disciplina diversidade e evolução 2007.')
+_('Disciplina diversidade e evolução 2007.')
 # Translators: model=Media, field=caption_pt_br.
 _('Diversas células com grânulos vermelhos se distribuem no epitélio da gástrula.')
 # Translators: model=Media, field=caption_pt_br.
-_('Divisão intratentacular em Scolymia wellsii')
+_('Divisão intratentacular em Scolymia wellsii.')
 # Translators: model=Media, field=caption_pt_br.
-_('Divisão intratentacular em Scolymia wellsii (detalhe)')
+_('Divisão intratentacular em Scolymia wellsii (detalhe).')
 # Translators: model=Media, field=caption_pt_br.
 _('Duas pequenas colônias de Agaricia agaricites.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1657,8 +1647,6 @@ _('Exemplar adulto liberando esperma durante tarde de verão nos tanques do CEBI
 # Translators: model=Media, field=caption_pt_br.
 _('Extremidade de um ramo mostrando gastrozoóides e dactilozoóides. Parte de colônia mantida em laboratório.')
 # Translators: model=Media, field=caption_pt_br.
-_('Fêmea')
-# Translators: model=Media, field=caption_pt_br.
 _('Fêmea.')
 # Translators: model=Media, field=caption_pt_br.
 _('Fêmea adulta liberando ovos.')
@@ -1717,7 +1705,7 @@ _('Gonotecas, 60x.')
 # Translators: model=Media, field=caption_pt_br.
 _('Gonotecas, 70x.')
 # Translators: model=Media, field=caption_pt_br.
-_('Grama-brasileiro próximo a ascídias e esponjas')
+_('Grama-brasileiro próximo a ascídias e esponjas.')
 # Translators: model=Media, field=caption_pt_br.
 _('Grânulos pigmentados e transparentes presentes nas células epiteliais.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1821,9 +1809,9 @@ _('Intestino e vestíbulo durante o estágio de oito braços.')
 # Translators: model=Media, field=caption_pt_br.
 _('Introverte distal.')
 # Translators: model=Media, field=caption_pt_br.
-_('introverte distal mostrando papilas.')
+_('Introverte distal mostrando papilas.')
 # Translators: model=Media, field=caption_pt_br.
-_('introverte distal mostrando tentáculos.')
+_('Introverte distal mostrando tentáculos.')
 # Translators: model=Media, field=caption_pt_br.
 _('Introverte estendido mostrando coroa tentacular.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1853,7 +1841,7 @@ _('Larva.')
 # Translators: model=Media, field=caption_pt_br.
 _('Larva actínula.')
 # Translators: model=Media, field=caption_pt_br.
-_('Larva cidipida')
+_('Larva cidipida.')
 # Translators: model=Media, field=caption_pt_br.
 _('Larva com 2 pares de braços e início do desenvolvimento dos braços postero-dorsais na lateral do corpo.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1863,7 +1851,7 @@ _('Larva com quatro pares de braços.')
 # Translators: model=Media, field=caption_pt_br.
 _('Larva com seis braços.')
 # Translators: model=Media, field=caption_pt_br.
-_('Larva com seis braços. Boca')
+_('Larva com seis braços. Boca.')
 # Translators: model=Media, field=caption_pt_br.
 _('Larva com seis braços. Detalhe dos pares antero-lateral e postero-dorsal.')
 # Translators: model=Media, field=caption_pt_br.
@@ -1930,8 +1918,6 @@ _('Medusa.')
 _('Medusa, 320x.')
 # Translators: model=Media, field=caption_pt_br.
 _('Medusa aderida a alga Sargassum, com tentáculos retraídos na subumbrela.')
-# Translators: model=Media, field=caption_pt_br.
-_('Medusa adulta')
 # Translators: model=Media, field=caption_pt_br.
 _('Medusa adulta.')
 # Translators: model=Media, field=caption_pt_br.
@@ -2023,7 +2009,7 @@ _('Microalga no trato digestório larval.')
 # Translators: model=Media, field=caption_pt_br.
 _('Montagem de fotos de uma larva plúteos da bolacha-do-mar Clypeaster subdepressus mostrando sua tridimensionalidade.')
 # Translators: model=Media, field=caption_pt_br.
-_('Montastraea cavernosa com pólipos expandidos (foto realizada durante a noite)')
+_('Montastraea cavernosa com pólipos expandidos (foto realizada durante a noite).')
 # Translators: model=Media, field=caption_pt_br.
 _('Montastraea cavernosa predando uma poliqueta.')
 # Translators: model=Media, field=caption_pt_br.
@@ -2119,7 +2105,7 @@ _('Ovum.')
 # Translators: model=Media, field=caption_pt_br.
 _('Painéis usados para testar o efeito de tintas à base de cobre na composição das comunidades e no desempenho de diferentes invertebrados. As molduras azuis e brancas contornam unidades experimentais sujeitas aos efeitos de cobre e unidades controle, respectivamente.')
 # Translators: model=Media, field=caption_pt_br.
-_('Palythoa caribaeorum recobrindo o infralitoral da Ilha dos Búzios, São Paulo')
+_('Palythoa caribaeorum recobrindo o infralitoral da Ilha dos Búzios, São Paulo.')
 # Translators: model=Media, field=caption_pt_br.
 _('Papila genital presente na região aboral do corpo.')
 # Translators: model=Media, field=caption_pt_br.
@@ -2147,9 +2133,9 @@ _('Paxilas.')
 # Translators: model=Media, field=caption_pt_br.
 _('Peixe-borboleta.')
 # Translators: model=Media, field=caption_pt_br.
-_('Peixe-cofre')
+_('Peixe-cofre.')
 # Translators: model=Media, field=caption_pt_br.
-_('Peixe-cofre juvenil')
+_('Peixe-cofre juvenil.')
 # Translators: model=Media, field=caption_pt_br.
 _('Peixe-donzela na sombra de uma pedra guardando o ninho com ovos.')
 # Translators: model=Media, field=caption_pt_br.
@@ -2169,7 +2155,7 @@ _('Peixes serranídeos atuando como seguidores da estrela Luidia senegalensis.')
 # Translators: model=Media, field=caption_pt_br.
 _('Pequena colônia de Madracis decactis próxima a uma esponja marinha amarela.')
 # Translators: model=Media, field=caption_pt_br.
-_('Pequena colônia de Mussismilia hispida com padrão de cor "craquelado"')
+_('Pequena colônia de Mussismilia hispida com padrão de cor "craquelado".')
 # Translators: model=Media, field=caption_pt_br.
 _('Pequena colônia do coral Favia gravida com pólipos parcialmente abertos.')
 # Translators: model=Media, field=caption_pt_br.
@@ -2237,7 +2223,7 @@ _('Porquinho, Peixe-porco.')
 # Translators: model=Media, field=caption_pt_br.
 _('Posicionamento dos micrômeros no pólo vegetal.')
 # Translators: model=Media, field=caption_pt_br.
-_('Primeira clivagem')
+_('Primeira clivagem.')
 # Translators: model=Media, field=caption_pt_br.
 _('Primeiro estágio de copepodito.')
 # Translators: model=Media, field=caption_pt_br.
@@ -2249,7 +2235,7 @@ _('Raia.')
 # Translators: model=Media, field=caption_pt_br.
 _('Ramo trisserial com aviculária frontal.')
 # Translators: model=Media, field=caption_pt_br.
-_('Recife de areia')
+_('Recife de areia.')
 # Translators: model=Media, field=caption_pt_br.
 _('Região aboral.')
 # Translators: model=Media, field=caption_pt_br.
@@ -2273,8 +2259,6 @@ _('Região entremarés, fundo areno-lamoso.')
 # Translators: model=Media, field=caption_pt_br.
 _('Região entremarés, fundo areno-lamoso; ao fundo exemplares do mangue-vermelho.')
 # Translators: model=Media, field=caption_pt_br.
-_('Região entremarés, fundo arenoso')
-# Translators: model=Media, field=caption_pt_br.
 _('Região entremarés, fundo arenoso.')
 # Translators: model=Media, field=caption_pt_br.
 _('Região oral.')
@@ -2282,8 +2266,6 @@ _('Região oral.')
 _('Região oral com a lanterna de Aristóteles em formação.')
 # Translators: model=Media, field=caption_pt_br.
 _('Restos do esqueleto larval na região aboral do juvenil.')
-# Translators: model=Media, field=caption_pt_br.
-_('Ritual de côrte entre um macho e uma fêmea')
 # Translators: model=Media, field=caption_pt_br.
 _('Ritual de côrte entre um macho e uma fêmea.')
 # Translators: model=Media, field=caption_pt_br.
@@ -2299,7 +2281,7 @@ _('Secretando o esqueleto calcário.')
 # Translators: model=Media, field=caption_pt_br.
 _('Sedimento areno-lamoso durante maré baixa; ao fundo raizes do mangue-vermelho.')
 # Translators: model=Media, field=caption_pt_br.
-_('Sternorhynchus seticornis sobre Millepora alcicornis')
+_('Sternorhynchus seticornis sobre Millepora alcicornis.')
 # Translators: model=Media, field=caption_pt_br.
 _('Superfície aboral.')
 # Translators: model=Media, field=caption_pt_br.
@@ -2329,7 +2311,7 @@ _('Variação da forma da lórica.')
 # Translators: model=Media, field=caption_pt_br.
 _('Vestíbulo em uma larva plúteos de oito braços.')
 # Translators: model=Media, field=caption_pt_br.
-_('Vibráculos')
+_('Vibráculos.')
 # Translators: model=Media, field=caption_pt_br.
 _('Vídeo tem duração de 6h.')
 # Translators: model=Media, field=caption_pt_br.
@@ -2361,7 +2343,7 @@ _('Vista do Canal de São Sebastião e da Baía do Araçá.')
 # Translators: model=Media, field=caption_pt_br.
 _('Vista do canal de São Sebastião - praias de Barequeçaba e Guaecá.')
 # Translators: model=Media, field=caption_pt_br.
-_('Vista do Canal de São Sebastião - Terminal Marítimo Almirante Barroso - TEBAR')
+_('Vista do Canal de São Sebastião - Terminal Marítimo Almirante Barroso - TEBAR.')
 # Translators: model=Media, field=caption_pt_br.
 _('Vista do costão rochoso próximo à ponta do Araçá.')
 # Translators: model=Media, field=caption_pt_br.

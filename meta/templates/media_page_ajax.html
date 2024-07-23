@@ -98,7 +98,7 @@
 
           <div id="citethis">
             <div>
-              {% show_set authors '' '' ', ' '' '' '.' %} <strong>{{ media.title }}</strong>. {% blocktrans with media_url=media.get_absolute_url %}Banco de imagens <em>Cifonauta</em>. Disponível em: <a id="cifonauta-link" href="{{ media_url }}">http://cifonauta.cebimar.usp.br{{ media_url }}</a> Acesso em:{% endblocktrans %} {% now "Y-m-d" %}.
+              {% show_set authors '' '' ', ' '' '' '.' %} <strong>{{ media.title }}</strong>{% if media.datatype == 'photo' %}{% trans ' (imagem)' %}{% elif media.datatype == 'video' %}{% trans ' (video)' %}{% else %}{% endif %}. {% trans 'Banco de imagens <em>Cifonauta</em>' %}. {% trans 'Disponível em' %}: <a id="cifonauta-link" href="{{ media.get_absolute_url }}">http://cifonauta.cebimar.usp.br{{ media.get_absolute_url }}</a> {% trans 'Acessado em' %}: {% now "Y-m-d" %}.
             </div>
             <div class="align-right quiet">
               {% blocktrans %}Conheça os <a href="/terms/">termos de uso</a>.{% endblocktrans %}

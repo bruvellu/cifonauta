@@ -344,11 +344,32 @@ class Media(models.Model):
 
     def normalize_title(self, title):
         '''Capitalize first letter, remove full stop from the end.'''
-        return title[0].upper() + title[1:].rstrip('.')
+        # Avoid None types in titles (shouldn't exist...)
+        if title is None:
+            return ''
+        # Strip extra white spaces
+        stripped_title = title.strip()
+        # In case len(title) < 2 or fails for some other reason
+        try:
+            # Capitalize first, remove full stop
+            return stripped_title[0].upper() + stripped_title[1:].rstrip('.')
+        except:
+            # Return the original title, but stripped
+            return stripped_title
 
     def normalize_caption(self, caption):
         '''Capitalize first letter, ensure full stop at the end.'''
-        return caption[0].upper() + caption[1:].rstrip('.') + '.'
+        # Avoid None types in captions (shouldn't exist...)
+        if caption is None:
+            return ''
+        # Strip extra white spaces
+        stripped_caption = caption.strip()
+        # In case len(caption) < 2 or fails for some other reason
+        try:
+            # Capitalize first, add full stop
+            return stripped_caption[0].upper() + stripped_caption[1:].rstrip('.') + '.'
+        except:
+            return stripped_caption
 
     def resize_files(self):
         '''Calls for the resizing of media files.'''

@@ -25,12 +25,18 @@ def slugify_name(sender, instance, *args, **kwargs):
         translation.activate('pt_br')
         instance.slug = slugify(instance.name)
 
+@receiver(pre_save, sender=Media)
+def normalize_title_and_caption(sender, instance, *args, **kwargs):
+    '''Normalize title and caption fields from Media before saving.'''
+    instance.title_pt_br = instance.normalize_title(instance.title_pt_br)
+    instance.title_en = instance.normalize_title(instance.title_en)
+    instance.caption_pt_br = instance.normalize_caption(instance.caption_pt_br)
+    instance.caption_en = instance.normalize_caption(instance.caption_en)
 
 @receiver(post_save, sender=Media)
 def update_search_vector(sender, instance, created, *args, **kwargs):
-    '''Update search_vector field with current metadata before saving.'''
+    '''Update search_vector field with current metadata after saving.'''
     sender.objects.filter(id=instance.id).update(search_vector=instance.update_search_vector())
-
 
 # Delete file from folder when the media is deleted on website
 @receiver(pre_delete, sender=Media)

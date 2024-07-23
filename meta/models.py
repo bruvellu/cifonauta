@@ -342,6 +342,14 @@ class Media(models.Model):
     def get_absolute_url(self):
         return reverse('media_url', args=[str(self.id)])
 
+    def normalize_title(self, title):
+        '''Capitalize first letter, remove full stop from the end.'''
+        return title[0].upper() + title[1:].rstrip('.')
+
+    def normalize_caption(self, caption):
+        '''Capitalize first letter, ensure full stop at the end.'''
+        return caption[0].upper() + caption[1:].rstrip('.') + '.'
+
     def resize_files(self):
         '''Calls for the resizing of media files.'''
         self.create_resized_files('cover')

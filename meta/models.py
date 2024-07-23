@@ -344,6 +344,7 @@ class Media(models.Model):
 
     def normalize_title(self, title):
         '''Capitalize first letter, remove full stop from the end.'''
+        #TODO: Move function to utils
         # Avoid None types in titles (shouldn't exist...)
         if title is None:
             return ''
@@ -359,6 +360,7 @@ class Media(models.Model):
 
     def normalize_caption(self, caption):
         '''Capitalize first letter, ensure full stop at the end.'''
+        #TODO: Move function to utils
         # Avoid None types in captions (shouldn't exist...)
         if caption is None:
             return ''

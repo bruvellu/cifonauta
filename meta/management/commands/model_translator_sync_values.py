@@ -51,8 +51,14 @@ class Command(BaseCommand):
         # Read .po valid entries
         for entry in valid_entries:
 
-            # Identify model and field
+            # Search for model and field comment
             search = regex.search(entry.comment)
+
+            # If not a model field, skip entry
+            if not search:
+                continue
+
+            # Parse model and field
             model = models[search.group('model')]
             field = search.group('field')
             field_pt_br = f'{field}_pt_br'

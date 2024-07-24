@@ -2072,14 +2072,18 @@ def authors_page(request):
     '''Page showing the full list of authors and specialists.'''
 
     # Get all person instances associated to media as authors
-    authors = Person.objects.filter(media_as_author__isnull=False).distinct()
+    authors = Person.objects.filter(id__in=Media.objects.values('authors')).order_by('name')
 
-    # Get person instances associated to media as specialists who are not authors
-    specialists = Person.objects.filter(media_as_specialist__isnull=False).filter(media_as_author__isnull=True).distinct()
+    # Get person instances associated to media as specialists
+    specialists = Person.objects.filter(id__in=Media.objects.values('specialists')).order_by('name')
+
+    # Get person instances associated to media as curators
+    curators = Person.objects.filter(id__in=Media.objects.values('curators')).order_by('name')
 
     context = {
         'authors': authors,
         'specialists': specialists,
+	'curators': curators,
         }
     return render(request, 'authors_page.html', context)
 

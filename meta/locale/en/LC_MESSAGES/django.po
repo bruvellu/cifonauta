@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-23 17:35-0300\n"
-"PO-Revision-Date: 2024-07-22 17:59-0300\n"
-"Last-Translator: Virginia Castilho <virginia@usp.br>\n"
+"POT-Creation-Date: 2024-07-23 18:01-0300\n"
+"PO-Revision-Date: 2024-07-24 04:07-0300\n"
+"Last-Translator: Bruno C.  Vellutini <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -333,11 +333,11 @@ msgstr "Modified"
 
 #: models.py:86
 msgid "Identificador único universal do arquivo."
-msgstr ""
+msgstr "Universal unique identifier of the file."
 
 #: models.py:91
 msgid "Arquivo original carregado pelo usuário."
-msgstr ""
+msgstr "Original file uploaded by the user."
 
 #: models.py:98
 #, fuzzy
@@ -411,7 +411,7 @@ msgstr "Type of file"
 
 #: models.py:142
 msgid "Usuário que fez o upload do arquivo."
-msgstr ""
+msgstr "User that uploaded the file."
 
 #: models.py:147
 #, fuzzy
@@ -453,7 +453,7 @@ msgstr "terms of use"
 
 #: models.py:165
 msgid "Flag indicando que termos foram aceitos."
-msgstr ""
+msgstr "Flag indicating that the terms were accepted."
 
 #: models.py:167
 #, fuzzy
@@ -469,11 +469,11 @@ msgstr "Media type."
 
 #: models.py:175
 msgid "Erro nos metadados"
-msgstr ""
+msgstr "Error in the metadata"
 
 #: models.py:177
 msgid "Flag indicando problema nos metadados."
-msgstr ""
+msgstr "Flag indicating a problem in the metadata."
 
 #: models.py:179 models.py:706
 msgid "status"
@@ -669,11 +669,11 @@ msgstr "Country shown in the image (or country where it was collected)."
 
 #: models.py:326
 msgid "vetor de busca"
-msgstr ""
+msgstr "search vector"
 
 #: models.py:328
 msgid "Campo que guarda o vetor de busca."
-msgstr ""
+msgstr "Field that stores the search vector."
 
 #: models.py:333
 msgid "ID da imagem no antigo modelo."
@@ -699,11 +699,11 @@ msgstr "original file."
 
 #: models.py:606
 msgid "Mídia original com metadados antes das modificações."
-msgstr ""
+msgstr "Original media with metadata before modifications."
 
 #: models.py:607
 msgid "alterada pelo autor"
-msgstr ""
+msgstr "changed by author"
 
 #: models.py:609
 msgid "Flag indicando quem fez a alteração na mídia."
@@ -1415,19 +1415,33 @@ msgid "Geolocalização"
 msgstr "Geolocation"
 
 #: templates/media_page_ajax.html:103
-#, fuzzy, python-format
-#| msgid ""
-#| "Banco de imagens <em>Cifonauta</em>. Disponível em: <a "
-#| "href=\"%(media_url)s\">http://cifonauta.cebimar.usp.br%(media_url)s</a> "
-#| "Acesso em:"
-msgid ""
-"Banco de imagens <em>Cifonauta</em>. Disponível em: <a id=\"cifonauta-link\" "
-"href=\"%(media_url)s\">http://cifonauta.cebimar.usp.br%(media_url)s</a> "
-"Acesso em:"
+#, fuzzy
+#| msgid "imagem"
+#| msgid_plural "imagens"
+msgid " (imagem)"
+msgstr "image"
+
+#: templates/media_page_ajax.html:103
+#, fuzzy
+#| msgid "video"
+msgid " (video)"
+msgstr "video"
+
+#: templates/media_page_ajax.html:103
+#, fuzzy
+#| msgid "Buscador do banco de imagens Cifonauta."
+msgid "Banco de imagens <em>Cifonauta</em>"
+msgstr "Cifonauta image database search engine."
+
+#: templates/media_page_ajax.html:103
+#, fuzzy
+#| msgid "Tour indisponível."
+msgid "Disponível em"
+msgstr "Tour unavailable."
+
+#: templates/media_page_ajax.html:103
+msgid "Acessado em"
 msgstr ""
-"<em>Cifonauta</em> image database. Available at: <a "
-"href=\"%(media_url)s\">http://cifonauta.cebimar.usp.br%(media_url)s</a> "
-"Accessed:"
 
 #: templates/media_page_ajax.html:106
 msgid "Conheça os <a href=\"/terms/\">termos de uso</a>."
@@ -5025,7 +5039,7 @@ msgstr "Adult, aboral view."
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1130
 msgid "A gastrulação está começando."
-msgstr ""
+msgstr "Gastrulation is beginning."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1132
@@ -5094,7 +5108,7 @@ msgstr "Planula larva."
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1152
 msgid "Ânus e placa anal."
-msgstr ""
+msgstr "Anus and anal plate."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1154
@@ -5119,7 +5133,7 @@ msgstr ""
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1158
 msgid "Ânus no início do estágio de quatro braços."
-msgstr ""
+msgstr "Anus in the early four-arm stage."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1160
@@ -5271,7 +5285,7 @@ msgstr "Puffer fish"
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1194
 msgid "Banda ciliada."
-msgstr ""
+msgstr "Ciliated band."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1196
@@ -5295,7 +5309,7 @@ msgstr "Pair of coelomic sacs in a two-arm pluteus larva."
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1200
 msgid "Bandas de musculatura longitudinal e circular da parede do corpo."
-msgstr ""
+msgstr "Longitudinal and circular muscle bands of the body wall."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1202
@@ -5366,7 +5380,7 @@ msgstr "Blastula"
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1224
 msgid "Boca e projeções que formarão os braços pré-orais."
-msgstr ""
+msgstr "Mouth and projections giving rise to the pre-oral arms."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1226
@@ -5380,12 +5394,12 @@ msgstr ""
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1228
 msgid "Braço crescendo em uma região não-usual."
-msgstr ""
+msgstr "Arm growing in an unusual region."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1230
 msgid "Braço pós-oral."
-msgstr ""
+msgstr "Pos-oral arm."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1232
@@ -5534,7 +5548,7 @@ msgstr ""
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1274
 msgid "Células adesivas (coloblastos) de larva de ctenóforo (cidipída)."
-msgstr ""
+msgstr "Adhesive cells (coloblasts) from ctenophore larvae (cydipid)."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1276
@@ -5585,7 +5599,7 @@ msgstr "Ectodermic cells"
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1288
 msgid "Cifistoma."
-msgstr ""
+msgstr "Scyphistoma."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1290
@@ -5597,7 +5611,7 @@ msgstr "Polyp (cyphistoma) in the process of strobilation."
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1292
 msgid "Cílios epiteliais."
-msgstr ""
+msgstr "Epithelial cilia."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1294
@@ -5849,7 +5863,7 @@ msgstr ""
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1370
 msgid "Coral mole com uma espécie invasora de ofiuróide."
-msgstr ""
+msgstr "Soft-coral with an invasive brittle star species."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1372
@@ -5944,7 +5958,7 @@ msgstr "Ectoderm"
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1398
 msgid "Detalhe da invaginação do vestíbulo."
-msgstr ""
+msgstr "Detail of vestibule invagination."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1400
@@ -5956,7 +5970,7 @@ msgstr "Details of gastrula cells"
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1402
 msgid "Detalhe da medusa (margem da umbrela e bulvos tentaculares)."
-msgstr ""
+msgstr "Detail of medusa (umbrella margin and tentacular bulbs)."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1404
@@ -5968,7 +5982,7 @@ msgstr "Ectoderm"
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1406
 msgid "Detalhe da paxila e do madreporito."
-msgstr ""
+msgstr "Detail of paxillae and madreporite."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1408
@@ -6024,7 +6038,7 @@ msgstr ""
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1422
 msgid "Detalhe de espinhos e pedicelárias."
-msgstr ""
+msgstr "Detail of spines and pedicellariae."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1424
@@ -6061,7 +6075,7 @@ msgstr ""
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1434
 msgid "Detalhe do arquêntero e da formação de espículas do esqueleto."
-msgstr ""
+msgstr "Detail of the archenteron and formation of skeleton spicules."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1436
@@ -6104,7 +6118,7 @@ msgstr "Blastopore"
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1448
 msgid "Detalhe do par de espinhos posteriores (mais longos)."
-msgstr ""
+msgstr "Detail of the pair of posterior spines (longer)."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1450
@@ -6292,7 +6306,7 @@ msgstr ""
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1504
 msgid "Ectoderme."
-msgstr ""
+msgstr "Ectoderm."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1506
@@ -6347,7 +6361,7 @@ msgstr ""
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1522
 msgid "Epitélio."
-msgstr ""
+msgstr "Epithelium."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1524
@@ -6360,7 +6374,7 @@ msgstr ""
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1526
 msgid "Epítopo sendo formado por esquizogamia."
-msgstr ""
+msgstr "Epitoke being formed by schizogamy."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1528
@@ -6372,7 +6386,7 @@ msgstr "Ambulacral feet and spines."
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1530
 msgid "Esofago."
-msgstr ""
+msgstr "Esophagus."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1532
@@ -6404,7 +6418,7 @@ msgstr "Species"
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1538
 msgid "Espécime adulto. Detalhe da região oral."
-msgstr ""
+msgstr "Adult specimen. Detail of the oral region."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1540
@@ -6419,7 +6433,7 @@ msgstr ""
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1542
 msgid "Espécime adulto. Detalhe do corpo e ossículos."
-msgstr ""
+msgstr "Adult specimen. Detail of the body and ossicles."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1544
@@ -6452,7 +6466,7 @@ msgstr "Adult medusa."
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1552
 msgid "Espécime com os lóbulos danificados."
-msgstr ""
+msgstr "Specimen with damaged lobes."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1554
@@ -6464,7 +6478,7 @@ msgstr "Sperm"
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1556
 msgid "Espinho."
-msgstr ""
+msgstr "Spine."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1558
@@ -6747,7 +6761,7 @@ msgstr ""
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1636
 msgid "Estrutura na região anal."
-msgstr ""
+msgstr "Structure in the anal region."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1638
@@ -6800,17 +6814,17 @@ msgstr "Dactylozooids and gastrozooids."
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1650
 msgid "Fêmea."
-msgstr ""
+msgstr "Female."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1652
 msgid "Fêmea adulta liberando ovos."
-msgstr ""
+msgstr "Female releasing eggs."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1654
 msgid "Fêmea desovando."
-msgstr ""
+msgstr "Female spawning."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1656
@@ -6820,7 +6834,7 @@ msgstr ""
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1658
 msgid "Fim de tarde na Praia do Segredo."
-msgstr ""
+msgstr "Late afternoon at Praia do Segredo."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1660
@@ -6832,7 +6846,7 @@ msgstr "Detail of the antero-lateral arms´ skeleton."
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1662
 msgid "Forquilha que dá origem aos braços pré-orais."
-msgstr ""
+msgstr "Fork that gives rise to the pre-oral arms."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1664
@@ -6910,7 +6924,7 @@ msgstr "Colony with gonangium on the sertularid Sertularia marginata."
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1684
 msgid "Gonângio - medusoide feminino dentro da gonoteca."
-msgstr ""
+msgstr "Gonangium - female medusoid within gonotheca."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1686
@@ -6977,7 +6991,7 @@ msgstr ""
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1710
 msgid "Grânulos pigmentados e transparentes presentes nas células epiteliais."
-msgstr ""
+msgstr "Pigmented and transparent granules present in epithelial cells."
 
 #. Translators: model=Media, field=caption_pt_br.
 #: values_for_translation.py:1712

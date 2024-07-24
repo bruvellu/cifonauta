@@ -4,14 +4,14 @@ from meta.models import Media, Tag, Category, Taxon, City, State, Country, Tour
 
 # Model fields that need translation
 all_fields = [
-        (Media, ['title_pt_br', 'caption_pt_br', 'acknowledgments_pt_br']),
-        (Taxon, ['rank_pt_br', 'status_pt_br']),
-        (Tag, ['name_pt_br', 'description_pt_br']),
-        (Category, ['name_pt_br', 'description_pt_br']),
-        # (City, ['name_pt_br']),
-        # (State, ['name_pt_br']),
-        # (Country, ['name_pt_br']),
-        (Tour, ['name_pt_br', 'description_pt_br']),
+        (Media, ['title', 'caption', 'acknowledgments']),
+        (Taxon, ['rank', 'status']),
+        (Tag, ['name', 'description']),
+        (Category, ['name', 'description']),
+        # (City, ['name']),
+        # (State, ['name']),
+        # (Country, ['name']),
+        (Tour, ['name', 'description']),
         ]
 
 
@@ -20,7 +20,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Create python file for output
-        #TODO: Add as an option to settings
+        #TODO: Add path as an option to settings
         filepath = 'meta/values_for_translation.py'
         self.stdout.write(f'FILE: {filepath}')
 
@@ -36,7 +36,8 @@ class Command(BaseCommand):
 
             # Loop through fields
             for field in fields:
-                values = model.objects.order_by(field).values_list(field, flat=True).distinct()
+                field_pt_br = f'{field}_pt_br'
+                values = model.objects.order_by(field_pt_br).values_list(field_pt_br, flat=True).distinct()
                 # Write values to file
                 for value in values:
                     if value:

@@ -2045,10 +2045,11 @@ def taxa_page(request):
 
 def places_page(request):
     '''Página mostrando locais de maneira organizada.'''
-    locations = Location.objects.order_by('name')
-    cities = City.objects.order_by('name')
-    states = State.objects.order_by('name')
-    countries = Country.objects.order_by('name')
+    locations = Location.objects.filter(id__in=Media.objects.values('location')).order_by('name')
+    cities = City.objects.filter(id__in=Media.objects.values('city')).order_by('name')
+    states = State.objects.filter(id__in=Media.objects.values('state')).order_by('name')
+    countries = Country.objects.filter(id__in=Media.objects.values('country')).order_by('name')
+
     context = {
         'locations': locations,
         'cities': cities,

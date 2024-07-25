@@ -35,9 +35,6 @@ class Command(BaseCommand):
         resolve_conflicts = options['resolve_conflicts']
 
         # Open .po file
-        #TODO: Check if this code still works with meta/values_for_translation.py
-        # filepath = 'model_translator/locale/en/LC_MESSAGES/django.po'
-        #TODO: This PO file also has other translations
         filepath = 'meta/locale/en/LC_MESSAGES/django.po'
         po = polib.pofile(filepath)
         self.stdout.write(f'FILE: {filepath}')
@@ -64,55 +61,89 @@ class Command(BaseCommand):
             field_pt_br = f'{field}_pt_br'
             field_en = f'{field}_en'
 
+            # Expected:
+            # entry.msgid == field_pt_br
+            # entry.msgstr == field_en
+
             # Query all instances with the exact msgid (field_pt_br)
-            query = {field: entry.msgid}
+            query = {field_pt_br: entry.msgid}
             instances = model.objects.filter(**query)
+
+            # Skip entries with specific values
+            skip = ''
 
             # Update values for each instance
             for instance in instances:
 
-                # Get current translated field from instance
-                translated_field = getattr(instance, field_en)
-
-                # Write current fields
+                # Get current model fields from instance
+                model_field_pt_br = getattr(instance, field_pt_br)
+                model_field_en = getattr(instance, field_en)
                 self.stdout.write(f'\nMODEL={model.__name__} (id={instance.id})')
-                self.stdout.write(f'FIELD={field}')
-                self.stdout.write(f'  [0] PT_DB: {entry.msgid}')
-                self.stdout.write(f'  [1] EN_DB: {translated_field}')
-                self.stdout.write(f'  [2] EN_PO: {entry.msgstr}')
 
-                # Field and translation are empty, skip
-                if not translated_field and not entry.msgstr:
+                # Skip instances with specific values
+                if model_field_pt_br == skip:
+                    continue
+
+                # Show current fields for inspection
+                self.stdout.write(f'FIELD={field}')
+                self.stdout.write(f'      PT_DB: {model_field_pt_br.replace(" ", "·")}')
+                self.stdout.write(f'      PT_PO: {entry.msgid.replace(" ", "·")}')
+                self.stdout.write(f'  [1] EN_DB: {model_field_en.replace(" ", "·")}')
+                self.stdout.write(f'  [2] EN_PO: {entry.msgstr.replace(" ", "·")}')
+
+                #TODO: Add case, if msgid == msgstr, empty msgstr
+
+                # Deal with model and pofile duplicated translations
+
+                # Skip instances with duplicated model translations
+                if model_field_pt_br == model_field_en:
+                    self.stdout.write('DUPLICATED MODEL TRANSLATION, SKIPPING...')
+                    # Run ./manage.py find_duplicated_translations
+                    continue
+
+                # Clear duplicated pofile translations
+                elif entry.msgid == entry.msgstr:
+                    entry.msgstr = ''
+                    po.save(filepath)
+                    self.stdout.write('DUPLICATED POFILE TRANSLATION, CLEARING...')
+
+                # Sync non-duplicated translation values
+
+                # Model and pofile translations are empty
+                if not model_field_en and not entry.msgstr:
                     message = 'EMPTY VALUES, SKIPPING...'
 
-                # Field and translation are identical, skip
-                elif translated_field == entry.msgstr:
+                # Model and pofile translations are identical
+                elif model_field_en == entry.msgstr:
                     message = 'IDENTICAL VALUES, SKIPPING...'
 
-                # Translation is empty, save field to .po file
-                elif translated_field and not entry.msgstr:
-                    entry.msgstr = translated_field
+                # Pofile translation is empty and model field is not duplicated
+                elif not entry.msgstr and model_field_en and (model_field_en != model_field_pt_br):
+                    entry.msgstr = model_field_en
                     po.save(filepath)
                     message = 'SAVED TO POFILE.'
 
-                # Field is empty, save translation to model
-                elif not translated_field and entry.msgstr:
+                # Model field is empty and pofile translation is not duplicated
+                elif not model_field_en and entry.msgstr and (entry.msgstr != entry.msgid):
                     setattr(instance, field_en, entry.msgstr)
                     instance.save()
                     message = 'SAVED TO MODEL.'
 
-                # Field and translation exist, skip or resolve?
-                elif translated_field and entry.msgstr:
+                # Model and pofile translations exist
+                elif model_field_en and entry.msgstr:
                     if resolve_conflicts:
                         choice = input('CONFLICT! Select the correct translation. Type 1 or 2: ')
                         if choice == '1':
-                            entry.msgstr = translated_field
+                            entry.msgstr = model_field_en
                             po.save(filepath)
                             message = 'CONFLICT! SAVED TO POFILE.'
                         elif choice == '2':
                             setattr(instance, field_en, entry.msgstr)
                             instance.save()
                             message = 'CONFLICT! SAVED TO MODEL.'
+                        elif choice == 's':
+                            skip = model_field_pt_br
+                            message = 'SKIPPING SUBSEQUENT IDENTICAL INSTANCES...'
                         else:
                             message = 'CONFLICT NOT RESOLVED...'
                     else:

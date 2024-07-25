@@ -119,6 +119,7 @@ class Command(BaseCommand):
 
                 # Pofile translation is empty and model field is not duplicated
                 elif not entry.msgstr and model_field_en and (model_field_en != model_field_pt_br):
+                    #TODO: Remove fuzzy annotation
                     entry.msgstr = model_field_en
                     po.save(filepath)
                     message = 'SAVED TO POFILE.'

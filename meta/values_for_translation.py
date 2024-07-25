@@ -315,8 +315,6 @@ _('Copépode parasita de peixe')
 # Translators: model=Media, field=title.
 _('Copépode simbionte de invertebrado planctônico')
 # Translators: model=Media, field=title.
-_('Cora-estrela')
-# Translators: model=Media, field=title.
 _('Corais')
 # Translators: model=Media, field=title.
 _('Coral')
@@ -533,7 +531,7 @@ _('Expedição Alcatrazes')
 # Translators: model=Media, field=title.
 _('Fecundação de um óvulo de bolacha-do-mar')
 # Translators: model=Media, field=title.
-_('Flexa-do-mar')
+_('Flecha-do-mar')
 # Translators: model=Media, field=title.
 _('Formação da blástula de bolacha-do-mar')
 # Translators: model=Media, field=title.
@@ -569,9 +567,9 @@ _('Gonângios e hidrante')
 # Translators: model=Media, field=title.
 _('Gorgônia')
 # Translators: model=Media, field=title.
-_('Gorgônia orelha-de-elefante')
+_('Gorgônia-de-fogo')
 # Translators: model=Media, field=title.
-_('Gorgônina-de-fogo')
+_('Gorgônia orelha-de-elefante')
 # Translators: model=Media, field=title.
 _('Grama-brasileiro')
 # Translators: model=Media, field=title.
@@ -2161,6 +2159,8 @@ _('Pequena colônia do coral Favia gravida com pólipos parcialmente abertos.')
 # Translators: model=Media, field=caption.
 _('Pequeno camarão marinho da família dos alfeídeos, encontrado geralmente sob pedras. Femea ovígera.')
 # Translators: model=Media, field=caption.
+_('Pés.')
+# Translators: model=Media, field=caption.
 _('Pés ambulacrais e espinhos.')
 # Translators: model=Media, field=caption.
 _('Pescadores locais.')
@@ -2171,9 +2171,7 @@ _('Pesquisadores entrevistando pescadores locais.')
 # Translators: model=Media, field=caption.
 _('Pirajica.')
 # Translators: model=Media, field=caption.
-_('Planuloid.')
-# Translators: model=Media, field=caption.
-_('Podia.')
+_('Planulóide.')
 # Translators: model=Media, field=caption.
 _('Pólipo.')
 # Translators: model=Media, field=caption.

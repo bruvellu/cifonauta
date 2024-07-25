@@ -24,3 +24,4 @@ True
 #TODO: Assert file name matches UUID field.
 
 #TODO: Make test for Media's normalize_title and normalize_caption methods
+#TODO: Check that the default ordering of model querysets didn't change

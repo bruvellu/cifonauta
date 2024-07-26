@@ -1,22 +1,22 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{% trans 'Curadores, especialistas e autores' %} | {{ block.super }}{% endblock %}
-{% block meta-keywords %}{% trans 'curadores, especialistas, autores, biodiversidade, biologia marinha' %}{% endblock %}
-{% block meta-description %}{% trans 'Curadores, especialistas e autores incluídos no banco de imagens Cifonauta.' %}{% endblock %}
+{% block title %}{% trans 'Autores, especialistas e curadores' %} | {{ block.super }}{% endblock %}
+{% block meta-keywords %}{% trans 'autores, especialistas, curadores, biodiversidade, biologia marinha' %}{% endblock %}
+{% block meta-description %}{% trans 'Autores, especialistas e curadores incluídos no banco de imagens Cifonauta.' %}{% endblock %}
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
 <link rel="stylesheet" href="{{ STATIC_URL }}css/authors_page.css">
 <meta property="og:title" content="{% trans 'Autores' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-<meta property="og:description" content="{% trans 'Curadores, especialistas e autores incluídos no banco de imagens Cifonauta.' %}" />
+<meta property="og:description" content="{% trans 'Autores, especialistas e curadores incluídos no banco de imagens Cifonauta.' %}" />
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 <meta property="og:type" content="article" />
 {% endblock %}
 
 {% block content %}
 <section class="last">
-    <header><h1>{% trans 'Curadores, especialistas e autores' %}</h1></header>
+    <header><h1>{% trans 'Autores, especialistas e curadores' %}</h1></header>
     <div class="authors-content">
          <div id="authors" class="authors-card last metagroup">
             <h2>{% trans 'Autores' %}</h2>

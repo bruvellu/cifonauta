@@ -18,24 +18,24 @@
 <section class="span-24 last " style="width: 100%;">
     <header><h1>{% trans 'Localidades' %}</h1></header>
     <section class="main-places">
-        <div id="locations" class="span-5 metagroup">
-            <h2>{% trans 'Locais' %}</h2>
-            {% print_metalist locations 'location' %}
+        <div id="countries" class="span-5 metagroup">
+            <h2>{% trans 'Países' %}</h2>
+            {% print_metalist countries 'country' %}
         </div>
-        <div id="cities" class="span-5 metagroup">
-            <h2>{% trans 'Cidades' %}</h2>
-            {% print_metalist cities 'city' %}
-        </div>
-        <div id="states" class="span-5 metagroup">
+	<div id="states" class="span-5 metagroup">
             <h2>{% trans 'Estados' %}</h2>
             <ul class="metalist">
             {% print_metalist states 'state' %}
         </div>
-        <div id="countries" class="span-5 last metagroup">
-            <h2>{% trans 'Países' %}</h2>
-            {% print_metalist countries 'country' %}
+	<div id="cities" class="span-5 metagroup">
+            <h2>{% trans 'Cidades' %}</h2>
+            {% print_metalist cities 'city' %}
         </div>
-    </section>
+	<div id="locations" class="span-5 last metagroup">
+            <h2>{% trans 'Locais' %}</h2>
+            {% print_metalist locations 'location' %}
+        </div>
+     </section>
 </section>
 {% endblock %}
 

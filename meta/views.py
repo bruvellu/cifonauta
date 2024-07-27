@@ -2045,10 +2045,11 @@ def taxa_page(request):
 
 def places_page(request):
     '''Página mostrando locais de maneira organizada.'''
-    locations = Location.objects.order_by('name')
-    cities = City.objects.order_by('name')
-    states = State.objects.order_by('name')
-    countries = Country.objects.order_by('name')
+    locations = Location.objects.exclude(media__isnull=True)
+    cities = City.objects.exclude(media__isnull=True)
+    states = State.objects.exclude(media__isnull=True)
+    countries = Country.objects.exclude(media__isnull=True)
+
     context = {
         'locations': locations,
         'cities': cities,
@@ -2071,14 +2072,18 @@ def authors_page(request):
     '''Page showing the full list of authors and specialists.'''
 
     # Get all person instances associated to media as authors
-    authors = Person.objects.filter(media_as_author__isnull=False).distinct()
+    authors = Person.objects.exclude(media_as_author__isnull=True)
 
-    # Get person instances associated to media as specialists who are not authors
-    specialists = Person.objects.filter(media_as_specialist__isnull=False).filter(media_as_author__isnull=True).distinct()
+    # Get person instances associated to media as specialists
+    specialists = Person.objects.exclude(media_as_specialist__isnull=True)
+
+    # Get person instances associated to media as curators
+    curators = Person.objects.exclude(media_as_curator__isnull=True)
 
     context = {
         'authors': authors,
         'specialists': specialists,
+	'curators': curators,
         }
     return render(request, 'authors_page.html', context)
 

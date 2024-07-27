@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-25 04:33-0300\n"
-"PO-Revision-Date: 2024-07-25 04:28-0300\n"
+"POT-Creation-Date: 2024-07-27 04:51-0300\n"
+"PO-Revision-Date: 2024-07-27 04:50-0300\n"
 "Last-Translator: Bruno C.  Vellutini <organelas@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -234,16 +234,12 @@ msgid "Escolher tour(s)"
 msgstr "Pick tour(s)"
 
 #: models.py:29
-#, fuzzy
-#| msgid "Especialistas"
 msgid "especialistas"
-msgstr "Experts"
+msgstr "specialists"
 
 #: models.py:30
-#, fuzzy
-#| msgid "Especialistas"
 msgid "Especialistas da curadoria."
-msgstr "Experts"
+msgstr "Specialists of the curatorship."
 
 #: models.py:34
 msgid "curadores"
@@ -326,10 +322,8 @@ msgid ">100 mm"
 msgstr ">100 mm"
 
 #: models.py:84
-#, fuzzy
-#| msgid "Modificado"
 msgid "identificador"
-msgstr "Modified"
+msgstr "identifier"
 
 #: models.py:86
 msgid "Identificador único universal do arquivo."
@@ -340,38 +334,28 @@ msgid "Arquivo original carregado pelo usuário."
 msgstr "Original file uploaded by the user."
 
 #: models.py:98
-#, fuzzy
-#| msgid "Arquivo processado para a web."
 msgid "Arquivo processado tamanho grande."
-msgstr "Media file processed for the web."
+msgstr "Media file processed for the web, large size."
 
 #: models.py:103
-#, fuzzy
-#| msgid "Arquivo processado para a web."
 msgid "Arquivo processado tamanho médio."
-msgstr "Media file processed for the web."
+msgstr "Media file processed for the web, medium size."
 
 #: models.py:108
-#, fuzzy
-#| msgid "Arquivo processado para a web."
 msgid "Arquivo processado tamanho pequeno."
-msgstr "Media file processed for the web."
+msgstr "Media file processed for the web, small size."
 
 #: models.py:113
-#, fuzzy
-#| msgid "Imagem de amostra do arquivo processado."
 msgid "Imagem de capa do arquivo."
-msgstr "Cover image from media file."
+msgstr "Cover image of the file."
 
 #: models.py:115
 msgid "tipo de mídia"
 msgstr "media type"
 
 #: models.py:118
-#, fuzzy
-#| msgid "fotos e vídeos"
 msgid "Foto ou vídeo."
-msgstr "photos and videos"
+msgstr "Photo or video."
 
 #: models.py:121
 msgid "arquivo web"
@@ -382,60 +366,44 @@ msgid "Arquivo processado para a web."
 msgstr "Media file processed for the web."
 
 #: models.py:126
-#, fuzzy
-#| msgid "Imagem de capa"
 msgid "imagem de capa"
-msgstr "Cover image"
+msgstr "cover image"
 
 #: models.py:128
-#, fuzzy
-#| msgid "Imagem de amostra do arquivo processado."
 msgid "Imagem de capa para o arquivo processado."
-msgstr "Cover image from media file."
+msgstr "Cover image for the processed media file."
 
 #: models.py:131
 msgid "arquivo original"
 msgstr "original file"
 
 #: models.py:134
-#, fuzzy
-#| msgid "Caminho único para arquivo original."
 msgid "Caminho único para o arquivo original."
-msgstr "Unique path to original file."
+msgstr "Unique path to the original file."
 
 #: models.py:141
-#, fuzzy
-#| msgid "Tipo de arquivo"
 msgid "usuário do arquivo"
-msgstr "Type of file"
+msgstr "user associated with the file"
 
 #: models.py:142
 msgid "Usuário que fez o upload do arquivo."
 msgstr "User that uploaded the file."
 
 #: models.py:147
-#, fuzzy
-#| msgid "amostra do arquivo."
 msgid "autores do arquivo"
-msgstr "sample of the file."
+msgstr "authors of the file"
 
 #: models.py:148
-#, fuzzy
-#| msgid "Arquivos associados a este autor."
 msgid "Autores associados a este arquivo."
-msgstr "Media linked to this author."
+msgstr "Authors associated with this file."
 
 #: models.py:153
-#, fuzzy
-#| msgid "Especialistas"
 msgid "especialistas associados"
-msgstr "Experts"
+msgstr "associated specialists"
 
 #: models.py:154
-#, fuzzy
-#| msgid "Arquivos associados a este autor."
 msgid "Especialistas associados a este arquivo."
-msgstr "Media linked to this author."
+msgstr "Specialists associated with this file."
 
 #: models.py:159
 msgid "curadores do arquivo"
@@ -446,26 +414,20 @@ msgid "Curadores associados a este arquivo."
 msgstr "Curators linked to this file."
 
 #: models.py:163
-#, fuzzy
-#| msgid "termos de uso"
 msgid "termos"
-msgstr "terms of use"
+msgstr "terms"
 
 #: models.py:165
 msgid "Flag indicando que termos foram aceitos."
 msgstr "Flag indicating that the terms were accepted."
 
 #: models.py:167
-#, fuzzy
-#| msgid "Licença de uso"
 msgid "Licença"
-msgstr "Content license"
+msgstr "License"
 
 #: models.py:172
-#, fuzzy
-#| msgid "Tipo de mídia."
 msgid "Tipo de licença da mídia."
-msgstr "Media type."
+msgstr "Type of media license."
 
 #: models.py:175
 msgid "Erro nos metadados"
@@ -480,10 +442,8 @@ msgid "status"
 msgstr "status"
 
 #: models.py:184
-#, fuzzy
-#| msgid "Nome do táxon."
 msgid "Status da mídia."
-msgstr "Taxon name."
+msgstr "Media status."
 
 #: models.py:186 models.py:859
 msgid "público"
@@ -502,30 +462,24 @@ msgid "Imagem que merece destaque."
 msgstr "Image that deserves highlight."
 
 #: models.py:199
-#, fuzzy
-#| msgid "Data de criação da imagem."
 msgid "Data de criação do arquivo."
-msgstr "Media creation date."
+msgstr "Creation date of the file."
 
 #: models.py:203
 msgid "data do upload"
 msgstr "Media upload date"
 
 #: models.py:207
-#, fuzzy
-#| msgid "amostra do arquivo."
 msgid "Data do upload do arquivo."
-msgstr "sample of the file."
+msgstr "Upload date of the file."
 
 #: models.py:215 models.py:717
 msgid "Data da última modificação do arquivo."
 msgstr "File modification date."
 
 #: models.py:222
-#, fuzzy
-#| msgid "Data da última modificação do arquivo."
 msgid "Data da publicação do arquivo."
-msgstr "File modification date."
+msgstr "Modification date of the file."
 
 #: models.py:225
 msgid "título"
@@ -548,22 +502,16 @@ msgid "agradecimentos"
 msgstr "acknowledgements"
 
 #: models.py:239
-#, fuzzy
-#| msgid "Legenda da imagem."
 msgid "Agradecimentos da imagem."
-msgstr "Image caption."
+msgstr "Acknowledgments of the file."
 
 #: models.py:241
-#, fuzzy
-#| msgid "data da imagem"
 msgid "escala da imagem"
-msgstr "image date"
+msgstr "scale of the file"
 
 #: models.py:245
-#, fuzzy
-#| msgid "Classe de tamanho."
 msgid "Classes de escala."
-msgstr "Size class."
+msgstr "Size classes."
 
 #: models.py:247
 msgid "duração"
@@ -594,74 +542,52 @@ msgid "latitude"
 msgstr "latitude"
 
 #: models.py:269
-#, fuzzy
-#| msgid "Latitude onde a imagem foi criada."
 msgid "Latitude onde a imagem foi criada no formato decimal."
-msgstr "Latitude the file was created."
+msgstr "Latitude where the file was created in the decimal format."
 
 #: models.py:271
 msgid "longitude"
 msgstr "longitude"
 
 #: models.py:275
-#, fuzzy
-#| msgid "Longitude onde a imagem foi criada."
 msgid "Longitude onde a imagem foi criada no formato decimal."
-msgstr "Longitude the file was created."
+msgstr "Longitude where the file was created in the decimal format."
 
 #: models.py:280
-#, fuzzy
-#| msgid "tipo de mídia"
 msgid "táxons da mídia"
-msgstr "media type"
+msgstr "media taxa"
 
 #: models.py:281
-#, fuzzy
-#| msgid "Arquivos associados a esta referência."
 msgid "Grupos taxonômicos associados com esta mídia."
-msgstr "Media linked to this reference."
+msgstr "Taxonomic groups associated with this file."
 
 #: models.py:286
-#, fuzzy
-#| msgid "marcadores"
 msgid "marcadores da mídia"
-msgstr "tags"
+msgstr "media tags"
 
 #: models.py:287
-#, fuzzy
-#| msgid "Arquivos associados a esta referência."
 msgid "Marcadores associados com esta mídia."
-msgstr "Media linked to this reference."
+msgstr "Tags associated with this file."
 
 #: models.py:292
-#, fuzzy
-#| msgid "referências"
 msgid "referências da mídia"
-msgstr "references"
+msgstr "associated references"
 
 #: models.py:293
-#, fuzzy
-#| msgid "Referências bibliográficas citadas no banco de imagens Cifonauta."
 msgid "Referências bibliográficas associadas com esta mídia."
-msgstr "References cited in the Cifonauta image database."
+msgstr "References associated with this file."
 
 #: models.py:302
-#, fuzzy
-#| msgid "Localidade mostrada na imagem (ou local de coleta)."
 msgid "Localidade mostrada na imagem ou local de coleta."
-msgstr "Place shown in the image (or collection site)."
+msgstr "Place shown in the media or collection site."
 
 #: models.py:309
-#, fuzzy
-#| msgid "Cidade mostrada na imagem (ou cidade de coleta)."
 msgid "Cidade mostrada na imagem ou cidade de coleta."
-msgstr "City shown in the image (or city where it was collected)."
+msgstr "City shown in the media or city of collection."
 
 #: models.py:316
-#, fuzzy
-#| msgid "Estado mostrado na imagem (ou estado de coleta)."
 msgid "Estado mostrado na imagem ou estado de coleta."
-msgstr "State shown in the image (or state where it was collected)."
+msgstr "State shown in the media or state of collection."
 
 #: models.py:323
 msgid "País mostrado na imagem (ou país de coleta)."
@@ -692,10 +618,8 @@ msgid "arquivos"
 msgstr "files"
 
 #: models.py:606
-#, fuzzy
-#| msgid "arquivo original."
 msgid "mídia original"
-msgstr "original file."
+msgstr "original file"
 
 #: models.py:606
 msgid "Mídia original com metadados antes das modificações."
@@ -718,16 +642,12 @@ msgid "Pessoa que realizou alterações na mídia publicada"
 msgstr "Person who made changes to published media"
 
 #: models.py:614
-#, fuzzy
-#| msgid "Última modificação"
 msgid "mídia modificada"
-msgstr "Last updated"
+msgstr "modified file"
 
 #: models.py:615
-#, fuzzy
-#| msgid "Última modificação"
 msgid "mídias modificadas"
-msgstr "Last updated"
+msgstr "modified files"
 
 #: models.py:618 models.py:655 models.py:679 models.py:696 models.py:754
 #: models.py:772 models.py:793 models.py:814 models.py:832 models.py:853
@@ -825,28 +745,20 @@ msgid "Ranking taxonômico do táxon."
 msgstr "Taxonomic rank of a taxon."
 
 #: models.py:703
-#, fuzzy
-#| msgid "APHIA, o identificador do táxon no WoRMS."
 msgid "AphiaID, o identificador do táxon no WoRMS."
-msgstr "APHIA, taxon identifier at WoRMS."
+msgstr "AphiaID, the taxon identifier on WoRMS."
 
 #: models.py:704
-#, fuzzy
-#| msgid "autores"
 msgid "autoridade"
-msgstr "authors"
+msgstr "authority"
 
 #: models.py:705
-#, fuzzy
-#| msgid "Nome do táxon."
 msgid "Autoridade do táxon."
-msgstr "Taxon name."
+msgstr "Taxon authority."
 
 #: models.py:707 models.py:709
-#, fuzzy
-#| msgid "Nome do táxon."
 msgid "Status do táxon."
-msgstr "Taxon name."
+msgstr "Taxon status."
 
 #: models.py:708
 msgid "válido"
@@ -861,16 +773,12 @@ msgid "Táxon pai deste táxon."
 msgstr "Taxon parent."
 
 #: models.py:714
-#, fuzzy
-#| msgid "táxon"
 msgid "táxon válido"
-msgstr "taxon"
+msgstr "valid taxon"
 
 #: models.py:715
-#, fuzzy
-#| msgid "Táxon pai deste táxon."
 msgid "Sinônimo válido deste táxon."
-msgstr "Taxon parent."
+msgstr "Valid synonym of this taxon."
 
 #: models.py:749 templates/nav.html:41 templates/nav.html:72
 msgid "táxons"
@@ -949,10 +857,8 @@ msgid "Citação formatada da referência."
 msgstr "Reference formatted reference."
 
 #: models.py:838
-#, fuzzy
-#| msgid "referência"
 msgid "DOI da referência"
-msgstr "reference"
+msgstr "DOI of the reference"
 
 #: models.py:847
 msgid "referência"
@@ -995,16 +901,12 @@ msgid "Referências associadas a este tour."
 msgstr "References linked to this tour."
 
 #: models.py:870
-#, fuzzy
-#| msgid "Criado"
 msgid "criador"
-msgstr "Created"
+msgstr "creator"
 
 #: models.py:870
-#, fuzzy
-#| msgid "Descrição do tour."
 msgid "Usuário criador do tour."
-msgstr "Tour description."
+msgstr "User that created the tour."
 
 #: models.py:879
 msgid "tour"
@@ -1180,10 +1082,8 @@ msgid "Comentários"
 msgstr "Comments"
 
 #: templates/footer.html:5
-#, fuzzy
-#| msgid "Informações básicas"
 msgid "Informações"
-msgstr "Basic information"
+msgstr "Information"
 
 #: templates/footer.html:7 templates/sobremenu.html:5
 msgid "Sobre"
@@ -1262,11 +1162,10 @@ msgid "Apoio"
 msgstr "Support"
 
 #: templates/footer.html:64 templates/footer.html:65
-#, fuzzy
-#| msgid "Centro de Biologia Marinha da Universidade de São Paulo"
 msgid ""
 "Pró-Reitoria de Cultura e Extensão Universitária da Universidade de São Paulo"
-msgstr "Center for Marine Biology of University of São Paulo"
+msgstr ""
+"Dean of Culture and University Extension of the University of São Paulo"
 
 #: templates/footer.html:69 templates/footer.html:70
 msgid "CNPq - Conselho Nacional de Desenvolvimento Científico e Tecnológico"
@@ -1415,29 +1314,20 @@ msgid "Geolocalização"
 msgstr "Geolocation"
 
 #: templates/media_page_ajax.html:103
-#, fuzzy
-#| msgid "imagem"
-#| msgid_plural "imagens"
 msgid " (imagem)"
-msgstr "image"
+msgstr "(image)"
 
 #: templates/media_page_ajax.html:103
-#, fuzzy
-#| msgid "video"
 msgid " (video)"
-msgstr "video"
+msgstr "(video)"
 
 #: templates/media_page_ajax.html:103
-#, fuzzy
-#| msgid "Buscador do banco de imagens Cifonauta."
 msgid "Banco de imagens <em>Cifonauta</em>"
-msgstr "Cifonauta image database search engine."
+msgstr "<em>Cifonauta</em> image database"
 
 #: templates/media_page_ajax.html:103
-#, fuzzy
-#| msgid "Tour indisponível."
 msgid "Disponível em"
-msgstr "Tour unavailable."
+msgstr "Available at"
 
 #: templates/media_page_ajax.html:103
 msgid "Acessado em"
@@ -1448,8 +1338,6 @@ msgid "Conheça os <a href=\"/terms/\">termos de uso</a>."
 msgstr "Read the <a href=\"/termos/\">terms of use</a>."
 
 #: templates/media_page_ajax.html:144
-#, fuzzy
-#| msgid "Classificação"
 msgid "Classificações"
 msgstr "Classification"
 
@@ -1884,10 +1772,8 @@ msgid "Escolha como combinar os campos abaixo"
 msgstr "Choose how to combine the fields below"
 
 #: templates/search.html:90
-#, fuzzy
-#| msgid "Mais filtros"
 msgid "Escolha os filtros"
-msgstr "More filters"
+msgstr "Choose the filters"
 
 #: templates/search_box.html:3
 msgid "Buscar"
@@ -2026,12 +1912,6 @@ msgid "Grupos"
 msgstr "Groups"
 
 #: templates/tree.html:25
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  *Hierarquia taxonômica construída automaticamente a partir do <a "
-#| "href=\"http://www.itis.gov/\">ITIS</a>.\n"
-#| "  "
 msgid ""
 "\n"
 "  *Hierarquia taxonômica do <a href=\"https://marinespecies.org/\">WoRMS</"
@@ -2039,8 +1919,8 @@ msgid ""
 "  "
 msgstr ""
 "\n"
-"*Taxonomic hierarchy fetched automatically from <a href=\"http://www.itis."
-"gov/\">ITIS</a>."
+"*Taxonomic hierarchy fetched automatically from <a href=\"https://"
+"marinespecies.org/\">WoRMS</a>."
 
 #: templates/video.html:15
 msgid "Cover do vídeo"
@@ -5453,15 +5333,11 @@ msgstr ""
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1278
-#, fuzzy
-#| msgid "Células mesenquimais primárias"
 msgid "Células mesenquimais na blastocele."
-msgstr "Mesenchymal cells in the blastocele."
+msgstr "Mesenchymal cells in the blastocoele."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1280
-#, fuzzy
-#| msgid "Células mesenquimais primárias"
 msgid "Células mesenquimais primárias começando a ocupar a cavidade."
 msgstr "Primary mesenchymal cells beginning to occupy the cavity."
 
@@ -5597,8 +5473,6 @@ msgstr "Hydroid colony on algae."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1328
-#, fuzzy
-#| msgid "costão rochoso"
 msgid "Colônia de machos."
 msgstr "Male colony."
 
@@ -5815,8 +5689,6 @@ msgstr "Detail of medusa (umbrella margin and tentacular bulbs)."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1402
-#, fuzzy
-#| msgid "Detalhe da ectoderme"
 msgid "Detalhe da parede do corpo."
 msgstr "Detail of the body wall."
 
@@ -5827,8 +5699,6 @@ msgstr "Detail of paxillae and madreporite."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1406
-#, fuzzy
-#| msgid "Detalhe da região dorsal anterior de uma fêmea adulta."
 msgid "Detalhe da região anal."
 msgstr "Detail of anal region."
 
@@ -5846,22 +5716,16 @@ msgstr ""
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1412
-#, fuzzy
-#| msgid "Detalhe da ectoderme"
 msgid "Detalhe da região oral."
 msgstr "Detail of oral region."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1414
-#, fuzzy
-#| msgid "Detalhe das células da gástrula"
 msgid "Detalhe das células ciliadas em um dos braços larvais."
 msgstr "Detail of the ciliated band cells in one of the larval arms."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1416
-#, fuzzy
-#| msgid "Células mesenquimais primárias"
 msgid "Detalhe das células mesenquimais primárias."
 msgstr "Detail of primary mesenchymal cells."
 
@@ -5888,8 +5752,6 @@ msgstr "Mangrove trees on the intertidal zone."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1424
-#, fuzzy
-#| msgid "Detalhe da ectoderme"
 msgid "Detalhe de um autozooide."
 msgstr "Detail of an autozooid."
 
@@ -5918,8 +5780,6 @@ msgstr "Detail of the archenteron and formation of skeleton spicules."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1434
-#, fuzzy
-#| msgid "Detalhe do blastótoro"
 msgid "Detalhe do epitélio."
 msgstr "Epithelium detail."
 
@@ -6227,8 +6087,6 @@ msgstr ""
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1534
-#, fuzzy
-#| msgid "Espécie"
 msgid "Espécime adulto."
 msgstr "Adult specimen."
 
@@ -6239,10 +6097,6 @@ msgstr "Adult specimen. Detail of oral region."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1538
-#, fuzzy
-#| msgid ""
-#| "Exemplar adulto em vista lateral. Detalhe das papiplas do corpo e pés "
-#| "ambulacrais."
 msgid "Espécime adulto. Detalhe das papilas do corpo."
 msgstr "Adult specimen. Detail of body papillae."
 
@@ -6348,17 +6202,11 @@ msgstr "Non-fenestrated skeleton of antero-lateral arms."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1580
-#, fuzzy
-#| msgid "Superfície da blástula"
 msgid "Esqueleto na superfície aboral."
 msgstr "Skeleton on the aboral surface."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1582
-#, fuzzy
-#| msgid ""
-#| "O esqueleto calcário é secretado por células mesenquimais durante a "
-#| "gastrulação."
 msgid "Esqueleto sendo secretado por células mesenquimais primárias."
 msgstr "Skeleton being secreted by primary mesenchymal cells."
 
@@ -6395,29 +6243,21 @@ msgstr ""
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1592
-#, fuzzy
-#| msgid "Início do estágio com 4 pares de braços, região anal."
 msgid "Estágio com quatro pares de braços."
 msgstr "Stage with four pairs of arms."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1594
-#, fuzzy
-#| msgid "Início do estágio com 4 pares de braços, região anal."
 msgid "Estágio com três pares de braços."
 msgstr "Stage with three pairs of arms."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1596
-#, fuzzy
-#| msgid "Estágio de vida"
 msgid "Estágio de oito células."
 msgstr "Eight-cell stage."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1598
-#, fuzzy
-#| msgid "Estágio de vida"
 msgid "Estágio de quatro braços."
 msgstr "Four-arm stage."
 
@@ -7076,8 +6916,6 @@ msgstr "Introvert partially extended."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1820
-#, fuzzy
-#| msgid "Divisão dos micrômeros no pólo vegetativo"
 msgid "Invaginação do arquêntero já iniciada no pólo vegetativo."
 msgstr "Archenteron invagination already initiated at the vegetal pole."
 
@@ -7292,15 +7130,11 @@ msgstr ""
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1892
-#, fuzzy
-#| msgid "Medusa adulta."
 msgid "Macho."
 msgstr "Male."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1894
-#, fuzzy
-#| msgid "Medusa adulta."
 msgid "Macho adulto."
 msgstr "Adult male."
 
@@ -7313,8 +7147,6 @@ msgstr "Adult male guarding the nest with eggs."
 
 #. Translators: model=Media, field=caption.
 #: values_for_translation.py:1898
-#, fuzzy
-#| msgid "Medusa adulta."
 msgid "Macho desovando."
 msgstr "Male spawning."
 
@@ -9219,10 +9051,8 @@ msgstr "Phylum"
 
 #. Translators: model=Taxon, field=rank.
 #: values_for_translation.py:2528
-#, fuzzy
-#| msgid "Divisão"
 msgid "Filo (Divisão)"
-msgstr "Division"
+msgstr "Phylum (Division)"
 
 #. Translators: model=Taxon, field=rank.
 #: values_for_translation.py:2530
@@ -9251,10 +9081,8 @@ msgstr "Subclass"
 
 #. Translators: model=Taxon, field=rank.
 #: values_for_translation.py:2542
-#, fuzzy
-#| msgid "espécie"
 msgid "Subespécie"
-msgstr "species"
+msgstr "Subspecies"
 
 #. Translators: model=Taxon, field=rank.
 #: values_for_translation.py:2544
@@ -9664,14 +9492,12 @@ msgstr "A reduced or vestigial medusa."
 
 #. Translators: model=Tag, field=description.
 #: values_for_translation.py:2704
-#, fuzzy
-#| msgid ""
-#| "Organismos que vivem no leito dos oceanos e mares, fixos ou não a um "
-#| "substrato."
 msgid ""
 "Diz-se dos organismos que vivem no leito dos oceanos e mares, fixos ou não a "
 "um substrato."
-msgstr "Organisms living on or in the sea bottom."
+msgstr ""
+"This refers to organisms that live on the ocean floor, whether they are "
+"attached to a substrate or not."
 
 #. Translators: model=Tag, field=description.
 #: values_for_translation.py:2706
@@ -9849,14 +9675,12 @@ msgstr "Organism living with, on, or in another, without injury to either."
 
 #. Translators: model=Tag, field=description.
 #: values_for_translation.py:2756
-#, fuzzy
-#| msgid ""
-#| "Que vive próximo ao fundo do mar, embora possua capacidade de natação "
-#| "ativa."
 msgid ""
 "Organismo que vive próximo ao fundo do mar, embora possua capacidade de "
 "natação ativa."
-msgstr "Pelagic organisms living close to the bottom."
+msgstr ""
+"An organism that lives near the bottom of the sea, although it has active "
+"swimming capabilities."
 
 #. Translators: model=Tag, field=description.
 #: values_for_translation.py:2758
@@ -10300,10 +10124,8 @@ msgid "Houve um erro ao tentar aplicar as ações em lote"
 msgstr "There was an error trying to apply the batch actions"
 
 #: views.py:634 views.py:856 views.py:1030 views.py:1295
-#, fuzzy
-#| msgid "Nenhum arquivo encontrado"
 msgid "Nenhum registro foi selecionado"
-msgstr "No files found."
+msgstr "No records were selected"
 
 #: views.py:840
 msgid "Não é possível realizar ação em lotes de mídia já publicada"

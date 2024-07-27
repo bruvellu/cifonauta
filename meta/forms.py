@@ -614,43 +614,43 @@ class DisplayForm(forms.Form):
                                                     "multiple": "multiple"}),
                                          label=_('Marcadores'))
     author = forms.ModelMultipleChoiceField(required=False,
-                                            queryset=Person.objects.filter(id__in=Media.objects.values('authors')).order_by('name'),
+                                            queryset=Person.objects.exclude(media_as_author__isnull=True),
                                             widget=forms.SelectMultiple(
                                                 attrs={"class": "select2-options",
                                                        "multiple": "multiple"}),
                                             label=_('Autores'),)
     specialist = forms.ModelMultipleChoiceField(required=False,
-                                                queryset=Person.objects.filter(id__in=Media.objects.values('specialists')).order_by('name'),
+                                                queryset=Person.objects.exclude(media_as_specialist__isnull=True),
                                                 widget=forms.SelectMultiple(
                                                     attrs={"class": "select2-options",
                                                            "multiple": "multiple"}),
                                                 label=_('Especialistas'),)
     curator = forms.ModelMultipleChoiceField(required=False,
-                                            queryset=Person.objects.filter(id__in=Media.objects.values('curators')).order_by('name'),
+                                            queryset=Person.objects.exclude(media_as_curator__isnull=True),
                                             widget=forms.SelectMultiple(
                                                 attrs={"class": "select2-options",
                                                        "multiple": "multiple"}),
                                             label=_('Curadores'),)
     location = forms.ModelMultipleChoiceField(required=False,
-                                         queryset=Location.objects.filter(id__in=Media.objects.values('location')).order_by('name'),
+                                         queryset=Location.objects.exclude(media__isnull=True),
                                          widget=forms.SelectMultiple(
                                              attrs={"class": "select2-options",
                                                     "multiple": "multiple"}),
                                          label=_('Localidades'))
     city = forms.ModelMultipleChoiceField(required=False,
-                                          queryset=City.objects.filter(id__in=Media.objects.values('city')).order_by('name'),
+                                          queryset=City.objects.exclude(media__isnull=True),
                                           widget=forms.SelectMultiple(
                                               attrs={"class": "select2-options",
                                                      "multiple": "multiple"}),
                                           label=_('Cidades'))
     state = forms.ModelMultipleChoiceField(required=False,
-                                           queryset=State.objects.filter(id__in=Media.objects.values('state')).order_by('name'),
+                                           queryset=State.objects.exclude(media__isnull=True),
                                            widget=forms.SelectMultiple(
                                                attrs={"class": "select2-options",
                                                       "multiple": "multiple"}),
                                            label=_('Estados'))
     country = forms.ModelMultipleChoiceField(required=False,
-                                             queryset=Country.objects.filter(id__in=Media.objects.values('country')).order_by('name'),
+                                             queryset=Country.objects.exclude(media__isnull=True),
                                              widget=forms.SelectMultiple(
                                                  attrs={"class": "select2-options",
                                                         "multiple": "multiple"}),

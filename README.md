@@ -17,47 +17,45 @@ All the contents are available under [Creative Commons licenses](http://creative
 <a href="http://cifonauta.cebimar.usp.br/media/2425/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_dIPsvR_cover.jpg" height="137px"></a>
 <a href="http://cifonauta.cebimar.usp.br/media/5683/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_jYEPs1_cover.jpg" height="137px"></a>
 
-## Contribute
-
-- As user uploading original images and videos.
-- As a curator.
-
 ## Cite
 
-### Image or videos
+**Individual photo or video:**
 
-If you use an image or video in a presentation, website, give attribution to the author of the file and cite it like this:
+Inácio Domingos da Silva Neto. **Dinoflagelate** (image). Cifonauta: marine biology image database. Available at http://cifonauta.cebimar.usp.br/media/8945/ Accessed on 2024-06-23.
 
-Inácio Domingos da Silva Neto. Copépode parasita de berbigão (Tivela mactroides). Banco de imagens Cifonauta. Disponível em: http://cifonauta.cebimar.usp.br/media/7332/ Acesso em: yyyy-mm-dd.
+**The database itself:**
 
-Or:
-
-Inácio Domingos da Silva Neto, http://cifonauta.cebimar.usp.br/media/7332/
-
-### Database
-
-To cite the whole database use:
-
-Migotto AE, Vellutini BC (eds). 2011. Cifonauta: banco de imagens de biologia marinha. Disponível em:
-standard citation
-
+Vellutini BC, Migotto AE (2011). **Cifonauta: marine biology image database.** Available at http://cifonauta.cebimar.usp.br/ Accessed on 2024-06-23.
+  
 ## Credits
 
-The Cifonauta database was created and launched in 2011 by [Bruno C. Vellutini](https://brunovellutini.com/) and [Alvaro E. Migotto](http://cebimar.usp.br/pt/quem-somos/equipe/academica) from the [Center for Marine Biology](http://cebimar.usp.br/) of the [University of São Paulo](http://www.usp.br/) (CEBIMar/USP) with funding from the Brazilian [National Council for Scientific and Technological Development](https://www.gov.br/cnpq/) (CNPq), Call MCT/CNPq N°42/2007, Process 551951/2008-7.
+The Cifonauta database was created and launched in 2011 by [Bruno C. Vellutini](https://brunovellutini.com/) and [Alvaro E. Migotto](http://cebimar.usp.br/pt/quem-somos/equipe/academica) from the [Center for Marine Biology](http://cebimar.usp.br/) of the [University of São Paulo](http://www.usp.br/) (CEBIMar/USP).
+Since then, other people have contributed to the project as detailed below.
 
-- **Bruno C. Vellutini:** created the Cifonauta database. Contributed with creating the concept, obtaining funding, designing the database and website, developing the backend and frontend, testing the application, curating the data, managing servers, and maintaining the codebase over the years.
-- **Alvaro E. Migotto:** created the Cifonauta database. Contributed with creating the concept, obtaining funding, implementation ideas, testing the application, and curating the data.
-- **Virginia Castilho:** coordinated the development of v2. Contributed with obtaining funding, project planning, implementation ideas, testing the application, and bug fixing.
-- **Allan Rodrigo de Lima:** provided IT support for v1. Contributed with configuring the servers for hosting the website.
-- **Joel Simberg Vieira:** provided IT support for v2. Contributed with configuring the virtual machines for hosting website.
+### Version 1 (2011--2024)
+
+- **Bruno C. Vellutini:** created the Cifonauta database. Contributed with shaping the concept, obtaining funding, designing the database and website, developing the backend and frontend, testing the application, curating the data, managing the servers, and maintaining the codebase over the years.
+- **Alvaro E. Migotto:** created the Cifonauta database. Contributed with conceiving the concept, obtaining funding, formulating features and implementation ideas, testing the application, and curating the data.
+
 - **Roberto Faga:** developed features for v1.
-- **Luiz Felyppe Nunes dos Santos:** worked on the development of v2.
-- **João Diniz:** worked on the development of v2.
-- **João Guilherme Storti Scatambuli:** worked on the development of v2.
-- **Arthur Ferreira:** worked on the development of v2.
-- **Vitória Oliveira:** worked on the development of v2.
-- **Larissa Nascimento:** worked on the development of v2.
-- **Rian Breno Polonini:** worked on the development of v2.
+- **Allan Rodrigo de Lima:** provided IT support for v1. Contributed with configuring the servers for hosting the website.
+
+### Version 2 (2024--today)
+
+- **Virginia Castilho:** coordinated the development of v2. Contributed with obtaining funding, planning and managing the project, formulating workflows, features and implementation ideas, testing the application, fixing bugs, and curating the data.
+- **Bruno C. Vellutini:** supported the development of v2. Contributed with obtaining funding, planning the project, providing guidance over the codebase, refactoring and modernizing existing code to support new features, managing the repository and servers, and curating the data.
+- **Alvaro E. Migotto:** supported the development of v2. Contributed with obtaining funding, testing the application, and curating the data.
+
+- **IN Junior Team:** developed the features of v2. Contributed with implementing solutions developing the backend and frontend for the planned features.
+  - **João Diniz:** worked on the development of v2.
+  - **Luiz Felyppe Nunes dos Santos:** worked on the development of v2.
+  - **João Guilherme Storti Scatambuli:** worked on the development of v2.
+  - **Vitória Oliveira:** worked on the development of v2.
+  - **Arthur Ferreira:** worked on the development of v2.
+  - **Larissa Nascimento:** worked on the development of v2.
+  - **Rian Breno Polonini:** worked on the development of v2.
+
+- **Joel Simberg Vieira:** provided IT support for v2. Contributed with configuring the virtual machines for hosting website.
 
 ## Funding
 
@@ -71,4 +69,9 @@ The Cifonauta database was created and launched in 2011 by [Bruno C. Vellutini](
 - Alvaro E. Migotto: data curation, testing, 
 - Marcelo Kitahara: testing, 
 - Joel Simberg Vieira: IT support
+
+## Contribute
+
+- As user uploading original images and videos.
+- As a curator.
 

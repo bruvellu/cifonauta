@@ -35,14 +35,6 @@ def normalize_title_and_caption(sender, instance, *args, **kwargs):
     instance.acknowledgments_pt_br = instance.normalize_caption(instance.acknowledgments_pt_br)
     instance.acknowledgments_en = instance.normalize_caption(instance.acknowledgments_en)
 
-    # Clear duplicated translations before saving
-    if instance.title_en == instance.title_pt_br:
-        instance.title_en = ''
-    if instance.caption_en == instance.caption_pt_br:
-        instance.caption_en = ''
-    if instance.acknowledgments_en == instance.acknowledgments_pt_br:
-        instance.acknowledgments_en = ''
-
 @receiver(post_save, sender=Media)
 def update_search_vector(sender, instance, created, *args, **kwargs):
     '''Update search_vector field with current metadata after saving.'''

@@ -6,7 +6,7 @@ The images were captured by scientists during their research and are accompanied
 Whether you are [searching](http://cifonauta.cebimar.usp.br/search/) for your favorite organism or simply want to explore the diversity of [marine larvae](http://cifonauta.cebimar.usp.br/tour/larvas-marinhas/) or [gelatinous creatures](http://cifonauta.cebimar.usp.br/tour/aguas-vivas-e-outras-criaturas-gelatinosas/), our [thematic tours](http://cifonauta.cebimar.usp.br/tours/), offer a curated experience.
 All the contents are available under [Creative Commons licenses](http://creativecommons.org/licenses/).
 
-## Explore at [cifonauta.cebimar.usp.br](http://cifonauta.cebimar.usp.br/)
+## Explore the marine biodiversity at [cifonauta.cebimar.usp.br](http://cifonauta.cebimar.usp.br/)
 
 <a href="http://cifonauta.cebimar.usp.br/media/6692/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_RBkyCp_cover.jpg" height="150px"></a>
 <a href="http://cifonauta.cebimar.usp.br/media/3033/"><img src="http://cifonauta.cebimar.usp.br/site_media/aem_fXBYda_cover.jpg" height="150px"></a>
@@ -40,18 +40,10 @@ The Cifonauta database was created by the [Center for Marine Biology](http://ceb
 
 - **Virginia Castilho:** coordinated the development of v2. Contributed with obtaining funding, planning and managing the project, formulating workflows and implementation ideas, testing the application, fixing bugs, and curating the data.
 - **Roberto Faga:** improved the search and navigation for v1. Contributed with coding for the frontend.
-- **IN Junior Team:** developed the admin dashboard and responsive design of v2. Contributed with formulating workflows and implementation ideas, and coding the backend and frontend features.
-  - **Luiz Felyppe Nunes dos Santos**
-  - **Vitória Oliveira**
-  - **João Diniz**
-  - **Arthur Ferreira**
-  - **João Guilherme Storti Scatambuli**
-  - **Larissa Nascimento**
-  - **Rian Breno Polonini**
+- **IN Junior Team (Luiz Felyppe Nunes dos Santos, Vitória Oliveira, João Diniz, Arthur Ferreira, João Guilherme Storti Scatambuli, Larissa Nascimento, Rian Breno Polonini):** developed the admin dashboard and responsive design of v2. Contributed with formulating workflows, designing implementations, and developing the new features in the backend and frontend of the application.
 - **Allan Rodrigo de Lima:** provided IT support for v1. Contributed with setting up the servers hosting the website.
 - **Joel Simberg Vieira:** provided IT support for v2. Contributed with setting up the virtual machines for hosting the website.
-- **Marcelo Kitahara:** provided help for v2. Contributed with testing the application.
-- **IN Junior Team (Luiz Felyppe Nunes dos Santos, Vitória Oliveira, João Diniz, Arthur Ferreira, João Guilherme Storti Scatambuli, Larissa Nascimento, Rian Breno Polonini):** developed the admin dashboard and responsive design of v2. Contributed with formulating workflows and implementation ideas, and coding the backend and frontend features.
+- **Marcelo Kitahara:** helped with v2. Contributed with testing the application.
 
 ## Funding
 

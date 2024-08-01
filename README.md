@@ -39,11 +39,11 @@ The Cifonauta database was created by the [Center for Marine Biology](http://ceb
 ### Contributors
 
 - **Virginia Castilho:** coordinated the development of v2. Contributed with obtaining funding, planning and managing the project, formulating workflows and implementation ideas, testing the application, fixing bugs, and curating the data.
-- **Roberto Faga:** improved the search and navigation for v1. Contributed with coding for the frontend.
 - **IN Junior Team (Luiz Felyppe Nunes dos Santos, Vitória Oliveira, João Diniz, Arthur Ferreira, João Guilherme Storti Scatambuli, Larissa Nascimento, Rian Breno Polonini):** developed the admin dashboard and responsive design of v2. Contributed with formulating workflows, designing implementations, and developing the new features in the backend and frontend of the application.
+- **Roberto Faga:** improved the search and navigation for v1. Contributed with coding for the frontend.
 - **Allan Rodrigo de Lima:** provided IT support for v1. Contributed with setting up the servers hosting the website.
 - **Joel Simberg Vieira:** provided IT support for v2. Contributed with setting up the virtual machines for hosting the website.
-- **Marcelo Kitahara:** helped with v2. Contributed with testing the application.
+- **Marcelo Kitahara:** tested the dashboard for v2. Contributed with testing the application.
 
 ## Funding
 

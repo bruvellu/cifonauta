@@ -29,46 +29,41 @@ Vellutini BC, Migotto AE (2011). **Cifonauta: marine biology image database.** A
   
 ## Credits
 
-The Cifonauta database was created and launched in 2011 by [Bruno C. Vellutini](https://brunovellutini.com/) and [Alvaro E. Migotto](http://cebimar.usp.br/pt/quem-somos/equipe/academica) from the [Center for Marine Biology](http://cebimar.usp.br/) of the [University of São Paulo](http://www.usp.br/) (CEBIMar/USP).
-Since then, other people have contributed to the project as detailed below.
+The Cifonauta database launched in 2011 by the [Center for Marine Biology](http://cebimar.usp.br/) of the [University of São Paulo](http://www.usp.br/) (CEBIMar/USP).
 
-### Version 1 (2011--2024)
+### Creators
 
-- **Bruno C. Vellutini:** created the Cifonauta database. Contributed with shaping the concept, obtaining funding, designing the database and website, developing the backend and frontend, testing the application, curating the data, managing the servers, and maintaining the codebase over the years.
-- **Alvaro E. Migotto:** created the Cifonauta database. Contributed with conceiving the concept, obtaining funding, formulating features and implementation ideas, testing the application, and curating the data.
+- **Bruno C. Vellutini:** created the Cifonauta database. Contributed with shaping the concept, obtaining funding, designing the database and website, developing the backend and frontend, testing the application, curating the data, managing the repository and servers, and maintaining the codebase over the years.
+- **Alvaro E. Migotto:** created the Cifonauta database. Contributed with creating the concept, obtaining funding, formulating features and implementation ideas, testing the application, and curating the data.
 
-- **Roberto Faga:** developed features for v1.
-- **Allan Rodrigo de Lima:** provided IT support for v1. Contributed with configuring the servers for hosting the website.
+### Contributors
 
-### Version 2 (2024--today)
+- **Virginia Castilho:** coordinated the development of v2. Contributed with obtaining funding, planning and managing the project, formulating workflows and implementation ideas, testing the application, fixing bugs, and curating the data.
 
-- **Virginia Castilho:** coordinated the development of v2. Contributed with obtaining funding, planning and managing the project, formulating workflows, features and implementation ideas, testing the application, fixing bugs, and curating the data.
-- **Bruno C. Vellutini:** supported the development of v2. Contributed with obtaining funding, planning the project, providing guidance over the codebase, refactoring and modernizing existing code to support new features, managing the repository and servers, and curating the data.
-- **Alvaro E. Migotto:** supported the development of v2. Contributed with obtaining funding, testing the application, and curating the data.
-
-- **IN Junior Team:** developed the features of v2. Contributed with implementing solutions developing the backend and frontend for the planned features.
-  - **João Diniz:** worked on the development of v2.
+- **Roberto Faga:** improved the search and navigation for v1. Contributed with coding for the frontend.
+- **IN Junior Team:** developed the dashboard and responsive template of v2. Contributed with discussing implementation ideas and coding for the backend and frontend.
   - **Luiz Felyppe Nunes dos Santos:** worked on the development of v2.
-  - **João Guilherme Storti Scatambuli:** worked on the development of v2.
   - **Vitória Oliveira:** worked on the development of v2.
+  - **João Diniz:** worked on the development of v2.
   - **Arthur Ferreira:** worked on the development of v2.
+  - **João Guilherme Storti Scatambuli:** worked on the development of v2.
   - **Larissa Nascimento:** worked on the development of v2.
   - **Rian Breno Polonini:** worked on the development of v2.
 
-- **Joel Simberg Vieira:** provided IT support for v2. Contributed with configuring the virtual machines for hosting website.
+- **Allan Rodrigo de Lima:** provided IT support for v1. Contributed with setting up the servers hosting the website.
+- **Joel Simberg Vieira:** provided IT support for v2. Contributed with setting up the virtual machines for hosting the website.
+- **Marcelo Kitahara:** provided help for v2. Contributed with testing the application.
 
 ## Funding
 
-- 2008: Supported the development of v1: Brazilian [National Council for Scientific and Technological Development](https://www.gov.br/cnpq/) (CNPq), Call MCT/CNPq N°42/2007, Process 551951/2008-7.
-- 2022: Supported the development of v2: Pró-Reitoria de Cultura e Extensão Universitária da Universidade de São Paulo, Edital 02/2022 - Preservação e Curadoria de Acervos e Patrimônio Cultural.
+- [2008] [**National Council for Scientific and Technological Development**](https://www.gov.br/cnpq/) (CNPq), Call MCT/CNPq N°42/2007, Process 551951/2008-7. Supported the development of v1.
+- [2022] [Pro-Rectory of Culture and University Extension](https://prceu.usp.br/) (PRCEU), Call 02/2022 - Preservation and Curation of Collections and Cultural Heritage. Supported the development of v2.
 
 ## Current team
 
-- Bruno C. Vellutini (@bruvellu): developer and maintainer
-- Virginia Castilho (@castilhovirginia): coordinator
-- Alvaro E. Migotto: data curation, testing, 
-- Marcelo Kitahara: testing, 
-- Joel Simberg Vieira: IT support
+- Bruno C. Vellutini (@bruvellu)
+- Virginia Castilho (@castilhovirginia)
+- Alvaro E. Migotto
 
 ## Contribute
 

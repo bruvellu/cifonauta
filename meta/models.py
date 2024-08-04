@@ -722,6 +722,13 @@ class Taxon(MPTTModel):
     def get_absolute_url(self):
         return reverse('taxon_url', args=[self.slug])
 
+    def get_total_media_count(self):
+        '''Get the total media count the taxon and its descendants.'''
+        #TODO: Too costly to call every time, save as a field?
+        taxon_and_descendants = self.get_descendants(include_self=True)
+        media_count = Media.objects.filter(taxa__in=taxon_and_descendants).distinct().count()
+        return media_count
+
     @staticmethod
     def get_taxon_and_parents(qs):
         '''Returns all parents and current taxon from a QuerySet of taxons.'''
@@ -742,7 +749,7 @@ class Taxon(MPTTModel):
         return Taxon.objects.filter(query)
     
     class MPTTMeta:
-            order_insertion_by = ['name']
+        order_insertion_by = ['name']
 
     class Meta:
         verbose_name = _('táxon')

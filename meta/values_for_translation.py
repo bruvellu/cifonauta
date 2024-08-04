@@ -677,6 +677,8 @@ _('Larva mitrária')
 # Translators: model=Media, field=title.
 _('Larva pelagosfera')
 # Translators: model=Media, field=title.
+_('Larva pentactula')
+# Translators: model=Media, field=title.
 _('Larva pilídio')
 # Translators: model=Media, field=title.
 _('Larva plúteos de bolacha-do-mar')
@@ -2394,6 +2396,8 @@ _('Vista lateral.')
 _('Vista lateral com detalhe da lanterna de Aristóteles sob a membrana peristomial (onde a boca irá se abrir).')
 # Translators: model=Media, field=caption.
 _('Vista lateral de Acanthurus bahianus.')
+# Translators: model=Media, field=caption.
+_('Vista lateral de uma larva pentactula com cinco bandas ciliadas ao redor do corpo, mostrando os tentáculos primários.')
 # Translators: model=Media, field=caption.
 _('Vista lateral de um exemplar adulto.')
 # Translators: model=Media, field=caption.

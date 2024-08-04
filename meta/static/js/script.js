@@ -1,5 +1,5 @@
 // jQuery Treeview.
-var treeview = $("#colaptree").treeview({
+var treeview = $("#tree").treeview({
   collapsed: true,
   animated: "fast",
   persist: "location",

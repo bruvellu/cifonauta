@@ -2031,7 +2031,7 @@ def tour_page(request, slug):
 # Menu
 def taxa_page(request):
     '''Taxonomic groups organized in a tree and species list.'''
-    species = Taxon.objects.filter(rank_pt_br='Espécie').exclude(media__isnull=True).annotate(count=Count('media')).order_by('-count')[:20]
+    species = Taxon.objects.filter(rank_pt_br='Espécie').exclude(media__status__in=['loaded', 'draft', 'submitted']).annotate(count=Count('media')).order_by('-count')[:20]
     context = {'species': species}
     return render(request, 'taxa_page.html', context)
 

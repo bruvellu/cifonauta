@@ -659,15 +659,17 @@ Based on work by Jørgen Arnor Gårdsø Lom [http://twistedintellect.com/] */
   float:left;
 }
 
-#itis {
-  color:#aaaaaa;
-  padding-top:1em;
+div#tree-footer {
+  color: #aaaaaa;
+  padding-top: 1em;
+  padding-bottom: 1em;
 }
 
 /* BODY */
 #content {
   display: block;
   clear: both;
+  margin-bottom: 2rem;
 }
 
 #not-found {

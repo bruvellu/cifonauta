@@ -8,7 +8,7 @@ import json
 
 from django.http import HttpResponse, JsonResponse, FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Q, F
+from django.db.models import Q, F, Count
 from django.db.models.functions import Lower
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.urls import reverse
@@ -2030,16 +2030,9 @@ def tour_page(request, slug):
 
 # Menu
 def taxa_page(request):
-    '''Taxa organized in a tree and species list.
-
-    Species list is a genus list to show undefined species as well.
-    '''
-    query = Q(rank='Gênero')
-    query.add(Q(rank='Espécie'), Q.OR)
-    genera = Taxon.objects.filter(media__status='published').distinct().get_ancestors(include_self=True).filter(query)
-    context = {
-        'genera': genera,
-        }
+    '''Taxonomic groups organized in a tree and species list.'''
+    species = Taxon.objects.filter(rank_pt_br='Espécie').exclude(media__isnull=True).annotate(count=Count('media')).order_by('-count')[:20]
+    context = {'species': species}
     return render(request, 'taxa_page.html', context)
 
 

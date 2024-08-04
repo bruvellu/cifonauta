@@ -3,7 +3,8 @@
 
 {% get_current_language as LANGUAGE_CODE %}
 
-<h2>{% trans 'Grupos' %}</h2>
+<h2>{% trans 'Classificação' %}</h2>
+<p>{% trans 'Árvore taxonômica dos grupos com imagens.' %}</p>
 <ul class="root tree" id="colaptree">
   {% recursetree taxa %}
   {% if node.rank %}
@@ -20,8 +21,8 @@
   {% endrecursetree %}
 </ul>
 
-<div id="itis" class="quiet">
+<div id="tree-footer" class="quiet">
   {% blocktrans %}
-  *Hierarquia taxonômica do <a href="https://marinespecies.org/">WoRMS</a>.
+  *Classificação baseada no <a href="https://marinespecies.org/" target="_blank">WoRMS</a>.
   {% endblocktrans %}
 </div>

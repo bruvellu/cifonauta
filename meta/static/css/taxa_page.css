@@ -9,7 +9,7 @@
 }
 
 #species {
-    width: 14rem;
+    width: 20rem;
 }
 
 @media (max-width: 575px) {
@@ -17,4 +17,8 @@
         flex-direction: column;
         gap: 1.5rem;
     }
+}
+
+ol#species-list {
+  padding-left: 1.5rem;
 }

@@ -225,12 +225,12 @@ def show_stats():
 
 @register.inclusion_tag('tree.html')
 def show_tree(current=None):
-    '''Passa objeto para gerar árvore.
+    '''Get taxa with published media to generate the tree.
 
-    Usa o recursetree do MPTT no template para gerar a árvore. Aceita argumento opcional para pré-expandir os nós mostrando os táxons da imagem aberta.
+    The tree is generated in the template using the `recursetree` tag from the MPTT package. If the current argument is passed, the tree will be expanded at that node.
     '''
     Taxon = apps.get_model('meta', 'Taxon')
-    taxa = Taxon.objects.filter(media__status='published').distinct().get_ancestors(include_self=True)
+    taxa = Taxon.objects.exclude(media__isnull=True).exclude(media__status__in=['loaded', 'draft', 'submitted']).get_ancestors(include_self=True)
 
     return {'taxa': taxa, 'current': current}
 

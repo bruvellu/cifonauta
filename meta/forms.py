@@ -602,7 +602,7 @@ class DisplayForm(forms.Form):
                                  label=_('Operador'))
 
     taxon = forms.ModelMultipleChoiceField(required=False,
-                                           queryset=Taxon.objects.all(),
+                                           queryset=Taxon.objects.exclude(media__isnull=True).exclude(media__status__in=['loaded', 'draft', 'submitted']).order_by('name'),
                                            widget=forms.SelectMultiple(
                                                attrs={"class": "select2-options",
                                                       "multiple": "multiple"}),

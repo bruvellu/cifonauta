@@ -52,6 +52,6 @@ The Cifonauta database was created by the [Center for Marine Biology](http://ceb
 
 ## Current team
 
-- [**Bruno C. Vellutini**](https://brunovellutini.com) ([@bruvellu](https://github.com/bruvellu))
-- **Virginia Castilho** ([@castilhovirginia](https://github.com/castilhovirginia))
+- [**Bruno C. Vellutini**](https://github.com/bruvellu)
 - **Alvaro E. Migotto**
+- [**Virginia Castilho**](https://github.com/castilhovirginia)

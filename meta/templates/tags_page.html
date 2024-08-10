@@ -21,10 +21,10 @@ Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o re
 {% block content %}
 <header><h1>{% trans 'Marcadores' %}</h1></header>
 <section class="tags-content">
-    <div class="tags-categories">
+    <div class="metadiv" id="tags">
         {% for cat in cats %}
-        <div class="metagroup tags-category">
-            <h2 class="tags-category-name">{{ cat.name }}</h2>
+        <div class="metagroup">
+            <h2>{{ cat.name }}</h2>
             {% if cat.description %}
                 <p class="quiet tags-category-description">{{ cat.description }}</p>
             {% endif %}

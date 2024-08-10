@@ -11,25 +11,10 @@
   align-items: center;
 }
 
-.tags-categories {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  row-gap: 12px;
-}
-
-.tags-category {
-  width: 44.5%;
-}
-
-.tags-category-name {
-  width: 100%;
-  font-size: 1.4rem;
-}
-
+/*TODO: Remove?*/
 .tags-category-description {
-  width: 100%;
-  font-size: 0.8rem;
+  /*width: 100%;*/
+  /*font-size: 0.8rem;*/
 }
 
 .tags-category > ul {

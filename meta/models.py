@@ -645,34 +645,20 @@ class Person(models.Model):
     def get_absolute_url(self):
         return reverse('person_url', args=[self.slug])
 
-    class Meta:
-        verbose_name = _('pessoa')
-        verbose_name_plural = _('pessoas')
-        ordering = ['name']
-
     def get_absolute_url_author(self):
         return reverse('author_url', args=[self.slug])
 
-    class Meta:
-        verbose_name = _('autor')
-        verbose_name_plural = _('autores')
-        ordering = ['name']
-
     def get_absolute_url_specialist(self):
         return reverse('specialist_url', args=[self.slug])
-
-    class Meta:
-        verbose_name = _('especialista')
-        verbose_name_plural = _('especialistas')
-        ordering = ['name']
 
     def get_absolute_url_curator(self):
         return reverse('curator_url', args=[self.slug])
 
     class Meta:
-        verbose_name = _('curador')
-        verbose_name_plural = _('curadores')
+        verbose_name = _('pessoa')
+        verbose_name_plural = _('pessoas')
         ordering = ['name']
+
 
 class Tag(models.Model):
     name = models.CharField(_('nome'), max_length=64, unique=True,

@@ -716,7 +716,7 @@ div.metadiv {
 }
 
 div.metadiv > * {
-  flex: 1 1 auto;
+  flex: 1 1 12rem;
 }
 
 @media (max-width: 799px) {

@@ -1,14 +1,2 @@
-.main-contributors {
-    display: flex; 
-    flex-wrap: wrap; 
-    width: 100%; 
-}
-
-@media (max-width: 799px) {
-    .main-contributors {
-        justify-content: space-between;
-    }
-    header > h1 {
-        text-align: center;
-    }
+#contributors {
 }

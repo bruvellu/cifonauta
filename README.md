@@ -33,23 +33,26 @@ The Cifonauta database was created by the [Center for Marine Biology](http://ceb
 
 ### Creators
 
-- **Bruno C. Vellutini:** Created the Cifonauta database. Contributed with shaping the concept, obtaining funding, designing the database and website, developing the backend and frontend, testing the application, curating the data, managing the repository and servers, and maintaining the codebase over the years.
-- **Alvaro E. Migotto:** created the Cifonauta database. Contributed with creating the concept, obtaining funding, formulating features and implementation ideas, testing the application, and curating the data.
+- **Bruno C. Vellutini:** Created the Cifonauta database and coordinated the development of v1 and v2. Contributed with shaping the concept, obtaining funding, designing the database and website, developing the backend and frontend, testing the application, curating the data, managing the repository and servers, and maintaining the codebase over the years.
+- **Alvaro E. Migotto:** Created the Cifonauta database and coordinated the development of v1 and v2. Contributed with creating the concept, obtaining funding, formulating features and implementation ideas, testing the application, and curating the data.
 
 ### Contributors
-**V. 1**
-- **Roberto Faga:** improved the search and navigation for v1. Contributed with coding for the frontend.
-- **Allan Rodrigo de Lima:** provided IT support for v1. Contributed with setting up the servers hosting the website.
 
-**V. 2**
-- **Alvaro Migotto and Bruno C. Vellutini:** coordinated the development of v2.
-- **Virginia Castilho:** Contributed with obtaining funding, planning and managing the project, formulating workflows and implementation ideas, testing the application, fixing bugs, and curating the data.
-- **IN Junior Team (Luiz Felyppe Nunes dos Santos, Vitória Oliveira, João Diniz, Arthur Ferreira, João Guilherme Storti Scatambuli, Larissa Nascimento, Rian Breno Polonini):** developed the admin dashboard and responsive design of v2. Contributed with formulating workflows, designing implementations, and developing the new features in the backend and frontend of the application.
-- **Joel Simberg Vieira:** provided IT support for v2. Contributed with setting up the virtual machines for hosting the website.
-- **Alvaro Migotto and Marcelo Kitahara:** tested the dashboard for v2. Contributed with testing the application.
+#### Version 1 (2011–2024)
 
-**V 1 e V. 2**
-- And all the **authors, specialists and curators** that upload, edit and publich medias. See: <a href=http://cifonauta.cebimar.usp.br/contributors/>http://cifonauta.cebimar.usp.br/contributors/</a>
+- **Roberto Faga:** Improved the search interface and taxon navigation. Contributed with coding for the frontend.
+- **Allan Rodrigo de Lima:** Provided IT support. Contributed with setting up the servers that host the website.
+
+#### Version 2 (2024–today)
+
+- **Virginia Castilho:** Coordinated the development of this version. Contributed with obtaining funding, planning and managing the project, formulating workflows and implementation ideas, testing the application, fixing bugs, and curating the data.
+- **IN Junior Team (Luiz Felyppe Nunes dos Santos, Vitória Oliveira, João Diniz, Arthur Ferreira, João Guilherme Storti Scatambuli, Larissa Nascimento, Rian Breno Polonini):** Developed the new admin dashboard and responsive design. Contributed with formulating workflows, designing implementations, and developing the new features in the backend and frontend of the application.
+- **Marcelo Kitahara:** Tested the new dashboard workflows. Contributed with testing the application.
+- **Joel Simberg Vieira:** Provided IT support. Contributed with setting up the virtual machines for hosting the website.
+
+#### Content
+
+- **Authors, specialists, and curators:** created, edited, and curated the photos and videos featured in the Cifonauta database. See the full [list of contributors](http://cifonauta.cebimar.usp.br/authors/).
 
 ## Funding
 

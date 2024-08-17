@@ -120,7 +120,7 @@
 
 		const lastName = data.match(/^([^,]+)/)[1]
 		const pubYear = data.match(/\((\d{4})\)/)[1]
-		const suffix = Math.random().toString(36).substring(2, 4)
+		const suffix = Array(2).fill().map(() => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join('');
 		const bibkey = `${lastName}${pubYear}-${suffix}`
 
                 referenceData.name = bibkey

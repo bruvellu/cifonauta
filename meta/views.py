@@ -1787,7 +1787,7 @@ def search_page(request, model_name='', field='', slug=''):
         if 'reference' in query_dict:
             get_references = query_dict.getlist('reference')
             references = Reference.objects.filter(id__in=get_references)
-            media_list = filter_request(media_list, references, 'reference', operator)
+            media_list = filter_request(media_list, references, 'references', operator)
             form_references = list(get_references)
         else:
             form_references = []

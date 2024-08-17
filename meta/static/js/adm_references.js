@@ -40,7 +40,7 @@
 
     // Validate DOI input
     const validateDoi = (doi) => {
-        const regex = /^\d{2}\.\d{4}\/(.+)$/;
+	const regex = /^\d{2}\.\d{4,9}\/[a-zA-Z0-9\-._;()/:]+$/;
         const invalidDoi = doiForm.querySelector('[data-error="doi"]');
         invalidDoi?.remove();
 

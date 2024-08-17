@@ -40,7 +40,7 @@
 
     // Validate DOI input
     const validateDoi = (doi) => {
-        const regex = /^\d{2}\.\d{4}\/(.+)$/;
+	const regex = /^\d{2}\.\d{4,9}\/[a-zA-Z0-9\-._;()/:]+$/;
         const invalidDoi = doiForm.querySelector('[data-error="doi"]');
         invalidDoi?.remove();
 
@@ -116,10 +116,11 @@
                 doiSubmit.disabled = false;
 
                 // Generate bibkey
-                const lastName = data.match(/^([^,]+)/)[1];
+                const lastName = data.match(/^([A-Za-z]+(?:[-\s][A-Za-z]+)*)/)[1];
                 const pubYear = data.match(/\((\d{4})\)/)[1];
                 const suffix = Array(2).fill().map(() => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join('');
-                const bibkey = `${lastName}${pubYear}-${suffix}`;
+                let bibkey = `${lastName}${pubYear}-${suffix}`;
+		bibkey = bibkey.replace(' ', '-')
 
                 referenceData.name = bibkey;
                 referenceData.citation = data;

@@ -118,7 +118,12 @@
                 displayResult(data)
                 doiSubmit.disabled = false
 
-                referenceData.name = doi
+		const lastName = data.match(/^([^,]+)/)[1]
+		const pubYear = data.match(/\((\d{4})\)/)[1]
+		const suffix = Math.random().toString(36).substring(2, 4)
+		const bibkey = `${lastName}${pubYear}-${suffix}`
+
+                referenceData.name = bibkey
                 referenceData.citation = data
                 referenceData.doi = doi
             })

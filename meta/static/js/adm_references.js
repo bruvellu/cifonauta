@@ -116,7 +116,7 @@
                 doiSubmit.disabled = false;
 
                 // Generate bibkey
-                const lastName = data.match(/^([A-Za-z]+(?:[-\s][A-Za-z]+)*)/)[1];
+                const lastName = data.match(/^([\wÀ-ÖØ-öø-ÿ]+(?:[-\s][\wÀ-ÖØ-öø-ÿ]+)*)/)[1];
                 const pubYear = data.match(/\((\d{4})\)/)[1];
                 const suffix = Array(2).fill().map(() => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join('');
                 let bibkey = `${lastName}${pubYear}-${suffix}`;

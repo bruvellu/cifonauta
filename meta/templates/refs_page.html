@@ -33,13 +33,8 @@
   <div class="refs-citation-thumb">
     {% print_thumb 'references' reference %}
   </div>
-    <div class="refs-citation-info">
-    {% autoescape off %}
-        {% if "N-DOI" not in reference.doi %}
-        <a href="https://doi.org/{{ reference.doi }}" target='_blank' class='citation__doi-link'>(doi)</a>
-        {% endif %}
-        {{ reference.citation }}
-    {% endautoescape %}
+  <div class="refs-citation-info">
+    {{ reference.citation|urlize }}
   </div>
   <div class="refs-citation-link">
     <a href="{{ reference.get_absolute_url }}">{% blocktrans count reference.media.count as counter %}{{ counter }} imagem ligada à este trabalho.{% plural %}{{ counter }} imagens ligadas à este trabalho.{% endblocktrans %}</a>

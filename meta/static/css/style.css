@@ -708,6 +708,23 @@ div.metagroup {
   border-radius: 10px;
 }
 
+div.metadiv {
+  display: flex; 
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+div.metadiv > * {
+  flex: 1 1 12rem;
+}
+
+@media (max-width: 799px) {
+  header > h1 {
+    text-align: center;
+  }
+}
+
 .darkrow {
   background:#f5f5f5;
 }

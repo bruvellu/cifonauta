@@ -33,9 +33,12 @@
   <div class="refs-citation-thumb">
     {% print_thumb 'references' reference %}
   </div>
-  <div class="refs-citation-info">
+    <div class="refs-citation-info">
     {% autoescape off %}
-    {{ reference.citation }}
+        {% if "N-DOI" not in reference.doi %}
+        <a href="https://doi.org/{{ reference.doi }}" target='_blank' class='citation__doi-link'>(doi)</a>
+        {% endif %}
+        {{ reference.citation }}
     {% endautoescape %}
   </div>
   <div class="refs-citation-link">

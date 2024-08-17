@@ -1716,6 +1716,19 @@ def search_page(request, model_name='', field='', slug=''):
         else:
             form_specialists = []
 
+        # Curator
+        if 'curator' in query_dict:
+            # Extract objects from query_dict
+            get_curators = query_dict.getlist('curator')
+            # Get instances from the query_dict IDs
+            curators = Person.objects.filter(id__in=get_curators)
+            # Filter media by field and operator
+            media_list = filter_request(media_list, curators, 'curators', operator)
+            # Fill the form with proper values
+            form_curators = list(get_curators)
+        else:
+            form_curators = []
+
         # Tag
         if 'tag' in query_dict:
             get_tags = query_dict.getlist('tag')
@@ -2061,7 +2074,7 @@ def tags_page(request):
     return render(request, 'tags_page.html', context)
 
 
-def authors_page(request):
+def contributors_page(request):
     '''Page showing the full list of authors and specialists.'''
 
     # Get all person instances associated to media as authors
@@ -2076,9 +2089,9 @@ def authors_page(request):
     context = {
         'authors': authors,
         'specialists': specialists,
-	'curators': curators,
+	    'curators': curators,
         }
-    return render(request, 'authors_page.html', context)
+    return render(request, 'contributors_page.html', context)
 
 
 def refs_page(request):

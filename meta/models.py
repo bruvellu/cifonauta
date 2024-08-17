@@ -645,6 +645,15 @@ class Person(models.Model):
     def get_absolute_url(self):
         return reverse('person_url', args=[self.slug])
 
+    def get_absolute_url_author(self):
+        return reverse('author_url', args=[self.slug])
+
+    def get_absolute_url_specialist(self):
+        return reverse('specialist_url', args=[self.slug])
+
+    def get_absolute_url_curator(self):
+        return reverse('curator_url', args=[self.slug])
+
     class Meta:
         verbose_name = _('pessoa')
         verbose_name_plural = _('pessoas')

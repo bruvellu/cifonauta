@@ -865,7 +865,8 @@ class Reference(models.Model):
             return ''
 
         # Extract the last name of the first author
-        last_name_match = re.match(r'^([^,]+)', self.citation)
+        # last_name_match = re.match(r'^([^,]+)', self.citation)
+        last_name_match = re.match(r'^([A-Za-z]+(?:[-\s][A-Za-z]+)*)', self.citation)
         last_name = last_name_match.group(1) if last_name_match else ''
 
         # Extract the publication year
@@ -880,6 +881,7 @@ class Reference(models.Model):
 
         # Construct the bibkey-like name
         bibkey = f'{last_name}{publication_year}-{suffix}'
+        bibkey = bibkey.replace(' ', '-').lower().capitalize()
         return bibkey
 
     def get_absolute_url(self):

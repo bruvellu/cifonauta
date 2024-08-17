@@ -119,7 +119,8 @@
                 const lastName = data.match(/^([A-Za-z]+(?:[-\s][A-Za-z]+)*)/)[1];
                 const pubYear = data.match(/\((\d{4})\)/)[1];
                 const suffix = Array(2).fill().map(() => String.fromCharCode(97 + Math.floor(Math.random() * 26))).join('');
-                const bibkey = `${lastName}${pubYear}-${suffix}`;
+                let bibkey = `${lastName}${pubYear}-${suffix}`;
+		bibkey = bibkey.replace(' ', '-')
 
                 referenceData.name = bibkey;
                 referenceData.citation = data;

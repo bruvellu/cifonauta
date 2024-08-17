@@ -2096,7 +2096,7 @@ def contributors_page(request):
 
 def refs_page(request):
     '''Página mostrando referências.'''
-    references = Reference.objects.order_by('-citation')
+    references = Reference.objects.all()
     context = {
         'references': references,
         }

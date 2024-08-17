@@ -891,7 +891,7 @@ class Reference(models.Model):
     class Meta:
         verbose_name = _('referência')
         verbose_name_plural = _('referências')
-        ordering = ['-citation']
+        ordering = ['name']
 
 
 class Tour(models.Model):

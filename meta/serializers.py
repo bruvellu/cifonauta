@@ -11,7 +11,7 @@ class ReferenceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate_name(self, value):
-        reference = Reference.objects.filter(name=value)
+        reference = Reference.objects.filter(doi=value)
         if reference.exists():
             raise serializers.ValidationError(f'DOI já existe no banco de dados')
         return value
@@ -30,4 +30,4 @@ class CoauthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
         fields = ('name', 'id')
-        
+

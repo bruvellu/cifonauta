@@ -881,7 +881,7 @@ class Reference(models.Model):
 
         # Construct the bibkey-like name
         bibkey = f'{last_name}{publication_year}-{suffix}'
-        bibkey = bibkey.replace(' ', '-').lower().capitalize()
+        bibkey = bibkey.replace(' ', '-')
         return bibkey
 
     def get_absolute_url(self):

@@ -849,9 +849,9 @@ class Country(models.Model):
 
 class Reference(models.Model):
     name = models.CharField(_('nome'), max_length=100, unique=True,
-            help_text=_('Identificador da referência (Mendeley ID).'))
+            help_text=_('Nome chave no estilo bibkey (e.g., Vieira2012-nt).'))
     slug = models.SlugField(_('slug'), max_length=100, blank=True,
-            help_text=_('Slug do identificar da referência.'))
+            help_text=_('Slug do nome chave da referência.'))
     citation = models.TextField(_('citação'), blank=True,
             help_text=_('Citação formatada da referência.'))
     doi = models.CharField('doi', max_length=40, blank=True, help_text=_('DOI da referência'))

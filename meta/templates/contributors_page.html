@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Contribuidores (autores, especialistas e curadores)' %} | {{ block.super }}{% endblock %}
+{% block meta-keywords %}{% trans 'autores, especialistas, curadores, biodiversidade, biologia marinha' %}{% endblock %}
+{% block meta-description %}{% trans 'Autores, especialistas e curadores incluídos no banco de imagens Cifonauta.' %}{% endblock %}
+{% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
+
+{% block extra-head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/contributors_page.css">
+<meta property="og:title" content="{% trans 'Autores, especialistas e curadores' %}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:description" content="{% trans 'Autores, especialistas e curadores incluídos no banco de imagens Cifonauta.' %}" />
+<meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+<meta property="og:type" content="article" />
+{% endblock %}
+
+{% block content %}
+<section>
+    <header><h1>{% trans 'Contribuidores (autores, especialistas e curadores)' %}</h1></header>
+    <div class="metadiv" id="contributors">
+      <div class="metagroup" id="authors">
+        <h2>{% trans 'Autores' %}</h2>
+        <p class="quiet">{% trans 'Quem capturou a imagem' %}</p>
+        {% print_metalist authors 'author' %}
+      </div>
+      <div class="metagroup" id="specialists">
+        <h2>{% trans 'Especialistas' %}</h2>
+        <p class="quiet">{% trans 'Quem fez a edição dos metadados' %}</p>
+        {% print_metalist specialists 'specialist' %}
+      </div>
+      <div class="metagroup" id="curators">
+        <h2>{% trans 'Curadores' %}</h2>
+        <p class="quiet">{% trans 'Quem fez a revisão e a publicação' %}</p>
+        {% print_metalist curators 'curator' %}
+      </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}

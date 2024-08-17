@@ -5,11 +5,13 @@
 
 #taxa-page-section > div {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
-#species {
-    width: 20rem;
+#taxa {}
+#species {}
+#species ol {
+  padding-left: 1.5rem;
 }
 
 @media (max-width: 575px) {
@@ -19,6 +21,3 @@
     }
 }
 
-ol#species-list {
-  padding-left: 1.5rem;
-}

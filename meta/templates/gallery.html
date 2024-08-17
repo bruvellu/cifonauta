@@ -10,17 +10,13 @@
   <section id="photo-gallery">
     <header>
       {% if meta %}
-        <h1>{{ meta|sp_em }} <span class="quiet" id="metafield">({% trans field %}{% if field == 'tag' %}: {{ meta.category|lower }}{% else %}{% if field == 'taxon' %}{% if meta.rank %}: {{ meta.rank|lower }}{% endif %}{% endif %}{% endif %})</span></h1>
-        
-        {% if meta.citation %}
-          <div id="citation">
-            <p>
-            {% autoescape off %}
-            {{ meta.citation }}
-            {% endautoescape %}
-            </p>
-          </div>
-        {% endif %}
+      <h1>{{ meta|sp_em }} <span class="quiet" id="metafield">({% trans field %}{% if field == 'tag' %}: {{ meta.category|lower }}{% else %}{% if field == 'taxon' %}{% if meta.rank %}: {{ meta.rank|lower }}{% endif %}{% endif %}{% endif %})</span></h1>
+
+      {% if meta.citation %}
+      <div id="citation">
+        <p>{{ meta.citation|urlize }}</p>
+      </div>
+      {% endif %}
       {% endif %}
 
       <h2>{{ entries.paginator.count }} {% trans 'arquivo' %}{{ entries.paginator.count|pluralize }}</h2>

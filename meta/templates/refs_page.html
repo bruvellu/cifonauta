@@ -34,9 +34,7 @@
     {% print_thumb 'references' reference %}
   </div>
   <div class="refs-citation-info">
-    {% autoescape off %}
-    {{ reference.citation }}
-    {% endautoescape %}
+    {{ reference.citation|urlize }}
   </div>
   <div class="refs-citation-link">
     <a href="{{ reference.get_absolute_url }}">{% blocktrans count reference.media.count as counter %}{{ counter }} imagem ligada à este trabalho.{% plural %}{{ counter }} imagens ligadas à este trabalho.{% endblocktrans %}</a>

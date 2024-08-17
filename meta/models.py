@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
+import random
+import re
 import shutil
+import string
 import uuid
 
 from utils.media import Metadata, resize_image, resize_video, extract_video_cover
@@ -645,6 +648,15 @@ class Person(models.Model):
     def get_absolute_url(self):
         return reverse('person_url', args=[self.slug])
 
+    def get_absolute_url_author(self):
+        return reverse('author_url', args=[self.slug])
+
+    def get_absolute_url_specialist(self):
+        return reverse('specialist_url', args=[self.slug])
+
+    def get_absolute_url_curator(self):
+        return reverse('curator_url', args=[self.slug])
+
     class Meta:
         verbose_name = _('pessoa')
         verbose_name_plural = _('pessoas')
@@ -846,6 +858,29 @@ class Reference(models.Model):
 
     def __str__(self):
         return self.name
+
+    def generate_name(self):
+        '''Generate name from APA-style citation.'''
+        if not self.citation:
+            return ''
+
+        # Extract the last name of the first author
+        last_name_match = re.match(r'^([^,]+)', self.citation)
+        last_name = last_name_match.group(1) if last_name_match else ''
+
+        # Extract the publication year
+        publication_year_match = re.search(r'\((\d{4})\)', self.citation)
+        publication_year = publication_year_match.group(1) if publication_year_match else ''
+        # Stop if empty
+        if not last_name or not publication_year:
+            return ''
+
+        # Generate a two-letter random suffix
+        suffix = ''.join(random.choice(string.ascii_lowercase) for n in range(2))
+
+        # Construct the bibkey-like name
+        bibkey = f'{last_name}{publication_year}-{suffix}'
+        return bibkey
 
     def get_absolute_url(self):
         return reverse('reference_url', args=[self.slug])

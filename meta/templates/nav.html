@@ -41,7 +41,7 @@
     <li> <a {% if fullpath == '/taxa/' %}class="selected"{% endif %} href="{% url 'taxa_url' %}">{% trans 'táxons' %}</a> </li>
     <li> <a {% if fullpath == '/tags/' %}class="selected"{% endif %} href="{% url 'tags_url' %}">{% trans 'marcadores' %}</a> </li>
     <li> <a {% if fullpath == '/places/' %}class="selected"{% endif %} href="{% url 'places_url' %}">{% trans 'localidades' %}</a> </li>
-    <li> <a {% if fullpath == '/authors/' %}class="selected"{% endif %} href="{% url 'persons_url' %}">{% trans 'autores' %}</a> </li>
+    <li> <a {% if fullpath == '/contributors/' %}class="selected"{% endif %} href="{% url 'persons_url' %}">{% trans 'contribuidores' %}</a> </li>
     <li> <a {% if fullpath == '/literature/' %}class="selected"{% endif %} href="{% url 'refs_url' %}">{% trans 'referências' %}</a> </li>
   </ul>
 

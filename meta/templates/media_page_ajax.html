@@ -151,10 +151,9 @@
     <div id="references">
       <h2>{% trans 'Referências bibliográficas' %}</h2>
       <div>
-        {% for ref in references %}
+        {% for reference in references %}
         <div class="citation">
-          <a href="https://doi.org/{{ ref.doi }}" target='_blank' class='citation__doi-link'>doi></a>
-          {% autoescape off %}{{ ref.citation }}{% endautoescape %}
+          {{ reference.citation|urlize }}
         </div>
         {% endfor %}
       </div>

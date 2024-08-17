@@ -385,16 +385,6 @@ button:disabled {
     display: none !important;
 }
 
-
-
-
-
-
-
-
-
-
-
 .doi-form {
     display: flex;
     flex-direction: column;
@@ -413,6 +403,8 @@ button:disabled {
     border: 1px solid #00000040;
     border-radius: 0.5rem 0 0 0.5rem;
 }
+
+.doi-form__input::placeholder { color: #cccccc; }
 
 .doi-form__button {
   padding: 0 0.5rem;
@@ -745,15 +737,6 @@ button:disabled {
     align-items: flex-end;
     gap: 1rem;
 }
-
-
-
-
-
-
-
-
-
 
 .entries-number-form {
     color: #222;

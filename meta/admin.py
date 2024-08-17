@@ -80,8 +80,9 @@ class TaxonAdmin(TranslationAdmin):
 
 
 class ReferenceAdmin(admin.ModelAdmin):
+    list_display = ['name', 'doi', 'citation']
     filter_horizontal = ['media']
-    search_fields = ['name']
+    search_fields = ['name', 'citation']
 
 
 class TourAdmin(TranslationAdmin):

@@ -46,7 +46,7 @@ The Cifonauta database was created by the [Center for Marine Biology](http://ceb
 #### Version 2 (2024–today)
 
 - **Virginia Castilho:** CEBIMar project manager of this version. Contributed with obtaining funding, planning and managing the project, formulating workflows and implementation ideas, testing the application, fixing bugs, and curating the data.
-- **IN Junior Team (João Diniz (InJunior project manager), Luiz Felyppe Nunes dos Santos, Vitória Oliveira, Arthur Ferreira, João Guilherme Storti Scatambuli, Larissa Nascimento, Rian Breno Polonini):** Developed the new admin dashboard and responsive design. Contributed with formulating workflows, designing implementations, and developing the new features in the backend and frontend of the application.
+- **IN Junior Team (Luiz Felyppe Nunes dos Santos, Vitória Oliveira, João Diniz, Arthur Ferreira, João Guilherme Storti Scatambuli, Larissa Nascimento, Rian Breno Polonini):** Developed the new admin dashboard and responsive design. Contributed with formulating workflows, designing implementations, and developing the new features in the backend and frontend of the application.
 - **Marcelo Kitahara:** Tested the new dashboard workflows. Contributed with testing the application.
 - **Joel Simberg Vieira:** Provided IT support. Contributed with setting up the virtual machines for hosting the website.
 

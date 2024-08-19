@@ -857,7 +857,10 @@ class Reference(models.Model):
     doi = models.CharField('doi', max_length=40, blank=True, help_text=_('DOI da referência'))
 
     def __str__(self):
-        return self.name
+        if self.doi:
+            return f'{self.name} [DOI:{self.doi}]'
+        else:
+            return f'{self.name} [sem DOI]'
 
     def generate_name(self):
         '''Generate name from APA-style citation.'''

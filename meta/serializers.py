@@ -10,7 +10,7 @@ class ReferenceSerializer(serializers.ModelSerializer):
         model = Reference
         fields = '__all__'
 
-    def validate_name(self, value):
+    def validate_doi(self, value):
         reference = Reference.objects.filter(doi=value)
         if reference.exists():
             raise serializers.ValidationError(f'DOI já existe no banco de dados')

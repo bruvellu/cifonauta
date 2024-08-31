@@ -280,6 +280,7 @@ class TaxonUpdater:
         en2pt_statuses = {
                 'accepted': 'aceito',
                 'unaccepted': 'não aceito',
+                'junior subjective synonym': 'sinônimo subjetivo júnior',
                 'alternative representation': 'representação alternativa',
                 'temporary name': 'nome temporário',
                 'uncertain': 'incerto'

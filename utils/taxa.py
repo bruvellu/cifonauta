@@ -259,38 +259,53 @@ class TaxonUpdater:
             taxon.save()
         return taxon
 
-    def save_taxon_lineage(self, taxon, record):
-        '''Get or create parent taxa and set tree relationship.'''
+    def get_taxon_lineage(self, taxon, record, canonical=False):
+        '''Get or create the taxonomic lineage of a taxon.'''
+
         # Initial list for lineage tree
         lineage = [taxon]
-        # Only get standard ranks from WoRMS
-        parent_names = [record['genus'],
-                        record['family'],
-                        record['order'],
-                        record['cls'],
-                        record['phylum'],
-                        record['kingdom'],]
-        # Loop over parent names and get or create taxon instances
-        for parent_name in parent_names:
-            if parent_name:
-                parent_name = parent_name.replace('[unassigned] ', '')
-                parent_taxon = self.get_parent_taxon(parent_name)
-                lineage.append(parent_taxon)
+
+        # Only create canonical ranks
+        if canonical:
+
+            # Canonical ranks from WoRMS
+            parent_names = [record['genus'],
+                            record['family'],
+                            record['order'],
+                            record['cls'],
+                            record['phylum'],
+                            record['kingdom'],]
+
+            # Loop over parent names and get or create taxon instances
+            for parent_name in parent_names:
+                if parent_name:
+                    parent_name = parent_name.replace('[unassigned] ', '')
+                    parent_taxon = self.get_parent_taxon(parent_name)
+                    lineage.append(parent_taxon)
 
         # Reverse list to start with higher ranks
         lineage.reverse()
 
+        return lineage
+
+    def save_taxon_lineage(self, taxon, record):
+        '''Get or create parent taxa and set tree relationship.'''
+        # Get list with taxon lineage, including itself
+        lineage = self.get_taxon_lineage(taxon, record, canonical=True)
+
         # Establish parent > child relationships
-        print(f'Tree relationships:')
+        print(f'Lineage tree:')
         for count, parent in enumerate(lineage):
-            print(f'[{parent.timestamp}] {parent} ({parent.rank_en})')
-            # Last node has no parent, break the loop
+            print(f' [{parent.rank_en}] {parent} ({parent.is_valid})')
+            # Last taxon's parent already set on previous iteration
             if count == len(lineage) - 1:
                 break
+            # Get child of current taxon (parent)
             child = lineage[count + 1]
-            # When not species, skip setting itself as parent
+            # Skip setting itself as parent
             if parent.name == child.name:
                 continue
+            # Save current taxon as the child's parent
             child.parent = parent
             child.save()
         return lineage
@@ -300,18 +315,23 @@ class TaxonUpdater:
         if not taxon.is_valid and record['valid_AphiaID']:
             print(f'Invalid taxon: {taxon}')
             print(f'Searching for the valid equivalent...')
+
             # Get valid record and taxon and save instance
             valid_record = self.aphia.get_aphia_record_by_id(record['valid_AphiaID'])
             valid_taxon = self.get_or_create_taxon(valid_record['scientificname'])
             valid_taxon = self.update_taxon_metadata(valid_taxon, valid_record)
+
             # Save lineage for valid taxon
             valid_lineage = self.save_taxon_lineage(valid_taxon, valid_record)
+
             # Add valid_taxon reference to invalid taxon
             taxon.valid_taxon = valid_taxon
             taxon.save()
+
             # Mirror associated images
             valid_taxon.media.add(*taxon.media.all())
             valid_taxon.save()
+
             print(f'Saved valid taxon: {valid_taxon} (replaces {taxon})')
             return valid_taxon, valid_record, valid_lineage
         else:

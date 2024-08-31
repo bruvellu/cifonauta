@@ -98,26 +98,18 @@ class TaxonUpdater:
         # Clean input name
         self.name = self.sanitize_name(name)
 
-        # Get or create Taxon instance
-        self.taxon = self.get_or_create_taxon(self.name)
-
         # Connect to WoRMS webservice
         self.aphia = Aphia()
 
-        # Search taxon name in WoRMS
-        self.record = self.search_worms(self.taxon.name)
+        # Get Taxon instance and WoRMS record
+        self.taxon, self.record = self.get_taxon_record_by_name(self.name)
 
-        # Check WoRMS record before continuing
-        self.check = self.check_record(self.taxon.name, self.record)
+        # Update database entry with new record data
+        self.taxon, self.check = self.update_taxon(self.taxon, self.record)
 
         # Stop update in case of missing record or mismatch
         if not self.check:
-            self.taxon.save()
-            print(f'Saved without WoRMS metadata: {self.taxon}')
             return None
-
-        # Update database entry with new record data
-        self.taxon = self.update_taxon_metadata(self.taxon, self.record)
 
         # Get or create parent taxa
         self.lineage = self.save_taxon_lineage(self.taxon, self.record)
@@ -138,7 +130,14 @@ class TaxonUpdater:
         print(f'Taxon: {taxon} (new={is_new})')
         return taxon
 
-    def search_worms(self, taxon_name):
+    def get_worms_record_by_id(self, aphia_id):
+        '''Get WoRMS taxon record by AphiaID.'''
+        record = self.aphia.get_aphia_record_by_id(aphia_id)
+        if not record:
+            return None
+        return record
+
+    def get_worms_record_by_name(self, taxon_name):
         '''Search WoRMS for taxon name and return the first matching record.'''
         records = self.aphia.get_aphia_records(taxon_name)
         if not records:
@@ -149,26 +148,44 @@ class TaxonUpdater:
         else:
             return None
 
-    def check_record(self, taxon_name, record):
+    def check_taxon_record(self, taxon, record):
         '''Check WoRMS record name against Taxon name, they should be identical.'''
 
         # Skip taxon without WoRMS record (but update timestamp)
         if not record:
-            print(f'Record not found: No WoRMS record for "{taxon_name}"')
+            print(f'Record not found: No WoRMS record for "{taxon.name}"')
             self.status = 'not_exist'
             return False
 
         # Skip taxon without exact name match (but update timestamp)
-        if record['scientificname'] != taxon_name:
-            print(f'Record name mismatch: "{record["scientificname"]}" (WoRMS) not identical to "{taxon_name}" (Taxon name)')
+        if record['scientificname'] != taxon.name:
+            print(f'Record name mismatch: "{record["scientificname"]}" (WoRMS) not identical to "{taxon.name}" (Taxon name)')
             self.status = 'not_exist'
             return False
 
         # If not caught above
         return True
 
-    def update_taxon_metadata(self, taxon, record):
+    def update_taxon(self, taxon, record):
         '''Update taxon entry in the database.'''
+
+        # Check taxon record
+        check = self.check_taxon_record(taxon, record)
+
+        # If record broken or absent, only save taxon object
+        if not check:
+            # Updates timestamp
+            taxon.save()
+            print(f'Saved without WoRMS metadata: {taxon}')
+        else:
+            taxon = self.update_metadata(taxon, record)
+
+        return taxon, check
+
+
+    def update_metadata(self, taxon, record):
+        '''Update taxon metadata with WoRMS record data.'''
+
         # Convert status string to boolean
         #TODO: turn into function get_boolean_from_status
         if record['status'] == 'accepted':
@@ -178,11 +195,11 @@ class TaxonUpdater:
             self.status = 'invalid'
             is_valid = False
 
-        # Set new medadata for individual fields
+        # Set new metadata for individual fields
         taxon.aphia = record['AphiaID']
         taxon.name = record['scientificname']
         taxon.authority = record['authority']
-        #TODO: Make status translatable
+        #TODO: Save as status_en (it's already translatable)
         taxon.status = record['status']
         taxon.is_valid = is_valid
         taxon.slug = slugify(record['scientificname'])
@@ -251,16 +268,17 @@ class TaxonUpdater:
         rank_pt = en2pt_ranks[rank_en]
         return rank_pt
 
-    def get_parent_taxon(self, parent_name):
-        '''Get parent taxon using its name.'''
-        taxon = self.get_or_create_taxon(parent_name)
-        record = self.search_worms(taxon.name)
-        check = self.check_record(parent_name, record)
-        if check:
-            taxon = self.update_taxon_metadata(taxon, record)
-        else:
-            taxon.save()
-        return taxon
+    def get_taxon_record_by_name(self, name):
+        '''Get taxon object and WoRMS record by scientific name.'''
+        taxon = self.get_or_create_taxon(name)
+        record = self.get_worms_record_by_name(taxon.name)
+        return taxon, record
+
+    def get_taxon_record_by_id(self, aphia):
+        '''Get WoRMS record by AphiaID and create taxon object.'''
+        record = self.get_worms_record_by_id(aphia)
+        taxon = self.get_or_create_taxon(record['scientificname'])
+        return taxon, record
 
     def get_canonical_taxon_lineage(self, taxon, record):
         '''Get canonical taxonomic lineage of a taxon.'''
@@ -268,23 +286,22 @@ class TaxonUpdater:
         # Initial list for lineage tree
         lineage = [taxon]
 
-        # Only create canonical ranks
-        if canonical:
+        # Canonical ranks from WoRMS
+        parent_names = [record['genus'],
+                        record['family'],
+                        record['order'],
+                        record['cls'],
+                        record['phylum'],
+                        record['kingdom'],]
 
-            # Canonical ranks from WoRMS
-            parent_names = [record['genus'],
-                            record['family'],
-                            record['order'],
-                            record['cls'],
-                            record['phylum'],
-                            record['kingdom'],]
+        # Loop over parent names and get or create taxon instances
+        for parent_name in parent_names:
+            if parent_name:
+                parent_name = parent_name.replace('[unassigned] ', '')
+                parent_taxon, parent_record = self.get_taxon_record_by_name(parent_name)
 
-            # Loop over parent names and get or create taxon instances
-            for parent_name in parent_names:
-                if parent_name:
-                    parent_name = parent_name.replace('[unassigned] ', '')
-                    parent_taxon = self.get_parent_taxon(parent_name)
-                    lineage.append(parent_taxon)
+                parent_taxon, parent_check = self.update_taxon(parent_taxon, parent_record)
+                lineage.append(parent_taxon)
 
         # Reverse list to start with higher ranks
         lineage.reverse()
@@ -297,19 +314,31 @@ class TaxonUpdater:
         # Initial list for lineage tree
         lineage = [taxon]
 
+        # Save current record
+        current_record = record
+
+        # Iterate up the tree hierarchy, append taxon, update record
+        while current_record.parentNameUsageID != 1:
+            parent_taxon, parent_record = self.get_taxon_record_by_id(current_record.parentNameUsageID)
+            parent_taxon, parent_check = self.update_taxon(parent_taxon, parent_record)
+            lineage.append(parent_taxon)
+            current_record = parent_record
+
         # Reverse list to start with higher ranks
         lineage.reverse()
+
+        return lineage
         
     def save_taxon_lineage(self, taxon, record):
         '''Get or create parent taxa and set tree relationship.'''
         # Get list with taxon lineage, including itself
-        lineage = self.get_canonical_taxon_lineage(taxon, record)
+        # lineage = self.get_canonical_taxon_lineage(taxon, record)
         lineage = self.get_full_taxon_lineage(taxon, record)
 
         # Establish parent > child relationships
         print(f'Lineage tree:')
         for count, parent in enumerate(lineage):
-            print(f' [{parent.rank_en}] {parent} ({parent.is_valid})')
+            print(f' [{parent.rank_en}] {parent} (valid={parent.is_valid})')
             # Last taxon's parent already set on previous iteration
             if count == len(lineage) - 1:
                 break
@@ -332,7 +361,7 @@ class TaxonUpdater:
             # Get valid record and taxon and save instance
             valid_record = self.aphia.get_aphia_record_by_id(record['valid_AphiaID'])
             valid_taxon = self.get_or_create_taxon(valid_record['scientificname'])
-            valid_taxon = self.update_taxon_metadata(valid_taxon, valid_record)
+            valid_taxon = self.update_metadata(valid_taxon, valid_record)
 
             # Save lineage for valid taxon
             valid_lineage = self.save_taxon_lineage(valid_taxon, valid_record)

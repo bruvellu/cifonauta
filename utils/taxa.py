@@ -203,8 +203,7 @@ class TaxonUpdater:
         taxon.slug = slugify(record['scientificname'])
         taxon.rank_en = record['rank']
         taxon.rank_pt_br = self.translate_rank(record['rank'])
-        #TODO: Get record citation into a TextField
-        # taxon.citation = record['citation']
+        taxon.citation = record['citation']
 
         # Save taxon and return
         taxon.save()

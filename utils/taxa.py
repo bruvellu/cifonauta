@@ -192,6 +192,7 @@ class TaxonUpdater:
 
     def get_worms_record_by_id(self, aphia):
         '''Get WoRMS taxon record by AphiaID.'''
+        #TODO: Add option to ignore cache
         try:
             # Try getting record from cache
             record = self.records[aphia]
@@ -209,6 +210,7 @@ class TaxonUpdater:
 
     def get_worms_record_by_name(self, taxon_name):
         '''Search WoRMS for taxon name and return the first matching record.'''
+        #TODO: Add option to ignore cache
         try:
             # Try getting record from cache
             record = self.records[self.namemap[taxon_name]]

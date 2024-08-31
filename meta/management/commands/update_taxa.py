@@ -10,6 +10,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
 
+        #TODO: Add argument to ignore cache
+
         parser.add_argument('-n', '--number', type=int, default=10,
                             help='Set number of taxa to update (default=10).')
 

@@ -317,10 +317,12 @@ class TaxonUpdater:
         # Save current record
         current_record = record
 
-        # Iterate up the tree hierarchy, append taxon, update record
+        # Iterate up the tree, appending to lineage and updating record
         while current_record.parentNameUsageID != 1:
+            # Get and update parent taxon
             parent_taxon, parent_record = self.get_taxon_record_by_id(current_record.parentNameUsageID)
             parent_taxon, parent_check = self.update_taxon(parent_taxon, parent_record)
+            # Append to lineage and update current record
             lineage.append(parent_taxon)
             current_record = parent_record
 
@@ -339,17 +341,22 @@ class TaxonUpdater:
         print(f'Lineage tree:')
         for count, parent in enumerate(lineage):
             print(f' [{parent.rank_en}] {parent} (valid={parent.is_valid})')
+
             # Last taxon's parent already set on previous iteration
             if count == len(lineage) - 1:
                 break
+
             # Get child of current taxon (parent)
             child = lineage[count + 1]
+
             # Skip setting itself as parent
             if parent.name == child.name:
                 continue
+
             # Save current taxon as the child's parent
             child.parent = parent
             child.save()
+
         return lineage
 
     def get_valid_taxon(self, taxon, record):

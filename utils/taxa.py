@@ -86,11 +86,12 @@ Usage:
 '''
 
 class TaxonUpdater:
-    '''Update taxonomic records for a taxon.'''
+    '''Manage taxonomic information of taxa using WoRMS.'''
 
     def __init__(self, name):
 
         # Taxon status, ends in string: accepted, invalid or not_exist
+        #TODO: Fix this
         self.status = None
         self.status = 'not_exist'
 

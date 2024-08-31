@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 from meta.models import Taxon
@@ -66,21 +67,23 @@ class Command(BaseCommand):
         if not taxa:
             raise CommandError(f'No taxa left after filtering...')
 
-        # Disable MPTT updates
-        # Taxon.objects.disable_mptt_updates()
-        # MPTT already gets disabled within TaxonUpdater
+        # Enable atomic transactions
+        with transaction.atomic():
 
-        # Loop over taxon queryset
-        for taxon in taxa:
-            self.stdout.write(f'\n{taxon.name}')
+            # Disable MPTT updates
+            with Taxon.objects.disable_mptt_updates():
 
-            # Initialize WoRMS web service
-            taxon_updater = TaxonUpdater()
+                # Initialize WoRMS web service
+                taxon_updater = TaxonUpdater()
 
-            # Search taxon name in WoRMS
-            taxon_updater.update(taxon.name)
+                # Loop over taxon queryset
+                for taxon in taxa:
+                    self.stdout.write(f'\n{taxon.name}')
 
-        # Rebuild tree hierarchy
-        self.stdout.write(f'\nRebuilding tree...\n\n')
-        Taxon.objects.rebuild()
+                    # Search taxon name in WoRMS
+                    taxon_updater.update(taxon.name)
+
+                # Rebuild tree hierarchy
+                self.stdout.write(f'\nRebuilding tree...\n\n')
+                Taxon.objects.rebuild()
 

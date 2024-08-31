@@ -119,7 +119,7 @@ class TaxonUpdater:
         self.load_cache_from_file()
 
         # Disable MPTT updates
-        Taxon.objects.disable_mptt_updates()
+        # Taxon.objects.disable_mptt_updates()
 
         # Get Taxon instance and WoRMS record
         self.taxon, self.record = self.get_taxon_record_by_name(self.name)
@@ -471,9 +471,13 @@ class TaxonUpdater:
             if parent.name == child.name:
                 continue
 
-            # Save current taxon as the child's parent
-            child.parent = parent
+            # Remove current parent of child (updates tree)
+            # child.move_to(None, 'last-child')
+            # Set new parent for child (updates tree)
             # child.move_to(parent, 'last-child')
+            # Like this, it doesn't trigger MPTT
+            child.parent = parent
+            # Saving updates the timestamp
             child.save()
 
         return lineage

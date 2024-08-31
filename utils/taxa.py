@@ -90,10 +90,8 @@ class TaxonUpdater:
 
     def __init__(self, name):
 
-        # Taxon status, ends in string: accepted, invalid or not_exist
-        #TODO: Fix this
-        self.status = None
-        self.status = 'not_exist'
+        # Taxon status on WoRMS: accepted, invalid, or absent
+        self.status = 'absent'
 
         # Clean input name
         self.name = self.sanitize_name(name)
@@ -154,13 +152,13 @@ class TaxonUpdater:
         # Skip taxon without WoRMS record (but update timestamp)
         if not record:
             print(f'Record not found: No WoRMS record for "{taxon.name}"')
-            self.status = 'not_exist'
+            self.status = 'absent'
             return False
 
         # Skip taxon without exact name match (but update timestamp)
         if record['scientificname'] != taxon.name:
             print(f'Record name mismatch: "{record["scientificname"]}" (WoRMS) not identical to "{taxon.name}" (Taxon name)')
-            self.status = 'not_exist'
+            self.status = 'absent'
             return False
 
         # If not caught above

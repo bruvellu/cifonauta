@@ -485,13 +485,12 @@ class TaxonUpdater:
     def get_valid_taxon(self, taxon, record):
         '''Get valid taxon name and ancestors, if needed.'''
         if not taxon.is_valid and record['valid_AphiaID']:
-            print(f'Invalid taxon: {taxon}')
+            print(f'Invalid: {taxon}')
             print(f'Searching for the valid equivalent...')
 
             # Get valid record and taxon and save instance
-            valid_record = self.aphia.get_aphia_record_by_id(record['valid_AphiaID'])
-            valid_taxon = self.get_or_create_taxon(valid_record['scientificname'])
-            valid_taxon = self.update_metadata(valid_taxon, valid_record)
+            valid_taxon, valid_record = self.get_taxon_record_by_id(record['valid_AphiaID'])
+            valid_taxon, valid_check = self.update_taxon(valid_taxon, valid_record)
 
             # Save lineage for valid taxon
             valid_lineage = self.save_taxon_lineage(valid_taxon, valid_record)
@@ -504,7 +503,7 @@ class TaxonUpdater:
             valid_taxon.media.add(*taxon.media.all())
             valid_taxon.save()
 
-            print(f'Saved valid taxon: {valid_taxon} (replaces {taxon})')
+            print(f'Saved: {valid_taxon} (valid={valid_taxon.is_valid}) over {taxon} (valid={taxon.is_valid})')
             return valid_taxon, valid_record, valid_lineage
         else:
             return False, False, False

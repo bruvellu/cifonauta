@@ -54,6 +54,9 @@ class Command(BaseCommand):
         if only_orphans:
             taxa = taxa.filter(parent__isnull=True)
 
+        # Order by least recently updated
+        taxa = taxa.order_by('timestamp')
+
         # Limit the total number of taxa
         taxa = taxa[:n]
 
@@ -62,7 +65,8 @@ class Command(BaseCommand):
             raise CommandError(f'No taxa left after filtering...')
 
         # Disable MPTT updates
-        Taxon.objects.disable_mptt_updates()
+        # Taxon.objects.disable_mptt_updates()
+        # MPTT already gets disabled within TaxonUpdater
 
         # Loop over taxon queryset
         for taxon in taxa:
@@ -75,5 +79,6 @@ class Command(BaseCommand):
             taxon_updater.update(taxon.name)
 
         # Rebuild tree hierarchy
+        self.stdout.write(f'\nRebuilding tree...\n\n')
         Taxon.objects.rebuild()
 

@@ -117,6 +117,9 @@ class TaxonUpdater:
         self.namemap = {}
         self.load_cache_from_file()
 
+        # Disable MPTT updates
+        Taxon.objects.disable_mptt_updates()
+
         # Get Taxon instance and WoRMS record
         self.taxon, self.record = self.get_taxon_record_by_name(self.name)
 
@@ -135,6 +138,11 @@ class TaxonUpdater:
 
         # Write cache to file
         self.write_cache_to_file()
+
+    def rebuild_hierarchy(self):
+        '''Rebuild tree hierarchy of taxons.'''
+        # Rebuild tree hierarchy
+        Taxon.objects.rebuild()
 
     def sanitize_name(self, name):
         '''Trim spaces and standardize case for input names.'''
@@ -441,8 +449,8 @@ class TaxonUpdater:
                 continue
 
             # Save current taxon as the child's parent
-            # child.parent = parent
-            child.move_to(parent, 'last-child')
+            child.parent = parent
+            # child.move_to(parent, 'last-child')
             child.save()
 
         return lineage

@@ -1,9 +1,13 @@
+import os
+import pickle
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from django.utils import translation
 from django.template.defaultfilters import slugify
 from meta.models import Taxon
 from utils.worms import Aphia
+
+# TODO: Also fetch non-marine species
 
 '''
 Library for updating taxonomic information in the Cifonauta database using the
@@ -90,11 +94,17 @@ class TaxonUpdater:
 
     def __init__(self, name):
 
+        # Clean input name
+        self.name = self.sanitize_name(name)
+
         # Taxon status on WoRMS: accepted, invalid, or absent
         self.status = 'absent'
 
-        # Clean input name
-        self.name = self.sanitize_name(name)
+        # Cache dictionary for fetched records
+        self.cache = 'worms.pkl'
+        self.records = {}
+        self.namemap = {}
+        self.load_cache_from_file()
 
         # Connect to WoRMS webservice
         self.aphia = Aphia()
@@ -115,6 +125,9 @@ class TaxonUpdater:
         # Get valid taxon if needed
         self.valid_taxon, self.valid_record, self.valid_lineage = self.get_valid_taxon(self.taxon, self.record)
 
+        # Write cache to file
+        self.write_cache_to_file()
+
     def sanitize_name(self, name):
         '''Trim spaces and standardize case for input names.'''
         sanitized = name.strip().lower().capitalize()
@@ -122,27 +135,77 @@ class TaxonUpdater:
             print(f'Sanitized: "{name}" to "{sanitized}"')
         return sanitized
 
+    def load_cache_from_file(self):
+        '''Load a pickle file with previously fetched WoRMS records.'''
+        try:
+            if os.path.exists(self.cache):
+                with open(self.cache, 'rb') as file:
+                    self.records = pickle.load(file)
+            else:
+                self.records = {}
+            print(f'WoRMS records loaded from {self.cache}')
+        except Exception as e:
+            print(f'Error loading records from {self.cache}: {str(e)}')
+            self.records = {}
+
+    def write_cache_to_file(self):
+        '''Write fetched WoRMS records to pickle file.'''
+        try:
+            with open(self.cache, 'wb') as file:
+                pickle.dump(self.records, file)
+            print(f'Records successfully saved to {self.cache}')
+        except Exception as e:
+            print(f'Error saving records to {self.cache}: {str(e)}')
+
+    def convert_suds_to_dict(self, record):
+        '''Convert AphiaRecord suds object to standard dictionary.'''
+        record = self.aphia.client.dict(record)
+        return record
+
+    def add_record_to_cache(self, record):
+        '''Add record to dictionary with fetched records.'''
+        self.namemap[record['scientificname']] = record['AphiaID']
+        self.records[record['AphiaID']] = record
+
     def get_or_create_taxon(self, name):
         '''Get or create Taxon instance passing default name.'''
         taxon, is_new = Taxon.objects.get_or_create(name__iexact=name, defaults={'name': name})
         print(f'Taxon: {taxon} (new={is_new})')
         return taxon
 
-    def get_worms_record_by_id(self, aphia_id):
+    def get_worms_record_by_id(self, aphia):
         '''Get WoRMS taxon record by AphiaID.'''
-        record = self.aphia.get_aphia_record_by_id(aphia_id)
+        # Try getting record from cache
+        try:
+            record = self.records[aphia]
+            print(f'Fetched from cache: {record["scientificname"]}')
+        except:
+            record = self.aphia.get_aphia_record_by_id(aphia)
+            record = self.convert_suds_to_dict(record)
+            self.add_record_to_cache(record)
+
         if not record:
             return None
+
         return record
 
     def get_worms_record_by_name(self, taxon_name):
         '''Search WoRMS for taxon name and return the first matching record.'''
-        records = self.aphia.get_aphia_records(taxon_name)
-        if not records:
-            return None
-        for record in records:
-            if record['scientificname']:
-                return record
+        # Try getting record from cache
+        try:
+            record = self.records[self.namemap[taxon_name]]
+            print(f'Fetched from cache: {record["scientificname"]}')
+        except:
+            records = self.aphia.get_aphia_records(taxon_name)
+            if not records:
+                return None
+            for record in records:
+                if record['scientificname']:
+                    record = self.convert_suds_to_dict(record)
+                    self.add_record_to_cache(record)
+                    return record
+                else:
+                    return None
         else:
             return None
 
@@ -330,9 +393,9 @@ class TaxonUpdater:
         current_record = record
 
         # Iterate up the tree, appending to lineage and updating record
-        while current_record.parentNameUsageID != 1:
+        while current_record['parentNameUsageID'] != 1:
             # Get and update parent taxon
-            parent_taxon, parent_record = self.get_taxon_record_by_id(current_record.parentNameUsageID)
+            parent_taxon, parent_record = self.get_taxon_record_by_id(current_record['parentNameUsageID'])
             parent_taxon, parent_check = self.update_taxon(parent_taxon, parent_record)
             # Append to lineage and update current record
             lineage.append(parent_taxon)
@@ -352,8 +415,6 @@ class TaxonUpdater:
         # Establish parent > child relationships
         print(f'Lineage tree:')
         for count, parent in enumerate(lineage):
-            print(f' [{parent.rank_en}] {parent} (valid={parent.is_valid})')
-
             # Last taxon's parent already set on previous iteration
             if count == len(lineage) - 1:
                 break
@@ -361,12 +422,15 @@ class TaxonUpdater:
             # Get child of current taxon (parent)
             child = lineage[count + 1]
 
+            print(f' [{parent.rank_en}] {parent} (valid={parent.is_valid}) > {child}')
+
             # Skip setting itself as parent
             if parent.name == child.name:
                 continue
 
             # Save current taxon as the child's parent
-            child.parent = parent
+            # child.parent = parent
+            child.move_to(parent, 'last-child')
             child.save()
 
         return lineage

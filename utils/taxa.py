@@ -98,7 +98,7 @@ class TaxonUpdater:
         self.name = self.sanitize_name(name)
 
         # Get or create Taxon instance
-        self.taxon = self.get_taxon(self.name)
+        self.taxon = self.get_or_create_taxon(self.name)
 
         # Connect to WoRMS webservice
         self.aphia = Aphia()
@@ -130,7 +130,7 @@ class TaxonUpdater:
             print(f'Sanitized: "{name}" to "{sanitized}"')
         return sanitized
 
-    def get_taxon(self, name):
+    def get_or_create_taxon(self, name):
         '''Get or create Taxon instance passing default name.'''
         taxon, is_new = Taxon.objects.get_or_create(name__iexact=name, defaults={'name': name})
         print(f'Taxon: {taxon} (new={is_new})')
@@ -241,7 +241,7 @@ class TaxonUpdater:
 
     def get_parent_taxon(self, parent_name):
         '''Get parent taxon using its name.'''
-        taxon = self.get_taxon(parent_name)
+        taxon = self.get_or_create_taxon(parent_name)
         record = self.search_worms(taxon.name)
         check = self.check_record(parent_name, record)
         if check:
@@ -293,7 +293,7 @@ class TaxonUpdater:
             print(f'Searching for the valid equivalent...')
             # Get valid record and taxon and save instance
             valid_record = self.aphia.get_aphia_record_by_id(record['valid_AphiaID'])
-            valid_taxon = self.get_taxon(valid_record['scientificname'])
+            valid_taxon = self.get_or_create_taxon(valid_record['scientificname'])
             valid_taxon = self.update_taxon_metadata(valid_taxon, valid_record)
             # Save lineage for valid taxon
             valid_lineage = self.save_taxon_lineage(valid_taxon, valid_record)

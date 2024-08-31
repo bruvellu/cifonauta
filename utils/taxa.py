@@ -197,8 +197,8 @@ class TaxonUpdater:
         taxon.aphia = record['AphiaID']
         taxon.name = record['scientificname']
         taxon.authority = record['authority']
-        #TODO: Save as status_en (it's already translatable)
-        taxon.status = record['status']
+        taxon.status_en = record['status']
+        taxon.status_pt_br = self.translate_status(record['status'])
         taxon.is_valid = is_valid
         taxon.slug = slugify(record['scientificname'])
         taxon.rank_en = record['rank']
@@ -210,6 +210,21 @@ class TaxonUpdater:
         taxon.save()
         print(f'Saved with WoRMS metadata: {taxon}')
         return taxon
+
+    def translate_status(self, status_en):
+        '''Translate status from English to Portuguese.'''
+
+        # Dictionary of taxonomic status for translations
+        en2pt_statuses = {
+                'accepted': 'aceito',
+                'unaccepted': 'não aceito',
+                'alternative representation': 'representação alternativa',
+                'temporary name': 'nome temporário',
+                'uncertain': 'incerto'
+                }
+
+        status_pt = en2pt_statuses[status_en]
+        return status_pt
 
     def translate_rank(self, rank_en):
         '''Translate rank from English to Portuguese.'''

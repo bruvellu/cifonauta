@@ -117,6 +117,7 @@ class TaxonUpdater:
 
         # Update database entry with new record data
         self.taxon = self.update_taxon_metadata(self.taxon, self.record)
+
         # Get or create parent taxa
         self.lineage = self.save_taxon_lineage(self.taxon, self.record)
 
@@ -137,7 +138,7 @@ class TaxonUpdater:
         return taxon
 
     def search_worms(self, taxon_name):
-        '''Search WoRMS for taxon name.'''
+        '''Search WoRMS for taxon name and return the first matching record.'''
         records = self.aphia.get_aphia_records(taxon_name)
         if not records:
             return None
@@ -148,7 +149,7 @@ class TaxonUpdater:
             return None
 
     def check_record(self, taxon_name, record):
-        '''Check WoRMS record against Taxon name.'''
+        '''Check WoRMS record name against Taxon name, they should be identical.'''
 
         # Skip taxon without WoRMS record (but update timestamp)
         if not record:
@@ -168,21 +169,28 @@ class TaxonUpdater:
     def update_taxon_metadata(self, taxon, record):
         '''Update taxon entry in the database.'''
         # Convert status string to boolean
+        #TODO: turn into function get_boolean_from_status
         if record['status'] == 'accepted':
             self.status = 'accepted'
             is_valid = True
         else:
             self.status = 'invalid'
             is_valid = False
+
         # Set new medadata for individual fields
+        taxon.aphia = record['AphiaID']
         taxon.name = record['scientificname']
         taxon.authority = record['authority']
+        #TODO: Make status translatable
         taxon.status = record['status']
         taxon.is_valid = is_valid
         taxon.slug = slugify(record['scientificname'])
         taxon.rank_en = record['rank']
         taxon.rank_pt_br = self.translate_rank(record['rank'])
-        taxon.aphia = record['AphiaID']
+        #TODO: Get record citation into a TextField
+        # taxon.citation = record['citation']
+
+        # Save taxon and return
         taxon.save()
         print(f'Saved with WoRMS metadata: {taxon}')
         return taxon

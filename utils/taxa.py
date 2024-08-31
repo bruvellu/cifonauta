@@ -141,9 +141,10 @@ class TaxonUpdater:
             if os.path.exists(self.cache):
                 with open(self.cache, 'rb') as file:
                     self.records = pickle.load(file)
+                self.namemap = {record['scientificname']: aphia for aphia, record in self.records.items()}
+                print(f'Loaded: {len(self.records.keys())} WoRMS records from {self.cache}')
             else:
-                self.records = {}
-            print(f'WoRMS records loaded from {self.cache}')
+                print(f'Note: {self.cache} was not found')
         except Exception as e:
             print(f'Error loading records from {self.cache}: {str(e)}')
             self.records = {}
@@ -153,7 +154,7 @@ class TaxonUpdater:
         try:
             with open(self.cache, 'wb') as file:
                 pickle.dump(self.records, file)
-            print(f'Records successfully saved to {self.cache}')
+            print(f'Saved: {len(self.records.keys())} WoRMS records to {self.cache}')
         except Exception as e:
             print(f'Error saving records to {self.cache}: {str(e)}')
 
@@ -175,30 +176,34 @@ class TaxonUpdater:
 
     def get_worms_record_by_id(self, aphia):
         '''Get WoRMS taxon record by AphiaID.'''
-        # Try getting record from cache
         try:
+            # Try getting record from cache
             record = self.records[aphia]
-            print(f'Fetched from cache: {record["scientificname"]}')
+            print(f'Cache hit: {record["scientificname"]}')
         except:
+            # Get from WoRMS, convert to dictionary, save to cache
             record = self.aphia.get_aphia_record_by_id(aphia)
             record = self.convert_suds_to_dict(record)
             self.add_record_to_cache(record)
 
+        # Return empty if something goes wrong
         if not record:
             return None
-
         return record
 
     def get_worms_record_by_name(self, taxon_name):
         '''Search WoRMS for taxon name and return the first matching record.'''
-        # Try getting record from cache
         try:
+            # Try getting record from cache
             record = self.records[self.namemap[taxon_name]]
-            print(f'Fetched from cache: {record["scientificname"]}')
+            print(f'Cache hit: {record["scientificname"]}')
+            return record
         except:
+            # Search WoRMS for name
             records = self.aphia.get_aphia_records(taxon_name)
             if not records:
                 return None
+            # Return the first non-empty, generally it's the best match
             for record in records:
                 if record['scientificname']:
                     record = self.convert_suds_to_dict(record)
@@ -206,8 +211,6 @@ class TaxonUpdater:
                     return record
                 else:
                     return None
-        else:
-            return None
 
     def check_taxon_record(self, taxon, record):
         '''Check WoRMS record name against Taxon name, they should be identical.'''
@@ -237,7 +240,7 @@ class TaxonUpdater:
         if not check:
             # Updates timestamp
             taxon.save()
-            print(f'Saved without WoRMS metadata: {taxon}')
+            print(f'Saved: {taxon} (without WoRMS metadata)')
         else:
             taxon = self.update_metadata(taxon, record)
 
@@ -269,7 +272,7 @@ class TaxonUpdater:
 
         # Save taxon and return
         taxon.save()
-        print(f'Saved with WoRMS metadata: {taxon}')
+        print(f'Saved: {taxon} (with WoRMS metadata)')
 
         return taxon
 
@@ -414,7 +417,7 @@ class TaxonUpdater:
         lineage = self.get_full_taxon_lineage(taxon, record)
 
         # Establish parent > child relationships
-        print(f'Lineage tree:')
+        print(f'Lineage:')
         for count, parent in enumerate(lineage):
             # Last taxon's parent already set on previous iteration
             if count == len(lineage) - 1:

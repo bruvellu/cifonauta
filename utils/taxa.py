@@ -180,18 +180,17 @@ class TaxonUpdater:
 
         return taxon, check
 
+    def set_status(self, record_status):
+        '''Set self.status based on record['status'].'''
+        if record_status == 'accepted':
+            self.status = 'accepted'
+            return True
+        else:
+            self.status = 'invalid'
+            return False
 
     def update_metadata(self, taxon, record):
         '''Update taxon metadata with WoRMS record data.'''
-
-        # Convert status string to boolean
-        #TODO: turn into function get_boolean_from_status
-        if record['status'] == 'accepted':
-            self.status = 'accepted'
-            is_valid = True
-        else:
-            self.status = 'invalid'
-            is_valid = False
 
         # Set new metadata for individual fields
         taxon.aphia = record['AphiaID']
@@ -199,7 +198,7 @@ class TaxonUpdater:
         taxon.authority = record['authority']
         taxon.status_en = record['status']
         taxon.status_pt_br = self.translate_status(record['status'])
-        taxon.is_valid = is_valid
+        taxon.is_valid = self.set_status(record['status'])
         taxon.slug = slugify(record['scientificname'])
         taxon.rank_en = record['rank']
         taxon.rank_pt_br = self.translate_rank(record['rank'])
@@ -208,6 +207,7 @@ class TaxonUpdater:
         # Save taxon and return
         taxon.save()
         print(f'Saved with WoRMS metadata: {taxon}')
+
         return taxon
 
     def translate_status(self, status_en):

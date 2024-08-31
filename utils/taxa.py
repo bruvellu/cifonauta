@@ -1,5 +1,6 @@
 import os
 import pickle
+import re
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -146,7 +147,10 @@ class TaxonUpdater:
 
     def sanitize_name(self, name):
         '''Trim spaces and standardize case for input names.'''
+        # General rule standard names like: Clypeaster subdepressus
         sanitized = name.strip().lower().capitalize()
+        # Special case for cases like: Echinaster (Othilia) brasiliensis
+        sanitized = re.sub(r'\((\w+)\)', lambda m: f'({m.group(1).capitalize()})', sanitized)
         if sanitized != name:
             print(f'Sanitized: "{name}" to "{sanitized}"')
         return sanitized
@@ -300,11 +304,28 @@ class TaxonUpdater:
         # Dictionary of taxonomic status for translations
         en2pt_statuses = {
                 'accepted': 'aceito',
+                'unreplaced junior homonym': 'homônimo júnior não substituído',
                 'unaccepted': 'não aceito',
+                'nomen nudum': 'nomen nudum',
+                'interim unpublished': 'provisoriamente não publicado',
+                'superseded combination': 'combinação substituída',
+                'junior homonym': 'homônimo júnior',
                 'junior subjective synonym': 'sinônimo subjetivo júnior',
+                'junior objective synonym': 'sinônimo objetivo júnior',
+                'nomen oblitum': 'nomen oblitum',
+                'misspelling - incorrect original spelling': 'erro ortográfico - grafia original incorreta',
+                'misspelling - incorrect subsequent spelling': 'erro ortográfico - grafia subsequente incorreta',
+                'unjustified emendation': 'emenda injustificada',
+                'incorrect grammatical agreement of specific epithet': 'concordância gramatical incorreta do epíteto específico',
+                'misapplication': 'aplicação incorreta',
+                'unavailable name': 'nome indisponível',
+                'superseded rank': 'categoria taxonômica substituída',
                 'alternative representation': 'representação alternativa',
                 'temporary name': 'nome temporário',
-                'uncertain': 'incerto'
+                'uncertain': 'incerto',
+                'nomen dubium': 'nomen dubium',
+                'taxon inquirendum': 'taxon inquirendum',
+                'unassessed': 'não avaliado'
                 }
 
         status_pt = en2pt_statuses[status_en]

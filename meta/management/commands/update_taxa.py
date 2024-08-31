@@ -66,10 +66,13 @@ class Command(BaseCommand):
 
         # Loop over taxon queryset
         for taxon in taxa:
-            self.stdout.write(taxon.name)
+            self.stdout.write(f'\n{taxon.name}')
+
+            # Initialize WoRMS web service
+            taxon_updater = TaxonUpdater()
 
             # Search taxon name in WoRMS
-            taxon_updater = TaxonUpdater(taxon.name)
+            taxon_updater.update(taxon.name)
 
         # Rebuild tree hierarchy
         Taxon.objects.rebuild()

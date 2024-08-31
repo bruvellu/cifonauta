@@ -92,7 +92,18 @@ Usage:
 class TaxonUpdater:
     '''Manage taxonomic information of taxa using WoRMS.'''
 
-    def __init__(self, name):
+    def __init__(self, name=''):
+        '''Without a name, only initialize web service.'''
+
+        # Connect to WoRMS web service
+        self.aphia = Aphia()
+
+        # Execute update pipeline
+        if name:
+            self.update(name)
+
+    def update(self, name):
+        '''Execute update pipeline for given taxon name.'''
 
         # Clean input name
         self.name = self.sanitize_name(name)
@@ -105,9 +116,6 @@ class TaxonUpdater:
         self.records = {}
         self.namemap = {}
         self.load_cache_from_file()
-
-        # Connect to WoRMS webservice
-        self.aphia = Aphia()
 
         # Get Taxon instance and WoRMS record
         self.taxon, self.record = self.get_taxon_record_by_name(self.name)
@@ -179,7 +187,7 @@ class TaxonUpdater:
         try:
             # Try getting record from cache
             record = self.records[aphia]
-            print(f'Cache hit: {record["scientificname"]}')
+            print(f'Cache: {record["scientificname"]}')
         except:
             # Get from WoRMS, convert to dictionary, save to cache
             record = self.aphia.get_aphia_record_by_id(aphia)
@@ -196,7 +204,7 @@ class TaxonUpdater:
         try:
             # Try getting record from cache
             record = self.records[self.namemap[taxon_name]]
-            print(f'Cache hit: {record["scientificname"]}')
+            print(f'Cache: {record["scientificname"]}')
             return record
         except:
             # Search WoRMS for name
@@ -426,7 +434,7 @@ class TaxonUpdater:
             # Get child of current taxon (parent)
             child = lineage[count + 1]
 
-            print(f' [{parent.rank_en}] {parent} (valid={parent.is_valid}) > {child}')
+            print(f' [{parent.rank_en}] {parent} (valid={parent.is_valid}) > {child} (valid={child.is_valid})')
 
             # Skip setting itself as parent
             if parent.name == child.name:

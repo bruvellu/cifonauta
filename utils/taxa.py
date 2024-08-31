@@ -200,50 +200,53 @@ class TaxonUpdater:
         '''Translate rank from English to Portuguese.'''
 
         # Dictionary of taxonomic ranks for translations
-        en2pt_ranks = {'Subform': 'Subforma',
-                       'Superorder': 'Superordem',
-                       'Variety': 'Variedade',
-                       'Infraorder': 'Infraordem',
-                       'Section': 'Seção',
-                       'Subclass': 'Subclasse',
-                       'Subsection': 'Subseção',
-                       'Kingdom': 'Reino',
-                       'Infrakingdom': 'Infrareino',
-                       'Division': 'Divisão',
-                       'Subtribe': 'Subtribo',
-                       'Aberration': 'Aberração',
-                       'InfraOrder': 'Infraordem',
-                       'Subkingdom': 'Subreino',
-                       'Infraclass': 'Infraclasse',
-                       'Subfamily': 'Subfamília',
-                       'Class': 'Classe',
-                       'Gigaclass': 'Gigaclasse',
-                       'Superfamily': 'Superfamília',
-                       'Subdivision': 'Subdivisão',
-                       'Morph': 'Morfotipo',
-                       'Race': 'Raça',
-                       'Unspecified': 'Não especificado',
-                       'Suborder': 'Subordem',
-                       'Genus': 'Gênero',
-                       'Order': 'Ordem',
-                       'Subvariety': 'Subvariedade',
-                       'Tribe': 'Tribo',
-                       'Subgenus': 'Subgênero',
-                       'Form': 'Forma',
-                       'Family': 'Família',
-                       'Subphylum': 'Subfilo',
-                       'Stirp': 'Estirpe',
-                       'Phylum': 'Filo',
-                       'Superclass': 'Superclasse',
-                       'Subspecies': 'Subespécie',
-                       'Species': 'Espécie',
-                       'Parvphylum': 'Parvfilo',
-                       'Subterclass': 'Subterclasse',
-                       'Infraphylum': 'Infrafilo',
-                       'Phylum (Division)': 'Filo (Divisão)',
-                       'Subphylum (Subdivision)': 'Subfilo (Subdivisão)',
-                       'Parvorder': 'Parvordem',
-                       'Megaclass': 'Megaclasse',}
+        en2pt_ranks = {
+                'Subform': 'Subforma',
+                'Superorder': 'Superordem',
+                'Variety': 'Variedade',
+                'Infraorder': 'Infraordem',
+                'Section': 'Seção',
+                'Subclass': 'Subclasse',
+                'Subsection': 'Subseção',
+                'Kingdom': 'Reino',
+                'Infrakingdom': 'Infrareino',
+                'Division': 'Divisão',
+                'Subtribe': 'Subtribo',
+                'Aberration': 'Aberração',
+                'InfraOrder': 'Infraordem',
+                'Subkingdom': 'Subreino',
+                'Infraclass': 'Infraclasse',
+                'Subfamily': 'Subfamília',
+                'Class': 'Classe',
+                'Gigaclass': 'Gigaclasse',
+                'Superfamily': 'Superfamília',
+                'Subdivision': 'Subdivisão',
+                'Morph': 'Morfotipo',
+                'Race': 'Raça',
+                'Unspecified': 'Não especificado',
+                'Suborder': 'Subordem',
+                'Genus': 'Gênero',
+                'Order': 'Ordem',
+                'Subvariety': 'Subvariedade',
+                'Tribe': 'Tribo',
+                'Subgenus': 'Subgênero',
+                'Form': 'Forma',
+                'Family': 'Família',
+                'Subphylum': 'Subfilo',
+                'Stirp': 'Estirpe',
+                'Phylum': 'Filo',
+                'Superclass': 'Superclasse',
+                'Subspecies': 'Subespécie',
+                'Species': 'Espécie',
+                'Parvphylum': 'Parvfilo',
+                'Subterclass': 'Subterclasse',
+                'Infraphylum': 'Infrafilo',
+                'Phylum (Division)': 'Filo (Divisão)',
+                'Subphylum (Subdivision)': 'Subfilo (Subdivisão)',
+                'Parvorder': 'Parvordem',
+                'Megaclass': 'Megaclasse',
+                'Superdomain': 'Superdomínio'
+                }
 
         rank_pt = en2pt_ranks[rank_en]
         return rank_pt
@@ -259,8 +262,8 @@ class TaxonUpdater:
             taxon.save()
         return taxon
 
-    def get_taxon_lineage(self, taxon, record, canonical=False):
-        '''Get or create the taxonomic lineage of a taxon.'''
+    def get_canonical_taxon_lineage(self, taxon, record):
+        '''Get canonical taxonomic lineage of a taxon.'''
 
         # Initial list for lineage tree
         lineage = [taxon]
@@ -288,10 +291,20 @@ class TaxonUpdater:
 
         return lineage
 
+    def get_full_taxon_lineage(self, taxon, record):
+        '''Get full taxonomic lineage of a taxon.'''
+
+        # Initial list for lineage tree
+        lineage = [taxon]
+
+        # Reverse list to start with higher ranks
+        lineage.reverse()
+        
     def save_taxon_lineage(self, taxon, record):
         '''Get or create parent taxa and set tree relationship.'''
         # Get list with taxon lineage, including itself
-        lineage = self.get_taxon_lineage(taxon, record, canonical=True)
+        lineage = self.get_canonical_taxon_lineage(taxon, record)
+        lineage = self.get_full_taxon_lineage(taxon, record)
 
         # Establish parent > child relationships
         print(f'Lineage tree:')

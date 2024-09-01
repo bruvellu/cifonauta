@@ -248,7 +248,7 @@ def upload_media_step2(request):
                             with Taxon.objects.disable_mptt_updates():
                                 update = TaxonUpdater(taxon.name)
                             Taxon.objects.rebuild()
-                            if update.status == 'not_exist':
+                            if update.status == 'absent':
                                 curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
                                 curadory.taxons.add(taxon)
                             else:
@@ -412,7 +412,7 @@ def editing_media_details(request, media_id):
                     with Taxon.objects.disable_mptt_updates():
                         update = TaxonUpdater(taxon.name)
                     Taxon.objects.rebuild()
-                    if update.status == 'not_exist':
+                    if update.status == 'absent':
                         curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
                         curadory.taxons.add(taxon)
                     else:
@@ -588,7 +588,7 @@ def editing_media_list(request):
                                     with Taxon.objects.disable_mptt_updates():
                                         update = TaxonUpdater(taxon.name)
                                     Taxon.objects.rebuild()
-                                    if update.status == 'not_exist':
+                                    if update.status == 'absent':
                                         curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
                                         curadory.taxons.add(taxon)
                                     else:
@@ -742,7 +742,7 @@ def my_media_details(request, pk):
                     with Taxon.objects.disable_mptt_updates():
                         update = TaxonUpdater(taxon.name)
                     Taxon.objects.rebuild()
-                    if update.status == 'not_exist':
+                    if update.status == 'absent':
                         curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
                         curadory.taxons.add(taxon)
                     else:
@@ -1160,7 +1160,7 @@ def revision_media_details(request, media_id):
                     with Taxon.objects.disable_mptt_updates():
                         update = TaxonUpdater(taxon.name)
                     Taxon.objects.rebuild()
-                    if update.status == 'not_exist':
+                    if update.status == 'absent':
                         curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
                         curadory.taxons.add(taxon)
                     else:
@@ -1402,7 +1402,7 @@ def my_curations_media_details(request, media_id):
                         with Taxon.objects.disable_mptt_updates():
                             update = TaxonUpdater(taxon.name)
                         Taxon.objects.rebuild()
-                        if update.status == 'not_exist':
+                        if update.status == 'absent':
                             curadory, created = Curadoria.objects.get_or_create(name='Não está na Worms')
                             curadory.taxons.add(taxon)
                         else:

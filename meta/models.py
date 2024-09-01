@@ -20,7 +20,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
 from django.utils import timezone
-from mptt.models import MPTTModel
+from mptt.models import MPTTModel, TreeForeignKey
 
 
 class Curadoria(models.Model):
@@ -715,11 +715,13 @@ class Taxon(MPTTModel):
             help_text=_('AphiaID, o identificador do táxon no WoRMS.'))
     authority = models.CharField(_('autoridade'), max_length=256, blank=True, null=True,
             help_text=_('Autoridade do táxon.'))
+
+    citation = models.TextField(_('citação'), default='', blank=True, help_text=_('Citação do táxon.'))
     status = models.CharField(_('status'), max_length=256, blank=True, null=True,
             help_text=_('Status do táxon.'))
     is_valid = models.BooleanField(_('válido'), default=False,
             help_text=_('Status do táxon.'))
-    parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,
+    parent = TreeForeignKey('self', on_delete=models.SET_NULL, blank=True,
             null=True, related_name='children', verbose_name=_('pai'),
             help_text=_('Táxon pai deste táxon.'))
     valid_taxon = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,

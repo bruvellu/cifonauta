@@ -5,7 +5,7 @@
 
 #taxa-page-section > div {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 #taxa {}

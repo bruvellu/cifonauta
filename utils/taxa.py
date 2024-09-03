@@ -328,7 +328,14 @@ class TaxonUpdater:
                 'unassessed': 'não avaliado'
                 }
 
-        status_pt = en2pt_statuses[status_en]
+
+        # Return empty string if status has no translation 
+        try:
+            status_pt = en2pt_statuses[status_en]
+        except:
+            print(f'{status_en} has no translation.')
+            status_pt = ''
+
         return status_pt
 
     def translate_rank(self, rank_en):
@@ -383,11 +390,17 @@ class TaxonUpdater:
                 'Race': 'Raça',
                 'Stirp': 'Estirpe',
                 'Subdivision': 'Subdivisão',
-                'Superdomain': 'Superdomínio'
-                'Unspecified': 'Não especificado',
+                'Superdomain': 'Superdomínio',
+                'Unspecified': 'Não especificado'
                 }
 
-        rank_pt = en2pt_ranks[rank_en]
+        # Return empty string if rank has no translation 
+        try:
+            rank_pt = en2pt_ranks[rank_en]
+        except:
+            print(f'{rank_en} has no translation.')
+            rank_pt = ''
+
         return rank_pt
 
     def get_taxon_record_by_name(self, name):

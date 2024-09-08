@@ -35,6 +35,22 @@ def normalize_title_and_caption(sender, instance, *args, **kwargs):
     instance.acknowledgments_pt_br = instance.normalize_caption(instance.acknowledgments_pt_br)
     instance.acknowledgments_en = instance.normalize_caption(instance.acknowledgments_en)
 
+@receiver(pre_save, sender=Taxon)
+def synchronize_taxa_media(sender, instance, *args, **kwargs):
+    '''Synchronize media between valid/invalid taxa.'''
+
+    # Add valid media to invalid taxon
+    if instance.is_valid and instance.synonyms.all():
+        for invalid in instance.synonyms.all():
+            invalid.media.add(*instance.media.all())
+            print(f'Media from {instance} (is_valid={instance.is_valid}) to {invalid} (is_valid={invalid.is_valid})')
+
+    # Add invalid media to valid taxon
+    elif not instance.is_valid and instance.valid_taxon:
+        instance.valid_taxon.media.add(*instance.media.all())
+        print(f'Media from {instance} (is_valid={instance.is_valid}) to {instance.valid_taxon} (is_valid={instance.valid_taxon.is_valid})')
+
+
 @receiver(post_save, sender=Media)
 def update_search_vector(sender, instance, created, *args, **kwargs):
     '''Update search_vector field with current metadata after saving.'''

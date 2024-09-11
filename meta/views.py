@@ -46,6 +46,13 @@ from utils.views import execute_bash_action
 from dotenv import load_dotenv
 load_dotenv()
 
+from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ValidationError
+import magic
+
+
+ext_validator = FileExtensionValidator(['jpg', 'png'])
+
 
 @api_view(['POST'])
 def create_reference(request):
@@ -132,10 +139,25 @@ def upload_media_step1(request):
             # Iterate over multiple files
             for file in files:
 
-                # Prevent upload of large files
-                if file.size > 3000000:
-                    messages.error(request, 'Arquivo maior que 3MB')
+                images_types_accept = ['image/jpg', 'image/jpeg', 'image/png']
+                videos_types_accept = ['video/mp4']
+                types_accept =  images_types_accept + videos_types_accept
+                file_mime_type = magic.from_buffer(file.read(1024), mime=True)
+                print(file_mime_type)
+                if file_mime_type not in types_accept:
+                    messages.error(request, f'MimeType inválido. Verifique o arquivo: {file.name}')
                     return redirect('upload_media_step1')
+
+                # Prevent upload of large files
+                if file_mime_type in images_types_accept:
+                    if file.size > 3000000:
+                        messages.error(request, f'Arquivo de imagem maior que 3MB: {file.name}')
+                        return redirect('upload_media_step1')
+                else:
+                    if file_mime_type in videos_types_accept:
+                        if file.size > 1000000000:
+                            messages.error(request, f'Arquivo de vídeo maior que 1GB: {file.name}')
+                            return redirect('upload_media_step1')
 
                 # Split lower cased name and extension
                 filename, extension = os.path.splitext(file.name.lower())

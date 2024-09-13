@@ -139,6 +139,7 @@ def upload_media_step1(request):
             # Iterate over multiple files
             for file in files:
 
+                # Verify file mimetype
                 images_types_accept = ['image/jpg', 'image/jpeg', 'image/png']
                 videos_types_accept = ['video/mp4']
                 types_accept =  images_types_accept + videos_types_accept

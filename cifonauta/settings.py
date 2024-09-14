@@ -181,11 +181,10 @@ STATICFILES_DIRS = [
 # Make sure to use a trailing slash.
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
-# List of accepted file extensions.
+# List of accepted file extensions in splitext format (".ext")
 #TODO: Increase accepted extensions?
 # PHOTO_EXTENSIONS = ('tif', 'tiff', 'jpg', 'jpeg', 'png', 'gif')
 # VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogv', 'dv', 'mpg', 'mpeg', 'flv', 'm2ts', 'wmv')
-#TODO: Remove dots
 PHOTO_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.gif',)
 VIDEO_EXTENSIONS = ('.mp4',)
 MEDIA_EXTENSIONS = PHOTO_EXTENSIONS + VIDEO_EXTENSIONS

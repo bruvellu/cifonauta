@@ -34,3 +34,5 @@ piexif
 djangorestframework
 # Language detector to help managing translations
 lingua-language-detector
+#Verify mimetype
+python-magic

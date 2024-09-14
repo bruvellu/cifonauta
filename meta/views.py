@@ -141,6 +141,14 @@ def upload_media_step1(request):
             # Iterate over multiple files
             for file in files:
 
+                # First check if file has an extension
+                basename, extension = os.path.splitext(file.name.lower())
+
+                # Prevent the upload of files without an extension
+                if not extension:
+                    messages.error(request, f'Arquivo inválido: "{file.name}" não tem uma extensão')
+                    return redirect('upload_media_step1')
+
                 # Verify MIME type of uploaded file
                 #TODO: Migrate mime type check to function on utils/media.py
                 mimetype = magic.from_buffer(file.read(2048), mime=True)
@@ -163,9 +171,6 @@ def upload_media_step1(request):
                     messages.error(request, message)
                     return redirect('upload_media_step1')
 
-                #TODO: The extension check is probably not needed anymore
-                # Split lower cased name and extension
-                filename, extension = os.path.splitext(file.name.lower())
 
                 if extension:
                     #TODO: Instead of raising error, simply replace invalid characters

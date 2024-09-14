@@ -35,4 +35,4 @@ djangorestframework
 # Language detector to help managing translations
 lingua-language-detector
 #Verify mimetype
-magic
+python-magic

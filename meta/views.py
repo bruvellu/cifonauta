@@ -143,8 +143,7 @@ def upload_media_step1(request):
 
                 # Verify MIME type of uploaded file
                 #TODO: Migrate mime type check to function on utils/media.py
-                #TODO: Change to first 2048 as recommended by the package
-                mimetype = magic.from_buffer(file.read(1024), mime=True)
+                mimetype = magic.from_buffer(file.read(2048), mime=True)
                 #TODO: Remove this print
                 print(f'{file.name}: {mimetype}')
 

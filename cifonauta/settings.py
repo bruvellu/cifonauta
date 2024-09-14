@@ -182,11 +182,18 @@ STATICFILES_DIRS = [
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # List of accepted file extensions.
+#TODO: Increase accepted extensions?
 # PHOTO_EXTENSIONS = ('tif', 'tiff', 'jpg', 'jpeg', 'png', 'gif')
 # VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogv', 'dv', 'mpg', 'mpeg', 'flv', 'm2ts', 'wmv')
-PHOTO_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.gif')
+#TODO: Remove dots
+PHOTO_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.gif',)
 VIDEO_EXTENSIONS = ('.mp4',)
 MEDIA_EXTENSIONS = PHOTO_EXTENSIONS + VIDEO_EXTENSIONS
+
+# List of accepted file mime types
+IMAGE_MIMETYPES = ('image/jpeg', 'image/png',)
+VIDEO_MIMETYPES = ('video/mp4',)
+MEDIA_MIMETYPES = IMAGE_MIMETYPES + VIDEO_MIMETYPES
 
 # Default dimensions and quality for different media files
 # Image quality in percentage (0-100%)

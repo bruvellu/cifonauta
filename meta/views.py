@@ -32,7 +32,7 @@ from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
-from cifonauta.settings import MEDIA_EXTENSIONS, FILENAME_REGEX, MEDIA_ROOT
+from cifonauta.settings import MEDIA_EXTENSIONS, MEDIA_MIMETYPES, IMAGE_MIMETYPES, VIDEO_MIMETYPES, FILENAME_REGEX, MEDIA_ROOT
 from django.core.files import File
 from django.utils.translation import get_language, get_language_info
 from django.utils.translation import gettext_lazy as _
@@ -134,36 +134,35 @@ def upload_media_step1(request):
         files = request.FILES.getlist('files')
 
         if files:
+
+            # Define user to assign as media author
             user_person = Person.objects.filter(user_cifonauta=request.user.id)
 
             # Iterate over multiple files
             for file in files:
 
+                # Verify MIME type of uploaded file
                 #TODO: Migrate mime type check to function on utils/media.py
-                # Verify file mimetype
-                #TODO: Migrate mime types to settings.py (similar to extensions)
-                images_types_accept = ['image/jpg', 'image/jpeg', 'image/png']
-                videos_types_accept = ['video/mp4']
-                types_accept = images_types_accept + videos_types_accept
                 #TODO: Change to first 2048 as recommended by the package
                 file_mime_type = magic.from_buffer(file.read(1024), mime=True)
                 #TODO: Remove this print
-                print(file_mime_type)
+                print(f'{file.name}: {file_mime_type}')
+
                 #TODO: Raise appropriate validation error
-                if file_mime_type not in types_accept:
-                    messages.error(request, f'MimeType inválido. Verifique o arquivo: {file.name}')
+                if file_mime_type not in MEDIA_MIMETYPES:
+                    messages.error(request, f'Arquivo inválido: {file.name} ({file_mime_type})')
                     return redirect('upload_media_step1')
 
                 #TODO: Migrate size check to function on utils/media.py
                 # Prevent upload of large files
                 #TODO: Put file size limits on settings.py
-                if file_mime_type in images_types_accept:
+                if file_mime_type in IMAGE_MIMETYPES:
                     if file.size > 3000000:
                         messages.error(request, f'Arquivo de imagem maior que 3MB: {file.name}')
                         return redirect('upload_media_step1')
                 #TODO: Use elif here
                 else:
-                    if file_mime_type in videos_types_accept:
+                    if file_mime_type in VIDEO_MIMETYPES:
                         if file.size > 1000000000:
                             messages.error(request, f'Arquivo de vídeo maior que 1GB: {file.name}')
                             return redirect('upload_media_step1')

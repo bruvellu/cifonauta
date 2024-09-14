@@ -32,7 +32,7 @@ from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
-from cifonauta.settings import MEDIA_EXTENSIONS, FILENAME_REGEX, MEDIA_ROOT
+from cifonauta.settings import MEDIA_EXTENSIONS, IMAGE_EXTENSIONS, VIDEO_EXTENSIONS, MEDIA_MIMETYPES, IMAGE_MIMETYPES, IMAGE_SIZE_LIMIT, VIDEO_SIZE_LIMIT, VIDEO_MIMETYPES, FILENAME_REGEX, MEDIA_ROOT
 from django.core.files import File
 from django.utils.translation import get_language, get_language_info
 from django.utils.translation import gettext_lazy as _
@@ -45,6 +45,8 @@ from utils.views import execute_bash_action
 
 from dotenv import load_dotenv
 load_dotenv()
+
+import magic
 
 
 @api_view(['POST'])
@@ -121,58 +123,85 @@ def dashboard(request):
 @author_required
 def upload_media_step1(request):
 
+    # Define readable image size limit in MB
+    image_size_limit = round(IMAGE_SIZE_LIMIT / 1024 / 1024, 1)
+    video_size_limit = round(VIDEO_SIZE_LIMIT / 1024 / 1024 / 1024, 1)
+
     if request.method == 'POST':
 
         # Files selected via upload form
         files = request.FILES.getlist('files')
 
         if files:
+
+            # Define user to assign as media author
             user_person = Person.objects.filter(user_cifonauta=request.user.id)
 
-            # Iterate over multiple files
+            # First iterate over uploads to detect any invalid file
             for file in files:
 
-                # Prevent upload of large files
-                if file.size > 3000000:
-                    messages.error(request, 'Arquivo maior que 3MB')
+                # First check if file has an extension
+                basename, extension = os.path.splitext(file.name.lower())
+
+                # Prevent the upload of files without an extension
+                if not extension:
+                    messages.error(request, f'Arquivo inválido: "{file.name}" não tem uma extensão')
                     return redirect('upload_media_step1')
 
-                # Split lower cased name and extension
-                filename, extension = os.path.splitext(file.name.lower())
+                # Verify MIME type of uploaded file
+                #TODO: Migrate mime type check to function on utils/media.py
+                mimetype = magic.from_buffer(file.read(2048), mime=True)
+                # print(f'{file.name}: {mimetype}')
 
-                #TODO: Use elif for capturing every possibility
-                #TODO: Also check for content_type
-                
-                if extension:
-                    if not re.match(FILENAME_REGEX, filename):
-                        messages.error(request, f'Nome de arquivo inválido: {file.name}')
-                        messages.warning(request, 'Caracteres especiais aceitos: - _ ( )')
-                        return redirect('upload_media_step1')
-                    
-                    if not extension.endswith(MEDIA_EXTENSIONS):
-                        messages.error(request, f'Formato de arquivo não aceito: {file.name}')
-                        messages.warning(request, 'Verifique os tipos de arquivos aceitos')
-                        return redirect('upload_media_step1')
-                else:
-                    messages.error(request, f'Arquivo inválido: {file.name}')
+                # Prevent the upload of invalid file formats
+                if mimetype not in MEDIA_MIMETYPES:
+                    message =  f'Formato inválido: "{file.name}" ({mimetype})'
+                    messages.error(request, message)
+                    return redirect('upload_media_step1')
+                # Prevent the upload of invalid file extensions
+                elif extension not in MEDIA_EXTENSIONS:
+                    message =  f'Extensão inválida: "{file.name}" ({mimetype})'
+                    messages.error(request, message)
+                    return redirect('upload_media_step1')
+                # Prevent the upload of invalid file names
+                #TODO: Instead of raising error, replace invalid characters
+                elif not re.match(FILENAME_REGEX, basename):
+                    message = f'Nome inválido: "{file.name}" ({mimetype})'
+                    messages.error(request, message)
+                    messages.warning(request, 'Caracteres especiais aceitos: - _ ( )')
+                    return redirect('upload_media_step1')
+                # Prevent the upload of large files
+                elif mimetype in IMAGE_MIMETYPES and file.size > IMAGE_SIZE_LIMIT:
+                    message = f'Tamanho excedido: "{file.name}" ({round(file.size / 1024 / 1024, 1)}MB) é maior que o limite de {image_size_limit}MB'
+                    messages.error(request, message)
+                    return redirect('upload_media_step1')
+                elif mimetype in VIDEO_MIMETYPES and file.size > VIDEO_SIZE_LIMIT:
+                    message = f'Tamanho excedido: "{file.name}" ({round(file.size / 1024 / 1024 / 1024, 1)}GB) é maior que o limite de {video_size_limit}GB'
+                    messages.error(request, message)
                     return redirect('upload_media_step1')
 
+            # Iterate again over uploads to create entries
             #TODO: Don't loop twice
             for file in files:
+
                 # Create empty Media instance for new UUID
                 media = Media()
+
                 # Rename file name with UUID and lowercase extension
-                file_noext, extension = os.path.splitext(file.name.lower())
+                basename, extension = os.path.splitext(file.name.lower())
                 file.name = f'{media.uuid}{extension}'
 
                 # Define file field of Media instance
                 media.file = file
+
                 # Define user field of Media instance
                 media.user = request.user
+
                 # Define if media is a photo or a video
-                if extension.endswith(settings.PHOTO_EXTENSIONS):
+                if extension.endswith(IMAGE_EXTENSIONS):
+                    #TODO: Change to 'image'
                     media.datatype = 'photo'
-                elif extension.endswith(settings.VIDEO_EXTENSIONS):
+                elif extension.endswith(VIDEO_EXTENSIONS):
                     media.datatype = 'video'
 
                 # Save instance
@@ -193,15 +222,17 @@ def upload_media_step1(request):
         messages.info(request, 'Complete ou cancele o upload para adicionar outras mídias')
         return redirect('upload_media_step2')
     
-    media_extensions = ''
-    for media_extension in MEDIA_EXTENSIONS:
-        media_extensions += f'{media_extension[1:].upper()} '
-
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
+    media_mimetypes = [m.split('/')[1].upper() for m in MEDIA_MIMETYPES]
+    media_extensions = [e for e in MEDIA_EXTENSIONS]
+
     context = {
-        'media_extensions': media_extensions,
+        'media_extensions': ', '.join(media_extensions),
+        'media_mimetypes': ', '.join(media_mimetypes),
+        'image_size_limit': image_size_limit,
+        'video_size_limit': video_size_limit,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }

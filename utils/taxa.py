@@ -517,8 +517,9 @@ class TaxonUpdater:
             taxon.save()
 
             # Mirror associated images
-            valid_taxon.media.add(*taxon.media.all())
-            valid_taxon.save()
+            # No longer needed, done on pre_save at meta/signals.py
+            # valid_taxon.media.add(*taxon.media.all())
+            # valid_taxon.save()
 
             print(f'Saved: {valid_taxon} (valid={valid_taxon.is_valid}) over {taxon} (valid={taxon.is_valid})')
             return valid_taxon, valid_record, valid_lineage

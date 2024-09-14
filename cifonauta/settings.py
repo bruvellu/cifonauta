@@ -181,12 +181,22 @@ STATICFILES_DIRS = [
 # Make sure to use a trailing slash.
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
-# List of accepted file extensions.
-# PHOTO_EXTENSIONS = ('tif', 'tiff', 'jpg', 'jpeg', 'png', 'gif')
+# List of accepted file extensions in splitext format (".ext")
+#TODO: Increase accepted extensions?
+# IMAGE_EXTENSIONS = ('tif', 'tiff', 'jpg', 'jpeg', 'png', 'gif')
 # VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogv', 'dv', 'mpg', 'mpeg', 'flv', 'm2ts', 'wmv')
-PHOTO_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.gif')
+IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.png',)
 VIDEO_EXTENSIONS = ('.mp4',)
-MEDIA_EXTENSIONS = PHOTO_EXTENSIONS + VIDEO_EXTENSIONS
+MEDIA_EXTENSIONS = IMAGE_EXTENSIONS + VIDEO_EXTENSIONS
+
+# List of accepted file mime types
+IMAGE_MIMETYPES = ('image/jpeg', 'image/png',)
+VIDEO_MIMETYPES = ('video/mp4',)
+MEDIA_MIMETYPES = IMAGE_MIMETYPES + VIDEO_MIMETYPES
+
+# Size limits for images (3MB) and videos (1GB)
+IMAGE_SIZE_LIMIT = 3 * 1024 * 1024
+VIDEO_SIZE_LIMIT = 1 * 1024 * 1024 * 1024
 
 # Default dimensions and quality for different media files
 # Image quality in percentage (0-100%)

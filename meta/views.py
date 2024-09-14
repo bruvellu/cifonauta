@@ -144,28 +144,25 @@ def upload_media_step1(request):
                 # Verify MIME type of uploaded file
                 #TODO: Migrate mime type check to function on utils/media.py
                 #TODO: Change to first 2048 as recommended by the package
-                file_mime_type = magic.from_buffer(file.read(1024), mime=True)
+                mimetype = magic.from_buffer(file.read(1024), mime=True)
                 #TODO: Remove this print
-                print(f'{file.name}: {file_mime_type}')
+                print(f'{file.name}: {mimetype}')
 
-                #TODO: Raise appropriate validation error
-                if file_mime_type not in MEDIA_MIMETYPES:
-                    messages.error(request, f'Arquivo inválido: {file.name} ({file_mime_type})')
+                # Prevent the upload of invalid file formats
+                if mimetype not in MEDIA_MIMETYPES:
+                    message =  f'Formato inválido: "{file.name}" ({mimetype})'
+                    messages.error(request, message)
+                    #TODO: Raise appropriate validation error
                     return redirect('upload_media_step1')
-
-                #TODO: Migrate size check to function on utils/media.py
-                # Prevent upload of large files
-                #TODO: Put file size limits on settings.py
-                if file_mime_type in IMAGE_MIMETYPES:
-                    if file.size > IMAGE_SIZE_LIMIT:
-                        messages.error(request, f'Arquivo de imagem maior que 3MB: {file.name}')
-                        return redirect('upload_media_step1')
-                #TODO: Use elif here
-                else:
-                    if file_mime_type in VIDEO_MIMETYPES:
-                        if file.size > VIDEO_SIZE_LIMIT:
-                            messages.error(request, f'Arquivo de vídeo maior que 1GB: {file.name}')
-                            return redirect('upload_media_step1')
+                # Prevent the upload of large files
+                elif mimetype in IMAGE_MIMETYPES and file.size > IMAGE_SIZE_LIMIT:
+                    message = f'Tamanho excedido: "{file.name}" ({round(file.size / 1024 / 1024, 1)}MB) é maior que o limite de {round(IMAGE_SIZE_LIMIT / 1024 / 1024, 1)}MB'
+                    messages.error(request, message)
+                    return redirect('upload_media_step1')
+                elif mimetype in VIDEO_MIMETYPES and file.size > VIDEO_SIZE_LIMIT:
+                    message = f'Tamanho excedido: "{file.name}" ({round(file.size / 1024 / 1024 / 1024, 1)}GB) é maior que o limite de {round(VIDEO_SIZE_LIMIT / 1024 / 1024 / 1024, 1)}GB'
+                    messages.error(request, message)
+                    return redirect('upload_media_step1')
 
                 #TODO: The extension check is probably not needed anymore
                 # Split lower cased name and extension

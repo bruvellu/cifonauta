@@ -161,6 +161,11 @@ def upload_media_step1(request):
                     messages.error(request, message)
                     #TODO: Raise appropriate validation error
                     return redirect('upload_media_step1')
+                # Prevent the upload of invalid file extensions
+                elif extension not in MEDIA_EXTENSIONS:
+                    message =  f'Extensão inválida: "{file.name}" ({mimetype})'
+                    messages.error(request, message)
+                    return redirect('upload_media_step1')
                 # Prevent the upload of large files
                 elif mimetype in IMAGE_MIMETYPES and file.size > IMAGE_SIZE_LIMIT:
                     message = f'Tamanho excedido: "{file.name}" ({round(file.size / 1024 / 1024, 1)}MB) é maior que o limite de {round(IMAGE_SIZE_LIMIT / 1024 / 1024, 1)}MB'

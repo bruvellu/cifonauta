@@ -73,7 +73,9 @@ def delete_files_from_folder(sender, instance, **kwargs):
             except FileNotFoundError:
                 print('{file} not found. Probably already deleted.')
 
+#TODO: Create a proper trigger for adding descendants to curation
 
+#TODO: This is being triggered when a curation is added to a taxon and it causes an error because the sender is a Taxon instance
 @receiver(m2m_changed, sender=Curadoria.taxons.through)
 def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
     m2m_changed.disconnect(get_taxons_descendants, sender=Curadoria.taxons.through)

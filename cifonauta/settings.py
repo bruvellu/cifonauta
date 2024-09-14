@@ -248,7 +248,7 @@ EMAIL_USE_TLS = True
 
 # Import server settings.
 hostname = socket.gethostname()
-if hostname == 'cifonauta':
+if hostname == 'cifonauta2':
     from .server_settings import *
 
 

@@ -185,7 +185,7 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 #TODO: Increase accepted extensions?
 # IMAGE_EXTENSIONS = ('tif', 'tiff', 'jpg', 'jpeg', 'png', 'gif')
 # VIDEO_EXTENSIONS = ('avi', 'mov', 'mp4', 'ogv', 'dv', 'mpg', 'mpeg', 'flv', 'm2ts', 'wmv')
-IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.gif',)
+IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.png',)
 VIDEO_EXTENSIONS = ('.mp4',)
 MEDIA_EXTENSIONS = IMAGE_EXTENSIONS + VIDEO_EXTENSIONS
 

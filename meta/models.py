@@ -22,6 +22,9 @@ from django.utils.text import slugify
 from django.utils import timezone
 from mptt.models import MPTTModel, TreeForeignKey
 
+#TODO: Change model name to Curation
+#TODO: Change taxons to taxa
+#TODO: Set a proper related name (curations?)
 
 class Curadoria(models.Model):
     name = models.CharField(max_length=50)
@@ -38,7 +41,7 @@ class Curadoria(models.Model):
                                       help_text=_('Curadores da curadoria.'))
 
     def __str__(self):
-        return self.name
+        return f'{self.name} [id={self.id}]'
 
 
 # Function that defines path for user upload directory
@@ -742,6 +745,14 @@ class Taxon(MPTTModel):
         taxon_and_descendants = self.get_descendants(include_self=True)
         media_count = Media.objects.filter(taxa__in=taxon_and_descendants).distinct().count()
         return media_count
+
+    def get_taxon_curations(self):
+        '''Retrieve curations this taxon belongs to from ancestors.'''
+        ancestors = self.get_ancestors(include_self=True)
+        curation_ids = ancestors.values_list('curadoria', flat=True).order_by().distinct()
+        curations = [curation_id for curation_id in curation_ids if curation_id]
+        # curations = [Curadoria.objects.get(id=curation_id) for curation_id in curation_ids if curation_id]
+        return curations
 
     @staticmethod
     def get_taxon_and_parents(qs):

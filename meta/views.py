@@ -46,12 +46,7 @@ from utils.views import execute_bash_action
 from dotenv import load_dotenv
 load_dotenv()
 
-from django.core.validators import FileExtensionValidator
-from django.core.exceptions import ValidationError
 import magic
-
-
-ext_validator = FileExtensionValidator(['jpg', 'png'])
 
 
 @api_view(['POST'])
@@ -156,14 +151,12 @@ def upload_media_step1(request):
                 # Verify MIME type of uploaded file
                 #TODO: Migrate mime type check to function on utils/media.py
                 mimetype = magic.from_buffer(file.read(2048), mime=True)
-                #TODO: Remove this print
-                print(f'{file.name}: {mimetype}')
+                # print(f'{file.name}: {mimetype}')
 
                 # Prevent the upload of invalid file formats
                 if mimetype not in MEDIA_MIMETYPES:
                     message =  f'Formato inválido: "{file.name}" ({mimetype})'
                     messages.error(request, message)
-                    #TODO: Raise appropriate validation error
                     return redirect('upload_media_step1')
                 # Prevent the upload of invalid file extensions
                 elif extension not in MEDIA_EXTENSIONS:

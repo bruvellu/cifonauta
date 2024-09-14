@@ -138,7 +138,7 @@ def upload_media_step1(request):
             # Define user to assign as media author
             user_person = Person.objects.filter(user_cifonauta=request.user.id)
 
-            # Iterate over multiple files
+            # First iterate over uploads to detect any invalid file
             for file in files:
 
                 # First check if file has an extension
@@ -166,6 +166,13 @@ def upload_media_step1(request):
                     message =  f'Extensão inválida: "{file.name}" ({mimetype})'
                     messages.error(request, message)
                     return redirect('upload_media_step1')
+                # Prevent the upload of invalid file names
+                #TODO: Instead of raising error, replace invalid characters
+                elif not re.match(FILENAME_REGEX, basename):
+                    message = f'Nome inválido: "{file.name}" ({mimetype})'
+                    messages.error(request, message)
+                    messages.warning(request, 'Caracteres especiais aceitos: - _ ( )')
+                    return redirect('upload_media_step1')
                 # Prevent the upload of large files
                 elif mimetype in IMAGE_MIMETYPES and file.size > IMAGE_SIZE_LIMIT:
                     message = f'Tamanho excedido: "{file.name}" ({round(file.size / 1024 / 1024, 1)}MB) é maior que o limite de {round(IMAGE_SIZE_LIMIT / 1024 / 1024, 1)}MB'
@@ -176,22 +183,7 @@ def upload_media_step1(request):
                     messages.error(request, message)
                     return redirect('upload_media_step1')
 
-
-                if extension:
-                    #TODO: Instead of raising error, simply replace invalid characters
-                    if not re.match(FILENAME_REGEX, filename):
-                        messages.error(request, f'Nome de arquivo inválido: {file.name}')
-                        messages.warning(request, 'Caracteres especiais aceitos: - _ ( )')
-                        return redirect('upload_media_step1')
-                    
-                    if not extension.endswith(MEDIA_EXTENSIONS):
-                        messages.error(request, f'Formato de arquivo não aceito: {file.name}')
-                        messages.warning(request, 'Verifique os tipos de arquivos aceitos')
-                        return redirect('upload_media_step1')
-                else:
-                    messages.error(request, f'Arquivo inválido: {file.name}')
-                    return redirect('upload_media_step1')
-
+            # Iterate again over uploads to create entries
             #TODO: Don't loop twice
             for file in files:
                 # Create empty Media instance for new UUID

@@ -32,7 +32,7 @@ from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
-from cifonauta.settings import MEDIA_EXTENSIONS, MEDIA_MIMETYPES, IMAGE_MIMETYPES, IMAGE_SIZE_LIMIT, VIDEO_SIZE_LIMIT, VIDEO_MIMETYPES, FILENAME_REGEX, MEDIA_ROOT
+from cifonauta.settings import MEDIA_EXTENSIONS, PHOTO_EXTENSIONS, VIDEO_EXTENSIONS, MEDIA_MIMETYPES, IMAGE_MIMETYPES, IMAGE_SIZE_LIMIT, VIDEO_SIZE_LIMIT, VIDEO_MIMETYPES, FILENAME_REGEX, MEDIA_ROOT
 from django.core.files import File
 from django.utils.translation import get_language, get_language_info
 from django.utils.translation import gettext_lazy as _
@@ -189,7 +189,7 @@ def upload_media_step1(request):
                 # Create empty Media instance for new UUID
                 media = Media()
                 # Rename file name with UUID and lowercase extension
-                file_noext, extension = os.path.splitext(file.name.lower())
+                basename, extension = os.path.splitext(file.name.lower())
                 file.name = f'{media.uuid}{extension}'
 
                 # Define file field of Media instance
@@ -197,9 +197,9 @@ def upload_media_step1(request):
                 # Define user field of Media instance
                 media.user = request.user
                 # Define if media is a photo or a video
-                if extension.endswith(settings.PHOTO_EXTENSIONS):
+                if extension.endswith(PHOTO_EXTENSIONS):
                     media.datatype = 'photo'
-                elif extension.endswith(settings.VIDEO_EXTENSIONS):
+                elif extension.endswith(VIDEO_EXTENSIONS):
                     media.datatype = 'video'
 
                 # Save instance

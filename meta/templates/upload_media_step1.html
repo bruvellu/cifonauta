@@ -40,8 +40,10 @@
         <div class="field__input-container">
             <input type="file" name="files" id="files" multiple>
             <div data-file-div class="file-div"></div>
-            <span class="field__help-text">Arquivos aceitos: {{ media_extensions }}</span>
-            <span class="field__help-text">Tamanho máxmo: arquivos de imagens: 3MB; arquivos de vídeos: 1GB</span>
+            <span class="field__help-text">Formatos aceitos: {{ media_mimetypes }}</span>
+            <span class="field__help-text">Extensões aceitas: {{ media_extensions }}</span>
+            <span class="field__help-text">Tamanho máximo imagens: {{ image_size_limit }}MB</span>
+            <span class="field__help-text">Tamanho máximo vídeos: {{ video_size_limit }}GB</span>
         </div>
     </div>
     

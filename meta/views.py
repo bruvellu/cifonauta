@@ -128,6 +128,10 @@ def dashboard(request):
 @author_required
 def upload_media_step1(request):
 
+    # Define readable image size limit in MB
+    image_size_limit = round(IMAGE_SIZE_LIMIT / 1024 / 1024, 1)
+    video_size_limit = round(VIDEO_SIZE_LIMIT / 1024 / 1024 / 1024, 1)
+
     if request.method == 'POST':
 
         # Files selected via upload form
@@ -175,11 +179,11 @@ def upload_media_step1(request):
                     return redirect('upload_media_step1')
                 # Prevent the upload of large files
                 elif mimetype in IMAGE_MIMETYPES and file.size > IMAGE_SIZE_LIMIT:
-                    message = f'Tamanho excedido: "{file.name}" ({round(file.size / 1024 / 1024, 1)}MB) é maior que o limite de {round(IMAGE_SIZE_LIMIT / 1024 / 1024, 1)}MB'
+                    message = f'Tamanho excedido: "{file.name}" ({round(file.size / 1024 / 1024, 1)}MB) é maior que o limite de {image_size_limit}MB'
                     messages.error(request, message)
                     return redirect('upload_media_step1')
                 elif mimetype in VIDEO_MIMETYPES and file.size > VIDEO_SIZE_LIMIT:
-                    message = f'Tamanho excedido: "{file.name}" ({round(file.size / 1024 / 1024 / 1024, 1)}GB) é maior que o limite de {round(VIDEO_SIZE_LIMIT / 1024 / 1024 / 1024, 1)}GB'
+                    message = f'Tamanho excedido: "{file.name}" ({round(file.size / 1024 / 1024 / 1024, 1)}GB) é maior que o limite de {video_size_limit}GB'
                     messages.error(request, message)
                     return redirect('upload_media_step1')
 
@@ -225,15 +229,17 @@ def upload_media_step1(request):
         messages.info(request, 'Complete ou cancele o upload para adicionar outras mídias')
         return redirect('upload_media_step2')
     
-    media_extensions = ''
-    for media_extension in MEDIA_EXTENSIONS:
-        media_extensions += f'{media_extension[1:].upper()} '
-
     is_specialist = request.user.curatorship_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
+    media_mimetypes = [m.split('/')[1].upper() for m in MEDIA_MIMETYPES]
+    media_extensions = [e for e in MEDIA_EXTENSIONS]
+
     context = {
-        'media_extensions': media_extensions,
+        'media_extensions': ', '.join(media_extensions),
+        'media_mimetypes': ', '.join(media_mimetypes),
+        'image_size_limit': image_size_limit,
+        'video_size_limit': video_size_limit,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }

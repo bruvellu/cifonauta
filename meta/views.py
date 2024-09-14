@@ -32,7 +32,7 @@ from .decorators import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.models import UserCifonauta
-from cifonauta.settings import MEDIA_EXTENSIONS, MEDIA_MIMETYPES, IMAGE_MIMETYPES, VIDEO_MIMETYPES, FILENAME_REGEX, MEDIA_ROOT
+from cifonauta.settings import MEDIA_EXTENSIONS, MEDIA_MIMETYPES, IMAGE_MIMETYPES, IMAGE_SIZE_LIMIT, VIDEO_SIZE_LIMIT, VIDEO_MIMETYPES, FILENAME_REGEX, MEDIA_ROOT
 from django.core.files import File
 from django.utils.translation import get_language, get_language_info
 from django.utils.translation import gettext_lazy as _
@@ -157,13 +157,13 @@ def upload_media_step1(request):
                 # Prevent upload of large files
                 #TODO: Put file size limits on settings.py
                 if file_mime_type in IMAGE_MIMETYPES:
-                    if file.size > 3000000:
+                    if file.size > IMAGE_SIZE_LIMIT:
                         messages.error(request, f'Arquivo de imagem maior que 3MB: {file.name}')
                         return redirect('upload_media_step1')
                 #TODO: Use elif here
                 else:
                     if file_mime_type in VIDEO_MIMETYPES:
-                        if file.size > 1000000000:
+                        if file.size > VIDEO_SIZE_LIMIT:
                             messages.error(request, f'Arquivo de vídeo maior que 1GB: {file.name}')
                             return redirect('upload_media_step1')
 

@@ -195,6 +195,10 @@ IMAGE_MIMETYPES = ('image/jpeg', 'image/png',)
 VIDEO_MIMETYPES = ('video/mp4',)
 MEDIA_MIMETYPES = IMAGE_MIMETYPES + VIDEO_MIMETYPES
 
+# Size limits for images (3MB) and videos (1GB)
+IMAGE_SIZE_LIMIT = 3 * 1024 * 1024
+VIDEO_SIZE_LIMIT = 1 * 1024 * 1024 * 1024
+
 # Default dimensions and quality for different media files
 # Image quality in percentage (0-100%)
 # Video quality in bitrate (0-infinite kbits/s)

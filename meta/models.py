@@ -746,12 +746,10 @@ class Taxon(MPTTModel):
         media_count = Media.objects.filter(taxa__in=taxon_and_descendants).distinct().count()
         return media_count
 
-    def get_taxon_curations(self):
-        '''Retrieve curations this taxon belongs to from ancestors.'''
+    def get_curations(self):
+        '''Retrieve set of curations associated with ancestors.'''
         ancestors = self.get_ancestors(include_self=True)
-        curation_ids = ancestors.values_list('curadoria', flat=True).order_by().distinct()
-        curations = [curation_id for curation_id in curation_ids if curation_id]
-        # curations = [Curadoria.objects.get(id=curation_id) for curation_id in curation_ids if curation_id]
+        curations = Curadoria.objects.filter(taxons__in=ancestors).distinct()
         return curations
 
     @staticmethod

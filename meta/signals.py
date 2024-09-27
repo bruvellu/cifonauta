@@ -73,22 +73,47 @@ def delete_files_from_folder(sender, instance, **kwargs):
             except FileNotFoundError:
                 print('{file} not found. Probably already deleted.')
 
-#TODO: Create a proper trigger for adding descendants to curation
+@receiver(post_save, sender=Taxon)
+def update_taxon_curations(sender, instance, created, **kwards):
+    '''Add curations from ancestors and to descendants.'''
+
+    # Get all curations from ancestors
+    curations = instance.get_curations()
+    print(curations)
+
+    # Apply curations to instance and descendants
+    for descendant in instance.get_descendants(include_self=True):
+        descendant.curadoria_set.set(curations)
+        print(descendant)
+
+@receiver(pre_save, sender=Curadoria)
+def propagate_curations_to_descendants(sender, instance, *args, **kwargs):
+    '''Propagate current curation to taxon descendants.'''
+
+    #TODO: This works via programmatically, but not via admin forms
+
+    # Get all taxa from curation
+    taxa = instance.taxons.all()
+
+    # Add curation to all descendants of every taxon
+    for taxon in taxa:
+        descendants = taxon.get_descendants()
+        instance.taxons.add(*descendants)
 
 #TODO: This is being triggered when a curation is added to a taxon and it causes an error because the sender is a Taxon instance
-@receiver(m2m_changed, sender=Curadoria.taxons.through)
-def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
-    m2m_changed.disconnect(get_taxons_descendants, sender=Curadoria.taxons.through)
+# @receiver(m2m_changed, sender=Curadoria.taxons.through)
+# def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
+    # m2m_changed.disconnect(get_taxons_descendants, sender=Curadoria.taxons.through)
     
-    taxon = Taxon.objects.filter(id__in=pk_set)
-    descendants = taxon.get_descendants()
+    # taxon = Taxon.objects.filter(id__in=pk_set)
+    # descendants = taxon.get_descendants()
 
-    if action == "pre_add":
-        instance.taxons.add(*descendants)
-    elif action == "pre_remove":
-        instance.taxons.remove(*descendants)
+    # if action == "pre_add":
+        # instance.taxons.add(*descendants)
+    # elif action == "pre_remove":
+        # instance.taxons.remove(*descendants)
 
-    m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)
+    # m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)
 
 
 def makestats(signal, instance, sender, **kwargs):

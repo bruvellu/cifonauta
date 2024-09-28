@@ -51,7 +51,7 @@ class UserCifonautaAdmin(UserAdmin):
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = list(self.readonly_fields)
         
-        if obj and (obj.curations_as_specialist.exists() or obj.curatorship_curator.exists()):
+        if obj and (obj.curations_as_specialist.exists() or obj.curations_as_curator.exists()):
             readonly_fields.append('is_author')
         
         return readonly_fields

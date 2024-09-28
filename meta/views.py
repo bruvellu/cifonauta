@@ -950,18 +950,18 @@ def manage_users(request):
             messages.success(request, "Os autores foram atualizados com sucesso")
         else:
             specialist_ids = request.POST.getlist('specialist_ids')
-            curatorship_id = request.POST.get('curatorship_id')
+            curation_id = request.POST.get('curation_id')
 
             specialists = UserCifonauta.objects.filter(id__in=specialist_ids)
-            curatorship = Curation.objects.filter(id=curatorship_id).first()
-            curatorship.specialists.set(specialists)
+            curation = Curation.objects.filter(id=curation_id).first()
+            curation.specialists.set(specialists)
 
             messages.success(request, "Os especialistas foram atualizados com sucesso")
 
     is_specialist = request.user.curations_as_specialist.exists()
     is_curator = request.user.curations_as_curator.exists()
 
-    curatorships = Curation.objects.filter(curators=request.user.id)
+    curations = Curation.objects.filter(curators=request.user.id)
     authors_queryset = UserCifonauta.objects.filter(is_author=True).exclude(id=request.user.id)
     
     users = [
@@ -969,7 +969,7 @@ def manage_users(request):
             'name': f'{user.first_name} {user.last_name}',
             'id': user.id,
             'is_author': user.is_author,
-            'curatorship_ids': [str(curatorship.id) for curatorship in curatorships.filter(Q(specialists=user.id))]
+            'curation_ids': [str(curation.id) for curation in curations.filter(Q(specialists=user.id))]
         } for user in users_queryset
     ]
 
@@ -977,14 +977,14 @@ def manage_users(request):
         {
             'name': f'{user.first_name} {user.last_name}',
             'id': user.id,
-            'curatorship_ids': [str(curatorship.id) for curatorship in curatorships.filter(Q(specialists=user.id))]
+            'curation_ids': [str(curation.id) for curation in curations.filter(Q(specialists=user.id))]
         } for user in authors_queryset
     ]
 
     context = {
         'users': users,
         'authors': authors,
-        'curatorships': curatorships,
+        'curations': curations,
         'is_specialist': is_specialist,
         'is_curator': is_curator,
     }
@@ -1617,10 +1617,10 @@ def get_tour_medias(request):
         offset = int(request.GET.get('offset', 0))
         input_value = request.GET.get('input_value', '')
 
-        curatorships = Curation.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
+        curations = Curation.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
         taxon_ids = []
-        for curatorship in curatorships:
-            taxon_ids.extend(curatorship.taxa.values_list('id', flat=True))
+        for curation in curations:
+            taxon_ids.extend(curation.taxa.values_list('id', flat=True))
         medias = Media.objects.filter(taxa__id__in=taxon_ids, status='published').distinct()
 
         query = None

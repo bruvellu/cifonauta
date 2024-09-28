@@ -86,7 +86,7 @@ def propagate_curations_to_descendants(sender, instance, created, **kwargs):
         descendant.curadoria_set.set(curations)
 
 
-@receiver(m2m_changed, sender=Curation.taxons.through)
+@receiver(m2m_changed, sender=Curation.taxa.through)
 def add_or_rm_descendants_to_curation(sender, instance, action, reverse, model, pk_set, **kwargs):
     '''Add or remove taxa descendants to current curation.'''
 
@@ -104,16 +104,16 @@ def add_or_rm_descendants_to_curation(sender, instance, action, reverse, model, 
 
         # Add descendants to curation
         if action == 'pre_add':
-            instance.taxons.add(*descendants)
+            instance.taxa.add(*descendants)
         elif action == 'pre_remove':
-            instance.taxons.remove(*descendants)
+            instance.taxa.remove(*descendants)
 
             #TODO: This allows removing subclades which is probably not a good idea. For example, removing Asterozoa from the Echinodermata curation would cause a problem that not all descendants would be include in the curation. The code should only remove a taxon if its ancestor is not part of curation. The code below prevents descendants removal, but not the removal of the specific taxon chosen by the admin. 
 
             # ancestors = taxa.get_ancestors()
             # ancestors_ids = ancestors.values_list('id', flat=True)
-            # if not instance.taxons.filter(id__in=ancestors_ids):
-                # instance.taxons.remove(*descendants)
+            # if not instance.taxa.filter(id__in=ancestors_ids):
+                # instance.taxa.remove(*descendants)
             # else:
                 # print('NOT REMOVED: ', descendants)
 

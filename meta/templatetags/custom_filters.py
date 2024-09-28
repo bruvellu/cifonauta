@@ -7,8 +7,8 @@ register = template.Library()
 
 @register.simple_tag
 def get_media_curations(media):
-  taxons = media.taxa.all()
-  curations = Curation.objects.filter(taxons__in=taxons).distinct()
+  taxa = media.taxa.all()
+  curations = Curation.objects.filter(taxa__in=taxa).distinct()
   return list(curations)
 
   

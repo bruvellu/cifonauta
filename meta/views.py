@@ -272,30 +272,30 @@ def upload_media_step2(request):
                     media_instance.sitepath = media_instance.file_medium
                     media_instance.coverpath = media_instance.file_cover
 
-                    #Update taxons
+                    #Update taxa
                     not_worms_curatory, created = Curation.objects.get_or_create(name='Não está na Worms')
                     for taxon in form.cleaned_data['taxa']:
-                        if taxon.rank == '' and taxon not in not_worms_curatory.taxons.all():
+                        if taxon.rank == '' and taxon not in not_worms_curatory.taxa.all():
                             with Taxon.objects.disable_mptt_updates():
                                 update = TaxonUpdater(taxon.name)
                             Taxon.objects.rebuild()
                             if update.status == 'absent':
                                 curadory, created = Curation.objects.get_or_create(name='Não está na Worms')
-                                curadory.taxons.add(taxon)
+                                curadory.taxa.add(taxon)
                             else:
                                 curadory, created = Curation.objects.get_or_create(name='Todos os Táxons')
-                                curadory.taxons.add(taxon)
+                                curadory.taxa.add(taxon)
                         if taxon.valid_taxon != None:
                             media_instance.taxa.add(taxon.valid_taxon)
                             media_instance.taxa.remove(taxon)
                             curadory, created = Curation.objects.get_or_create(name='Todos os Táxons')
-                            curadory.taxons.add(taxon.valid_taxon)
+                            curadory.taxa.add(taxon.valid_taxon)
                                     
                     # Save media instance
                     media_instance.save() #TODO: Move down (last)
                     
                 # Send email 
-                curations = Curation.objects.filter(taxons__in=form.cleaned_data['taxa'])
+                curations = Curation.objects.filter(taxa__in=form.cleaned_data['taxa'])
                 specialists_user = set()
                 for curation in curations:
                     for specialist in curation.specialists.all():
@@ -436,24 +436,24 @@ def editing_media_details(request, media_id):
             person = Person.objects.filter(user_cifonauta=request.user.id).first()
             media_instance.specialists.add(person)
 
-            #Update taxons
+            #Update taxa
             not_worms_curatory, created = Curation.objects.get_or_create(name='Não está na Worms')
             for taxon in form.cleaned_data['taxa']:
-                if taxon.rank == '' and taxon not in not_worms_curatory.taxons.all():
+                if taxon.rank == '' and taxon not in not_worms_curatory.taxa.all():
                     with Taxon.objects.disable_mptt_updates():
                         update = TaxonUpdater(taxon.name)
                     Taxon.objects.rebuild()
                     if update.status == 'absent':
                         curadory, created = Curation.objects.get_or_create(name='Não está na Worms')
-                        curadory.taxons.add(taxon)
+                        curadory.taxa.add(taxon)
                     else:
                         curadory, created = Curation.objects.get_or_create(name='Todos os Táxons')
-                        curadory.taxons.add(taxon)
+                        curadory.taxa.add(taxon)
                 if taxon.valid_taxon != None:
                     media_instance.taxa.add(taxon.valid_taxon)
                     media_instance.taxa.remove(taxon)
                     curadory, created = Curation.objects.get_or_create(name='Todos os Táxons')
-                    curadory.taxons.add(taxon.valid_taxon)
+                    curadory.taxa.add(taxon.valid_taxon)
 
             media_instance.save()
 
@@ -461,7 +461,7 @@ def editing_media_details(request, media_id):
                 author = UserCifonauta.objects.filter(id=media.user.id)
                 form.send_mail(request.user, author, [media], 'Mídia enviada para revisão no Cifonauta', 'email_media_to_revision_author.html')
 
-                curations = Curation.objects.filter(taxons__in=form.cleaned_data['taxa'])
+                curations = Curation.objects.filter(taxa__in=form.cleaned_data['taxa'])
                 curators_user = set()
                 for curation in curations:
                     for curator in curation.curators.all():
@@ -550,11 +550,11 @@ def filter_medias(queryset, query_dict, curations=''):
         else:
             filtered_curations = Curation.objects.filter(id__in=curation_ids).distinct()
 
-        taxons = set()
+        taxa = set()
         for curation in filtered_curations:
-            taxons.update(curation.taxons.all())
+            taxa.update(curation.taxa.all())
 
-        filtered_queryset = filtered_queryset.filter(taxa__in=taxons)
+        filtered_queryset = filtered_queryset.filter(taxa__in=taxa)
 
 
     status = query_dict.getlist('status', None)
@@ -577,13 +577,13 @@ def editing_media_list(request):
 
     user = request.user
     curations = user.curatorship_specialist.all()
-    curations_taxons = set()
+    curations_taxa = set()
 
     for curadoria in curations:
-        taxons = curadoria.taxons.all()
-        curations_taxons.update(taxons)
+        taxa = curadoria.taxa.all()
+        curations_taxa.update(taxa)
 
-    queryset = Media.objects.filter(status='draft').filter(taxa__in=curations_taxons).distinct().order_by('-date_modified')
+    queryset = Media.objects.filter(status='draft').filter(taxa__in=curations_taxa).distinct().order_by('-date_modified')
 
     if request.method == "POST":
         action = request.POST['action']
@@ -609,27 +609,27 @@ def editing_media_list(request):
                                 messages.error(request, 'Não é possível submeter mídia com campos obrigatórios faltando')
                                 return redirect('editing_media_list')
                         
-                        #Update taxons
+                        #Update taxa
                         #TODO: Revise this code, it breaks when batch updating without taxa
                         # A quick fix is below.
                         if 'taxa' in form.cleaned_data.keys():
                             not_worms_curatory, created = Curation.objects.get_or_create(name='Não está na Worms')
                             for taxon in form.cleaned_data['taxa']:
-                                if taxon.rank == '' and taxon not in not_worms_curatory.taxons.all():
+                                if taxon.rank == '' and taxon not in not_worms_curatory.taxa.all():
                                     with Taxon.objects.disable_mptt_updates():
                                         update = TaxonUpdater(taxon.name)
                                     Taxon.objects.rebuild()
                                     if update.status == 'absent':
                                         curadory, created = Curation.objects.get_or_create(name='Não está na Worms')
-                                        curadory.taxons.add(taxon)
+                                        curadory.taxa.add(taxon)
                                     else:
                                         curadory, created = Curation.objects.get_or_create(name='Todos os Táxons')
-                                        curadory.taxons.add(taxon)
+                                        curadory.taxa.add(taxon)
                                 if taxon.valid_taxon != None:
                                     media.taxa.add(taxon.valid_taxon)
                                     media.taxa.remove(taxon)
                                     curadory, created = Curation.objects.get_or_create(name='Todos os Táxons')
-                                    curadory.taxons.add(taxon.valid_taxon)
+                                    curadory.taxa.add(taxon.valid_taxon)
                     media.save()
 
                     error = execute_bash_action(request, medias, user, 'editing_media_list')
@@ -645,10 +645,10 @@ def editing_media_list(request):
 
                         curations = []
                         if form.cleaned_data['taxa_action'] != 'maintain':
-                            curations = Curation.objects.filter(taxons__in=form.cleaned_data['taxa'])
+                            curations = Curation.objects.filter(taxa__in=form.cleaned_data['taxa'])
                         else:
-                            taxons = Taxon.objects.filter(media__id__in=media_ids).distinct()
-                            curations = Curation.objects.filter(taxons__in=taxons)
+                            taxa = Taxon.objects.filter(media__id__in=media_ids).distinct()
+                            curations = Curation.objects.filter(taxa__in=taxa)
                         curators_user = set()
                         for curation in curations:
                             for curator in curation.curators.all():
@@ -766,24 +766,24 @@ def my_media_details(request, pk):
 
                 messages.success(request, 'Informações alteradas com sucesso')
             
-            #Update taxons
+            #Update taxa
             not_worms_curatory, created = Curation.objects.get_or_create(name='Não está na Worms')
             for taxon in form.cleaned_data['taxa']:
-                if taxon.rank == '' and taxon not in not_worms_curatory.taxons.all():
+                if taxon.rank == '' and taxon not in not_worms_curatory.taxa.all():
                     with Taxon.objects.disable_mptt_updates():
                         update = TaxonUpdater(taxon.name)
                     Taxon.objects.rebuild()
                     if update.status == 'absent':
                         curadory, created = Curation.objects.get_or_create(name='Não está na Worms')
-                        curadory.taxons.add(taxon)
+                        curadory.taxa.add(taxon)
                     else:
                         curadory, created = Curation.objects.get_or_create(name='Todos os Táxons')
-                        curadory.taxons.add(taxon)
+                        curadory.taxa.add(taxon)
                 if taxon.valid_taxon != None:
                     media.taxa.add(taxon.valid_taxon)
                     media.taxa.remove(taxon)
                     curadory, created = Curation.objects.get_or_create(name='Todos os Táxons')
-                    curadory.taxons.add(taxon.valid_taxon)
+                    curadory.taxa.add(taxon.valid_taxon)
 
             media.save()
 
@@ -999,17 +999,17 @@ def revision_media_list(request):
     user = request.user
 
     curations = user.curatorship_curator.all()
-    curations_taxons = set()
+    curations_taxa = set()
 
     for curadoria in curations:
-        taxons = curadoria.taxons.all()
-        curations_taxons.update(taxons)
+        taxa = curadoria.taxa.all()
+        curations_taxa.update(taxa)
     
     queryset = None
 
     queryset = Media.objects.filter(
-        Q(status='submitted') & Q(taxa__in=curations_taxons) |
-        Q(modified_media__taxa__in=curations_taxons))
+        Q(status='submitted') & Q(taxa__in=curations_taxa) |
+        Q(modified_media__taxa__in=curations_taxa))
 
     queryset = queryset.distinct().order_by('-date_modified')
 
@@ -1184,24 +1184,24 @@ def revision_media_details(request, media_id):
                     media_instance.taxa.add(taxon.valid_taxon)
                     media_instance.taxa.remove(taxon)
 
-            #Update taxons
+            #Update taxa
             not_worms_curatory, created = Curation.objects.get_or_create(name='Não está na Worms')
             for taxon in form.cleaned_data['taxa']:
-                if taxon.rank == '' and taxon not in not_worms_curatory.taxons.all():
+                if taxon.rank == '' and taxon not in not_worms_curatory.taxa.all():
                     with Taxon.objects.disable_mptt_updates():
                         update = TaxonUpdater(taxon.name)
                     Taxon.objects.rebuild()
                     if update.status == 'absent':
                         curadory, created = Curation.objects.get_or_create(name='Não está na Worms')
-                        curadory.taxons.add(taxon)
+                        curadory.taxa.add(taxon)
                     else:
                         curadory, created = Curation.objects.get_or_create(name='Todos os Táxons')
-                        curadory.taxons.add(taxon)
+                        curadory.taxa.add(taxon)
                 if taxon.valid_taxon != None:
                     media_instance.taxa.add(taxon.valid_taxon)
                     media_instance.taxa.remove(taxon)
                     curadory, created = Curation.objects.get_or_create(name='Todos os Táxons')
-                    curadory.taxons.add(taxon.valid_taxon)
+                    curadory.taxa.add(taxon.valid_taxon)
 
             # Save instance
             media_instance.save()
@@ -1260,26 +1260,26 @@ def my_curations_media_list(request):
     user = request.user
 
     curations_as_specialist = user.curatorship_specialist.all()
-    curations_as_specialist_taxons = set()
+    curations_as_specialist_taxa = set()
     for curation in curations_as_specialist:
-        curations_as_specialist_taxons.update(curation.taxons.all())
+        curations_as_specialist_taxa.update(curation.taxa.all())
 
 
     curations_as_curator = user.curatorship_curator.all()
-    curations_as_curator_taxons = set()
+    curations_as_curator_taxa = set()
     for curation in curations_as_curator:
-        curations_as_curator_taxons.update(curation.taxons.all())
+        curations_as_curator_taxa.update(curation.taxa.all())
 
     curations = curations_as_specialist | curations_as_curator
     curations = curations.distinct()
 
-    curations_taxons = set()
+    curations_taxa = set()
     for curation in curations:
-        curations_taxons.update(curation.taxons.all())
+        curations_taxa.update(curation.taxa.all())
 
-    curator_queryset = Media.objects.filter(Q(taxa__in=curations_as_curator_taxons))
+    curator_queryset = Media.objects.filter(Q(taxa__in=curations_as_curator_taxa))
 
-    specialist_queryset = Media.objects.filter(Q(taxa__in=curations_as_specialist_taxons))    
+    specialist_queryset = Media.objects.filter(Q(taxa__in=curations_as_specialist_taxa))    
 
     queryset = (curator_queryset | specialist_queryset).exclude(status='loaded').distinct().order_by('-pk')
 
@@ -1308,7 +1308,7 @@ def my_curations_media_list(request):
 
                         is_media_curator = False
                         for taxa in media.taxa.all():
-                            if taxa in curations_as_curator_taxons:
+                            if taxa in curations_as_curator_taxa:
                                 is_media_curator = True
                                 break
                         if not is_media_curator:
@@ -1361,7 +1361,7 @@ def my_curations_media_details(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     modified_media = ModifiedMedia.objects.filter(media=media).first()
     user_person = Person.objects.filter(user_cifonauta=request.user.id).first()
-    curations = Curation.objects.filter(taxons__in=media.taxa.all()).distinct()
+    curations = Curation.objects.filter(taxa__in=media.taxa.all()).distinct()
     curations_as_curator = request.user.curatorship_curator.all()
     
     is_only_media_specialist = True
@@ -1424,26 +1424,26 @@ def my_curations_media_details(request, media_id):
             else:
                 form.save()
 
-                #Update taxons
+                #Update taxa
                 not_worms_curatory, created = Curation.objects.get_or_create(name='Não está na Worms')
                 for taxon in form.cleaned_data['taxa']:
                     print(taxon.name)
                     print(taxon.valid_taxon)
-                    if taxon.rank == '' and taxon not in not_worms_curatory.taxons.all():
+                    if taxon.rank == '' and taxon not in not_worms_curatory.taxa.all():
                         with Taxon.objects.disable_mptt_updates():
                             update = TaxonUpdater(taxon.name)
                         Taxon.objects.rebuild()
                         if update.status == 'absent':
                             curadory, created = Curation.objects.get_or_create(name='Não está na Worms')
-                            curadory.taxons.add(taxon)
+                            curadory.taxa.add(taxon)
                         else:
                             curadory, created = Curation.objects.get_or_create(name='Todos os Táxons')
-                            curadory.taxons.add(taxon)
+                            curadory.taxa.add(taxon)
                     if taxon.valid_taxon != None:
                         media.taxa.add(taxon.valid_taxon)
                         media.taxa.remove(taxon)
                         curadory, created = Curation.objects.get_or_create(name='Todos os Táxons')
-                        curadory.taxons.add(taxon.valid_taxon)
+                        curadory.taxa.add(taxon.valid_taxon)
                 media.save()
 
                 media.curators.add(user_person)
@@ -1620,7 +1620,7 @@ def get_tour_medias(request):
         curatorships = Curation.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
         taxon_ids = []
         for curatorship in curatorships:
-            taxon_ids.extend(curatorship.taxons.values_list('id', flat=True))
+            taxon_ids.extend(curatorship.taxa.values_list('id', flat=True))
         medias = Media.objects.filter(taxa__id__in=taxon_ids, status='published').distinct()
 
         query = None

@@ -141,7 +141,7 @@ class TaxonUpdater:
         self.write_cache_to_file()
 
     def rebuild_hierarchy(self):
-        '''Rebuild tree hierarchy of taxons.'''
+        '''Rebuild tree hierarchy of taxa.'''
         # Rebuild tree hierarchy
         Taxon.objects.rebuild()
 

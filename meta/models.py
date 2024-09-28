@@ -22,13 +22,11 @@ from django.utils.text import slugify
 from django.utils import timezone
 from mptt.models import MPTTModel, TreeForeignKey
 
-#TODO: Change model name to Curation
-#TODO: Change taxons to taxa
 #TODO: Set a proper related name (curations?)
 
 class Curation(models.Model):
     name = models.CharField(max_length=50)
-    taxons = models.ManyToManyField('Taxon', blank=True)
+    taxa = models.ManyToManyField('Taxon', blank=True)
     specialists = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                          related_name='curatorship_specialist',
                                          blank=True,
@@ -749,12 +747,12 @@ class Taxon(MPTTModel):
     def get_curations(self):
         '''Retrieve set of curations associated with ancestors.'''
         ancestors = self.get_ancestors(include_self=True)
-        curations = Curation.objects.filter(taxons__in=ancestors).distinct()
+        curations = Curation.objects.filter(taxa__in=ancestors).distinct()
         return curations
 
     @staticmethod
     def get_taxon_and_parents(qs):
-        '''Returns all parents and current taxon from a QuerySet of taxons.'''
+        '''Returns all parents and current taxon from a QuerySet of taxa.'''
         tree_list = {}
         query = Q()
 

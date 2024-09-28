@@ -70,8 +70,8 @@ def media_specialist_required(view_func):
         curations = user.curatorship_specialist.all()
         curations_taxa = set()
 
-        for curadoria in curations:
-            taxa = curadoria.taxa.all()
+        for curation in curations:
+            taxa = curation.taxa.all()
             curations_taxa.update(taxa)
 
         queryset_ids = Media.objects.filter(status='draft').filter(taxa__in=curations_taxa).values_list('id', flat=True)
@@ -109,8 +109,8 @@ def media_curator_required(view_func):
         curations = user.curatorship_curator.all()
         curations_taxa = set()
 
-        for curadoria in curations:
-            taxa = curadoria.taxa.all()
+        for curation in curations:
+            taxa = curation.taxa.all()
             curations_taxa.update(taxa)
 
         queryset_ids = Media.objects.filter(

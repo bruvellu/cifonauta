@@ -36,13 +36,13 @@ class Curation(models.Model):
             related_name='curatorship_specialist',
             blank=True,
             verbose_name=_('especialistas'),
-            help_text=_('Especialistas da curadoria.'))
+            help_text=_('Especialistas nesta curadoria.'))
     curators = models.ManyToManyField(
             settings.AUTH_USER_MODEL,
             related_name='curatorship_curator',
             blank=True,
             verbose_name=_('curadores'),
-            help_text=_('Curadores da curadoria.'))
+            help_text=_('Curadores desta curadoria.'))
 
     def __str__(self):
         return f'{self.name} [id={self.id}]'

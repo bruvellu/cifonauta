@@ -86,34 +86,32 @@ def propagate_curations_to_descendants(sender, instance, created, **kwargs):
         descendant.curadoria_set.set(curations)
 
 
-@receiver(pre_save, sender=Curadoria)
-def propagate_curations_to_descendants(sender, instance, *args, **kwargs):
-    '''Propagate current curation to taxon descendants.'''
+@receiver(m2m_changed, sender=Curadoria.taxons.through)
+def add_or_rm_descendants_to_curation(sender, instance, action, reverse, model, pk_set, **kwargs):
+    '''Add or remove taxa descendants to current curation.'''
 
-    #TODO: This works via programmatically, but not via admin forms
+    # Signal from Curadoria to Taxon (eg, Curadoria instance saved)
+    if not reverse and action in ['pre_add', 'pre_remove']:
 
-    # Get all taxa from curation
-    taxa = instance.taxons.all()
+        # Prevent recursively calling this function for each descendant
+        m2m_changed.disconnect(add_or_rm_descendants_to_curation, sender=sender)
 
-    # Add curation to all descendants of every taxon
-    for taxon in taxa:
-        descendants = taxon.get_descendants()
-        instance.taxons.add(*descendants)
+        # Get taxa being modified
+        taxa = Taxon.objects.filter(id__in=pk_set)
 
-#TODO: This is being triggered when a curation is added to a taxon and it causes an error because the sender is a Taxon instance
-# @receiver(m2m_changed, sender=Curadoria.taxons.through)
-# def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
-    # m2m_changed.disconnect(get_taxons_descendants, sender=Curadoria.taxons.through)
-    
-    # taxon = Taxon.objects.filter(id__in=pk_set)
-    # descendants = taxon.get_descendants()
+        # Get all descendants excluding self
+        descendants = taxa.get_descendants()
 
-    # if action == "pre_add":
-        # instance.taxons.add(*descendants)
-    # elif action == "pre_remove":
-        # instance.taxons.remove(*descendants)
+        # Add descendants to curation
+        if action == 'pre_add':
+            instance.taxons.add(*descendants)
+        elif action == 'pre_remove':
+            #TODO: This allows removing subclades, probably not a good idea
+            #TODO: Only remove if ancestor is not part of curation
+            instance.taxons.remove(*descendants)
 
-    # m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)
+        # Re-enable signal connection
+        m2m_changed.connect(add_or_rm_descendants_to_curation, sender=sender)
 
 
 def makestats(signal, instance, sender, **kwargs):

@@ -1,14 +1,14 @@
 from django import template
 from django.utils.safestring import mark_safe
-from meta.models import Curadoria
+from meta.models import Curation
 
 register = template.Library()
 
 
 @register.simple_tag
 def get_media_curations(media):
-  taxons = media.taxa.all()
-  curations = Curadoria.objects.filter(taxons__in=taxons).distinct()
+  taxa = media.taxa.all()
+  curations = Curation.objects.filter(taxa__in=taxa).distinct()
   return list(curations)
 
   

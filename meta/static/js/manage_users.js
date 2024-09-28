@@ -29,10 +29,10 @@ enableAuthors.setData(users, 'author_ids', divideAuthors)
 
 let selectedUsers = document.querySelector('#selected-users')
 let userOptions = document.querySelector('#user-options')
-let curatorshipOptions = document.querySelector('#id_curatorship')
+let curationOptions = document.querySelector('#id_curation')
 let userOptionsList = document.querySelectorAll('.user-option')
 let searchUserOptions = document.querySelector('#search-user-options')
-let searchUsersInCuratorship = document.querySelector('#search-users-in-curatorship')
+let searchUsersIncuration = document.querySelector('#search-users-in-curation')
 let selectAllUsers = document.querySelector('#select-all-users')
 let removeAllUsers = document.querySelector('#remove-all-users')
 
@@ -40,10 +40,10 @@ let enableSpecialists = new TwoTables(
   userOptions, 
   searchUserOptions, 
   selectedUsers, 
-  searchUsersInCuratorship, 
+  searchUsersIncuration, 
   selectAllUsers, 
   removeAllUsers, 
-  curatorshipOptions
+  curationOptions
 )
 
 authors = JSON.parse(document.querySelector('#authors-json').textContent)

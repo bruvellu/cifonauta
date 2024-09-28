@@ -2,12 +2,12 @@ from django.contrib import admin, messages
 from django.contrib.flatpages.models import FlatPage
 from meta.models import *
 from modeltranslation.admin import TranslationAdmin
-from .forms import CuradoriaAdminForm
+from .forms import CurationAdminForm
 
 
-class CuradoriaAdmin(admin.ModelAdmin):
-    form = CuradoriaAdminForm
-    autocomplete_fields = ['specialists', 'curators', 'taxons']
+class CurationAdmin(admin.ModelAdmin):
+    form = CurationAdminForm
+    autocomplete_fields = ['specialists', 'curators', 'taxa']
 
 
 # Translation admin.
@@ -109,5 +109,5 @@ admin.site.register(Tour, TourAdmin)
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Taxon, TaxonAdmin)
 admin.site.register(Reference, ReferenceAdmin)
-admin.site.register(Curadoria, CuradoriaAdmin)
+admin.site.register(Curation, CurationAdmin)
 

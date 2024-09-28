@@ -5,7 +5,7 @@ from django.db.models.signals import pre_save, post_save, m2m_changed, pre_delet
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from django.utils import translation
-from meta.models import Media, Person, Tag, Category, Taxon, Location, City, State, Country, Reference, Tour, Curadoria
+from meta.models import Media, Person, Tag, Category, Taxon, Location, City, State, Country, Reference, Tour, Curation
 
 
 @receiver(pre_save, sender=Person)
@@ -73,22 +73,52 @@ def delete_files_from_folder(sender, instance, **kwargs):
             except FileNotFoundError:
                 print('{file} not found. Probably already deleted.')
 
-#TODO: Create a proper trigger for adding descendants to curation
 
-#TODO: This is being triggered when a curation is added to a taxon and it causes an error because the sender is a Taxon instance
-@receiver(m2m_changed, sender=Curadoria.taxons.through)
-def get_taxons_descendants(sender, instance, action, model, pk_set, **kwargs):
-    m2m_changed.disconnect(get_taxons_descendants, sender=Curadoria.taxons.through)
-    
-    taxon = Taxon.objects.filter(id__in=pk_set)
-    descendants = taxon.get_descendants()
+@receiver(post_save, sender=Taxon)
+def propagate_curations_to_descendants(sender, instance, created, **kwargs):
+    '''Propagate curations from ancestors to descendants.'''
 
-    if action == "pre_add":
-        instance.taxons.add(*descendants)
-    elif action == "pre_remove":
-        instance.taxons.remove(*descendants)
+    # Get all curations from ancestors
+    curations = instance.get_curations()
 
-    m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)
+    # Apply curations to instance and descendants
+    for descendant in instance.get_descendants(include_self=True):
+        descendant.curations.set(curations)
+
+
+@receiver(m2m_changed, sender=Curation.taxa.through)
+def add_or_rm_descendants_to_curation(sender, instance, action, reverse, model, pk_set, **kwargs):
+    '''Add or remove taxa descendants to current curation.'''
+
+    # Signal from Curation to Taxon (eg, Curation instance saved)
+    if not reverse and action in ['pre_add', 'pre_remove']:
+
+        # Prevent recursively calling this function for each descendant
+        m2m_changed.disconnect(add_or_rm_descendants_to_curation, sender=sender)
+
+        # Get taxa being modified
+        taxa = Taxon.objects.filter(id__in=pk_set)
+
+        # Get all descendants excluding self
+        descendants = taxa.get_descendants()
+
+        # Add descendants to curation
+        if action == 'pre_add':
+            instance.taxa.add(*descendants)
+        elif action == 'pre_remove':
+            instance.taxa.remove(*descendants)
+
+            #TODO: This allows removing subclades which is probably not a good idea. For example, removing Asterozoa from the Echinodermata curation would cause a problem that not all descendants would be include in the curation. The code should only remove a taxon if its ancestor is not part of curation. The code below prevents descendants removal, but not the removal of the specific taxon chosen by the admin. 
+
+            # ancestors = taxa.get_ancestors()
+            # ancestors_ids = ancestors.values_list('id', flat=True)
+            # if not instance.taxa.filter(id__in=ancestors_ids):
+                # instance.taxa.remove(*descendants)
+            # else:
+                # print('NOT REMOVED: ', descendants)
+
+        # Re-enable signal connection
+        m2m_changed.connect(add_or_rm_descendants_to_curation, sender=sender)
 
 
 def makestats(signal, instance, sender, **kwargs):

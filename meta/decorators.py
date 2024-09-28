@@ -34,7 +34,7 @@ def specialist_required(view_func):
     @authentication_required
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
-        is_specialist = user.curatorship_specialist.exists()
+        is_specialist = user.curations_as_specialist.exists()
         if is_specialist:
             return view_func(request, *args, **kwargs)
         
@@ -67,14 +67,14 @@ def media_specialist_required(view_func):
         media_id = kwargs.get('media_id')
 
         user = request.user
-        curations = user.curatorship_specialist.all()
-        curations_taxons = set()
+        curations = user.curations_as_specialist.all()
+        curations_taxa = set()
 
-        for curadoria in curations:
-            taxons = curadoria.taxons.all()
-            curations_taxons.update(taxons)
+        for curation in curations:
+            taxa = curation.taxa.all()
+            curations_taxa.update(taxa)
 
-        queryset_ids = Media.objects.filter(status='draft').filter(taxa__in=curations_taxons).values_list('id', flat=True)
+        queryset_ids = Media.objects.filter(status='draft').filter(taxa__in=curations_taxa).values_list('id', flat=True)
 
         if media_id in queryset_ids:
             return view_func(request, *args, **kwargs)
@@ -89,7 +89,7 @@ def curator_required(view_func):
     @authentication_required
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
-        is_curator = user.curatorship_curator.exists()
+        is_curator = user.curations_as_curator.exists()
         if is_curator:
             return view_func(request, *args, **kwargs)
         
@@ -106,16 +106,16 @@ def media_curator_required(view_func):
         media_id = kwargs.get('media_id')
 
         user = request.user
-        curations = user.curatorship_curator.all()
-        curations_taxons = set()
+        curations = user.curations_as_curator.all()
+        curations_taxa = set()
 
-        for curadoria in curations:
-            taxons = curadoria.taxons.all()
-            curations_taxons.update(taxons)
+        for curation in curations:
+            taxa = curation.taxa.all()
+            curations_taxa.update(taxa)
 
         queryset_ids = Media.objects.filter(
-            Q(status='submitted') & Q(taxa__in=curations_taxons) |
-            Q(modified_media__taxa__in=curations_taxons)
+            Q(status='submitted') & Q(taxa__in=curations_taxa) |
+            Q(modified_media__taxa__in=curations_taxa)
         ).values_list('id', flat=True)
         
         if media_id in queryset_ids:
@@ -165,8 +165,8 @@ def specialist_or_curator_required(view_func):
     @authentication_required
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
-        is_curator = user.curatorship_curator.exists()
-        is_specialist = user.curatorship_specialist.exists()
+        is_curator = user.curations_as_curator.exists()
+        is_specialist = user.curations_as_specialist.exists()
 
         if is_specialist or is_curator:
             return view_func(request, *args, **kwargs)
@@ -184,26 +184,26 @@ def curations_media_required(view_func):
         media_id = kwargs.get('media_id')
         user = request.user
 
-        curations_as_specialist = user.curatorship_specialist.all()
-        curations_as_specialist_taxons = set()
+        curations_as_specialist = user.curations_as_specialist.all()
+        curations_as_specialist_taxa = set()
         for curation in curations_as_specialist:
-            curations_as_specialist_taxons.update(curation.taxons.all())
+            curations_as_specialist_taxa.update(curation.taxa.all())
 
-        curations_as_curator = user.curatorship_curator.all()
-        curations_as_curator_taxons = set()
+        curations_as_curator = user.curations_as_curator.all()
+        curations_as_curator_taxa = set()
         for curation in curations_as_curator:
-            curations_as_curator_taxons.update(curation.taxons.all())
+            curations_as_curator_taxa.update(curation.taxa.all())
 
         curations = curations_as_specialist | curations_as_curator
         curations = curations.distinct()
 
-        curations_taxons = set()
+        curations_taxa = set()
         for curation in curations:
-            curations_taxons.update(curation.taxons.all())
+            curations_taxa.update(curation.taxa.all())
 
-        curator_queryset_ids = Media.objects.filter(Q(taxa__in=curations_as_curator_taxons)).values_list('id', flat=True)
+        curator_queryset_ids = Media.objects.filter(Q(taxa__in=curations_as_curator_taxa)).values_list('id', flat=True)
 
-        specialist_queryset_ids = Media.objects.filter(Q(taxa__in=curations_as_specialist_taxons)) .values_list('id', flat=True)   
+        specialist_queryset_ids = Media.objects.filter(Q(taxa__in=curations_as_specialist_taxa)) .values_list('id', flat=True)   
 
         queryset_ids = (curator_queryset_ids | specialist_queryset_ids).exclude(status='loaded').distinct()
         

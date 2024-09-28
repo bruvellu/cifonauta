@@ -22,23 +22,27 @@ from django.utils.text import slugify
 from django.utils import timezone
 from mptt.models import MPTTModel, TreeForeignKey
 
-#TODO: Change model name to Curation
-#TODO: Change taxons to taxa
-#TODO: Set a proper related name (curations?)
 
-class Curadoria(models.Model):
+class Curation(models.Model):
     name = models.CharField(max_length=50)
-    taxons = models.ManyToManyField('Taxon', blank=True)
-    specialists = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                         related_name='curatorship_specialist',
-                                         blank=True,
-                                         verbose_name=_('especialistas'),
-                                         help_text=_('Especialistas da curadoria.'))
-    curators = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                      related_name='curatorship_curator',
-                                      blank=True,
-                                      verbose_name=_('curadores'),
-                                      help_text=_('Curadores da curadoria.'))
+    taxa = models.ManyToManyField(
+            'Taxon',
+            related_name='curations',
+            blank=True,
+            verbose_name=_('táxons'),
+            help_text=_('Táxons nesta curadoria.'))
+    specialists = models.ManyToManyField(
+            settings.AUTH_USER_MODEL,
+            related_name='curations_as_specialist',
+            blank=True,
+            verbose_name=_('especialistas'),
+            help_text=_('Especialistas nesta curadoria.'))
+    curators = models.ManyToManyField(
+            settings.AUTH_USER_MODEL,
+            related_name='curations_as_curator',
+            blank=True,
+            verbose_name=_('curadores'),
+            help_text=_('Curadores desta curadoria.'))
 
     def __str__(self):
         return f'{self.name} [id={self.id}]'
@@ -746,17 +750,15 @@ class Taxon(MPTTModel):
         media_count = Media.objects.filter(taxa__in=taxon_and_descendants).distinct().count()
         return media_count
 
-    def get_taxon_curations(self):
-        '''Retrieve curations this taxon belongs to from ancestors.'''
+    def get_curations(self):
+        '''Retrieve set of curations associated with ancestors.'''
         ancestors = self.get_ancestors(include_self=True)
-        curation_ids = ancestors.values_list('curadoria', flat=True).order_by().distinct()
-        curations = [curation_id for curation_id in curation_ids if curation_id]
-        # curations = [Curadoria.objects.get(id=curation_id) for curation_id in curation_ids if curation_id]
+        curations = Curation.objects.filter(taxa__in=ancestors).distinct()
         return curations
 
     @staticmethod
     def get_taxon_and_parents(qs):
-        '''Returns all parents and current taxon from a QuerySet of taxons.'''
+        '''Returns all parents and current taxon from a QuerySet of taxa.'''
         tree_list = {}
         query = Q()
 
@@ -965,9 +967,3 @@ class Stats(models.Model):
         verbose_name = _('estatísticas')
         verbose_name_plural = _('estatísticas')
 
-
-# # Create citation with bibkey
-# models.signals.pre_save.connect(citation_pre_save, sender=Reference)
-
-# # Get taxons descendents when creating a curatorship
-# models.signals.m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)

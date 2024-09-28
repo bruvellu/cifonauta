@@ -65,12 +65,12 @@ class TwoTables {
     }
   }
 
-  changeCategory(curatorshipId) {
+  changeCategory(curationId) {
     this.selectedOptions.innerHTML = ''
     this.options.innerHTML = ''
   
     this.data.forEach(user => {
-      if (user.curatorship_ids.includes(curatorshipId)) {
+      if (user.curation_ids.includes(curationId)) {
         this.selectedOptions.append(this.createOptionTag(user, true))
       } else {
         this.options.append(this.createOptionTag(user, false))

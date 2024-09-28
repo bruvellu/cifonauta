@@ -73,18 +73,18 @@ def delete_files_from_folder(sender, instance, **kwargs):
             except FileNotFoundError:
                 print('{file} not found. Probably already deleted.')
 
+
 @receiver(post_save, sender=Taxon)
-def update_taxon_curations(sender, instance, created, **kwards):
-    '''Add curations from ancestors and to descendants.'''
+def propagate_curations_to_descendants(sender, instance, created, **kwargs):
+    '''Propagate curations from ancestors to descendants.'''
 
     # Get all curations from ancestors
     curations = instance.get_curations()
-    print(curations)
 
     # Apply curations to instance and descendants
     for descendant in instance.get_descendants(include_self=True):
         descendant.curadoria_set.set(curations)
-        print(descendant)
+
 
 @receiver(pre_save, sender=Curadoria)
 def propagate_curations_to_descendants(sender, instance, *args, **kwargs):

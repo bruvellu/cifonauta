@@ -51,7 +51,7 @@ class UserCifonautaChangeForm(forms.ModelForm):
 
         if self.instance.pk:
             self.fields['curator_of'].initial = self.instance.curatorship_curator.all()
-            self.fields['specialist_of'].initial = self.instance.curatorship_specialist.all()
+            self.fields['specialist_of'].initial = self.instance.curations_as_specialist.all()
 
     def save(self, commit=True):
         user_instance = super().save(commit=False)
@@ -62,7 +62,7 @@ class UserCifonautaChangeForm(forms.ModelForm):
         specialist_of = self.cleaned_data.get('specialist_of', [])
         curator_of = self.cleaned_data.get('curator_of', [])
 
-        user_instance.curatorship_specialist.set(specialist_of)
+        user_instance.curations_as_specialist.set(specialist_of)
         user_instance.curatorship_curator.set(curator_of)
 
         return user_instance

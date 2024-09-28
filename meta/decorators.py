@@ -34,7 +34,7 @@ def specialist_required(view_func):
     @authentication_required
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
-        is_specialist = user.curatorship_specialist.exists()
+        is_specialist = user.curations_as_specialist.exists()
         if is_specialist:
             return view_func(request, *args, **kwargs)
         
@@ -67,7 +67,7 @@ def media_specialist_required(view_func):
         media_id = kwargs.get('media_id')
 
         user = request.user
-        curations = user.curatorship_specialist.all()
+        curations = user.curations_as_specialist.all()
         curations_taxa = set()
 
         for curation in curations:
@@ -166,7 +166,7 @@ def specialist_or_curator_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
         is_curator = user.curatorship_curator.exists()
-        is_specialist = user.curatorship_specialist.exists()
+        is_specialist = user.curations_as_specialist.exists()
 
         if is_specialist or is_curator:
             return view_func(request, *args, **kwargs)
@@ -184,7 +184,7 @@ def curations_media_required(view_func):
         media_id = kwargs.get('media_id')
         user = request.user
 
-        curations_as_specialist = user.curatorship_specialist.all()
+        curations_as_specialist = user.curations_as_specialist.all()
         curations_as_specialist_taxa = set()
         for curation in curations_as_specialist:
             curations_as_specialist_taxa.update(curation.taxa.all())

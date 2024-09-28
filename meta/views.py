@@ -222,7 +222,7 @@ def upload_media_step1(request):
         messages.info(request, 'Complete ou cancele o upload para adicionar outras mídias')
         return redirect('upload_media_step2')
     
-    is_specialist = request.user.curatorship_specialist.exists()
+    is_specialist = request.user.curations_as_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     media_mimetypes = [m.split('/')[1].upper() for m in MEDIA_MIMETYPES]
@@ -369,7 +369,7 @@ def upload_media_step2(request):
     location_form = AddLocationForm()
     taxa_form = AddTaxaForm()
     
-    is_specialist = request.user.curatorship_specialist.exists()
+    is_specialist = request.user.curations_as_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     context = {
@@ -498,7 +498,7 @@ def editing_media_details(request, media_id):
     taxa_form = AddTaxaForm()
 
     # media = get_object_or_404(Media, pk=media_id)
-    is_specialist = request.user.curatorship_specialist.exists()
+    is_specialist = request.user.curations_as_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     context = {
@@ -576,7 +576,7 @@ def editing_media_list(request):
     records_number = number_of_entries_per_page(request, 'entries_curadoria_media_list')
 
     user = request.user
-    curations = user.curatorship_specialist.all()
+    curations = user.curations_as_specialist.all()
     curations_taxa = set()
 
     for curation in curations:
@@ -686,7 +686,7 @@ def editing_media_list(request):
         'location_form': location_form,
         'object_exists': queryset.exists(),
         'entries': page,
-        'is_specialist': user.curatorship_specialist.exists(),
+        'is_specialist': user.curations_as_specialist.exists(),
         'is_curator': user.curatorship_curator.exists(),
         'list_page': True
     }
@@ -819,7 +819,7 @@ def my_media_details(request, pk):
         license_index = license_choices.index(media.license)
         form.fields['license'].choices = Media.LICENSE_CHOICES[:license_index + 1]
 
-    is_specialist = request.user.curatorship_specialist.exists()
+    is_specialist = request.user.curations_as_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     authors_form = AddAuthorsForm()
@@ -899,7 +899,7 @@ def my_media_list(request):
     authors_form = AddAuthorsForm()
     location_form = AddLocationForm()
 
-    is_specialist = user.curatorship_specialist.exists()
+    is_specialist = user.curations_as_specialist.exists()
     is_curator = user.curatorship_curator.exists()
 
     queryset_paginator = Paginator(filtered_queryset, records_number)
@@ -941,7 +941,7 @@ def manage_users(request):
                     messages.error(request, f'O usuário "{user.first_name} {user.last_name}" possui mídia relacionada')
                     return redirect('manage_users')
 
-                user.curatorship_specialist.clear()
+                user.curations_as_specialist.clear()
                 user.curatorship_curator.clear()
                 
             authors.update(is_author=True)
@@ -958,7 +958,7 @@ def manage_users(request):
 
             messages.success(request, "Os especialistas foram atualizados com sucesso")
 
-    is_specialist = request.user.curatorship_specialist.exists()
+    is_specialist = request.user.curations_as_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     curatorships = Curation.objects.filter(curators=request.user.id)
@@ -1081,7 +1081,7 @@ def revision_media_list(request):
         'location_form': location_form,
         'object_exists': queryset.exists(),
         'entries': page,
-        'is_specialist': user.curatorship_specialist.exists(),
+        'is_specialist': user.curations_as_specialist.exists(),
         'is_curator': user.curatorship_curator.exists(),
         'list_page': True
     }
@@ -1142,7 +1142,7 @@ def revision_modified_media(request, media_id):
             messages.error(request, 'Houve um erro ao tentar realizar a ação')
 
 
-    is_specialist = request.user.curatorship_specialist.exists()
+    is_specialist = request.user.curations_as_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     form = ModifiedMediaForm(instance=modified_media, author_form=True) if modified_media.altered_by_author else ModifiedMediaForm(instance=modified_media)
@@ -1237,7 +1237,7 @@ def revision_media_details(request, media_id):
     location_form = AddLocationForm()
     taxa_form = AddTaxaForm()
 
-    is_specialist = request.user.curatorship_specialist.exists()
+    is_specialist = request.user.curations_as_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     context = {
@@ -1259,7 +1259,7 @@ def my_curations_media_list(request):
 
     user = request.user
 
-    curations_as_specialist = user.curatorship_specialist.all()
+    curations_as_specialist = user.curations_as_specialist.all()
     curations_as_specialist_taxa = set()
     for curation in curations_as_specialist:
         curations_as_specialist_taxa.update(curation.taxa.all())
@@ -1347,7 +1347,7 @@ def my_curations_media_list(request):
         'location_form': location_form,
         'object_exists': queryset.exists(),
         'entries': page,
-        'is_specialist': user.curatorship_specialist.exists(),
+        'is_specialist': user.curations_as_specialist.exists(),
         'is_curator': user.curatorship_curator.exists(),
         'list_page': True
     }
@@ -1483,7 +1483,7 @@ def my_curations_media_details(request, media_id):
         form.fields['state'].queryset = State.objects.none()
     
     
-    is_specialist = request.user.curatorship_specialist.exists()
+    is_specialist = request.user.curations_as_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     modified_media_form = ModifiedMediaForm(instance=media)
@@ -1516,7 +1516,7 @@ def download_media(request, media_id):
 @curator_required
 def tour_list(request):
     tours = Tour.objects.filter(creator=request.user)
-    is_specialist = request.user.curatorship_specialist.exists()
+    is_specialist = request.user.curations_as_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     context = {
@@ -1552,7 +1552,7 @@ def tour_add(request):
 
     form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
-    is_specialist = request.user.curatorship_specialist.exists()
+    is_specialist = request.user.curations_as_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     context = {
@@ -1596,7 +1596,7 @@ def tour_details(request, pk):
 
     medias_related = tour.media.all()
 
-    is_specialist = request.user.curatorship_specialist.exists()
+    is_specialist = request.user.curations_as_specialist.exists()
     is_curator = request.user.curatorship_curator.exists()
 
     context = {

@@ -33,7 +33,7 @@ class Curation(models.Model):
             help_text=_('Táxons nesta curadoria.'))
     specialists = models.ManyToManyField(
             settings.AUTH_USER_MODEL,
-            related_name='curatorship_specialist',
+            related_name='curations_as_specialist',
             blank=True,
             verbose_name=_('especialistas'),
             help_text=_('Especialistas nesta curadoria.'))

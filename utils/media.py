@@ -39,13 +39,37 @@ def resize_image(filepath, dimension, quality):
 
 def resize_video(input_path, dimension, bitrate, output_path):
     '''Uses FFmpeg to scale and convert videos.'''
+    #TODO: Fix this mess. Watermark gets distorted always...
+
     # min(width, iw) prevents upscaling
     # lanczos is a better resizing algorithm
+    # ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
+                   # '-threads', '0', '-i', input_path,
+                   # '-b:v', f'{bitrate}k', '-filter:v',
+                   # f'scale=\'min({dimension},iw)\':-2:flags=lanczos',
+                   # output_path]
+
+    # # With watermark gets distorted
+    # ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
+                   # '-threads', '0',
+                   # '-i', input_path,
+                   # '-i', 'tmp/marca.png',
+                   # '-b:v', f'{bitrate}k',
+                   # '-filter_complex',
+                   # f'scale=\'min({dimension},iw)\':-2:flags=lanczos,overlay=0:main_h-overlay_h-0',
+                   # output_path]
+
+    # # With watermark gets distorted
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
-                   '-threads', '0', '-i', input_path,
-                   '-b:v', f'{bitrate}k', '-filter:v',
-                   f'scale=\'min({dimension},iw)\':-2:flags=lanczos',
+                   '-threads', '0',
+                   '-i', input_path,
+                   '-i', 'tmp/marca.png',
+                   '-b:v', f'{bitrate}k',
+                   '-filter_complex',
+                   f'scale=\'min({dimension},iw)\':-2:flags=lanczos[video];[video][1:v]overlay=0:main_h-overlay_h-0',
                    output_path]
+
+
     try:
         subprocess.call(ffmpeg_call)
         return True

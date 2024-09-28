@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.template import loader 
 from django.core.mail import EmailMultiAlternatives 
 from .models import UserCifonauta
-from meta.models import Curadoria
+from meta.models import Curation
 from django import forms
 
 
@@ -27,7 +27,7 @@ class UserCifonautaCreationForm(UserCreationForm):
 class UserCifonautaChangeForm(forms.ModelForm):
     specialist_of = forms.ModelMultipleChoiceField(
         required=False,
-        queryset=Curadoria.objects.all(),
+        queryset=Curation.objects.all(),
         widget=forms.SelectMultiple(
             attrs={"class": "select2-options", "multiple": "multiple"}
         ),
@@ -35,7 +35,7 @@ class UserCifonautaChangeForm(forms.ModelForm):
     )
     curator_of = forms.ModelMultipleChoiceField(
         required=False,
-        queryset=Curadoria.objects.all(),
+        queryset=Curation.objects.all(),
         widget=forms.SelectMultiple(
             attrs={"class": "select2-options", "multiple": "multiple"}
         ),

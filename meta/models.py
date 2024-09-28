@@ -26,7 +26,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 #TODO: Change taxons to taxa
 #TODO: Set a proper related name (curations?)
 
-class Curadoria(models.Model):
+class Curation(models.Model):
     name = models.CharField(max_length=50)
     taxons = models.ManyToManyField('Taxon', blank=True)
     specialists = models.ManyToManyField(settings.AUTH_USER_MODEL,
@@ -749,7 +749,7 @@ class Taxon(MPTTModel):
     def get_curations(self):
         '''Retrieve set of curations associated with ancestors.'''
         ancestors = self.get_ancestors(include_self=True)
-        curations = Curadoria.objects.filter(taxons__in=ancestors).distinct()
+        curations = Curation.objects.filter(taxons__in=ancestors).distinct()
         return curations
 
     @staticmethod
@@ -963,9 +963,3 @@ class Stats(models.Model):
         verbose_name = _('estatísticas')
         verbose_name_plural = _('estatísticas')
 
-
-# # Create citation with bibkey
-# models.signals.pre_save.connect(citation_pre_save, sender=Reference)
-
-# # Get taxons descendents when creating a curatorship
-# models.signals.m2m_changed.connect(get_taxons_descendants, sender=Curadoria.taxons.through)

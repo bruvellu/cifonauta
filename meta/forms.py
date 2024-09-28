@@ -3,7 +3,7 @@
 from django import forms
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
-from .models import Media, Curadoria, ModifiedMedia, Person, Taxon, Tour, Location, Tag
+from .models import Media, Curation, ModifiedMedia, Person, Taxon, Tour, Location, Tag
 from user.models import UserCifonauta
 from django.template import loader 
 from django.core.mail import EmailMultiAlternatives
@@ -514,14 +514,14 @@ class BashActionsForm(forms.ModelForm, SendEmailForm):
             
 
 class DashboardFilterForm(forms.Form):
-    Curadoria = apps.get_model('meta', 'Curadoria')
+    Curation = apps.get_model('meta', 'Curation')
     
     search = forms.CharField(required=False,
                              label=_('Filtrar por:'),
                              widget=forms.TextInput(attrs={'placeholder': _('Digite palavra(s)-chave')}))
     curations = forms.ModelMultipleChoiceField(
         required=False,
-        queryset=Curadoria.objects.all(),
+        queryset=Curation.objects.all(),
         widget=forms.SelectMultiple(attrs={"class": "select2-curations", "multiple": "multiple"}),
         label=_('Curadorias')
     )
@@ -667,9 +667,9 @@ class AdminForm(forms.Form):
             required=False, label=_('Escolher tour(s)'))
     
 
-class CuradoriaAdminForm(forms.ModelForm):
+class CurationAdminForm(forms.ModelForm):
     class Meta:
-        model = Curadoria
+        model = Curation
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):

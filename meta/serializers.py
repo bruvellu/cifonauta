@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Reference, Taxon, Location, Person, Curadoria
+from .models import Reference, Taxon, Location, Person, Curation
 from django.utils.text import slugify
 
 from utils.worms import Aphia

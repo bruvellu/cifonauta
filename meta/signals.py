@@ -5,7 +5,7 @@ from django.db.models.signals import pre_save, post_save, m2m_changed, pre_delet
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from django.utils import translation
-from meta.models import Media, Person, Tag, Category, Taxon, Location, City, State, Country, Reference, Tour, Curadoria
+from meta.models import Media, Person, Tag, Category, Taxon, Location, City, State, Country, Reference, Tour, Curation
 
 
 @receiver(pre_save, sender=Person)
@@ -86,11 +86,11 @@ def propagate_curations_to_descendants(sender, instance, created, **kwargs):
         descendant.curadoria_set.set(curations)
 
 
-@receiver(m2m_changed, sender=Curadoria.taxons.through)
+@receiver(m2m_changed, sender=Curation.taxons.through)
 def add_or_rm_descendants_to_curation(sender, instance, action, reverse, model, pk_set, **kwargs):
     '''Add or remove taxa descendants to current curation.'''
 
-    # Signal from Curadoria to Taxon (eg, Curadoria instance saved)
+    # Signal from Curation to Taxon (eg, Curation instance saved)
     if not reverse and action in ['pre_add', 'pre_remove']:
 
         # Prevent recursively calling this function for each descendant

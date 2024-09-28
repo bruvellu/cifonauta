@@ -22,21 +22,27 @@ from django.utils.text import slugify
 from django.utils import timezone
 from mptt.models import MPTTModel, TreeForeignKey
 
-#TODO: Set a proper related name (curations?)
 
 class Curation(models.Model):
     name = models.CharField(max_length=50)
-    taxa = models.ManyToManyField('Taxon', blank=True)
-    specialists = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                         related_name='curatorship_specialist',
-                                         blank=True,
-                                         verbose_name=_('especialistas'),
-                                         help_text=_('Especialistas da curadoria.'))
-    curators = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                      related_name='curatorship_curator',
-                                      blank=True,
-                                      verbose_name=_('curadores'),
-                                      help_text=_('Curadores da curadoria.'))
+    taxa = models.ManyToManyField(
+            'Taxon',
+            related_name='curations',
+            blank=True,
+            verbose_name=_('táxons'),
+            help_text=_('Táxons nesta curadoria.'))
+    specialists = models.ManyToManyField(
+            settings.AUTH_USER_MODEL,
+            related_name='curatorship_specialist',
+            blank=True,
+            verbose_name=_('especialistas'),
+            help_text=_('Especialistas da curadoria.'))
+    curators = models.ManyToManyField(
+            settings.AUTH_USER_MODEL,
+            related_name='curatorship_curator',
+            blank=True,
+            verbose_name=_('curadores'),
+            help_text=_('Curadores da curadoria.'))
 
     def __str__(self):
         return f'{self.name} [id={self.id}]'

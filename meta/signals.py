@@ -83,7 +83,7 @@ def propagate_curations_to_descendants(sender, instance, created, **kwargs):
 
     # Apply curations to instance and descendants
     for descendant in instance.get_descendants(include_self=True):
-        descendant.curadoria_set.set(curations)
+        descendant.curations.set(curations)
 
 
 @receiver(m2m_changed, sender=Curation.taxa.through)

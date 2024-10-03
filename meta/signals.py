@@ -74,51 +74,54 @@ def delete_files_from_folder(sender, instance, **kwargs):
                 print('{file} not found. Probably already deleted.')
 
 
-@receiver(post_save, sender=Taxon)
-def propagate_curations_to_descendants(sender, instance, created, **kwargs):
-    '''Propagate curations from ancestors to descendants.'''
+# @receiver(post_save, sender=Taxon)
+# def propagate_curations_to_descendants(sender, instance, created, **kwargs):
+    # '''Propagate curations from ancestors to descendants.'''
 
-    # Get all curations from ancestors
-    curations = instance.get_curations()
+    # # Get all curations from ancestors
+    # curations = instance.get_curations()
 
-    # Apply curations to instance and descendants
-    for descendant in instance.get_descendants(include_self=True):
-        descendant.curations.set(curations)
+    # # Apply curations to instance and descendants
+    # for descendant in instance.get_descendants(include_self=True):
+        # print('POSTSAVE', descendant, curations)
+        # descendant.curations.set(curations)
 
 
-@receiver(m2m_changed, sender=Curation.taxa.through)
-def add_or_rm_descendants_to_curation(sender, instance, action, reverse, model, pk_set, **kwargs):
-    '''Add or remove taxa descendants to current curation.'''
+# @receiver(m2m_changed, sender=Curation.taxa.through)
+# def add_or_rm_descendants_to_curation(sender, instance, action, reverse, model, pk_set, **kwargs):
+    # '''Add or remove taxa descendants to current curation.'''
 
-    # Signal from Curation to Taxon (eg, Curation instance saved)
-    if not reverse and action in ['pre_add', 'pre_remove']:
+    # # Signal from Curation to Taxon (eg, Curation instance saved)
+    # if not reverse and action in ['pre_add', 'pre_remove']:
 
-        # Prevent recursively calling this function for each descendant
-        m2m_changed.disconnect(add_or_rm_descendants_to_curation, sender=sender)
+        # # Prevent recursively calling this function for each descendant
+        # m2m_changed.disconnect(add_or_rm_descendants_to_curation, sender=sender)
 
-        # Get taxa being modified
-        taxa = Taxon.objects.filter(id__in=pk_set)
+        # # Get taxa being modified
+        # taxa = Taxon.objects.filter(id__in=pk_set)
 
-        # Get all descendants excluding self
-        descendants = taxa.get_descendants()
+        # # Get all descendants excluding self
+        # descendants = taxa.get_descendants()
 
-        # Add descendants to curation
-        if action == 'pre_add':
-            instance.taxa.add(*descendants)
-        elif action == 'pre_remove':
-            instance.taxa.remove(*descendants)
+        # # Add descendants to curation
+        # if action == 'pre_add':
+            # print('M2MCHANGED', 'PREADD', taxa)
+            # instance.taxa.add(*descendants)
+        # elif action == 'pre_remove':
+            # print('M2MCHANGED', 'PREREMOVE', taxa)
+            # instance.taxa.remove(*descendants)
 
-            #TODO: This allows removing subclades which is probably not a good idea. For example, removing Asterozoa from the Echinodermata curation would cause a problem that not all descendants would be include in the curation. The code should only remove a taxon if its ancestor is not part of curation. The code below prevents descendants removal, but not the removal of the specific taxon chosen by the admin. 
+            # #TODO: This allows removing subclades which is probably not a good idea. For example, removing Asterozoa from the Echinodermata curation would cause a problem that not all descendants would be include in the curation. The code should only remove a taxon if its ancestor is not part of curation. The code below prevents descendants removal, but not the removal of the specific taxon chosen by the admin. 
 
-            # ancestors = taxa.get_ancestors()
-            # ancestors_ids = ancestors.values_list('id', flat=True)
-            # if not instance.taxa.filter(id__in=ancestors_ids):
-                # instance.taxa.remove(*descendants)
-            # else:
-                # print('NOT REMOVED: ', descendants)
+            # # ancestors = taxa.get_ancestors()
+            # # ancestors_ids = ancestors.values_list('id', flat=True)
+            # # if not instance.taxa.filter(id__in=ancestors_ids):
+                # # instance.taxa.remove(*descendants)
+            # # else:
+                # # print('NOT REMOVED: ', descendants)
 
-        # Re-enable signal connection
-        m2m_changed.connect(add_or_rm_descendants_to_curation, sender=sender)
+        # # Re-enable signal connection
+        # m2m_changed.connect(add_or_rm_descendants_to_curation, sender=sender)
 
 
 def makestats(signal, instance, sender, **kwargs):

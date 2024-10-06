@@ -25,6 +25,10 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 class Curation(models.Model):
     name = models.CharField(max_length=50)
+    slug = models.SlugField(_('slug'), max_length=64, default='', blank=True,
+            help_text=_('Slug do nome da curadoria.'))
+    description = models.TextField(_('descrição'), default='', blank=True,
+            help_text=_('Descrição da curadoria.'))
     taxa = models.ManyToManyField(
             'Taxon',
             related_name='curations',
@@ -722,7 +726,6 @@ class Taxon(MPTTModel):
             help_text=_('AphiaID, o identificador do táxon no WoRMS.'))
     authority = models.CharField(_('autoridade'), max_length=256, blank=True, null=True,
             help_text=_('Autoridade do táxon.'))
-
     citation = models.TextField(_('citação'), default='', blank=True, help_text=_('Citação do táxon.'))
     status = models.CharField(_('status'), max_length=256, blank=True, null=True,
             help_text=_('Status do táxon.'))
@@ -762,7 +765,8 @@ class Taxon(MPTTModel):
 
     def update_curations(self):
         '''Add taxon to standard curations.'''
-        pass
+
+        # Add or remove from "not in WoRMS" curation
 
     def synchronize_media(self):
         '''Synchronize media between valid and invalid taxa.'''

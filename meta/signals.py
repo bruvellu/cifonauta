@@ -7,7 +7,7 @@ from django.template.defaultfilters import slugify
 from django.utils import translation
 from meta.models import Media, Person, Tag, Category, Taxon, Location, City, State, Country, Reference, Tour, Curation
 
-
+@receiver(pre_save, sender=Curation)
 @receiver(pre_save, sender=Person)
 @receiver(pre_save, sender=Tag)
 @receiver(pre_save, sender=Category)

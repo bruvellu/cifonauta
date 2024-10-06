@@ -761,7 +761,8 @@ class Taxon(MPTTModel):
 
     def fetch_worms_data(self):
         '''Fetch WoRMS metadata and apply for current taxon.'''
-        pass
+        #TODO: Can't do that... circular import. Keep this in the view for now.
+        #taxon_updater = TaxonUpdater(self.name)
 
     def update_curations(self):
         '''Add taxon to standard curations.

@@ -764,9 +764,25 @@ class Taxon(MPTTModel):
         pass
 
     def update_curations(self):
-        '''Add taxon to standard curations.'''
+        '''Add taxon to standard curations.
+
+        These are:
+            - id=1, 'Cifonauta'
+            - id=2, 'Sem táxons',
+            - id=3, 'Presente no WoRMS'
+            - id=4, 'Ausente do WoRMS',
+        '''
+
+        # Add every taxon to the "all taxa" curation Cifonauta
+        self.curations.add(1)
 
         # Add or remove from "not in WoRMS" curation
+        if self.aphia:
+            self.curations.add(3)
+            self.curations.remove(4)
+        else:
+            self.curations.add(4)
+            self.curations.remove(3)
 
     def synchronize_media(self):
         '''Synchronize media between valid and invalid taxa.'''

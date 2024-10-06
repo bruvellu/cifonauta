@@ -756,6 +756,18 @@ class Taxon(MPTTModel):
         curations = Curation.objects.filter(taxa__in=ancestors).distinct()
         return curations
 
+    def fetch_worms_data(self):
+        '''Fetch WoRMS metadata and apply for current taxon.'''
+        pass
+
+    def update_curations(self):
+        '''Add taxon to standard curations.'''
+        pass
+
+    def synchronize_media(self):
+        '''Synchronize media between valid and invalid taxa.'''
+        pass
+
     @staticmethod
     def get_taxon_and_parents(qs):
         '''Returns all parents and current taxon from a QuerySet of taxa.'''

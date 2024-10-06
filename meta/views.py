@@ -275,6 +275,11 @@ def upload_media_step2(request):
                     #Update taxa
                     not_worms_curatory, created = Curation.objects.get_or_create(name='Não está na Worms')
                     for taxon in form.cleaned_data['taxa']:
+                        #TODO: Replace the logic below with new Taxon.methods()
+                        # 1. taxon.fetch_worms_data()
+                        # 2. taxon.synchronize_media()
+                        # 3. taxon.update_curations()
+
                         if taxon.rank == '' and taxon not in not_worms_curatory.taxa.all():
                             with Taxon.objects.disable_mptt_updates():
                                 update = TaxonUpdater(taxon.name)

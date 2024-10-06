@@ -39,6 +39,8 @@ def normalize_title_and_caption(sender, instance, *args, **kwargs):
 def synchronize_taxa_media(sender, instance, *args, **kwargs):
     '''Synchronize media between valid/invalid taxa.'''
 
+    #TODO: Move this logic to Taxon.synchronize_media_with_synonyms()
+
     # Add valid media to invalid taxon
     if instance.is_valid and instance.synonyms.all():
         for invalid in instance.synonyms.all():

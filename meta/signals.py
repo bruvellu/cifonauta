@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import os
-from django.db.models.signals import pre_save, post_save, m2m_changed, pre_delete
+
+from django.db.models.signals import pre_save, post_save, pre_delete
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from django.utils import translation
+
 from meta.models import Media, Person, Tag, Category, Taxon, Location, City, State, Country, Reference, Tour, Curation
+
 
 @receiver(pre_save, sender=Curation)
 @receiver(pre_save, sender=Person)

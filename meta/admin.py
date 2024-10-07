@@ -1,7 +1,8 @@
 from django.contrib import admin, messages
 from django.contrib.flatpages.models import FlatPage
-from meta.models import *
 from modeltranslation.admin import TranslationAdmin
+
+from meta.models import *
 from .forms import CurationAdminForm
 
 

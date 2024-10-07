@@ -1,8 +1,10 @@
+from django.contrib import messages
 from django.db import transaction
 from django.forms import ValidationError
-from django.contrib import messages
+
 from meta.forms import BashActionsForm
 from meta.models import Person
+
 
 @transaction.atomic
 def execute_bash_action(request, medias, user, view_name):

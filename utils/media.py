@@ -12,11 +12,12 @@ import random
 import re
 import subprocess
 from datetime import datetime
-from django.utils import timezone
-from shutil import copy2, move
-from PIL import Image
-import pyexiv2
+from shutil import move
+
 import piexif
+import pyexiv2
+from PIL import Image
+from django.utils import timezone
 
 # Get logger
 logger = logging.getLogger('cifonauta.utils')

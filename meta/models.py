@@ -1,26 +1,21 @@
 # -*- coding: utf-8 -*-
 
-import os
 import random
 import re
-import shutil
 import string
 import uuid
 
-from utils.media import Metadata, resize_image, resize_video, extract_video_cover
-
 from django.conf import settings
-from django.contrib.auth.models import Group
-from django.contrib.postgres.aggregates import StringAgg
 from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchVectorField, SearchVector
 from django.db import models
 from django.db.models import Q, Value
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
-from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
+
+from utils.media import Metadata, resize_image, resize_video, extract_video_cover
 
 
 class Curation(models.Model):

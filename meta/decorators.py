@@ -1,8 +1,11 @@
 from functools import wraps
+
+from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse
-from .models import Media, Person, Tour
-from django.db.models import Q
+
+from .models import Media, Tour
+
 
 def authentication_required(view_func):
     @wraps(view_func)

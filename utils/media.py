@@ -239,9 +239,9 @@ def get_info(video):
     # Necessário converter pra string pra ser objeto permanente.
     info = str(call.stderr.read())
     # Encontra a duração do arquivo.
-    length_re = re.search('(?<=Duration: )\d+:\d+:\d+', info)
+    length_re = re.search(r'(?<=Duration: )\d+:\d+:\d+', info)
     # Encontra o codec e dimensões.
-    precodec_re = re.search('(?<=Video: ).+, .+, \d+x\d+', info)
+    precodec_re = re.search(r'(?<=Video: ).+, .+, \d+x\d+', info)
     # Processando os outputs brutos.
     #XXX Melhorar isso e definir o formato oficial dos valores.
     # Exemplo (guardar em segundos e converter depois):

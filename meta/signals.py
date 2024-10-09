@@ -55,6 +55,11 @@ def synchronize_taxa_media(sender, instance, *args, **kwargs):
         instance.valid_taxon.media.add(*instance.media.all())
         print(f'Media from {instance} (is_valid={instance.is_valid}) to {instance.valid_taxon} (is_valid={instance.valid_taxon.is_valid})')
 
+@receiver(post_save, sender=Taxon)
+def update_taxon_curations(sender, instance, created, *args, **kwargs):
+    '''Update curations after saving a taxon.'''
+    instance.update_curations()
+
 
 @receiver(post_save, sender=Media)
 def update_search_vector(sender, instance, created, *args, **kwargs):

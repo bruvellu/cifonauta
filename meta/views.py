@@ -257,29 +257,19 @@ def upload_media_step2(request):
                     media_instance.sitepath = media_instance.file_medium
                     media_instance.coverpath = media_instance.file_cover
 
-                    #Update taxa
-                    not_worms_curatory, created = Curation.objects.get_or_create(name='Não está na Worms')
+                    # Update taxa one by one
                     for taxon in form.cleaned_data['taxa']:
+
                         #TODO: Replace the logic below with new Taxon.methods()
                         # 1. taxon.fetch_worms_data()
                         # 2. taxon.synchronize_media()
                         # 3. taxon.update_curations()
 
-                        if taxon.rank == '' and taxon not in not_worms_curatory.taxa.all():
-                            with Taxon.objects.disable_mptt_updates():
-                                update = TaxonUpdater(taxon.name)
-                            Taxon.objects.rebuild()
-                            if update.status == 'absent':
-                                curation, created = Curation.objects.get_or_create(name='Não está na Worms')
-                                curation.taxa.add(taxon)
-                            else:
-                                curation, created = Curation.objects.get_or_create(name='Todos os Táxons')
-                                curation.taxa.add(taxon)
-                        if taxon.valid_taxon != None:
-                            media_instance.taxa.add(taxon.valid_taxon)
-                            media_instance.taxa.remove(taxon)
-                            curation, created = Curation.objects.get_or_create(name='Todos os Táxons')
-                            curation.taxa.add(taxon.valid_taxon)
+                        # Fetch WoRMS metadata for taxon, if needed
+                        if taxon.needs_worms():
+                            taxon_updater = TaxonUpdater(taxon.name)
+
+                        # Media and curations will synchronize via signals
                                     
                     # Save media instance
                     media_instance.save() #TODO: Move down (last)

@@ -759,6 +759,19 @@ class Taxon(MPTTModel):
         #TODO: Can't do that... circular import. Keep this in the view for now.
         #taxon_updater = TaxonUpdater(self.name)
 
+    def needs_worms(self):
+        '''Check if taxon needs metadata from WoRMS.'''
+        #TODO: This is meant to keep the logic within model methods, not views.
+
+        # Get curation IDs
+        curation_ids = self.get_curations().values_list('id', flat=True)
+
+        # Return True if no AphiaID and not already in 'Absent from WoRMS' curation (id=4)
+        if not self.aphia and 4 not in curation_ids:
+            return True
+        else:
+            return False
+
     def update_curations(self):
         '''Add taxon to standard curations.
 

@@ -260,11 +260,6 @@ def upload_media_step2(request):
                     # Update taxa one by one
                     for taxon in form.cleaned_data['taxa']:
 
-                        #TODO: Replace the logic below with new Taxon.methods()
-                        # 1. taxon.fetch_worms_data()
-                        # 2. taxon.synchronize_media()
-                        # 3. taxon.update_curations()
-
                         # Fetch WoRMS metadata for taxon, if needed
                         if taxon.needs_worms():
                             taxon_updater = TaxonUpdater(taxon.name)

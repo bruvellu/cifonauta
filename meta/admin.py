@@ -9,7 +9,7 @@ from .forms import CurationAdminForm
 class CurationAdmin(admin.ModelAdmin):
     form = CurationAdminForm
     autocomplete_fields = ['specialists', 'curators', 'taxa']
-    list_display = ['id', 'name', 'description']
+    list_display = ['name', 'description', 'slug', 'id']
 
 
 # Translation admin.

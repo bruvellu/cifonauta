@@ -4,6 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from .forms import UserCifonautaCreationForm, UserCifonautaChangeForm
 from .models import UserCifonauta
 
+
 @admin.action(description="Tornar autor")
 def make_author_action(modeladmin, request, queryset):
     for pessoa in queryset:

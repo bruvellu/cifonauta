@@ -1,12 +1,13 @@
-from django.shortcuts import render, redirect
-from .forms import UserCifonautaCreationForm, LoginForm, PasswordResetForm, ForgotUsernameForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
-from django.views.generic.edit import FormView
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from meta.models import Person
+from django.views.generic.edit import FormView
+
+from .forms import UserCifonautaCreationForm, LoginForm, PasswordResetForm, ForgotUsernameForm
+
 
 def user_creation(request):
     if request.method == 'POST':

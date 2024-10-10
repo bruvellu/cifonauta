@@ -1,13 +1,15 @@
 from django.contrib import admin, messages
 from django.contrib.flatpages.models import FlatPage
-from meta.models import *
 from modeltranslation.admin import TranslationAdmin
+
+from meta.models import *
 from .forms import CurationAdminForm
 
 
 class CurationAdmin(admin.ModelAdmin):
     form = CurationAdminForm
     autocomplete_fields = ['specialists', 'curators', 'taxa']
+    list_display = ['name', 'description', 'slug', 'id']
 
 
 # Translation admin.

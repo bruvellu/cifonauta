@@ -1,15 +1,16 @@
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from captcha.fields import CaptchaField
+from django import forms
 from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMultiAlternatives
+from django.template import loader
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
-from captcha.fields import CaptchaField
 from django.utils.translation import gettext_lazy as _
-from django.template import loader 
-from django.core.mail import EmailMultiAlternatives 
-from .models import UserCifonauta
+
 from meta.models import Curation
-from django import forms
+from .models import UserCifonauta
 
 
 class UserCifonautaCreationForm(UserCreationForm):

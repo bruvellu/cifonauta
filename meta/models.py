@@ -1,30 +1,29 @@
 # -*- coding: utf-8 -*-
 
-import os
 import random
 import re
-import shutil
 import string
 import uuid
 
-from utils.media import Metadata, resize_image, resize_video, extract_video_cover
-
 from django.conf import settings
-from django.contrib.auth.models import Group
-from django.contrib.postgres.aggregates import StringAgg
 from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchVectorField, SearchVector
 from django.db import models
 from django.db.models import Q, Value
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
 from django.utils.text import slugify
-from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
+
+from utils.media import Metadata, resize_image, resize_video, extract_video_cover
 
 
 class Curation(models.Model):
     name = models.CharField(max_length=50)
+    slug = models.SlugField(_('slug'), max_length=64, default='', blank=True,
+            help_text=_('Slug do nome da curadoria.'))
+    description = models.TextField(_('descrição'), default='', blank=True,
+            help_text=_('Descrição da curadoria.'))
     taxa = models.ManyToManyField(
             'Taxon',
             related_name='curations',
@@ -722,7 +721,6 @@ class Taxon(MPTTModel):
             help_text=_('AphiaID, o identificador do táxon no WoRMS.'))
     authority = models.CharField(_('autoridade'), max_length=256, blank=True, null=True,
             help_text=_('Autoridade do táxon.'))
-
     citation = models.TextField(_('citação'), default='', blank=True, help_text=_('Citação do táxon.'))
     status = models.CharField(_('status'), max_length=256, blank=True, null=True,
             help_text=_('Status do táxon.'))
@@ -755,6 +753,45 @@ class Taxon(MPTTModel):
         ancestors = self.get_ancestors(include_self=True)
         curations = Curation.objects.filter(taxa__in=ancestors).distinct()
         return curations
+
+    def fetch_worms_data(self):
+        '''Fetch WoRMS metadata and apply for current taxon.'''
+        #TODO: Can't do that... circular import. Keep this in the view for now.
+        #taxon_updater = TaxonUpdater(self.name)
+
+    def needs_worms(self):
+        '''Check if taxon needs metadata from WoRMS.'''
+        #TODO: This is meant to keep the logic within model methods, not views.
+
+        if not self.aphia and not self.authority:
+            return True
+        else:
+            return False
+
+    def update_curations(self):
+        '''Add taxon to standard curations.
+
+        These are:
+            - id=1, 'Cifonauta'
+            - id=2, 'Sem táxons',
+            - id=3, 'Presente no WoRMS'
+            - id=4, 'Ausente do WoRMS',
+        '''
+
+        # Add every taxon to the "all taxa" curation Cifonauta
+        self.curations.add(1)
+
+        # Add or remove from "not in WoRMS" curation
+        if self.aphia:
+            self.curations.add(3)
+            self.curations.remove(4)
+        else:
+            self.curations.add(4)
+            self.curations.remove(3)
+
+    def synchronize_media(self):
+        '''Synchronize media between valid and invalid taxa.'''
+        pass
 
     @staticmethod
     def get_taxon_and_parents(qs):

@@ -1,7 +1,9 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import UserCifonauta
+
 from meta.models import Person
+from .models import UserCifonauta
+
 
 @receiver(post_save, sender=UserCifonauta)
 def create_person(sender, instance, created, **kwargs):

@@ -2,18 +2,17 @@
 
 from django import forms
 from django.apps import apps
-from django.utils.translation import gettext_lazy as _
-from .models import Media, Curation, ModifiedMedia, Person, Taxon, Tour, Location, Tag
-from user.models import UserCifonauta
-from django.template import loader 
 from django.core.mail import EmailMultiAlternatives
-from django.db.models.query import QuerySet
 from django.db import models
-from utils.media import format_name
-from django.utils import timezone
+from django.db.models.query import QuerySet
 from django.forms import ValidationError
+from django.template import loader
 from django.template.loader import render_to_string
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
+from user.models import UserCifonauta
+from .models import Media, Curation, ModifiedMedia, Person, Taxon, Tour, Location, Tag
 
 METAS = (
         ('author', _('autor')),

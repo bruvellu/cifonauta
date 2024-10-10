@@ -21,7 +21,7 @@ from rest_framework.response import Response
 
 from cifonauta.settings import MEDIA_EXTENSIONS, IMAGE_EXTENSIONS, VIDEO_EXTENSIONS, MEDIA_MIMETYPES, IMAGE_MIMETYPES, \
     IMAGE_SIZE_LIMIT, VIDEO_SIZE_LIMIT, VIDEO_MIMETYPES, FILENAME_REGEX, MEDIA_ROOT
-from utils.media import number_of_entries_per_page
+from utils.media import number_of_entries_per_page, format_name
 from utils.taxa import TaxonUpdater
 from utils.views import execute_bash_action
 from .decorators import *

@@ -1,7 +1,7 @@
 # Requirement for pip
 wheel
 # Django itself, upgrade manually
-django==4.2.16
+django==5.1.2
 #TODO: Update PostgreSQL library?
 psycopg2==2.9.6
 # For taxon hierarchical tree

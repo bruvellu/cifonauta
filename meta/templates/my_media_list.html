@@ -16,7 +16,7 @@
 
 {% block dashboard_content %}
 
-<h2>Lista de suas mídias</h2>
+<h2>Lista de mídias</h2>
 
 {% if messages %}
 <div class="messages-div hide-messages-animation">
@@ -61,7 +61,7 @@
                         <th class="no-shrink-cell">Título</th>
                         <th class="">Tipo de mídia</th>
                         <th class="">Status</th>
-                        <th class="no-shrink-cell">Curadorias</th>
+
                         <th class="no-shrink-cell">Data de Modificação</th>
                     </tr>
                 </thead>
@@ -77,31 +77,15 @@
                             </a>
                         </td>
                         <td class="text-cedule">
-                            {% if media.title_pt_br %}
-                            {{ media.title_pt_br }}
-                            {% endif %}
+                            {{ media.title }}
                         </td>
                         <td>
-                            {% if media.datatype == 'video' %}
-                            Vídeo
-                            {% else %}
-                            Imagem
-                            {% endif %}
+                        {{ media.datatype }}
                         </td>
                         <td class="text-cedule">
                             <span class="media-status {% if media.status == 'draft' %}not-edited{% elif media.status == 'submitted' %}to-review{% else %}published{% endif %}">
                                 {{ media.get_status_display }}
                             </span>
-                        </td>
-                        <td>
-                            <ul class="curations-list">
-                                {% get_media_curations media as curations %}
-                                {% for curation in curations %}
-                                <li>
-                                    {{ curation }}
-                                </li>
-                                {% endfor %}
-                            </ul>
                         </td>
                         <td>{{ media.date_modified }}</td>
                     </tr>

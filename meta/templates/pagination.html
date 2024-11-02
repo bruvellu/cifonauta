@@ -3,7 +3,7 @@
 <footer class="paginator">
 
   {% if entries.has_previous %}
-     <div><a href="{% paged_url request.META.QUERY_STRING entries.previous_page_number %}">< {% trans 'anterior' %}</a></div>
+     <div><a href="{% paged_url request.META.QUERY_STRING entries.previous_page_number %}"><< {% trans 'anterior' %}</a></div>
   {% else %}
      <div>&nbsp;</div>
   {% endif %}

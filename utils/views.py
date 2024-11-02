@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.forms import ValidationError
 
-from meta.forms import BashActionsForm
+from meta.forms import BatchActionsForm
 from meta.models import Person
 
 
@@ -13,7 +13,7 @@ def execute_bash_action(request, medias, user, view_name):
     try:
         with transaction.atomic():
             for media in medias:
-                form = BashActionsForm(request.POST, instance=media, user_person=user_person, view_name=view_name)
+                form = BatchActionsForm(request.POST, instance=media, user_person=user_person, view_name=view_name)
                 form.save()
     except Exception as error:
         messages.error(request, 'Houve um erro ao tentar aplicar as ações em lote')

@@ -353,7 +353,7 @@ class TourForm(forms.ModelForm):
         self.fields['media'].label_from_instance = lambda obj: obj.title
      
         
-class BashActionsForm(forms.ModelForm, SendEmailForm):
+class BatchActionsForm(forms.ModelForm, SendEmailForm):
     STATUS_CHOICES = [
         ('maintain', _('Manter status')),
         ('submitted', _('Enviar para revisão')),

@@ -33,39 +33,48 @@
         </button>
         <ul>
             <li class='initial-page-li'>
-                <a href="{% url 'home' %}">Voltar à Página Inicial</a>
-            </li>
+                <a href="{% url 'home' %}">Voltar ao site</a>
+            </li><hr>
             <li>
-                <a 
-                    href="{% url 'upload_media_step1' %}" 
-                    {% if '/dashboard/upload/' in fullpath %}class='current-page'{% endif %}
-                >
-                    Adicionar mídia
+                <a href="{% url 'upload_media_step1' %}" {% if '/dashboard/upload/' in fullpath %}class='current-page'{% endif %}>
+                    Adicionar
+                </a>
+            </li><hr>
+            <li>
+                <a href="{% url 'my_media_list' %}" {% if '/dashboard/medias/' in fullpath %}class='current-page'{% endif %}>
+                    Meus uploads
                 </a>
             </li>
+            {% if is_specialist or is_curator %}
             <li>
-                <a href="{% url 'my_media_list' %}" {% if '/dashboard/medias/' in fullpath %}class='current-page'{% endif %}>Minhas mídias</a>
-            </li>
+                <a href="{% url 'my_curations_media_list' %}" {% if '/dashboard/curations/' in fullpath %}class='current-page'{% endif %}>
+                    Minhas curadorias
+                </a>
+            </li><hr>
+            {% endif %}
             {% if is_specialist %}
             <li>
-                <a href="{% url 'editing_media_list' %}" {% if '/dashboard/editing/' in fullpath %}class='current-page'{% endif %}>Edição de metadados</a>
+                <a href="{% url 'editing_media_list' %}" {% if '/dashboard/editing/' in fullpath %}class='current-page'{% endif %}>
+                    Editar metadados
+                </a>
             </li>
             {% endif %}
             {% if is_curator %}
             <li>
-                <a href="{% url 'revision_media_list' %}" {% if '/dashboard/revision/' in fullpath %}class='current-page'{% endif %}>Revisão de mídias</a>
+                <a href="{% url 'revision_media_list' %}" {% if '/dashboard/revision/' in fullpath %}class='current-page'{% endif %}>
+                    Revisar submissões
+                </a>
+            </li><hr>
+            <li>
+                <a href="{% url 'manage_users' %}" {% if '/dashboard/manage-users/' in fullpath %}class='current-page'{% endif %}>
+                    Gerenciar usuários
+                </a>
             </li>
             <li>
-                <a href="{% url 'manage_users' %}" {% if '/dashboard/manage-users/' in fullpath %}class='current-page'{% endif %}>Gerenciar Usuários</a>
-            </li>
-            <li>
-                <a href="{% url 'tour_list' %}" {% if '/dashboard/tours/' in fullpath %}class='current-page'{% endif %}>Tours</a>
-            </li>
-            {% endif %}
-            {% if is_specialist or is_curator %}
-            <li>
-                <a href="{% url 'my_curations_media_list' %}" {% if '/dashboard/curations/' in fullpath %}class='current-page'{% endif %}>Mídias da minha curadoria</a>
-            </li>
+                <a href="{% url 'tour_list' %}" {% if '/dashboard/tours/' in fullpath %}class='current-page'{% endif %}>
+                    Gerenciar tours
+                </a>
+            </li><hr>
             {% endif %}
         </ul>
         {% endwith %}
@@ -83,7 +92,7 @@
         <h1>Módulo Administrativo</h1>
 
         {% block dashboard_content %}{% endblock %}
-    <mainv>
+    </main>
     
     <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

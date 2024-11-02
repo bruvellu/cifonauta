@@ -555,7 +555,7 @@ def editing_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = BashActionsForm(request.POST, view_name='editing_media_list')
+                form = BatchActionsForm(request.POST, view_name='editing_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
@@ -624,7 +624,7 @@ def editing_media_list(request):
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
-    form = BashActionsForm(view_name='editing_media_list')
+    form = BatchActionsForm(view_name='editing_media_list')
     taxa_form = AddTaxaForm()
     location_form = AddLocationForm()
 
@@ -784,14 +784,16 @@ def my_media_details(request, pk):
 @never_cache
 @author_required
 def my_media_list(request):
+    '''Show list of media uploaded by the user.'''
 
+    # Get logged in user from request
+    user = request.user
+
+    # Get variable with number of entries per page
     #TODO: Convert this to regular GET query parameter
     records_number = number_of_entries_per_page(request, 'entries_my_medias')
 
-    user = request.user
-    user_person = Person.objects.filter(user_cifonauta=user).first()
-    queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
-
+    # Logic controlling the filter form
     if request.method == "POST":
         action = request.POST['action']
 
@@ -801,7 +803,7 @@ def my_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = BashActionsForm(request.POST, view_name='my_media_list')
+                form = BatchActionsForm(request.POST, view_name='my_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
@@ -826,37 +828,52 @@ def my_media_list(request):
             else:
                 messages.warning(request, _('Nenhum registro foi selecionado'))
 
+    # Get media queryset
+    queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-id')
+
+    # Get GET query dictionary
     query_dict = request.GET.copy()
+
+    # Filter media through passed queries
     filtered_queryset = filter_medias(queryset, query_dict)
-    
+
+    # Create pagination
+    queryset_paginator = Paginator(filtered_queryset, records_number)
+    page_num = query_dict.get('page', 1)
+    entries = queryset_paginator.get_page(page_num)
+
+    # Get person associated to user
+    person = Person.objects.get(user_cifonauta=user)
+
+    # Check if user is a specialist or curator
+    is_specialist = user.curations_as_specialist.exists()
+    is_curator = user.curations_as_curator.exists()
+
+    # Populate filter form with query dict data
     filter_form = DashboardFilterForm(query_dict)
 
-    user = request.user
-    queryset = Media.objects.filter(user=user).exclude(status='loaded').order_by('-pk')
-    
-    form = BashActionsForm(view_name='my_media_list', user_person=user_person)
+    # TODO: Revise these forms for batch actions
+    form = BatchActionsForm(view_name='my_media_list', user_person=person)
     taxa_form = AddTaxaForm()
     authors_form = AddAuthorsForm()
     location_form = AddLocationForm()
 
-    is_specialist = user.curations_as_specialist.exists()
-    is_curator = user.curations_as_curator.exists()
-
-    queryset_paginator = Paginator(filtered_queryset, records_number)
-    page_num = request.GET.get('page')
-    page = queryset_paginator.get_page(page_num)
-
     context = {
-        'records_number': records_number,
-        'form': form,
+        'object_exists': queryset.exists(),
+        'entries': entries,
         'filter_form': filter_form,
+        'is_specialist': is_specialist,
+        'is_curator': is_curator,
+
+        'records_number': records_number,
+
+        'form': form,
         'taxa_form': taxa_form,
         'location_form': location_form,
         'authors_form': authors_form,
-        'object_exists': queryset.exists(),
-        'entries': page,
-        'is_specialist': is_specialist,
-        'is_curator': is_curator,
+
+        # This sets a darker background to the header
+        # TODO: Change to a less confusing name
         'list_page': True
     }
 
@@ -962,7 +979,7 @@ def revision_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = BashActionsForm(request.POST, view_name='revision_media_list')
+                form = BatchActionsForm(request.POST, view_name='revision_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
@@ -1009,7 +1026,7 @@ def revision_media_list(request):
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
-    form = BashActionsForm(view_name='revision_media_list')
+    form = BatchActionsForm(view_name='revision_media_list')
     taxa_form = AddTaxaForm()
     location_form = AddLocationForm()
 
@@ -1220,7 +1237,7 @@ def my_curations_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = BashActionsForm(request.POST, view_name='my_curations_media_list')
+                form = BatchActionsForm(request.POST, view_name='my_curations_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
@@ -1263,7 +1280,7 @@ def my_curations_media_list(request):
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
-    form = BashActionsForm(view_name='my_curations_media_list')
+    form = BatchActionsForm(view_name='my_curations_media_list')
     taxa_form = AddTaxaForm()
     location_form = AddLocationForm()
 

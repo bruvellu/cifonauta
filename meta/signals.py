@@ -45,23 +45,6 @@ def update_taxon_fields(sender, instance, *args, **kwargs):
     # Update value for on_worms boolean field
     instance.update_on_worms_field()
 
-#
-# @receiver(pre_save, sender=Taxon)
-# def synchronize_taxa_media(sender, instance, *args, **kwargs):
-#     '''Synchronize media between valid/invalid taxa.'''
-#
-#     #TODO: Move this logic to Taxon.synchronize_media_with_synonyms()
-#
-#     # Add valid media to invalid taxon
-#     if instance.is_valid and instance.synonyms.all():
-#         for invalid in instance.synonyms.all():
-#             invalid.media.add(*instance.media.all())
-#             print(f'Media from {instance} (is_valid={instance.is_valid}) to {invalid} (is_valid={invalid.is_valid})')
-#
-#     # Add invalid media to valid taxon
-#     elif not instance.is_valid and instance.valid_taxon:
-#         instance.valid_taxon.media.add(*instance.media.all())
-#         print(f'Media from {instance} (is_valid={instance.is_valid}) to {instance.valid_taxon} (is_valid={instance.valid_taxon.is_valid})')
 
 @receiver(post_save, sender=Taxon)
 def update_taxon_related(sender, instance, created, *args, **kwargs):
@@ -69,10 +52,12 @@ def update_taxon_related(sender, instance, created, *args, **kwargs):
     instance.update_curations()
     instance.synchronize_media_between_synonyms()
 
+
 @receiver(post_save, sender=Media)
 def update_search_vector(sender, instance, created, *args, **kwargs):
     '''Update search_vector field with current metadata after saving.'''
     sender.objects.filter(id=instance.id).update(search_vector=instance.update_search_vector())
+
 
 # Delete file from folder when the media is deleted on website
 @receiver(pre_delete, sender=Media)

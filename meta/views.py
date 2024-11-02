@@ -784,6 +784,8 @@ def my_media_details(request, pk):
 @never_cache
 @author_required
 def my_media_list(request):
+
+    #TODO: Convert this to regular GET query parameter
     records_number = number_of_entries_per_page(request, 'entries_my_medias')
 
     user = request.user

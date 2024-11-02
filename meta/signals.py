@@ -38,6 +38,14 @@ def normalize_title_and_caption(sender, instance, *args, **kwargs):
     instance.acknowledgments_pt_br = instance.normalize_caption(instance.acknowledgments_pt_br)
     instance.acknowledgments_en = instance.normalize_caption(instance.acknowledgments_en)
 
+
+@receiver(pre_save, sender=Taxon)
+def auto_update_taxon_fields(sender, instance, *args, **kwargs):
+    '''Update Taxon fields before saving.'''
+    # Update value for on_worms boolean field
+    instance.update_on_worms_field()
+
+
 @receiver(pre_save, sender=Taxon)
 def synchronize_taxa_media(sender, instance, *args, **kwargs):
     '''Synchronize media between valid/invalid taxa.'''
@@ -59,7 +67,6 @@ def synchronize_taxa_media(sender, instance, *args, **kwargs):
 def update_taxon_curations(sender, instance, created, *args, **kwargs):
     '''Update curations after saving a taxon.'''
     instance.update_curations()
-
 
 @receiver(post_save, sender=Media)
 def update_search_vector(sender, instance, created, *args, **kwargs):

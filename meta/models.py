@@ -724,14 +724,16 @@ class Taxon(MPTTModel):
     citation = models.TextField(_('citação'), default='', blank=True, help_text=_('Citação do táxon.'))
     status = models.CharField(_('status'), max_length=256, blank=True, null=True,
             help_text=_('Status do táxon.'))
-    is_valid = models.BooleanField(_('válido'), default=False,
-            help_text=_('Status do táxon.'))
+    is_valid = models.BooleanField(_('válido no WoRMS'), default=False,
+            help_text=_('Status do táxon no WoRMS.'))
     parent = TreeForeignKey('self', on_delete=models.SET_NULL, blank=True,
             null=True, related_name='children', verbose_name=_('pai'),
             help_text=_('Táxon pai deste táxon.'))
     valid_taxon = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,
             null=True, related_name='synonyms', verbose_name=_('táxon válido'),
             help_text=_('Sinônimo válido deste táxon.'))
+    on_worms = models.BooleanField(_('presente no WoRMS'), default=False,
+            help_text=_('Indica se o táxon está presente no WoRMS.'))
     timestamp = models.DateTimeField(_('data de modificação'), auto_now=True,
             blank=True, null=True, help_text=_('Data da última modificação do arquivo.'))
 
@@ -759,10 +761,15 @@ class Taxon(MPTTModel):
         #TODO: Can't do that... circular import. Keep this in the view for now.
         #taxon_updater = TaxonUpdater(self.name)
 
+    def update_on_worms_field(self):
+        '''Set boolean field for present/absent from WorMS.'''
+        if self.aphia:
+            self.on_worms = True
+        else:
+            self.on_worms = False
+
     def needs_worms(self):
         '''Check if taxon needs metadata from WoRMS.'''
-        #TODO: This is meant to keep the logic within model methods, not views.
-
         if not self.aphia and not self.authority:
             return True
         else:
@@ -777,6 +784,8 @@ class Taxon(MPTTModel):
             - id=3, 'Presente no WoRMS'
             - id=4, 'Ausente do WoRMS',
         '''
+
+        #TODO: These curations should be Taxon bool fields
 
         # Add every taxon to the "all taxa" curation Cifonauta
         self.curations.add(1)

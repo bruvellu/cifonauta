@@ -785,10 +785,10 @@ class Taxon(MPTTModel):
             - id=4, 'Ausente do WoRMS',
         '''
 
-        #TODO: These curations should be Taxon bool fields
-
         # Add every taxon to the "all taxa" curation Cifonauta
         self.curations.add(1)
+
+        #TODO: These curations should be Taxon bool fields
 
         # Add or remove from "not in WoRMS" curation
         if self.aphia:
@@ -798,9 +798,20 @@ class Taxon(MPTTModel):
             self.curations.add(4)
             self.curations.remove(3)
 
-    def synchronize_media(self):
+    def synchronize_media_between_synonyms(self):
         '''Synchronize media between valid and invalid taxa.'''
-        pass
+
+        # Add valid media to invalid taxon
+        if self.is_valid and self.synonyms.all():
+            for invalid in self.synonyms.all():
+                invalid.media.add(*self.media.all())
+                print(f'Media from {self} (is_valid={self.is_valid}) to {invalid} (is_valid={invalid.is_valid})')
+
+        # Add invalid media to valid taxon
+        elif not self.is_valid and self.valid_taxon:
+            self.valid_taxon.media.add(*self.media.all())
+            print(f'Media from {self} (is_valid={self.is_valid}) to {self.valid_taxon} (is_valid={self.valid_taxon.is_valid})')
+
 
     @staticmethod
     def get_taxon_and_parents(qs):

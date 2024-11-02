@@ -81,8 +81,8 @@ class PersonAdmin(admin.ModelAdmin):
 
 class TaxonAdmin(TranslationAdmin):
     list_display = ['name', 'aphia', 'rank', 'authority', 'status', 'is_valid',
-                    'valid_taxon', 'parent', 'timestamp']
-    list_filter = ['is_valid', 'timestamp', 'rank']
+                    'valid_taxon__name', 'timestamp']
+    list_filter = ['is_valid', 'on_worms', 'timestamp', 'rank']
     search_fields = ['name', 'authority']
     readonly_fields = ['timestamp']
 

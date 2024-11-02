@@ -555,7 +555,7 @@ def editing_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = BashActionsForm(request.POST, view_name='editing_media_list')
+                form = BatchActionsForm(request.POST, view_name='editing_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
@@ -624,7 +624,7 @@ def editing_media_list(request):
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
-    form = BashActionsForm(view_name='editing_media_list')
+    form = BatchActionsForm(view_name='editing_media_list')
     taxa_form = AddTaxaForm()
     location_form = AddLocationForm()
 
@@ -803,7 +803,7 @@ def my_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = BashActionsForm(request.POST, view_name='my_media_list')
+                form = BatchActionsForm(request.POST, view_name='my_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
@@ -852,8 +852,8 @@ def my_media_list(request):
     # Populate filter form with query dict data
     filter_form = DashboardFilterForm(query_dict)
 
-    # TODO: What are these forms for in this list view?
-    form = BashActionsForm(view_name='my_media_list', user_person=person)
+    # TODO: Revise these forms for batch actions
+    form = BatchActionsForm(view_name='my_media_list', user_person=person)
     taxa_form = AddTaxaForm()
     authors_form = AddAuthorsForm()
     location_form = AddLocationForm()
@@ -872,6 +872,8 @@ def my_media_list(request):
         'location_form': location_form,
         'authors_form': authors_form,
 
+        # This sets a darker background to the header
+        # TODO: Change to a less confusing name
         'list_page': True
     }
 
@@ -977,7 +979,7 @@ def revision_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = BashActionsForm(request.POST, view_name='revision_media_list')
+                form = BatchActionsForm(request.POST, view_name='revision_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
@@ -1024,7 +1026,7 @@ def revision_media_list(request):
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
-    form = BashActionsForm(view_name='revision_media_list')
+    form = BatchActionsForm(view_name='revision_media_list')
     taxa_form = AddTaxaForm()
     location_form = AddLocationForm()
 
@@ -1235,7 +1237,7 @@ def my_curations_media_list(request):
             media_ids = request.POST.getlist('selected_media_ids')
 
             if media_ids:
-                form = BashActionsForm(request.POST, view_name='my_curations_media_list')
+                form = BatchActionsForm(request.POST, view_name='my_curations_media_list')
 
                 if form.is_valid():
                     medias = Media.objects.filter(id__in=media_ids)
@@ -1278,7 +1280,7 @@ def my_curations_media_list(request):
     page_num = request.GET.get('page')
     page = queryset_paginator.get_page(page_num)
 
-    form = BashActionsForm(view_name='my_curations_media_list')
+    form = BatchActionsForm(view_name='my_curations_media_list')
     taxa_form = AddTaxaForm()
     location_form = AddLocationForm()
 

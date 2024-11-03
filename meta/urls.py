@@ -1,5 +1,7 @@
 from django.urls import path
+
 from . import views
+
 
 def extra(model, field):
     return {'model_name': model, 'field': field}

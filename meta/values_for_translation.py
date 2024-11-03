@@ -1053,6 +1053,8 @@ _('Tardígrado')
 # Translators: model=Media, field=title.
 _('Terceira divisão no embrião de bolacha-do-mar')
 # Translators: model=Media, field=title.
+_('Teste')
+# Translators: model=Media, field=title.
 _('Trilha ou salmonete')
 # Translators: model=Media, field=title.
 _('Tunicado pelágico')
@@ -2075,6 +2077,8 @@ _('Orifício por onde passa o sifão inalante do bivalve e marcas deixadas no se
 # Translators: model=Media, field=caption.
 _('Os Entoprocta (=Kamptozoa) compreendem um filo de animais invertebrados sésseis, coloniais ou solitários, um dos grupos menos conhecidos do Reino animal e de posição filogenética obscura e controversa. Cerca de 180 espécies foram descritas mundialmente. Pequenos, transparentes e de hábitos crípticos, os entoproctos passam geralmente despercebidos, embora sejam relativamente comuns em substratos consolidados, como rochas, seixos, corais, conchas e algas, sendo comensais de muitas espécies de invertebrados, como esponjas, poliquetas, sipuncúlidos. São frequentemente encontrados dentro dos tubos e galerias de seus hospedeiros. Eles são muito parecidos com alguns briozoários e hidrozoários pelo aspecto geral e hábito. Os indivíduos são formados basicamente por uma região distal superior, denominada cálice e que possui uma coroa de tentáculos ciliados, e uma haste denominada pedúnculo, na qual o cálice é sustentado; o pedúnculo pode ser preso diretamente ao substrato através de uma estrutura dilatada, denominada pé e característico das espécies solitárias, ou através de estolões nas espécies coloniais.')
 # Translators: model=Media, field=caption.
+_('Os equiúridos são invertebrados marinhos bentônicos não segmentados, com corpo em forma de bastão ou pêra e probóscide não retrátil. Na região ventral anterior, ocorre sempre um par de cerdas ou ganchos diminutos. Habitam fundos inconsolidados ou consolidados, construindo galerias revestidas internamente com muco.')
+# Translators: model=Media, field=caption.
 _('Os equiúridos são invertebrados marinhos bentônicos não segmentados, com corpo em forma de bastão ou pêra e probóscide não retrátil. Na região ventral anterior, ocorre sempre um par de cerdas ou ganchos diminutos. Habitam fundos inconsolidados ou consolidados, construindo galerias revestidas internamente com muco. Atualmente há fortes evidências de que os Echiura são de fato anelídeos.')
 # Translators: model=Media, field=caption.
 _('O siri-azul é uma espécie comum no litoral de São Paulo, ocorrendo próximo a manguezais e regiões estuarinas. Comercialmente importante para o ser humano, é também recurso alimentar para outros organismos aquáticos e aves litorâneas.')
@@ -2293,6 +2297,8 @@ _('Tentáculo.')
 # Translators: model=Media, field=caption.
 _('Tentáculos orais, 500x.')
 # Translators: model=Media, field=caption.
+_('Teste taxon novo.')
+# Translators: model=Media, field=caption.
 _('Tubo digestivo e celomas durante crescimento do par de braços antero-laterais (2° par).')
 # Translators: model=Media, field=caption.
 _('Tubo do poliqueta Diopatra  em sedimento areno-lamoso na região entremarés.')
@@ -2435,91 +2441,91 @@ _('Zoobotryum é comum no litoral norte de São Paulo, sobretudo em regiões por
 # Translators: model=Media, field=caption.
 _('Zooide com ovicelos.')
 # Translators: model=Media, field=acknowledgments.
-_('Alfredo Carvalho Filho')
+_('Alfredo Carvalho Filho.')
 # Translators: model=Media, field=acknowledgments.
-_('André Carrara Morandini')
+_('André Carrara Morandini.')
 # Translators: model=Media, field=acknowledgments.
-_('André Carrara Morandini; Fábio Lang da Silveira')
+_('André Carrara Morandini; Fábio Lang da Silveira.')
 # Translators: model=Media, field=acknowledgments.
-_('Antônia Cecília Z. Amaral')
+_('Antônia Cecília Z. Amaral.')
 # Translators: model=Media, field=acknowledgments.
-_('Antônio Carlos Marques')
+_('Antônio Carlos Marques.')
 # Translators: model=Media, field=acknowledgments.
-_('Antonio Sérgio Ferreira Ditadi')
+_('Antonio Sérgio Ferreira Ditadi.')
 # Translators: model=Media, field=acknowledgments.
-_('Arthur Anker')
+_('Arthur Anker.')
 # Translators: model=Media, field=acknowledgments.
-_('Carlo M. Cunha')
+_('Carlo M. Cunha.')
 # Translators: model=Media, field=acknowledgments.
-_('Cheryl Ames Lewis')
+_('Cheryl Ames Lewis.')
 # Translators: model=Media, field=acknowledgments.
-_('Cláudio Gonçalves Tiago')
+_('Cláudio Gonçalves Tiago.')
 # Translators: model=Media, field=acknowledgments.
-_('Clóvis Barreira e Castro')
+_('Clóvis Barreira e Castro.')
 # Translators: model=Media, field=acknowledgments.
-_('Dale R. Calder')
+_('Dale R. Calder.')
 # Translators: model=Media, field=acknowledgments.
-_('Dennis P. Gordon; Facelucia B. C. Souza')
+_('Dennis P. Gordon; Facelucia B. C. Souza.')
 # Translators: model=Media, field=acknowledgments.
-_('Erika Schlenz')
+_('Erika Schlenz.')
 # Translators: model=Media, field=acknowledgments.
-_('Fábio Lang da Silveira')
+_('Fábio Lang da Silveira.')
 # Translators: model=Media, field=acknowledgments.
-_('Fernando Z. Gibran')
+_('Fernando Z. Gibran.')
 # Translators: model=Media, field=acknowledgments.
-_('Fosca Pedini Pereira Leite')
+_('Fosca Pedini Pereira Leite.')
 # Translators: model=Media, field=acknowledgments.
-_('Fosca P. P. Leite')
+_('Fosca P. P. Leite.')
 # Translators: model=Media, field=acknowledgments.
-_('Gisele Yukimi Kawauchi')
+_('Gisele Yukimi Kawauchi.')
 # Translators: model=Media, field=acknowledgments.
-_('Gordon Hendler; Carlos Renato R. Ventura')
+_('Gordon Hendler; Carlos Renato R. Ventura.')
 # Translators: model=Media, field=acknowledgments.
-_('João Miguel de Matos Nogueira')
+_('João Miguel de Matos Nogueira.')
 # Translators: model=Media, field=acknowledgments.
-_('Jon L. Norenburg')
+_('Jon L. Norenburg.')
 # Translators: model=Media, field=acknowledgments.
-_('José Eduardo Marian')
+_('José Eduardo Marian.')
 # Translators: model=Media, field=acknowledgments.
-_('Judith E. Winston')
+_('Judith E. Winston.')
 # Translators: model=Media, field=acknowledgments.
-_('Judith E. Winston; Karin H. Fehlauer-Ale')
+_('Judith E. Winston; Karin H. Fehlauer-Ale.')
 # Translators: model=Media, field=acknowledgments.
-_('Judith E. Winston; Karin H. Fehlauer-Ale; Kevin Tilbrook')
+_('Judith E. Winston; Karin H. Fehlauer-Ale; Kevin Tilbrook.')
 # Translators: model=Media, field=acknowledgments.
-_('Judith E. Winston; Karin H. Fehlauer-Ale; Leandro M. Vieira')
+_('Judith E. Winston; Karin H. Fehlauer-Ale; Leandro M. Vieira.')
 # Translators: model=Media, field=acknowledgments.
-_('Judith E. Winston; Leandro M. Vieira')
+_('Judith E. Winston; Leandro M. Vieira.')
 # Translators: model=Media, field=acknowledgments.
-_('Karin H. Fehlauer-Ale; Judith E. Winston')
+_('Karin H. Fehlauer-Ale; Judith E. Winston.')
 # Translators: model=Media, field=acknowledgments.
-_('Karin H. Fehlauer-Ale; Judith E. Winston; Leandro M. Vieira')
+_('Karin H. Fehlauer-Ale; Judith E. Winston; Leandro M. Vieira.')
 # Translators: model=Media, field=acknowledgments.
-_('Leandro M. Vieira')
+_('Leandro M. Vieira.')
 # Translators: model=Media, field=acknowledgments.
-_('Leila de Lourdes Longo')
+_('Leila de Lourdes Longo.')
 # Translators: model=Media, field=acknowledgments.
-_('Luciana Gusmão')
+_('Luciana Gusmão.')
 # Translators: model=Media, field=acknowledgments.
-_('Marcelo V. Fukuda')
+_('Marcelo V. Fukuda.')
 # Translators: model=Media, field=acknowledgments.
-_('Márcio Reis Custódio')
+_('Márcio Reis Custódio.')
 # Translators: model=Media, field=acknowledgments.
-_('Marcos Tavares')
+_('Marcos Tavares.')
 # Translators: model=Media, field=acknowledgments.
-_('Martin L. Christoffersen')
+_('Martin L. Christoffersen.')
 # Translators: model=Media, field=acknowledgments.
-_('Rosana M. Rocha')
+_('Rosana M. Rocha.')
 # Translators: model=Media, field=acknowledgments.
-_('Shin Kubota')
+_('Shin Kubota.')
 # Translators: model=Media, field=acknowledgments.
-_('Tagea Kristina Simon Björnberg')
+_('Tagea Kristina Simon Björnberg.')
 # Translators: model=Media, field=acknowledgments.
-_('Teruaki Nishikawa')
+_('Teruaki Nishikawa.')
 # Translators: model=Media, field=acknowledgments.
-_('Tito C. Lotufo; Rosana M. Rocha')
+_('Tito C. Lotufo; Rosana M. Rocha.')
 # Translators: model=Media, field=acknowledgments.
-_('Ulf Jondelius')
+_('Ulf Jondelius.')
 # Translators: model=Taxon, field=rank.
 _('Classe')
 # Translators: model=Taxon, field=rank.
@@ -2533,11 +2539,27 @@ _('Filo (Divisão)')
 # Translators: model=Taxon, field=rank.
 _('Gênero')
 # Translators: model=Taxon, field=rank.
+_('Gigaclasse')
+# Translators: model=Taxon, field=rank.
+_('Infraclasse')
+# Translators: model=Taxon, field=rank.
+_('Infrafilo')
+# Translators: model=Taxon, field=rank.
 _('Infraordem')
+# Translators: model=Taxon, field=rank.
+_('Infrareino')
+# Translators: model=Taxon, field=rank.
+_('Megaclasse')
 # Translators: model=Taxon, field=rank.
 _('Ordem')
 # Translators: model=Taxon, field=rank.
+_('Parvfilo')
+# Translators: model=Taxon, field=rank.
+_('Parvordem')
+# Translators: model=Taxon, field=rank.
 _('Reino')
+# Translators: model=Taxon, field=rank.
+_('Seção')
 # Translators: model=Taxon, field=rank.
 _('Sem táxon')
 # Translators: model=Taxon, field=rank.
@@ -2545,39 +2567,55 @@ _('Subclasse')
 # Translators: model=Taxon, field=rank.
 _('Subespécie')
 # Translators: model=Taxon, field=rank.
+_('Subfamília')
+# Translators: model=Taxon, field=rank.
 _('Subfilo')
+# Translators: model=Taxon, field=rank.
+_('Subfilo (Subdivisão)')
+# Translators: model=Taxon, field=rank.
+_('Subgênero')
 # Translators: model=Taxon, field=rank.
 _('Subordem')
 # Translators: model=Taxon, field=rank.
+_('Subreino')
+# Translators: model=Taxon, field=rank.
+_('Subseção')
+# Translators: model=Taxon, field=rank.
+_('Subterclasse')
+# Translators: model=Taxon, field=rank.
+_('Superclasse')
+# Translators: model=Taxon, field=rank.
 _('Superfamília')
+# Translators: model=Taxon, field=rank.
+_('Superordem')
+# Translators: model=Taxon, field=rank.
+_('Tribo')
 # Translators: model=Taxon, field=status.
-_('accepted')
+_('aceito')
 # Translators: model=Taxon, field=status.
-_('junior homonym')
+_('combinação substituída')
 # Translators: model=Taxon, field=status.
-_('junior objective synonym')
+_('erro ortográfico - grafia subsequente incorreta')
 # Translators: model=Taxon, field=status.
-_('misspelling - incorrect subsequent spelling')
+_('não aceito')
+# Translators: model=Taxon, field=status.
+_('nomen dubium')
+# Translators: model=Taxon, field=status.
+_('nome temporário')
+# Translators: model=Taxon, field=status.
+_('representação alternativa')
+# Translators: model=Taxon, field=status.
+_('sinônimo objetivo júnior')
+# Translators: model=Taxon, field=status.
+_('sinônimo subjetivo júnior')
 # Translators: model=Taxon, field=status.
 _('taxon inquirendum')
-# Translators: model=Taxon, field=status.
-_('temporary name')
-# Translators: model=Taxon, field=status.
-_('unaccepted')
 # Translators: model=Tag, field=name.
 _('3d')
 # Translators: model=Tag, field=name.
 _('adulto')
 # Translators: model=Tag, field=name.
-_('água-viva')
-# Translators: model=Tag, field=name.
-_('alga')
-# Translators: model=Tag, field=name.
 _('ameaçada de extinção')
-# Translators: model=Tag, field=name.
-_('baixio não vegetado')
-# Translators: model=Tag, field=name.
-_('banco não vegetado')
 # Translators: model=Tag, field=name.
 _('bentônico')
 # Translators: model=Tag, field=name.
@@ -2627,8 +2665,6 @@ _('intersticial')
 # Translators: model=Tag, field=name.
 _('juvenil')
 # Translators: model=Tag, field=name.
-_('laboratório de biologia marinha de seto')
-# Translators: model=Tag, field=name.
 _('larva')
 # Translators: model=Tag, field=name.
 _('lecitotrófica')
@@ -2641,8 +2677,6 @@ _('macrofotografia')
 # Translators: model=Tag, field=name.
 _('manguezal')
 # Translators: model=Tag, field=name.
-_('medusóide')
-# Translators: model=Tag, field=name.
 _('meiofauna')
 # Translators: model=Tag, field=name.
 _('mergulho')
@@ -2652,8 +2686,6 @@ _('mesolitoral')
 _('metamorfose')
 # Translators: model=Tag, field=name.
 _('mev')
-# Translators: model=Tag, field=name.
-_('museu da áfrica do sul')
 # Translators: model=Tag, field=name.
 _('nectônico')
 # Translators: model=Tag, field=name.
@@ -2665,11 +2697,7 @@ _('parasita')
 # Translators: model=Tag, field=name.
 _('parátipo')
 # Translators: model=Tag, field=name.
-_('paratomia')
-# Translators: model=Tag, field=name.
 _('pelágico')
-# Translators: model=Tag, field=name.
-_('placa de recrutamento')
 # Translators: model=Tag, field=name.
 _('planctônico')
 # Translators: model=Tag, field=name.
@@ -2677,17 +2705,9 @@ _('planctotrófica')
 # Translators: model=Tag, field=name.
 _('pleustônico')
 # Translators: model=Tag, field=name.
-_('pólipo')
-# Translators: model=Tag, field=name.
 _('praia')
 # Translators: model=Tag, field=name.
-_('progênese')
-# Translators: model=Tag, field=name.
-_('projeto árvore da vida dos cnidários')
-# Translators: model=Tag, field=name.
 _('simbiose')
-# Translators: model=Tag, field=name.
-_('submersa')
 # Translators: model=Tag, field=name.
 _('substrato artificial')
 # Translators: model=Tag, field=name.
@@ -2703,8 +2723,6 @@ _('Célula reprodutiva madura (espermatozoide ou óvulo).')
 # Translators: model=Tag, field=description.
 _('Detalhe tirado com câmera convencional; muitas vezes de organismos em aquários.')
 # Translators: model=Tag, field=description.
-_('Diz-se da medusa que apresenta algum tipo de redução ou é vestigial.')
-# Translators: model=Tag, field=description.
 _('Diz-se dos organismos que vivem no leito dos oceanos e mares, fixos ou não a um substrato.')
 # Translators: model=Tag, field=description.
 _('Ecossistema costeiro de transição entre os ambientes terrestre e marinho, dominado por espécies vegetais típicas, geralmente associado a locais onde há encontro de águas de rios e do mar.')
@@ -2715,7 +2733,11 @@ _('Espécie que foi acidental ou deliberadamente transportada para fora de sua �
 # Translators: model=Tag, field=description.
 _('Estágio pós-embrionário que difere da forma adulta na sua morfologia, comportamento, habitat entre outros. Não se reproduz de maneira sexuada.')
 # Translators: model=Tag, field=description.
+_('Faixa costeira periodicamente exposta e submersa durante os ciclos de maré.')
+# Translators: model=Tag, field=description.
 _('Faixa de terra coberta de lama, areia ou seixos, às margens de um corpo de água.')
+# Translators: model=Tag, field=description.
+_('Fotografia submarina.')
 # Translators: model=Tag, field=description.
 _('Iluminação transmitida, em que a amostra apresenta-se escura contra um fundo claro.')
 # Translators: model=Tag, field=description.
@@ -2757,7 +2779,13 @@ _('Organismo que ainda não atingiu a capacidade reprodutiva, embora seja morfol
 # Translators: model=Tag, field=description.
 _('Organismo que vive associado a outro, sem que haja prejuízo para ambos.')
 # Translators: model=Tag, field=description.
+_('Organismo que vive associado a um substrato não natural.')
+# Translators: model=Tag, field=description.
+_('Organismo que vivem em substrato mole, como cascalho, areia, lodo.')
+# Translators: model=Tag, field=description.
 _('Organismo que vive próximo ao fundo do mar, embora possua capacidade de natação ativa.')
+# Translators: model=Tag, field=description.
+_('Organismo que vive sobre substrato duro, como rocha, conchas e corais.')
 # Translators: model=Tag, field=description.
 _('Organismos que ficam retidos em uma peneira de 0,5 mm de malha.')
 # Translators: model=Tag, field=description.
@@ -2766,8 +2794,6 @@ _('Organismos que habitam os espaços entre os grãos de areia.')
 _('Organismos que vivem à deriva na coluna d´água.')
 # Translators: model=Tag, field=description.
 _('Organismos vivendo na coluna d´água.')
-# Translators: model=Tag, field=description.
-_('Qualquer um dos vários animais gelatinosos aquáticos, particularmente o estágio de medusa dos cnidários.')
 # Translators: model=Tag, field=description.
 _('Que flutua na superfície da água, como algumas plantas e a caravela-portuguesa.')
 # Translators: model=Tag, field=description.
@@ -2787,15 +2813,15 @@ _('Técnica de impregnação com prata.')
 # Translators: model=Tag, field=description.
 _('Técnica de microscopia de luz utilizada para aumentar o contraste da imagem em amostras ou preparações não coradas.')
 # Translators: model=Tag, field=description.
-_('Termo informal que designa diversos grupos de organismos eucariotos fotossintetizantes, incluindo formas unicelulares e multicelulares.')
-# Translators: model=Tag, field=description.
-_('Tirado embaixo d’água com caixa-estanque.')
-# Translators: model=Tag, field=description.
 _('Uma espécie cujo desaparecimento pode ocorrer no futuro próximo.')
+# Translators: model=Tag, field=description.
+_('Um espécime selecionado para substituir um espécime-tipo original que foi perdido.')
 # Translators: model=Tag, field=description.
 _('Um espécime selecionado para substituir um holotipo que foi perdido ou destruído.')
 # Translators: model=Tag, field=description.
-_('Vive disperso na coluna d´água mas é capaz de natação ativa.')
+_('Um organismo que vive dentro ou sobre outra espécie (seu hospedeiro) e se beneficia obtendo nutrientes às custas desta.')
+# Translators: model=Tag, field=description.
+_('Vive disperso na coluna d´água, mas é capaz de natação ativa.')
 # Translators: model=Category, field=name.
 _('Diversos')
 # Translators: model=Category, field=name.
@@ -2830,10 +2856,6 @@ _('Ciclo de vida de um equinodermo')
 _('Larvas marinhas')
 # Translators: model=Tour, field=name.
 _('Plâncton: pequenos gigantes')
-# Translators: model=Tour, field=name.
-_('Um tour teste')
-# Translators: model=Tour, field=description.
-_('Descrição teste.')
 # Translators: model=Tour, field=description.
 _('<p>Embora geralmente pequenos em tamanho, os seres planctônicos são verdadeiros gigantes em importância. Base das cadeias alimentares marinhas, o plâncton (do grego <em>planktós</em>, errante) compreende uma diversidade fantástica de organismos uni e multicelulares que vivem dispersos na água. Essa comunidade é composta em grande parte por seres com menos de 0,01 mm a poucos centímetros, mas existem exceções marcantes como as águas-vivas e a caravela-portuguesa, que podem atingir metros de comprimento. Muitos nadam bem, mas não o suficiente para vencer a força das águas. Por isso, eles vagam livremente, sendo transportados pelas correntes marinhas.</p><p>Além de pequenos, os planctontes são também transparentes ou translúcidos, e passam facilmente despercebidos por nós ― observá-los exige o uso de microscópios e aparatos especiais de captura, as redes de plâncton. Contudo, eles são muito abundantes e se reproduzem com uma rapidez incrível. Um litro de água do mar pode conter dezenas de milhares desses pequenos organismos. Muitos deles são produtores primários, isto é, realizam fotossíntese, e são denominados de <em>fitoplâncton</em>. Os fitoplanctontes, que incluem vários grupos de "microalgas", vivem apenas nas camadas superiores e iluminadas dos oceanos. Produzem grande parte do oxigênio atmosférico, além de servir como alimento para uma parcela do plâncton incapaz de obter energia diretamente da luz do sol e que depende deles para sobreviver, o <em>zooplâncton</em>. </p><p>Além de se alimentarem de fitoplâncton, as espécies de zooplâncton podem consumir bactérias e material orgânico particulado. E, por sua vez, servem de alimento para organismos maiores, incluindo outras espécies de zooplâncton, peixes e até baleias.</p><p>Muitos organismos passam todo o seu ciclo de vida no plâncton, como os unicelulares e espécies de invertebrados: copépodes, moluscos, crustáceos, poliquetas etc. Mas a comunidade planctônica é composta também pelas larvas de invertebrados e de certos peixes, cujos adultos habitam o fundo do mar ou a coluna de água (veja o tour <a href="/web/20130606133023/http://cifonauta.cebimar.usp.br/tour/larvas-marinhas/">Larvas Marinhas</a>). </p><p>Os seres do plâncton vivem em um mundo fisicamente diferente do que estamos acostumados. Nesse meio, a força da viscosidade da água impera sobre os seus corpos microscópicos, que têm "dificuldade" para se deslocar. Para entender melhor esse fenômeno, imagine-se em uma piscina de melado, onde só é possível nadar ou mexer qualquer parte de seu corpo em câmara lenta. É neste tipo de ambiente que os organismos planctônicos obtêm alimento e se reproduzem há milhões de anos.</p>')
 # Translators: model=Tour, field=description.

@@ -2,9 +2,8 @@ import os
 import pickle
 import re
 
-from django.core.management.base import BaseCommand
-from django.utils import timezone
 from django.template.defaultfilters import slugify
+
 from meta.models import Taxon
 from utils.worms import Aphia
 

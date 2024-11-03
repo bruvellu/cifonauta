@@ -95,6 +95,7 @@ def resize_video(input_path, dimension, bitrate, output_path):
                    '-i', 'tmp/cifomark.png',
                    '-b:v', f'{bitrate}k',
                    '-filter_complex', filter_complex,
+                   '-an',
                    output_path]
 
     try:

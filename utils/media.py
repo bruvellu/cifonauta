@@ -42,34 +42,60 @@ def resize_video(input_path, dimension, bitrate, output_path):
     '''Uses FFmpeg to scale and convert videos.'''
     #TODO: Fix this mess. Watermark gets distorted always...
 
-    # min(width, iw) prevents upscaling
-    # lanczos is a better resizing algorithm
-    # ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
-                   # '-threads', '0', '-i', input_path,
-                   # '-b:v', f'{bitrate}k', '-filter:v',
-                   # f'scale=\'min({dimension},iw)\':-2:flags=lanczos',
-                   # output_path]
 
-    # # With watermark gets distorted
     # ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
-                   # '-threads', '0',
-                   # '-i', input_path,
-                   # '-i', 'tmp/marca.png',
-                   # '-b:v', f'{bitrate}k',
-                   # '-filter_complex',
-                   # f'scale=\'min({dimension},iw)\':-2:flags=lanczos,overlay=0:main_h-overlay_h-0',
-                   # output_path]
+    #                '-threads', '0', '-i', input_path,
+    #                '-b:v', f'{bitrate}k', '-filter:v',
+    #                f'scale=\'min({dimension},iw)\':-2:flags=lanczos',
+    #                output_path]
 
-    # # With watermark gets distorted
+    # ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
+    #                '-threads', '0',
+    #                '-i', input_path,
+    #                '-i', 'tmp/marca.png',
+    #                '-b:v', f'{bitrate}k',
+    #                '-filter_complex',
+    #                f'scale=\'min({dimension},iw)\':-2:flags=lanczos[video];[video][1:v]overlay=0:main_h-overlay_h-0',
+    #                output_path]
+
+    # Define parameters for scaling and watermarking
+    # min(width, iw) prevents upscaling, it picks the lowest between dimension and video width
+    # lanczos is a better scaling algorithm
+    # setsar=1 sets the pixel aspect ratio to 1 and avoids distortions
+    # format=rgba,colorchannelmixer=aa=0.5 ensures there's an alpha channel and controls transparency
+    # :format=auto,format=yuv420p improves watermark quality for mp4
+    # TODO: Make watermark scale by scaled video width
+    filter_complex = (
+        f"[0:v]scale='min({dimension},iw)':-2:flags=lanczos,setsar=1[video];"
+        f"[1:v]scale='min({dimension},iw)*0.35':-1,setsar=1,format=rgba,colorchannelmixer=aa=0.5[watermark];"
+        "[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
+    )
+
+    # This command should work for ffmpeg > 7.0
+    # filter_complex = (
+    #     f"[0:v]scale='min({dimension},iw)':-2:flags=lanczos,setsar=1[video];"
+    #     f"[1:v][video]scale=rw*0.5:-1,setsar=1,format=rgba,colorchannelmixer=aa=0.5[watermark];"
+    #     "[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
+    # )
+
+    # # This command should work for ffmpeg < 7.0
+    # filter_complex = (
+    #     f"[0:v]scale='min({dimension},iw)':-2:flags=lanczos,setsar=1[video];"
+    #     f"[1:v][video]scale2ref=w=oh*mdar:h=ih*0.1[watermark][video];"
+    #     f"[watermark]setsar=1,format=rgba,colorchannelmixer=aa=0.5[watermark];"
+    #     f"[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
+    # )
+
+    print(filter_complex)
+
+    # Create FFmpeg call with remaining parameters
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
                    '-threads', '0',
                    '-i', input_path,
-                   '-i', 'tmp/marca.png',
+                   '-i', 'tmp/cifomark.png',
                    '-b:v', f'{bitrate}k',
-                   '-filter_complex',
-                   f'scale=\'min({dimension},iw)\':-2:flags=lanczos[video];[video][1:v]overlay=0:main_h-overlay_h-0',
+                   '-filter_complex', filter_complex,
                    output_path]
-
 
     try:
         subprocess.call(ffmpeg_call)

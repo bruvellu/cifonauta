@@ -65,10 +65,28 @@ def resize_video(input_path, dimension, bitrate, output_path):
     # format=rgba,colorchannelmixer=aa=0.5 ensures there's an alpha channel and controls transparency
     # :format=auto,format=yuv420p improves watermark quality for mp4
     # TODO: Make watermark scale by scaled video width
+    # TODO: Changing pixel ratio messes up videos 16/9
+    # TODO: Get width, height, sar and par from videos (ffprobe)
+    # TODO: Save to model and use this info for watermarking scaling
+    # TODO: Calculate pixels in advance and pass values to filter_complex
+    # filter_complex = (
+    #     f"[0:v]scale={dimension}:-2:flags=lanczos[video];"
+    #     f"[1:v]scale=100:100,format=rgba,colorchannelmixer=aa=0.5[watermark];"
+    #     f"[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
+    # )
+
+    # filter_complex = (
+    #     f"[0:v]scale='min({dimension},iw)':-2:flags=lanczos[video];"
+    #     f"[1:v]scale='min({dimension},iw)':ih*0.35,format=rgba,colorchannelmixer=aa=0.5[watermark];"
+    #     "[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
+    # )
+
+    # # This command should work for ffmpeg < 7.0
     filter_complex = (
-        f"[0:v]scale='min({dimension},iw)':-2:flags=lanczos,setsar=1[video];"
-        f"[1:v]scale='min({dimension},iw)*0.35':-1,setsar=1,format=rgba,colorchannelmixer=aa=0.5[watermark];"
-        "[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
+        f"[0:v]scale='min({dimension},iw)':-2:flags=lanczos[video];"
+        f"[1:v][video]scale2ref=60/1.33:60[watermark][video];"
+        f"[watermark]format=rgba,colorchannelmixer=aa=0.5[watermark];"
+        f"[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
     )
 
     # This command should work for ffmpeg > 7.0
@@ -78,13 +96,7 @@ def resize_video(input_path, dimension, bitrate, output_path):
     #     "[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
     # )
 
-    # # This command should work for ffmpeg < 7.0
-    # filter_complex = (
-    #     f"[0:v]scale='min({dimension},iw)':-2:flags=lanczos,setsar=1[video];"
-    #     f"[1:v][video]scale2ref=w=oh*mdar:h=ih*0.1[watermark][video];"
-    #     f"[watermark]setsar=1,format=rgba,colorchannelmixer=aa=0.5[watermark];"
-    #     f"[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
-    # )
+
 
     print(filter_complex)
 
@@ -92,7 +104,7 @@ def resize_video(input_path, dimension, bitrate, output_path):
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
                    '-threads', '0',
                    '-i', input_path,
-                   '-i', 'tmp/cifomark.png',
+                   '-i', 'tmp/logo_social.png',
                    '-b:v', f'{bitrate}k',
                    '-filter_complex', filter_complex,
                    '-an',

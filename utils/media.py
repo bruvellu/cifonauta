@@ -14,6 +14,12 @@ import subprocess
 from datetime import datetime
 from shutil import move
 
+
+import subprocess
+import json
+from typing import Dict, Optional
+
+
 import piexif
 import pyexiv2
 from PIL import Image
@@ -130,6 +136,69 @@ def extract_video_cover(input_path, dimension, output_path):
     except:
         logger.critical(f'Could not save {output_path}!')
         return False
+
+
+def probe_video_info(file_path):
+    '''Uses FFmpeg ffprobe to fetch video information.'''
+    # ffprobe command to extract relevant data
+
+
+
+
+
+def get_video_info(file_path: str) -> Optional[Dict]:
+    """
+    Extract video information using ffprobe command.
+
+    Args:
+        file_path (str): Path to the video file
+
+    Returns:
+        dict: Dictionary containing video information, or None if the command fails
+
+    Example:
+        >>> info = get_video_info("video.avi")
+        >>> print(info["format"]["duration"])
+    """
+    # ffmpeg.ffprobe -v error -select_streams V:0 -show_entries "format=format_name,start_time,duration,size,bit_rate : stream=codec_name,codec_type,width,height,sample_aspect_ratio,display_aspect_ratio,pix_fmt" 3d47dbea-635f-42e9-a699-f8bedcd03260.avi
+
+    # Build ffprobe command to probe relevant information
+    command = [
+        "ffmpeg.ffprobe",
+        "-v", "error",
+        "-select_streams", "v:0",
+        "-show_entries",
+        "format=format_name,start_time,duration,size,bit_rate:stream=codec_name,codec_type,width,height,sample_aspect_ratio,display_aspect_ratio,pix_fmt",
+        "-print_format", "json",
+        file_path
+    ]
+
+    try:
+        # Run ffprobe as a subprocess
+        result = subprocess.run(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+
+        if result.returncode != 0:
+            print(f"Error running ffprobe: {result.stderr}")
+            return None
+
+        # Parse JSON output
+        data = json.loads(result.stdout)
+
+        # Transform data into a flat dictionary
+        video_info = {}
+        video_info.update(data.get("format", {}))
+        video_info.update(data.get("streams")[0] if data.get("streams") else {})
+
+        return video_info
+
+    except Exception as e:
+        print(f"Error processing video: {str(e)}")
+        return None
 
 
 #TODO: Remove?

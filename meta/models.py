@@ -15,7 +15,7 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 
-from utils.media import Metadata, resize_image, resize_video, extract_video_cover
+from utils.media import Metadata, resize_image, resize_video, extract_video_cover, probe_media_info
 
 
 class Curation(models.Model):
@@ -253,11 +253,70 @@ class Media(models.Model):
                              choices=SCALE_CHOICES,
                              help_text=_('Classes de escala.'))
 
-    duration = models.CharField(_('duração'),
+    # Video information fields
+    format_name = models.CharField(_('formato da mídia'),
+                                   max_length=10,
+                                   default='',
+                                   blank=True,
+                                   help_text=_('Nome do formato da mídia (e.g., avi ou image2).'))
+
+    codec_name = models.CharField(_('codec da mídia'),
+                                  max_length=10,
+                                  default='',
+                                  blank=True,
+                                  help_text=_('Nome do codec da mídia (e.g., dvvideo ou mjpeg).'))
+
+    size = models.CharField(_('tamanho do arquivo'),
+                            max_length=20,
+                            default='',
+                            blank=True,
+                            help_text=_('Tamanho do arquivo original em bytes (e.g., 138519976).'))
+
+    bit_rate = models.CharField(_('bitrate da mídia'),
                                 max_length=20,
-                                default='00:00:00',
+                                default='',
                                 blank=True,
-                                help_text=_('Duração do vídeo no formato HH:MM:SS.'))
+                                help_text=_('Bitrate da mídia em bits por segundo (e.g., 30330212).'))
+
+    pix_fmt = models.CharField(_('formato do pixel'),
+                               max_length=20,
+                               default='',
+                               blank=True,
+                               help_text=_('Formato do pixel da mídia (e.g., yuv411p).'))
+
+    start_time = models.CharField(_('início do vídeo'),
+                                  max_length=20,
+                                  default='',
+                                  blank=True,
+                                  help_text=_('Quando o vídeo stream se inicia (e.g., 0.000000).'))
+
+    duration = models.CharField(_('duração do vídeo'),
+                                max_length=20,
+                                default='',
+                                blank=True,
+                                help_text=_('Duração do vídeo em segundos (e.g., 36.536500).'))
+
+    width = models.PositiveIntegerField(_('largura da mídia'),
+                                        null=True,
+                                        blank=True,
+                                        help_text=_('Largura da mídia em pixels (e.g., 720).'))
+
+    height = models.PositiveIntegerField(_('altura da mídia'),
+                                        null=True,
+                                        blank=True,
+                                        help_text=_('Altura da mídia em pixels (e.g., 720).'))
+
+    sample_aspect_ratio = models.CharField(_('Proporção do píxel'),
+                                max_length=20,
+                                default='',
+                                blank=True,
+                                help_text=_('Proporção de aspecto dos píxels (e.g., 8:9).'))
+
+    display_aspect_ratio = models.CharField(_('Proporção da tela'),
+                                           max_length=20,
+                                           default='',
+                                           blank=True,
+                                           help_text=_('Proporção de aspecto da tela (e.g., 4:3).'))
 
     dimensions = models.CharField(_('dimensões'),
                                   max_length=20,
@@ -426,6 +485,45 @@ class Media(models.Model):
 
         # Return True/False for convenience
         return resized
+
+    def update_media_info(self):
+        '''Get media information and update related fields.
+
+        Can be used for both images and videos. Since returned fields can be different, pass on the dictionary
+        directly to the __dict__ update method. The alternative would be looping over attr (also not bad):
+
+            for key, value in filtered_dict.items():
+                setattr(self, key, value)
+
+        Fields are not saved! This needs to be done on the logic outside (to avoid over saving).
+        '''
+
+        # Fetch media information using FFprobe
+        info = probe_media_info(self.file.path)
+
+        if info:
+            # Only update fields that were fetched
+            self.__dict__.update(**info)
+            print('Success! Updated media information...')
+            print(info)
+            # try:
+            #     self.format_name = info['format_name']
+            #     self.codec_name = info['codec_name']
+            #     self.size = info['size']
+            #     self.bit_rate = info['bit_rate']
+            #     self.pix_fmt = info['pix_fmt']
+            #     self.start_time = info['start_time']
+            #     self.duration = info['duration']
+            #     self.width = info['width']
+            #     self.height = info['height']
+            #     self.sample_aspect_ratio = info['sample_aspect_ratio']
+            #     self.display_aspect_ratio = info['display_aspect_ratio']
+            #     print('Success! Updated media information...')
+            #     print(info)
+            # except KeyError:
+            #     print('Error! Media info update failed...')
+            #     print(info)
+
 
     def get_ancestors_vector(self):
         taxa = self.taxa.all()

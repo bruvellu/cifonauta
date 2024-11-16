@@ -138,28 +138,43 @@ def extract_video_cover(input_path, dimension, output_path):
         return False
 
 
-def probe_video_info(file_path):
-    '''Uses FFmpeg ffprobe to fetch video information.'''
-    # ffprobe command to extract relevant data
+def probe_media_info(file_path):
+    '''Extract information from videos and images using ffprobe command.
 
+    Returns for videos:
+    {
+        'format_name': 'avi',
+        'codec_name': 'dvvideo',
+        'size': '138519976',
+        'bit_rate': '30330212',
+        'pix_fmt': 'yuv411p',
+        'start_time': '0.000000',
+        'duration': '36.536500',
+        'width': 720,
+        'height': 480,
+        'sample_aspect_ratio': '8:9',
+        'display_aspect_ratio': '4:3'
+     }
 
+     Returns for images:
+     {
+        'format_name': 'image2',
+        'codec_name': 'mjpeg',
+        'size': '21175',
+        'bit_rate': '4235000',
+        'pix_fmt': 'yuvj422p',
+        'start_time': '0.000000',
+        'duration': '0.040000',
+        'width': 750,
+        'height': 500,
+        'sample_aspect_ratio': '8:9',
+        'display_aspect_ratio': '4:3',
 
+     }
 
+    Removed 'codec_type' value as it always returns 'video'.
+    '''
 
-def get_video_info(file_path: str) -> Optional[Dict]:
-    """
-    Extract video information using ffprobe command.
-
-    Args:
-        file_path (str): Path to the video file
-
-    Returns:
-        dict: Dictionary containing video information, or None if the command fails
-
-    Example:
-        >>> info = get_video_info("video.avi")
-        >>> print(info["format"]["duration"])
-    """
     # ffmpeg.ffprobe -v error -select_streams V:0 -show_entries "format=format_name,start_time,duration,size,bit_rate : stream=codec_name,codec_type,width,height,sample_aspect_ratio,display_aspect_ratio,pix_fmt" 3d47dbea-635f-42e9-a699-f8bedcd03260.avi
 
     # Build ffprobe command to probe relevant information
@@ -168,7 +183,7 @@ def get_video_info(file_path: str) -> Optional[Dict]:
         "-v", "error",
         "-select_streams", "v:0",
         "-show_entries",
-        "format=format_name,start_time,duration,size,bit_rate:stream=codec_name,codec_type,width,height,sample_aspect_ratio,display_aspect_ratio,pix_fmt",
+        "format=format_name,start_time,duration,size,bit_rate:stream=codec_name,width,height,sample_aspect_ratio,display_aspect_ratio,pix_fmt",
         "-print_format", "json",
         file_path
     ]

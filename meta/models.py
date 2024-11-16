@@ -255,7 +255,7 @@ class Media(models.Model):
 
     # Video information fields
     format_name = models.CharField(_('formato da mídia'),
-                                   max_length=10,
+                                   max_length=30,
                                    default='',
                                    blank=True,
                                    help_text=_('Nome do formato da mídia (e.g., avi ou image2).'))
@@ -502,10 +502,15 @@ class Media(models.Model):
         info = probe_media_info(self.file.path)
 
         if info:
-            # Only update fields that were fetched
-            self.__dict__.update(**info)
-            print('Success! Updated media information...')
-            print(info)
+            try:
+                # Only update fields that were fetched
+                self.__dict__.update(**info)
+                print('Success! Updated media information...')
+                print(info)
+            except Exception as e:
+                print('Error! Media info update failed')
+                print(e)
+
             # try:
             #     self.format_name = info['format_name']
             #     self.codec_name = info['codec_name']

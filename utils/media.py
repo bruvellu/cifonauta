@@ -44,52 +44,15 @@ def resize_image(filepath, dimension, quality):
         return False
 
 
-def resize_video(input_path, dimension, bitrate, width, height, sar, dar, output_path):
-    '''Use FFmpeg to scale, apply watermark, and convert videos to MP4.'''
+def resize_video(input_path, dimension, bitrate, height, sar, output_path):
+    '''Scale, watermark, and convert videos to MP4 using FFmpeg.
 
-    #TODO: Fix this mess. Watermark gets distorted always...
-
-    print(input_path, dimension, bitrate, width, height, sar, dar, output_path)
-
-    # ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
-    #                '-threads', '0', '-i', input_path,
-    #                '-b:v', f'{bitrate}k', '-filter:v',
-    #                f'scale=\'min({dimension},iw)\':-2:flags=lanczos',
-    #                output_path]
-
-    # ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
-    #                '-threads', '0',
-    #                '-i', input_path,
-    #                '-i', 'tmp/marca.png',
-    #                '-b:v', f'{bitrate}k',
-    #                '-filter_complex',
-    #                f'scale=\'min({dimension},iw)\':-2:flags=lanczos[video];[video][1:v]overlay=0:main_h-overlay_h-0',
-    #                output_path]
-
-    # Define parameters for scaling and watermarking
-    # min(width, iw) prevents upscaling, it picks the lowest between dimension and video width
-    # lanczos is a better scaling algorithm
-    # setsar=1 sets the pixel aspect ratio to 1 and avoids distortions
-    # format=rgba,colorchannelmixer=aa=0.5 ensures there's an alpha channel and controls transparency
-    # :format=auto,format=yuv420p improves watermark quality for mp4
-
-    # TODO: Make watermark scale by scaled video width
-    # TODO: Changing pixel ratio messes up videos 16/9
-    # TODO: Get width, height, sar and par from videos (ffprobe)
-    # TODO: Save to model and use this info for watermarking scaling
-    # TODO: Calculate pixels in advance and pass values to filter_complex
-
-    # filter_complex = (
-    #     f"[0:v]scale={dimension}:-2:flags=lanczos[video];"
-    #     f"[1:v]scale=100:100,format=rgba,colorchannelmixer=aa=0.5[watermark];"
-    #     f"[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
-    # )
-
-    # filter_complex = (
-    #     f"[0:v]scale='min({dimension},iw)':-2:flags=lanczos[video];"
-    #     f"[1:v]scale='min({dimension},iw)':ih*0.35,format=rgba,colorchannelmixer=aa=0.5[watermark];"
-    #     "[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
-    # )
+    Scaling is based on the height, width is scaled accordingly to maintain aspect ratio.
+    If height is smaller than dimension, use height.
+    Watermark is sized to 1/10 of the final video height. Its width needs to be adjusted with the video's
+    sample aspect ratio (sar) to be displayed in the correct aspect ratio. It is placed in the bottom left corner.
+    The audio is removed from the video.
+    '''
 
     # Get final height in case video is smaller than dimension
     if dimension > height:
@@ -99,36 +62,43 @@ def resize_video(input_path, dimension, bitrate, width, height, sar, dar, output
 
     # Transform sar from 4:3 to 4/3 format
     sar_slash = sar.replace(':', '/')
+    sar_value = eval(sar_slash)
 
     # Get height and width for a 1/10 sized watermark
     # based on the video's sample_aspect_ratio
-    water_height = int(video_height / 10)
-    water_width = int(water_height / eval(sar_slash))
+    water_height = int(video_height / 20)
+    water_width = int(water_height / sar_value)
 
-    # # This command should work for ffmpeg < 7.0
-    filter_complex = (
-        f"[0:v]scale='-2:min({video_height},ih)':flags=lanczos[video];"
-        f"[1:v][video]scale2ref={water_width}:{water_height}[watermark][video];"
-        f"[watermark]format=rgba,colorchannelmixer=aa=0.1[watermark];"
-        f"[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
-    )
+    # Set value for lateral padding relative to watermark height
+    pad = int(water_height / 5)
 
+    # Set value for watermark transparency
+    alpha = 0.5
+
+    # Using scale2ref (soon to be deprecated)
     # filter_complex = (
-    #     f"[0:v]scale='min({dimension},iw)':-2:flags=lanczos[video];"
+    #     f"[0:v]scale=-2:'min({video_height},ih)':flags=lanczos[video];"
     #     f"[1:v][video]scale2ref={water_width}:{water_height}[watermark][video];"
     #     f"[watermark]format=rgba,colorchannelmixer=aa=0.5[watermark];"
     #     f"[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
     # )
 
-    # This command should work for ffmpeg > 7.0
-    # filter_complex = (
-    #     f"[0:v]scale='min({dimension},iw)':-2:flags=lanczos,setsar=1[video];"
-    #     f"[1:v][video]scale=rw*0.5:-1,setsar=1,format=rgba,colorchannelmixer=aa=0.5[watermark];"
-    #     "[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
-    # )
+    # Define parameters for scaling and watermarking
+    # -2:min(height, ih) prevents upscaling and makes sure width is divisible by 2
+    # flags=lanczos is a better scaling algorithm
+    # format=rgba,colorchannelmixer=aa=0.5 ensures there's an alpha channel and controls transparency
+    # overlay=5:H-h-5 puts the watermark in the bottom left corner with 5 pixels padding
+    # format=yuv420p improves watermark quality for mp4
 
+    # Using standard scale filter
+    filter_complex = (
+        f"[0:v]scale=-2:'min({video_height},ih)':flags=lanczos[video];"
+        f"[1:v]scale={water_width}:{water_height}[watermark];"
+        f"[watermark]format=rgba,colorchannelmixer=aa={alpha}[watermark];"
+        f"[video][watermark]overlay={pad}:H-h-{pad},format=yuv420p"
+    )
 
-
+    print(f'dimension={dimension}, height={height}, sar={sar}')
     print(filter_complex)
 
     # Create FFmpeg call with remaining parameters

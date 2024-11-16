@@ -44,10 +44,12 @@ def resize_image(filepath, dimension, quality):
         return False
 
 
-def resize_video(input_path, dimension, bitrate, output_path):
-    '''Uses FFmpeg to scale and convert videos.'''
+def resize_video(input_path, dimension, bitrate, width, height, sar, dar, output_path):
+    '''Use FFmpeg to scale, apply watermark, and convert videos to MP4.'''
+
     #TODO: Fix this mess. Watermark gets distorted always...
 
+    print(input_path, dimension, bitrate, width, height, sar, dar, output_path)
 
     # ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
     #                '-threads', '0', '-i', input_path,
@@ -70,11 +72,13 @@ def resize_video(input_path, dimension, bitrate, output_path):
     # setsar=1 sets the pixel aspect ratio to 1 and avoids distortions
     # format=rgba,colorchannelmixer=aa=0.5 ensures there's an alpha channel and controls transparency
     # :format=auto,format=yuv420p improves watermark quality for mp4
+
     # TODO: Make watermark scale by scaled video width
     # TODO: Changing pixel ratio messes up videos 16/9
     # TODO: Get width, height, sar and par from videos (ffprobe)
     # TODO: Save to model and use this info for watermarking scaling
     # TODO: Calculate pixels in advance and pass values to filter_complex
+
     # filter_complex = (
     #     f"[0:v]scale={dimension}:-2:flags=lanczos[video];"
     #     f"[1:v]scale=100:100,format=rgba,colorchannelmixer=aa=0.5[watermark];"
@@ -87,13 +91,34 @@ def resize_video(input_path, dimension, bitrate, output_path):
     #     "[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
     # )
 
+    # Get final height in case video is smaller than dimension
+    if dimension > height:
+        video_height = height
+    else:
+        video_height = dimension
+
+    # Transform sar from 4:3 to 4/3 format
+    sar_slash = sar.replace(':', '/')
+
+    # Get height and width for a 1/10 sized watermark
+    # based on the video's sample_aspect_ratio
+    water_height = int(video_height / 10)
+    water_width = int(water_height / eval(sar_slash))
+
     # # This command should work for ffmpeg < 7.0
     filter_complex = (
-        f"[0:v]scale='min({dimension},iw)':-2:flags=lanczos[video];"
-        f"[1:v][video]scale2ref=60/1.33:60[watermark][video];"
-        f"[watermark]format=rgba,colorchannelmixer=aa=0.5[watermark];"
+        f"[0:v]scale='-2:min({video_height},ih)':flags=lanczos[video];"
+        f"[1:v][video]scale2ref={water_width}:{water_height}[watermark][video];"
+        f"[watermark]format=rgba,colorchannelmixer=aa=0.1[watermark];"
         f"[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
     )
+
+    # filter_complex = (
+    #     f"[0:v]scale='min({dimension},iw)':-2:flags=lanczos[video];"
+    #     f"[1:v][video]scale2ref={water_width}:{water_height}[watermark][video];"
+    #     f"[watermark]format=rgba,colorchannelmixer=aa=0.5[watermark];"
+    #     f"[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
+    # )
 
     # This command should work for ffmpeg > 7.0
     # filter_complex = (
@@ -179,6 +204,7 @@ def probe_media_info(file_path):
 
     # Build ffprobe command to probe relevant information
     command = [
+        # TODO: Change back to ffprobe for server
         "ffmpeg.ffprobe",
         "-v", "error",
         "-select_streams", "v:0",

@@ -202,7 +202,7 @@ VIDEO_SIZE_LIMIT = 1 * 1024 * 1024 * 1024
 # Default dimensions and quality for different media files
 MEDIA_DEFAULTS = {
 
-    # dimension: maximum width or height
+    # dimension: maximum width for images and cover
     # quality: percentage (0-100%)
     'photo': {
         'extension': 'jpg',
@@ -212,7 +212,7 @@ MEDIA_DEFAULTS = {
         'cover': {'dimension': 750, 'quality': 70}
         },
 
-    # dimension: maximum height (resolution)
+    # dimension: maximum height (resolution) for videos
     # quality: bitrate (0-infinite kbits/s)
     'video': {
         'extension': 'mp4',

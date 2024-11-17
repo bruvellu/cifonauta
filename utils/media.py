@@ -152,24 +152,49 @@ def resize_video(input_path, dimension, bitrate, height, sar, output_path):
     try:
         subprocess.call(ffmpeg_call)
         return True
-    except:
+    except Exception as e:
         logger.critical(f'Could not save {output_path}!')
+        logger.critical(e)
         return False
 
 
-def extract_video_cover(input_path, dimension, output_path):
-    '''Uses FFmpeg to scale and convert videos.'''
-    #TODO: Add watermark for video cover
-    #TODO: Fix aspect ratio of cover image
+def extract_video_cover(input_path, dimension, width, height, sar, output_path):
+    '''Uses FFmpeg to extract frame from video and watermark it.'''
+
+    # Get sar value and corrected width
+    sar_slash = sar.replace(':', '/')
+    sar_value = eval(sar_slash)
+    sar_width = int(width * sar_value)
+
+    # Create filter with proper steps
+    # setsar=1 set square pixels
+    # scale first to corrected size with square pixels
+    # scale image to final size
+    filter = (
+        f'setsar=1,'
+        f'scale={sar_width}:{height},'
+        f'scale={dimension}:-2'
+    )
+
+    # Call for FFmpeg
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
-                   '-i', input_path, '-vframes', '1',
-                   '-filter:v', f'scale=-2:{dimension}',
-                   '-ss', '1', '-f', 'image2', output_path]
+                   '-i', input_path,
+                   '-vframes', '1',
+                   '-filter:v', filter,
+                   '-ss', '1',
+                   '-f', 'image2',
+                   output_path]
+
+    print(ffmpeg_call)
+
+    # Extract image and add watermark
     try:
         subprocess.call(ffmpeg_call)
+        resize_image(output_path, dimension, 70)
         return True
-    except:
+    except Exception as e:
         logger.critical(f'Could not save {output_path}!')
+        logger.critical(e)
         return False
 
 

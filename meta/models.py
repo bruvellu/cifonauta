@@ -480,6 +480,9 @@ class Media(models.Model):
                 resized = extract_video_cover(
                     self.file.path,
                     dimension,
+                    self.width,
+                    self.height,
+                    self.sample_aspect_ratio,
                     field.path
                 )
             else:

@@ -540,7 +540,7 @@ class Media(models.Model):
 
     @property
     def display_duration(self):
-        '''Format duration to be displayed on the website.'''
+        '''Format duration display tag for website.'''
 
         seconds = self.duration.seconds
         minutes = seconds // 60

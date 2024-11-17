@@ -6,7 +6,7 @@
   <img src="{{ im.url }}" alt="{{ media.title }}" title="{{ media.title }}" />
   {% endthumbnail %}
 
-  {% if media.datatype == 'video' %}<span class="thumb-duration">{{ media.duration|slice:'3:' }}</span>{% endif %}
+  {% if media.datatype == 'video' %}<span class="thumb-duration">{{ media.display_duration }}</span>{% endif %}
 </a>
 
 <a class="lupa highslide scale-{{ media.scale }}" onclick="return hs.expand(this)" href="{{ MEDIA_URL }}{{ media.file_cover }}">+</a>

@@ -10,6 +10,7 @@ from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchVectorField, SearchVector
 from django.db import models
 from django.db.models import Q, Value
+from django.db.models.functions import Concat
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -318,11 +319,13 @@ class Media(models.Model):
                                            blank=True,
                                            help_text=_('Proporção de aspecto da tela (e.g., 4:3).'))
 
-    dimensions = models.CharField(_('dimensões'),
-                                  max_length=20,
-                                  default='0x0',
-                                  blank=True,
-                                  help_text=_('Dimensões do vídeo original.'))
+    # Generated field didn't work. Making it a property
+    # dimensions = models.GeneratedField(expression=Concat('width', Value('x'), 'height',),
+    #                                    output_field=models.CharField(),
+    #                                    db_persist=True,
+    #                                    blank=True,
+    #                                    verbose_name=_('dimensões'),
+    #                                    help_text=_('Dimensões do vídeo original.'))
 
     geolocation = models.CharField(_('geolocalização'),
                                    default='',
@@ -552,6 +555,14 @@ class Media(models.Model):
             seconds = seconds % 60
 
         return f'{minutes:02d}:{seconds:02d}'
+
+    @property
+    def dimensions(self):
+        '''Display media dimensions in pixels.'''
+        if self.width and self.height:
+            return f'{self.width}x{self.height}'
+        else:
+            return '0x0'
 
     def get_ancestors_vector(self):
         taxa = self.taxa.all()

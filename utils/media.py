@@ -239,8 +239,7 @@ def probe_media_info(file_path):
 
     # Build ffprobe command to probe relevant information
     command = [
-        # TODO: Change back to ffprobe for server
-        "ffmpeg.ffprobe",
+        "ffprobe",
         "-v", "error",
         "-select_streams", "v:0",
         "-show_entries",

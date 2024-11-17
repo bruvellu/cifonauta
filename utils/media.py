@@ -6,21 +6,19 @@
 Common functions to read image metadata and create thumbnails.
 '''
 
+import json
 import logging
 import os
 import random
-import re
 import subprocess
 from datetime import datetime, timedelta
-from shutil import move
-from cifonauta.settings import WATERMARK
-
-import json
 
 import piexif
 import pyexiv2
 from PIL import Image
 from django.utils import timezone
+
+from cifonauta.settings import WATERMARK
 
 # Get logger
 logger = logging.getLogger('cifonauta.utils')
@@ -139,7 +137,6 @@ def resize_video(input_path, dimension, bitrate, height, sar, output_path):
     print(filter_complex)
 
     # Create FFmpeg call with remaining parameters
-    #TODO: Replace video player?
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
                    '-threads', '0',
                    '-i', input_path,
@@ -148,6 +145,12 @@ def resize_video(input_path, dimension, bitrate, height, sar, output_path):
                    '-filter_complex', filter_complex,
                    '-an',
                    output_path]
+
+    # Audio codec.
+    # video_call.extend(['-acodec', 'libfaac', '-b:a', '128k', '-ac', '2', '-ar', '44100'])
+
+    # Video codec.
+    # video_call.extend(['-vcodec', 'libx264'])
 
     try:
         subprocess.call(ffmpeg_call)
@@ -298,50 +301,9 @@ def read_photo_metadata(filepath):
         return metadata
 
 
-#TODO: Keep for the watermark
-def video_to_web(filepath, sitepath, metadata):
-    '''Convert video for web using FFmpeg.
-
-    # HD
-    ffmpeg -y -i hd.m2ts -i marca.png -metadata title="A MP4 HD" -metadata author="AN AUTHOR"
-    -b:v 600k -threads 0 -acodec libfaac -b:a 128k -ac 2 -ar 44100 -vcodec libx264
-    -filter_complex "scale=512x288,overlay=0:main_h-overlay_h-0" hd.mp4
-
-    # SD
-    ffmpeg -y -i dv.avi -i marca.png -metadata title="A MP4 DV" -metadata author="AN AUTHOR"
-    -b:v 600k -threads 0 -acodec libfaac -b:a 128k -ac 2 -ar 44100 -vcodec libx264
-    -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" '-aspect', '4:3',dv.mp4
-    '''
-
-    # FFMPEG command.
-    video_call = [
-            'ffmpeg', '-y',
-            '-hide_banner',
-            '-loglevel', 'error',
-            '-threads', '0',
-            '-i', filepath,
-            '-i', 'marca.png',
-            '-metadata', 'title={}'.format(metadata.title),
-            '-metadata', 'artist={}'.format(metadata.author),
-            '-b:v', '600k',
-            '-filter_complex', 'scale=512:-2,overlay=0:main_h-overlay_h-0',
-            sitepath
-            ]
-
-    # Audio codec.
-    #video_call.extend(['-acodec', 'libfaac', '-b:a', '128k', '-ac', '2', '-ar', '44100'])
-
-    # Video codec.
-    #video_call.extend(['-vcodec', 'libx264'])
-
-    # Add destination.
-    #video_call.append(sitepath)
-
-    # Execute.
-    subprocess.call(video_call)
-
 #TODO: Clean up from here
 
+#TODO Watermarking with imagemagick
 def watermarker(filepath):
     '''Insert watermark.'''
     # Watermark file.
@@ -443,53 +405,12 @@ def get_decimal(ref, deg, min, sec):
     return decimal
 
 
-def get_info(video):
-    '''Pega informações do vídeo na marra e retorna dicionário.
-
-    Os valores são extraídos do stderr do ffmpeg usando expressões
-    regulares.
-    '''
-    try:
-        call = subprocess.Popen(['ffmpeg', '-i', video],
-                stderr=subprocess.PIPE)
-    except:
-        logger.warning('Não conseguiu abrir o arquivo %s', video)
-        return None
-    # Necessário converter pra string pra ser objeto permanente.
-    info = str(call.stderr.read())
-    # Encontra a duração do arquivo.
-    length_re = re.search(r'(?<=Duration: )\d+:\d+:\d+', info)
-    # Encontra o codec e dimensões.
-    precodec_re = re.search(r'(?<=Video: ).+, .+, \d+x\d+', info)
-    # Processando os outputs brutos.
-    #XXX Melhorar isso e definir o formato oficial dos valores.
-    # Exemplo (guardar em segundos e converter depois):
-    #   >>> import datetime
-    #   >>> str(datetime.timedelta(seconds=666))
-    #   '0:11:06'
-    duration = length_re.group(0)
-    codecs = precodec_re.group(0).split(', ')
-    codec = codecs[0].split(' ')[0]
-    dimensions = codecs[-1]
-    # Salvando valores limpos em um dicionário.
-    details = {
-            'duration': duration,
-            'dimensions': dimensions,
-            'codec': codec,
-            }
-    return details
-
 def dir_ready(*dirs):
     '''Verifica se diretório(s) existe(m), criando caso não exista.'''
     for dir in dirs:
         if os.path.isdir(dir) is False:
             logger.debug('Criando diretório %s', dir)
             os.makedirs(dir)
-
-def check_file(filepath):
-    '''Checa se arquivo existe.'''
-    media_file = os.path.isfile(filepath)
-    return media_file
 
 def create_filename(filename, authors):
     '''Create filename with author initials and unique ID.'''
@@ -517,29 +438,6 @@ def create_id():
     unique_id = ''.join([random.choice(chars) for x in range(6)])
     return unique_id
 
-def fix_filename(root, filename):
-    '''Checa validade do nome do arquivo.'''
-    # Verifica a existência de pontos extras.
-    dotcount = filename.count('.')
-    if dotcount == 0:
-        filepath = os.path.join(root, filename)
-        logger.warning('%s sem extensão!', filepath)
-    elif dotcount > 1:
-        splitname = filename.split('.')
-        extension = splitname.pop()
-        basename = ''.join(splitname)
-        fixedname = basename + '.' + extension
-        filepath = os.path.join(root, fixedname)
-        oldpath = os.path.join(root, filename)
-        try:
-            move(oldpath, filepath)
-            logger.debug('Corrigido: %s >> %s', filename, fixedname)
-        except:
-            logger.warning('%s não foi corrigido!', oldpath)
-            filepath = oldpath
-    else:
-        filepath = os.path.join(root, filename)
-    return filepath
 
 class Metadata():
     

@@ -249,6 +249,9 @@ def upload_media_step2(request):
                     media_instance = specific_form.save()
                     media_instance.status = 'draft'
 
+                    # Read media file information
+                    media_instance.update_media_info()
+
                     # Create media files with different dimensions
                     media_instance.resize_files()
 

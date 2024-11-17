@@ -43,9 +43,11 @@
             <span class="quiet" id="media-duration">{{ media.display_duration }}</span>
             {% endif %}
           </div>
-          <div id='download_media'>
-            <a href="{% url 'download_media' media.id %}"><button>Baixar Imagem</button></a>
-          </div>    
+              {% comment %}
+                <div id='download_media'>
+                <a href="{% url 'download_media' media.id %}"><button>Baixar Imagem</button></a>
+                </div>
+              {% endcomment %}
           {% endif %}
         </figure>
 

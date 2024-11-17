@@ -29,7 +29,7 @@
           {% if media.caption %}
             <figcation>
               {% if media.datatype == 'video' %}
-                <span class="quiet" id="media-duration">{{ media.duration|slice:'3:' }}</span>
+                <span class="quiet" id="media-duration">{{ media.display_duration }}</span>
               {% endif %}
               {{ media.caption }}
             </figcaption>
@@ -40,12 +40,14 @@
           <div id="author">
             {% show_set authors '' '' ', ' '' %}
             {% if media.datatype == 'video' %}
-            <span class="quiet" id="media-duration">{{ media.duration|slice:'3:' }}</span>
+            <span class="quiet" id="media-duration">{{ media.display_duration }}</span>
             {% endif %}
           </div>
-          <div id='download_media'>
-            <a href="{% url 'download_media' media.id %}"><button>Baixar Imagem</button></a>
-          </div>    
+              {% comment %}
+                <div id='download_media'>
+                <a href="{% url 'download_media' media.id %}"><button>Baixar Imagem</button></a>
+                </div>
+              {% endcomment %}
           {% endif %}
         </figure>
 

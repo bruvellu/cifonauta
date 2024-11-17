@@ -297,6 +297,11 @@ class Media(models.Model):
                                 blank=True,
                                 help_text=_('Duração do vídeo em segundos (e.g., 36.536500).'))
 
+    duranew = models.DurationField(_('duração do vídeo'),
+                                   null=True,
+                                   blank=True,
+                                   help_text=_('Duração do vídeo em segundos (e.g., 36.536500).'))
+
     width = models.PositiveIntegerField(_('largura da mídia'),
                                         null=True,
                                         blank=True,
@@ -539,6 +544,13 @@ class Media(models.Model):
             #     print('Error! Media info update failed...')
             #     print(info)
 
+    def display_duration(self):
+        '''Format duration to be displayed on the website.'''
+
+        seconds = self.duration.seconds % 60
+        minutes = seconds // 60
+
+        return f'{minutes:02d}:{seconds:02d}'
 
     def get_ancestors_vector(self):
         taxa = self.taxa.all()

@@ -11,7 +11,7 @@ import os
 import random
 import re
 import subprocess
-from datetime import datetime
+from datetime import datetime, timedelta
 from shutil import move
 
 
@@ -209,12 +209,24 @@ def probe_media_info(file_path):
         video_info.update(data.get("format", {}))
         video_info.update(data.get("streams")[0] if data.get("streams") else {})
 
+        # Convert duration to timedelta
+        video_info = convert_duration_to_timedelta(video_info)
+
         return video_info
 
     except Exception as e:
         print(f"Error processing video: {str(e)}")
         return None
 
+def convert_duration_to_timedelta(video_info):
+    '''Converts duration info from FFprobe to timedelta.
+
+    This is needed to import the data to Media's DurationField.
+    '''
+
+    if 'duration' in video_info:
+        video_info['duration'] = timedelta(seconds=(float(video_info['duration'])))
+        return video_info
 
 #TODO: Remove?
 def read_photo_metadata(filepath):

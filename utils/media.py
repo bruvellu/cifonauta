@@ -102,6 +102,8 @@ def resize_video(input_path, dimension, bitrate, height, sar, output_path):
     print(filter_complex)
 
     # Create FFmpeg call with remaining parameters
+    #TODO: Move watermark to meta/static
+    #TODO: Replace video player?
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
                    '-threads', '0',
                    '-i', input_path,
@@ -121,9 +123,11 @@ def resize_video(input_path, dimension, bitrate, height, sar, output_path):
 
 def extract_video_cover(input_path, dimension, output_path):
     '''Uses FFmpeg to scale and convert videos.'''
+    #TODO: Add watermark for video cover
+    #TODO: Fix aspect ratio of cover image
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
                    '-i', input_path, '-vframes', '1',
-                   '-filter:v', f'scale={dimension}:-2',
+                   '-filter:v', f'scale=-2:{dimension}',
                    '-ss', '1', '-f', 'image2', output_path]
     try:
         subprocess.call(ffmpeg_call)

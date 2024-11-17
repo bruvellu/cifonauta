@@ -290,6 +290,7 @@ class Media(models.Model):
                                   blank=True,
                                   help_text=_('Quando o vídeo stream se inicia (e.g., 0.000000).'))
 
+    #TODO: Fix duration display on website
     duration = models.CharField(_('duração do vídeo'),
                                 max_length=20,
                                 default='',
@@ -477,11 +478,20 @@ class Media(models.Model):
             resized = resize_image(field.path, dimension, quality)
         elif self.datatype == 'video':
             if size == 'cover':
-                resized = extract_video_cover(self.file.path, dimension,
-                                              field.path)
+                resized = extract_video_cover(
+                    self.file.path,
+                    dimension,
+                    field.path
+                )
             else:
-                resized = resize_video(self.file.path, dimension,
-                                       quality, field.path)
+                resized = resize_video(
+                    self.file.path,
+                    dimension,
+                    quality,
+                    self.height,
+                    self.sample_aspect_ratio,
+                    field.path
+                )
 
         # Return True/False for convenience
         return resized

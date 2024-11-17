@@ -291,13 +291,7 @@ class Media(models.Model):
                                   help_text=_('Quando o vídeo stream se inicia (e.g., 0.000000).'))
 
     #TODO: Fix duration display on website
-    duration = models.CharField(_('duração do vídeo'),
-                                max_length=20,
-                                default='',
-                                blank=True,
-                                help_text=_('Duração do vídeo em segundos (e.g., 36.536500).'))
-
-    duranew = models.DurationField(_('duração do vídeo'),
+    duration = models.DurationField(_('duração do vídeo'),
                                    null=True,
                                    blank=True,
                                    help_text=_('Duração do vídeo em segundos (e.g., 36.536500).'))
@@ -544,11 +538,15 @@ class Media(models.Model):
             #     print('Error! Media info update failed...')
             #     print(info)
 
+    @property
     def display_duration(self):
         '''Format duration to be displayed on the website.'''
 
-        seconds = self.duration.seconds % 60
+        seconds = self.duration.seconds
         minutes = seconds // 60
+
+        if minutes > 0:
+            seconds = seconds % 60
 
         return f'{minutes:02d}:{seconds:02d}'
 

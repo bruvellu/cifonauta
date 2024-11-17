@@ -223,6 +223,9 @@ MEDIA_DEFAULTS = {
         },
     }
 
+# Define path to watermark file
+WATERMARK = os.path.join(STATICFILES_DIRS[0], 'watermark.png')
+
 # Regex for filename of uploaded files
 FILENAME_REGEX = fr'{os.environ["FILENAME_REGEX"]}'
 

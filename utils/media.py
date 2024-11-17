@@ -13,12 +13,9 @@ import re
 import subprocess
 from datetime import datetime, timedelta
 from shutil import move
+from cifonauta.settings import WATERMARK
 
-
-import subprocess
 import json
-from typing import Dict, Optional
-
 
 import piexif
 import pyexiv2
@@ -30,18 +27,58 @@ logger = logging.getLogger('cifonauta.utils')
 
 
 def resize_image(filepath, dimension, quality):
-    '''Uses Pillow's thumbnail method to scale images.'''
-    #TODO: Use "with" approach? See https://pillow.readthedocs.io/en/latest/reference/open_files.html#file-handling
-    image = Image.open(filepath)
-    image.thumbnail((dimension, dimension))
+    '''Uses Pillow's thumbnail method to scale images and add watermark.'''
+
     try:
-        image.convert('RGB').save(filepath, format='jpeg', quality=quality)
+        # Load image and set size
+        image = Image.open(filepath)
+        image = image.convert('RGBA')
+        image.thumbnail((dimension, dimension))
+
+        # Set watermark dimensions based on image height
+        dimension_water = int(image.height / 20)
+
+        # Load watermark and set its size and transparency
+        water = Image.open(WATERMARK)
+        water = water.convert('RGBA')
+        water.thumbnail((dimension_water, dimension_water))
+
+        # Lower transparency of non-transparent pixels only
+        # This preserve already transparent parts of the watermark
+        water.putalpha(water.getchannel('A').point(lambda x: x * 0.5))
+
+        # Define padding and position relative to watermark height
+        padding_water = int(water.height / 5)
+        position_water = padding_water, image.height - water.height - padding_water
+
+        # Paste watermark on image, convert to RGB, and save
+        image.paste(water, position_water, water)
+        image = image.convert('RGB')
+        image.save(filepath, format='jpeg', quality=quality)
+
+        # Closure
         image.close()
+        water.close()
         return True
-    except:
+    except Exception as e:
         logger.critical(f'Could not save {filepath}!')
-        image.close()
+        logger.critical(e)
+        try:
+            image.close()
+            water.close()
+        except:
+            pass
         return False
+
+    # Previous code for scaling without watermark
+    # try:
+    #     image.convert('RGB').save(filepath, format='jpeg', quality=quality)
+    #     image.close()
+    #     return True
+    # except:
+    #     logger.critical(f'Could not save {filepath}!')
+    #     image.close()
+    #     return False
 
 
 def resize_video(input_path, dimension, bitrate, height, sar, output_path):
@@ -64,12 +101,12 @@ def resize_video(input_path, dimension, bitrate, height, sar, output_path):
     sar_slash = sar.replace(':', '/')
     sar_value = eval(sar_slash)
 
-    # Get height and width for a 1/10 sized watermark
+    # Get height and width for a 1/20 sized watermark
     # based on the video's sample_aspect_ratio
     water_height = int(video_height / 20)
     water_width = int(water_height / sar_value)
 
-    # Set value for lateral padding relative to watermark height
+    # Set value of padding to 1/5 of watermark height
     pad = int(water_height / 5)
 
     # Set value for watermark transparency
@@ -102,12 +139,11 @@ def resize_video(input_path, dimension, bitrate, height, sar, output_path):
     print(filter_complex)
 
     # Create FFmpeg call with remaining parameters
-    #TODO: Move watermark to meta/static
     #TODO: Replace video player?
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
                    '-threads', '0',
                    '-i', input_path,
-                   '-i', 'tmp/logo_social.png',
+                   '-i', WATERMARK,
                    '-b:v', f'{bitrate}k',
                    '-filter_complex', filter_complex,
                    '-an',

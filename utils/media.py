@@ -6,68 +6,290 @@
 Common functions to read image metadata and create thumbnails.
 '''
 
+import json
 import logging
 import os
 import random
-import re
 import subprocess
-from datetime import datetime
-from shutil import move
+from datetime import datetime, timedelta
 
 import piexif
 import pyexiv2
 from PIL import Image
 from django.utils import timezone
 
+from cifonauta.settings import WATERMARK
+
 # Get logger
 logger = logging.getLogger('cifonauta.utils')
 
 
 def resize_image(filepath, dimension, quality):
-    '''Uses Pillow's thumbnail method to scale images.'''
-    #TODO: Use "with" approach? See https://pillow.readthedocs.io/en/latest/reference/open_files.html#file-handling
-    image = Image.open(filepath)
-    image.thumbnail((dimension, dimension))
+    '''Uses Pillow's thumbnail method to scale images and add watermark.'''
+
     try:
-        image.convert('RGB').save(filepath, format='jpeg', quality=quality)
+        # Load image and set size
+        image = Image.open(filepath)
+        image = image.convert('RGBA')
+        image.thumbnail((dimension, dimension))
+
+        # Set watermark dimensions based on image height
+        dimension_water = int(image.height / 20)
+
+        # Load watermark and set its size and transparency
+        water = Image.open(WATERMARK)
+        water = water.convert('RGBA')
+        water.thumbnail((dimension_water, dimension_water))
+
+        # Lower transparency of non-transparent pixels only
+        # This preserve already transparent parts of the watermark
+        water.putalpha(water.getchannel('A').point(lambda x: x * 0.5))
+
+        # Define padding and position relative to watermark height
+        padding_water = int(water.height / 5)
+        position_water = padding_water, image.height - water.height - padding_water
+
+        # Paste watermark on image, convert to RGB, and save
+        image.paste(water, position_water, water)
+        image = image.convert('RGB')
+        image.save(filepath, format='jpeg', quality=quality)
+
+        # Closure
         image.close()
+        water.close()
         return True
-    except:
+    except Exception as e:
         logger.critical(f'Could not save {filepath}!')
-        image.close()
+        logger.critical(e)
+        try:
+            image.close()
+            water.close()
+        except:
+            pass
         return False
 
+    # Previous code for scaling without watermark
+    # try:
+    #     image.convert('RGB').save(filepath, format='jpeg', quality=quality)
+    #     image.close()
+    #     return True
+    # except:
+    #     logger.critical(f'Could not save {filepath}!')
+    #     image.close()
+    #     return False
 
-def resize_video(input_path, dimension, bitrate, output_path):
-    '''Uses FFmpeg to scale and convert videos.'''
-    # min(width, iw) prevents upscaling
-    # lanczos is a better resizing algorithm
+
+def resize_video(input_path, dimension, bitrate, height, sar, output_path):
+    '''Scale, watermark, and convert videos to MP4 using FFmpeg.
+
+    Scaling is based on the height, width is scaled accordingly to maintain aspect ratio.
+    If height is smaller than dimension, use height.
+    Watermark is sized to 1/10 of the final video height. Its width needs to be adjusted with the video's
+    sample aspect ratio (sar) to be displayed in the correct aspect ratio. It is placed in the bottom left corner.
+    The audio is removed from the video.
+    '''
+
+    # Get final height in case video is smaller than dimension
+    if dimension > height:
+        video_height = height
+    else:
+        video_height = dimension
+
+    # Transform sar from 4:3 to 4/3 format
+    sar_slash = sar.replace(':', '/')
+    sar_value = eval(sar_slash)
+
+    # Get height and width for a 1/20 sized watermark
+    # based on the video's sample_aspect_ratio
+    water_height = int(video_height / 20)
+    water_width = int(water_height / sar_value)
+
+    # Set value of padding to 1/5 of watermark height
+    pad = int(water_height / 5)
+
+    # Set value for watermark transparency
+    alpha = 0.5
+
+    # Using scale2ref (soon to be deprecated)
+    # filter_complex = (
+    #     f"[0:v]scale=-2:'min({video_height},ih)':flags=lanczos[video];"
+    #     f"[1:v][video]scale2ref={water_width}:{water_height}[watermark][video];"
+    #     f"[watermark]format=rgba,colorchannelmixer=aa=0.5[watermark];"
+    #     f"[video][watermark]overlay=5:H-h-5:format=auto,format=yuv420p"
+    # )
+
+    # Define parameters for scaling and watermarking
+    # -2:min(height, ih) prevents upscaling and makes sure width is divisible by 2
+    # flags=lanczos is a better scaling algorithm
+    # format=rgba,colorchannelmixer=aa=0.5 ensures there's an alpha channel and controls transparency
+    # overlay=5:H-h-5 puts the watermark in the bottom left corner with 5 pixels padding
+    # format=yuv420p improves watermark quality for mp4
+
+    # Using standard scale filter
+    filter_complex = (
+        f"[0:v]scale=-2:'min({video_height},ih)':flags=lanczos[video];"
+        f"[1:v]scale={water_width}:{water_height}[watermark];"
+        f"[watermark]format=rgba,colorchannelmixer=aa={alpha}[watermark];"
+        f"[video][watermark]overlay={pad}:H-h-{pad},format=yuv420p"
+    )
+
+    print(f'dimension={dimension}, height={height}, sar={sar}')
+    print(filter_complex)
+
+    # Create FFmpeg call with remaining parameters
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
-                   '-threads', '0', '-i', input_path,
-                   '-b:v', f'{bitrate}k', '-filter:v',
-                   f'scale=\'min({dimension},iw)\':-2:flags=lanczos',
+                   '-threads', '0',
+                   '-i', input_path,
+                   '-i', WATERMARK,
+                   '-b:v', f'{bitrate}k',
+                   '-filter_complex', filter_complex,
+                   '-an',
                    output_path]
+
+    # Audio codec.
+    # video_call.extend(['-acodec', 'libfaac', '-b:a', '128k', '-ac', '2', '-ar', '44100'])
+
+    # Video codec.
+    # video_call.extend(['-vcodec', 'libx264'])
+
     try:
         subprocess.call(ffmpeg_call)
         return True
-    except:
+    except Exception as e:
         logger.critical(f'Could not save {output_path}!')
+        logger.critical(e)
         return False
 
 
-def extract_video_cover(input_path, dimension, output_path):
-    '''Uses FFmpeg to scale and convert videos.'''
+def extract_video_cover(input_path, dimension, width, height, sar, output_path):
+    '''Uses FFmpeg to extract frame from video and watermark it.'''
+
+    # Get sar value and corrected width
+    sar_slash = sar.replace(':', '/')
+    sar_value = eval(sar_slash)
+    sar_width = int(width * sar_value)
+
+    # Create filter with proper steps
+    # setsar=1 set square pixels
+    # scale first to corrected size with square pixels
+    # scale image to final size
+    filter = (
+        f'setsar=1,'
+        f'scale={sar_width}:{height},'
+        f'scale={dimension}:-2'
+    )
+
+    # Call for FFmpeg
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
-                   '-i', input_path, '-vframes', '1',
-                   '-filter:v', f'scale={dimension}:-2',
-                   '-ss', '1', '-f', 'image2', output_path]
+                   '-i', input_path,
+                   '-vframes', '1',
+                   '-filter:v', filter,
+                   '-ss', '1',
+                   '-f', 'image2',
+                   output_path]
+
+    print(ffmpeg_call)
+
+    # Extract image and add watermark
     try:
         subprocess.call(ffmpeg_call)
+        resize_image(output_path, dimension, 70)
         return True
-    except:
+    except Exception as e:
         logger.critical(f'Could not save {output_path}!')
+        logger.critical(e)
         return False
 
+
+def probe_media_info(file_path):
+    '''Extract information from videos and images using ffprobe command.
+
+    Returns for videos:
+    {
+        'format_name': 'avi',
+        'codec_name': 'dvvideo',
+        'size': '138519976',
+        'bit_rate': '30330212',
+        'pix_fmt': 'yuv411p',
+        'start_time': '0.000000',
+        'duration': '36.536500',
+        'width': 720,
+        'height': 480,
+        'sample_aspect_ratio': '8:9',
+        'display_aspect_ratio': '4:3'
+     }
+
+     Returns for images:
+     {
+        'format_name': 'image2',
+        'codec_name': 'mjpeg',
+        'size': '21175',
+        'bit_rate': '4235000',
+        'pix_fmt': 'yuvj422p',
+        'start_time': '0.000000',
+        'duration': '0.040000',
+        'width': 750,
+        'height': 500,
+        'sample_aspect_ratio': '8:9',
+        'display_aspect_ratio': '4:3',
+
+     }
+
+    Removed 'codec_type' value as it always returns 'video'.
+    '''
+
+    # ffmpeg.ffprobe -v error -select_streams V:0 -show_entries "format=format_name,start_time,duration,size,bit_rate : stream=codec_name,codec_type,width,height,sample_aspect_ratio,display_aspect_ratio,pix_fmt" 3d47dbea-635f-42e9-a699-f8bedcd03260.avi
+
+    # Build ffprobe command to probe relevant information
+    command = [
+        "ffprobe",
+        "-v", "error",
+        "-select_streams", "v:0",
+        "-show_entries",
+        "format=format_name,start_time,duration,size,bit_rate:stream=codec_name,width,height,sample_aspect_ratio,display_aspect_ratio,pix_fmt",
+        "-print_format", "json",
+        file_path
+    ]
+
+    try:
+        # Run ffprobe as a subprocess
+        result = subprocess.run(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+
+        if result.returncode != 0:
+            print(f"Error running ffprobe: {result.stderr}")
+            return None
+
+        # Parse JSON output
+        data = json.loads(result.stdout)
+
+        # Transform data into a flat dictionary
+        video_info = {}
+        video_info.update(data.get("format", {}))
+        video_info.update(data.get("streams")[0] if data.get("streams") else {})
+
+        # Convert duration to timedelta
+        video_info = convert_duration_to_timedelta(video_info)
+
+        return video_info
+
+    except Exception as e:
+        print(f"Error processing video: {str(e)}")
+        return None
+
+def convert_duration_to_timedelta(video_info):
+    '''Converts duration info from FFprobe to timedelta.
+
+    This is needed to import the data to Media's DurationField.
+    '''
+
+    if 'duration' in video_info:
+        video_info['duration'] = timedelta(seconds=(float(video_info['duration'])))
+        return video_info
 
 #TODO: Remove?
 def read_photo_metadata(filepath):
@@ -79,50 +301,9 @@ def read_photo_metadata(filepath):
         return metadata
 
 
-#TODO: Keep for the watermark
-def video_to_web(filepath, sitepath, metadata):
-    '''Convert video for web using FFmpeg.
-
-    # HD
-    ffmpeg -y -i hd.m2ts -i marca.png -metadata title="A MP4 HD" -metadata author="AN AUTHOR"
-    -b:v 600k -threads 0 -acodec libfaac -b:a 128k -ac 2 -ar 44100 -vcodec libx264
-    -filter_complex "scale=512x288,overlay=0:main_h-overlay_h-0" hd.mp4
-
-    # SD
-    ffmpeg -y -i dv.avi -i marca.png -metadata title="A MP4 DV" -metadata author="AN AUTHOR"
-    -b:v 600k -threads 0 -acodec libfaac -b:a 128k -ac 2 -ar 44100 -vcodec libx264
-    -filter_complex "scale=512x384,overlay=0:main_h-overlay_h-0" '-aspect', '4:3',dv.mp4
-    '''
-
-    # FFMPEG command.
-    video_call = [
-            'ffmpeg', '-y',
-            '-hide_banner',
-            '-loglevel', 'error',
-            '-threads', '0',
-            '-i', filepath,
-            '-i', 'marca.png',
-            '-metadata', 'title={}'.format(metadata.title),
-            '-metadata', 'artist={}'.format(metadata.author),
-            '-b:v', '600k',
-            '-filter_complex', 'scale=512:-2,overlay=0:main_h-overlay_h-0',
-            sitepath
-            ]
-
-    # Audio codec.
-    #video_call.extend(['-acodec', 'libfaac', '-b:a', '128k', '-ac', '2', '-ar', '44100'])
-
-    # Video codec.
-    #video_call.extend(['-vcodec', 'libx264'])
-
-    # Add destination.
-    #video_call.append(sitepath)
-
-    # Execute.
-    subprocess.call(video_call)
-
 #TODO: Clean up from here
 
+#TODO Watermarking with imagemagick
 def watermarker(filepath):
     '''Insert watermark.'''
     # Watermark file.
@@ -224,53 +405,12 @@ def get_decimal(ref, deg, min, sec):
     return decimal
 
 
-def get_info(video):
-    '''Pega informações do vídeo na marra e retorna dicionário.
-
-    Os valores são extraídos do stderr do ffmpeg usando expressões
-    regulares.
-    '''
-    try:
-        call = subprocess.Popen(['ffmpeg', '-i', video],
-                stderr=subprocess.PIPE)
-    except:
-        logger.warning('Não conseguiu abrir o arquivo %s', video)
-        return None
-    # Necessário converter pra string pra ser objeto permanente.
-    info = str(call.stderr.read())
-    # Encontra a duração do arquivo.
-    length_re = re.search(r'(?<=Duration: )\d+:\d+:\d+', info)
-    # Encontra o codec e dimensões.
-    precodec_re = re.search(r'(?<=Video: ).+, .+, \d+x\d+', info)
-    # Processando os outputs brutos.
-    #XXX Melhorar isso e definir o formato oficial dos valores.
-    # Exemplo (guardar em segundos e converter depois):
-    #   >>> import datetime
-    #   >>> str(datetime.timedelta(seconds=666))
-    #   '0:11:06'
-    duration = length_re.group(0)
-    codecs = precodec_re.group(0).split(', ')
-    codec = codecs[0].split(' ')[0]
-    dimensions = codecs[-1]
-    # Salvando valores limpos em um dicionário.
-    details = {
-            'duration': duration,
-            'dimensions': dimensions,
-            'codec': codec,
-            }
-    return details
-
 def dir_ready(*dirs):
     '''Verifica se diretório(s) existe(m), criando caso não exista.'''
     for dir in dirs:
         if os.path.isdir(dir) is False:
             logger.debug('Criando diretório %s', dir)
             os.makedirs(dir)
-
-def check_file(filepath):
-    '''Checa se arquivo existe.'''
-    media_file = os.path.isfile(filepath)
-    return media_file
 
 def create_filename(filename, authors):
     '''Create filename with author initials and unique ID.'''
@@ -298,29 +438,6 @@ def create_id():
     unique_id = ''.join([random.choice(chars) for x in range(6)])
     return unique_id
 
-def fix_filename(root, filename):
-    '''Checa validade do nome do arquivo.'''
-    # Verifica a existência de pontos extras.
-    dotcount = filename.count('.')
-    if dotcount == 0:
-        filepath = os.path.join(root, filename)
-        logger.warning('%s sem extensão!', filepath)
-    elif dotcount > 1:
-        splitname = filename.split('.')
-        extension = splitname.pop()
-        basename = ''.join(splitname)
-        fixedname = basename + '.' + extension
-        filepath = os.path.join(root, fixedname)
-        oldpath = os.path.join(root, filename)
-        try:
-            move(oldpath, filepath)
-            logger.debug('Corrigido: %s >> %s', filename, fixedname)
-        except:
-            logger.warning('%s não foi corrigido!', oldpath)
-            filepath = oldpath
-    else:
-        filepath = os.path.join(root, filename)
-    return filepath
 
 class Metadata():
     

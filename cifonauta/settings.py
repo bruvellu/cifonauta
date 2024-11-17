@@ -200,24 +200,31 @@ IMAGE_SIZE_LIMIT = 3 * 1024 * 1024
 VIDEO_SIZE_LIMIT = 1 * 1024 * 1024 * 1024
 
 # Default dimensions and quality for different media files
-# Image quality in percentage (0-100%)
-# Video quality in bitrate (0-infinite kbits/s)
 MEDIA_DEFAULTS = {
-        'photo': {
-            'extension': 'jpg',
-            'large': {'dimension': 2000, 'quality': 90},
-            'medium': {'dimension': 1000, 'quality': 70},
-            'small': {'dimension': 500, 'quality': 70},
-            'cover': {'dimension': 750, 'quality': 70}
-            },
-        'video': {
-            'extension': 'mp4',
-            'large': {'dimension': 1920, 'quality': 2000},
-            'medium': {'dimension': 1280, 'quality': 1000},
-            'small': {'dimension': 640, 'quality': 600},
-            'cover': {'dimension': 750, 'quality': 70}
-            },
-        }
+
+    # dimension: maximum width for images and cover
+    # quality: percentage (0-100%)
+    'photo': {
+        'extension': 'jpg',
+        'large': {'dimension': 2000, 'quality': 90},
+        'medium': {'dimension': 1000, 'quality': 70},
+        'small': {'dimension': 500, 'quality': 70},
+        'cover': {'dimension': 750, 'quality': 70}
+        },
+
+    # dimension: maximum height (resolution) for videos
+    # quality: bitrate (0-infinite kbits/s)
+    'video': {
+        'extension': 'mp4',
+        'large': {'dimension': 1080, 'quality': 2000},
+        'medium': {'dimension': 720, 'quality': 1000},
+        'small': {'dimension': 480, 'quality': 600},
+        'cover': {'dimension': 750, 'quality': 70}
+        },
+    }
+
+# Define path to watermark file
+WATERMARK = os.path.join(STATICFILES_DIRS[0], 'watermark.png')
 
 # Regex for filename of uploaded files
 FILENAME_REGEX = fr'{os.environ["FILENAME_REGEX"]}'

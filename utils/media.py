@@ -133,8 +133,8 @@ def resize_video(input_path, dimension, bitrate, height, sar, output_path):
         f"[video][watermark]overlay={pad}:H-h-{pad},format=yuv420p"
     )
 
-    print(f'dimension={dimension}, height={height}, sar={sar}')
-    print(filter_complex)
+    # print(f'dimension={dimension}, height={height}, sar={sar}')
+    # print(filter_complex)
 
     # Create FFmpeg call with remaining parameters
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
@@ -188,7 +188,7 @@ def extract_video_cover(input_path, dimension, width, height, sar, output_path):
                    '-f', 'image2',
                    output_path]
 
-    print(ffmpeg_call)
+    # print(ffmpeg_call)
 
     # Extract image and add watermark
     try:

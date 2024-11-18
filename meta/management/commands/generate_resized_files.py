@@ -18,7 +18,10 @@ class Command(BaseCommand):
                             help='ID of the media to update.')
 
         parser.add_argument('-n', '--number', type=int, default=10,
-                            help='Number of media to update (default=10).')
+                            help='Number of media to update (default=10, max=1000).')
+
+        parser.add_argument('-d', '--days', type=int, default=1,
+                            help='Skip entries updated less than X days ago (default=1).')
 
         parser.add_argument('--only-photo', action='store_true', dest='only_photo',
                 help='Only update photos.')
@@ -34,6 +37,7 @@ class Command(BaseCommand):
         # Parse options
         id = options['id']
         number = options['number']
+        days = options['days']
         only_photo = options['only_photo']
         only_video = options['only_video']
         skip_recent = options['skip_recent']
@@ -51,10 +55,13 @@ class Command(BaseCommand):
 
         # Ignore recently updated files
         if skip_recent:
-            datelimit = timezone.now() - timezone.timedelta(days=1)
+            datelimit = timezone.now() - timezone.timedelta(days=days)
             files = files.filter(date_modified__lt=datelimit)
 
         # Limit the total number of taxa
+        if number > 1000:
+            print(f'You requested {number} entries, but the limit is 1000.')
+            number = 1000
         files = files[:number]
 
         # If ID, ignore above and force processing

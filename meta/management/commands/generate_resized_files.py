@@ -14,15 +14,20 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
 
-        parser.add_argument('-i', '--id', type=int, default=None,
+        parser.add_argument('--id', type=int, default=None,
                             help='ID of the media to update.')
 
         parser.add_argument('-n', '--number', type=int, default=10,
                             help='Number of media to update (default=10, max=1000).')
 
-        parser.add_argument('-d', '--days', type=int, default=1,
+        parser.add_argument('--days', type=int, default=1,
                             help='Skip entries updated less than X days ago (default=1).')
 
+        parser.add_argument('--hours', type=int, default=0,
+                            help='Skip entries updated less than X hours ago (default=0).')
+
+        parser.add_argument('--minutes', type=int, default=0,
+                            help='Skip entries updated less than X minutes ago (default=0).')
         parser.add_argument('--only-photo', action='store_true', dest='only_photo',
                 help='Only update photos.')
 
@@ -34,10 +39,18 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        # Print options
+        print()
+        for k, v in options.items():
+            print(f'  {k}: {v}')
+        print()
+
         # Parse options
         id = options['id']
         number = options['number']
         days = options['days']
+        hours = options['hours']
+        minutes = options['minutes']
         only_photo = options['only_photo']
         only_video = options['only_video']
         skip_recent = options['skip_recent']
@@ -55,7 +68,11 @@ class Command(BaseCommand):
 
         # Ignore recently updated files
         if skip_recent:
-            datelimit = timezone.now() - timezone.timedelta(days=days)
+            datelimit = timezone.now() - timezone.timedelta(
+                    days=days,
+                    hours=hours,
+                    minutes=minutes
+                    )
             files = files.filter(date_modified__lt=datelimit)
 
         # Limit the total number of taxa

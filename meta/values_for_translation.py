@@ -69,6 +69,8 @@ _('Ave')
 # Translators: model=Media, field=title.
 _('A vida dupla de Dipurena')
 # Translators: model=Media, field=title.
+_('Baba-de-boi')
+# Translators: model=Media, field=title.
 _('Badejo-quadrado')
 # Translators: model=Media, field=title.
 _('Baiacu')
@@ -795,6 +797,8 @@ _('Molusco opistobrânquio sobre alga parda')
 # Translators: model=Media, field=title.
 _('Molusco opistobrânquio sobre briozoário')
 # Translators: model=Media, field=title.
+_('Molusco pelágico')
+# Translators: model=Media, field=title.
 _('Moluscos bivalves')
 # Translators: model=Media, field=title.
 _('Moluscos nudibrânquio')
@@ -869,6 +873,8 @@ _('Peixe-borboleta-listrado')
 # Translators: model=Media, field=title.
 _('Peixe cirurgião')
 # Translators: model=Media, field=title.
+_('Peixe-cirurgião')
+# Translators: model=Media, field=title.
 _('Peixe cirurgião-barbeiro forrageando')
 # Translators: model=Media, field=title.
 _('Peixe-cofre')
@@ -900,6 +906,8 @@ _('Piaba-do-mar')
 _('Pico de São Sebastião')
 # Translators: model=Media, field=title.
 _('Pirajica')
+# Translators: model=Media, field=title.
+_('Pirá próximo ao seu ninho')
 # Translators: model=Media, field=title.
 _('Placas de recrutamento')
 # Translators: model=Media, field=title.
@@ -1088,6 +1096,8 @@ _('Zigoto')
 _('Zigoto de uma bolacha-do-mar')
 # Translators: model=Media, field=title.
 _('Zoantharia')
+# Translators: model=Media, field=title.
+_('Zoantharia e um blênio')
 # Translators: model=Media, field=title.
 _('Zoantídeo')
 # Translators: model=Media, field=title.
@@ -2009,6 +2019,8 @@ _('Mexilhões e algas verdes.')
 # Translators: model=Media, field=caption.
 _('Microalga no trato digestório larval.')
 # Translators: model=Media, field=caption.
+_('Molusco gastrópodo pelágico.')
+# Translators: model=Media, field=caption.
 _('Montagem de fotos de uma larva plúteos da bolacha-do-mar Clypeaster subdepressus mostrando sua tridimensionalidade.')
 # Translators: model=Media, field=caption.
 _('Montastraea cavernosa com pólipos expandidos (foto realizada durante a noite).')
@@ -2455,6 +2467,8 @@ _('Antonio Sérgio Ferreira Ditadi.')
 # Translators: model=Media, field=acknowledgments.
 _('Arthur Anker.')
 # Translators: model=Media, field=acknowledgments.
+_('Arthur Anker (identificação da espécie); Marcelo Kitahara & Aline Zanotti (coleta do exemplar).')
+# Translators: model=Media, field=acknowledgments.
 _('Carlo M. Cunha.')
 # Translators: model=Media, field=acknowledgments.
 _('Cheryl Ames Lewis.')
@@ -2507,6 +2521,8 @@ _('Leila de Lourdes Longo.')
 # Translators: model=Media, field=acknowledgments.
 _('Luciana Gusmão.')
 # Translators: model=Media, field=acknowledgments.
+_('Marcelo Kitahara.')
+# Translators: model=Media, field=acknowledgments.
 _('Marcelo V. Fukuda.')
 # Translators: model=Media, field=acknowledgments.
 _('Márcio Reis Custódio.')
@@ -2514,6 +2530,8 @@ _('Márcio Reis Custódio.')
 _('Marcos Tavares.')
 # Translators: model=Media, field=acknowledgments.
 _('Martin L. Christoffersen.')
+# Translators: model=Media, field=acknowledgments.
+_('Rafael Masson Rosa.')
 # Translators: model=Media, field=acknowledgments.
 _('Rosana M. Rocha.')
 # Translators: model=Media, field=acknowledgments.

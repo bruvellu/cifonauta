@@ -56,15 +56,15 @@ class Command(BaseCommand):
         skip_recent = options['skip_recent']
 
         # Start with all media files
-        files = Media.objects.all()
+        media = Media.objects.all()
 
         # Only photos
         if only_photo:
-            files = files.filter(datatype='photo')
+            media = media.filter(datatype='photo')
 
         # Only videos
         if only_video:
-            files = files.filter(datatype='video')
+            media = media.filter(datatype='video')
 
         # Ignore recently updated files
         if skip_recent:
@@ -73,24 +73,25 @@ class Command(BaseCommand):
                     hours=hours,
                     minutes=minutes
                     )
-            files = files.filter(date_modified__lt=datelimit)
+            media = media.filter(date_modified__lt=datelimit)
 
         # Limit the total number of taxa
         if number > 1000:
             print(f'You requested {number} entries, but the limit is 1000.')
             number = 1000
-        files = files[:number]
+        media = media[:number]
 
         # If ID, ignore above and force processing
         if id:
-            files = Media.objects.filter(id=id)
+            media = Media.objects.filter(id=id)
             print(f'Processing single file ID={id} (ignoring other filters).')
         else:
             print(f'Processing {number} files...')
             print(f'photo={only_photo}, video={only_video}, recent={skip_recent}')
 
         # Loop over taxon queryset
-        for file in files:
-            print(file.id, file.file)
-            file.resize_files()
+        for instance in media:
+            print(instance.id, instance.file)
+            instance.resize_files()
+            instance.file.close()
 

@@ -8,6 +8,7 @@ Common functions to read image metadata and create thumbnails.
 
 import json
 import logging
+import math
 import os
 import random
 import subprocess
@@ -268,28 +269,51 @@ def probe_media_info(file_path):
         data = json.loads(result.stdout)
 
         # Transform data into a flat dictionary
-        video_info = {}
-        video_info.update(data.get("format", {}))
-        video_info.update(data.get("streams")[0] if data.get("streams") else {})
+        media_info = {}
+        media_info.update(data.get("format", {}))
+        media_info.update(data.get("streams")[0] if data.get("streams") else {})
 
         # Convert duration to timedelta
-        video_info = convert_duration_to_timedelta(video_info)
+        media_info = standardize_media_info(media_info)
 
-        return video_info
+        return media_info
 
     except Exception as e:
         print(f"Error processing video: {str(e)}")
         return None
 
-def convert_duration_to_timedelta(video_info):
-    '''Converts duration info from FFprobe to timedelta.
+def standardize_media_info(media_info):
+    '''Prepare media data for importing to model's fields.'''
 
-    This is needed to import the data to Media's DurationField.
-    '''
+    # Convert duration (seconds) to timedelta
+    if 'duration' in media_info:
+        media_info['duration'] = timedelta(seconds=float(media_info['duration']))
 
-    if 'duration' in video_info:
-        video_info['duration'] = timedelta(seconds=(float(video_info['duration'])))
-        return video_info
+    # Add sample_aspect_ratio when absent (pixel proportion)
+    if not 'sample_aspect_ratio' in media_info:
+        # Assume it is standard square pixels
+        media_info['sample_aspect_ratio'] = '1:1'
+
+    # Add display_aspect_ratio from width:height when absent (display proportion)
+    if not 'display_aspect_ratio' in media_info:
+        # Calculate aspect ratio based on width and height
+        display_aspect_ratio = get_display_aspect_ratio(
+                media_info['width'], media_info['height'])
+        media_info['display_aspect_ratio'] = display_aspect_ratio
+
+    return media_info
+
+
+def get_display_aspect_ratio(width, height):
+    '''Convert width and height to display aspect ratio.'''
+
+    # Divide width and height by greatest common divisor
+    gcd = math.gcd(width, height)
+    aspect_width = width // gcd
+    aspect_height = height // gcd
+    
+    return f'{aspect_width}:{aspect_height}'
+
 
 #TODO: Remove?
 def read_photo_metadata(filepath):

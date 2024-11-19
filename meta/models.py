@@ -291,7 +291,6 @@ class Media(models.Model):
                                   blank=True,
                                   help_text=_('Quando o vídeo stream se inicia (e.g., 0.000000).'))
 
-    #TODO: Fix duration display on website
     duration = models.DurationField(_('duração do vídeo'),
                                    null=True,
                                    blank=True,
@@ -318,14 +317,6 @@ class Media(models.Model):
                                            default='',
                                            blank=True,
                                            help_text=_('Proporção de aspecto da tela (e.g., 4:3).'))
-
-    # Generated field didn't work. Making it a property
-    # dimensions = models.GeneratedField(expression=Concat('width', Value('x'), 'height',),
-    #                                    output_field=models.CharField(),
-    #                                    db_persist=True,
-    #                                    blank=True,
-    #                                    verbose_name=_('dimensões'),
-    #                                    help_text=_('Dimensões do vídeo original.'))
 
     geolocation = models.CharField(_('geolocalização'),
                                    default='',
@@ -443,6 +434,14 @@ class Media(models.Model):
             return stripped_caption[0].upper() + stripped_caption[1:].rstrip('.') + '.'
         except:
             return stripped_caption
+
+    def close_files(self):
+        '''Close open files to avoid too many open files error.'''
+        self.file.close()
+        self.file_cover.close()
+        self.file_large.close()
+        self.file_medium.close()
+        self.file_small.close()
 
     def resize_files(self):
         '''Calls for the resizing of media files.'''
@@ -730,12 +729,12 @@ class Media(models.Model):
         # Workaround logic to prevent errors on publishing videos
         if self.datatype == 'photo':
             to_write = [self.file_large, self.file_medium, self.file_small,
-                        self.file_cover, self.sitepath, self.coverpath]
+                        self.file_cover]
             for file in to_write:
                 meta_instance = Metadata(file.path)
                 meta_instance.insert_metadata(metadata)
         elif self.datatype == 'video':
-            to_write = [self.file_cover, self.coverpath]
+            to_write = [self.file_cover]
             for file in to_write:
                 meta_instance = Metadata(file.path)
                 meta_instance.insert_metadata(metadata)

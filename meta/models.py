@@ -788,7 +788,7 @@ class Person(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('person_url', args=[self.slug])
+        return reverse('author_url', args=[self.slug])
 
     def get_absolute_url_author(self):
         return reverse('author_url', args=[self.slug])

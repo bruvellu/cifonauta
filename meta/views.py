@@ -1138,6 +1138,7 @@ def revision_media_details(request, media_id):
             if action == 'publish':
                 media_instance.status = 'published'
                 media_instance.is_public = True
+                #TODO: Add resize_files() here?
                 media_instance.update_metadata()
             for taxon in form.cleaned_data['taxa']:
                 if taxon.valid_taxon != None:

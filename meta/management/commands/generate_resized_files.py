@@ -93,5 +93,5 @@ class Command(BaseCommand):
         for instance in media:
             print(instance.id, instance.file)
             instance.resize_files()
-            instance.file.close()
+            instance.close_files()
 

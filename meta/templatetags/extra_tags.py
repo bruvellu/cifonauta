@@ -331,6 +331,7 @@ def paged_url(query_string, page_number):
         url = url + 'page=%d' % page_number
     return url
 
+#TODO: Improve or simplify show_set tag
 @register.inclusion_tag('sets.html')
 def show_set(set, prefix, suffix, sep, method='name', before='', after=''):
     '''Gera série a partir de um set.

@@ -139,7 +139,7 @@ def resize_video(input_path, dimension, bitrate, height, sar, output_path):
 
     # Create FFmpeg call with remaining parameters
     ffmpeg_call = ['ffmpeg', '-y', '-hide_banner', '-loglevel', 'error',
-                   '-threads', '0',
+                   '-threads', '6',
                    '-i', input_path,
                    '-i', WATERMARK,
                    '-b:v', f'{bitrate}k',

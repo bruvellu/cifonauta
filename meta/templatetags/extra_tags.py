@@ -44,6 +44,18 @@ def print_thumb(context, field, obj):
         media = ''
     return {'media': media, 'MEDIA_URL': media_url}
 
+@register.inclusion_tag('thumb_org_tour.html', takes_context=True)
+def print_thumb_tour(context, field, obj):
+    '''Generates random thumbnail for supplied metadata.'''
+    Media = apps.get_model('meta', 'Media')
+    media_url = context['MEDIA_URL']
+    params = {field: obj, 'is_public': True}
+    try:
+        media = Media.objects.filter(**params).order_by('?')[0]
+    except:
+        media = ''
+    return {'media': media, 'MEDIA_URL': media_url}
+
 
 def slicer(query, media_id):
     '''Process queryset results.

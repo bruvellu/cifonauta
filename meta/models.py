@@ -10,12 +10,13 @@ from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchVectorField, SearchVector
 from django.db import models
 from django.db.models import Q, Value
+from django.db.models.functions import Concat
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 
-from utils.media import Metadata, resize_image, resize_video, extract_video_cover
+from utils.media import Metadata, resize_image, resize_video, extract_video_cover, probe_media_info
 
 
 class Curation(models.Model):
@@ -253,17 +254,69 @@ class Media(models.Model):
                              choices=SCALE_CHOICES,
                              help_text=_('Classes de escala.'))
 
-    duration = models.CharField(_('duração'),
-                                max_length=20,
-                                default='00:00:00',
-                                blank=True,
-                                help_text=_('Duração do vídeo no formato HH:MM:SS.'))
+    # Video information fields
+    format_name = models.CharField(_('formato da mídia'),
+                                   max_length=30,
+                                   default='',
+                                   blank=True,
+                                   help_text=_('Nome do formato da mídia (e.g., avi ou image2).'))
 
-    dimensions = models.CharField(_('dimensões'),
-                                  max_length=20,
-                                  default='0x0',
+    codec_name = models.CharField(_('codec da mídia'),
+                                  max_length=10,
+                                  default='',
                                   blank=True,
-                                  help_text=_('Dimensões do vídeo original.'))
+                                  help_text=_('Nome do codec da mídia (e.g., dvvideo ou mjpeg).'))
+
+    size = models.CharField(_('tamanho do arquivo'),
+                            max_length=20,
+                            default='',
+                            blank=True,
+                            help_text=_('Tamanho do arquivo original em bytes (e.g., 138519976).'))
+
+    bit_rate = models.CharField(_('bitrate da mídia'),
+                                max_length=20,
+                                default='',
+                                blank=True,
+                                help_text=_('Bitrate da mídia em bits por segundo (e.g., 30330212).'))
+
+    pix_fmt = models.CharField(_('formato do pixel'),
+                               max_length=20,
+                               default='',
+                               blank=True,
+                               help_text=_('Formato do pixel da mídia (e.g., yuv411p).'))
+
+    start_time = models.CharField(_('início do vídeo'),
+                                  max_length=20,
+                                  default='',
+                                  blank=True,
+                                  help_text=_('Quando o vídeo stream se inicia (e.g., 0.000000).'))
+
+    duration = models.DurationField(_('duração do vídeo'),
+                                   null=True,
+                                   blank=True,
+                                   help_text=_('Duração do vídeo em segundos (e.g., 36.536500).'))
+
+    width = models.PositiveIntegerField(_('largura da mídia'),
+                                        null=True,
+                                        blank=True,
+                                        help_text=_('Largura da mídia em pixels (e.g., 720).'))
+
+    height = models.PositiveIntegerField(_('altura da mídia'),
+                                        null=True,
+                                        blank=True,
+                                        help_text=_('Altura da mídia em pixels (e.g., 720).'))
+
+    sample_aspect_ratio = models.CharField(_('Proporção do píxel'),
+                                max_length=20,
+                                default='',
+                                blank=True,
+                                help_text=_('Proporção de aspecto dos píxels (e.g., 8:9).'))
+
+    display_aspect_ratio = models.CharField(_('Proporção da tela'),
+                                           max_length=20,
+                                           default='',
+                                           blank=True,
+                                           help_text=_('Proporção de aspecto da tela (e.g., 4:3).'))
 
     geolocation = models.CharField(_('geolocalização'),
                                    default='',
@@ -382,6 +435,14 @@ class Media(models.Model):
         except:
             return stripped_caption
 
+    def close_files(self):
+        '''Close open files to avoid too many open files error.'''
+        self.file.close()
+        self.file_cover.close()
+        self.file_large.close()
+        self.file_medium.close()
+        self.file_small.close()
+
     def resize_files(self):
         '''Calls for the resizing of media files.'''
         self.create_resized_files('cover')
@@ -418,14 +479,89 @@ class Media(models.Model):
             resized = resize_image(field.path, dimension, quality)
         elif self.datatype == 'video':
             if size == 'cover':
-                resized = extract_video_cover(self.file.path, dimension,
-                                              field.path)
+                resized = extract_video_cover(
+                    self.file.path,
+                    dimension,
+                    self.width,
+                    self.height,
+                    self.sample_aspect_ratio,
+                    field.path
+                )
             else:
-                resized = resize_video(self.file.path, dimension,
-                                       quality, field.path)
+                resized = resize_video(
+                    self.file.path,
+                    dimension,
+                    quality,
+                    self.height,
+                    self.sample_aspect_ratio,
+                    field.path
+                )
 
         # Return True/False for convenience
         return resized
+
+    def update_media_info(self):
+        '''Get media information and update related fields.
+
+        Can be used for both images and videos. Since returned fields can be different, pass on the dictionary
+        directly to the __dict__ update method. The alternative would be looping over attr (also not bad):
+
+            for key, value in filtered_dict.items():
+                setattr(self, key, value)
+
+        Fields are not saved! This needs to be done on the logic outside (to avoid over saving).
+        '''
+
+        # Fetch media information using FFprobe
+        info = probe_media_info(self.file.path)
+
+        if info:
+            try:
+                # Only update fields that were fetched
+                self.__dict__.update(**info)
+                print('Success! Updated media information...')
+                print(info)
+            except Exception as e:
+                print('Error! Media info update failed')
+                print(e)
+
+            # try:
+            #     self.format_name = info['format_name']
+            #     self.codec_name = info['codec_name']
+            #     self.size = info['size']
+            #     self.bit_rate = info['bit_rate']
+            #     self.pix_fmt = info['pix_fmt']
+            #     self.start_time = info['start_time']
+            #     self.duration = info['duration']
+            #     self.width = info['width']
+            #     self.height = info['height']
+            #     self.sample_aspect_ratio = info['sample_aspect_ratio']
+            #     self.display_aspect_ratio = info['display_aspect_ratio']
+            #     print('Success! Updated media information...')
+            #     print(info)
+            # except KeyError:
+            #     print('Error! Media info update failed...')
+            #     print(info)
+
+    @property
+    def display_duration(self):
+        '''Format duration display tag for website.'''
+
+        seconds = self.duration.seconds
+        minutes = seconds // 60
+
+        if minutes > 0:
+            seconds = seconds % 60
+
+        return f'{minutes:02d}:{seconds:02d}'
+
+    @property
+    def dimensions(self):
+        '''Display media dimensions in pixels.'''
+        if self.width and self.height:
+            return f'{self.width}x{self.height}'
+        else:
+            return '0x0'
 
     def get_ancestors_vector(self):
         taxa = self.taxa.all()
@@ -593,12 +729,12 @@ class Media(models.Model):
         # Workaround logic to prevent errors on publishing videos
         if self.datatype == 'photo':
             to_write = [self.file_large, self.file_medium, self.file_small,
-                        self.file_cover, self.sitepath, self.coverpath]
+                        self.file_cover]
             for file in to_write:
                 meta_instance = Metadata(file.path)
                 meta_instance.insert_metadata(metadata)
         elif self.datatype == 'video':
-            to_write = [self.file_cover, self.coverpath]
+            to_write = [self.file_cover]
             for file in to_write:
                 meta_instance = Metadata(file.path)
                 meta_instance.insert_metadata(metadata)
@@ -651,8 +787,9 @@ class Person(models.Model):
     def __str__(self):
         return self.name
 
+    #TODO: Revise the url methods
     def get_absolute_url(self):
-        return reverse('person_url', args=[self.slug])
+        return reverse('author_url', args=[self.slug])
 
     def get_absolute_url_author(self):
         return reverse('author_url', args=[self.slug])

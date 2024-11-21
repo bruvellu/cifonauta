@@ -249,6 +249,9 @@ def upload_media_step2(request):
                     media_instance = specific_form.save()
                     media_instance.status = 'draft'
 
+                    # Read media file information
+                    media_instance.update_media_info()
+
                     # Create media files with different dimensions
                     media_instance.resize_files()
 
@@ -1135,6 +1138,7 @@ def revision_media_details(request, media_id):
             if action == 'publish':
                 media_instance.status = 'published'
                 media_instance.is_public = True
+                #TODO: Add resize_files() here?
                 media_instance.update_metadata()
             for taxon in form.cleaned_data['taxa']:
                 if taxon.valid_taxon != None:

@@ -5,6 +5,7 @@ from django.contrib.flatpages.sitemaps import FlatPageSitemap
 from django.contrib.sitemaps import GenericSitemap
 from django.contrib.sitemaps import views
 from django.urls import include, path
+from django.views.generic.base import TemplateView  # new
 
 from meta.models import Media, Person, Tag, Taxon, Location, City, State, Country, Tour, Reference
 
@@ -56,7 +57,7 @@ urlpatterns = [
         path('rosetta/', include('rosetta.urls')),
         path('i18n/', include('django.conf.urls.i18n')),
         path('sitemap.xml', views.index, {'sitemaps': sitemaps}),
-        path('sitemap-<section>.xml', views.sitemap, {'sitemaps': sitemaps},
-            name='django.contrib.sitemaps.views.sitemap'),
+        path('sitemap-<section>.xml', views.sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+        path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
         ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

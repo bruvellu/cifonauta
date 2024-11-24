@@ -1,0 +1,10 @@
+{% load i18n %}
+{% if media %}
+<div class="thumbs-org shadow scale-{{ media.scale }}">
+  {% include 'thumb_tour.html' %}
+</div>
+{% else %}
+<div class="thumbs-org shadow semfoto">
+  {% trans 'sem foto' %}
+</div>
+{% endif %}

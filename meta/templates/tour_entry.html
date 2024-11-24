@@ -1,7 +1,8 @@
 {% load i18n %}
+
 <div class="span-24 last tour metagroup">
   <div class="span-4">
-    {% print_thumb 'tour' tour %}
+    <a href="{{ tour.get_absolute_url }}">{% print_thumb_tour 'tour' tour%}</a>
   </div>
   <div class="span-13">
     <h2><a href="{{ tour.get_absolute_url }}" title="{% trans 'Clique aqui para continuar lendo e iniciar o tour' %}"><strong>{{ tour.name }}</strong></a>{% if not tour.is_public %} [PRIVADO]{% endif %}</h2>

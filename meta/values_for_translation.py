@@ -23,6 +23,8 @@ _('Amborê junto a colônias de coral-sol')
 # Translators: model=Media, field=title.
 _('Amborê-vidro')
 # Translators: model=Media, field=title.
+_('Amostra de plâncton marinho')
+# Translators: model=Media, field=title.
 _('Anêmona-do-mar')
 # Translators: model=Media, field=title.
 _('Anêmona gigante e seu morador, o camarão de pederson')
@@ -271,6 +273,8 @@ _('Células no epitélio da larva plúteos de bolacha-do-mar')
 # Translators: model=Media, field=title.
 _('Chapeirão Faca-cega')
 # Translators: model=Media, field=title.
+_('Cianobactéria marinha')
+# Translators: model=Media, field=title.
 _('Cifopólipos')
 # Translators: model=Media, field=title.
 _('Cifozoário')
@@ -323,6 +327,8 @@ _('Coral')
 # Translators: model=Media, field=title.
 _('Coral azooxantelado')
 # Translators: model=Media, field=title.
+_('Coral-baba-de-boi')
+# Translators: model=Media, field=title.
 _('Coral-bola-furado')
 # Translators: model=Media, field=title.
 _('Coral-botão')
@@ -352,6 +358,8 @@ _('Coral-esmeralda')
 _('Coral-estrela')
 # Translators: model=Media, field=title.
 _('Coral-estrela-de-dez-raios')
+# Translators: model=Media, field=title.
+_('Coral-floco-de=neve')
 # Translators: model=Media, field=title.
 _('Coral-folha-de-alface')
 # Translators: model=Media, field=title.
@@ -395,6 +403,8 @@ _('Ctenóforo e crustáceo simbionte')
 # Translators: model=Media, field=title.
 _('Ctenóforo juvenil dentro da membrana do ovo')
 # Translators: model=Media, field=title.
+_('Ctenóforo: larva cidipida')
+# Translators: model=Media, field=title.
 _('Cubozoário')
 # Translators: model=Media, field=title.
 _('Cubozoários')
@@ -408,6 +418,10 @@ _('Detalhe da ectoderme')
 _('Detalhe das células da gástrula')
 # Translators: model=Media, field=title.
 _('Detalhe do blastótoro')
+# Translators: model=Media, field=title.
+_('Diatomácea cêntrica')
+# Translators: model=Media, field=title.
+_('Diatomácea marinha')
 # Translators: model=Media, field=title.
 _('Dinoflagelado')
 # Translators: model=Media, field=title.
@@ -511,6 +525,8 @@ _('Esponja')
 # Translators: model=Media, field=title.
 _('Esponja calcária sobre concha de vieira')
 # Translators: model=Media, field=title.
+_('Esponja-de-vidro')
+# Translators: model=Media, field=title.
 _('Esponja do mar')
 # Translators: model=Media, field=title.
 _('Esponja-do-mar')
@@ -534,6 +550,8 @@ _('Expedição Alcatrazes')
 _('Fecundação de um óvulo de bolacha-do-mar')
 # Translators: model=Media, field=title.
 _('Flecha-do-mar')
+# Translators: model=Media, field=title.
+_('Foraminífero incrustante')
 # Translators: model=Media, field=title.
 _('Formação da blástula de bolacha-do-mar')
 # Translators: model=Media, field=title.
@@ -585,6 +603,8 @@ _('Hidrocoral de fogo')
 # Translators: model=Media, field=title.
 _('Hidrocoral-de-fogo')
 # Translators: model=Media, field=title.
+_('Hidroid')
+# Translators: model=Media, field=title.
 _('Hidroide')
 # Translators: model=Media, field=title.
 _('Hidróide')
@@ -592,6 +612,8 @@ _('Hidróide')
 _('Hidróide, hidromedusa')
 # Translators: model=Media, field=title.
 _('Hidroide pluma-de-penas')
+# Translators: model=Media, field=title.
+_('Hidroide tubulariídeo')
 # Translators: model=Media, field=title.
 _('Hidróide tubulariídeo')
 # Translators: model=Media, field=title.
@@ -657,9 +679,9 @@ _('Larva coronada')
 # Translators: model=Media, field=title.
 _('Larva de esponja recém assentada')
 # Translators: model=Media, field=title.
-_('Larva de estrela-do-mar (bipinária)')
+_('Larva de estrela-do-mar')
 # Translators: model=Media, field=title.
-_('Larva de ofiuróide - ofioplúteus')
+_('Larva de estrela-do-mar (bipinária)')
 # Translators: model=Media, field=title.
 _('Larva de peixe')
 # Translators: model=Media, field=title.
@@ -677,9 +699,13 @@ _('Larva megalopa de um caranguejo')
 # Translators: model=Media, field=title.
 _('Larva mitrária')
 # Translators: model=Media, field=title.
+_('Larva ofioplúteo')
+# Translators: model=Media, field=title.
 _('Larva pelagosfera')
 # Translators: model=Media, field=title.
 _('Larva pentactula')
+# Translators: model=Media, field=title.
+_('Larva pentactula recém assentada')
 # Translators: model=Media, field=title.
 _('Larva pilídio')
 # Translators: model=Media, field=title.
@@ -701,7 +727,7 @@ _('Larva tornaria')
 # Translators: model=Media, field=title.
 _('Larva véliger')
 # Translators: model=Media, field=title.
-_('Larva zoeae')
+_('Larva zoea')
 # Translators: model=Media, field=title.
 _('Lebre-do-mar')
 # Translators: model=Media, field=title.
@@ -740,6 +766,8 @@ _('Maria-da-toca, Amborê-das-pedras')
 _('Maria-farinha')
 # Translators: model=Media, field=title.
 _('Maria-mijona')
+# Translators: model=Media, field=title.
+_('Maria-nagô')
 # Translators: model=Media, field=title.
 _('Marimbás')
 # Translators: model=Media, field=title.
@@ -861,11 +889,15 @@ _('Paru preto, frade cinza')
 # Translators: model=Media, field=title.
 _('Parus-brancos ou enxadas')
 # Translators: model=Media, field=title.
+_('Peixe-anjo-anão')
+# Translators: model=Media, field=title.
 _('Peixe-anjo, anjo-rainha')
 # Translators: model=Media, field=title.
 _('Peixe-anjo-rainha')
 # Translators: model=Media, field=title.
 _('Peixe anjo-rainha e coral-cérebro')
+# Translators: model=Media, field=title.
+_('Peixe-anjo-tricolor')
 # Translators: model=Media, field=title.
 _('Peixe-borboleta')
 # Translators: model=Media, field=title.
@@ -878,6 +910,8 @@ _('Peixe-cirurgião')
 _('Peixe cirurgião-barbeiro forrageando')
 # Translators: model=Media, field=title.
 _('Peixe-cofre')
+# Translators: model=Media, field=title.
+_('Peixe-cofre-de-chifre')
 # Translators: model=Media, field=title.
 _('Peixe-donzela')
 # Translators: model=Media, field=title.
@@ -898,6 +932,8 @@ _('Peixes-lagarto')
 _('Penatuláceo')
 # Translators: model=Media, field=title.
 _('Pepino-do-mar')
+# Translators: model=Media, field=title.
+_('Pepino-do-mar juvenil')
 # Translators: model=Media, field=title.
 _('Pesquisador coletando amostras em mergulho autônomo')
 # Translators: model=Media, field=title.
@@ -1039,6 +1075,8 @@ _('Segunda divisão celular em uma bolacha-do-mar')
 # Translators: model=Media, field=title.
 _('Segunda divisão celular na bolacha-do-mar Clypeaster subdepressus')
 # Translators: model=Media, field=title.
+_('Simbiose entre um ciliado e uma diatomácea')
+# Translators: model=Media, field=title.
 _('Sipuncúlido')
 # Translators: model=Media, field=title.
 _('Siri-azul')
@@ -1060,8 +1098,6 @@ _('Tardigrada')
 _('Tardígrado')
 # Translators: model=Media, field=title.
 _('Terceira divisão no embrião de bolacha-do-mar')
-# Translators: model=Media, field=title.
-_('Teste')
 # Translators: model=Media, field=title.
 _('Trilha ou salmonete')
 # Translators: model=Media, field=title.
@@ -1094,6 +1130,8 @@ _('Vista Praia Picinguaba')
 _('Zigoto')
 # Translators: model=Media, field=title.
 _('Zigoto de uma bolacha-do-mar')
+# Translators: model=Media, field=title.
+_('Zoantário')
 # Translators: model=Media, field=title.
 _('Zoantharia')
 # Translators: model=Media, field=title.
@@ -2309,8 +2347,6 @@ _('Tentáculo.')
 # Translators: model=Media, field=caption.
 _('Tentáculos orais, 500x.')
 # Translators: model=Media, field=caption.
-_('Teste taxon novo.')
-# Translators: model=Media, field=caption.
 _('Tubo digestivo e celomas durante crescimento do par de braços antero-laterais (2° par).')
 # Translators: model=Media, field=caption.
 _('Tubo do poliqueta Diopatra  em sedimento areno-lamoso na região entremarés.')
@@ -2616,6 +2652,8 @@ _('combinação substituída')
 _('erro ortográfico - grafia subsequente incorreta')
 # Translators: model=Taxon, field=status.
 _('não aceito')
+# Translators: model=Taxon, field=status.
+_('não avaliado')
 # Translators: model=Taxon, field=status.
 _('nomen dubium')
 # Translators: model=Taxon, field=status.

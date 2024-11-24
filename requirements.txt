@@ -36,5 +36,3 @@ djangorestframework==3.15.2
 lingua-language-detector==2.0.2
 # Verify mimetype of uploaded files
 python-magic==0.4.27
-# Calculate test coverage
-coverage==7.6.8

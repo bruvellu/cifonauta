@@ -756,14 +756,6 @@ figcation {
   text-align:left;
 }
 
-#author {
-  font-size: 1.1em;
-  font-weight: bold;
-  position: relative;
-  padding-top: .3rem;
-  padding-right: 3rem;
-}
-
 #scale {
   text-align: center;
 }
@@ -840,9 +832,7 @@ div.external li:hover {
   font-size: .75rem;
   font-weight: normal;
   padding: 0 .313rem;
-  position: absolute;
-  top: 0;
-  right: 0;
+  float: right;
 }
 
 div#meta {

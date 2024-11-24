@@ -93,7 +93,7 @@ class ReferenceAdmin(admin.ModelAdmin):
 
 
 class TourAdmin(TranslationAdmin):
-    list_display = ['id', 'name', 'is_public', 'pub_date', 'timestamp']
+    list_display = ['name', 'is_public', 'pub_date', 'timestamp']
     filter_horizontal = ['media', 'references']
     readonly_fields = ['pub_date', 'timestamp']
 

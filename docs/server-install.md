@@ -329,6 +329,8 @@ systemctl enable --now gunicorn.socket
 
 Create nginx configuration:
 
+Location: `/etc/nginx/sites-available/cifonauta`
+
 ```
 server {
         listen 80;
@@ -441,6 +443,25 @@ If you like Certbot, please consider supporting our work by:
  * Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
  * Donating to EFF:                    https://eff.org/donate-le
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+```
+
+The domain must already be working on the current server.
+Otherwise you get an error like this:
+
+```
+certbot --nginx -d cifonauta.cebimar.usp.br
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Requesting a certificate for cifonauta.cebimar.usp.br
+
+Certbot failed to authenticate some domains (authenticator: nginx). The Certificate Authority reported these problems:
+  Domain: cifonauta.cebimar.usp.br
+  Type:   unauthorized
+  Detail: XXX.XXX.XXX.XXX: Invalid response from http://cifonauta.cebimar.usp.br/.well-known/acme-challenge/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX: 404
+
+Hint: The Certificate Authority failed to verify the temporary nginx configuration changes made by Certbot. Ensure the listed domains point to this nginx server and that it is accessible from the internet.
+
+Some challenges have failed.
+Ask for help or search for solutions at https://community.letsencrypt.org. See the logfile /var/log/letsencrypt/letsencrypt.log or re-run Certbot with -v for more details.
 ```
 
 ### Additional packages

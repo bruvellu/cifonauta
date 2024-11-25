@@ -12,10 +12,9 @@
 
 #footerbase {
     display: flex;
-    justify-content: space-between;
-    gap: .5rem 4rem;
-    padding: 0 1rem;
-    margin: 1rem 0; 
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1rem; 
 }
 
 #footerbase > div p:first-child {

@@ -827,7 +827,7 @@ div.external li:hover {
   background: -moz-linear-gradient(center top , #222222 0%, #111111 100%) repeat scroll 0 0 transparent; /* firefox */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#222222), color-stop(100%,#111111)); /* webkit */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#222222', endColorstr='#111111',GradientType=0 ); /* ie */
-  border-radius: 0 0 .313rem .313rem;
+  border-radius: 0 0 5px 5px;
   color: #EEEEEE;
   font-size: .75rem;
   font-weight: normal;

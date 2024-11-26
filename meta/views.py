@@ -1623,16 +1623,16 @@ def home_page(request):
 def search_page(request, model_name='', field='', slug=''):
     '''Default gallery view for displaying and filtering metadata.'''
 
-    # Get public media.
+    # Make queryset with all public media
     media_list = Media.objects.filter(is_public=True)
 
-    # Check request.GET for query refinements.
+    # Make mutable copy of request.GET QueryDict
+    query_dict = request.GET.copy()
+
+    # Check request.GET for query filtering
     if request.method == 'GET':
 
-        # Make mutable copy of request.GET QueryDict.
-        query_dict = request.GET.copy()
-
-        # Inject meta information to request.
+        # Inject meta information to request
         if field:
             model = apps.get_model('meta', model_name)
             instance = get_object_or_404(model, slug=slug)
@@ -1640,7 +1640,7 @@ def search_page(request, model_name='', field='', slug=''):
         else:
             instance = ''
 
-        # Datatype.
+        # Datatype
         datatype = query_dict.get('datatype', 'all')
         if not datatype == 'all':
             # Only filter if datatype is not all (i.e. photos or videos).
@@ -1814,7 +1814,7 @@ def search_page(request, model_name='', field='', slug=''):
         display_form = DisplayForm()
 
     # Return paginated list.
-    entries = get_paginated(query_dict, media_list, n_page)
+    entries = get_paginated(query_dict, media_list)
 
     context = {
         'entries': entries,
@@ -2106,7 +2106,7 @@ def catch_get(keys, get):
         False
 
 
-def get_paginated(query_dict, media_list, n_page=16):
+def get_paginated(query_dict, media_list, n_page=40):
     '''Return queryset paginator. n_page must be integer.'''
     paginator = Paginator(media_list, n_page)
     # Make sure page request is an int. If not, deliver first page.

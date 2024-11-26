@@ -26,29 +26,23 @@
               {% include 'video.html' %}
             {% endif %}
           {% endif %}
-          {% if media.caption %}
-            <figcation>
-              {% if media.datatype == 'video' %}
-                <span class="quiet" id="media-duration">{{ media.display_duration }}</span>
-              {% endif %}
-              {{ media.caption }}
-            </figcaption>
-          <div id="author">
-            {% show_set authors '' '' ', ' '' %}
-          </div>
-          {% else %}
-          <div id="author">
-            {% show_set authors '' '' ', ' '' %}
+
+          <figcaption>
             {% if media.datatype == 'video' %}
             <span class="quiet" id="media-duration">{{ media.display_duration }}</span>
             {% endif %}
-          </div>
+
+            {% if media.caption %}
+            {{ media.caption }}
+            {% endif %}
+
+            <div id="author">{% show_set authors '' '' ', ' '' %}</div>
+          </figcaption>
               {% comment %}
                 <div id='download_media'>
                 <a href="{% url 'download_media' media.id %}"><button>Baixar Imagem</button></a>
                 </div>
               {% endcomment %}
-          {% endif %}
         </figure>
 
         <div id="meta">

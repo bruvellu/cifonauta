@@ -20,7 +20,11 @@ from meta.models import Media, Person, Tag, Taxon, Location, City, State, Countr
 #HALF_YEAR = 60 * 60 * 24 * 30 * 6   # 15552000
 #ONE_YEAR = 60 * 60 * 24 * 30 * 12   # 31104000
 
-# Sitemaps
+# Subclass sitemap with lower pagination limit
+class PaginatedSitemap(GenericSitemap):
+    limit = 2000
+
+# Queries for sitemaps
 media_dict = {'queryset': Media.objects.filter(is_public=True),
               'date_field': 'date_modified'}
 person_dict = {'queryset': Person.objects.filter(media_as_author__isnull=False).distinct()}
@@ -34,17 +38,18 @@ tour_dict = {'queryset': Tour.objects.filter(is_public=True),
              'date_field': 'timestamp'}
 reference_dict = {'queryset': Reference.objects.all()}
 
+# Generate paginated sitemaps
 sitemaps = {
-    'media': GenericSitemap(media_dict, priority=0.9, changefreq='daily'),
-    'persons': GenericSitemap(person_dict, priority=0.8, changefreq='weekly'),
-    'tags': GenericSitemap(tag_dict, priority=0.8, changefreq='weekly'),
-    'taxa': GenericSitemap(taxon_dict, priority=1.0, changefreq='weekly'),
-    'locations': GenericSitemap(location_dict, priority=0.7, changefreq='weekly'),
-    'cities': GenericSitemap(city_dict, priority=0.6, changefreq='monthly'),
-    'states': GenericSitemap(state_dict, priority=0.4, changefreq='monthly'),
-    'countries': GenericSitemap(country_dict, priority=0.4, changefreq='monthly'),
-    'tours': GenericSitemap(tour_dict, priority=0.8, changefreq='monthly'),
-    'references': GenericSitemap(reference_dict, priority=0.7, changefreq='monthly'),
+    'media': PaginatedSitemap(media_dict, priority=0.9, changefreq='daily'),
+    'persons': PaginatedSitemap(person_dict, priority=0.8, changefreq='weekly'),
+    'tags': PaginatedSitemap(tag_dict, priority=0.8, changefreq='weekly'),
+    'taxa': PaginatedSitemap(taxon_dict, priority=1.0, changefreq='weekly'),
+    'locations': PaginatedSitemap(location_dict, priority=0.7, changefreq='weekly'),
+    'cities': PaginatedSitemap(city_dict, priority=0.6, changefreq='monthly'),
+    'states': PaginatedSitemap(state_dict, priority=0.4, changefreq='monthly'),
+    'countries': PaginatedSitemap(country_dict, priority=0.4, changefreq='monthly'),
+    'tours': PaginatedSitemap(tour_dict, priority=0.8, changefreq='monthly'),
+    'references': PaginatedSitemap(reference_dict, priority=0.7, changefreq='monthly'),
     'flatpages': FlatPageSitemap,
 }
 

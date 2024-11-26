@@ -573,7 +573,7 @@ def editing_media_list(request):
                                 messages.error(request, 'Não é possível submeter mídia com campos obrigatórios faltando')
                                 return redirect('editing_media_list')
                         
-                        #Update taxa
+                        # Update taxa
                         #TODO: Revise this code, it breaks when batch updating without taxa
                         # A quick fix is below.
                         if 'taxa' in form.cleaned_data.keys():
@@ -590,18 +590,26 @@ def editing_media_list(request):
                         return redirect('editing_media_list')
 
                     if form.cleaned_data['status_action'] != 'maintain':
+                        
+                        # Set media authors
                         authors = set()
                         for media in medias:
                             authors.add(media.user)
 
                         form.send_mail(request.user, authors, medias, 'Mídia publicada no Cifonauta', 'email_media_to_revision_author.html')
 
+                        # Set media curators
+                        #TODO: Revise this code, KeyError occurring with taxa_action
                         curations = []
-                        if form.cleaned_data['taxa_action'] != 'maintain':
-                            curations = Curation.objects.filter(taxa__in=form.cleaned_data['taxa'])
+
+                        # Workaround created below
+                        if 'taxa_action' in form.cleaned_data.keys():
+                            if form.cleaned_data['taxa_action'] != 'maintain':
+                                curations = Curation.objects.filter(taxa__in=form.cleaned_data['taxa'])
                         else:
                             taxa = Taxon.objects.filter(media__id__in=media_ids).distinct()
                             curations = Curation.objects.filter(taxa__in=taxa)
+
                         curators_user = set()
                         for curation in curations:
                             for curator in curation.curators.all():

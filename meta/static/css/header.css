@@ -31,6 +31,12 @@
     padding:0;
 }
 
+#title-version {
+  top: -1.2em;
+  font-size: 40%;
+  color: #607890;
+}
+
 #tagline {
     padding: 0 0 0 9px; 
     text-align: initial; 

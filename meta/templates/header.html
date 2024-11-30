@@ -4,22 +4,18 @@
   <hgroup id="logo-container" class="main">
     <img id="logo" src="{{ STATIC_URL }}logo.png">
     <div>
-      <h1 id="maintitle">Cifonauta</h1>
+      <h1 id="maintitle">Cifonauta<sup id="title-version">2.0</sup></h1>
       <h2 id="tagline" {% if LANGUAGE_CODE == 'en' %}style="letter-spacing: 1.6px;"{% endif %}>{% trans 'banco de imagens de biologia marinha' %}</h2>
     </div>
   </hgroup>
 </a>
 
+{% comment %}
 <div id="stats-search">
+  <div class="quiet" id="stats"> {% show_stats %} </div>
+</div>
+{% endcomment %}
 
-  {% comment %}<div class="quiet" id="stats"> {% show_stats %} </div>{% endcomment %}
-
-  <div id="home-search">
-
-    {% if not request.GET %}
-        {% search_box %}
-    {% endif %}
-    
-  </div>
-
+<div id="home-search">
+  {% if not request.GET %}{% search_box %}{% endif %}
 </div>

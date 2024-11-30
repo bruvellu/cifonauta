@@ -189,11 +189,15 @@ button::-moz-focus-inner { border: 0; padding: 0; }
 input:valid, textarea:valid {
 }
 
-input:invalid, textarea:invalid {
-  border-radius: 1px;
-  -moz-box-shadow: 0px 0px 5px red;
-  -webkit-box-shadow: 0px 0px 5px red;
-  box-shadow: 0px 0px 5px red;
+input:invalid {
+    border-radius: 1px;
+    -moz-box-shadow: 0px 0px 5px #FF5E99;
+    -webkit-box-shadow: 0px 0px 5px #FF5E99;
+    box-shadow: 0px 0px 5px #FF5E99;
+}
+
+input:invalid:not(:focus):not(:placeholder-shown) {
+    box-shadow: none;
 }
 
 .no-boxshadow input:invalid, .no-boxshadow textarea:invalid {
@@ -634,7 +638,9 @@ Based on work by Jørgen Arnor Gårdsø Lom [http://twistedintellect.com/] */
   left: 0;
   text-align: left;
   pointer-events: none;
+  font-size: 1rem;
 }
+
 #admin ul {
   list-style-type:none;
   margin:0;

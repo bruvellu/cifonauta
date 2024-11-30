@@ -1,30 +1,14 @@
 {% load i18n %}
-
-{% if user.is_authenticated %}
-<span id="admin">
-  <ul>
-    {% if user.is_superuser %}
-    <li><a href="/admin/">admin</a></li>
-    <li><a href="/rosetta/">tradução</a></li>
-    {% endif %}
-    {% if user.is_author %}
-    <li><a href="{% url 'upload_media_step1' %}">dashboard</a></li>
-    {% endif %}
-    <li><a href="{% url 'Logout' %}">logout</a></li>
-  </ul>
-</span>
-{% endif %}
-
 {% with fullpath=request.get_full_path %}
 
 <div id="nav-languages">
-	<form action="/i18n/setlang/" method="post">{% csrf_token %}
-		<select name="language">
-			{% for lang in LANGUAGES %}
-			<option value="{{ lang.0 }}"{% if lang.0 == LANGUAGE_CODE %} selected="selected"{% endif %}>{{ lang.1 }}</option>
-			{% endfor %}
-		</select>
-	</form>
+  <form action="/i18n/setlang/" method="post">{% csrf_token %}
+    <select name="language">
+      {% for lang in LANGUAGES %}
+      <option value="{{ lang.0 }}"{% if lang.0 == LANGUAGE_CODE %} selected="selected"{% endif %}>{{ lang.1 }}</option>
+      {% endfor %}
+    </select>
+  </form>
 </div>
 
 <div id="nav-menus">

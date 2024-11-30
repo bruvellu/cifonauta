@@ -638,7 +638,9 @@ Based on work by Jørgen Arnor Gårdsø Lom [http://twistedintellect.com/] */
   left: 0;
   text-align: left;
   pointer-events: none;
+  font-size: 1rem;
 }
+
 #admin ul {
   list-style-type:none;
   margin:0;

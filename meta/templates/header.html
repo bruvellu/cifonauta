@@ -16,9 +16,7 @@
 
   <div id="home-search">
 
-    {% if not request.GET %}
-        {% search_box %}
-    {% endif %}
+    {% if not request.GET %}{% search_box %}{% endif %}
     
   </div>
 

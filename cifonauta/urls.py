@@ -2,10 +2,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.flatpages.sitemaps import FlatPageSitemap
-from django.contrib.sitemaps import GenericSitemap
 from django.contrib.sitemaps import views
 from django.urls import include, path
-from django.views.generic.base import TemplateView  # new
+from django.views.generic.base import TemplateView
+from .sitemaps import PaginatedSitemap
 
 from meta.models import Media, Person, Tag, Taxon, Location, City, State, Country, Tour, Reference
 
@@ -19,10 +19,6 @@ from meta.models import Media, Person, Tag, Taxon, Location, City, State, Countr
 #ONE_MONTH = 60 * 60 * 24 * 30       # 2592000
 #HALF_YEAR = 60 * 60 * 24 * 30 * 6   # 15552000
 #ONE_YEAR = 60 * 60 * 24 * 30 * 12   # 31104000
-
-# Subclass sitemap with lower pagination limit
-class PaginatedSitemap(GenericSitemap):
-    limit = 2000
 
 # Queries for sitemaps
 media_dict = {'queryset': Media.objects.filter(is_public=True),

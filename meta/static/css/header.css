@@ -56,17 +56,8 @@
   padding-right:1em;
 }
 
-#stats-search {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding-top: 1rem;
-}
-
 #home-search {
-    margin-top: 0;
-    align-self: flex-end;
-    padding-right: 0.8rem;
+    padding-top: 1rem;
 }
 
 #header-search {
@@ -80,7 +71,8 @@
 
 #header-search > input:first-child {
     margin: 0;
-    height: .8rem;
+    height: 1.5em;
+    border-radius:5px;
 }
 
 @media (max-width: 850px) {
@@ -91,9 +83,9 @@
 
 @media (max-width: 910px) {
     #mainheader {
-        flex-direction: column;
-        gap: 1.5rem;
-	align-items: center;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
     }
 
     #stats-search {
@@ -103,10 +95,6 @@
     
     #stats {
         text-align: left;
-    }
-
-    #home-search {
-        align-self: flex-start;
     }
 }
 

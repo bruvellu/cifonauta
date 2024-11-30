@@ -10,14 +10,12 @@
   </hgroup>
 </a>
 
+{% comment %}
 <div id="stats-search">
+  <div class="quiet" id="stats"> {% show_stats %} </div>
+</div>
+{% endcomment %}
 
-  {% comment %}<div class="quiet" id="stats"> {% show_stats %} </div>{% endcomment %}
-
-  <div id="home-search">
-
-    {% if not request.GET %}{% search_box %}{% endif %}
-    
-  </div>
-
+<div id="home-search">
+  {% if not request.GET %}{% search_box %}{% endif %}
 </div>

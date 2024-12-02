@@ -8,14 +8,14 @@ All the contents are available under [Creative Commons licenses](http://creative
 
 ## Explore the marine biodiversity at [cifonauta.cebimar.usp.br](https://cifonauta.cebimar.usp.br/)
 
-<a href="https://cifonauta.cebimar.usp.br/media/6692/"><img src="https://cifonauta.cebimar.usp.br/site_media/aem_RBkyCp_cover.jpg" height="150px"></a>
-<a href="https://cifonauta.cebimar.usp.br/media/3033/"><img src="https://cifonauta.cebimar.usp.br/site_media/aem_fXBYda_cover.jpg" height="150px"></a>
-<a href="https://cifonauta.cebimar.usp.br/media/4924/"><img src="https://cifonauta.cebimar.usp.br/site_media/aem_TkKZgx_cover.jpg" height="150px"></a>
-<a href="https://cifonauta.cebimar.usp.br/media/1882/"><img src="https://cifonauta.cebimar.usp.br/site_media/aem_r33pVK_cover.jpg" height="150px"></a>
-<a href="https://cifonauta.cebimar.usp.br/media/9362/"><img src="https://cifonauta.cebimar.usp.br/site_media/aem_SO5w7N_cover.jpg" height="137px"></a>
-<a href="https://cifonauta.cebimar.usp.br/media/9972/"><img src="https://cifonauta.cebimar.usp.br/site_media/aem_yUcBzx_cover.jpg" height="137px"></a>
-<a href="https://cifonauta.cebimar.usp.br/media/2425/"><img src="https://cifonauta.cebimar.usp.br/site_media/aem_dIPsvR_cover.jpg" height="137px"></a>
-<a href="https://cifonauta.cebimar.usp.br/media/5683/"><img src="https://cifonauta.cebimar.usp.br/site_media/aem_jYEPs1_cover.jpg" height="137px"></a>
+<a href="https://cifonauta.cebimar.usp.br/media/6692/"><img src="https://cifonauta.cebimar.usp.br/media_files/uploads/2/1b04a075-ddd8-41de-8235-eef7275d3ec1_small.jpg" height="150px"></a>
+<a href="https://cifonauta.cebimar.usp.br/media/3033/"><img src="https://cifonauta.cebimar.usp.br/media_files/uploads/2/a9f275ed-e2c9-412b-b159-f6d0fa203da7_small.jpg" height="150px"></a>
+<a href="https://cifonauta.cebimar.usp.br/media/4924/"><img src="https://cifonauta.cebimar.usp.br/media_files/uploads/2/e06b7408-a32f-45ea-a1b4-cf9dbcb73716_small.jpg" height="150px"></a>
+<a href="https://cifonauta.cebimar.usp.br/media/1882/"><img src="https://cifonauta.cebimar.usp.br/media_files/uploads/2/4c5ad2ab-5859-4281-bf30-f5d6af65eede_small.jpg" height="150px"></a>
+<a href="https://cifonauta.cebimar.usp.br/media/9362/"><img src="https://cifonauta.cebimar.usp.br/media_files/uploads/2/a596e6ea-2e7b-4502-a641-fccf8282da49_small.jpg" height="137px"></a>
+<a href="https://cifonauta.cebimar.usp.br/media/9972/"><img src="https://cifonauta.cebimar.usp.br/media_files/uploads/2/73d05966-26b5-4f29-a4e5-1c04f7052264_small.jpg" height="137px"></a>
+<a href="https://cifonauta.cebimar.usp.br/media/2425/"><img src="https://cifonauta.cebimar.usp.br/media_files/uploads/2/91868ce9-70e4-4973-bf63-7d45c5c15cd1_small.jpg" height="137px"></a>
+<a href="https://cifonauta.cebimar.usp.br/media/5683/"><img src="https://cifonauta.cebimar.usp.br/media_files/uploads/2/e19cc670-e263-42ba-aad1-2ed743b6c075_small.jpg" height="137px"></a>
 
 ## How to cite
 

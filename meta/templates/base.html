@@ -47,9 +47,6 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
     <link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico">
 
-    <!-- Humans -->
-    <link rel="author" href="{{ STATIC_URL }}humans.txt" />
-
     <!-- Estilos -->
     <!-- CSS: implied media="all" -->
     <link rel="stylesheet" href="{{ STATIC_URL }}css/style.css">
@@ -57,6 +54,9 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/nav.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/header.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/footer.css">
+
+    <!-- Canonical URLs -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
     <!--[if lt IE 8]><link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
 

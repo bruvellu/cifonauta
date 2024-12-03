@@ -1,19 +1,16 @@
 {% load i18n %}
-
 <footer class="paginator">
-
   {% if entries.has_previous %}
-     <div><a href="{% paged_url request.META.QUERY_STRING entries.previous_page_number %}"><< {% trans 'anterior' %}</a></div>
+     <div><a href="{% paged_url request.META.QUERY_STRING entries.previous_page_number %}">&lt;&lt; {% trans 'anterior' %}</a></div>
   {% else %}
-     <div>&nbsp;</div>
+     <div>&lt;&lt; {% trans 'anterior' %}</div>
   {% endif %}
 
   <div>{% trans 'Página' %} {{ entries.number }} {% trans 'de' %} {{ entries.paginator.num_pages }}</div>
 
   {% if entries.has_next %}
-     <div><a href="{% paged_url request.META.QUERY_STRING entries.next_page_number %}">{% trans 'próxima' %} >></a></div>
+     <div><a href="{% paged_url request.META.QUERY_STRING entries.next_page_number %}">{% trans 'próxima' %} &gt;&gt;</a></div>
   {% else %}
-     <div>&nbsp;</div>
+  <div>{% trans 'próxima' %} &gt;&gt;</div>
   {% endif %}
-
 </footer>

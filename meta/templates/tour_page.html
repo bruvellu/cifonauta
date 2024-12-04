@@ -25,7 +25,7 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}css/tour_page.css">
 <meta property="og:title" content="{{ tour.name }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ thumb }}" />
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ MEDIA_URL }}{{ thumb }}" />
 <meta property="og:description" content="{{ tour.description|striptags|truncatewords:30 }}" />
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 <meta property="og:type" content="cifonauta:tour" />

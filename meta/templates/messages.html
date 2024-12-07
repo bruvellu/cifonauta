@@ -3,7 +3,7 @@
 <div id="messages">
     {% if entries.paginator.count %}
     <div class="success">
-        {{ entries.paginator.count }} {% trans 'arquivo' %}{{ entries.paginator.count|pluralize }} {% trans 'encontrado' %}{{ entries.paginator.count|pluralize }}
+        {{ entries.paginator.count }} {% trans 'arquivo' %}{{ entries.paginator.count|pluralize }} {% trans 'encontrado' %}{% if LANGUAGE_CODE == 'pt-br' %}{{ entries.paginator.count|pluralize }}{% endif %}
     </div>
     {% endif %}
     {% if not entries.paginator.count %}

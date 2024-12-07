@@ -875,7 +875,7 @@ class Taxon(MPTTModel):
             blank=True, null=True, help_text=_('Data da última modificação do arquivo.'))
 
     def __str__(self):
-        return f'{self.name} [id={self.id}]'
+        return f'{self.name}'
 
     def get_absolute_url(self):
         return reverse('taxon_url', args=[self.slug])

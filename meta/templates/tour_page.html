@@ -40,7 +40,7 @@
 
 <article id="tour" class="{{ tour.slug }}">
 
-<header class="span-24 last">
+<header class="tour-header">
 
   <div class="quiet" id="metafield">{% trans 'Tour' %}: </div>
 
@@ -48,30 +48,29 @@
 
 </header>
 
-<div class="span-24 last" id="slides">
+<div class="tour-slides" id="slides">
 
-  <div class="span-1">
-
+  <div class="" id="slides-arrow-prev">
     <a href="#" class="prev"><img src="{{ STATIC_URL }}js/slides/arrow-prev.png" width="24" height="43" alt="{% trans 'Anterior' %}"></a>
-
   </div>
 
-  <div class="slides_container shadow span-21">
+  <div class="slides-container shadow">
 
     {% for media in entries %}
 
-    <div class="span-21 eachslide last">
+    <div class="eachslide">
       <div class="content-slider"> 
-        <div class="span-13">
-          
-    {% if media.datatype == 'photo' %}
-      {% include 'photo.html' %}
-    {% elif media.datatype == 'video' %}
-      {% include 'video.html' %}
-    {% endif %}
+        <div class="slide-media">
+
+          {% if media.datatype == 'photo' %}
+          {% include 'photo.html' %}
+          {% elif media.datatype == 'video' %}
+          {% include 'video.html' %}
+          {% endif %}
+
         </div>
 
-        <div class="span-8 last">
+        <div class="slide-info">
 
           <h2>{{ media.title }}</h2>
 
@@ -125,31 +124,18 @@
     {% endfor %}
   </div>
 
-  <div class="span-1 last">
+  <div class="" id="slides-arrow-next">
     <a href="#" class="next"><img src="{{ STATIC_URL }}js/slides/arrow-next.png" width="24" height="43" alt="{% trans 'Próximo' %}"></a>
   </div>
 
-  <div class="last" id="paginator-container">
-    <ul class="pagination">
-      {% for result in photos %}{% with result.object as media %}
-      <li>
-      <a href="#">
-        {% thumbnail media.filepath "120x90" crop="center" as im %}
-        <img class="shadow" src="{{ im.url }}" alt="{{ media.title }}" title="{{ media.title }}" />
-        {% endthumbnail %}
-      </a>
-      </li>
-      {% endwith %}{% endfor %}
-    </ul>
-  </div>
 </div>
 {% if tour.description|safe %}
-<div id="tour-description">
+<div class="tour-description">
   {{ tour.description|safe }}
 </div>
 {% endif %}
 
-<div class="last metagroup">
+<div class="metagroup">
   <h2>{% trans 'Ficha Técnica' %}</h2>
   <ul class="metalist">
     <li><strong>{% trans 'Número de imagens' %}:</strong> {{ tour.media.count }}</li>
@@ -163,7 +149,7 @@
 </article>
 
 {% if references %}
-<div class="last">
+<div class="">
   {% comment %}Translators: list of references rendered on a page{% endcomment %}
   <h2>{% trans 'Referências' %}</h2>
   {% for ref in references %}

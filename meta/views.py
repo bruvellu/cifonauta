@@ -1637,16 +1637,16 @@ def search_page(request, model_name='', field='', slug=''):
     # Make mutable copy of request.GET QueryDict
     query_dict = request.GET.copy()
 
+    # Inject meta information to request
+    if field:
+        model = apps.get_model('meta', model_name)
+        instance = get_object_or_404(model, slug=slug)
+        query_dict.appendlist(field, instance.id)
+    else:
+        instance = ''
+
     # Check request.GET for query filtering
     if request.method == 'GET':
-
-        # Inject meta information to request
-        if field:
-            model = apps.get_model('meta', model_name)
-            instance = get_object_or_404(model, slug=slug)
-            query_dict.appendlist(field, instance.id)
-        else:
-            instance = ''
 
         # Datatype
         datatype = query_dict.get('datatype', 'all')

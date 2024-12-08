@@ -1641,7 +1641,7 @@ def search_page(request, model_name='', field='', slug=''):
     if field:
         model = apps.get_model('meta', model_name)
         instance = get_object_or_404(model, slug=slug)
-        query_dict.appendlist(field, instance.id)
+        query_dict.appendlist(field, str(instance.id))
     else:
         instance = ''
 

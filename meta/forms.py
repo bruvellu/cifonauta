@@ -887,10 +887,11 @@ class DisplayForm(forms.Form):
 
     # TODO: Excluding taxon without media does not take into account descendants
     # For example, chordata has no media, but its descendants have. It should not be excluded here.
+    # But there is a performance cost that needs to be dealt with.
     taxon = forms.ModelMultipleChoiceField(
         required=False,
-        #queryset=Taxon.objects.all()
-        queryset=Taxon.objects.exclude(media__isnull=True)
+        #queryset=Taxon.objects.exclude(media__isnull=True)
+        queryset=Taxon.objects.all()
         .exclude(media__status__in=["loaded", "draft", "submitted"])
         .order_by("name"),
         widget=forms.SelectMultiple(

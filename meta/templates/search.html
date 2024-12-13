@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{% trans 'Buscador' %} | {{ block.super }}{% endblock %}
+{% block title %}{% if meta %}{{ meta.name }}{% else %}{% trans 'Buscador' %}{% endif %} | {{ block.super }}{% endblock %}
 {% block meta-keywords %}<!--{{ keywords }}-->{% endblock %}
 {% block meta-description %}{% trans 'Buscador do banco de imagens Cifonauta.' %}{% endblock %}
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}

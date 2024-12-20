@@ -254,9 +254,9 @@ EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_USE_TLS = True
 
-# Import server settings.
+# Import server settings
 hostname = socket.gethostname()
 if hostname == 'cifonauta2':
     from .server_settings import *
-
-
+elif hostname == 'cifonauta-staging':
+    from .staging_settings import *

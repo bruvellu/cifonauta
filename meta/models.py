@@ -31,12 +31,14 @@ class Curation(models.Model):
             blank=True,
             verbose_name=_('táxons'),
             help_text=_('Táxons nesta curadoria.'))
+    #TODO: Change from User to Person?
     specialists = models.ManyToManyField(
             settings.AUTH_USER_MODEL,
             related_name='curations_as_specialist',
             blank=True,
             verbose_name=_('especialistas'),
             help_text=_('Especialistas nesta curadoria.'))
+    #TODO: Change from User to Person?
     curators = models.ManyToManyField(
             settings.AUTH_USER_MODEL,
             related_name='curations_as_curator',
@@ -45,7 +47,26 @@ class Curation(models.Model):
             help_text=_('Curadores desta curadoria.'))
 
     def __str__(self):
-        return f'{self.name} [id={self.id}]'
+        return f'{self.name}'
+
+    def get_taxa(self):
+        '''Get all descendants from ancestor taxa.'''
+        #TODO: Revise best way to perform this query
+        # Start from all taxa queryset
+        taxa_set = set()
+        # Get current curated ancestor nodes
+        curated_ancestors = self.taxa.all()
+        # Add ancestors to set
+        taxa_set.update(curated_ancestors)
+        # Loop over curated ancestors for descendants
+        for ancestor in curated_ancestors:
+            taxa_set.update(ancestor.get_descendants())
+        # Convert set to queryset
+        taxa_queryset = Taxon.objects.filter(Q(name__in=taxa_set))
+        # Order and keep unique
+        taxa_queryset = taxa_queryset.order_by('name').distinct()
+        return taxa_queryset
+
 
 
 # Function that defines path for user upload directory

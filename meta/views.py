@@ -514,9 +514,10 @@ def filter_medias(queryset, query_dict, curations=''):
         else:
             filtered_curations = Curation.objects.filter(id__in=curation_ids).distinct()
 
+        #TODO: Needed? Taxa were already filtered in view
         taxa = set()
         for curation in filtered_curations:
-            taxa.update(curation.taxa.all())
+            taxa.update(curation.get_taxa())
 
         filtered_queryset = filtered_queryset.filter(taxa__in=taxa)
 
@@ -1214,31 +1215,36 @@ def revision_media_details(request, media_id):
 def my_curations_media_list(request):
     records_number = number_of_entries_per_page(request, 'entries_media_from_curation')
 
+    # Instance current user
     user = request.user
 
+    # Get unique list of curations as specialist and curator
     curations_as_specialist = user.curations_as_specialist.all()
-    curations_as_specialist_taxa = set()
-    for curation in curations_as_specialist:
-        curations_as_specialist_taxa.update(curation.taxa.all())
-
-
     curations_as_curator = user.curations_as_curator.all()
-    curations_as_curator_taxa = set()
-    for curation in curations_as_curator:
-        curations_as_curator_taxa.update(curation.taxa.all())
-
     curations = curations_as_specialist | curations_as_curator
     curations = curations.distinct()
 
+    # Get all taxa for every curation as a set
     curations_taxa = set()
     for curation in curations:
-        curations_taxa.update(curation.taxa.all())
+        curations_taxa.update(curation.get_taxa())
 
-    curator_queryset = Media.objects.filter(Q(taxa__in=curations_as_curator_taxa))
+    # curations_as_specialist_taxa = set()
+    # for curation in curations_as_specialist:
+        # curations_as_specialist_taxa.update(curation.taxa.all())
 
-    specialist_queryset = Media.objects.filter(Q(taxa__in=curations_as_specialist_taxa))    
+    # curations_as_curator_taxa = set()
+    # for curation in curations_as_curator:
+        # curations_as_curator_taxa.update(curation.taxa.all())
 
-    queryset = (curator_queryset | specialist_queryset).exclude(status='loaded').distinct().order_by('-pk')
+
+    # curator_queryset = Media.objects.filter(Q(taxa__in=curations_as_curator_taxa))
+
+    # specialist_queryset = Media.objects.filter(Q(taxa__in=curations_as_specialist_taxa))    
+
+    # queryset = (curator_queryset | specialist_queryset).exclude(status='loaded').distinct().order_by('-pk')
+
+    queryset = Media.objects.filter(Q(taxa__in=curations_taxa)).exclude(status='loaded').order_by('-id').distinct()
 
     if request.method == 'POST':
         action = request.POST['action']

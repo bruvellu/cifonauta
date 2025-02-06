@@ -42,6 +42,17 @@
       <div></div>
       <div></div>
   </button>
+  <ul class="menu" id="hamburger-menu__about">
+    <li>
+        <a {% if fullpath == '/' %}class="selected"{% endif %}href="/">{% trans 'home' %}</a>
+    </li>
+    <li>
+        <a 
+        {% if fullpath == '/about/' or fullpath == '/content/' or fullpath == '/organization/' or fullpath == '/credits/' or fullpath == '/details/' or fullpath == '/development/' or fullpath == '/roadmap/' or fullpath == '/terms/' %}class="selected"{% endif %}href="/about/">
+            {% trans 'sobre' %}
+        </a>
+    </li>
+  </ul>
   <ul class="menu" id="hamburger-menu__media">
       <li>
           <a {% if fullpath == '/search/?datatype=photo' %}class="selected"{% endif %} href="/search/?datatype=photo">{% trans 'fotos' %}</a>
@@ -67,17 +78,6 @@
       <li>
           <a {% if fullpath == '/literature/' %}class="selected"{% endif %} href="{% url 'refs_url' %}">{% trans 'referências' %}</a>
       </li>
-  </ul>
-  <ul class="menu" id="hamburger-menu__about">
-    <li>
-        <a {% if fullpath == '/' %}class="selected"{% endif %}href="/">{% trans 'home' %}</a>
-    </li>
-    <li>
-        <a 
-        {% if fullpath == '/about/' or fullpath == '/content/' or fullpath == '/organization/' or fullpath == '/credits/' or fullpath == '/details/' or fullpath == '/development/' or fullpath == '/roadmap/' or fullpath == '/terms/' %}class="selected"{% endif %}href="/about/">
-            {% trans 'sobre' %}
-        </a>
-    </li>
   </ul>
 </div>
 

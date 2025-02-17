@@ -128,7 +128,7 @@ def slicer(query, media_id):
 def get_media_queryset(media, qobj):
     '''Returns queryset used in the linear browser.'''
     Media = apps.get_model('meta', 'Media')
-    query = Media.objects.filter(qobj, is_public=True).order_by('id')
+    query = Media.objects.filter(qobj, is_public=True).order_by('id').distinct()
     return query
 
 @register.inclusion_tag('related.html', takes_context=True)

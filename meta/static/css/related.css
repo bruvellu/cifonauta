@@ -4,13 +4,14 @@
 
 #related-form > form {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: .3rem;
 }
 
 #crumbs {
-    align-self: flex-end;
+    align-self: flex-start;
     margin-right: 2rem;
 }
 
@@ -22,6 +23,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.625rem;
+    justify-content: center;
 }
 
 .rel-thumbs > li {

@@ -2,6 +2,7 @@
     display: flex; 
     flex-wrap: wrap; 
     width: 100%; 
+    gap: 1em;
 }
 
 @media (max-width: 799px) {

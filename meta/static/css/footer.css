@@ -65,7 +65,7 @@
 	height: 50px;
 }
 
-@media (max-width: 780px) {
+@media (max-width: 880px) {
     #footerbase {
         flex-direction: column;
         padding-bottom: 1rem;

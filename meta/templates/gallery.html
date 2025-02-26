@@ -4,7 +4,9 @@
 {% block extra-head %}
 {% endblock %}
 
-{% include 'messages.html' %}
+{% if not entries.has_previous %}
+  {% include 'messages.html' %}
+{% endif %}
 
 {% if entries.paginator.count %}
 <section id="photo-gallery">

@@ -725,6 +725,10 @@ div.metadiv > * {
   flex: 1 1 12rem;
 }
 
+section.metadiv > * {
+  flex: 1 1 12rem;
+}
+
 @media (max-width: 799px) {
   header > h1 {
     text-align: center;
@@ -2419,3 +2423,29 @@ html>/**/body .highslide-gallery ul img {
 /* Search autocomplete custom style */
 .ui-autocomplete-loading{background:url(../img/indicator.gif) no-repeat right center;}
 .ui-menu-item table{ cursor: hand; width: 280px;}
+
+
+/* Responsive */
+.inner {
+    max-width: 960px;
+    margin: 0 auto;
+    float: left;
+}
+
+@media only screen and (min-width: 1154px) {
+    .inner {
+        max-width:1154px
+    }
+}
+
+@media only screen and (max-width: 991px) {
+    .inner {
+        padding:0 20px
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .inner {
+        padding:0 10px
+    }
+}

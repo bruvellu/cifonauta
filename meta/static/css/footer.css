@@ -12,7 +12,7 @@
 
 #footerbase {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     gap: 2rem;
     margin-bottom: 1rem; 
 }
@@ -53,6 +53,10 @@
     padding: 2rem;
 }
 
+.cebimar {
+	text-align: center;
+}
+
 .cebimar img {
 	height: 80px;
 }
@@ -61,7 +65,7 @@
 	height: 50px;
 }
 
-@media (max-width: 780px) {
+@media (max-width: 880px) {
     #footerbase {
         flex-direction: column;
         padding-bottom: 1rem;
@@ -75,6 +79,11 @@
         flex-direction: row;
         flex-wrap: wrap;
         padding-left: .6rem;
+        justify-content: center;
+    }
+
+    .cebimar {
+        margin-top: 2rem;
     }
 }
 

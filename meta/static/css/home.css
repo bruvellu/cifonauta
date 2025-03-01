@@ -10,7 +10,7 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     box-sizing: border-box;
     margin-bottom: 2rem;
@@ -23,9 +23,6 @@
 }
 
 #intro > #cover-image {
-    display: flex;
-    justify-content: center;
-    margin-right: 2rem;
 }
 
 #intro > #cover-text {

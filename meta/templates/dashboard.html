@@ -45,14 +45,14 @@
                     Meus uploads
                 </a>
             </li>
-            {% if is_specialist or is_curator %}
+            {% if is_editor or is_curator %}
             <li>
                 <a href="{% url 'my_curations_media_list' %}" {% if '/dashboard/curations/' in fullpath %}class='current-page'{% endif %}>
                     Minhas curadorias
                 </a>
             </li><hr>
             {% endif %}
-            {% if is_specialist %}
+            {% if is_editor %}
             <li>
                 <a href="{% url 'editing_media_list' %}" {% if '/dashboard/editing/' in fullpath %}class='current-page'{% endif %}>
                     Editar metadados
@@ -104,8 +104,8 @@
         $('.select2-taxons').select2({
             placeholder: 'Selecione os táxons'
         })
-        $('.select2-specialists').select2({
-            placeholder: 'Selecione os especialistas'
+        $('.select2-editors').select2({
+            placeholder: 'Selecione os editores'
         })
         $('.select2-media').select2({
             placeholder: 'Selecione as mídias'

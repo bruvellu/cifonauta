@@ -32,13 +32,13 @@ def author_required(view_func):
     return _wrapped_view
 
 
-def specialist_required(view_func):
+def editor_required(view_func):
     @wraps(view_func)
     @authentication_required
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
-        is_specialist = user.curations_as_specialist.exists()
-        if is_specialist:
+        is_editor = user.curations_as_editor.exists()
+        if is_editor:
             return view_func(request, *args, **kwargs)
         
         return redirect('dashboard')
@@ -62,15 +62,15 @@ def loaded_media_required(view_func):
     return _wrapped_view
 
     
-def media_specialist_required(view_func):
+def media_editor_required(view_func):
     @wraps(view_func)
     @authentication_required
-    @specialist_required
+    @editor_required
     def _wrapped_view(request, *args, **kwargs):
         media_id = kwargs.get('media_id')
 
         user = request.user
-        curations = user.curations_as_specialist.all()
+        curations = user.curations_as_editor.all()
         curations_taxa = set()
 
         for curation in curations:
@@ -163,15 +163,15 @@ def tour_owner_required(view_func):
     return _wrapped_view
 
 
-def specialist_or_curator_required(view_func):
+def editor_or_curator_required(view_func):
     @wraps(view_func)
     @authentication_required
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
         is_curator = user.curations_as_curator.exists()
-        is_specialist = user.curations_as_specialist.exists()
+        is_editor = user.curations_as_editor.exists()
 
-        if is_specialist or is_curator:
+        if is_editor or is_curator:
             return view_func(request, *args, **kwargs)
         
         return redirect('dashboard')
@@ -182,22 +182,22 @@ def specialist_or_curator_required(view_func):
 def curations_media_required(view_func):
     @wraps(view_func)
     @authentication_required
-    @specialist_or_curator_required
+    @editor_or_curator_required
     def _wrapped_view(request, *args, **kwargs):
         media_id = kwargs.get('media_id')
         user = request.user
 
-        curations_as_specialist = user.curations_as_specialist.all()
-        curations_as_specialist_taxa = set()
-        for curation in curations_as_specialist:
-            curations_as_specialist_taxa.update(curation.taxa.all())
+        curations_as_editor = user.curations_as_editor.all()
+        curations_as_editor_taxa = set()
+        for curation in curations_as_editor:
+            curations_as_editor_taxa.update(curation.taxa.all())
 
         curations_as_curator = user.curations_as_curator.all()
         curations_as_curator_taxa = set()
         for curation in curations_as_curator:
             curations_as_curator_taxa.update(curation.taxa.all())
 
-        curations = curations_as_specialist | curations_as_curator
+        curations = curations_as_editor | curations_as_curator
         curations = curations.distinct()
 
         curations_taxa = set()
@@ -206,9 +206,9 @@ def curations_media_required(view_func):
 
         curator_queryset_ids = Media.objects.filter(Q(taxa__in=curations_as_curator_taxa)).values_list('id', flat=True)
 
-        specialist_queryset_ids = Media.objects.filter(Q(taxa__in=curations_as_specialist_taxa)) .values_list('id', flat=True)   
+        editor_queryset_ids = Media.objects.filter(Q(taxa__in=curations_as_editor_taxa)) .values_list('id', flat=True)
 
-        queryset_ids = (curator_queryset_ids | specialist_queryset_ids).exclude(status='loaded').distinct()
+        queryset_ids = (curator_queryset_ids | editor_queryset_ids).exclude(status='loaded').distinct()
         
         if media_id in queryset_ids:
             return view_func(request, *args, **kwargs)

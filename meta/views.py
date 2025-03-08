@@ -93,11 +93,11 @@ def create_authors(request):
 @never_cache
 @authentication_required
 def dashboard(request):
-    is_specialist = Curation.objects.filter(Q(specialists=request.user)).exists()
+    is_editor = Curation.objects.filter(Q(editors=request.user)).exists()
     is_curator = Curation.objects.filter(Q(curators=request.user)).exists()
 
     context = {
-        'is_specialist': is_specialist,
+        'is_editor': is_editor,
         'is_curator': is_curator
     }
 
@@ -207,7 +207,7 @@ def upload_media_step1(request):
         messages.info(request, 'Complete ou cancele o upload para adicionar outras mídias')
         return redirect('upload_media_step2')
     
-    is_specialist = request.user.curations_as_specialist.exists()
+    is_editor = request.user.curations_as_editor.exists()
     is_curator = request.user.curations_as_curator.exists()
 
     media_mimetypes = [m.split('/')[1].upper() for m in MEDIA_MIMETYPES]
@@ -218,7 +218,7 @@ def upload_media_step1(request):
         'media_mimetypes': ', '.join(media_mimetypes),
         'image_size_limit': image_size_limit,
         'video_size_limit': video_size_limit,
-        'is_specialist': is_specialist,
+        'is_editor': is_editor,
         'is_curator': is_curator,
     }
 
@@ -272,13 +272,13 @@ def upload_media_step2(request):
                     
                 # Send email 
                 curations = Curation.objects.filter(taxa__in=form.cleaned_data['taxa'])
-                specialists_user = set()
+                editors_user = set()
                 for curation in curations:
-                    for specialist in curation.specialists.all():
-                        specialists_user.add(specialist)
+                    for editor in curation.editors.all():
+                        editors_user.add(editor)
                 
-                form.send_mail(request.user, specialists_user, medias, 'Nova mídia para edição no Cifonauta', 'email_media_to_editing_specialists.html')
-                messages.success(request, 'As mídias foram enviadas para o especialista editar.')
+                form.send_mail(request.user, editors_user, medias, 'Nova mídia para edição no Cifonauta', 'email_media_to_editing_editors.html')
+                messages.success(request, 'As mídias foram enviadas para o editor.')
                 messages.info(request, 'Você ainda pode editá-las antes de serem submetidas para o curador.')
                 return redirect('my_media_list')
 
@@ -345,7 +345,7 @@ def upload_media_step2(request):
     location_form = AddLocationForm()
     taxa_form = AddTaxaForm()
     
-    is_specialist = request.user.curations_as_specialist.exists()
+    is_editor = request.user.curations_as_editor.exists()
     is_curator = request.user.curations_as_curator.exists()
 
     context = {
@@ -354,7 +354,7 @@ def upload_media_step2(request):
         'location_form': location_form,
         'taxa_form': taxa_form,
         'medias': medias,
-        'is_specialist': is_specialist,
+        'is_editor': is_editor,
         'is_curator': is_curator,
     }
 
@@ -388,7 +388,7 @@ def synchronize_fields(request):
 
 
 @never_cache
-@media_specialist_required
+@media_editor_required
 def editing_media_details(request, media_id):
     media = get_object_or_404(Media, id=media_id)
     
@@ -410,7 +410,7 @@ def editing_media_details(request, media_id):
                 media_instance.status = 'submitted'
 
             person = Person.objects.filter(user_cifonauta=request.user.id).first()
-            media_instance.specialists.add(person)
+            media_instance.editors.add(person)
 
             # Update taxa one by one
             for taxon in form.cleaned_data['taxa']:
@@ -462,7 +462,7 @@ def editing_media_details(request, media_id):
     taxa_form = AddTaxaForm()
 
     # media = get_object_or_404(Media, pk=media_id)
-    is_specialist = request.user.curations_as_specialist.exists()
+    is_editor = request.user.curations_as_editor.exists()
     is_curator = request.user.curations_as_curator.exists()
 
     context = {
@@ -470,7 +470,7 @@ def editing_media_details(request, media_id):
         'location_form': location_form,
         'taxa_form': taxa_form,
         'media': media,
-        'is_specialist': is_specialist,
+        'is_editor': is_editor,
         'is_curator': is_curator,
     }
 
@@ -536,12 +536,12 @@ def filter_medias(queryset, query_dict, curations=''):
 
 
 @never_cache
-@specialist_required
+@editor_required
 def editing_media_list(request):
     records_number = number_of_entries_per_page(request, 'entries_curadoria_media_list')
 
     user = request.user
-    curations = user.curations_as_specialist.all()
+    curations = user.curations_as_editor.all()
     curations_taxa = set()
 
     for curation in curations:
@@ -648,7 +648,7 @@ def editing_media_list(request):
         'location_form': location_form,
         'object_exists': queryset.exists(),
         'entries': page,
-        'is_specialist': user.curations_as_specialist.exists(),
+        'is_editor': user.curations_as_editor.exists(),
         'is_curator': user.curations_as_curator.exists(),
         'list_page': True
     }
@@ -699,7 +699,7 @@ def my_media_details(request, pk):
                             messages.warning(request, 'Descarte a alteração pendente ou efetue uma alteração válida')
                             return redirect('my_media_details', media.pk)
                     else:
-                        messages.warning(request, "Esta mídia tem alterações pendentes de um especialista. Não é possível realizar alterações até que elas sejam revisadas pelo curador")
+                        messages.warning(request, "Esta mídia tem alterações pendentes de um editor. Não é possível realizar alterações até que elas sejam revisadas pelo curador")
                         return redirect('my_media_details', pk)
 
                 else:
@@ -749,10 +749,10 @@ def my_media_details(request, pk):
             if modified_media.altered_by_author:
                 messages.warning(request, "Esta mídia tem alterações pendentes. Clique no botão abaixo para ver as alterações. Se você fizer novas alterações, as anteriores serão sobrepostas")
             elif not is_modification_owner:
-                messages.warning(request, "Esta mídia tem alterações pendentes de um especialista. Não é possível realizar alterações até que elas sejam revisadas pelo curador")
+                messages.warning(request, "Esta mídia tem alterações pendentes de um editor. Não é possível realizar alterações até que elas sejam revisadas pelo curador")
         if is_modification_owner and not modified_media.altered_by_author:
             url = reverse('my_curations_media_details', args=[pk])
-            messages.warning(request, f'Esta mídia tem alterações sua como especialista. Para vê-las, <a href={url}>Clique aqui</a>')
+            messages.warning(request, f'Esta mídia tem alterações sua como editor. Para vê-las, <a href={url}>Clique aqui</a>')
     elif media.status == 'submitted':
         messages.warning(request, "Não é possível fazer alteração em mídias que estão submetidas para revisão")
 
@@ -769,7 +769,7 @@ def my_media_details(request, pk):
         license_index = license_choices.index(media.license)
         form.fields['license'].choices = Media.LICENSE_CHOICES[:license_index + 1]
 
-    is_specialist = request.user.curations_as_specialist.exists()
+    is_editor = request.user.curations_as_editor.exists()
     is_curator = request.user.curations_as_curator.exists()
 
     authors_form = AddAuthorsForm()
@@ -786,7 +786,7 @@ def my_media_details(request, pk):
         'location_form': location_form,
         'taxa_form': taxa_form,
         'is_modification_owner': is_modification_owner,
-        'is_specialist': is_specialist,
+        'is_editor': is_editor,
         'is_curator': is_curator,
     }
 
@@ -857,8 +857,8 @@ def my_media_list(request):
     # Get person associated to user
     person = Person.objects.get(user_cifonauta=user)
 
-    # Check if user is a specialist or curator
-    is_specialist = user.curations_as_specialist.exists()
+    # Check if user is a editor or curator
+    is_editor = user.curations_as_editor.exists()
     is_curator = user.curations_as_curator.exists()
 
     # Populate filter form with query dict data
@@ -874,7 +874,7 @@ def my_media_list(request):
         'object_exists': queryset.exists(),
         'entries': entries,
         'filter_form': filter_form,
-        'is_specialist': is_specialist,
+        'is_editor': is_editor,
         'is_curator': is_curator,
 
         'records_number': records_number,
@@ -910,7 +910,7 @@ def manage_users(request):
                     messages.error(request, f'O usuário "{user.first_name} {user.last_name}" possui mídia relacionada')
                     return redirect('manage_users')
 
-                user.curations_as_specialist.clear()
+                user.curations_as_editor.clear()
                 user.curations_as_curator.clear()
                 
             authors.update(is_author=True)
@@ -918,16 +918,16 @@ def manage_users(request):
 
             messages.success(request, "Os autores foram atualizados com sucesso")
         else:
-            specialist_ids = request.POST.getlist('specialist_ids')
+            editor_ids = request.POST.getlist('editor_ids')
             curation_id = request.POST.get('curation_id')
 
-            specialists = UserCifonauta.objects.filter(id__in=specialist_ids)
+            editors = UserCifonauta.objects.filter(id__in=editor_ids)
             curation = Curation.objects.filter(id=curation_id).first()
-            curation.specialists.set(specialists)
+            curation.editors.set(editors)
 
-            messages.success(request, "Os especialistas foram atualizados com sucesso")
+            messages.success(request, "Os editores foram atualizados com sucesso")
 
-    is_specialist = request.user.curations_as_specialist.exists()
+    is_editor = request.user.curations_as_editor.exists()
     is_curator = request.user.curations_as_curator.exists()
 
     curations = Curation.objects.filter(curators=request.user.id)
@@ -938,7 +938,7 @@ def manage_users(request):
             'name': f'{user.first_name} {user.last_name}',
             'id': user.id,
             'is_author': user.is_author,
-            'curation_ids': [str(curation.id) for curation in curations.filter(Q(specialists=user.id))]
+            'curation_ids': [str(curation.id) for curation in curations.filter(Q(editors=user.id))]
         } for user in users_queryset
     ]
 
@@ -946,7 +946,7 @@ def manage_users(request):
         {
             'name': f'{user.first_name} {user.last_name}',
             'id': user.id,
-            'curation_ids': [str(curation.id) for curation in curations.filter(Q(specialists=user.id))]
+            'curation_ids': [str(curation.id) for curation in curations.filter(Q(editors=user.id))]
         } for user in authors_queryset
     ]
 
@@ -954,7 +954,7 @@ def manage_users(request):
         'users': users,
         'authors': authors,
         'curations': curations,
-        'is_specialist': is_specialist,
+        'is_editor': is_editor,
         'is_curator': is_curator,
     }
     return render(request, 'manage_users.html', context)        
@@ -1008,20 +1008,20 @@ def revision_media_list(request):
                     # Send email
                     if form.cleaned_data['status_action'] != 'maintain':
                         authors = set()
-                        specialists = set()
+                        editors = set()
                         for media in medias:
                             authors.add(media.user)
 
-                            for specialist in media.specialists.all():
-                                specialists.add(specialist)
+                            for editor in media.editors.all():
+                                editors.add(editor)
 
                         form.send_mail(request.user, authors, medias, 'Mídia publicada no Cifonauta', 'email_published_media_author.html')
 
-                        specialists_user = set()
-                        for specialist in specialists:
-                            specialists_user.add(specialist.user_cifonauta)
+                        editors_user = set()
+                        for editor in editors:
+                            editors_user.add(editor.user_cifonauta)
 
-                        form.send_mail(request.user, specialists_user, medias, 'Fluxo da mídia no Cifonauta', 'email_published_media_specialists.html')
+                        form.send_mail(request.user, editors_user, medias, 'Fluxo da mídia no Cifonauta', 'email_published_media_editors.html')
 
                     messages.success(request, _('As ações em lote foram aplicadas com sucesso'))
                 else:
@@ -1050,7 +1050,7 @@ def revision_media_list(request):
         'location_form': location_form,
         'object_exists': queryset.exists(),
         'entries': page,
-        'is_specialist': user.curations_as_specialist.exists(),
+        'is_editor': user.curations_as_editor.exists(),
         'is_curator': user.curations_as_curator.exists(),
         'list_page': True
     }
@@ -1068,17 +1068,17 @@ def revision_modified_media(request, media_id):
         action = request.POST['action']
         form = ModifiedMediaForm(request.POST)
 
-        specialists_user = set()
-        for specialist in media.specialists.all():
-            specialists_user.add(specialist.user_cifonauta)
+        editors_user = set()
+        for editor in media.editors.all():
+            editors_user.add(editor.user_cifonauta)
 
-        if media.user in specialists_user:
-            specialists_user.remove(media.user)
+        if media.user in editors_user:
+            editors_user.remove(media.user)
 
         if action == 'discard':
             form.send_mail(request.user, media.user, media, 'Alteração de mídia no Cifonauta', 'email_modified_media.html', modification_accepted=False)
         
-            form.send_mail(request.user, specialists_user, media, 'Alteração de mídia no Cifonauta', 'email_modified_media.html', modification_accepted=False, modified_media_specialists_message=True)
+            form.send_mail(request.user, editors_user, media, 'Alteração de mídia no Cifonauta', 'email_modified_media.html', modification_accepted=False, modified_media_editors_message=True)
 
             modified_media.delete()
             messages.success(request, 'Alteração descartada com sucesso')
@@ -1089,7 +1089,7 @@ def revision_modified_media(request, media_id):
             form.save()
 
             if not modified_media.altered_by_author:
-                media.specialists.add(modified_media.modification_person)
+                media.editors.add(modified_media.modification_person)
 
             for taxon in form.cleaned_data['taxa']:
                 if taxon.valid_taxon != None:
@@ -1099,7 +1099,7 @@ def revision_modified_media(request, media_id):
 
             form.send_mail(request.user, media.user, media, 'Alteração de mídia no Cifonauta', 'email_modified_media.html', modification_accepted=True)
 
-            form.send_mail(request.user, specialists_user, media, 'Alteração de mídia no Cifonauta', 'email_modified_media.html', modification_accepted=True, modified_media_specialists_message=True)
+            form.send_mail(request.user, editors_user, media, 'Alteração de mídia no Cifonauta', 'email_modified_media.html', modification_accepted=True, modified_media_editors_message=True)
 
             modified_media.delete()
 
@@ -1111,7 +1111,7 @@ def revision_modified_media(request, media_id):
             messages.error(request, 'Houve um erro ao tentar realizar a ação')
 
 
-    is_specialist = request.user.curations_as_specialist.exists()
+    is_editor = request.user.curations_as_editor.exists()
     is_curator = request.user.curations_as_curator.exists()
 
     form = ModifiedMediaForm(instance=modified_media, author_form=True) if modified_media.altered_by_author else ModifiedMediaForm(instance=modified_media)
@@ -1120,7 +1120,7 @@ def revision_modified_media(request, media_id):
         'modified_media_form': form,
         'media': media,
         'modified_media': modified_media,
-        'is_specialist': is_specialist,
+        'is_editor': is_editor,
         'is_curator': is_curator
     }
 
@@ -1167,10 +1167,10 @@ def revision_media_details(request, media_id):
             if action == 'publish':
                 # TODO: Move to its own method?
                 form.send_mail(request.user, media.user, media, 'Mídia publicada no Cifonauta', 'email_published_media_author.html')
-                specialists_user = set()
-                for specialist in media.specialists.all():
-                    specialists_user.add(specialist.user_cifonauta)
-                form.send_mail(request.user, specialists_user, media, 'Fluxo da mídia no Cifonauta', 'email_published_media_specialists.html')
+                editors_user = set()
+                for editor in media.editors.all():
+                    editors_user.add(editor.user_cifonauta)
+                form.send_mail(request.user, editors_user, media, 'Fluxo da mídia no Cifonauta', 'email_published_media_editors.html')
                 messages.success(request, f'A mídia ({media.title}) foi publicada com sucesso')
             else:
                 messages.success(request, f'A mídia ({media.title}) foi salva com sucesso')
@@ -1195,7 +1195,7 @@ def revision_media_details(request, media_id):
     location_form = AddLocationForm()
     taxa_form = AddTaxaForm()
 
-    is_specialist = request.user.curations_as_specialist.exists()
+    is_editor = request.user.curations_as_editor.exists()
     is_curator = request.user.curations_as_curator.exists()
 
     context = {
@@ -1203,7 +1203,7 @@ def revision_media_details(request, media_id):
         'location_form': location_form,
         'taxa_form': taxa_form,
         'media': media,
-        'is_specialist': is_specialist,
+        'is_editor': is_editor,
         'is_curator': is_curator,
     }
 
@@ -1211,38 +1211,23 @@ def revision_media_details(request, media_id):
 
 
 @never_cache
-@specialist_or_curator_required
+@editor_or_curator_required
 def my_curations_media_list(request):
     records_number = number_of_entries_per_page(request, 'entries_media_from_curation')
 
     # Instance current user
     user = request.user
 
-    # Get unique list of curations as specialist and curator
-    curations_as_specialist = user.curations_as_specialist.all()
+    # Get unique list of curations as editor and curator
+    curations_as_editor = user.curations_as_editor.all()
     curations_as_curator = user.curations_as_curator.all()
-    curations = curations_as_specialist | curations_as_curator
+    curations = curations_as_editor | curations_as_curator
     curations = curations.distinct()
 
     # Get all taxa for every curation as a set
     curations_taxa = set()
     for curation in curations:
         curations_taxa.update(curation.get_taxa())
-
-    # curations_as_specialist_taxa = set()
-    # for curation in curations_as_specialist:
-        # curations_as_specialist_taxa.update(curation.taxa.all())
-
-    # curations_as_curator_taxa = set()
-    # for curation in curations_as_curator:
-        # curations_as_curator_taxa.update(curation.taxa.all())
-
-
-    # curator_queryset = Media.objects.filter(Q(taxa__in=curations_as_curator_taxa))
-
-    # specialist_queryset = Media.objects.filter(Q(taxa__in=curations_as_specialist_taxa))    
-
-    # queryset = (curator_queryset | specialist_queryset).exclude(status='loaded').distinct().order_by('-pk')
 
     queryset = Media.objects.filter(Q(taxa__in=curations_taxa)).exclude(status='loaded').order_by('-id').distinct()
 
@@ -1310,7 +1295,7 @@ def my_curations_media_list(request):
         'location_form': location_form,
         'object_exists': queryset.exists(),
         'entries': page,
-        'is_specialist': user.curations_as_specialist.exists(),
+        'is_editor': user.curations_as_editor.exists(),
         'is_curator': user.curations_as_curator.exists(),
         'list_page': True
     }
@@ -1327,10 +1312,10 @@ def my_curations_media_details(request, media_id):
     curations = Curation.objects.filter(taxa__in=media.taxa.all()).distinct()
     curations_as_curator = request.user.curations_as_curator.all()
     
-    is_only_media_specialist = True
+    is_only_media_editor = True
     for curation in curations_as_curator:
         if curation in curations:
-            is_only_media_specialist = False
+            is_only_media_editor = False
             break
 
     is_modification_owner = False
@@ -1358,7 +1343,7 @@ def my_curations_media_details(request, media_id):
 
         if form.is_valid():
 
-            if is_only_media_specialist:
+            if is_only_media_editor:
                 if modified_media:
                     if form.has_changed():
                         form = EditMetadataForm(request.POST, instance=modified_media)
@@ -1415,7 +1400,7 @@ def my_curations_media_details(request, media_id):
             url = reverse('my_media_details', args=[media_id])
             messages.warning(request, f'Esta mídia tem alterações suas como autor. Para vê-las, <a href="{url}">Clique aqui</a>')
             
-        if not is_only_media_specialist:
+        if not is_only_media_editor:
             url = reverse('revision_modified_media', args=[media_id])
             messages.info(request, f'Para revisar as alterações, <a href="{url}">Clique aqui</a>')
 
@@ -1432,7 +1417,7 @@ def my_curations_media_details(request, media_id):
         form.fields['state'].queryset = State.objects.none()
     
     
-    is_specialist = request.user.curations_as_specialist.exists()
+    is_editor = request.user.curations_as_editor.exists()
     is_curator = request.user.curations_as_curator.exists()
 
     modified_media_form = ModifiedMediaForm(instance=media)
@@ -1446,9 +1431,9 @@ def my_curations_media_details(request, media_id):
         'taxa_form': taxa_form,
         'media': media,
         'modified_media': modified_media,
-        'is_only_specialist': is_only_media_specialist,
+        'is_only_editor': is_only_media_editor,
         'is_modification_owner': is_modification_owner,
-        'is_specialist': is_specialist,
+        'is_editor': is_editor,
         'is_curator': is_curator,
     }
 
@@ -1465,12 +1450,12 @@ def download_media(request, media_id):
 @curator_required
 def tour_list(request):
     tours = Tour.objects.filter(creator=request.user)
-    is_specialist = request.user.curations_as_specialist.exists()
+    is_editor = request.user.curations_as_editor.exists()
     is_curator = request.user.curations_as_curator.exists()
 
     context = {
         'tours': tours,
-        'is_specialist': is_specialist,
+        'is_editor': is_editor,
         'is_curator': is_curator,
         'list_page': True
     }
@@ -1501,12 +1486,12 @@ def tour_add(request):
 
     form.fields['creator'].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
-    is_specialist = request.user.curations_as_specialist.exists()
+    is_editor = request.user.curations_as_editor.exists()
     is_curator = request.user.curations_as_curator.exists()
 
     context = {
         'form': form,
-        'is_specialist': is_specialist,
+        'is_editor': is_editor,
         'is_curator': is_curator
     }
 
@@ -1545,14 +1530,14 @@ def tour_details(request, pk):
 
     medias_related = tour.media.all()
 
-    is_specialist = request.user.curations_as_specialist.exists()
+    is_editor = request.user.curations_as_editor.exists()
     is_curator = request.user.curations_as_curator.exists()
 
     context = {
         'form': form,
         'tour': tour,
         'medias_related': medias_related,
-        'is_specialist': is_specialist,
+        'is_editor': is_editor,
         'is_curator': is_curator
     }
 
@@ -1566,7 +1551,7 @@ def get_tour_medias(request):
         offset = int(request.GET.get('offset', 0))
         input_value = request.GET.get('input_value', '')
 
-        curations = Curation.objects.filter(Q(specialists=request.user.id) | Q(curators=request.user.id))
+        curations = Curation.objects.filter(Q(editors=request.user.id) | Q(curators=request.user.id))
         taxon_ids = []
         for curation in curations:
             taxon_ids.extend(curation.taxa.values_list('id', flat=True))
@@ -1682,18 +1667,18 @@ def search_page(request, model_name='', field='', slug=''):
         else:
             form_authors = []
 
-        # Specialist
-        if 'specialist' in query_dict:
+        # Editor
+        if 'editor' in query_dict:
             # Extract objects from query_dict
-            get_specialists = query_dict.getlist('specialist')
+            get_editors = query_dict.getlist('editor')
             # Get instances from the query_dict IDs
-            specialists = get_objects_from_get_list(Person, get_specialists)
+            editors = get_objects_from_get_list(Person, get_editors)
             # Filter media by field and operator
-            media_list = filter_request(media_list, specialists, 'specialists', operator)
+            media_list = filter_request(media_list, editors, 'editors', operator)
             # Fill the form with proper values
-            form_specialists = specialists.values_list('id', flat=True)
+            form_editors = editors.values_list('id', flat=True)
         else:
-            form_specialists = []
+            form_editors = []
 
         # Curator
         if 'curator' in query_dict:
@@ -1813,7 +1798,7 @@ def search_page(request, model_name='', field='', slug=''):
             'order': order,
             'operator': operator,
             'author': form_authors,
-            'specialist': form_specialists,
+            'editor': form_editors,
             'tag': form_tags,
             'location': form_locations,
             'city': form_cities,
@@ -1973,7 +1958,7 @@ def media_page(request, media_id):
 
     tags = media.tags.all()
     authors = media.authors.all()
-    specialists = media.specialists.all()
+    editors = media.editors.all()
     curators = media.curators.all()
     taxa = media.taxa.all()
     references = media.references.all()
@@ -1987,7 +1972,7 @@ def media_page(request, media_id):
         'tags': tags,
         'authors': authors,
         'taxa': taxa,
-        'specialists': specialists,
+        'editors': editors,
         'curators': curators,
         'references': references,
         'file_extension': file_extension
@@ -2013,7 +1998,7 @@ def tour_page(request, slug):
         thumb = ''
 
     # Extract media metadata.
-    authors, specialists, taxa, locations, cities, states, countries, tags = extract_set(entries)
+    authors, editors, taxa, locations, cities, states, countries, tags = extract_set(entries)
 
     context = {
         'tour': tour,
@@ -2062,20 +2047,20 @@ def tags_page(request):
 
 
 def contributors_page(request):
-    '''Page showing the full list of authors and specialists.'''
+    '''Page showing the full list of authors and editors.'''
 
     # Get all person instances associated to media as authors
     authors = Person.objects.exclude(media_as_author__isnull=True)
 
-    # Get person instances associated to media as specialists
-    specialists = Person.objects.exclude(media_as_specialist__isnull=True)
+    # Get person instances associated to media as editors
+    editors = Person.objects.exclude(media_as_editor__isnull=True)
 
     # Get person instances associated to media as curators
     curators = Person.objects.exclude(media_as_curator__isnull=True)
 
     context = {
         'authors': authors,
-        'specialists': specialists,
+        'editors': editors,
 	    'curators': curators,
         }
     return render(request, 'contributors_page.html', context)
@@ -2150,7 +2135,7 @@ def extract_set(media_list):
     '''
 
     authors = Person.objects.filter(id__in=media_list.values_list('authors', flat=True))
-    specialists = Person.objects.filter(id__in=media_list.values_list('specialists', flat=True))
+    editors = Person.objects.filter(id__in=media_list.values_list('editors', flat=True))
     tags = Tag.objects.filter(id__in=media_list.values_list('tags', flat=True))
     taxa = Taxon.objects.filter(id__in=media_list.values_list('taxa', flat=True))
     locations = Location.objects.filter(id__in=media_list.values_list('location', flat=True))
@@ -2158,7 +2143,7 @@ def extract_set(media_list):
     states = State.objects.filter(id__in=media_list.values_list('state', flat=True))
     countries = Country.objects.filter(id__in=media_list.values_list('country', flat=True))
 
-    return authors, specialists, taxa, locations, cities, states, countries, tags
+    return authors, editors, taxa, locations, cities, states, countries, tags
 
 
 def add_meta(meta, field, query):

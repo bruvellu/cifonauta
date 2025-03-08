@@ -1426,7 +1426,7 @@ textarea {
 
 
 
-/* ENABLE SPECIALISTS */
+/* ENABLE EDITORS */
 .checkbox-column {
     max-width: 2rem;
 }
@@ -1613,7 +1613,7 @@ textarea {
     flex-direction: column;
     gap: 0.5rem;
 }
-.enable-specialists-section {
+.enable-editors-section {
     border-top: 1px solid black;
     margin-top: 2rem;
     padding-top: 2rem;

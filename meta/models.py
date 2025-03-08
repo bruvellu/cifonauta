@@ -32,19 +32,26 @@ class Curation(models.Model):
             verbose_name=_('táxons'),
             help_text=_('Táxons nesta curadoria.'))
     #TODO: Change from User to Person?
-    specialists = models.ManyToManyField(
-            settings.AUTH_USER_MODEL,
-            related_name='curations_as_specialist',
-            blank=True,
-            verbose_name=_('especialistas'),
-            help_text=_('Especialistas nesta curadoria.'))
-    #TODO: Change from User to Person?
     curators = models.ManyToManyField(
             settings.AUTH_USER_MODEL,
             related_name='curations_as_curator',
             blank=True,
             verbose_name=_('curadores'),
             help_text=_('Curadores desta curadoria.'))
+    #TODO: Change from User to Person?
+    editors = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='curations_as_editor',
+        blank=True,
+        verbose_name=_('editores'),
+        help_text=_('Editores desta curadoria.'))
+    #TODO: Change from User to Person?
+    specialists = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='curations_as_specialist',
+        blank=True,
+        verbose_name=_('especialistas'),
+        help_text=_('Especialistas nesta curadoria.'))
 
     def __str__(self):
         return f'{self.name}'
@@ -179,17 +186,24 @@ class Media(models.Model):
                                      help_text=_('Autores associados a este arquivo.'),
                                      related_name='media_as_author')
 
-    specialists = models.ManyToManyField('Person',
-                                         blank=True,
-                                         verbose_name=_('especialistas associados'),
-                                         help_text=_('Especialistas associados a este arquivo.'),
-                                         related_name='media_as_specialist')
-
     curators = models.ManyToManyField('Person',
                                   blank=True,
                                   verbose_name=_('curadores do arquivo'),
                                   help_text=_('Curadores associados a este arquivo.'),
                                   related_name='media_as_curator')
+
+    editors = models.ManyToManyField('Person',
+                                         blank=True,
+                                         verbose_name=_('editores associados'),
+                                         help_text=_('Editores associados a este arquivo.'),
+                                         related_name='media_as_editor')
+
+    # TODO: Remove after migration
+    specialists = models.ManyToManyField('Person',
+                                     blank=True,
+                                     verbose_name=_('especialistas associados'),
+                                     help_text=_('Especialistas associados a este arquivo.'),
+                                     related_name='media_as_specialist')
 
     terms = models.BooleanField(_('termos'),
                                 default=False,
@@ -606,7 +620,7 @@ class Media(models.Model):
         # Fetch associated authors, taxa, tags, curators, etc
         authors = ' '.join(self.authors.values_list('name', flat=True))
         curators = ' '.join(self.curators.values_list('name', flat=True))
-        specialists = ' '.join(self.specialists.values_list('name', flat=True))
+        editors = ' '.join(self.editors.values_list('name', flat=True))
         taxa = ' '.join(self.taxa.values_list('name', flat=True))
         tags_pt_br = ' '.join(self.tags.values_list('name_pt_br', flat=True))
         tags_en = ' '.join(self.tags.values_list('name_en', flat=True))
@@ -630,8 +644,8 @@ class Media(models.Model):
                 SearchVector(Value(authors), weight='B', config='english') +
                 SearchVector(Value(curators), weight='C', config='portuguese_unaccent') +
                 SearchVector(Value(curators), weight='C', config='english') +
-                SearchVector(Value(specialists), weight='D', config='portuguese_unaccent') +
-                SearchVector(Value(specialists), weight='D', config='english') +
+                SearchVector(Value(editors), weight='D', config='portuguese_unaccent') +
+                SearchVector(Value(editors), weight='D', config='english') +
                 SearchVector(Value(taxa), weight='B', config='portuguese_unaccent') +
                 SearchVector(Value(taxa), weight='B', config='english') +
                 SearchVector(Value(ancestors), weight='C', config='portuguese_unaccent') +
@@ -700,7 +714,7 @@ class Media(models.Model):
             tags.append(tag.name)
 
         sources = []
-        for source in self.specialists.all():
+        for source in self.editors.all():
             sources.append(source.name)
 
         authors = []
@@ -815,11 +829,11 @@ class Person(models.Model):
     def get_absolute_url_author(self):
         return reverse('author_url', args=[self.slug])
 
-    def get_absolute_url_specialist(self):
-        return reverse('specialist_url', args=[self.slug])
-
     def get_absolute_url_curator(self):
         return reverse('curator_url', args=[self.slug])
+
+    def get_absolute_url_editor(self):
+        return reverse('editor_url', args=[self.slug])
 
     class Meta:
         verbose_name = _('pessoa')

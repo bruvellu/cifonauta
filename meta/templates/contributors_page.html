@@ -16,22 +16,32 @@
 
 {% block content %}
 <section>
-    <header><h1>{% trans 'Contribuidores (autores, curadores e editores)' %}</h1></header>
+    <header><h1>{% trans 'Contribuidores' %}</h1></header>
     <div class="metadiv" id="contributors">
       <div class="metagroup" id="authors">
         <h2>{% trans 'Autores' %}</h2>
+        {% comment %}
         <p class="quiet">{% trans 'Quem capturou a imagem' %}</p>
+        {% endcomment %}
         {% print_metalist authors 'author' %}
-      </div>
-      <div class="metagroup" id="editors">
-        <h2>{% trans 'Editores' %}</h2>
-        <p class="quiet">{% trans 'Quem fez a edição dos metadados' %}</p>
-        {% print_metalist editors 'editor' %}
       </div>
       <div class="metagroup" id="curators">
         <h2>{% trans 'Curadores' %}</h2>
+        {% comment %}
         <p class="quiet">{% trans 'Quem fez a revisão e a publicação' %}</p>
+        {% endcomment %}
         {% print_metalist curators 'curator' %}
+      </div>
+      <div class="metagroup" id="editors">
+        <h2>{% trans 'Editores' %}</h2>
+        {% comment %}
+        <p class="quiet">{% trans 'Quem fez a edição dos metadados' %}</p>
+        {% endcomment %}
+        {% if editors %}
+          {% print_metalist editors 'editor' %}
+        {% else %}
+          <p class="quiet">{% trans 'Nenhum editor ainda...' %}</p>
+        {% endif %}
       </div>
     </div>
 </section>

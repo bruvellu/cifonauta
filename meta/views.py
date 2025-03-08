@@ -1271,7 +1271,7 @@ def my_curations_media_list(request):
 
                         is_media_curator = False
                         for taxa in media.taxa.all():
-                            if taxa in curations_as_curator_taxa:
+                            if taxa in curations_taxa:
                                 is_media_curator = True
                                 break
                         if not is_media_curator:

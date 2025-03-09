@@ -31,27 +31,6 @@ class Curation(models.Model):
             blank=True,
             verbose_name=_('táxons'),
             help_text=_('Táxons nesta curadoria.'))
-    #TODO: Change from User to Person?
-    curators = models.ManyToManyField(
-            settings.AUTH_USER_MODEL,
-            related_name='curations_as_curator',
-            blank=True,
-            verbose_name=_('curadores'),
-            help_text=_('Curadores desta curadoria.'))
-    #TODO: Change from User to Person?
-    editors = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        related_name='curations_as_editor',
-        blank=True,
-        verbose_name=_('editores'),
-        help_text=_('Editores desta curadoria.'))
-    #TODO: Change from User to Person?
-    specialists = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        related_name='curations_as_specialist',
-        blank=True,
-        verbose_name=_('especialistas'),
-        help_text=_('Especialistas nesta curadoria.'))
 
     # TODO: Temporary models to become official after migrations
     tmp_curators = models.ManyToManyField(

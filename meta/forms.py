@@ -979,15 +979,15 @@ class AdminForm(forms.Form):
     )
 
 
-class CurationAdminForm(forms.ModelForm):
-    class Meta:
-        model = Curation
-        fields = "__all__"
+# class CurationAdminForm(forms.ModelForm):
+    # class Meta:
+        # model = Curation
+        # fields = "__all__"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    # def __init__(self, *args, **kwargs):
+        # super().__init__(*args, **kwargs)
 
-        self.fields["curators"].queryset = UserCifonauta.objects.filter(is_author=True)
-        self.fields["editors"].queryset = UserCifonauta.objects.filter(
-            is_author=True
-        )
+        # self.fields["curators"].queryset = UserCifonauta.objects.filter(is_author=True)
+        # self.fields["editors"].queryset = UserCifonauta.objects.filter(
+            # is_author=True
+        # )

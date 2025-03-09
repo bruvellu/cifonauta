@@ -2052,16 +2052,16 @@ def contributors_page(request):
     # Get all person instances associated to media as authors
     authors = Person.objects.exclude(media_as_author__isnull=True)
 
-    # Get person instances associated to media as editors
-    editors = Person.objects.exclude(media_as_editor__isnull=True)
-
     # Get person instances associated to media as curators
     curators = Person.objects.exclude(media_as_curator__isnull=True)
 
+    # Get person instances associated to media as editors
+    editors = Person.objects.exclude(media_as_editor__isnull=True)
+
     context = {
         'authors': authors,
-        'editors': editors,
 	    'curators': curators,
+        'editors': editors,
         }
     return render(request, 'contributors_page.html', context)
 

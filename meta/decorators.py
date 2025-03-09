@@ -36,8 +36,8 @@ def editor_required(view_func):
     @wraps(view_func)
     @authentication_required
     def _wrapped_view(request, *args, **kwargs):
-        user = request.user
-        is_editor = user.curations_as_editor.exists()
+        person = request.user.person
+        is_editor = person.curations_as_editor.exists()
         if is_editor:
             return view_func(request, *args, **kwargs)
         
@@ -69,8 +69,8 @@ def media_editor_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
         media_id = kwargs.get('media_id')
 
-        user = request.user
-        curations = user.curations_as_editor.all()
+        person = request.user.person
+        curations = person.curations_as_editor.all()
         curations_taxa = set()
 
         for curation in curations:
@@ -91,8 +91,8 @@ def curator_required(view_func):
     @wraps(view_func)
     @authentication_required
     def _wrapped_view(request, *args, **kwargs):
-        user = request.user
-        is_curator = user.curations_as_curator.exists()
+        person = request.user.person
+        is_curator = person.curations_as_curator.exists()
         if is_curator:
             return view_func(request, *args, **kwargs)
         
@@ -108,8 +108,8 @@ def media_curator_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
         media_id = kwargs.get('media_id')
 
-        user = request.user
-        curations = user.curations_as_curator.all()
+        person = request.user.person
+        curations = person.curations_as_curator.all()
         curations_taxa = set()
 
         for curation in curations:
@@ -167,9 +167,9 @@ def editor_or_curator_required(view_func):
     @wraps(view_func)
     @authentication_required
     def _wrapped_view(request, *args, **kwargs):
-        user = request.user
-        is_curator = user.curations_as_curator.exists()
-        is_editor = user.curations_as_editor.exists()
+        person = request.user.person
+        is_curator = person.curations_as_curator.exists()
+        is_editor = person.curations_as_editor.exists()
 
         if is_editor or is_curator:
             return view_func(request, *args, **kwargs)
@@ -185,14 +185,14 @@ def curations_media_required(view_func):
     @editor_or_curator_required
     def _wrapped_view(request, *args, **kwargs):
         media_id = kwargs.get('media_id')
-        user = request.user
+        person = request.user.person
 
-        curations_as_editor = user.curations_as_editor.all()
+        curations_as_editor = person.curations_as_editor.all()
         curations_as_editor_taxa = set()
         for curation in curations_as_editor:
             curations_as_editor_taxa.update(curation.taxa.all())
 
-        curations_as_curator = user.curations_as_curator.all()
+        curations_as_curator = person.curations_as_curator.all()
         curations_as_curator_taxa = set()
         for curation in curations_as_curator:
             curations_as_curator_taxa.update(curation.taxa.all())

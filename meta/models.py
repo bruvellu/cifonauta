@@ -31,23 +31,22 @@ class Curation(models.Model):
             blank=True,
             verbose_name=_('táxons'),
             help_text=_('Táxons nesta curadoria.'))
-
-    # TODO: Temporary models to become official after migrations
     curators = models.ManyToManyField(
         'Person',
-        related_name='tmp_curations_as_curator',
+        related_name='curations_as_curator',
         blank=True,
         verbose_name=_('curadores'),
         help_text=_('Curadores desta curadoria.'))
     editors = models.ManyToManyField(
         'Person',
-        related_name='tmp_curations_as_editor',
+        related_name='curations_as_editor',
         blank=True,
         verbose_name=_('editores'),
         help_text=_('Editores desta curadoria.'))
+    #TODO: Deprecated field, to be removed
     specialists = models.ManyToManyField(
             'Person',
-            related_name='tmp_curations_as_specialist',
+            related_name='curations_as_specialist',
             blank=True,
             verbose_name=_('especialistas'),
             help_text=_('Especialistas nesta curadoria.'))

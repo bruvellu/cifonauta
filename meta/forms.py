@@ -641,7 +641,7 @@ class BatchActionsForm(forms.ModelForm, SendEmailForm):
         }
 
     def __init__(self, *args, **kwargs):
-        self.user_person = kwargs.pop("user_person", None)
+        self.person = kwargs.pop("person", None)
         self.view_name = kwargs.pop("view_name", None)
         super().__init__(*args, **kwargs)
 
@@ -670,7 +670,7 @@ class BatchActionsForm(forms.ModelForm, SendEmailForm):
             self.fields["date_created_action"].required = True
             self.fields["license_action"].required = True
             self.fields["authors_action"].required = True
-            self.fields["authors"].initial = self.user_person
+            self.fields["authors"].initial = self.person
         elif (
             self.view_name == "editing_media_list"
             or self.view_name == "revision_media_list"
@@ -736,9 +736,7 @@ class BatchActionsForm(forms.ModelForm, SendEmailForm):
                 elif self.view_name == "editing_media_list":
                     media_instance.status = "submitted"
 
-        author_person = Person.objects.filter(
-            user_cifonauta=media_instance.user
-        ).first()
+        author_person = media_instance.user.person
         if "authors_action" in self.cleaned_data:
             if self.cleaned_data["authors"] != "maintain":
                 if author_person not in self.cleaned_data["authors"]:
@@ -767,12 +765,12 @@ class BatchActionsForm(forms.ModelForm, SendEmailForm):
 
         if self.view_name != "my_media_list":
             if self.view_name == "editing_media_list":
-                media_instance.editors.add(self.user_person.id)
+                media_instance.editors.add(self.person.id)
             elif (
                 self.view_name == "my_curations_media_list"
                 or self.view_name == "revision_media_list"
             ):
-                media_instance.curators.add(self.user_person.id)
+                media_instance.curators.add(self.person.id)
 
         if commit:
             media_instance.save()
@@ -814,6 +812,7 @@ class DashboardFilterForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        #TODO: Update this field to person?
         user_curations = kwargs.pop("user_curations", None)
         is_editing_media_list = kwargs.pop("is_editing_media_list", None)
         super().__init__(*args, **kwargs)

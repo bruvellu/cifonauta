@@ -53,6 +53,26 @@ class Curation(models.Model):
         verbose_name=_('especialistas'),
         help_text=_('Especialistas nesta curadoria.'))
 
+    # TODO: Temporary models to become official after migrations
+    tmp_curators = models.ManyToManyField(
+            'Person',
+            related_name='tmp_curations_as_curator',
+            blank=True,
+            verbose_name=_('curadores'),
+            help_text=_('Curadores desta curadoria.'))
+    tmp_editors = models.ManyToManyField(
+            'Person',
+            related_name='tmp_curations_as_editor',
+            blank=True,
+            verbose_name=_('editores'),
+            help_text=_('Editores desta curadoria.'))
+    tmp_specialists = models.ManyToManyField(
+            'Person',
+            related_name='tmp_curations_as_specialist',
+            blank=True,
+            verbose_name=_('especialistas'),
+            help_text=_('Especialistas nesta curadoria.'))
+
     def __str__(self):
         return f'{self.name}'
 

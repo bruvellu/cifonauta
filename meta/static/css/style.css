@@ -1257,10 +1257,6 @@ div#comments p {
   cursor:pointer;
 }
 
-/* FIXTAXA */
-.unselect-all, .select-all {cursor: pointer;}
-.unselect-all {display:none;}
-
 /* EMBED */
 #embed-page {
   width:100%;

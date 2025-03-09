@@ -1257,28 +1257,6 @@ div#comments p {
   cursor:pointer;
 }
 
-/* EMBED */
-#embed-page {
-  width:100%;
-  height:100%;
-  margin:0;
-  padding:0;
-  overflow:hidden;
-}
-
-#embed-page .full-frame {
-  position:absolute;
-  width:100%;
-  height:100%;
-}
-
-#embed-code {
-  background:#fafafa;
-  color:#aaaaaa;
-}
-
-
-
 
 
 /**

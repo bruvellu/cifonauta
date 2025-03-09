@@ -28,7 +28,7 @@
 {% endblock %}
 
 {% block content %}
-<section id="media-page">
+<section id="media-page-content">
 	<div id="ajaxcontent">
 		{% include "media_page_ajax.html" %}
 	</div>
@@ -37,8 +37,7 @@
 {% endblock %}
 
 {% block sidebar %}
-<aside class="main aside-sidebar">
-
+<aside id="media-page-aside" class="main aside-sidebar">
 	<div class="borders block shadow">
 	  {% show_tree taxa %}
 	</div>

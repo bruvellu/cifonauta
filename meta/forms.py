@@ -68,7 +68,7 @@ class SendEmailForm(forms.Form):
         subject_template_name,
         email_template_name,
         modification_accepted=False,
-        modified_media_specialists_message=False,
+        modified_media_editors_message=False,
         from_email=None,
         html_email_template_name=None,
     ):
@@ -102,7 +102,7 @@ class SendEmailForm(forms.Form):
             "timestamp": medias[0].date_modified,
             "modified_media": medias[0].modified_media.first(),
             "modification_accepted": modification_accepted,
-            "modified_media_specialists_message": modified_media_specialists_message,
+            "modified_media_editors_message": modified_media_editors_message,
         }
 
         subject = subject_template_name
@@ -342,8 +342,8 @@ class EditMetadataForm(forms.ModelForm, SendEmailForm):
                 attrs={"class": "select2-references", "multiple": "multiple"}
             ),
             "tags": CustomCheckboxSelectMultiple(),
-            "specialists": forms.SelectMultiple(
-                attrs={"class": "select2-specialists", "multiple": "multiple"}
+            "editors": forms.SelectMultiple(
+                attrs={"class": "select2-editors", "multiple": "multiple"}
             ),
             "date_created": forms.DateInput(
                 format=("%Y-%m-%d"), attrs={"type": "date", "readonly": "readonly"}
@@ -641,7 +641,7 @@ class BatchActionsForm(forms.ModelForm, SendEmailForm):
         }
 
     def __init__(self, *args, **kwargs):
-        self.user_person = kwargs.pop("user_person", None)
+        self.person = kwargs.pop("person", None)
         self.view_name = kwargs.pop("view_name", None)
         super().__init__(*args, **kwargs)
 
@@ -670,7 +670,7 @@ class BatchActionsForm(forms.ModelForm, SendEmailForm):
             self.fields["date_created_action"].required = True
             self.fields["license_action"].required = True
             self.fields["authors_action"].required = True
-            self.fields["authors"].initial = self.user_person
+            self.fields["authors"].initial = self.person
         elif (
             self.view_name == "editing_media_list"
             or self.view_name == "revision_media_list"
@@ -736,9 +736,7 @@ class BatchActionsForm(forms.ModelForm, SendEmailForm):
                 elif self.view_name == "editing_media_list":
                     media_instance.status = "submitted"
 
-        author_person = Person.objects.filter(
-            user_cifonauta=media_instance.user
-        ).first()
+        author_person = media_instance.user.person
         if "authors_action" in self.cleaned_data:
             if self.cleaned_data["authors"] != "maintain":
                 if author_person not in self.cleaned_data["authors"]:
@@ -767,12 +765,12 @@ class BatchActionsForm(forms.ModelForm, SendEmailForm):
 
         if self.view_name != "my_media_list":
             if self.view_name == "editing_media_list":
-                media_instance.specialists.add(self.user_person.id)
+                media_instance.editors.add(self.person.id)
             elif (
                 self.view_name == "my_curations_media_list"
                 or self.view_name == "revision_media_list"
             ):
-                media_instance.curators.add(self.user_person.id)
+                media_instance.curators.add(self.person.id)
 
         if commit:
             media_instance.save()
@@ -814,6 +812,7 @@ class DashboardFilterForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        #TODO: Update this field to person?
         user_curations = kwargs.pop("user_curations", None)
         is_editing_media_list = kwargs.pop("is_editing_media_list", None)
         super().__init__(*args, **kwargs)
@@ -915,13 +914,13 @@ class DisplayForm(forms.Form):
         ),
         label=_("Autores"),
     )
-    specialist = forms.ModelMultipleChoiceField(
+    editor = forms.ModelMultipleChoiceField(
         required=False,
-        queryset=Person.objects.exclude(media_as_specialist__isnull=True),
+        queryset=Person.objects.exclude(media_as_editor__isnull=True),
         widget=forms.SelectMultiple(
             attrs={"class": "select2-options", "multiple": "multiple"}
         ),
-        label=_("Especialistas"),
+        label=_("Editores"),
     )
     curator = forms.ModelMultipleChoiceField(
         required=False,
@@ -979,15 +978,15 @@ class AdminForm(forms.Form):
     )
 
 
-class CurationAdminForm(forms.ModelForm):
-    class Meta:
-        model = Curation
-        fields = "__all__"
+# class CurationAdminForm(forms.ModelForm):
+    # class Meta:
+        # model = Curation
+        # fields = "__all__"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    # def __init__(self, *args, **kwargs):
+        # super().__init__(*args, **kwargs)
 
-        self.fields["curators"].queryset = UserCifonauta.objects.filter(is_author=True)
-        self.fields["specialists"].queryset = UserCifonauta.objects.filter(
-            is_author=True
-        )
+        # self.fields["curators"].queryset = UserCifonauta.objects.filter(is_author=True)
+        # self.fields["editors"].queryset = UserCifonauta.objects.filter(
+            # is_author=True
+        # )

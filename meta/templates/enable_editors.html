@@ -1,7 +1,7 @@
 {% extends 'dashboard.html' %}
 {% load i18n %}
 
-{% block title %}Habilitar Especialistas e Autores{% endblock %}
+{% block title %}Habilitar Autores e Editores{% endblock %}
 
 {% block dashboard_content %}
     <aside>
@@ -9,7 +9,7 @@
             <h3>Selecione o que quer administrar</h3>
             <select name="select_users_type">
                 <option value="authors" {% if request.GET.select_users_type == "authors" %}selected{% endif %}>Autores</option>
-                <option value="specialists" {% if request.GET.select_users_type == "specialists" %}selected{% endif %}>Especialistas</option>
+                <option value="editors" {% if request.GET.select_users_type == "editors" %}selected{% endif %}>Editores</option>
             </select>
             
             <h3>{% trans 'Escolha uma curadoria' %}</h3>
@@ -69,7 +69,7 @@
         <!--This input needs to be hidden, it gets the value from the select "selected_curation_id" in the "GET" form-->
         <input type="hidden" name="selected_curation_id" id="selected_curation_id_post" value="{{ selected_curation_id }}">
 
-        <button type="submit" name="enable_specialists">Habilitar</button>
-        <button type="submit" name="remove_specialists">Remover</button>
+        <button type="submit" name="enable_editors">Habilitar</button>
+        <button type="submit" name="remove_editors">Remover</button>
     </form>
 {% endblock %}

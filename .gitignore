@@ -2,6 +2,7 @@
 *.swp
 tasks.py
 fabfile.py
+justfile
 static/*
 virtual/*
 media_files/cache

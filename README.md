@@ -52,7 +52,7 @@ The Cifonauta database was created by the [Center for Marine Biology](http://ceb
 
 #### Content
 
-- **Authors, specialists, and curators:** created, edited, and curated the photos and videos featured in the Cifonauta database. See the full [list of contributors](https://cifonauta.cebimar.usp.br/authors/).
+- **Authors, curators, and editors:** created, edited, and curated the photos and videos featured in the Cifonauta database. See the full [list of contributors](https://cifonauta.cebimar.usp.br/authors/).
 
 ## Funding
 

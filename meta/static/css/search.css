@@ -1,3 +1,9 @@
+#content {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
 .search-results-section {
     max-width: 45rem;
 }

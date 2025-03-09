@@ -8,7 +8,7 @@ from meta.models import *
 
 class CurationAdmin(admin.ModelAdmin):
     # form = CurationAdminForm
-    autocomplete_fields = ['tmp_editors', 'tmp_curators', 'taxa']
+    autocomplete_fields = ['editors', 'curators', 'taxa']
     list_display = ['name', 'description', 'slug', 'id']
 
 
@@ -21,8 +21,8 @@ class MediaAdmin(TranslationAdmin):
     list_display = ['id', 'datatype', 'title', 'user', 'date_created', 'is_public',
                     'highlight', 'date_modified']
     list_select_related = True
-    search_fields = ['title', 'caption', 'taxa__name', 'tags__name', 'authors__name', 'tmp_curators__name',
-                     'tmp_editors__name', 'location__name', 'city__name', 'state__name', 'country__name',
+    search_fields = ['title', 'caption', 'taxa__name', 'tags__name', 'authors__name', 'curators__name',
+                     'editors__name', 'location__name', 'city__name', 'state__name', 'country__name',
                      'references__citation']
     list_filter = ['status', 'datatype', 'highlight', 'date_modified', 'scale',
                    'authors', 'tags', 'license', 'terms']

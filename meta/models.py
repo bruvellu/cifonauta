@@ -33,19 +33,19 @@ class Curation(models.Model):
             help_text=_('Táxons nesta curadoria.'))
 
     # TODO: Temporary models to become official after migrations
-    tmp_curators = models.ManyToManyField(
-            'Person',
-            related_name='tmp_curations_as_curator',
-            blank=True,
-            verbose_name=_('curadores'),
-            help_text=_('Curadores desta curadoria.'))
-    tmp_editors = models.ManyToManyField(
-            'Person',
-            related_name='tmp_curations_as_editor',
-            blank=True,
-            verbose_name=_('editores'),
-            help_text=_('Editores desta curadoria.'))
-    tmp_specialists = models.ManyToManyField(
+    curators = models.ManyToManyField(
+        'Person',
+        related_name='tmp_curations_as_curator',
+        blank=True,
+        verbose_name=_('curadores'),
+        help_text=_('Curadores desta curadoria.'))
+    editors = models.ManyToManyField(
+        'Person',
+        related_name='tmp_curations_as_editor',
+        blank=True,
+        verbose_name=_('editores'),
+        help_text=_('Editores desta curadoria.'))
+    specialists = models.ManyToManyField(
             'Person',
             related_name='tmp_curations_as_specialist',
             blank=True,

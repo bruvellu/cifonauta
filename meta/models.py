@@ -43,13 +43,6 @@ class Curation(models.Model):
         blank=True,
         verbose_name=_('editores'),
         help_text=_('Editores desta curadoria.'))
-    #TODO: Deprecated field, to be removed
-    specialists = models.ManyToManyField(
-            'Person',
-            related_name='curations_as_specialist',
-            blank=True,
-            verbose_name=_('especialistas'),
-            help_text=_('Especialistas nesta curadoria.'))
 
     def __str__(self):
         return f'{self.name}'

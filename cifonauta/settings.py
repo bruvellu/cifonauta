@@ -152,12 +152,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 SITE_ID = 1
 
 # Absolute path to the directory that holds site media
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media_files')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = '/media/'
+MEDIA_URL = '/media_files/'
 
 # Defines subdirectory of MEDIA_ROOT to store user uploads
 UPLOAD_ROOT = 'uploads'
@@ -254,9 +254,9 @@ EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_USE_TLS = True
 
-# Import server settings.
+# Import server settings
 hostname = socket.gethostname()
-if hostname == 'cifonauta2':
+if hostname == 'cifonauta-production':
     from .server_settings import *
-
-
+elif hostname == 'cifonauta-staging':
+    from .staging_settings import *

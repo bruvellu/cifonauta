@@ -4,14 +4,14 @@
         {% if field == 'author' %}
             <a href="{{ meta.get_absolute_url_author }}" {% if meta.description %}title="{{ meta.description }}"{% endif %}>{{ meta.name }}</a>
             <span class="metacount quiet">{{ meta.media_count }}</span>
-        {% elif field == 'specialist' %}
-            <a href="{{ meta.get_absolute_url_specialist }}" {% if meta.description %}title="{{ meta.description }}"{% endif %}>{{ meta.name }}</a>
+        {% elif field == 'editor' %}
+            <a href="{{ meta.get_absolute_url_editor }}" {% if meta.description %}title="{{ meta.description }}"{% endif %}>{{ meta.name }}</a>
             <span class="metacount quiet">{{ meta.media_count }}</span>
         {% elif field == 'curator' %}
             <a href="{{ meta.get_absolute_url_curator }}" {% if meta.description %}title="{{ meta.description }}"{% endif %}>{{ meta.name }}</a>
             <span class="metacount quiet">{{ meta.media_count }}</span>
         </li>
-        {% elif field != 'author' or 'specialist' or 'curator' %}
+        {% elif field != 'author' or 'editor' or 'curator' %}
             <a href="{{ meta.get_absolute_url }}" {% if meta.description %}title="{{ meta.description }}"{% endif %}>{{ meta.name }}</a>
             <span class="metacount quiet">{{ meta.media_count }}</span>
         </li>

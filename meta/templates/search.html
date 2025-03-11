@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{% trans 'Buscador' %} | {{ block.super }}{% endblock %}
+{% block title %}{% if meta %}{{ meta.name }}{% else %}{% trans 'Buscador' %}{% endif %} | {{ block.super }}{% endblock %}
 {% block meta-keywords %}<!--{{ keywords }}-->{% endblock %}
 {% block meta-description %}{% trans 'Buscador do banco de imagens Cifonauta.' %}{% endblock %}
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
@@ -21,75 +21,76 @@
 {% endblock %}
 
 <div class="photo-and-search-container">
-  {% block content %}
-  <section class="search-results-section">
-    <div id="search-results">
-      {% include 'gallery.html' %}
-    </div>
-  </section>
-  {% endblock %}
 
+  {% block content %}
+    <section class="search-results-section">
+      <div id="search-results">
+        {% include 'gallery.html' %}
+      </div>
+    </section>
+  {% endblock %}
 
   {% block sidebar %}
-  <aside class="aside-search-form">
-  <div class="block shadow">
-    <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
-      <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-top" />
+    <aside class="aside-search-form">
+      <div class="block shadow">
+        <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
+          <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-top" />
+          <div class="search-query">
+            <label for="id_{{ display_form.query.name }}">{{ display_form.query.label }}:</label>
+            {{ display_form.query }}
+          </div>
 
-      <div>
-        <label for="id_{{ display_form.query.name }}">{{ display_form.query.label }}:</label>
-        {{ display_form.query }}
-      </div>
+          <button class="more-filters-button" onClick="showCheckboxOptions(this, event)">
+            <p>{% trans 'Mais filtros' %}</p>
+            <img class="first-dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg" alt="">
+          </button>
 
-      <button class="more-filters-button" onClick="showCheckboxOptions(this, event)">
-	      <p>{% trans 'Mais filtros' %}</p>
-        <img class="first-dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg" alt="">
-      </button>
-      
-      <div class="more-filters">
-        {% for field in display_form %}
-          {% if field.field.widget.attrs.fields %}
+          <div class="more-filters">
+            {% for field in display_form %}
+              {% if field.field.widget.attrs.fields %}
+                <div>
+                  <label for="{{ field.auto_id }}">{{ field.label }}:</label>
+                  {{ field }}
+                </div>
+              {% endif %}
+            {% endfor %}
+
+            <p class="p-divider">{% trans 'Escolha como combinar os campos abaixo' %}</p>
+
+            <div class="operator-div">
+            <label for="{{ display_form.operator.auto_id }}">{{ display_form.operator.label }}:</label>
+            {{ display_form.operator }}
+          </div>
+
             <div>
-              <label for="{{ field.auto_id }}">{{ field.label }}:</label>
-              {{ field }}
-            </div>
-          {% endif %}
-        {% endfor %}
-
-	<p class="p-divider">{% trans 'Escolha como combinar os campos abaixo' %}</p>
-
-        <div class="operator-div">
-          <label for="{{ display_form.operator.auto_id }}">{{ display_form.operator.label }}:</label>
-          {{ display_form.operator }}
-        </div>
-
-        <div>
-          {% for field in display_form %}
-            {% if field.field.widget.attrs.multiple %}
-              <div class="checkbox-div">
+            {% for field in display_form %}
+              {% if field.field.widget.attrs.multiple %}
+                <div class="checkbox-div">
                   <label>{{ field.label }}</label>
                   {{ field }}
-              </div>
-            {% endif %}
-          {% endfor %}
-        </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
 
+            <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-bottom" />
+
+          </div>
+        </form>
       </div>
+    </aside>
 
-      <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-bottom" />
-    </form>
-  </div>
-  </section>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.select2-options').select2({
+                width: "100%",
+                placeholder: "{% trans 'Escolha os filtros' %}"
+            });
+        });
+    </script>
 
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      $('.select2-options').select2({
-        width: "100%",
-	      placeholder: "{% trans 'Escolha os filtros' %}"
-      });
-    });
-  </script>
   {% endblock %}
 
+</div>

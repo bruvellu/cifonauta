@@ -3,12 +3,12 @@ from django.contrib.flatpages.models import FlatPage
 from modeltranslation.admin import TranslationAdmin
 
 from meta.models import *
-from .forms import CurationAdminForm
+# from .forms import CurationAdminForm
 
 
 class CurationAdmin(admin.ModelAdmin):
-    form = CurationAdminForm
-    autocomplete_fields = ['specialists', 'curators', 'taxa']
+    # form = CurationAdminForm
+    autocomplete_fields = ['editors', 'curators', 'taxa']
     list_display = ['name', 'description', 'slug', 'id']
 
 
@@ -22,12 +22,12 @@ class MediaAdmin(TranslationAdmin):
                     'highlight', 'date_modified']
     list_select_related = True
     search_fields = ['title', 'caption', 'taxa__name', 'tags__name', 'authors__name', 'curators__name',
-                     'specialists__name', 'location__name', 'city__name', 'state__name', 'country__name',
+                     'editors__name', 'location__name', 'city__name', 'state__name', 'country__name',
                      'references__citation']
     list_filter = ['status', 'datatype', 'highlight', 'date_modified', 'scale',
                    'authors', 'tags', 'license', 'terms']
     autocomplete_fields = ['user', 'location', 'city', 'state', 'country']
-    filter_horizontal = ['authors', 'curators', 'specialists', 'taxa', 'tags', 'references']
+    filter_horizontal = ['authors', 'curators', 'editors', 'taxa', 'tags', 'references']
     readonly_fields = ['uuid', 'date_uploaded', 'date_modified', 'search_vector']
 
 
@@ -93,7 +93,7 @@ class ReferenceAdmin(admin.ModelAdmin):
 
 
 class TourAdmin(TranslationAdmin):
-    list_display = ['id', 'name', 'is_public', 'pub_date', 'timestamp']
+    list_display = ['name', 'is_public', 'pub_date', 'timestamp']
     filter_horizontal = ['media', 'references']
     readonly_fields = ['pub_date', 'timestamp']
 

@@ -6,18 +6,25 @@
 #taxa-page-section > div {
     display: flex;
     justify-content: space-between;
+    gap: 2rem;
 }
 
-#taxa {}
-#species {}
+#taxa {
+  flex: 1;
+}
+
+#species {
+  flex: 0.4;
+}
+
 #species ol {
   padding-left: 1.5rem;
 }
 
-@media (max-width: 575px) {
+@media (max-width: 800px) {
     #taxa-page-section > div {
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1rem;
     }
 }
 

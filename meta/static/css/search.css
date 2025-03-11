@@ -1,5 +1,11 @@
+#content {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
 .search-results-section {
-    max-width: 36.5rem;
+    max-width: 45rem;
 }
 
 .aside-search-form {

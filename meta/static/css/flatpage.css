@@ -1,7 +1,23 @@
-@media (max-width: 1028px) {
-     .span-16 {
-        width: 100%;
-    }
+#content {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 800px) {
+  #content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+} 
+
+#flatpage-content {
+  flex: 0.6;
+}
+
+#flatpage-aside {
+  flex: 0.3;
 }
 
 #license-details {

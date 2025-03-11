@@ -31,21 +31,47 @@ class Curation(models.Model):
             blank=True,
             verbose_name=_('táxons'),
             help_text=_('Táxons nesta curadoria.'))
+    curators = models.ManyToManyField(
+        'Person',
+        related_name='curations_as_curator',
+        blank=True,
+        verbose_name=_('curadores'),
+        help_text=_('Curadores desta curadoria.'))
+    editors = models.ManyToManyField(
+        'Person',
+        related_name='curations_as_editor',
+        blank=True,
+        verbose_name=_('editores'),
+        help_text=_('Editores desta curadoria.'))
+    #TODO: Deprecated field, to be removed
     specialists = models.ManyToManyField(
-            settings.AUTH_USER_MODEL,
+            'Person',
             related_name='curations_as_specialist',
             blank=True,
             verbose_name=_('especialistas'),
             help_text=_('Especialistas nesta curadoria.'))
-    curators = models.ManyToManyField(
-            settings.AUTH_USER_MODEL,
-            related_name='curations_as_curator',
-            blank=True,
-            verbose_name=_('curadores'),
-            help_text=_('Curadores desta curadoria.'))
 
     def __str__(self):
-        return f'{self.name} [id={self.id}]'
+        return f'{self.name}'
+
+    def get_taxa(self):
+        '''Get all descendants from ancestor taxa.'''
+        #TODO: Revise best way to perform this query
+        # Start from all taxa queryset
+        taxa_set = set()
+        # Get current curated ancestor nodes
+        curated_ancestors = self.taxa.all()
+        # Add ancestors to set
+        taxa_set.update(curated_ancestors)
+        # Loop over curated ancestors for descendants
+        for ancestor in curated_ancestors:
+            taxa_set.update(ancestor.get_descendants())
+        # Convert set to queryset
+        taxa_queryset = Taxon.objects.filter(Q(name__in=taxa_set))
+        # Order and keep unique
+        taxa_queryset = taxa_queryset.order_by('name').distinct()
+        return taxa_queryset
+
 
 
 # Function that defines path for user upload directory
@@ -158,17 +184,24 @@ class Media(models.Model):
                                      help_text=_('Autores associados a este arquivo.'),
                                      related_name='media_as_author')
 
-    specialists = models.ManyToManyField('Person',
-                                         blank=True,
-                                         verbose_name=_('especialistas associados'),
-                                         help_text=_('Especialistas associados a este arquivo.'),
-                                         related_name='media_as_specialist')
-
     curators = models.ManyToManyField('Person',
                                   blank=True,
                                   verbose_name=_('curadores do arquivo'),
                                   help_text=_('Curadores associados a este arquivo.'),
                                   related_name='media_as_curator')
+
+    editors = models.ManyToManyField('Person',
+                                         blank=True,
+                                         verbose_name=_('editores associados'),
+                                         help_text=_('Editores associados a este arquivo.'),
+                                         related_name='media_as_editor')
+
+    # TODO: Remove after migration
+    specialists = models.ManyToManyField('Person',
+                                     blank=True,
+                                     verbose_name=_('especialistas associados'),
+                                     help_text=_('Especialistas associados a este arquivo.'),
+                                     related_name='media_as_specialist')
 
     terms = models.BooleanField(_('termos'),
                                 default=False,
@@ -585,7 +618,7 @@ class Media(models.Model):
         # Fetch associated authors, taxa, tags, curators, etc
         authors = ' '.join(self.authors.values_list('name', flat=True))
         curators = ' '.join(self.curators.values_list('name', flat=True))
-        specialists = ' '.join(self.specialists.values_list('name', flat=True))
+        editors = ' '.join(self.editors.values_list('name', flat=True))
         taxa = ' '.join(self.taxa.values_list('name', flat=True))
         tags_pt_br = ' '.join(self.tags.values_list('name_pt_br', flat=True))
         tags_en = ' '.join(self.tags.values_list('name_en', flat=True))
@@ -609,8 +642,8 @@ class Media(models.Model):
                 SearchVector(Value(authors), weight='B', config='english') +
                 SearchVector(Value(curators), weight='C', config='portuguese_unaccent') +
                 SearchVector(Value(curators), weight='C', config='english') +
-                SearchVector(Value(specialists), weight='D', config='portuguese_unaccent') +
-                SearchVector(Value(specialists), weight='D', config='english') +
+                SearchVector(Value(editors), weight='D', config='portuguese_unaccent') +
+                SearchVector(Value(editors), weight='D', config='english') +
                 SearchVector(Value(taxa), weight='B', config='portuguese_unaccent') +
                 SearchVector(Value(taxa), weight='B', config='english') +
                 SearchVector(Value(ancestors), weight='C', config='portuguese_unaccent') +
@@ -679,7 +712,7 @@ class Media(models.Model):
             tags.append(tag.name)
 
         sources = []
-        for source in self.specialists.all():
+        for source in self.editors.all():
             sources.append(source.name)
 
         authors = []
@@ -794,11 +827,11 @@ class Person(models.Model):
     def get_absolute_url_author(self):
         return reverse('author_url', args=[self.slug])
 
-    def get_absolute_url_specialist(self):
-        return reverse('specialist_url', args=[self.slug])
-
     def get_absolute_url_curator(self):
         return reverse('curator_url', args=[self.slug])
+
+    def get_absolute_url_editor(self):
+        return reverse('editor_url', args=[self.slug])
 
     class Meta:
         verbose_name = _('pessoa')
@@ -875,7 +908,7 @@ class Taxon(MPTTModel):
             blank=True, null=True, help_text=_('Data da última modificação do arquivo.'))
 
     def __str__(self):
-        return f'{self.name} [id={self.id}]'
+        return f'{self.name}'
 
     def get_absolute_url(self):
         return reverse('taxon_url', args=[self.slug])

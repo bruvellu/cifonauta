@@ -52,6 +52,22 @@ def update_taxon_related(sender, instance, created, *args, **kwargs):
     instance.update_curations()
     instance.synchronize_media_between_synonyms()
 
+# @receiver(post_save, sender=Curation)
+# def update_curated_media(sender, instance, created, *args, **kwargs):
+#     '''Assign or remove curated media after saving a curation.'''
+#     taxa = instance.get_taxa()
+#     curators = instance.curators.all()
+#     editors = instance.editors.all()
+#     print(taxa)
+#     print(curators)
+#     print(editors)
+#
+#     for taxon in taxa:
+#         print(taxon)
+#         for editor in editors:
+#             print(editor)
+#             editor.media_as_editor.add(taxon.media.all())
+
 
 @receiver(post_save, sender=Media)
 def update_search_vector(sender, instance, created, *args, **kwargs):

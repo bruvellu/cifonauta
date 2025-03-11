@@ -3,7 +3,7 @@
 
 <div id="ajaxcontent">
   {% if media %}
-  <article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} {% show_set specialists 'specialist-' '' ' ' 'slug' %} location-{{ media.location.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }}">
+  <article id="single" class="{{ media.datatype }} {% show_set authors 'author-' '' ' ' 'slug' %} {% show_set taxa 'taxon-' '' ' ' 'slug' %} {% show_set editors 'editor-' '' ' ' 'slug' %} location-{{ media.location.slug }} city-{{ media.city.slug }} state-{{ media.state.slug }} country-{{ media.country.slug }}">
 {% comment %}This is coloring the entire article: scale-{{ media.scale }} {% endcomment %}
     <header>
       <h1>{{ media.title }}</h1>
@@ -26,29 +26,23 @@
               {% include 'video.html' %}
             {% endif %}
           {% endif %}
-          {% if media.caption %}
-            <figcation>
-              {% if media.datatype == 'video' %}
-                <span class="quiet" id="media-duration">{{ media.display_duration }}</span>
-              {% endif %}
-              {{ media.caption }}
-            </figcaption>
-          <div id="author">
-            {% show_set authors '' '' ', ' '' %}
-          </div>
-          {% else %}
-          <div id="author">
-            {% show_set authors '' '' ', ' '' %}
+
+          <figcaption>
             {% if media.datatype == 'video' %}
             <span class="quiet" id="media-duration">{{ media.display_duration }}</span>
             {% endif %}
-          </div>
+
+            {% if media.caption %}
+            {{ media.caption }}
+            {% endif %}
+
+            <div id="author">{% show_set authors '' '' ', ' '' %}</div>
+          </figcaption>
               {% comment %}
                 <div id='download_media'>
                 <a href="{% url 'download_media' media.id %}"><button>Baixar Imagem</button></a>
                 </div>
               {% endcomment %}
-          {% endif %}
         </figure>
 
         <div id="meta">
@@ -59,8 +53,8 @@
               <br>
               {% endif %}
     
-              {% if specialists %}
-              <strong>{% blocktrans count counter=specialists.count %}Especialista{% plural %}Especialistas{% endblocktrans %}:</strong> <span id="source">{% show_set specialists '' '' ', ' '' %}</span>
+              {% if editors %}
+              <strong>{% blocktrans count counter=editors.count %}Editor{% plural %}Editores{% endblocktrans %}:</strong> <span id="source">{% show_set editors '' '' ', ' '' %}</span>
               <br>
               {% endif %}
 
@@ -101,7 +95,7 @@
 
           <div id="citethis">
             <div>
-              {% show_set authors '' '' ', ' '' '' '.' %} <strong>{{ media.title }}</strong>{% if media.datatype == 'photo' %}{% trans ' (imagem)' %}{% elif media.datatype == 'video' %}{% trans ' (video)' %}{% else %}{% endif %}. {% trans 'Banco de imagens <em>Cifonauta</em>' %}. {% trans 'Disponível em' %}: <a id="cifonauta-link" href="{{ media.get_absolute_url }}">http://cifonauta.cebimar.usp.br{{ media.get_absolute_url }}</a> {% trans 'Acessado em' %}: {% now "Y-m-d" %}.
+              {% show_set authors '' '' ', ' '' '' '.' %} <strong>{{ media.title }}</strong>{% if media.datatype == 'photo' %}{% trans ' (imagem)' %}{% elif media.datatype == 'video' %}{% trans ' (video)' %}{% else %}{% endif %}. {% trans 'Banco de imagens <em>Cifonauta</em>' %}. {% trans 'Disponível em' %}: <a id="cifonauta-link" href="{{ media.get_absolute_url }}">https://cifonauta.cebimar.usp.br{{ media.get_absolute_url }}</a> {% trans 'Acessado em' %}: {% now "Y-m-d" %}.
             </div>
             <div class="align-right quiet">
               {% blocktrans %}Conheça os <a href="/terms/">termos de uso</a>.{% endblocktrans %}

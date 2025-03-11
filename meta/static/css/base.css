@@ -1,5 +1,5 @@
 body {
-    max-width: 950px;
+    max-width: 1154px;
     margin: 0 auto;
     padding: 0 2.5rem;
 }
@@ -9,12 +9,6 @@ body {
     flex-direction: column;
     margin: 0;
     width: 100%;
-}
-
-.content-and-sidebar {
-    display: flex;
-    justify-content: space-between;
-    gap: 2rem;
 }
 
 @media (max-width: 595px) {

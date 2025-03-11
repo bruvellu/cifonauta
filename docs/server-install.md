@@ -1,8 +1,6 @@
 # Server installation
 
-## Current server
-
-### Requirements
+## Requirements
 
 - [Ubuntu](https://ubuntu.com/): Linux server
 - [Gunicorn](https://gunicorn.org/): HTTP server
@@ -10,7 +8,7 @@
 - [PostgreSQL](https://www.postgresql.org/): Relational database
 - [Memcached](https://www.memcached.org/): Caching system
 
-### Configure and install system packages (as root)
+### Become root (or use `sudo`)
 
 Become root to have the permissions to install system packages:
 
@@ -18,11 +16,17 @@ Become root to have the permissions to install system packages:
 su -l
 ```
 
-Make sure the package repositories are up-to-date:
+Or precede the commands with `sudo`.
+
+### Update repository packages
+
+Make sure the packages are up-to-date:
 
 ```
 apt update && apt upgrade
 ```
+
+### Update timezone
 
 Check the server timezone setting:
 
@@ -51,6 +55,8 @@ System clock synchronized: yes
           RTC in local TZ: no
 ```
 
+### Update locale
+
 For the database, it’s important to enable the proper system locale.
 Check the enabled locales:
 
@@ -75,51 +81,29 @@ POSIX
 pt_BR.utf8
 ```
 
-Install Python pip and env for installing packages and creating virtual environments:
+### Install translation-related packages
 
 ```
-apt install python3-pip python3-venv
+apt install gettext language-pack-pt
 ```
 
-Install Git to clone and manage the repository:
-
-```
-apt install git
-```
-
-Install unzip to unzip media files:
-
-```
-apt install unzip
-```
+### Install and configure PostgreSQL
 
 Install PostgreSQL, the relational database, and a required psycopg2 library:
 
 ```
-apt install postgresql libpq-dev
+apt install postgresql postgresql-server-dev-all libpq-dev
 ```
 
-Create a PostgreSQL user using the same user name as your user:
+Create a PostgreSQL user using the name of your user (replace it below):
 
 ```
 su - postgres
-createuser -s user
+createuser --superuser --createrole --createdb user
 exit
 ```
 
-Create a directory in the main partition, and give its ownership to the proper user:
-
-```
-cd /mnt/partition
-mkdir cifonauta
-chown user:user cifonauta
-```
-
-Install Nginx:
-
-```
-apt install nginx
-```
+### Install and test memcached
 
 Install memcached:
 
@@ -134,6 +118,7 @@ telnet localhost 11211
 Trying 127.0.0.1...
 Connected to localhost.
 Escape character is '^]'.
+
 stats
 STAT pid 68841
 STAT uptime 1156
@@ -154,9 +139,78 @@ The second package provides a tool for flushing the cache after an update:
 memcflush --servers=127.0.0.1:11211
 ```
 
-In addition, another memcached package needs to be installed via pip, see below.
+### Install Nginx server
 
-### Configure and install Cifonauta packages (as user)
+Install Nginx:
+
+```
+apt install nginx
+```
+
+### Install git
+
+Install Git to clone and manage the repository:
+
+```
+apt install git
+```
+
+### Install unzip tool
+
+Needed to unzip media files:
+
+```
+apt install unzip
+```
+
+### Install Python packages
+
+Install Python pip and env for installing packages and creating virtual environments:
+
+```
+apt install python3-pip python3-venv
+```
+
+### Install exiv2-related dependencies
+
+These are needed to compile the `py3exiv2` package.
+```
+apt install libexiv2-dev libboost-python-dev python3-all-dev g++
+```
+
+### Install zlib for gzip compression
+
+```
+apt install zlib1g-dev
+```
+
+### Install media-related packages
+
+FFmpeg for video processing, and the other is a dependency for JPG processing in Pillow.
+
+```
+apt install ffmpeg libjpeg-dev
+```
+
+### Install package for content types
+
+This package helps to identify content types of uploaded files.
+
+```
+apt install libmagic1
+```
+
+### Set up directory
+
+Create a directory in the main partition, and give its ownership to the proper user:
+
+```
+cd /mnt/partition
+mkdir cifonauta
+chown user:user cifonauta
+```
+
+### Clone repository
 
 Now as user (not root), clone the Cifonauta’s repository:
 
@@ -172,9 +226,12 @@ cd
 ln -s /mnt/partition/cifonauta ~/
 ```
 
+### Create virtual env and install requirements
+
 Create a virtual environment and activate it:
 
 ```
+cd cifonauta
 python3 -m venv virtual
 source virtual/bin/activate
 ```
@@ -184,6 +241,24 @@ Install Django and other required packages using pip:
 ```
 pip install --upgrade -r requirements.txt
 ```
+
+### Install memcache Python bindings
+
+Install memcached binding library:
+
+```
+pip install pymemcache
+```
+
+### Install gunicorn
+
+Install Gunicorn:
+
+```
+pip install gunicorn
+```
+
+### Create empty database
 
 Create an empty `cebimar` database:
 
@@ -196,6 +271,8 @@ If you get an error, restart PostgreSQL and try again:
 ```
 service postgresql restart
 ```
+
+### Copy and load database dump
 
 Copy the database dump and image files from your computer to the server:
 
@@ -210,11 +287,21 @@ Load a database backup:
 gunzip < cebimar_2023-05-09_2117.sql.gz | psql cebimar
 ```
 
+### Copy media files
+
 Unzip media files into the `site_media` directory:
 
 ```
 unzip site_media.zip
 ```
+
+Or `rsync` media files:
+
+```
+rsync -ahu --progress source/media_files/ local/media_files/
+```
+
+### Create server settings
 
 Create a `cifonauta/server_settings.py` with:
 
@@ -262,11 +349,17 @@ ALLOWED_HOSTS = [
     ]
 ```
 
-Install Gunicorn:
+### Create .env file
+
+Environment variables for production.
 
 ```
-pip install gunicorn
+FILENAME_REGEX=^$
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 ```
+
+### Test gunicorn
 
 Test Gunicorn:
 
@@ -277,6 +370,8 @@ gunicorn cifonauta.wsgi
 [2023-06-07 17:42:41 -0300] [70104] [INFO] Using worker: sync
 [2023-06-07 17:42:41 -0300] [70105] [INFO] Booting worker with pid: 70105
 ```
+
+### Configure gunicorn services
 
 Create systemd service for gunicorn (number of workers = cores*2+1):
 
@@ -294,7 +389,7 @@ User=user
 Group=www-data
 RuntimeDirectory=gunicorn
 WorkingDirectory=/home/user/cifonauta
-EnvironmentFile=/home/nelas/cifonauta/.env
+EnvironmentFile=/home/user/cifonauta/.env
 ExecStart=/home/user/cifonauta/virtual/bin/gunicorn --access-logfile - --workers 17 --timeout 60 --bind unix:/run/gunicorn.sock cifonauta.wsgi:application
 ExecReload=/bin/kill -s HUP $MAINPID
 KillMode=mixed
@@ -327,54 +422,48 @@ Enable and start daemon:
 systemctl enable --now gunicorn.socket
 ```
 
+### Configure Nginx site
+
 Create nginx configuration:
+
+Location: `/etc/nginx/sites-available/cifonauta`
 
 ```
 server {
-        listen 80;
-        server_name IPADDRESS;
 
-        location /site_media/ {
-                root /home/user/cifonauta/;
+        listen 80;
+
+        server_name IPADDRESS DOMAIN;
+
+        location = /favicon.ico { access_log off; log_not_found off; }
+
+        location / {
+                include proxy_params;
+                proxy_pass http://unix:/run/gunicorn.sock;
         }
 
         location /static/ {
                 root /home/user/cifonauta/;
         }
 
-        location / {
-                include proxy_params;
-                proxy_pass http://unix:/run/gunicorn.sock;
+        location /media_files/ {
+                root /home/user/cifonauta/;
         }
+
+        # Set file limit on server side
+        client_max_body_size 500M;
+
 }
-```
-
-Test everything with:
-
 
 ```
-sudo -u www-data curl --unix-socket /run/gunicorn.sock http
-```
 
-
-Install memcached binding library:
-
+Enable site:
 
 ```
-pip install pymemcache
+ln -s /etc/nginx/sites-available/cifonauta /etc/nginx/sites-enabled/
 ```
 
-Generate static directory for serving:
-
-```
-./manage.py collectstatic --noinput
-```
-
-If Nginx can’t access static or media and returns 403 forbidden error, add www-data to user group:
-
-```
-sudo gpasswd -a www-data user
-```
+### Password protect website
 
 To password protect the entire site first install:
 
@@ -388,12 +477,36 @@ Then, create a user/pass combination:
 htpasswd -c /etc/nginx/htpasswd user
 ```
 
-And add to /etc/nginx/sites-available/cifonauta:
+And add to /etc/nginx/sites-available/cifonauta inside `location /`:
 
 ```
 auth_basic "Cifonauta staging";
 auth_basic_user_file /etc/nginx/htpasswd;
 ```
+
+### Generate static files
+
+Generate static directory for serving:
+
+```
+./manage.py collectstatic --noinput
+```
+
+If Nginx can’t access static or media and returns 403 forbidden error, add www-data to user group:
+
+```
+sudo gpasswd -a www-data user
+```
+
+### Test site
+
+Test everything with:
+
+```
+sudo -u www-data curl --unix-socket /run/gunicorn.sock http
+```
+
+(may fail)
 
 ### Setting up HTTPS
 
@@ -401,7 +514,7 @@ As root:
 
 ```
 apt install python3-certbot-nginx
-certbot --nginx -d staging.cifonauta.cebimar.usp.br 
+certbot --nginx -d staging.cifonauta.cebimar.usp.br
 
 Saving debug log to /var/log/letsencrypt/letsencrypt.log
 Enter email address (used for urgent renewal and security notices)
@@ -443,109 +556,21 @@ If you like Certbot, please consider supporting our work by:
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ```
 
-### Additional packages
+The domain must already be working on the current server.
+Otherwise you get an error like this:
 
 ```
-apt install gettext libmagic1
-```
+certbot --nginx -d cifonauta.cebimar.usp.br
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Requesting a certificate for cifonauta.cebimar.usp.br
 
+Certbot failed to authenticate some domains (authenticator: nginx). The Certificate Authority reported these problems:
+  Domain: cifonauta.cebimar.usp.br
+  Type:   unauthorized
+  Detail: XXX.XXX.XXX.XXX: Invalid response from http://cifonauta.cebimar.usp.br/.well-known/acme-challenge/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX: 404
 
+Hint: The Certificate Authority failed to verify the temporary nginx configuration changes made by Certbot. Ensure the listed domains point to this nginx server and that it is accessible from the internet.
 
-## Legacy server
-
-Apache, Nginx, PostgreSQL, mod_wsgi (daemon mode), Memcached.
-
-```
-su -l
-
-apt update && apt upgrade
-
-apt install git python3 python3-dev python3-pip python3-venv python3-gi postgresql postgresql-server-dev-all libpq-dev yui-compressor ffmpeg imagemagick gettext language-pack-pt gir1.2-gexiv2-0.10 libjpeg62 libjpeg62-dev zlib1g-dev apache2 nginx rsync python3-markdown python3-memcache memcached libapache2-mod-wsgi-py3 policykit-1
-```
-
-Clone repository:
-
-```
-git clone https://github.com/nelas/cifonauta.git
-cd cifonauta
-```
-
-Install Python packages using pip as root:
-
-```
-pip install --upgrade -r requirements.txt
-```
-
-Configure PostgreSQL database as root:
-
-```
-su - postgres
-createuser -s nelas
-exit
-```
-
-Restart PostgreSQL just in case:
-
-```
-systemctl restart postgresql
-```
-
-Create empty cebimar database as user nelas:
-
-```
-createdb -E UTF8 -T template0 -l pt_BR.UTF8 cebimar
-```
-
-Load a database backup:
-
-```
-gunzip < backups/cebimar_2019-09-21_1234.sql.gz | psql cebimar
-```
-
-Replace `peer` to `trust` in `/etc/postgresql/9.5/main/pg_hba.conf`:
-
-``` 
-# "local" is for Unix domain socket connections only
-local   all             all                                     trust
-```
-
-First copy the local `server` directory into the remote project root:
-
-```
-scp -r server cifonauta:cifonauta/
-```
-
-Then copy the settings for the production site to the appropriate folder.
-
-```
-cp server/server_settings.py cifonauta/
-```
-
-As root, copy site configuration files:
-
-```
-cp server/etc_apache2_sites-enabled_cifonauta /etc/apache2/sites-available/cifonauta.conf
-cp server/etc_nginx_sites-enabled_cifonauta /etc/nginx/sites-available/cifonauta.conf
-```
-
-If you get a 502 Gateway error, disable `Listen 80` in Apache’s `ports.conf`.
-
-Update paths to reflect the current installation and activate sites:
-
-```
-a2ensite cifonauta
-ln -s /etc/nginx/sites-available/cifonauta.conf /etc/nginx/sites-enabled/
-```
-
-Fix permissions for `site_media`:
-
-```
-groupadd www-users
-adduser www-data www-users
-adduser nelas www-users
-adduser memcache www-users
-chgrp -R www-users site_media/
-chmod -R 760 site_media/
-chgrp -R www-users static/
-chmod -R 760 static/
+Some challenges have failed.
+Ask for help or search for solutions at https://community.letsencrypt.org. See the logfile /var/log/letsencrypt/letsencrypt.log or re-run Certbot with -v for more details.
 ```

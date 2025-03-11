@@ -8,7 +8,7 @@ def set_general_specialist(apps, schema_editor):
 
     Media = apps.get_model('meta', 'Media')
     Person = apps.get_model('meta', 'Person')
-    specialist = Person.objects.get(id=68)
+    # specialist = Person.objects.get(id=68) # Removed for testing
     for m in Media.objects.all():
         m.specialists.set([specialist])
         print(m, m.specialists.all())

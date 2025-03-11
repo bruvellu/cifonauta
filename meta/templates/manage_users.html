@@ -63,8 +63,8 @@
                 <button class="primary-button submit-button" type="submit" name='action' value="enable-authors">Realizar ação</button>
             </form>
         </section>
-        <section class="enable-specialists-section">
-            <h3>Habilitar especialistas</h3>
+        <section class="enable-editors-section">
+            <h3>Habilitar editores</h3>
             <form method="post">
                 {% csrf_token %}
                 <select name="curation_id" id="id_curation">
@@ -110,7 +110,7 @@
                     </div>
                 </div>
 
-                <button type="submit" name='action' value="enable-specialists" class="primary-button submit-button">Salvar configurações</button>
+                <button type="submit" name='action' value="enable-editores" class="primary-button submit-button">Salvar configurações</button>
             </form>
         </section>
     </div>

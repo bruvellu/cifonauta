@@ -1,9 +1,11 @@
 footer.paginator {
     display: flex;
     justify-content: space-between;
-    padding: 0 .5rem;
+    padding-right: 1rem;
 }
 
-footer.paginator > div:not(div:nth-child(2)) {
-    width: 3.8rem;
+@media (max-width: 1142px) {
+  footer.paginator  {
+      max-width: 35.5rem;
+  }
 }

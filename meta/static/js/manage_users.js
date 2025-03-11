@@ -36,7 +36,7 @@ let searchUsersIncuration = document.querySelector('#search-users-in-curation')
 let selectAllUsers = document.querySelector('#select-all-users')
 let removeAllUsers = document.querySelector('#remove-all-users')
 
-let enableSpecialists = new TwoTables(
+let enableEditors = new TwoTables(
   userOptions, 
   searchUserOptions, 
   selectedUsers, 
@@ -48,4 +48,4 @@ let enableSpecialists = new TwoTables(
 
 authors = JSON.parse(document.querySelector('#authors-json').textContent)
 
-enableSpecialists.setData(authors, 'specialist_ids')
+enableEditors.setData(authors, 'editor_ids')

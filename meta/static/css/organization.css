@@ -1,10 +1,16 @@
-.content-only {
-    display: flex;
+#content {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
 }
 
-.section_organization {
-    width: 66%;
-    margin-right: 0.5rem;
+#organization-content {
+  flex: 0.6;
+}
+
+#organization-aside {
+  flex: 0.3;
 }
 
 .description-text{
@@ -13,12 +19,8 @@
 
 /* Tablet layout */
 @media (max-width: 990px) {
-    .section_organization {
+    #organization-content {
         width: 100%;
-    }
-
-    .content-only {
-        flex-wrap: wrap-reverse;
     }
 }
 

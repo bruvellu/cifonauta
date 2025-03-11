@@ -1,30 +1,14 @@
 {% load i18n %}
-
-{% if user.is_authenticated %}
-<span id="admin">
-  <ul>
-    {% if user.is_superuser %}
-    <li><a href="/admin/">admin</a></li>
-    <li><a href="/rosetta/">tradução</a></li>
-    {% endif %}
-    {% if user.is_author %}
-    <li><a href="{% url 'upload_media_step1' %}">dashboard</a></li>
-    {% endif %}
-    <li><a href="{% url 'Logout' %}">logout</a></li>
-  </ul>
-</span>
-{% endif %}
-
 {% with fullpath=request.get_full_path %}
 
 <div id="nav-languages">
-	<form action="/i18n/setlang/" method="post">{% csrf_token %}
-		<select name="language">
-			{% for lang in LANGUAGES %}
-			<option value="{{ lang.0 }}"{% if lang.0 == LANGUAGE_CODE %} selected="selected"{% endif %}>{{ lang.1 }}</option>
-			{% endfor %}
-		</select>
-	</form>
+  <form action="/i18n/setlang/" method="post">{% csrf_token %}
+    <select name="language">
+      {% for lang in LANGUAGES %}
+      <option value="{{ lang.0 }}"{% if lang.0 == LANGUAGE_CODE %} selected="selected"{% endif %}>{{ lang.1 }}</option>
+      {% endfor %}
+    </select>
+  </form>
 </div>
 
 <div id="nav-menus">
@@ -35,8 +19,8 @@
   </ul>
 
   <ul class="menu" id="media">
-    <li> <a {% if fullpath == '/search/?datatype=photo' %}class="selected"{% endif %} href="/search/?datatype=photo">{% trans 'fotos' %}</a> </li>
-    <li> <a {% if fullpath == '/search/?datatype=video' %}class="selected"{% endif %} href="/search/?datatype=video">{% trans 'vídeos' %}</a> </li>
+    <li> <a {% if request.GET.datatype == 'photo' %}class="selected"{% endif %} href="/search/?datatype=photo">{% trans 'fotos' %}</a> </li>
+    <li> <a {% if request.GET.datatype == 'video' %}class="selected"{% endif %} href="/search/?datatype=video">{% trans 'vídeos' %}</a> </li>
     <li> <a {% if fullpath == '/tours/' %}class="selected"{% endif %} href="{% url 'tours_url' %}">{% trans 'tours' %}</a> </li>
     <li> <a {% if fullpath == '/taxa/' %}class="selected"{% endif %} href="{% url 'taxa_url' %}">{% trans 'táxons' %}</a> </li>
     <li> <a {% if fullpath == '/tags/' %}class="selected"{% endif %} href="{% url 'tags_url' %}">{% trans 'marcadores' %}</a> </li>
@@ -58,6 +42,17 @@
       <div></div>
       <div></div>
   </button>
+  <ul class="menu" id="hamburger-menu__about">
+    <li>
+        <a {% if fullpath == '/' %}class="selected"{% endif %}href="/">{% trans 'home' %}</a>
+    </li>
+    <li>
+        <a 
+        {% if fullpath == '/about/' or fullpath == '/content/' or fullpath == '/organization/' or fullpath == '/credits/' or fullpath == '/details/' or fullpath == '/development/' or fullpath == '/roadmap/' or fullpath == '/terms/' %}class="selected"{% endif %}href="/about/">
+            {% trans 'sobre' %}
+        </a>
+    </li>
+  </ul>
   <ul class="menu" id="hamburger-menu__media">
       <li>
           <a {% if fullpath == '/search/?datatype=photo' %}class="selected"{% endif %} href="/search/?datatype=photo">{% trans 'fotos' %}</a>
@@ -83,17 +78,6 @@
       <li>
           <a {% if fullpath == '/literature/' %}class="selected"{% endif %} href="{% url 'refs_url' %}">{% trans 'referências' %}</a>
       </li>
-  </ul>
-  <ul class="menu" id="hamburger-menu__about">
-    <li>
-        <a {% if fullpath == '/' %}class="selected"{% endif %}href="/">{% trans 'home' %}</a>
-    </li>
-    <li>
-        <a 
-        {% if fullpath == '/about/' or fullpath == '/content/' or fullpath == '/organization/' or fullpath == '/credits/' or fullpath == '/details/' or fullpath == '/development/' or fullpath == '/roadmap/' or fullpath == '/terms/' %}class="selected"{% endif %}href="/about/">
-            {% trans 'sobre' %}
-        </a>
-    </li>
   </ul>
 </div>
 

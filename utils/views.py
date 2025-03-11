@@ -7,13 +7,11 @@ from meta.models import Person
 
 
 @transaction.atomic
-def execute_bash_action(request, medias, user, view_name):
-    user_person = Person.objects.filter(user_cifonauta=user).first()
-
+def execute_batch_action(request, medias, person, view_name):
     try:
         with transaction.atomic():
             for media in medias:
-                form = BatchActionsForm(request.POST, instance=media, user_person=user_person, view_name=view_name)
+                form = BatchActionsForm(request.POST, instance=media, person=person, view_name=view_name)
                 form.save()
     except Exception as error:
         messages.error(request, 'Houve um erro ao tentar aplicar as ações em lote')

@@ -98,6 +98,20 @@ class TaxonUpdater:
         # Connect to WoRMS web service
         self.aphia = Aphia()
 
+        # Taxon status on WoRMS: accepted, invalid, or absent
+        self.lineage = None
+        self.check = None
+        self.taxon = None
+        self.record = None
+        self.valid_taxon = None
+        self.valid_record = None
+        self.valid_lineage = None
+        self.namemap = {}
+        self.records = {}
+        self.cache = 'worms.pkl'
+        self.status = 'absent'
+        self.name = name
+
         # Execute update pipeline
         if name:
             self.update(name)
@@ -108,13 +122,7 @@ class TaxonUpdater:
         # Clean input name
         self.name = self.sanitize_name(name)
 
-        # Taxon status on WoRMS: accepted, invalid, or absent
-        self.status = 'absent'
-
         # Cache dictionary for fetched records
-        self.cache = 'worms.pkl'
-        self.records = {}
-        self.namemap = {}
         self.load_cache_from_file()
 
         # Disable MPTT updates
@@ -160,6 +168,8 @@ class TaxonUpdater:
             if os.path.exists(self.cache):
                 with open(self.cache, 'rb') as file:
                     self.records = pickle.load(file)
+                # TODO: Deal with non-unique names like Cidaroidea
+                # Making a name+id map should solve this
                 self.namemap = {record['scientificname']: aphia for aphia, record in self.records.items()}
                 print(f'Loaded: {len(self.records.keys())} WoRMS records from {self.cache}')
             else:

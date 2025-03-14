@@ -173,15 +173,15 @@ class TaxonUpdater:
             if os.path.exists(self.cache):
                 with open(self.cache, "rb") as file:
                     self.records = pickle.load(file)
-                # TODO: Deal with non-unique names like Cidaroidea
-                # Making a name+id map should solve this
-                self.namemap = {
-                    record["scientificname"]: aphia
-                    for aphia, record in self.records.items()
-                }
-                print(
-                    f"Loaded: {len(self.records.keys())} WoRMS records from {self.cache}"
-                )
+                
+                # Create nested dictionary structure for name mapping
+                for aphia, record in self.records.items():
+                    taxon_name = record["scientificname"]
+                    if taxon_name not in self.namemap:
+                        self.namemap[taxon_name] = {}
+                    self.namemap[taxon_name][aphia] = aphia
+                    
+                print(f"Loaded: {len(self.records.keys())} WoRMS records from {self.cache}")
             else:
                 print(f"Note: {self.cache} was not found")
         except Exception as e:
@@ -204,8 +204,14 @@ class TaxonUpdater:
 
     def add_record_to_cache(self, record):
         """Add record to dictionary with fetched records."""
-        self.namemap[record["scientificname"]] = record["AphiaID"]
-        self.records[record["AphiaID"]] = record
+        taxon_name = record["scientificname"]
+        aphia = record["AphiaID"]
+        
+        # Add taxon to namemap and cache records
+        if taxon_name not in self.namemap:
+            self.namemap[taxon_name] = {}
+        self.namemap[taxon_name][aphia] = aphia
+        self.records[aphia] = record
 
     def get_or_create_taxon(self, name):
         """Get or create Taxon instance passing default name."""
@@ -237,23 +243,30 @@ class TaxonUpdater:
         """Search WoRMS for taxon name and return the first matching record."""
         # TODO: Add option to ignore cache
         try:
+            # Get dictionary of IDs from namemap
+            ids = self.namemap[taxon_name]
+            # Return the first ID, for now
+            # TODO: Handle multiple taxa better
+            aphia = next(iter(ids.keys()))
             # Try getting record from cache
-            record = self.records[self.namemap[taxon_name]]
-            print(f'Cache: {record["scientificname"]}')
+            record = self.records[aphia]
+            print(f'Cache: {record["scientificname"]} (id={aphia})')
             return record
-        except:
-            # Search WoRMS for name
-            records = self.aphia.get_aphia_records(taxon_name)
-            if not records:
+        except Exception as e:
+            print(f"Error retrieving from cache: {str(e)}")
+
+        # Search WoRMS for name
+        records = self.aphia.get_aphia_records(taxon_name)
+        if not records:
+            return None
+        # Return the first non-empty, generally it's the best match
+        for record in records:
+            if record["scientificname"]:
+                record = self.convert_suds_to_dict(record)
+                self.add_record_to_cache(record)
+                return record
+            else:
                 return None
-            # Return the first non-empty, generally it's the best match
-            for record in records:
-                if record["scientificname"]:
-                    record = self.convert_suds_to_dict(record)
-                    self.add_record_to_cache(record)
-                    return record
-                else:
-                    return None
 
     def check_taxon_record(self, taxon, record):
         """Check WoRMS record name against Taxon name, they should be identical."""

@@ -173,15 +173,17 @@ class TaxonUpdater:
             if os.path.exists(self.cache):
                 with open(self.cache, "rb") as file:
                     self.records = pickle.load(file)
-                
+
                 # Create nested dictionary structure for name mapping
                 for aphia, record in self.records.items():
                     taxon_name = record["scientificname"]
                     if taxon_name not in self.namemap:
                         self.namemap[taxon_name] = {}
                     self.namemap[taxon_name][aphia] = aphia
-                    
-                print(f"Loaded: {len(self.records.keys())} WoRMS records from {self.cache}")
+
+                print(
+                    f"Loaded: {len(self.records.keys())} WoRMS records from {self.cache}"
+                )
             else:
                 print(f"Note: {self.cache} was not found")
         except Exception as e:
@@ -206,7 +208,7 @@ class TaxonUpdater:
         """Add record to dictionary with fetched records."""
         taxon_name = record["scientificname"]
         aphia = record["AphiaID"]
-        
+
         # Add taxon to namemap and cache records
         if taxon_name not in self.namemap:
             self.namemap[taxon_name] = {}

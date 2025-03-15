@@ -49,6 +49,13 @@ class Command(BaseCommand):
             help="Only update taxa without parents.",
         )
 
+        parser.add_argument(
+            "--interactive",
+            action="store_true",
+            dest="interactive",
+            help="Enable interactive mode for non-unique taxon names.",
+        )
+
     def handle(self, *args, **options):
         # Parse options
         n = options["number"]
@@ -56,6 +63,7 @@ class Command(BaseCommand):
         rank = options["rank"]
         only_aphia = options["only_aphia"]
         only_orphans = options["only_orphans"]
+        interactive = options["interactive"]
 
         # Get all taxa
         taxa = Taxon.objects.all()
@@ -92,7 +100,7 @@ class Command(BaseCommand):
             # Disable MPTT updates
             with Taxon.objects.disable_mptt_updates():
                 # Initialize WoRMS web service
-                taxon_updater = TaxonUpdater()
+                taxon_updater = TaxonUpdater(interactive=interactive)
 
                 # Loop over taxon queryset
                 for taxon in taxa:

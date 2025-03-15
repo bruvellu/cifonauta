@@ -93,13 +93,20 @@ Usage:
 class TaxonUpdater:
     """Manage taxonomic information of taxa using WoRMS."""
 
-    def __init__(self, name=""):
-        """Without a name, only initialize web service."""
-
+    def __init__(self, name="", interactive=False):
+        """
+        Initialize with WoRMS web service.
+        
+        Parameters:
+        - name: Initial taxon name to update. If empty, just initialize web service
+        - interactive: Prompts for user input for non-unique taxa names
+        """
         # Connect to WoRMS web service
         self.aphia = Aphia()
-
-        # Taxon status on WoRMS: accepted, invalid, or absent
+        
+        # Instantiate variables
+        self.name = name
+        self.interactive = interactive
         self.lineage = None
         self.check = None
         self.taxon = None
@@ -111,7 +118,6 @@ class TaxonUpdater:
         self.records = {}
         self.cache = "worms.pkl"
         self.status = "absent"
-        self.name = name
 
         # Execute update pipeline
         if name:
@@ -150,6 +156,38 @@ class TaxonUpdater:
         # Write cache to file
         self.write_cache_to_file()
 
+    def select_taxon_interactively(self, taxon_name, records_dict):
+        """Present multiple taxa options and get user selection."""
+        print(f"\nMultiple taxa found for '{taxon_name}'. Please select one:")
+
+        #TODO: Simplify this function, adjust variable names
+        
+        options = []
+        for aphia_id in records_dict.keys():
+            record = self.records[aphia_id]
+            options.append((aphia_id, record))
+        
+        # Display options
+        for i, (aphia_id, record) in enumerate(options, 1):
+            rank = record.get("rank", "Unknown rank")
+            authority = record.get("authority", "Unknown authority")
+            status = record.get("status", "Unknown status")
+            name = record['scientificname']
+            phylum = record.get('phylum', '')
+            print(f"{i}. {aphia_id} / {name} / {authority} / {rank} / {status} / {phylum}")
+            
+        # Get user selection
+        while True:
+            try:
+                selection = int(input("\nEnter number of desired taxon: "))
+                if 1 <= selection <= len(options):
+                    aphia_id, record = options[selection - 1]
+                    return record
+                else:
+                    print(f"Please enter a number between 1 and {len(options)}")
+            except ValueError:
+                print("Please enter a valid number")
+
     def rebuild_hierarchy(self):
         """Rebuild tree hierarchy of taxa."""
         # Rebuild tree hierarchy
@@ -177,6 +215,7 @@ class TaxonUpdater:
                 # Create nested dictionary structure for name mapping
                 for aphia, record in self.records.items():
                     taxon_name = record["scientificname"]
+                    # TODO: Remove the need for namemap, query self.records directly
                     if taxon_name not in self.namemap:
                         self.namemap[taxon_name] = {}
                     self.namemap[taxon_name][aphia] = aphia
@@ -242,14 +281,24 @@ class TaxonUpdater:
         return record
 
     def get_worms_record_by_name(self, taxon_name):
-        """Search WoRMS for taxon name and return the first matching record."""
+        """Search WoRMS for taxon name and return matching record."""
         # TODO: Add option to ignore cache
+        # TODO: Break-up into two functions, cache loading and worms search
+
         try:
             # Get dictionary of IDs from namemap
             ids = self.namemap[taxon_name]
+
+            # Handle non-unique taxon names interactively
+            if len(ids) > 1 and self.interactive:
+                record = self.select_taxon_interactively(taxon_name, ids)
+                print(f'Selected: {record["scientificname"]} (id={record["AphiaID"]})')
+                return record
+
             # Return the first ID, for now
             # TODO: Handle multiple taxa better
             aphia = next(iter(ids.keys()))
+
             # Try getting record from cache
             record = self.records[aphia]
             print(f'Cache: {record["scientificname"]} (id={aphia})')
@@ -261,14 +310,29 @@ class TaxonUpdater:
         records = self.aphia.get_aphia_records(taxon_name)
         if not records:
             return None
+
+        # Dictionary to store matches
+        matches = {}
+
         # Return the first non-empty, generally it's the best match
         for record in records:
-            if record["scientificname"]:
-                record = self.convert_suds_to_dict(record)
-                self.add_record_to_cache(record)
-                return record
-            else:
-                return None
+            if record["scientificname"] == taxon_name:
+                match = self.convert_suds_to_dict(record)
+                self.add_record_to_cache(match)
+                matches[match["AphiaID"]] = match
+
+        # Check resulting matches
+        if not matches:
+            return None
+
+        # Get non-unique matches interactively
+        if len(matches.keys()) > 1 and self.interactive:
+            return self.select_taxon_interactively(taxon_name, matches)
+
+        # If none of the above, return first non-empty record
+        first_id = next(iter(matches.keys()))
+        return matches[first_id]
+
 
     def check_taxon_record(self, taxon, record):
         """Check WoRMS record name against Taxon name, they should be identical."""
@@ -290,6 +354,7 @@ class TaxonUpdater:
         # If not caught above
         return True
 
+    # TODO: Change name to something else, this is confusing with update
     def update_taxon(self, taxon, record):
         """Update taxon entry in the database."""
 

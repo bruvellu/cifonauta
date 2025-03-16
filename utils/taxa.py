@@ -114,7 +114,6 @@ class TaxonUpdater:
         self.valid_taxon = None
         self.valid_record = None
         self.valid_lineage = None
-        self.namemap = {}
         self.records = {}
         self.cache = "worms.pkl"
         self.status = "absent"
@@ -156,32 +155,31 @@ class TaxonUpdater:
         # Write cache to file
         self.write_cache_to_file()
 
-    def select_taxon_interactively(self, taxon_name, records_dict):
+    def select_taxon_interactively(self, taxon_name, records):
         """Present multiple taxa options and get user selection."""
         print(f"\nMultiple taxa found for '{taxon_name}'. Please select one:")
 
         #TODO: Simplify this function, adjust variable names
         
         options = []
-        for aphia_id in records_dict.keys():
-            record = self.records[aphia_id]
-            options.append((aphia_id, record))
+        for aphia, record in records.items():
+            options.append((aphia, record))
         
         # Display options
-        for i, (aphia_id, record) in enumerate(options, 1):
+        for i, (aphia, record) in enumerate(options, 1):
             rank = record.get("rank", "Unknown rank")
             authority = record.get("authority", "Unknown authority")
             status = record.get("status", "Unknown status")
-            name = record['scientificname']
-            phylum = record.get('phylum', '')
-            print(f"{i}. {aphia_id} / {name} / {authority} / {rank} / {status} / {phylum}")
+            name = record.get("scientificname", "Unknown name")
+            phylum = record.get('phylum', 'Unknown phylum')
+            print(f"{i}. {aphia} / {name} / {authority} / {rank} / {status} / {phylum}")
             
         # Get user selection
         while True:
             try:
                 selection = int(input("\nEnter number of desired taxon: "))
                 if 1 <= selection <= len(options):
-                    aphia_id, record = options[selection - 1]
+                    aphia, record = options[selection - 1]
                     return record
                 else:
                     print(f"Please enter a number between 1 and {len(options)}")
@@ -211,15 +209,6 @@ class TaxonUpdater:
             if os.path.exists(self.cache):
                 with open(self.cache, "rb") as file:
                     self.records = pickle.load(file)
-
-                # Create nested dictionary structure for name mapping
-                for aphia, record in self.records.items():
-                    taxon_name = record["scientificname"]
-                    # TODO: Remove the need for namemap, query self.records directly
-                    if taxon_name not in self.namemap:
-                        self.namemap[taxon_name] = {}
-                    self.namemap[taxon_name][aphia] = aphia
-
                 print(
                     f"Loaded: {len(self.records.keys())} WoRMS records from {self.cache}"
                 )
@@ -245,13 +234,7 @@ class TaxonUpdater:
 
     def add_record_to_cache(self, record):
         """Add record to dictionary with fetched records."""
-        taxon_name = record["scientificname"]
         aphia = record["AphiaID"]
-
-        # Add taxon to namemap and cache records
-        if taxon_name not in self.namemap:
-            self.namemap[taxon_name] = {}
-        self.namemap[taxon_name][aphia] = aphia
         self.records[aphia] = record
 
     def get_or_create_taxon(self, name):
@@ -280,25 +263,32 @@ class TaxonUpdater:
             return None
         return record
 
+    def find_records_by_name(self, taxon_name, records):
+        """Find all records with matching scientific name."""
+        matches = {}
+        for aphia, record in records.items():
+            if record["scientificname"] == taxon_name:
+                matches[aphia] = record
+        return matches
+
     def get_worms_record_by_name(self, taxon_name):
         """Search WoRMS for taxon name and return matching record."""
         # TODO: Add option to ignore cache
         # TODO: Break-up into two functions, cache loading and worms search
 
         try:
-            # Get dictionary of IDs from namemap
-            ids = self.namemap[taxon_name]
+            # Get records with matching taxon names
+            matches = self.find_records_by_name(taxon_name, self.records)
 
             # Handle non-unique taxon names interactively
-            if len(ids) > 1 and self.interactive:
-                record = self.select_taxon_interactively(taxon_name, ids)
+            if len(matches) > 1 and self.interactive:
+                record = self.select_taxon_interactively(taxon_name, matches)
                 print(f'Selected: {record["scientificname"]} (id={record["AphiaID"]})')
                 return record
 
             # Return the first ID, for now
             # TODO: Handle multiple taxa better
-            aphia = next(iter(ids.keys()))
-
+            aphia = next(iter(matches))
             # Try getting record from cache
             record = self.records[aphia]
             print(f'Cache: {record["scientificname"]} (id={aphia})')
@@ -330,8 +320,8 @@ class TaxonUpdater:
             return self.select_taxon_interactively(taxon_name, matches)
 
         # If none of the above, return first non-empty record
-        first_id = next(iter(matches.keys()))
-        return matches[first_id]
+        aphia = next(iter(matches))
+        return matches[aphia]
 
 
     def check_taxon_record(self, taxon, record):

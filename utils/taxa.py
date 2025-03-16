@@ -271,14 +271,15 @@ class TaxonUpdater:
                 matches[aphia] = record
         return matches
 
-    def get_worms_record_by_name(self, taxon_name):
-        """Search WoRMS for taxon name and return matching record."""
-        # TODO: Add option to ignore cache
-        # TODO: Break-up into two functions, cache loading and worms search
-
+    def get_record_from_cache(self, taxon_name):
+        """Search cache for taxon name and return matching record."""
         try:
             # Get records with matching taxon names
             matches = self.find_records_by_name(taxon_name, self.records)
+
+            # If no matches found, return None
+            if not matches:
+                return None
 
             # Handle non-unique taxon names interactively
             if len(matches) > 1 and self.interactive:
@@ -295,6 +296,16 @@ class TaxonUpdater:
             return record
         except Exception as e:
             print(f"Error retrieving from cache: {str(e)}")
+            return None
+
+    def get_worms_record_by_name(self, taxon_name):
+        """Search WoRMS for taxon name and return matching record."""
+        # TODO: Add option to ignore cache
+
+        # First try getting from cache
+        record = self.get_record_from_cache(taxon_name)
+        if record:
+            return record
 
         # Search WoRMS for name
         records = self.aphia.get_aphia_records(taxon_name)

@@ -96,14 +96,14 @@ class TaxonUpdater:
     def __init__(self, name="", interactive=False):
         """
         Initialize with WoRMS web service.
-        
+
         Parameters:
         - name: Initial taxon name to update. If empty, just initialize web service
         - interactive: Prompts for user input for non-unique taxa names
         """
         # Connect to WoRMS web service
         self.aphia = Aphia()
-        
+
         # Instantiate variables
         self.name = name
         self.interactive = interactive
@@ -159,21 +159,21 @@ class TaxonUpdater:
         """Present multiple taxa options and get user selection."""
         print(f"\nMultiple taxa found for '{taxon_name}'. Please select one:")
 
-        #TODO: Simplify this function, adjust variable names
-        
+        # TODO: Simplify this function, adjust variable names
+
         options = []
         for aphia, record in records.items():
             options.append((aphia, record))
-        
+
         # Display options
         for i, (aphia, record) in enumerate(options, 1):
             rank = record.get("rank", "Unknown rank")
             authority = record.get("authority", "Unknown authority")
             status = record.get("status", "Unknown status")
             name = record.get("scientificname", "Unknown name")
-            phylum = record.get('phylum', 'Unknown phylum')
+            phylum = record.get("phylum", "Unknown phylum")
             print(f"{i}. {aphia} / {name} / {authority} / {rank} / {status} / {phylum}")
-            
+
         # Get user selection
         while True:
             try:
@@ -322,7 +322,6 @@ class TaxonUpdater:
         # If none of the above, return first non-empty record
         aphia = next(iter(matches))
         return matches[aphia]
-
 
     def check_taxon_record(self, taxon, record):
         """Check WoRMS record name against Taxon name, they should be identical."""

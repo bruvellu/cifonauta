@@ -874,7 +874,7 @@ class Category(models.Model):
 
 
 class Taxon(MPTTModel):
-    name = models.CharField(_('nome'), max_length=256, unique=True,
+    name = models.CharField(_('nome'), max_length=256,
             help_text=_('Nome do táxon.'))
     slug = models.SlugField(_('slug'), max_length=256, blank=True,
             help_text=_('Slug do nome do táxon.'))

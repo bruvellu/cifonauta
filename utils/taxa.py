@@ -15,11 +15,65 @@ worms.py library.
 
 Usage:
 >>> from utils.taxa import TaxonUpdater
->>> taxon_updater = TaxonUpdater('Acanthostracion polygonius')
->>> taxon_updater.name
-'Acanthostracion polygonius'
->>> taxon_updater.processed_records
-[<TaxonRecord: Acanthostracion polygonius>]
+>>> taxon_updater = TaxonUpdater('Clypeaster subdepressus')
+[INFO] 2025-03-18 18:38:34,071 @ worms __init__ (l66): Initiating contact with WoRMS...
+[INFO] 2025-03-18 18:38:34,406 @ worms __init__ (l69): Connected to WoRMS web services.
+Loaded: 2158 WoRMS records from worms.pkl
+Searching cache for Clypeaster subdepressus
+Found 1 records for Clypeaster subdepressus on cache
+Taxon: Clypeaster subdepressus (new=False)
+Saved: Clypeaster subdepressus (with WoRMS metadata)
+Cache: Clypeaster (id=205242)
+Taxon: Clypeaster (new=False)
+Saved: Clypeaster (with WoRMS metadata)
+Cache: Clypeasteridae (id=196177)
+Taxon: Clypeasteridae (new=False)
+Saved: Clypeasteridae (with WoRMS metadata)
+Cache: Clypeasterina (id=196261)
+Taxon: Clypeasterina (new=False)
+Saved: Clypeasterina (with WoRMS metadata)
+Cache: Clypeasteroida (id=123100)
+Taxon: Clypeasteroida (new=False)
+Saved: Clypeasteroida (with WoRMS metadata)
+Cache: Luminacea (id=1572017)
+Taxon: Luminacea (new=False)
+Saved: Luminacea (with WoRMS metadata)
+Cache: Neognathostomata (id=510501)
+Taxon: Neognathostomata (new=False)
+Saved: Neognathostomata (with WoRMS metadata)
+Cache: Irregularia (id=510499)
+Taxon: Irregularia (new=False)
+Saved: Irregularia (with WoRMS metadata)
+Cache: Euechinoidea (id=149854)
+Taxon: Euechinoidea (new=False)
+Saved: Euechinoidea (with WoRMS metadata)
+Cache: Echinoidea (id=123082)
+Taxon: Echinoidea (new=False)
+Saved: Echinoidea (with WoRMS metadata)
+Cache: Echinozoa (id=148744)
+Taxon: Echinozoa (new=False)
+Saved: Echinozoa (with WoRMS metadata)
+Cache: Echinodermata (id=1806)
+Taxon: Echinodermata (new=False)
+Saved: Echinodermata (with WoRMS metadata)
+Cache: Animalia (id=2)
+Taxon: Animalia (new=False)
+Saved: Animalia (with WoRMS metadata)
+Lineage:
+ [Kingdom] Animalia (valid=True)
+ [Phylum] Echinodermata (valid=True)
+ [Subphylum] Echinozoa (valid=True)
+ [Class] Echinoidea (valid=True)
+ [Subclass] Euechinoidea (valid=True)
+ [Infraclass] Irregularia (valid=True)
+ [Subterclass] Neognathostomata (valid=True)
+ [Superorder] Luminacea (valid=True)
+ [Order] Clypeasteroida (valid=True)
+ [Suborder] Clypeasterina (valid=True)
+ [Family] Clypeasteridae (valid=True)
+ [Genus] Clypeaster (valid=True)
+ [Species] Clypeaster subdepressus (valid=True)
+Saved: 2158 WoRMS records to worms.pkl
 """
 
 

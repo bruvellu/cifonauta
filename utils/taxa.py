@@ -48,7 +48,7 @@ class TaxonRecord:
         """Return string representation of taxon record."""
         return self.record["scientificname"]
 
-    def process(self):
+    def process(self, lineage=True):
         """Execute full processing pipeline for this taxon record."""
         # Get or create database entry using AphiaID for uniqueness
         self.taxon = self.get_or_create_taxon()
@@ -60,8 +60,9 @@ class TaxonRecord:
         if not self.check:
             return False
 
-        # Create taxonomic lineage
-        self.lineage = self.save_taxon_lineage()
+        # Create taxonomic lineage (by default)
+        if lineage:
+            self.lineage = self.save_taxon_lineage()
 
         # Process valid taxon if needed
         self.process_valid_taxon()
@@ -150,7 +151,7 @@ class TaxonRecord:
 
             # Create parent taxon record and process it
             parent_taxon_record = TaxonRecord(parent_record, self.updater)
-            parent_taxon_record.process()
+            parent_taxon_record.process(lineage=False)
 
             # Add parent to lineage
             lineage.append(parent_taxon_record.taxon)
@@ -173,13 +174,15 @@ class TaxonRecord:
         for count, parent in enumerate(lineage):
             # Last taxon's parent already set on previous iteration
             if count == len(lineage) - 1:
+                print(f" [{parent.rank_en}] {parent} (valid={parent.is_valid})")
                 break
 
             # Get child of current taxon (parent)
             child = lineage[count + 1]
-            print(
-                f" [{parent.rank_en}] {parent} (valid={parent.is_valid}) > {child} (valid={child.is_valid})"
-            )
+            print(f" [{parent.rank_en}] {parent} (valid={parent.is_valid})")
+            # print(
+                # f" [{parent.rank_en}] {parent} (valid={parent.is_valid}) > {child} (valid={child.is_valid})"
+            # )
 
             # Skip setting itself as parent
             if parent.name == child.name:
@@ -240,6 +243,7 @@ class TaxonUpdater:
         self.cached_records = {}
         self.cache_file = "worms.pkl"
         self.fetched_records = []
+        self.returned_taxa = []
 
         # Load cache
         self.load_cache_from_file()
@@ -260,9 +264,13 @@ class TaxonUpdater:
         for record in self.fetched_records:
             taxon_record = TaxonRecord(record, self)
             taxon_record.process()
+            self.returned_taxa.append(taxon_record)
 
         # Write updated cache to file
         self.write_cache_to_file()
+
+        # Return the fetched_records
+        return self.returned_taxa
 
     def find_records_by_taxon_name(self, taxon_name):
         """Fetch records with taxon name from cache or worms."""

@@ -906,6 +906,21 @@ class Taxon(MPTTModel):
     def get_absolute_url(self):
         return reverse('taxon_url', args=[self.slug])
 
+    def ensure_unique_slug(self):
+        """Ensure taxon has a unique slug."""
+        if not self.slug:
+            self.slug = slugify(self.name)
+            
+        # Check uniqueness only if this is a new instance or slug changed
+        if not self.pk or Taxon.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+            if self.aphia:
+                self.slug = f"{slugify(self.name)}-{self.aphia}"
+            elif self.rank:
+                self.slug = f"{slugify(self.name)}-{slugify(self.rank)}"
+            else:
+                from django.utils.crypto import get_random_string
+                self.slug = f"{slugify(self.name)}-{get_random_string(4)}"
+
     def get_total_media_count(self):
         '''Get the total media count the taxon and its descendants.'''
         #TODO: Too costly to call every time, save as a field?

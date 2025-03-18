@@ -14,7 +14,6 @@ from meta.models import Media, Person, Tag, Category, Taxon, Location, City, Sta
 @receiver(pre_save, sender=Person)
 @receiver(pre_save, sender=Tag)
 @receiver(pre_save, sender=Category)
-@receiver(pre_save, sender=Taxon)
 @receiver(pre_save, sender=Location)
 @receiver(pre_save, sender=City)
 @receiver(pre_save, sender=State)
@@ -27,6 +26,10 @@ def slugify_name(sender, instance, *args, **kwargs):
         # Force slug in Portuguese, for now
         translation.activate('pt_br')
         instance.slug = slugify(instance.name)
+
+@receiver(pre_save, sender=Taxon)
+def taxon_pre_save(sender, instance, **kwargs):
+    instance.ensure_unique_slug()
 
 @receiver(pre_save, sender=Media)
 def normalize_title_and_caption(sender, instance, *args, **kwargs):

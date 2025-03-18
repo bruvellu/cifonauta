@@ -880,7 +880,7 @@ class Taxon(MPTTModel):
             help_text=_('Slug do nome do táxon.'))
     rank = models.CharField(_('rank'), max_length=256, blank=True,
             help_text=_('Ranking taxonômico do táxon.'))
-    aphia = models.PositiveIntegerField(null=True, blank=True,
+    aphia = models.PositiveIntegerField(null=True, blank=True, unique=True,
             help_text=_('AphiaID, o identificador do táxon no WoRMS.'))
     authority = models.CharField(_('autoridade'), max_length=256, blank=True, null=True,
             help_text=_('Autoridade do táxon.'))

@@ -425,7 +425,7 @@ class Media(models.Model):
                                             help_text=_('ID do vídeo no antigo modelo.'))
 
     def __str__(self):
-        return 'ID={} {} ({}) {}'.format(self.id, self.title, self.datatype, self.status)
+        return f'[{self.id}] [{self.datatype}] [{self.status}] {self.title}'
 
     def get_absolute_url(self):
         return reverse('media_url', args=[str(self.id)])

@@ -1,17 +1,17 @@
 {% load i18n %}
 
-<div class="span-24 last tour metagroup">
-  <div class="span-4">
+<div class="tour metagroup">
+  <div id="tour-thumb">
     <a href="{{ tour.get_absolute_url }}">{% print_thumb_tour 'tour' tour%}</a>
   </div>
-  <div class="span-13">
+  <div id="tour-description">
     <h2><a href="{{ tour.get_absolute_url }}" title="{% trans 'Clique aqui para continuar lendo e iniciar o tour' %}"><strong>{{ tour.name }}</strong></a>{% if not tour.is_public %} [PRIVADO]{% endif %}</h2>
     <p>
     {{ tour.description|striptags|truncatewords:30 }}
     <a href="{{ tour.get_absolute_url }}"><strong>{% trans 'Clique aqui para continuar lendo e iniciar o tour' %}</strong></a>.
     </p>
   </div>
-  <div class="span-6 last">
+  <div id="tour-data">
     <h3 class="upper">{{ tour.media.count }} {% trans 'imagens' %}</h3>
     <ul class="padlist">
       <li>

@@ -1070,16 +1070,6 @@ article.post {
   padding:0;
 }
 
-/* TOURS */
-.tour {
-  margin-bottom:1em;
-  padding:1em 0 !important;
-}
-
-.tour .thumbs-org {
-  margin-left:1em;
-}
-
 /* COMMENTS */
 div#comments {
   margin:0 0 1em 0;

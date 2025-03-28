@@ -775,11 +775,7 @@ div#notes {
   filter: dropshadow(color=#000000, offx=2, offy=2);
 }
 
-/* SEARCH PAGE */
-div#search-results {
-}
-div#search-status {
-}
+
 
 #showall {
   font-size:2em;

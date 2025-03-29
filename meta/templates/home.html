@@ -79,8 +79,8 @@
   <h2>{% trans 'Tours' %}</h2>
 
   <div id="tours-image">
-    <a href="{{ tour_image.get_absolute_url }}">
-      <img class="shadow" id="media-photo" src="{{ MEDIA_URL }}{{ tour_image.file_cover }}" alt="{{ tour_image.title }}" title="{{ tour_image.title }}" />
+    <a href="{{ tour.get_absolute_url }}">
+      <img class="shadow" id="media-photo" src="{{ MEDIA_URL }}{{ tour_image.file_cover }}" alt="{{ tour_image.title }}" title="{{ tour.name }}" />
     </a>
   </div>
 

@@ -231,6 +231,7 @@ body, select, input, textarea {
 
 h1, h2, h3, h4, h5, h6 {font-weight:normal;color:#222222;}
 
+/*TODO: Shouldn't this padding be margin?*/
 h1 {font-size:2.333em;padding:0 0 0.4em 0;}
 h2 {font-size:1.778em;padding:0 0 0.3em 0;}
 h3 {font-size:1.433em;padding:0 0 0.3em 0;}

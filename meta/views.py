@@ -1599,7 +1599,9 @@ def home_page(request):
         tour_image = tour.media.exclude(id=main_image.id).exclude(
             id=photo.id).order_by('?')[0]
     except:
-            main_image, photo, video, tour, tour_image = None, None, None, None, None
+        # TODO: Getting a TypeError 'NoneType' object is not subscriptable often
+        # Likely one of the thumbnail caches from production does not exist locally
+        main_image, photo, video, tour, tour_image = None, None, None, None, None
 
     context = {
         'main_image': main_image,

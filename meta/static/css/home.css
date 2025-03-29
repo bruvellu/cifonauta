@@ -34,6 +34,12 @@
 #cover-text {
     flex: 1;
     font-size:1rem;
+  text-align: center;
+}
+
+#cover-text p {
+  padding: 0 2rem;
+  margin-bottom: 1rem;
 }
 
 /* Make the image responsive */
@@ -49,6 +55,7 @@
   text-align:center;
   font-weight:bold;
   font-size:1.5rem;
+  line-height: 1em;
 }
 
 #intro-more {
@@ -79,59 +86,42 @@
   width: 100%;
 }
 
-/*!* Tablet *!*/
-/*@media (max-width: 984px) {*/
-/*}*/
-
-/*!* Media query for smaller screens *!*/
-/*@media (max-width: 768px) {*/
-/*  #cover-image, #cover-text {*/
-/*    flex: 100%;*/
-/*    max-width: 100%;*/
-/*  }*/
-/*}*/
-
-/*!* Mobile *!*/
-/*@media (max-width: 480px) {*/
-/*    #intro {*/
-/*        width: 95%;*/
-/*    }*/
-/*}*/
-
-/*@media (max-width: 350px) {*/
-/*    .success {*/
-/*        font-size: 1.1rem;*/
-/*        left: .5rem;*/
-/*    }*/
-/*}*/
-
-
 /* Smartwatches (max-width: 320px) */
 @media (max-width: 320px) {
-    /* Add styles for very small screens like smartwatches */
 }
 
 /* Phones (max-width: 600px) */
 @media (max-width: 600px) {
-    /* Add styles for smartphones */
 }
 
 /* Tablets and Large Phones (max-width: 768px) */
 @media (max-width: 768px) {
-    /* Add styles for tablets and larger phones in portrait mode */
+  #intro {
+    flex-direction: column;
+  }
+  #cover-image {
+    max-width: 75%;
+  }
+}
+
+/* Intermediate devices (max-width: 900px) */
+@media (max-width: 900px) {
+  #cover-image {
+    flex: 0.85;
+  }
 }
 
 /* Small Laptops (max-width: 1024px) */
 @media (max-width: 1024px) {
-    /* Add styles for small laptops and large tablets in landscape mode */
+  #cover-text p {
+    padding: 0 1rem;
+  }
 }
 
 /* Desktops and Larger Screens (max-width: 1200px) */
 @media (max-width: 1200px) {
-    /* Add styles for desktops and monitors */
 }
 
 /* Extra Large Screens (max-width: 1600px) */
 @media (max-width: 1600px) {
-    /* Add styles for ultra-wide screens like TVs or large monitors */
 }

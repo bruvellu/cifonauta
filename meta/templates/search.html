@@ -34,7 +34,7 @@
     <aside class="aside-search-form">
       <div class="block shadow">
         <form class="displayform" action="{{ request.path }}?{{ request.META.QUERY_STRING }}" method="get">
-          <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-top" />
+          <input type="submit" value="{% trans 'Atualizar' %}" class="fashion blue" id="display-top" />
           <div class="search-query">
             <label for="id_{{ display_form.query.name }}">{{ display_form.query.label }}:</label>
             {{ display_form.query }}
@@ -73,7 +73,7 @@
             {% endfor %}
           </div>
 
-            <input type="submit" value="{% trans 'Atualizar' %}" class="fashion" id="display-bottom" />
+            <input type="submit" value="{% trans 'Atualizar' %}" class="fashion blue" id="display-bottom" />
 
           </div>
         </form>

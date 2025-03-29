@@ -780,21 +780,34 @@ div#notes {
   font-size:2em;
 }
 
+/* Base styles for all .fashion buttons */
 .fashion {
-  background:#94B1CA;
-  background: -moz-linear-gradient(center top , #94B1CA 0%, #6B92B2 100%) repeat scroll 0 0 transparent; /* firefox */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#94B1CA), color-stop(100%,#6B92B2)); /* webkit */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#94B1CA', endColorstr='#6B92B2',GradientType=0 ); /* ie */
-  font-weight:bold;
-  -moz-border-radius:5px;
-  -webkit-border-radius:5px;
-  border-radius:5px;
-  color:#fff !important;
-  padding:4px 12px;
-  border:none;
-  -webkit-box-shadow: 2px 2px 5px #ddd;
-  -moz-box-shadow: 2px 2px 5px #ddd;
-  box-shadow: 2px 2px 5px #ddd; 
+  font-weight: bold;
+  border-radius: 5px;
+  color: #fff !important;
+  padding: 4px 12px;
+  border: none;
+  box-shadow: 2px 2px 5px #ddd;
+}
+
+/* Blue gradient */
+.fashion.blue {
+  background: linear-gradient(to bottom, #94B1CA 0%, #6B92B2 100%);
+}
+
+/* Green gradient */
+.fashion.green {
+  background: linear-gradient(to bottom, #BACC70 0%, #94A85A 100%);
+}
+
+/* Orange gradient */
+.fashion.orange {
+  background: linear-gradient(to bottom, #FFB566 0%, #FFA07A 100%);
+}
+
+.fashion:hover {
+  background:#C6D880;
+  cursor: pointer;
 }
 
 .displayform ul {
@@ -820,10 +833,7 @@ div#notes {
   color:#E5926F;
 }
 
-.fashion:hover {
-  background:#C6D880;
-  cursor: pointer;
-}
+
 
 ul.refine-active, ul.refine-inactive {
   list-style:none;

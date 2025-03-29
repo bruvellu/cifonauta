@@ -93,13 +93,15 @@
 }
 
 .card {
-  width: 100%;
+  flex: 1 1 300px;
+  min-width: 300px;
+  max-width: 400px;
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  box-sizing: border-box;
-  margin: 1rem 0;
+  margin: 1rem auto;
   background: #fafafa;
   border-radius: 10px;
   padding: 1.5rem 1rem;
@@ -107,7 +109,7 @@
   border-style: solid;
   border-width: 5px;
   gap: 1rem;
-  flex: 1;
+
 }
 
 #main-more {

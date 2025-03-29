@@ -27,12 +27,13 @@
 
 #sitelinks {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     width: 100%;
-    gap: .3rem 2rem;
-    flex-wrap: wrap;
+    gap: .5rem 2rem;
     box-sizing: border-box;
-    padding: 2rem;
+    padding: 2rem 2rem 2rem 4rem;
+    justify-items: stretch;
+    justify-content: center;
 }
 
 #copyright {
@@ -55,9 +56,6 @@
 @media (max-width: 900px) {
     #footerbase {
         gap: 1rem;
-    }
-    #sitelinks {
-        padding: 1rem 0.7rem 0 0.7rem;
     }
 }
 

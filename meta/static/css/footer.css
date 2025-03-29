@@ -39,23 +39,16 @@
 	text-align: center;
 	padding: 2em;
 }
-
-/* Smartwatches (max-width: 320px) */
-@media (max-width: 320px) {
+/* Extra Large Screens (max-width: 1600px) */
+@media (max-width: 1600px) {
 }
 
-/* Phones (max-width: 600px) */
-@media (max-width: 600px) {
-    #footerbase {
-        gap: 0rem;
-    }
+/* Desktops and Larger Screens (max-width: 1200px) */
+@media (max-width: 1200px) {
 }
 
-/* Tablets and Large Phones (max-width: 768px) */
-@media (max-width: 768px) {
-    #footerbase {
-        gap: 0.5rem;
-    }
+/* Small Laptops (max-width: 1024px) */
+@media (max-width: 1024px) {
 }
 
 /* Intermediate devices (max-width: 900px) */
@@ -68,14 +61,25 @@
     }
 }
 
-/* Small Laptops (max-width: 1024px) */
-@media (max-width: 1024px) {
+/* Tablets and Large Phones (max-width: 768px) */
+@media (max-width: 768px) {
+    #footerbase {
+        gap: 0.5rem;
+    }
 }
 
-/* Desktops and Larger Screens (max-width: 1200px) */
-@media (max-width: 1200px) {
+/* Phones (max-width: 600px) */
+@media (max-width: 600px) {
+    #footerbase {
+        gap: 0rem;
+    }
 }
 
-/* Extra Large Screens (max-width: 1600px) */
-@media (max-width: 1600px) {
+/* Smartwatches (max-width: 320px) */
+@media (max-width: 320px) {
 }
+
+
+
+
+

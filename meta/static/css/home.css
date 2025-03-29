@@ -7,19 +7,19 @@
 }
 
 #intro {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    box-sizing: border-box;
-    margin-bottom: 2rem;
-    background: #fafafa;
-    border-radius: 10px;
-    padding: 2rem;
-    border-color: #eee #fafafa;
-    border-style: solid;
-    border-width: 5px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  margin-bottom: 2rem;
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 2rem;
+  border-color: #eee #fafafa;
+  border-style: solid;
+  border-width: 5px;
   gap: 2rem;
 }
 
@@ -32,8 +32,8 @@
 }
 
 #cover-text {
-    flex: 1;
-    font-size:1rem;
+  flex: 1;
+  font-size:1rem;
   text-align: center;
 }
 
@@ -65,6 +65,7 @@
   justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
+  font-size:1rem;
 }
 
 .content-only {
@@ -74,21 +75,52 @@
 }
 
 #main-content {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0rem 1rem;
-    justify-content: center;
-    margin-bottom: 2rem;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0rem 2rem;
+  justify-content: space-between;
+  align-content: center;
+  margin-bottom: 2rem;
 }
 
-#main-content > div {
-    width: 300px;
+#main-content h2 {
+  padding: 0;
+  text-transform:uppercase;
+  color:#333;
+  font-weight:bold;
+  line-height: 1em;
+}
+
+.card {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  margin: 1rem 0;
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 1.5rem 1rem;
+  border-color: #eee #fafafa;
+  border-style: solid;
+  border-width: 5px;
+  gap: 1rem;
+  flex: 1;
+}
+
+#main-more {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  font-size:1rem;
 }
 
 #photos p, #videos p, #tours p {
-  font-size:.8rem;
+  font-size:1rem;
   width: 100%;
+  padding: 0;
 }
 
 /* Smartwatches (max-width: 320px) */

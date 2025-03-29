@@ -776,8 +776,6 @@ div#notes {
   filter: dropshadow(color=#000000, offx=2, offy=2);
 }
 
-
-
 #showall {
   font-size:2em;
 }
@@ -791,7 +789,7 @@ div#notes {
   -moz-border-radius:5px;
   -webkit-border-radius:5px;
   border-radius:5px;
-  color:#fff;
+  color:#fff !important;
   padding:4px 12px;
   border:none;
   -webkit-box-shadow: 2px 2px 5px #ddd;

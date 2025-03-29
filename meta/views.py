@@ -1590,22 +1590,16 @@ def get_tour_medias(request):
 def home_page(request):
     '''Home page showing image highlights.'''
 
-    # Photos
     try:
         highlights = Media.objects.filter(highlight=True, is_public=True).order_by('?')
         main_image = highlights.filter(datatype='photo')[0]
         photo = highlights.filter(datatype='photo')[1]
         video = highlights.filter(datatype='video')[0]
-    except:
-        main_image, photo, video = '', '', ''
-
-    # Tours
-    try:
         tour = Tour.objects.order_by('?')[0]
         tour_image = tour.media.exclude(id=main_image.id).exclude(
-                id=photo.id).order_by('?')[0]
+            id=photo.id).order_by('?')[0]
     except:
-        tour, tour_image = '', ''
+            main_image, photo, video, tour, tour_image = None, None, None, None, None
 
     context = {
         'main_image': main_image,

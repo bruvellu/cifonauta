@@ -25,9 +25,19 @@
 <section class="shadow" id="intro">
 <div id="cover-image">
   <a href="{{ main_image.get_absolute_url }}">
+    <img class="shadow" id="media-photo" src="{{ MEDIA_URL }}{{ main_image.file_cover }}" alt="{{ main_image.title }}" title="{{ main_image.title }}" />
+
+    {% comment %}
+
     {% thumbnail main_image.file_cover "300x200" crop="center" as im %}
-    <img class="shadow" src="{{ im.url }}" width="100%" height="100%" alt="{{ main_image.title }}">
+        <img class="shadow" src="{{ im.url }}" width="100%" height="100%" alt="{{ main_image.title }}">
     {% endthumbnail %}
+
+    <a href="{{ MEDIA_URL }}{{ main_image.file_cover }}" class="highslide" onclick="return hs.expand(this)">
+        <img id="media-photo" src="{{ MEDIA_URL }}{{ main_image.file_cover }}" alt="{{ main_image.title }}" title="{{ main_image.title }}" />
+    </a>
+
+    {% endcomment %}
   </a>
 </div>
 <div id="cover-text">

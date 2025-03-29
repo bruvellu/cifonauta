@@ -10,7 +10,7 @@
     width: 100%;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     box-sizing: border-box;
     margin-bottom: 2rem;
@@ -20,14 +20,27 @@
     border-color: #eee #fafafa;
     border-style: solid;
     border-width: 5px;
+  gap: 2rem;
 }
 
-#intro > #cover-image {
+#cover-image {
+  flex: 0.75;
+  max-width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-#intro > #cover-text {
-    width: 60%;
+#cover-text {
+    flex: 1;
     font-size:1rem;
+}
+
+/* Make the image responsive */
+#media-photo {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 #intro h1 {
@@ -66,33 +79,59 @@
   width: 100%;
 }
 
-/* Tablet */
-@media (max-width: 984px) {
-    #intro {
-        width: 75%;
-    }
+/*!* Tablet *!*/
+/*@media (max-width: 984px) {*/
+/*}*/
 
-    #intro > #cover-text {
-        width: 100%;
-        margin-top: 1rem;
-    }
-    
-    #intro > #cover-image {
-        margin: 0px;
-    }
+/*!* Media query for smaller screens *!*/
+/*@media (max-width: 768px) {*/
+/*  #cover-image, #cover-text {*/
+/*    flex: 100%;*/
+/*    max-width: 100%;*/
+/*  }*/
+/*}*/
+
+/*!* Mobile *!*/
+/*@media (max-width: 480px) {*/
+/*    #intro {*/
+/*        width: 95%;*/
+/*    }*/
+/*}*/
+
+/*@media (max-width: 350px) {*/
+/*    .success {*/
+/*        font-size: 1.1rem;*/
+/*        left: .5rem;*/
+/*    }*/
+/*}*/
+
+
+/* Smartwatches (max-width: 320px) */
+@media (max-width: 320px) {
+    /* Add styles for very small screens like smartwatches */
 }
 
-/* Mobile */
-@media (max-width: 480px) {
-    #intro {
-        width: 95%;
-    }
+/* Phones (max-width: 600px) */
+@media (max-width: 600px) {
+    /* Add styles for smartphones */
 }
 
-@media (max-width: 350px) {
-    .success {
-        font-size: 1.1rem;
-        left: .5rem;
-    }
+/* Tablets and Large Phones (max-width: 768px) */
+@media (max-width: 768px) {
+    /* Add styles for tablets and larger phones in portrait mode */
 }
 
+/* Small Laptops (max-width: 1024px) */
+@media (max-width: 1024px) {
+    /* Add styles for small laptops and large tablets in landscape mode */
+}
+
+/* Desktops and Larger Screens (max-width: 1200px) */
+@media (max-width: 1200px) {
+    /* Add styles for desktops and monitors */
+}
+
+/* Extra Large Screens (max-width: 1600px) */
+@media (max-width: 1600px) {
+    /* Add styles for ultra-wide screens like TVs or large monitors */
+}

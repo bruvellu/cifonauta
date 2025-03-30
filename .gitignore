@@ -1,10 +1,12 @@
 *.pyc
 *.swp
 tasks.py
+fabfile.py
+justfile
 static/*
 virtual/*
-site_media/*
-source_media/*
+media_files/cache
+media_files/uploads
 logs/*
 wiki/*
 backups/*
@@ -13,3 +15,5 @@ meta/static/css/style.min.css
 meta/static/js/plugins.min.js
 meta/static/js/script.min.js
 *~
+.env
+.idea

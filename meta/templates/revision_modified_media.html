@@ -1,0 +1,122 @@
+{% extends 'dashboard.html' %}
+{% load static custom_filters %}
+
+{% block title %}Atualizar Mídia{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="form-container">
+    <h2>Alterações feitas pelo autor</h2>
+    {% if messages %}
+    <div class="messages-div hide-messages-animation">
+    {% for message in messages %}
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <form class="margin-top--2" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="media-infos">
+            <div>
+                <p class="media-infos__label">Mídia:</p>
+                <a href="{{ media.file.url }}" target="_blank" class='media-wrapper'>
+                  <img class="media-cover" src="{{ MEDIA_URL }}{{ media.file_cover }}">
+                </a>
+            </div>
+            <div>
+                <p class="media-infos__label">Autor:</p>
+                <div>{{ media.user }}</div>
+            </div>
+            <div>
+                <p class="media-infos__label">Data de Criação:</p>
+                <div>
+                    {% if media.date_created.date|date:"d/m/Y" == '01/01/0001' %}
+                    Data desconhecida
+                    {% else %}
+                    {{ media.date_created.date }}
+                    {% endif %}
+                </div>
+            </div>
+            <div>
+                <p class="media-infos__label">Data de modificação:</p>
+                <div>{{ media.date_modified }}</div>
+            </div>
+            <div>
+                <p class="media-infos__label">Alterações feitas pelo:</p>
+                <div>
+                    {% if modified_media.altered_by_author %}
+                    {{ media.user }} (Autor)
+                    {% else %}
+                    {{ modified_media.editor_person }} (Editor)
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="comparison-table modified-media-table">
+                <thead class="comparison-table-head">
+                    <tr>
+                        <th class='comparison-label-column no-shrink-cell--large'></th>
+                        <th class="no-shrink-cell">Original</th>
+                        <th class="no-shrink-cell">Novo</th>
+                    </tr>
+                </thead>
+                <tbody class="comparison-table-body">
+                    {% for field in modified_media_form %}
+
+                    {% get_field_value media field.name as media_value %}
+                    {% get_field_value modified_media field.name as modified_value %}
+
+                    <tr class="comparison-row {% if media_value != modified_value %}highlight-difference{% endif %}">
+                        <td class="comparison-label-row">
+                            {{ field.label_tag }}
+                            {% if field.field.required %}
+                            <span class='required'>*</span>
+                            {% endif %}
+                        </td>
+                        {% if field.name == 'authors' or field.name == 'taxa' or field.name == 'tags' or field.name == 'references' %}
+                        <td>
+                            <ul>
+                                {% for item in media_value %}
+                                <li>
+                                    {{ item }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                {% for item in modified_value %}
+                                <li>
+                                    {{ item }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        {% else %}
+                        <td>{{ media_value }}</td>
+                        <td>{{ modified_value }}</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class='buttons-div'>
+            <button class='primary-button submit-button' type="submit" name="action" value="accept">Aceitar alterações</button>
+            <button class='primary-button cancel-button' type="submit" name="action" value="discard" formnovalidate>Descartar alterações</button>
+        </div>
+
+        <div class='hide-div'>
+            {% for field in modified_media_form %}
+            {{ field }}
+            {% endfor %}
+        </div>
+    </form>
+</div>
+
+
+
+{% endblock %}

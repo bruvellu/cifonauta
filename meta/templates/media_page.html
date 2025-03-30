@@ -3,39 +3,55 @@
 {% get_current_language as LANGUAGE_CODE %}
 
 {% block title %}{{ media.title }} | {{ block.super }}{% endblock %}
-{% block meta-keywords %}{% show_set tags '' '' ', ' '' %}, {% show_set authors '' '' ', ' '' %}, {% show_set taxa '' '' ', ' '' %}, {% show_set sources '' '' ', ' '' %}, {{ media.location.name }}, {{ media.city.name }}, {{ media.state.name }}, {{ media.country.slug }}{% endblock %}
+{% block meta-keywords %}{% show_set tags '' '' ', ' '' %},{% show_set authors '' '' ', ' '' %},{% show_set taxa '' '' ', ' '' %}, {% show_set editors '' '' ', ' '' %}, {{ media.location.name }}, {{ media.city.name }}, {{ media.state.name }}, {{ media.country.slug }}{% endblock %}
 {% block meta-description %}{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %} {% trans 'Por' %} {% show_set authors '' '' ', ' '' %}.{% endblock %}
 {% block meta-author %}{% show_set authors '' '' ', ' '' %}{% endblock %}
 
 {% block extra-head %}
-
+<link rel="stylesheet" href="{{ STATIC_URL }}css/media_page.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/related.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/photo.css">
 <meta property="og:title" content="{{ media.title }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.sitepath }}" />
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ MEDIA_URL }}{{ media.file_medium }}" />
 <meta property="og:description" content="{% if media.caption %}{{ media.caption }}{% else %}{{ media.title }}{% endif %}; {% show_set authors '' '' ', ' '' %}" />
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
-
 {% if media.datatype == 'video' %}
-<meta property="og:video" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ media.sitepath }}" />
-<meta property="og:video:height" content="{{ media.dimensions|slice:"4:" }}" />
+<meta property="og:video" content="{{ request.scheme }}://{{ request.get_host }}{{ MEDIA_URL }}{{ media.file_medium }}" />
 <meta property="og:video:width" content="512" />
 <meta property="og:video:type" content="application/x-shockwave-flash" />
 <meta property="og:type" content="cifonauta:video" />
 {% else %}
 <meta property="og:type" content="cifonauta:photo" />
 {% endif %}
-
 <link rel="stylesheet" href="{{ STATIC_URL }}js/videojs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
-
 {% endblock %}
 
 {% block content %}
-<section id="media-page" class="span-16">
+<section id="media-page-content">
 	<div id="ajaxcontent">
 		{% include "media_page_ajax.html" %}
 	</div>
+	
 </section>
+{% endblock %}
 
+{% block sidebar %}
+<aside id="media-page-aside" class="main aside-sidebar">
+	<div class="borders block shadow">
+	  {% show_tree taxa %}
+	</div>
+
+	{% if user.is_staff %}
+	<div class="borders block shadow" id="admin-controls">
+	  {% include 'admin_tools.html' %}
+	</div>
+	{% endif %}
+
+</aside>
+{% endblock %}
+
+{% block extra-foot %}
 <script>
 
 $(document).ready( function(){
@@ -71,26 +87,7 @@ $(document).ready( function(){
 	        $('body').css('cursor', 'default');
       	});
       };
-      
-      
-      
 });
+
 </script>
-
-{% endblock %}
-
-{% block sidebar %}
-<aside class="main span-8 last">
-
-	<div class="borders block shadow">
-	  {% show_tree taxa %}
-	</div>
-
-	{% if user.is_authenticated %}
-	<div class="borders block shadow" id="admin-controls">
-	  {% include 'admin_tools.html' %}
-	</div>
-	{% endif %}
-
-</aside>
 {% endblock %}

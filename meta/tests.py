@@ -1,23 +1,38 @@
-"""
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
-
-Replace these with more appropriate tests for your application.
-"""
-
 from django.test import TestCase
+from django.urls import reverse
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.failUnlessEqual(1 + 1, 2)
+#TODO: Assert file name matches UUID field.
+#TODO: Make test for Media's normalize_title and normalize_caption methods
+#TODO: Check that the default ordering of model querysets didn't change
+#TODO: Test detection of duplicate references on import
+#TODO: Check synchronization of valid/invalid media
 
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
 
->>> 1 + 1 == 2
-True
-"""}
+class WebsiteTests(TestCase):
+    '''Check if website pages are loading properly.'''
+
+    pages = [
+            {'url': '/', 'name': 'home'},
+            {'url': '/tours/', 'name': 'tours_url'}
+            ]
+
+    def test_response_status_code(self):
+
+        for page in self.pages:
+
+            with self.subTest(url=page['url']):
+                response = self.client.get(page['url'])
+                self.assertEqual(response.status_code, 200)
+
+            with self.subTest(name=page['name']):
+                response = self.client.get(reverse(page['name']))
+                self.assertEqual(response.status_code, 200)
+
+    # def test_response_status_code_for_page_url(self, page):
+        # response = self.client.get(page.url)
+        # self.assertEqual(response.status_code, 200)
+
+    # def test_response_status_code_for_page_name(self, page):
+        # response = self.client.get(reverse(page.name))
+        # self.assertEqual(response.status_code, 200)
 

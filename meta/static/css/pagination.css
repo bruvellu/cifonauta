@@ -1,0 +1,11 @@
+footer.paginator {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 1rem;
+}
+
+@media (max-width: 1142px) {
+  footer.paginator  {
+      max-width: 35.5rem;
+  }
+}

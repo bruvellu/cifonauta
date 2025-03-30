@@ -1,6 +1,7 @@
-from modeltranslation.translator import register, TranslationOptions
-from meta.models import Media, Taxon, Tag, Category, City, State, Country, Tour
 from django.contrib.flatpages.models import FlatPage
+from modeltranslation.translator import register, TranslationOptions
+
+from meta.models import Media, Taxon, Tag, Category, City, State, Country, Tour, ModifiedMedia
 
 
 @register(FlatPage)
@@ -9,7 +10,11 @@ class FlatPageTranslation(TranslationOptions):
 
 @register(Media)
 class MediaTranslation(TranslationOptions):
-    fields = ('title', 'caption',)
+    fields = ('title', 'caption', 'acknowledgments')
+
+@register(ModifiedMedia)
+class ModifiedMedia2Translation(TranslationOptions):
+    fields = ()
 
 @register(Taxon)
 class TaxonTranslation(TranslationOptions):
@@ -23,20 +28,22 @@ class TagTranslation(TranslationOptions):
 class CatTranslation(TranslationOptions):
     fields = ('name', 'description',)
 
-# TODO: Translate locations as well.
-
 @register(City)
 class CityTranslation(TranslationOptions):
-    fields = ('name',)
+    fields = ()
+    # fields = ('name',)
 
 @register(State)
 class StateTranslation(TranslationOptions):
-    fields = ('name',)
+    fields = ()
+    # fields = ('name',)
 
 @register(Country)
 class CountryTranslation(TranslationOptions):
-    fields = ('name',)
+    fields = ()
+    # fields = ('name',)
 
 @register(Tour)
 class TourTranslation(TranslationOptions):
     fields = ('name', 'description',)
+

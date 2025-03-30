@@ -1,0 +1,51 @@
+let notAuthorsOptions = document.querySelector('#not-authors-options')
+let searchNotAuthors = document.querySelector('#search-not-authors')
+let selectedAuthors = document.querySelector('#selected-authors')
+let searchAuthors = document.querySelector('#search-authors')
+let selectAllAuthors = document.querySelector('#select-all-authors')
+let removeAllAuthors = document.querySelector('#remove-all-authors')
+
+let enableAuthors = new TwoTables(
+  notAuthorsOptions,
+  searchNotAuthors,
+  selectedAuthors,
+  searchAuthors,
+  selectAllAuthors,
+  removeAllAuthors
+)
+
+users = JSON.parse(document.querySelector('#users-json').textContent)
+
+const divideAuthors = (data) => {
+  let authors = data.filter(user => user.is_author)
+  let notAuthors = data.filter(user => !user.is_author)
+
+  return [authors, notAuthors]
+}
+
+enableAuthors.setData(users, 'author_ids', divideAuthors)
+
+
+
+let selectedUsers = document.querySelector('#selected-users')
+let userOptions = document.querySelector('#user-options')
+let curationOptions = document.querySelector('#id_curation')
+let userOptionsList = document.querySelectorAll('.user-option')
+let searchUserOptions = document.querySelector('#search-user-options')
+let searchUsersIncuration = document.querySelector('#search-users-in-curation')
+let selectAllUsers = document.querySelector('#select-all-users')
+let removeAllUsers = document.querySelector('#remove-all-users')
+
+let enableEditors = new TwoTables(
+  userOptions, 
+  searchUserOptions, 
+  selectedUsers, 
+  searchUsersIncuration, 
+  selectAllUsers, 
+  removeAllUsers, 
+  curationOptions
+)
+
+authors = JSON.parse(document.querySelector('#authors-json').textContent)
+
+enableEditors.setData(authors, 'editor_ids')

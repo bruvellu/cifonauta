@@ -7,6 +7,7 @@
 - [Upload new media](media-upload.md)
 - [Thumbnail management](thumbnails.md)
 - [Taxonomic management](taxonomy.md)
+- [Translations management](translations.md)
 - [Metadata standard](metadata.md)
 - [Changelog](changelog.md)
 - [Véliger](veliger.md)

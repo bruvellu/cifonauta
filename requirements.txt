@@ -1,12 +1,38 @@
+# Requirement for pip
 wheel
-django==4.2.1
-psycopg2==2.8.6
-django-mptt
-django-rosetta
-django-modeltranslation==0.17.3
-django-debug-toolbar
-sorl-thumbnail
-requests
-pillow
-fabric
-suds
+# Django itself, upgrade manually
+django==5.1.7
+#TODO: Update PostgreSQL library?
+psycopg2==2.9.6
+# For taxon hierarchical tree
+django-mptt==0.16.0
+# For template translations
+django-rosetta==0.10.1
+# For model translations
+django-modeltranslation==0.19.11
+# Manages most of the site's thumbnails
+sorl-thumbnail==12.11.0
+# Image processing library
+pillow==11.0.0
+# Helper for handling different environments
+python-dotenv==1.0.1
+# For local debugging
+django-debug-toolbar==4.4.6
+# Deployment scripts
+fabric==3.2.2
+#TODO: For what?
+requests==2.32.3
+#TODO: For what?
+suds==1.2.0
+#TODO: Revise captcha for login
+django-simple-captcha==0.6.0
+#TODO: Revise Read/Write image metadata
+py3exiv2==0.12.0
+#TODO: Revise Read/Write image metadata
+piexif==1.1.3
+#TODO: Revise API framework (needed?)
+djangorestframework==3.15.2
+# Language detector to help managing translations
+lingua-language-detector==2.0.2
+# Verify mimetype of uploaded files
+python-magic==0.4.27

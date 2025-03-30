@@ -35,7 +35,18 @@ def taxon_paths(taxon):
 @register.inclusion_tag('thumb_org.html', takes_context=True)
 def print_thumb(context, field, obj):
     '''Generates random thumbnail for supplied metadata.'''
-    # Load model and parameters
+    Media = apps.get_model('meta', 'Media')
+    media_url = context['MEDIA_URL']
+    params = {field: obj, 'is_public': True}
+    try:
+        media = Media.objects.filter(**params).order_by('?')[0]
+    except:
+        media = ''
+    return {'media': media, 'MEDIA_URL': media_url}
+
+@register.inclusion_tag('thumb_org_tour.html', takes_context=True)
+def print_thumb_tour(context, field, obj):
+    '''Generates random thumbnail for supplied metadata.'''
     Media = apps.get_model('meta', 'Media')
     media_url = context['MEDIA_URL']
     params = {field: obj, 'is_public': True}
@@ -114,10 +125,10 @@ def slicer(query, media_id):
     return rel_query, relative
 
 
-def mediaque(media, qobj):
+def get_media_queryset(media, qobj):
     '''Returns queryset used in the linear browser.'''
     Media = apps.get_model('meta', 'Media')
-    query = Media.objects.filter(qobj, is_public=True).order_by('id')
+    query = Media.objects.filter(qobj, is_public=True).order_by('id').distinct()
     return query
 
 @register.inclusion_tag('related.html', takes_context=True)
@@ -134,17 +145,17 @@ def show_related(context, media, form, related):
         choices[c[0]] = c[1]
 
     # Se o choice escolhido no navegador for:
-    if related == 'person':
+    if related == 'author':
         # Salva queryset para performance.
-        persons = media.person_set.all()
-        if persons:
+        authors = media.authors.all()
+        if authors:
             qobj = Q()
-            for meta in persons:
+            for meta in authors:
                 # Adiciona parâmetros para futuro query usando Q.
-                qobj.add(Q(person=meta), Q.OR)
+                qobj.add(Q(authors=meta), Q.OR)
             if qobj.__len__():
                 # Se objeto não estiver vazio, descobrir seu tipo (foto ou vídeo) e gerar o queryset.
-                query = mediaque(media, qobj)
+                query = get_media_queryset(media, qobj)
                 # Processar queryset para se adaptar ao navegador linear.
                 rel_media, relative = slicer(query, media.id)
             else:
@@ -153,32 +164,23 @@ def show_related(context, media, form, related):
             rel_media = ''
 
     elif related == 'taxon':
-        taxa = media.taxon_set.all()
+        taxa = media.taxa.all()
         if taxa:
             qobj = Q()
             for meta in taxa:
-                qobj.add(Q(taxon=meta), Q.OR)
+                qobj.add(Q(taxa=meta), Q.OR)
             if qobj.__len__():
-                query = mediaque(media, qobj)
+                query = get_media_queryset(media, qobj)
                 rel_media, relative = slicer(query, media.id)
             else:
                 rel_media = ''
         else:
             rel_media = ''
 
-    # FIXME: Size is not an object anymore, disable for now.
-    # elif related == 'size':
-        # if media.size:
-            # qobj = Q(size=media.size_id)
-            # query = mediaque(media, qobj)
-            # rel_media, relative = slicer(query, media.id)
-        # else:
-            # rel_media = ''
-
     elif related == 'location':
         if media.location:
             qobj = Q(location=media.location_id)
-            query = mediaque(media, qobj)
+            query = get_media_queryset(media, qobj)
             rel_media, relative = slicer(query, media.id)
         else:
             rel_media = ''
@@ -186,7 +188,7 @@ def show_related(context, media, form, related):
     elif related == 'city':
         if media.city:
             qobj = Q(city=media.city_id)
-            query = mediaque(media, qobj)
+            query = get_media_queryset(media, qobj)
             rel_media, relative = slicer(query, media.id)
         else:
             rel_media = ''
@@ -194,15 +196,15 @@ def show_related(context, media, form, related):
     elif related == 'state':
         if media.state:
             qobj = Q(state=media.state_id)
-            query = mediaque(media, qobj)
+            query = get_media_queryset(media, qobj)
             rel_media, relative = slicer(query, media.id)
         else:
             rel_media = ''
 
-    elif related == u'country':
+    elif related == 'country':
         if media.country:
             qobj = Q(country=media.country_id)
-            query = mediaque(media, qobj)
+            query = get_media_queryset(media, qobj)
             rel_media, relative = slicer(query, media.id)
         else:
             rel_media = ''
@@ -211,8 +213,8 @@ def show_related(context, media, form, related):
         rel_media = ''
 
     # Mostra os valores avaliados para o navegador linear.
-    if related == 'person':
-        crumbs = persons
+    if related == 'author':
+        crumbs = authors
     elif related == 'taxon':
         crumbs = taxa
     else:
@@ -235,14 +237,13 @@ def show_stats():
 
 @register.inclusion_tag('tree.html')
 def show_tree(current=None):
-    '''Passa objeto para gerar árvore.
+    '''Get taxa with published media to generate the tree.
 
-    Usa o recursetree do MPTT no template para gerar a árvore. Aceita argumento opcional para pré-expandir os nós mostrando os táxons da imagem aberta.
-
-    Usar o selected_related para pegar o 'parent' diminuiu 100 queries!
+    The tree is generated in the template using the `recursetree` tag from the MPTT package. If the current argument is passed, the tree will be expanded at that node.
     '''
     Taxon = apps.get_model('meta', 'Taxon')
-    taxa = Taxon.objects.select_related('parent')
+    taxa = Taxon.objects.exclude(media__isnull=True).exclude(media__status__in=['loaded', 'draft', 'submitted']).get_ancestors(include_self=True)
+
     return {'taxa': taxa, 'current': current}
 
 @register.inclusion_tag('search_box.html')
@@ -342,6 +343,7 @@ def paged_url(query_string, page_number):
         url = url + 'page=%d' % page_number
     return url
 
+#TODO: Improve or simplify show_set tag
 @register.inclusion_tag('sets.html')
 def show_set(set, prefix, suffix, sep, method='name', before='', after=''):
     '''Gera série a partir de um set.

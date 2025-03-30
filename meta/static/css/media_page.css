@@ -1,0 +1,154 @@
+#content {
+  display: flex;
+  justify-content: space-between;
+  /*gap: 2rem;*/
+  flex-wrap: wrap;
+}
+
+#media-page-content {
+  flex: 0.6;
+    /*display: flex;*/
+    /*gap: 2rem;*/
+    /*max-width: 45rem;*/
+}
+
+#media-page-aside {
+  flex: 0.3;
+}
+
+@media (max-width: 800px) {
+  #content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+} 
+
+#media-page-content a {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+#single {
+    display: flex;
+    flex-direction: column;
+    max-width: 45rem;
+}
+
+#media-subcontainer {
+    display: flex;
+}
+
+#media-subcontainer > div:first-child {
+    /* max-width: 32rem; */
+}
+
+#author {
+  font-size: 1.1em;
+  font-weight: bold;
+  position: relative;
+  padding-top: .3rem;
+  text-align: right;
+  clear: both;
+}
+
+#meta {
+    padding: .625rem;
+}
+
+#meta > div:first-child {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: .5rem;
+    padding-bottom: .9rem;
+}
+
+/*.taxonomy {*/
+    /*margin-right: 1.5rem;*/
+/*}*/
+
+/*.location {*/
+    /*width: 14.375rem;*/
+/*}*/
+
+#media-sideinfo2 {
+    display: none;
+    border-radius: 0;
+}
+
+#media-sideinfo2 > ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    flex: 1;
+    gap: 0 1.5rem;
+    flex-wrap: wrap;
+    border-radius: 0;
+}
+
+#media-sideinfo2 > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#media-sideinfo2 > div > div:first-child {
+    height: -webkit-fill-available;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#media-sideinfo {
+    display: flex;
+    flex-direction: column;
+    width: 6rem;
+    margin-left: -1px;
+    -moz-border-radius: 0 .625rem 0 0;
+    -webkit-border-radius: 0 .625rem 0 0;
+    border-radius: 0 .625rem 0 0;
+}
+
+.scale-legend {
+    display: flex;
+    width: 100%;
+}
+
+.scale-legend > div {
+    width: 100%;
+    height: 1.25rem;
+}
+
+#references > div {
+    display: flex;
+    flex-direction: column;
+    gap: .7rem;
+}
+
+@media (max-width: 940px) {
+    .scale-legend > div {
+        width: 100%;
+    }
+}
+
+@media (max-width: 900px) {
+    #media-sideinfo {
+        display: none;
+    }
+
+    #media-sideinfo2 {
+        display: flex;
+    }
+}
+
+@media (max-width: 840px) {
+    .content-only {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 300px) {
+    .scale-legend > div {
+        width: .8rem;
+        height: 1rem;
+    }
+}

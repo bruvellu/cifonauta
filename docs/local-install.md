@@ -5,7 +5,7 @@
 First, open a terminal and install the required system packages (needs admin privileges):
 
 ```
-sudo apt install git python3 python3-dev python3-pip python3-venv python3-gi postgresql postgresql-server-dev-all libpq-dev yui-compressor ffmpeg imagemagick gettext language-pack-pt gir1.2-gexiv2-0.10 libjpeg-dev zlib1g-dev
+sudo apt install git python3 python3-all-dev python3-pip python3-venv python3-gi postgresql postgresql-server-dev-all libpq-dev yui-compressor ffmpeg imagemagick gettext language-pack-pt gir1.2-gexiv2-0.10 libjpeg-dev zlib1g-dev libexiv2-dev libboost-python-dev g++ libmagic1
 ```
 
 ## Clone the repository
@@ -86,7 +86,7 @@ createdb -E UTF8 -T template0 -l pt_BR.UTF8 cebimar
 To populate the empty database with the latest dump:
 
 ```
-gunzip < cebimar_2019-09-21_1234.sql.gz | psql cebimar
+gunzip < cebimar_2023-05-09_2117.sql.gz | psql cebimar
 ```
 
 ## Add media files

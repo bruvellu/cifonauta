@@ -41,11 +41,11 @@
     </ul>
     {% endif %}
 
-    {% if sources %}
-    <li>Especialista(s)</li>
+    {% if editors %}
+    <li>Editor(es)</li>
     <ul>
-        {% for source in sources %}
-        <li><a href="/admin/meta/source/{{ source.id }}/">{{ source.name }}</a></li>
+        {% for editor in editors %}
+        <li><a href="/admin/meta/person/{{ editor.id }}/">{{ editor.name }}</a></li>
         {% endfor %}
     </ul>
     {% endif %}

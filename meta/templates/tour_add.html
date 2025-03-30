@@ -1,0 +1,79 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block extra_head %}
+<script src="{% static 'js/tour.js' %}" defer></script>
+{% endblock %}
+
+{% block title %}Adicionar Tour Temático{% endblock %}
+
+{% block dashboard_content %}
+<div class="form-container">
+    <h2>Adicionar novo tour temático</h2>
+    {% if messages %}
+    <div class="messages-div hide-messages-animation">
+    {% for message in messages %}
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <form class="dashboard-form tour-form" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        {% if field == form.media %}
+        <div class="field">
+            <div class="field__label">
+                {{ field.label_tag }}
+                {% if field.field.required %}
+                <span class='required'>*</span>
+                {% endif %}
+            </div>
+            <div class="field__input-container">
+                <div class='input-and-options-wrapper'>
+                    <div id="input-container">
+                        <div id="selected-options-container"></div>
+                        <input id="search-options-input" type="text" placeholder="Selecione as mídias" autocomplete="off">
+                    </div>
+
+                    <div id="options-container" class="hide-div">
+                        <ul id="options-ul"></ul>
+                    </div>
+                </div>
+                {% if field.help_text %}
+                <span class="field__help-text">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="field">
+            <div class="field__label">
+                {{ field.label_tag }}
+                {% if field.field.required %}
+                <span class='required'>*</span>
+                {% endif %}
+            </div>
+            <div class="field__input-container">
+                {% if field.errors %}
+                <ul class="field__errors">
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {{ field }}
+                {% if field.help_text %}
+                <span class="field__help-text">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        <div class="buttons-div">
+            <button class='primary-button submit-button' type="submit">Criar Tour</button>
+        </div>
+    </form>
+</div>
+
+
+
+{% endblock %}

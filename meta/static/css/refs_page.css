@@ -1,0 +1,97 @@
+/*
+    Style to References Page
+*/
+
+.refs-main {
+    width: 100%;
+}
+
+.refs-title {
+    width: 100%;
+}
+
+.refs-subtitles, .refs-citation {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.refs-citation {
+    margin:0 0 1em;
+}
+
+.refs-subtitle-label {
+    display: none;
+}
+
+.refs-subtitle-example, .refs-citation-thumb {
+    width: 130px;
+}
+
+.refs-subtitle-citation, .refs-citation-info {
+    width: 60%;
+}
+
+.refs-subtitle-more, .refs-citation-link {
+    width: 20%;
+}
+
+.refs-citation-info > *{
+    width: 100%;
+    overflow-wrap: break-word;
+}
+
+.thumb-duration {
+    position: relative;
+}
+
+/*
+    MEDIA
+*/
+
+@media (max-width: 830px) {
+    .refs-subtitle-citation, .refs-citation-info {
+        width: 53%;
+    }
+    
+    .refs-subtitle-more, .refs-citation-link {
+        width: 16%;
+    }
+}
+
+@media (max-width: 664px) {
+    .refs-subtitle-citation, .refs-citation-info {
+        width: 50%;
+    }
+    
+    .refs-subtitle-more, .refs-citation-link {
+        width: 20%;
+    }
+}
+
+@media (max-width: 585px) {
+    .refs-citation {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        margin: 0px 0px 40px 0px;
+    }
+    
+    .refs-subtitles {
+        display: none;
+    }
+
+    .refs-citation-thumb {
+        width: 130px;
+    }
+    
+    .refs-citation-info {
+        width: 100%;
+    }
+    
+    .refs-citation-link {
+        width: 100%;
+    }
+}

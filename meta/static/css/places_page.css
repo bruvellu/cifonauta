@@ -1,0 +1,15 @@
+.main-places {
+    display: flex; 
+    flex-wrap: wrap; 
+    width: 100%; 
+    gap: 1em;
+}
+
+@media (max-width: 799px) {
+    .main-places {
+        justify-content: center;
+    }
+    header > h1 {
+        text-align: center;
+    }
+}

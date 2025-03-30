@@ -1,4 +1,3 @@
-from django.conf.urls import *
 from datatrans import views
 
 urlpatterns = patterns('',

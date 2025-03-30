@@ -1,0 +1,25 @@
+body {
+    max-width: 1154px;
+    margin: 0 auto;
+    padding: 0 2.5rem;
+}
+
+#div-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    width: 100%;
+}
+
+@media (max-width: 595px) {
+    .content-and-sidebar {
+        flex-direction: column-reverse;
+        gap: 1rem;
+    }
+} 
+
+@media (max-width: 350px) {
+    body {
+        padding: 0 1rem;
+    }
+}

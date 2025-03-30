@@ -1,0 +1,187 @@
+.main-tours-page {
+    width: 100%;
+}
+
+#tour {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+    gap: 0rem 2rem;
+}
+
+article .tour-description {
+  flex: 1;
+}
+
+article .metagroup{
+  flex: 0.7;
+}
+
+/* Slide */
+#slides {
+    width: 100%;
+    display: flex;
+    flex: 1;
+}
+
+.slides-container div.eachslide {
+  width: 100vw !important;
+  display:block;
+}
+
+.content-slider {
+    display: flex;
+    position: relative;
+    width: 100vw;
+    gap: 1rem;
+}
+
+.content-slider > .slide-media {
+  /*flex: 0.2;*/
+  width: 40em;
+}
+
+.content-slider > .slide-media img {
+    width: 100%;
+}
+
+.content-slider > .slide-info {
+  /*flex: 0.2;*/
+  width: 25em;
+}
+
+/*
+Slides container
+Important:
+Set the width of your slides container
+Set to display none, prevents content flash
+ */
+.slides-container {
+  width: 100%;
+  display:none;
+  margin-bottom:2rem;
+  background:#fafafa;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  padding:12px 10px 8px;
+  border-color:#eee #fafafa;
+  border-style:solid;
+  border-width:5px;
+}
+
+#slides .next {
+  position:relative;
+  top:2em;
+}
+
+#slides .prev {
+  position:relative;
+  top:2em;
+}
+
+/*
+Each slide
+Important:
+Set the width of your slides
+If height not specified height will be set by the slide content
+Set to display block
+ */
+
+.eachslide img { 
+  -webkit-box-shadow: 2px 2px 5px #aaa;
+  -moz-box-shadow: 2px 2px 5px #aaa;
+  box-shadow: 2px 2px 5px #aaa; 
+}
+
+/*
+Optional:
+Reset list default style
+ */
+#paginator-container {
+  margin-bottom:2em;
+}
+
+#slides .pagination {
+  list-style:none;
+  display:inline;
+  padding:0;
+  margin:0;
+}
+#slides .pagination li {
+  float:left;
+  padding:0 5px 0 0;
+}
+
+#slides .pagination li.current { 
+  -moz-opacity:0.4;
+  opacity:0.4;
+  filter:alpha(opacity=40);
+  transform: scale(1);
+  transform-origin: 0 0;
+}
+
+#slides .pagination img {
+  width:90px;
+}
+
+/*
+Optional:
+Show the current slide in the pagination
+ */
+.pagination .current a {
+  color:red;
+}
+
+/* Tablet */
+@media (max-width: 980px) {
+
+    .content-slider > .slide-media {
+        width: 35em;
+    }
+
+    .content-slider > .slide-info{
+        width: 20em;
+    }
+
+    .citation a {
+        word-break: break-all;
+    }
+}
+
+@media (max-width: 830px) {
+
+    .content-slider > .slide-media {
+        width: 30em;
+    }
+  }
+
+@media (max-width: 770px) {
+
+    .content-slider > .slide-media {
+        width: 25em;
+    }
+  }
+
+/* Mobile */
+@media (max-width: 700px) {
+
+    #tour {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .content-slider {
+        flex-direction: column;
+    }
+
+    .content-slider > .slide-info {
+        width: 50vw;
+        margin-left: 0.5rem;
+    }
+
+    .content-slider > .slide-media img {
+        width: 62vw;
+    }
+}

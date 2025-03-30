@@ -1,0 +1,27 @@
+<div data-modal="location" id="location-modal" class="modal modal--small">
+  <header class="modal-header">
+      <p>Adicione um novo local</p>
+      <button data-close-modal="location" class="close-modal-button">
+          <div class='line1'></div>
+          <div class='line2'></div>
+      </button>
+  </header>
+  <main class="modal-body">
+      <form method="post" data-form="location" class="modal-form">
+          {% csrf_token %}
+          {% for field in location_form %}
+          <div class="field field--modal">
+              {{ field.label_tag }}
+              <div class="field__input-container">
+                  {{ field }}
+                  {% if field.help_text %}
+                  <span class="field__help-text">{{ field.help_text }}</span>
+                  {% endif %}
+              </div>
+          </div>
+          {% endfor %}
+          <div data-response-message="location"></div>
+          <button class="secondary-button" type="submit" name="action" value="location" data-submitter="location">Adicionar</button>
+      </form>
+  </main>
+</div>

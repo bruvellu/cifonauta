@@ -1,0 +1,32 @@
+#content {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+#organization-content {
+  flex: 0.6;
+}
+
+#organization-aside {
+  flex: 0.3;
+}
+
+.description-text{
+    font-weight: normal;
+}
+
+/* Tablet layout */
+@media (max-width: 990px) {
+    #organization-content {
+        width: 100%;
+    }
+}
+
+@media (max-width: 280px) {
+    .thumbs-org > a >  img {
+        width: 35vw;
+    }
+}
+

@@ -1,0 +1,20 @@
+{% load i18n thumbnail %}
+
+{% if taxa %}
+  {% include 'biodb.html' %}
+{% endif %}
+
+{% if media.scale %}
+{% spaceless %}
+<div id="scale">
+  <div class="scale-{{ media.scale }}" id="scale-string">{% trans 'Escala' %}<br>{% trans media.get_scale_display %}</div>
+  <div class="scale-legend">
+    <div class="scale-micro" title="{% trans media.SCALE_CHOICES.0.1 %}"></div>
+    <div class="scale-tiny" title="{% trans media.SCALE_CHOICES.1.1 %}"></div>
+    <div class="scale-visible" title="{% trans media.SCALE_CHOICES.2.1 %}"></div>
+    <div class="scale-large" title="{% trans media.SCALE_CHOICES.3.1 %}"></div>
+    <div class="scale-huge" title="{% trans media.SCALE_CHOICES.4.1 %}"></div>
+  </div>
+</div>
+{% endspaceless %}
+{% endif %}

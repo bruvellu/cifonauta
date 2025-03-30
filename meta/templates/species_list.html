@@ -1,0 +1,15 @@
+{% load i18n %}
+
+{% if species %}
+<h2>{% trans 'Espécies' %}</h2>
+<p> {% trans 'As vinte espécies com mais imagens.' %}
+<ol id="species-list">
+  {% for sp in species %}
+  <li>
+    <a href="{{ sp.get_absolute_url }}"><em>{{ sp.name }}</em></a> <span class="quiet">({{ sp.media.count }})</span>
+  </li>
+  {% endfor %}
+</ol>
+{% else %}
+<h2>{% trans 'Nenhuma espécie no banco' %}</h2>
+{% endif %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Contribuidores (autores, curadores e editores)' %} | {{ block.super }}{% endblock %}
+{% block meta-keywords %}{% trans 'autores, curadores, editores, biodiversidade, biologia marinha' %}{% endblock %}
+{% block meta-description %}{% trans 'Autores, curadores e editores incluídos no banco de imagens Cifonauta.' %}{% endblock %}
+{% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
+
+{% block extra-head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/contributors_page.css">
+<meta property="og:title" content="{% trans 'Autores, curadores e editores' %}" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:description" content="{% trans 'Autores, curadores e editores incluídos no banco de imagens Cifonauta.' %}" />
+<meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
+<meta property="og:type" content="article" />
+{% endblock %}
+
+{% block content %}
+<section>
+    <header><h1>{% trans 'Contribuidores' %}</h1></header>
+    <div class="metadiv" id="contributors">
+      <div class="metagroup" id="authors">
+        <h2>{% trans 'Autores' %}</h2>
+        {% comment %}
+        <p class="quiet">{% trans 'Quem capturou a imagem' %}</p>
+        {% endcomment %}
+        {% print_metalist authors 'author' %}
+      </div>
+      <div class="metagroup" id="curators">
+        <h2>{% trans 'Curadores' %}</h2>
+        {% comment %}
+        <p class="quiet">{% trans 'Quem fez a revisão e a publicação' %}</p>
+        {% endcomment %}
+        {% print_metalist curators 'curator' %}
+      </div>
+      <div class="metagroup" id="editors">
+        <h2>{% trans 'Editores' %}</h2>
+        {% comment %}
+        <p class="quiet">{% trans 'Quem fez a edição dos metadados' %}</p>
+        {% endcomment %}
+        {% if editors %}
+          {% print_metalist editors 'editor' %}
+        {% else %}
+          <p class="quiet">{% trans 'Nenhum editor ainda...' %}</p>
+        {% endif %}
+      </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}

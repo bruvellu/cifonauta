@@ -1,0 +1,13 @@
+{% extends 'dashboard.html' %}
+
+{% block title %}Detalhes{% endblock %}
+
+{% block dashboard_content %}
+
+<h2>{{ media.title_pt_br }}</h2>
+<p>{{ media.author }}</p>
+<a href="{{ media.file.url }}" target="_blank">
+    <img src="{{ media.file.url }}" width="250px">
+</a>
+
+{% endblock %}

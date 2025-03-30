@@ -1,5 +1,7 @@
 from django.urls import path
+
 from . import views
+
 
 def extra(model, field):
     return {'model_name': model, 'field': field}
@@ -7,13 +9,40 @@ def extra(model, field):
 urlpatterns = [
         path('', views.home_page, name='home'),
 
+        # Módulo administrativo
+        path('dashboard/', views.dashboard, name='dashboard'),
+        path('dashboard/upload/step-1/', views.upload_media_step1, name='upload_media_step1'),
+        path('dashboard/upload/step-2/', views.upload_media_step2, name='upload_media_step2'),
+        path('dashboard/editing/', views.editing_media_list, name='editing_media_list'),
+        path('dashboard/editing/<int:media_id>/', views.editing_media_details, name='editing_media_details'),
+        path('dashboard/revision/', views.revision_media_list, name='revision_media_list'),
+        path('dashboard/revision/<int:media_id>/', views.revision_media_details, name='revision_media_details'),
+        path('dashboard/revision/modified/<int:media_id>/', views.revision_modified_media, name='revision_modified_media'),
+        path('dashboard/manage-users/', views.manage_users, name='manage_users'),
+        path('dashboard/tours/', views.tour_list, name='tour_list'),
+        path('dashboard/tours/add/', views.tour_add, name='tour_add'),
+        path('dashboard/tours/<int:pk>/', views.tour_details, name='tour_details'),
+        path('dashboard/curations/', views.my_curations_media_list, name='my_curations_media_list'),
+        path('dashboard/curations/<int:media_id>/', views.my_curations_media_details, name='my_curations_media_details'),
+        path('dashboard/medias/', views.my_media_list, name='my_media_list'),
+        path('dashboard/medias/<int:pk>/', views.my_media_details, name='my_media_details'),
+
+        path('download/<int:media_id>/', views.download_media, name='download_media'),
+
+        path('synchronize-fields', views.synchronize_fields, name='synchronize_fields'),
+        path('get-tour-medias', views.get_tour_medias, name='get_tour_medias'),
+        path('api/reference/', views.create_reference, name='create_reference'),
+        path('api/taxa/', views.create_taxa, name='create_taxa'),
+        path('api/location/', views.create_location, name='create_location'),
+        path('api/authors/', views.create_authors, name='create_authors'),
+
         # Menu
         path('search/', views.search_page, name='search_url'),
         path('organization/', views.org_page, name='org_url'),
         path('tags/', views.tags_page, name='tags_url'),
         path('taxa/', views.taxa_page, name='taxa_url'),
         path('places/', views.places_page, name='places_url'),
-        path('authors/', views.authors_page, name='persons_url'),
+        path('contributors/', views.contributors_page, name='persons_url'),
         path('literature/', views.refs_page, name='refs_url'),
         path('tours/', views.tours_page, name='tours_url'),
         path('press/', views.press_page, name='press_url'),
@@ -28,7 +57,11 @@ urlpatterns = [
         path('tag/<slug:slug>/', views.search_page, extra('Tag', 'tag'),
             name='tag_url'),
         path('author/<slug:slug>/', views.search_page, extra('Person',
-            'author'), name='person_url'),
+            'author'), name='author_url'),
+        path('curator/<slug:slug>/', views.search_page, extra('Person',
+            'curator'), name='curator_url'),
+        path('editor/<slug:slug>/', views.search_page, extra('Person',
+                'editor'), name='editor_url'),
         path('taxon/<slug:slug>/', views.search_page, extra('Taxon', 'taxon'),
             name='taxon_url'),
         path('place/<slug:slug>/', views.search_page, extra('Location',

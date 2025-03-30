@@ -3,25 +3,23 @@
 
 {% get_current_language as LANGUAGE_CODE %}
 
-<h2>{% trans 'Grupos' %}</h2>
-<ul class="root tree" id="colaptree">
+<h2>{% trans 'Classificação' %}</h2>
+<p>{% trans 'Árvore taxonômica dos grupos com imagens.' %}</p>
+<ul class="" id="tree">
   {% recursetree taxa %}
-  {% if node.rank %}
-  {% comment %} Necessário para espécies sem hierarquia {% endcomment %}
-    {% if node.parent or node.rank == 'Reino' or node.rank == 'Kingdom' %}
-    <li class="{{ node.rank|slugify }} {{ node.slug }} {% if node in current %}open{% endif %}" id="taxa{{ node.pk }}">
-      <span class="quiet">{{ node.rank }}</span> <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{{ node|sp_em }}</a>
-      {% if not node.is_leaf_node %}
-      <ul class="children tree"> {{ children }} </ul>
-      {% endif %}
-    </li>
+  {% if node.parent or node.rank_pt_br == 'Reino' %}
+  <li class="{{ node.rank|slugify }} {{ node.slug }} {% if node in current %}open{% endif %}" id="taxa{{ node.pk }}">
+    <span class="quiet">{{ node.rank }}</span> <a href="{{ node.get_absolute_url }}" title="{{ node.name }}">{{ node|sp_em }}</a>
+    {% if not node.is_leaf_node %}
+    <ul class="children tree"> {{ children }} </ul>
     {% endif %}
+  </li>
   {% endif %}
   {% endrecursetree %}
 </ul>
 
-<div id="itis" class="quiet">
+<div id="tree-footer" class="quiet">
   {% blocktrans %}
-  *Hierarquia taxonômica do <a href="https://marinespecies.org/">WoRMS</a>.
+  *Classificação baseada no <a href="https://marinespecies.org/" target="_blank">WoRMS</a>. Referência: WoRMS Editorial Board (2024). World Register of Marine Species. Disponível em <a href="https://marinespecies.org/" target="_blank">marinespecies.org</a> no <a href="https://www.vliz.be/" target="_blank">VLIZ</a>. doi:<a href="https://doi.org/10.14284/170" target="_blank">10.14284/170</a>.
   {% endblocktrans %}
 </div>

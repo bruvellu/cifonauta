@@ -17,10 +17,15 @@
 {% show_set authors '' '' ', ' '' %}
 {% endblock %}
 
+{% block meta-editor %}
+{% show_set editors '' '' ', ' '' %}
+{% endblock %}
+
 {% block extra-head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}css/tour_page.css">
 <meta property="og:title" content="{{ tour.name }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-<meta property="og:image" content="http://{{ request.get_host }}{{ MEDIA_URL }}{{ thumb }}" />
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ MEDIA_URL }}{{ thumb }}" />
 <meta property="og:description" content="{{ tour.description|striptags|truncatewords:30 }}" />
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 <meta property="og:type" content="cifonauta:tour" />
@@ -29,13 +34,13 @@
 {% endblock %}
 
 {% block content %}
-<section class="span-24 last">
+<section class="main-tours-page">
 
 {% if tour.is_public or user.is_authenticated %}
 
 <article id="tour" class="{{ tour.slug }}">
 
-<header class="span-24 last">
+<header class="tour-header">
 
   <div class="quiet" id="metafield">{% trans 'Tour' %}: </div>
 
@@ -43,129 +48,108 @@
 
 </header>
 
-<div class="span-24 last" id="slides">
+<div class="tour-slides" id="slides">
 
-  <div class="span-1">
-
+  <div class="" id="slides-arrow-prev">
     <a href="#" class="prev"><img src="{{ STATIC_URL }}js/slides/arrow-prev.png" width="24" height="43" alt="{% trans 'Anterior' %}"></a>
-
   </div>
 
-  <div class="slides_container shadow span-21">
+  <div class="slides-container shadow">
 
     {% for media in entries %}
 
-    <div class="span-21 eachslide last">
+    <div class="eachslide">
+      <div class="content-slider"> 
+        <div class="slide-media">
 
-      <div class="span-13">
-        
-	{% if media.datatype == 'photo' %}
-	  {% include 'photo.html' %}
-	{% elif media.datatype == 'video' %}
-	  {% include 'video.html' %}
-	{% endif %}
-      </div>
-
-      <div class="span-8 last">
-
-        <h2>{{ media.title }}</h2>
-
-        {% if media.caption %} <p>{{ media.caption }}</p> {% endif %}
-
-        <div>
-          {% with author_all=media.author_set.all %}
-          {% if author_all %}
-          <strong>{% blocktrans count counter=author_all.count %}Autor{% plural %}Autores{% endblocktrans %}:</strong> <span>{% show_set author_all '' '' ', ' '' %}</span>
-          <br>
+          {% if media.datatype == 'photo' %}
+          {% include 'photo.html' %}
+          {% elif media.datatype == 'video' %}
+          {% include 'video.html' %}
           {% endif %}
-          {% endwith %}
-
-          {% with taxa_all=media.taxon_set.all %}
-          {% if taxa_all %}
-          <strong>{% blocktrans count counter=taxa_all.count %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set taxa_all '' '' ', ' '' %}</span>
-          <br>
-          {% endif %}
-          {% endwith %}
-
-          {% if media.size %}
-          <strong>{% trans 'Tamanho' %}:</strong> <span>{{ media.size }}</span>
-          <br>
-          {% endif %}
-
-          {% if media.location.name or media.city.name or media.state.name or media.country.name %}
-          <strong>{% trans 'Local' %}:</strong>
-          {% if media.location.name %}<span id="location">{{ media.location }},</span>{% endif %}
-          {% if media.city.name %}<span id="city">{{ media.city }},</span>{% endif %}
-          {% if media.state.name %}<span id="state">{{ media.state }},</span>{% endif %}
-          {% if media.country.name %}<span id="country">{{ media.country }}</span>{% endif %}
-          <br>
-          {% endif %}
-
-          {% with tag_all=media.tag_set.all %}
-          {% if tag_all %}
-          <strong>{% blocktrans count counter=tag_all.count %}Marcador{% plural %}Marcadores{% endblocktrans %}:</strong> <span>{% show_set tag_all '' '' ', ' '' %}</span>
-          <br>
-          {% endif %}
-          {% endwith %}
-
-          <div class="align-right">
-            <br>
-            <a href="{{ media.get_absolute_url }}"><strong>{% trans 'veja mais detalhes' %}</strong></a>
-          </div>
 
         </div>
-      </div>
+
+        <div class="slide-info">
+
+          <h2>{{ media.title }}</h2>
+
+          {% if media.caption %} <p>{{ media.caption }}</p> {% endif %}
+
+          <div>
+            {% with author_all=media.author_set.all %}
+            {% if author_all %}
+            <strong>{% blocktrans count counter=author_all.count %}Autor{% plural %}Autores{% endblocktrans %}:</strong> <span>{% show_set author_all '' '' ', ' '' %}</span>
+            <br>
+            {% endif %}
+            {% endwith %}
+
+            {% with taxa_all=media.taxa.all %}
+            {% if taxa_all %}
+            <strong>{% blocktrans count counter=taxa_all.count %}Táxon{% plural %}Táxons{% endblocktrans %}:</strong> <span id="taxon">{% show_set taxa_all '' '' ', ' '' %}</span>
+            <br>
+            {% endif %}
+            {% endwith %}
+
+            {% if media.scale %}
+            <strong>{% trans 'Escala' %}:</strong> <span>{{ media.scale }}</span>
+            <br>
+            {% endif %}
+
+            {% if media.location.name or media.city.name or media.state.name or media.country.name %}
+            <strong>{% trans 'Local' %}:</strong>
+            {% if media.location.name %}<span id="location">{{ media.location }},</span>{% endif %}
+            {% if media.city.name %}<span id="city">{{ media.city }},</span>{% endif %}
+            {% if media.state.name %}<span id="state">{{ media.state }},</span>{% endif %}
+            {% if media.country.name %}<span id="country">{{ media.country }}</span>{% endif %}
+            <br>
+            {% endif %}
+
+            {% with tag_all=media.tags.all %}
+            {% if tag_all %}
+            <strong>{% blocktrans count counter=tag_all.count %}Marcador{% plural %}Marcadores{% endblocktrans %}:</strong> <span>{% show_set tag_all '' '' ', ' '' %}</span>
+            <br>
+            {% endif %}
+            {% endwith %}
+
+            <div class="align-right">
+              <br>
+              <a href="{{ media.get_absolute_url }}"><strong>{% trans 'veja mais detalhes' %}</strong></a>
+            </div>
+
+          </div>
+        </div>
+    </div>
     </div>
     {% endfor %}
   </div>
 
-  <div class="span-1 last">
+  <div class="" id="slides-arrow-next">
     <a href="#" class="next"><img src="{{ STATIC_URL }}js/slides/arrow-next.png" width="24" height="43" alt="{% trans 'Próximo' %}"></a>
   </div>
 
-  <div class="span-24 last" id="paginator-container">
-    <ul class="pagination">
-      {% for result in photos %}{% with result.object as media %}
-      <li>
-      <a href="#">
-        {% thumbnail media.filepath "120x90" crop="center" as im %}
-        <img class="shadow" src="{{ im.url }}" alt="{{ media.title }}" title="{{ media.title }}" />
-        {% endthumbnail %}
-      </a>
-      </li>
-      {% endwith %}{% endfor %}
-    </ul>
-  </div>
 </div>
-
-<div class="span-15" id="tour-description">
+{% if tour.description|safe %}
+<div class="tour-description">
   {{ tour.description|safe }}
 </div>
+{% endif %}
 
-<div class="span-8 last metagroup">
+<div class="metagroup">
   <h2>{% trans 'Ficha Técnica' %}</h2>
   <ul class="metalist">
-    <li>
-    <strong>{% trans 'Número de imagens' %}:</strong> {{ tour.media.count }}
-    </li>
-    <li>
-    <strong>{% trans 'Data de criação' %}:</strong> {{ tour.pub_date }}
-    </li>
-    <li>
-    <strong>{% trans 'Última modificação' %}:</strong> {{ tour.timestamp }}
-    </li>
-    <li>
-    <strong>{% trans 'Táxons representados' %}:</strong> {% show_set taxa '' '' ', ' 'link' %}
-    </li>
-    <li>
-    <strong>{% trans 'Marcadores presentes' %}:</strong> {% show_set tags '' '' ', ' 'link' %}
-    </li>
+    <li><strong>{% trans 'Número de imagens' %}:</strong> {{ tour.media.count }}</li>
+    <li><strong>{% trans 'Data de criação' %}:</strong> {{ tour.pub_date }}</li>
+    <li><strong>{% trans 'Última modificação' %}:</strong> {{ tour.timestamp }}</li>
+    <li><strong>{% trans 'Autores envolvidos' %}:</strong> {% show_set authors '' '' ', ' 'link' %}</li>
+    <li><strong>{% trans 'Táxons representados' %}:</strong> {% show_set taxa '' '' ', ' 'link' %}</li>
+    <li><strong>{% trans 'Marcadores presentes' %}:</strong> {% show_set tags '' '' ', ' 'link' %}</li>
   </ul>
 </div>
 </article>
 
 {% if references %}
-<div class="span-24 last">
+<div class="">
   {% comment %}Translators: list of references rendered on a page{% endcomment %}
   <h2>{% trans 'Referências' %}</h2>
   {% for ref in references %}

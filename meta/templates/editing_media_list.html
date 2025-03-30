@@ -1,0 +1,122 @@
+{% extends 'dashboard.html' %}
+{% load static custom_filters %}
+
+{% block extra_head %}
+<script src="{% static 'js/adm_select_all_records.js' %}" defer></script>
+<script src="{% static 'js/adm_sync_location_fields.js' %}" defer></script>
+<script src="{% static 'js/adm_modal.js' %}" defer></script>
+<script src="{% static 'js/adm_create_entry.js' %}" defer></script>
+<script src="{% static 'js/adm_references.js' %}" defer></script>
+<script src="{% static 'js/adm_latitude.js' %}" defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDq5WeIQ9PnSdEBvgtaykW5oB034cbpyak&callback=myMap" defer></script>
+<script src="{% static 'js/editing_media_list.js' %}" defer></script>
+{% endblock %}
+
+{% block title %}Lista de Mídias{% endblock %}
+
+{% block dashboard_content %}
+
+<h2>Lista de mídias para edição</h2>
+{% if messages %}
+<div class="messages-div hide-messages-animation">
+    {% for message in messages %}
+    <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
+    {% endfor %}
+</div>
+{% endif %}
+{% if object_exists %}
+<section class="table-section">
+    {% include 'dashboard_filter_aside.html' %}
+
+
+    <form class="post-form-wrapper" method="post" novalidate>
+        {% csrf_token %}
+        {% include 'dashboard_actions_modal.html' %}
+
+        {% if entries.object_list %}
+        <div class='table-top'>
+            <button type="button" data-open-modal="group-action" id="open-modal-button" class="primary-button action-button">Ações em lotes</button>
+            {% if entries.paginator.num_pages > 1 %}
+            {% include 'pagination.html' %}
+            {% endif %}
+            <div class="entries-number-form">
+                <span>Mostrar</span>
+                <input type="number" name="entries_number" value="{{ records_number }}" min="1" class="entries-number-form__input">
+                <span>registros</span>
+                <button type="submit" name="action" value="entries_number" data-entries-number-form-submit class="entries-number-form__submit">
+                    <img src="{{ STATIC_URL }}img/reload.svg" alt="">
+                </button>
+            </div>
+        </div>
+        
+        <div class="table-wrapper">
+            <table class="dashboard-table">
+                <thead class="table-head">
+                    <tr>
+                        <th><input type="checkbox" id="select-all-records" class="dashboard-input"></th>
+                        <th class="no-shrink-cell">Mídia</th>
+                        <th class="no-shrink-cell">Título</th>
+                        <th class="no-shrink-cell">Curadorias</th>
+                        <th class="no-shrink-cell">Autor</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body">
+                    {% for media in entries.object_list %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="selected-record dashboard-input" name="selected_media_ids" value="{{ media.id }}">
+                        </td>
+                        <td class="image-cedule">
+                            <a href="{% url 'editing_media_details' media.id %}" class="media-wrapper-td">
+                              <img src="{{ MEDIA_URL }}{{ media.file_cover }}">
+                            </a>
+                        </td>
+                        <td class="text-cedule">
+                            {% if media.title_pt_br %}
+                            {{ media.title_pt_br }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <ul class="curations-list">
+                                {% get_media_curations media as curations %}
+                                {% for curation in curations %}
+                                <li>
+                                    {{ curation }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>{{media.user}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="table-bottom">
+            {% if entries.paginator.num_pages > 1 %}
+            {% include 'pagination.html' %}
+            {% endif %}
+        </div>
+        {% else %}
+        <p>
+            Nenhum arquivo encontrado :(
+        </p>
+        {% endif %}
+    </form>
+</section>
+{% else %}
+    <p>Não há imagens</p>
+{% endif %}
+
+{% if object_exists and entries.object_list %}
+    {% include 'dashboard_taxa_modal.html' %}
+
+    {% include 'dashboard_location_modal.html' %}
+
+    {% include 'dashboard_references_modal.html' %}
+
+    {% include 'dashboard_latitude_modal.html' %}
+{% endif %}
+
+{% endblock %}

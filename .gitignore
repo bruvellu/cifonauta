@@ -17,3 +17,5 @@ meta/static/js/script.min.js
 *~
 .env
 .idea
+meta/locale/en/LC_MESSAGES/django.mo
+secret.just

@@ -42,10 +42,6 @@
   margin-bottom: 1rem;
 }
 
-#media-photo {
-  border-radius: 10px;
-}
-
 #intro h1 {
   text-transform:uppercase;
   color:#333;
@@ -114,17 +110,29 @@
   font-size:1rem;
 }
 
-#cover-image,
-#photos-image,
-#videos-image,
-#tours-image {
+#cover-image {
   width: 100%;
-  height: 300px;
+  height: 400px;
   overflow: hidden;
   border-radius: 10px;
 }
 
-#cover-image img,
+#cover-image img {
+  width: auto;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+#photos-image,
+#videos-image,
+#tours-image {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
 #photos-image img,
 #videos-image img,
 #tours-image img {
@@ -132,6 +140,10 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
+}
+
+#media-photo {
+  /*border-radius: 10px;*/
 }
 
 #photos p, #videos p, #tours p {

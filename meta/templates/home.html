@@ -23,9 +23,9 @@
 {% endfor %}
 {% endif %}
 <section class="shadow" id="intro">
-<div id="cover-image">
+<div class="shadow" id="cover-image">
   <a href="{{ main_image.get_absolute_url }}">
-    <img class="shadow" id="media-photo" src="{{ MEDIA_URL }}{{ main_image.file_cover }}" alt="{{ main_image.title }}" title="{{ main_image.title }}" />
+    <img id="media-photo" src="{{ MEDIA_URL }}{{ main_image.file_cover }}" alt="{{ main_image.title }}" title="{{ main_image.title }}" />
   </a>
 </div>
 <div id="cover-text">
@@ -44,9 +44,9 @@
 
 <div class="card shadow" id="photos">
   <h2>{% trans 'Fotos' %}</h2>
-  <div id="photos-image">
+  <div class="shadow" id="photos-image">
     <a href="{{ photo.get_absolute_url }}">
-      <img class="shadow" id="media-photo" src="{{ MEDIA_URL }}{{ photo.file_cover }}" alt="{{ photo.title }}" title="{{ photo.title }}" />
+      <img id="media-photo" src="{{ MEDIA_URL }}{{ photo.file_cover }}" alt="{{ photo.title }}" title="{{ photo.title }}" />
     </a>
   </div>
   <p class="quiet">
@@ -60,9 +60,9 @@
 <div class="card shadow" id="videos">
   <h2>{% trans 'Vídeos' %}</h2>
 
-  <div id="videos-image">
+  <div class="shadow" id="videos-image">
     <a href="{{ video.get_absolute_url }}">
-      <img class="shadow" id="media-photo" src="{{ MEDIA_URL }}{{ video.file_cover }}" alt="{{ video.title }}" title="{{ video.title }}" />
+      <img id="media-photo" src="{{ MEDIA_URL }}{{ video.file_cover }}" alt="{{ video.title }}" title="{{ video.title }}" />
     </a>
   </div>
 
@@ -78,9 +78,9 @@
 <div class="card shadow" id="tours">
   <h2>{% trans 'Tours' %}</h2>
 
-  <div id="tours-image">
+  <div class="shadow" id="tours-image">
     <a href="{{ tour.get_absolute_url }}">
-      <img class="shadow" id="media-photo" src="{{ MEDIA_URL }}{{ tour_image.file_cover }}" alt="{{ tour_image.title }}" title="{{ tour.name }}" />
+      <img id="media-photo" src="{{ MEDIA_URL }}{{ tour_image.file_cover }}" alt="{{ tour_image.title }}" title="{{ tour.name }}" />
     </a>
   </div>
 

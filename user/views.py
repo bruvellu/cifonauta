@@ -1,101 +1,122 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.contrib.auth.views import (
+    PasswordResetView,
+    PasswordResetConfirmView,
+    PasswordResetCompleteView,
+)
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import FormView
 
-from .forms import UserCifonautaCreationForm, LoginForm, PasswordResetForm, ForgotUsernameForm
+from .forms import (
+    UserCifonautaCreationForm,
+    LoginForm,
+    PasswordResetForm,
+    ForgotUsernameForm,
+)
 
 
 def user_creation(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = UserCifonautaCreationForm(request.POST)
         if form.is_valid():
             user_instance = form.save(commit=False)
 
-            user_instance.first_name = form.cleaned_data['first_name'].capitalize()
-            user_instance.last_name = form.cleaned_data['last_name'].capitalize()
+            user_instance.first_name = form.cleaned_data["first_name"].capitalize()
+            user_instance.last_name = form.cleaned_data["last_name"].capitalize()
 
             user_instance.save()
 
-            messages.success(request, 'Usuário criado com sucesso')
-            return redirect('Login')
+            messages.success(request, "Usuário criado com sucesso")
+            return redirect("Login")
         else:
-            messages.error(request, 'Dados inválidos')
-            
+            messages.error(request, "Dados inválidos")
+
     else:
         form = UserCifonautaCreationForm()
 
-    return render(request, 'users/user_creation.html', { 'form': form })
+    return render(request, "user_creation.html", {"form": form})
 
 
 def login_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, 'Login realizado com sucesso')
-                
-                next = request.GET.get('next', None)
+                messages.success(request, "Login realizado com sucesso")
+
+                next = request.GET.get("next", None)
                 if next:
                     return redirect(next)
-                
-                return redirect('home')
+
+                return redirect("home")
         else:
-            if not form['captcha'].errors:
-                messages.error(request, 'Usuário ou senha incorretos')  
+            if not form["captcha"].errors:
+                messages.error(request, "Usuário ou senha incorretos")
             else:
-                messages.error(request, 'Captcha incorreto')  
-        
+                messages.error(request, "Captcha incorreto")
+
     else:
         form = LoginForm()
 
-    return render(request, 'users/login.html', {'form': form})
+    return render(request, "login.html", {"form": form})
+
 
 def logout_view(request):
     logout(request)
-    messages.success(request, 'Você se desconectou')
-    return redirect('Login')
+    messages.success(request, "Você se desconectou")
+    return redirect("Login")
+
 
 class PasswordResetView(PasswordResetView):
     form_class = PasswordResetForm
-    template_name = 'users/password_reset.html'
-    email_template_name = 'users/password_reset_email.html'
-    success_url = '/user/login'
+    template_name = "password_reset.html"
+    email_template_name = "password_reset_email.html"
+    success_url = "/user/login"
 
     def post(self, request, *args, **keyargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            messages.success(request, "Foi enviada uma mensagem para seu e-mail com instruções para redefinição da senha.")
+            messages.success(
+                request,
+                "Foi enviada uma mensagem para seu e-mail com instruções para redefinição da senha.",
+            )
             return super().form_valid(form)
-        
+
+
 class PasswordResetConfirmView(PasswordResetConfirmView):
     success_url = reverse_lazy("custom_password_reset_complete")
-    template_name = 'users/password_reset_confirm.html'
+    template_name = "password_reset_confirm.html"
+
 
 class PasswordResetCompleteView(PasswordResetCompleteView):
-    template_name = 'users/password_reset_complete.html'
+    template_name = "password_reset_complete.html"
+
 
 class ForgotUsernameView(FormView):
-    form_class = ForgotUsernameForm 
-    success_url = '/user/login'
-    title = _('Esqueceu o Nome de Usuário')
-    email_template_name = 'users/forgot_username_email.html'
-    subject_template_name = 'users/forgot_username_email.txt'
+    form_class = ForgotUsernameForm
+    success_url = "/user/login"
+    title = _("Esqueceu o Nome de Usuário")
+    email_template_name = "forgot_username_email.html"
+    subject_template_name = "forgot_username_email.txt"
     extra_email_context = None
     from_email = None
     html_email_template_name = None
-    template_name = 'users/forgot_username.html'
+    template_name = "forgot_username.html"
+
     def post(self, request, *args, **keyargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            messages.success(request, "Foi enviada uma mensagem de recuperação de nome de usuário para o seu e-mail")
+            messages.success(
+                request,
+                "Foi enviada uma mensagem de recuperação de nome de usuário para o seu e-mail",
+            )
             return self.form_valid(form)
 
     def form_valid(self, form):

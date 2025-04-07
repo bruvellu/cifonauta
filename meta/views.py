@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 from functools import reduce
 from operator import or_
@@ -27,6 +25,7 @@ from utils.views import execute_batch_action
 from .decorators import *
 from .forms import *
 from .models import *
+from user.models import UserCifonauta
 from .serializers import ReferenceSerializer, TaxonSerializer, LocationSerializer, CoauthorSerializer
 
 load_dotenv()

@@ -309,6 +309,8 @@ _('Cocoroca')
 # Translators: model=Media, field=title.
 _('Coió ou falso-voador')
 # Translators: model=Media, field=title.
+_('Colônias sobre o hidrozoário Macrorhynchia filamentosa (Lamarck, 1816), 7 December 1903, SAM H34')
+# Translators: model=Media, field=title.
 _('Copépoda')
 # Translators: model=Media, field=title.
 _('Copépode')
@@ -395,6 +397,8 @@ _('Ctenóforo bentônico')
 # Translators: model=Media, field=title.
 _('Ctenóforo bentônico sobre alga vermelha')
 # Translators: model=Media, field=title.
+_('Ctenóforo cinturão-de-vênus')
+# Translators: model=Media, field=title.
 _('Ctenóforo - coloblastos')
 # Translators: model=Media, field=title.
 _('Ctenóforo e anfípode associado')
@@ -424,6 +428,8 @@ _('Diatomácea cêntrica')
 _('Diatomácea marinha')
 # Translators: model=Media, field=title.
 _('Dinoflagelado')
+# Translators: model=Media, field=title.
+_('Divisão celular de uma alga diatomácea')
 # Translators: model=Media, field=title.
 _('Divisão dos micrômeros no pólo vegetativo')
 # Translators: model=Media, field=title.
@@ -603,13 +609,11 @@ _('Hidrocoral de fogo')
 # Translators: model=Media, field=title.
 _('Hidrocoral-de-fogo')
 # Translators: model=Media, field=title.
-_('Hidroid')
-# Translators: model=Media, field=title.
 _('Hidroide')
 # Translators: model=Media, field=title.
 _('Hidróide')
 # Translators: model=Media, field=title.
-_('Hidróide, hidromedusa')
+_('Hidroide, hidromedusa')
 # Translators: model=Media, field=title.
 _('Hidroide pluma-de-penas')
 # Translators: model=Media, field=title.
@@ -657,8 +661,6 @@ _('Hidrozoário colonial flutuante, vista oral - detalhe dos gastro-gonozoóides
 # Translators: model=Media, field=title.
 _('Hidrozoário colonial flutuante, vista oral - detalhe dos gastro-gonozoóides (cor branca) e do gastrozoóide central')
 # Translators: model=Media, field=title.
-_('Hidrozoários')
-# Translators: model=Media, field=title.
 _('Jacundá')
 # Translators: model=Media, field=title.
 _('Jaguareçá, olho-de-cão')
@@ -673,9 +675,9 @@ _('Larva actinotroca')
 # Translators: model=Media, field=title.
 _('Larva cifonauta')
 # Translators: model=Media, field=title.
-_('Larva cipris')
-# Translators: model=Media, field=title.
 _('Larva coronada')
+# Translators: model=Media, field=title.
+_('Larva de craca')
 # Translators: model=Media, field=title.
 _('Larva de esponja recém assentada')
 # Translators: model=Media, field=title.
@@ -733,6 +735,8 @@ _('Lebre-do-mar')
 # Translators: model=Media, field=title.
 _('Lepas')
 # Translators: model=Media, field=title.
+_('Lesma-do-mar')
+# Translators: model=Media, field=title.
 _('Liberação de gametas da bolacha-do-mar')
 # Translators: model=Media, field=title.
 _('Líquen')
@@ -783,6 +787,8 @@ _('Metamorfose na bolacha-do-mar')
 # Translators: model=Media, field=title.
 _('Mexilhão')
 # Translators: model=Media, field=title.
+_('Mexilhão-verde')
+# Translators: model=Media, field=title.
 _('Mexilhões')
 # Translators: model=Media, field=title.
 _('Mexilhões, cracas e algas')
@@ -830,6 +836,8 @@ _('Molusco pelágico')
 _('Moluscos bivalves')
 # Translators: model=Media, field=title.
 _('Moluscos nudibrânquio')
+# Translators: model=Media, field=title.
+_('Molusco teredinídeo')
 # Translators: model=Media, field=title.
 _('Momentos antes da primeira clivagem')
 # Translators: model=Media, field=title.
@@ -1013,6 +1021,8 @@ _('Praia da Fazenda')
 # Translators: model=Media, field=title.
 _('Praia do Segredo à noite')
 # Translators: model=Media, field=title.
+_('Pregoaí')
+# Translators: model=Media, field=title.
 _('Preguari o preguaí')
 # Translators: model=Media, field=title.
 _('Primeira clivagem de uma bolacha-do-mar')
@@ -1102,6 +1112,8 @@ _('Terceira divisão no embrião de bolacha-do-mar')
 _('Trilha ou salmonete')
 # Translators: model=Media, field=title.
 _('Tunicado pelágico')
+# Translators: model=Media, field=title.
+_('Turbelário')
 # Translators: model=Media, field=title.
 _('Turbelário marinho')
 # Translators: model=Media, field=title.
@@ -1208,6 +1220,8 @@ _('Ânus na superfície aboral do jovem (estrutura vermelha curvada).')
 _('Ânus no início do estágio de quatro braços.')
 # Translators: model=Media, field=caption.
 _('A Porpita é um hidrozoário colonial que vive flutuando na superfície do mar. Os pólipos estão arranjados concentricamente na superfície inferior de um disco central quitinoso. Há um pólipo grande central (gastrozoóide) e ao seu redor inúmeros gastro-gonozoóides, que são responsáveis pela ingestão de alimento e produção de medusas. Mais externamente, se distribuem os pólipos responsáveis pela captura de alimento e defesa, os dactilozoóides.')
+# Translators: model=Media, field=caption.
+_('A Porpita é um hidrozoário colonial que vive flutuando na superfície do mar. Os pólipos estão arranjados concentricamente na superfície inferior de um disco central quitinoso. Há um pólipo grande central (gastrozoóide) e ao seu redor inúmeros gonozoóides, responsáveis pela  produção de medusas. Mais externamente, se distribuem os pólipos responsáveis pela captura de alimento e defesa, os dactilozoóides.')
 # Translators: model=Media, field=caption.
 _('Após a fecundação artificial e criação dos embriões em laboratório as blástulas eclodem da membrana de fertilização e passam a nadar. Todo o processo de gastrulação até o desenvolvimento das larvas plúteos ocorrem na coluna d´água.')
 # Translators: model=Media, field=caption.
@@ -1407,6 +1421,8 @@ _('Colônias intertidais.')
 # Translators: model=Media, field=caption.
 _('Colônias sobre o hidrozoário Lytocarpus filamentosus (Lamarck, 1816), 7 December 1903, SAM H34.')
 # Translators: model=Media, field=caption.
+_('Colônias sobre o hidrozoário Macrorhynchia filamentosa (Lamarck, 1816), 7 December 1903, SAM H34.')
+# Translators: model=Media, field=caption.
 _('Conchas de moluscos num sedimento arenoso e lodoso.')
 # Translators: model=Media, field=caption.
 _('Conchas, rastos e dejetos na superfície do sedimento areno-lamoso.')
@@ -1424,6 +1440,8 @@ _('Coral-sol e o octocoral Carijoa.')
 _('Corbula.')
 # Translators: model=Media, field=caption.
 _('Corcoroca.')
+# Translators: model=Media, field=caption.
+_('Corte transversal de um pólipo abaixo da faringe.')
 # Translators: model=Media, field=caption.
 _('Cracas.')
 # Translators: model=Media, field=caption.
@@ -1454,6 +1472,8 @@ _('Detalhe da medusa (margem da umbrela e bulvos tentaculares).')
 _('Detalhe da parede do corpo.')
 # Translators: model=Media, field=caption.
 _('Detalhe da paxila e do madreporito.')
+# Translators: model=Media, field=caption.
+_('Detalhe da região aboral.')
 # Translators: model=Media, field=caption.
 _('Detalhe da região anal.')
 # Translators: model=Media, field=caption.
@@ -1540,6 +1560,8 @@ _('Detalhes de pólipos e ramos.')
 _('Disciplina diversidade e evolução 2007.')
 # Translators: model=Media, field=caption.
 _('Diversas células com grânulos vermelhos se distribuem no epitélio da gástrula.')
+# Translators: model=Media, field=caption.
+_('Divertículos laterais.')
 # Translators: model=Media, field=caption.
 _('Divisão intratentacular em Scolymia wellsii.')
 # Translators: model=Media, field=caption.
@@ -1644,6 +1666,8 @@ _('Estágio com 3 pares de braços e invaginação do vestíbulo do lado esquerd
 _('Estágio com quatro pares de braços.')
 # Translators: model=Media, field=caption.
 _('Estágio com três pares de braços.')
+# Translators: model=Media, field=caption.
+_('Estágio de cipris.')
 # Translators: model=Media, field=caption.
 _('Estágio de oito células.')
 # Translators: model=Media, field=caption.
@@ -1839,6 +1863,8 @@ _('Indivíduo de L. chattoni na superfície de um tentáculo de Zyzzyzus warreni
 # Translators: model=Media, field=caption.
 _('Indivíduo de Nomeus gronovii coletado em associação com caravela Physalia.')
 # Translators: model=Media, field=caption.
+_('Indivíduo em cobertura de gramas marinhas.')
+# Translators: model=Media, field=caption.
 _('Indivíduos de L. chattoni na superfície de um tentáculo de Zyzzyzus warreni.')
 # Translators: model=Media, field=caption.
 _('Indivíduos de L. chattoni na superfície do tentáculo de Zyzzyzus warreni.')
@@ -1948,6 +1974,8 @@ _('Macho adulto.')
 _('Macho adulto guardando o ninho com ovos.')
 # Translators: model=Media, field=caption.
 _('Macho desovando.')
+# Translators: model=Media, field=caption.
+_('Macrocílios da região oral.')
 # Translators: model=Media, field=caption.
 _('Macrorhynchia philippina é uma das espécies de cnidários urticantes ao ser humano.')
 # Translators: model=Media, field=caption.
@@ -2335,6 +2363,8 @@ _('Secretando o esqueleto calcário.')
 # Translators: model=Media, field=caption.
 _('Sedimento areno-lamoso durante maré baixa; ao fundo raizes do mangue-vermelho.')
 # Translators: model=Media, field=caption.
+_('Sessão transversal de um pólipo próximo da base dos tentáculos.')
+# Translators: model=Media, field=caption.
 _('Sternorhynchus seticornis sobre Millepora alcicornis.')
 # Translators: model=Media, field=caption.
 _('Superfície aboral.')
@@ -2346,6 +2376,12 @@ _('Superfície ventral.')
 _('Tentáculo.')
 # Translators: model=Media, field=caption.
 _('Tentáculos orais, 500x.')
+# Translators: model=Media, field=caption.
+_('Transverse section of a polyp at a level below pharynx.')
+# Translators: model=Media, field=caption.
+_('Transverse section of a polyp at pharynx level.')
+# Translators: model=Media, field=caption.
+_('Transverse section of a polyp at pharynx level, near base of tentacles.')
 # Translators: model=Media, field=caption.
 _('Tubo digestivo e celomas durante crescimento do par de braços antero-laterais (2° par).')
 # Translators: model=Media, field=caption.
@@ -2368,6 +2404,8 @@ _('Vestíbulo em uma larva plúteos de oito braços.')
 _('Vibráculos.')
 # Translators: model=Media, field=caption.
 _('Vídeo tem duração de 6h.')
+# Translators: model=Media, field=caption.
+_('Vídeo time-lapse do processo de divisão celular (mitose) da diatomácea unicelular Coscinodiscus.')
 # Translators: model=Media, field=caption.
 _('Vista aboral.')
 # Translators: model=Media, field=caption.
@@ -2513,6 +2551,8 @@ _('Cláudio Gonçalves Tiago.')
 # Translators: model=Media, field=acknowledgments.
 _('Clóvis Barreira e Castro.')
 # Translators: model=Media, field=acknowledgments.
+_('Corte transversal de um pólipo em um nível abaixo da faringe.')
+# Translators: model=Media, field=acknowledgments.
 _('Dale R. Calder.')
 # Translators: model=Media, field=acknowledgments.
 _('Dennis P. Gordon; Facelucia B. C. Souza.')
@@ -2555,6 +2595,8 @@ _('Leandro M. Vieira.')
 # Translators: model=Media, field=acknowledgments.
 _('Leila de Lourdes Longo.')
 # Translators: model=Media, field=acknowledgments.
+_('Lícia Sales.')
+# Translators: model=Media, field=acknowledgments.
 _('Luciana Gusmão.')
 # Translators: model=Media, field=acknowledgments.
 _('Marcelo Kitahara.')
@@ -2565,7 +2607,17 @@ _('Márcio Reis Custódio.')
 # Translators: model=Media, field=acknowledgments.
 _('Marcos Tavares.')
 # Translators: model=Media, field=acknowledgments.
+_('Marcos Tavares (MZUSP).')
+# Translators: model=Media, field=acknowledgments.
 _('Martin L. Christoffersen.')
+# Translators: model=Media, field=acknowledgments.
+_('Poliqueta.')
+# Translators: model=Media, field=acknowledgments.
+_('Prof. Dr. Maikon di Domenico.')
+# Translators: model=Media, field=acknowledgments.
+_('Prof. Dr. Maikon Di Domenico.')
+# Translators: model=Media, field=acknowledgments.
+_('Prof. Dr. Marcelo V. Kitahara.')
 # Translators: model=Media, field=acknowledgments.
 _('Rafael Masson Rosa.')
 # Translators: model=Media, field=acknowledgments.
@@ -2650,6 +2702,8 @@ _('aceito')
 _('combinação substituída')
 # Translators: model=Taxon, field=status.
 _('erro ortográfico - grafia subsequente incorreta')
+# Translators: model=Taxon, field=status.
+_('incerto')
 # Translators: model=Taxon, field=status.
 _('não aceito')
 # Translators: model=Taxon, field=status.
@@ -2912,6 +2966,8 @@ _('Ciclo de vida de um equinodermo')
 _('Larvas marinhas')
 # Translators: model=Tour, field=name.
 _('Plâncton: pequenos gigantes')
+# Translators: model=Tour, field=description.
+_('A maioria dos animais deste planeta tem um ciclo de vida complexo com um ou mais estágios larvais. Coletivamente, os invertebrados marinhos representam uma grande parte da diversidade larval observada. Os moluscos têm a véliger, uma larva com concha e um vélum ciliado mencionado acima; os equinodermos têm o pluteus, uma larva parecida com uma nave espacial com oito braços para capturar alimentos, e a braquiolária, uma larva que nada livremente, impulsionada por braços dançantes do comprimento do corpo; os briozoários têm o cifonauta, uma larva triangular fina como papel que navega sobre as lâminas de algas; os crustáceos têm a larva zoé, uma larva blindada que nada como se estivesse usando um jetpack; os nemertíneos têm a pilídio, uma larva com lóbulos e lapelas na forma de boné... e a lista continua. A diversidade de formas larvais é surpreendente.')
 # Translators: model=Tour, field=description.
 _('<p>Embora geralmente pequenos em tamanho, os seres planctônicos são verdadeiros gigantes em importância. Base das cadeias alimentares marinhas, o plâncton (do grego <em>planktós</em>, errante) compreende uma diversidade fantástica de organismos uni e multicelulares que vivem dispersos na água. Essa comunidade é composta em grande parte por seres com menos de 0,01 mm a poucos centímetros, mas existem exceções marcantes como as águas-vivas e a caravela-portuguesa, que podem atingir metros de comprimento. Muitos nadam bem, mas não o suficiente para vencer a força das águas. Por isso, eles vagam livremente, sendo transportados pelas correntes marinhas.</p><p>Além de pequenos, os planctontes são também transparentes ou translúcidos, e passam facilmente despercebidos por nós ― observá-los exige o uso de microscópios e aparatos especiais de captura, as redes de plâncton. Contudo, eles são muito abundantes e se reproduzem com uma rapidez incrível. Um litro de água do mar pode conter dezenas de milhares desses pequenos organismos. Muitos deles são produtores primários, isto é, realizam fotossíntese, e são denominados de <em>fitoplâncton</em>. Os fitoplanctontes, que incluem vários grupos de "microalgas", vivem apenas nas camadas superiores e iluminadas dos oceanos. Produzem grande parte do oxigênio atmosférico, além de servir como alimento para uma parcela do plâncton incapaz de obter energia diretamente da luz do sol e que depende deles para sobreviver, o <em>zooplâncton</em>. </p><p>Além de se alimentarem de fitoplâncton, as espécies de zooplâncton podem consumir bactérias e material orgânico particulado. E, por sua vez, servem de alimento para organismos maiores, incluindo outras espécies de zooplâncton, peixes e até baleias.</p><p>Muitos organismos passam todo o seu ciclo de vida no plâncton, como os unicelulares e espécies de invertebrados: copépodes, moluscos, crustáceos, poliquetas etc. Mas a comunidade planctônica é composta também pelas larvas de invertebrados e de certos peixes, cujos adultos habitam o fundo do mar ou a coluna de água (veja o tour <a href="/web/20130606133023/http://cifonauta.cebimar.usp.br/tour/larvas-marinhas/">Larvas Marinhas</a>). </p><p>Os seres do plâncton vivem em um mundo fisicamente diferente do que estamos acostumados. Nesse meio, a força da viscosidade da água impera sobre os seus corpos microscópicos, que têm "dificuldade" para se deslocar. Para entender melhor esse fenômeno, imagine-se em uma piscina de melado, onde só é possível nadar ou mexer qualquer parte de seu corpo em câmara lenta. É neste tipo de ambiente que os organismos planctônicos obtêm alimento e se reproduzem há milhões de anos.</p>')
 # Translators: model=Tour, field=description.

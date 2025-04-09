@@ -16,9 +16,9 @@
 {% endblock %}
 
 {% block content %}
-<section class="main-press-page last">
+<section class="main-press-page">
 
-<div class="span-9">
+<div class="">
   <h1>{% trans 'Imprensa' %}</h1>
   <p>
   {% blocktrans %}
@@ -90,7 +90,7 @@
   </p>
 </div>
 
-<div id="press-photos" class="span-15 last">
+<div id="press-photos" class="">
   {% thumbnail cover_photo.file_medium "550x412" crop="center" as im %}
   <a href="{{ cover_photo.get_absolute_url }}"><img class="shadow" src="{{ im.url }}" alt="{{ cover_photo.title }}"></a>
   {% endthumbnail %}

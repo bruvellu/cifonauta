@@ -23,63 +23,75 @@
 {% endfor %}
 {% endif %}
 <section class="shadow" id="intro">
-<div id="cover-image">
+<div class="shadow" id="cover-image">
   <a href="{{ main_image.get_absolute_url }}">
-    {% thumbnail main_image.file_cover "300x200" crop="center" as im %}
-    <img class="shadow" src="{{ im.url }}" width="100%" height="100%" alt="{{ main_image.title }}">
-    {% endthumbnail %}
+    <img id="media-photo" src="{{ MEDIA_URL }}{{ main_image.file_cover }}" alt="{{ main_image.title }}" title="{{ main_image.title }}" />
   </a>
 </div>
 <div id="cover-text">
-  <h1>{% trans 'Explore a biodiversidade marinha' %}</h1>
+  <h1>{% trans 'Descubra a biodiversidade marinha' %}</h1>
   <p>
   {% blocktrans %}O banco de imagens <em>Cifonauta</em> contém uma grande variedade de fotos e vídeos provenientes de atividades científicas em biologia marinha. As imagens possuem classificação taxonômica, estágio de vida, habitat e outras informações que permitem navegar de maneira intuitiva e didática.{% endblocktrans %}
   </p>
-  <div class="align-center" id="intro-more">
-    <a href="/about/">{% trans 'saiba mais' %}</a> | <a href="/organization/">{% trans 'organização do conteúdo' %}</a> | <a href="/terms/">{% trans 'termos de uso' %}</a> | <a href="/press/">{% trans 'imprensa' %}</a>
+  <div id="intro-more">
+    <a class="fashion blue" href="/about/">{% trans 'saiba mais' %}</a>
+    <a class="fashion green" href="/search/">{% trans 'explorar imagens' %}</a>
   </div>
 </div>
 </section>
 
 <section id="main-content">
 
-<div id="photos">
-  <h2><a href="/search/?datatype=photo">{% trans 'Fotos' %}</a></h2>
-  <a href="{{ photo.get_absolute_url }}">
-    {% thumbnail photo.file_cover "300x200" crop="center" as im %}
-    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ photo.title }}">
-    {% endthumbnail %}
-  </a>
-
+<div class="card shadow" id="photos">
+  <h2>{% trans 'Fotos' %}</h2>
+  <div class="shadow" id="photos-image">
+    <a href="{{ photo.get_absolute_url }}">
+      <img id="media-photo" src="{{ MEDIA_URL }}{{ photo.file_cover }}" alt="{{ photo.title }}" title="{{ photo.title }}" />
+    </a>
+  </div>
   <p class="quiet">
   {% blocktrans %}Além de fotos representativas de cada grupo disponibilizamos séries de um mesmo organismo possibilitando uma visualização mais completa de sua morfologia e tridimensionalidade.{% endblocktrans %}
   </p>
+  <div id="main-more">
+    <a class="fashion blue" href="/search/?datatype=photo">{% trans 'veja mais' %}</a>
+  </div>
 </div>
 
-<div id="videos">
-  <h2><a href="/search/?datatype=video">{% trans 'Vídeos' %}</a></h2>
-  <a href="{{ video.get_absolute_url }}">
-    {% thumbnail video.file_cover "300x200" crop="center" as im %}
-    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ video.title }}">
-    {% endthumbnail %}
-  </a>
+<div class="card shadow" id="videos">
+  <h2>{% trans 'Vídeos' %}</h2>
+
+  <div class="shadow" id="videos-image">
+    <a href="{{ video.get_absolute_url }}">
+      <img id="media-photo" src="{{ MEDIA_URL }}{{ video.file_cover }}" alt="{{ video.title }}" title="{{ video.title }}" />
+    </a>
+  </div>
 
   <p class="quiet">
   {% blocktrans %}Mostram aspectos da biologia dos organismos como desenvolvimento, locomoção, comportamento e reprodução em vídeos de curta duração.{% endblocktrans %}
   </p>
+
+  <div id="main-more">
+    <a class="fashion blue" href="/search/?datatype=video">{% trans 'veja mais' %}</a>
+  </div>
 </div>
 
-<div id="tours">
-  <h2><a href="/tours/">{% trans 'Tours' %}</a></h2>
-  <a href="{{ tour.get_absolute_url }}">
-    {% thumbnail tour_image.file_cover "300x200" crop="center" as im %}
-    <img class="shadow" src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" alt="{{ tour_image.title }}">
-    {% endthumbnail %}
-  </a>
+<div class="card shadow" id="tours">
+  <h2>{% trans 'Tours' %}</h2>
+
+  <div class="shadow" id="tours-image">
+    <a href="{{ tour.get_absolute_url }}">
+      <img id="media-photo" src="{{ MEDIA_URL }}{{ tour_image.file_cover }}" alt="{{ tour_image.title }}" title="{{ tour.name }}" />
+    </a>
+  </div>
 
   <p class="quiet">
-  {% blocktrans %}Seleção de imagens do banco sobre um tema específico com texto descritivo e slideshow. Conheça os <a href="/tours/">tours disponíveis</a>.{% endblocktrans %}
+  {% blocktrans %}Seleção de imagens do banco sobre um tema específico com texto descritivo e slideshow.{% endblocktrans %}
   </p>
+
+  <div id="main-more">
+    <a class="fashion blue" href="/tours/">{% trans 'veja mais' %}</a>
+  </div>
+
 </div>
 </section>
 

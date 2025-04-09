@@ -11,7 +11,6 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from user.models import UserCifonauta
 from .models import Media, Curation, ModifiedMedia, Person, Taxon, Tour, Location, Tag
 
 METAS = (
@@ -779,8 +778,6 @@ class BatchActionsForm(forms.ModelForm, SendEmailForm):
 
 
 class DashboardFilterForm(forms.Form):
-    Curation = apps.get_model("meta", "Curation")
-
     search = forms.CharField(
         required=False,
         label=_("Filtrar por:"),
@@ -812,7 +809,7 @@ class DashboardFilterForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        #TODO: Update this field to person?
+        # TODO: Update this field to person?
         user_curations = kwargs.pop("user_curations", None)
         is_editing_media_list = kwargs.pop("is_editing_media_list", None)
         super().__init__(*args, **kwargs)
@@ -889,7 +886,7 @@ class DisplayForm(forms.Form):
     # But there is a performance cost that needs to be dealt with.
     taxon = forms.ModelMultipleChoiceField(
         required=False,
-        #queryset=Taxon.objects.exclude(media__isnull=True)
+        # queryset=Taxon.objects.exclude(media__isnull=True)
         queryset=Taxon.objects.all()
         .exclude(media__status__in=["loaded", "draft", "submitted"])
         .order_by("name"),
@@ -979,14 +976,14 @@ class AdminForm(forms.Form):
 
 
 # class CurationAdminForm(forms.ModelForm):
-    # class Meta:
-        # model = Curation
-        # fields = "__all__"
+# class Meta:
+# model = Curation
+# fields = "__all__"
 
-    # def __init__(self, *args, **kwargs):
-        # super().__init__(*args, **kwargs)
+# def __init__(self, *args, **kwargs):
+# super().__init__(*args, **kwargs)
 
-        # self.fields["curators"].queryset = UserCifonauta.objects.filter(is_author=True)
-        # self.fields["editors"].queryset = UserCifonauta.objects.filter(
-            # is_author=True
-        # )
+# self.fields["curators"].queryset = UserCifonauta.objects.filter(is_author=True)
+# self.fields["editors"].queryset = UserCifonauta.objects.filter(
+# is_author=True
+# )

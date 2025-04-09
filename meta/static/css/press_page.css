@@ -39,7 +39,7 @@ ul.thumbs li, ul.rel-thumbs li {
 
 /* Tablet */
 @media (max-width: 1029px) {
-    .main-press-page > div.span-9 {
+    .main-press-page > div {
         width: 100%;
     }
 

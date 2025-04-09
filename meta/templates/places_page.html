@@ -15,7 +15,7 @@
 <meta property="og:type" content="article" />
 {% endblock %}
 {% block content %}
-<section class="span-24 last " style="width: 100%;">
+<section>
     <header><h1>{% trans 'Localidades' %}</h1></header>
     <section class="main-places metadiv">
         <div id="countries" class="metagroup">
@@ -24,7 +24,6 @@
         </div>
 	<div id="states" class="metagroup">
             <h2>{% trans 'Estados' %}</h2>
-            <ul class="metalist">
             {% print_metalist states 'state' %}
         </div>
 	<div id="cities" class="metagroup">

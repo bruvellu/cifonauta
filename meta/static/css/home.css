@@ -7,27 +7,38 @@
 }
 
 #intro {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
-    box-sizing: border-box;
-    margin-bottom: 2rem;
-    background: #fafafa;
-    border-radius: 10px;
-    padding: 2rem;
-    border-color: #eee #fafafa;
-    border-style: solid;
-    border-width: 5px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  margin-bottom: 2rem;
+  background: #fafafa;
+  padding: 2rem;
+  border-radius: 10px;
+  border-color: #eee #fafafa;
+  border-style: solid;
+  border-width: 5px;
+  gap: 2rem;
 }
 
-#intro > #cover-image {
+#cover-image {
+  flex: 0.75;
+  max-width: 50%;
+  display: flex;
+  justify-content: center;
 }
 
-#intro > #cover-text {
-    width: 60%;
-    font-size:1rem;
+#cover-text {
+  flex: 1;
+  font-size:1rem;
+  text-align: center;
+}
+
+#cover-text p {
+  padding: 0 2rem;
+  margin-bottom: 1rem;
 }
 
 #intro h1 {
@@ -36,10 +47,16 @@
   text-align:center;
   font-weight:bold;
   font-size:1.5rem;
+  line-height: 1em;
 }
 
 #intro-more {
-  margin-bottom:1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size:1rem;
 }
 
 .content-only {
@@ -49,50 +66,131 @@
 }
 
 #main-content {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0rem 1rem;
-    justify-content: center;
-    margin-bottom: 2rem;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0rem 2rem;
+  justify-content: space-between;
+  align-content: center;
+  margin-bottom: 2rem;
+  align-items: stretch;
 }
 
-#main-content > div {
-    width: 300px;
+#main-content h2 {
+  margin-top: 0;
+  padding: 0;
+  text-transform:uppercase;
+  color:#333;
+  font-weight:bold;
+  line-height: 1em;
+}
+
+.card {
+  flex: 1 1 300px;
+  min-width: 300px;
+  max-width: 400px;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 1rem auto;
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 1.5rem 1rem;
+  border-color: #eee #fafafa;
+  border-style: solid;
+  border-width: 5px;
+  gap: 1rem;
+}
+
+#main-more {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  font-size:1rem;
+  margin-top: auto;
+}
+
+#cover-image {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+#cover-image img {
+  width: auto;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+#photos-image,
+#videos-image,
+#tours-image {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+#photos-image img,
+#videos-image img,
+#tours-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+#media-photo {
+  /*border-radius: 10px;*/
 }
 
 #photos p, #videos p, #tours p {
-  font-size:.8rem;
+  font-size:1rem;
   width: 100%;
+  padding: 0;
+  flex-grow: 1;
 }
 
-/* Tablet */
-@media (max-width: 984px) {
-    #intro {
-        width: 75%;
-    }
-
-    #intro > #cover-text {
-        width: 100%;
-        margin-top: 1rem;
-    }
-    
-    #intro > #cover-image {
-        margin: 0px;
-    }
+/* Extra Large Screens (max-width: 1600px) */
+@media (max-width: 1600px) {
 }
 
-/* Mobile */
-@media (max-width: 480px) {
-    #intro {
-        width: 95%;
-    }
+/* Desktops and Larger Screens (max-width: 1200px) */
+@media (max-width: 1200px) {
 }
 
-@media (max-width: 350px) {
-    .success {
-        font-size: 1.1rem;
-        left: .5rem;
-    }
+/* Small Laptops (max-width: 1024px) */
+@media (max-width: 1024px) {
+  #cover-text p {
+    padding: 0 1rem;
+  }
 }
 
+/* Intermediate devices (max-width: 900px) */
+@media (max-width: 900px) {
+  #cover-image {
+    flex: 0.85;
+  }
+}
+
+/* Tablets and Large Phones (max-width: 768px) */
+@media (max-width: 768px) {
+  #intro {
+    flex-direction: column;
+  }
+  #cover-image {
+    max-width: 75%;
+  }
+}
+
+/* Phones (max-width: 600px) */
+@media (max-width: 600px) {
+}
+
+/* Smartwatches (max-width: 320px) */
+@media (max-width: 320px) {
+}

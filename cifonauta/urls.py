@@ -41,9 +41,7 @@ sitemaps = {
         changefreq="weekly",
     ),
     "taxa": PaginatedSitemap(
-        {"queryset": Taxon.objects.all()},
-        priority=1.0,
-        changefreq="weekly"
+        {"queryset": Taxon.objects.all()}, priority=1.0, changefreq="weekly"
     ),
     "locations": PaginatedSitemap(
         {"queryset": Location.objects.filter(media__isnull=False).distinct()},
@@ -71,9 +69,7 @@ sitemaps = {
         changefreq="monthly",
     ),
     "references": PaginatedSitemap(
-        {"queryset": Reference.objects.all()},
-        priority=0.7,
-        changefreq="monthly"
+        {"queryset": Reference.objects.all()}, priority=0.7, changefreq="monthly"
     ),
     "flatpages": FlatPageSitemap,
 }
@@ -82,7 +78,6 @@ urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     path("admin/", admin.site.urls),
     path("user/", include("user.urls")),
-    path("", include("django.contrib.auth.urls")),
     path("", include("meta.urls")),
     path("rosetta/", include("rosetta.urls")),
     path("i18n/", include("django.conf.urls.i18n")),

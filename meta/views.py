@@ -1806,7 +1806,7 @@ def tour_details(request, pk):
 
     form.fields["creator"].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
-    medias_related = tour.media.all()
+    media_files = tour.media.all()
 
     is_editor = request.user.person.curations_as_editor.exists()
     is_curator = request.user.person.curations_as_curator.exists()
@@ -1814,7 +1814,7 @@ def tour_details(request, pk):
     context = {
         "form": form,
         "tour": tour,
-        "medias_related": medias_related,
+        "media_files": media_files,
         "is_editor": is_editor,
         "is_curator": is_curator,
     }

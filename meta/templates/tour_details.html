@@ -36,19 +36,15 @@
 
           <div id="input-container">
             <div id="selected-options-container">
-              {% for media_related in medias_related %}
-              <div class="selected-option" id="selected_{{ media_related.id }}">
-                <input type="text" hidden name="selected_media" value="{{ media_related.id }}">
-                <button type="button" class="remove-selected-option-btn" onclick="removeOption({{ media_related.id }})"></button>
+              {% for media_file in media_files %}
+              <div class="selected-option" id="selected_{{ media_file.id }}">
+                <input type="text" hidden name="selected_media" value="{{ media_file.id }}">
+                <button type="button" class="remove-selected-option-btn" onclick="removeOption({{ media_file.id }})"></button>
                 <div class='option-infos-wrapper'>
-                  {% if media_related.datatype == 'video' %}
-                  <video class="option-cover scale-{{ media.scale }}" src="{{ media_related.file_cover }}"></video>
-                  {% else %}
-                  <img class="option-cover scale-{{ media.scale }}" src="{{ MEDIA_URL }}{{ media_related.file_cover }}">
-                  {% endif %}
+                  <img class="option-cover scale-{{ media.scale }}" src="{{ MEDIA_URL }}{{ media_file.file_cover }}">
                   <div class="option-infos">
-                    <a class="selected-option-cover-link" href="{{ media_related.file_cover }}" target="_blank">{{media_related.title}}</a>
-                    <span>{% if media_related.datatype == 'video' %}Vídeo{% else %}Foto{% endif %}</span>
+                    <a class="selected-option-cover-link" href="{{ media_file.file_cover }}" target="_blank">{{media_file.title}}</a>
+                    <span>{% if media_file.datatype == 'video' %}Vídeo{% else %}Foto{% endif %}</span>
                   </div>
                 </div>
               </div>

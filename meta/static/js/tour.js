@@ -101,11 +101,7 @@ function loadOptions(medias) {
     li.setAttribute('onclick', 'selectOption(event, this)')
 
     let optionCover
-    if (media.datatype == 'video') {
-      optionCover = document.createElement('video')
-    } else {
-      optionCover = document.createElement('img')
-    }
+    optionCover = document.createElement('img')
     optionCover.classList.add('option-cover', `scale-${media.scale}`)
     optionCover.setAttribute('src', media.file_cover)
 

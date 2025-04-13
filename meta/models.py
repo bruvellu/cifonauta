@@ -119,7 +119,7 @@ class Media(models.Model):
                             null=True,
                             help_text=_('Arquivo original carregado pelo usuário.'))
 
-    # TODO: Remove max_length after migrations
+    #TODO: Remove max_length after migrations
     file_large = models.FileField(upload_to=user_upload_directory,
                                   default=None,
                                   null=True,

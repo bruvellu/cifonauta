@@ -1824,6 +1824,15 @@ def tour_details(request, pk):
 
 @never_cache
 def get_tour_medias(request):
+
+    # NOTE: This function returns a dictionary with media information that will
+    # be used by the fetchToLoadMore function in tour.js to populate the form
+    # with the available images to be added on the tour_details page. This is a
+    # complicated way of doing this. It needs to be simplified. How? I'm not
+    # sure, yet.
+
+    # TODO: Revise the HTML, JS, and views needed for adding images to a tour.
+
     try:
         limit = int(request.GET.get("limit", 20))
         offset = int(request.GET.get("offset", 0))

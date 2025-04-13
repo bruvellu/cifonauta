@@ -465,6 +465,7 @@ class MyMediaForm(forms.ModelForm):
 
 
 class TourForm(forms.ModelForm):
+    # TODO: Revise the form for selecting media to a tour.
     class Meta:
         model = Tour
         fields = "__all__"

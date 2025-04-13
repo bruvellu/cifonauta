@@ -53,6 +53,7 @@ function fetchToSearch() {
   })
 }
 
+// TODO: Revise the functions below, probably try to do it without them.
 function fetchToLoadMore() {
   const url = window.location.origin
 

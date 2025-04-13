@@ -963,11 +963,11 @@ class DisplayForm(forms.Form):
 
 
 class AdminForm(forms.Form):
-    """Seleciona destaques e inclui imagens em tours."""
+    """Select highlights and include/remove media from tours."""
 
     Tour = apps.get_model("meta", "Tour")
     highlight = forms.BooleanField(required=False, initial=False, label=_("Destaque"))
-    cover = forms.BooleanField(required=False, initial=False, label=_("Imagem de capa"))
+    # cover = forms.BooleanField(required=False, initial=False, label=_("Imagem de capa"))
     tours = forms.ModelMultipleChoiceField(
         queryset=Tour.objects.all(),
         widget=forms.CheckboxSelectMultiple(attrs={"class": "check-taxon"}),

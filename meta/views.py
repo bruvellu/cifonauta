@@ -2191,12 +2191,11 @@ def media_page(request, media_id):
     elif request.method == "POST" and "admin" in request.POST:
         admin_form = AdminForm(request.POST)
         if admin_form.is_valid():
-            # Se algum tour tiver sido submetido no formulário.
             if "tours" in request.POST:
-                # Pega a lista de tours ligadas à imagem.
+                # Get the tours this files is associated with
                 media_tours = media.tour_set.values_list("id", flat=True)
                 # Define lista de tours submetidos no formulário.
-                form_tours = [int(id) for id in admin_form.cleaned_data["tours"]]
+                form_tours = [int(tour.id) for tour in admin_form.cleaned_data["tours"]]
                 # Usa sets para descobrir imagens que foram removidas,
                 remove_media = set(media_tours) - set(form_tours)
                 # e imagens que devem ser adicionadas.

@@ -223,6 +223,8 @@ class Media(models.Model):
                                     default=False,
                                     help_text=_('Visível para visitantes.'))
 
+    # TODO: Add another field named is_cover
+    # TODO: Rename this to is_highlight
     highlight = models.BooleanField(_('destaque'),
                                     default=False,
                                     help_text=_('Imagem que merece destaque.'))

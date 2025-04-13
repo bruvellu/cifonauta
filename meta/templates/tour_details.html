@@ -9,99 +9,95 @@
 
 {% block dashboard_content %}
 <div class="form-container">
-    <h2>Editar tour temático</h2>
-    {% if messages %}
-    <div class="messages-div hide-messages-animation">
+  <h2>Editar tour temático</h2>
+  {% if messages %}
+  <div class="messages-div hide-messages-animation">
     {% for message in messages %}
     <span {% if message.tags %} class="{{ message.tags }}" {% endif %}> {{ message }} </span>
     {% endfor %}
+  </div>
+  {% endif %}
+
+  <form class="dashboard-form tour-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for field in form %}
+    {% if field == form.media %}
+    <div class="field">
+
+      <div class="field__label">
+        {{ field.label_tag }}
+        {% if field.field.required %}
+        <span class='required'>*</span>
+        {% endif %}
+      </div>
+
+      <div class="field__input-container">
+        <div class='input-and-options-wrapper'>
+
+          <div id="input-container">
+            <div id="selected-options-container">
+              {% for media_related in medias_related %}
+              <div class="selected-option" id="selected_{{ media_related.id }}">
+                <input type="text" hidden name="selected_media" value="{{ media_related.id }}">
+                <button type="button" class="remove-selected-option-btn" onclick="removeOption({{ media_related.id }})"></button>
+                <div class='option-infos-wrapper'>
+                  {% if media_related.datatype == 'video' %}
+                  <video class="option-cover scale-{{ media.scale }}" src="{{ media_related.file_cover }}"></video>
+                  {% else %}
+                  <img class="option-cover scale-{{ media.scale }}" src="{{ MEDIA_URL }}{{ media_related.file_cover }}">
+                  {% endif %}
+                  <div class="option-infos">
+                    <a class="selected-option-cover-link" href="{{ media_related.file_cover }}" target="_blank">{{media_related.title}}</a>
+                    <span>{% if media_related.datatype == 'video' %}Vídeo{% else %}Foto{% endif %}</span>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <input id="search-options-input" type="text" placeholder="Selecione as mídias" autocomplete="off">
+          </div>
+
+          <div id="options-container" class="hide-div">
+            <ul id="options-ul"></ul>
+          </div>
+
+        </div>
+
+        {% if field.help_text %}
+        <span class="field__help-text">{{ field.help_text }}</span>
+        {% endif %}
+
+      </div>
+    </div>
+    {% else %}
+
+    <div class="field">
+      <div class="field__label">
+        {{ field.label_tag }}
+        {% if field.field.required %}
+        <span class='required'>*</span>
+        {% endif %}
+      </div>
+      <div class="field__input-container">
+        {% if field.errors %}
+        <ul class="field__errors">
+          {% for error in field.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {{ field }}
+        {% if field.help_text %}
+        <span class="field__help-text">{{ field.help_text }}</span>
+        {% endif %}
+      </div>
     </div>
     {% endif %}
-    <form class="dashboard-form tour-form" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% for field in form %}
-        {% if field == form.media %}
-        <div class="field">
-            <div class="field__label">
-                {{ field.label_tag }}
-                {% if field.field.required %}
-                <span class='required'>*</span>
-                {% endif %}
-            </div>
-            <div class="field__input-container">
-                <div class='input-and-options-wrapper'>
-                    <div id="input-container">
-                        <div id="selected-options-container">
-                            {% for media_related in medias_related %}
-                            <div class="selected-option" id="selected_{{ media_related.id }}">
-                                <input type="text" hidden name="selected_media" value="{{ media_related.id }}">
-
-                                <button type="button" class="remove-selected-option-btn" onclick="removeOption({{ media_related.id }})"></button>
-
-                                <div class='option-infos-wrapper'>
-                                    {% if media_related.datatype == 'video' %}
-                                    <video class="option-cover scale-{{ media.scale }}" src="{{ media_related.file_cover }}"></video>
-                                    {% else %}
-                                    <img class="option-cover scale-{{ media.scale }}" src="{{ media_related.file_cover }}">
-                                    {% endif %}
-                                    
-                                    <div class="option-infos">
-                                        <a class="selected-option-cover-link" href="{{ media_related.file_cover }}" target="_blank">{{media_related.title}}</a>
-                                        <span>
-                                            {% if media_related.datatype == 'video' %}
-                                            Vídeo
-                                            {% else %}
-                                            Foto
-                                            {% endif %}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        <input id="search-options-input" type="text" placeholder="Selecione as mídias" autocomplete="off">
-                    </div>
-
-                    <div id="options-container" class="hide-div">
-                        <ul id="options-ul"></ul>
-                    </div>
-                </div>
-                {% if field.help_text %}
-                <span class="field__help-text">{{ field.help_text }}</span>
-                {% endif %}
-            </div>
-        </div>
-        {% else %}
-        <div class="field">
-            <div class="field__label">
-                {{ field.label_tag }}
-                {% if field.field.required %}
-                <span class='required'>*</span>
-                {% endif %}
-            </div>
-            <div class="field__input-container">
-                {% if field.errors %}
-                <ul class="field__errors">
-                    {% for error in field.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                {{ field }}
-                {% if field.help_text %}
-                <span class="field__help-text">{{ field.help_text }}</span>
-                {% endif %}
-            </div>
-        </div>
-        {% endif %}
-        {% endfor %}
-        <div class="buttons-div">
-            <button class='primary-button submit-button' type="submit" name="action" value="submit">Salvar edições</button>
-            <button class='primary-button cancel-button' type="submit" name="action" value="delete">Excluir tour</button>
-        </div>
-    </form>
+    {% endfor %}
+    <div class="buttons-div">
+      <button class='primary-button submit-button' type="submit" name="action" value="submit">Salvar edições</button>
+      <button class='primary-button cancel-button' type="submit" name="action" value="delete">Excluir tour</button>
+    </div>
+  </form>
 </div>
-
-
-
 {% endblock %}

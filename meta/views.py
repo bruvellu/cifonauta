@@ -1806,7 +1806,7 @@ def tour_details(request, pk):
 
     form.fields["creator"].queryset = UserCifonauta.objects.filter(id=request.user.id)
 
-    medias_related = tour.media.all()
+    media_files = tour.media.all()
 
     is_editor = request.user.person.curations_as_editor.exists()
     is_curator = request.user.person.curations_as_curator.exists()
@@ -1814,7 +1814,7 @@ def tour_details(request, pk):
     context = {
         "form": form,
         "tour": tour,
-        "medias_related": medias_related,
+        "media_files": media_files,
         "is_editor": is_editor,
         "is_curator": is_curator,
     }
@@ -1824,6 +1824,15 @@ def tour_details(request, pk):
 
 @never_cache
 def get_tour_medias(request):
+
+    # NOTE: This function returns a dictionary with media information that will
+    # be used by the fetchToLoadMore function in tour.js to populate the form
+    # with the available images to be added on the tour_details page. This is a
+    # complicated way of doing this. It needs to be simplified. How? I'm not
+    # sure, yet.
+
+    # TODO: Revise the HTML, JS, and views needed for adding images to a tour.
+
     try:
         limit = int(request.GET.get("limit", 20))
         offset = int(request.GET.get("offset", 0))
@@ -2182,12 +2191,11 @@ def media_page(request, media_id):
     elif request.method == "POST" and "admin" in request.POST:
         admin_form = AdminForm(request.POST)
         if admin_form.is_valid():
-            # Se algum tour tiver sido submetido no formulário.
             if "tours" in request.POST:
-                # Pega a lista de tours ligadas à imagem.
+                # Get the tours this files is associated with
                 media_tours = media.tour_set.values_list("id", flat=True)
                 # Define lista de tours submetidos no formulário.
-                form_tours = [int(id) for id in admin_form.cleaned_data["tours"]]
+                form_tours = [int(tour.id) for tour in admin_form.cleaned_data["tours"]]
                 # Usa sets para descobrir imagens que foram removidas,
                 remove_media = set(media_tours) - set(form_tours)
                 # e imagens que devem ser adicionadas.

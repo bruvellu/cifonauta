@@ -2,7 +2,7 @@
 <h3>Tours e destaques</h3>
 
 <form action="." method="post">{% csrf_token %}
-    {{ admin_form.as_p }}
+    {{ admin_form.as_div }}
     <input id="display" class="fashion blue" name="admin" type="submit" value="Salvar" />
 </form>
 

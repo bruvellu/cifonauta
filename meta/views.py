@@ -47,6 +47,13 @@ load_dotenv()
 
 import magic
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+
+from .models import Taxon
+from .serializers import TaxonSerializer
+
 
 @api_view(["POST"])
 def create_reference(request):
@@ -57,32 +64,106 @@ def create_reference(request):
         return Response("Referência já existe", status=status.HTTP_409_CONFLICT)
     return Response(serializer.data)
 
-
-@api_view(["POST"])
+@api_view(['POST'])
 def create_taxa(request):
-    request_data = request.data.copy()
-    # TODO: format_name function is tailored for people's names. Species' names have a different formatting, see TaxonUpdater.sanitize_name() method (applied below). Either call sanitize_name here or get sanitized taxon name from TaxonUpdater below and save to the serializer object.
-    # request_data['name'] = format_name(request_data['name'])
-    request_data["name"] = request_data["name"].strip().lower().capitalize()
+    try:
+        request_data = request.data.copy()
 
-    serializer = TaxonSerializer(data=request_data)
-    if serializer.is_valid():
-        taxon_name = serializer.validated_data["name"]
+        # Sanitização do nome
+        name = request_data.get("name", "").strip()
+        if not name:
+            return Response(
+                {"message": "Nome do táxon é obrigatório."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        sanitized_name = name.lower().capitalize()
+        request_data["name"] = sanitized_name
+
+        # Verifica duplicação exata (name + rank se quiser)
+        existing_taxon = Taxon.objects.filter(name__iexact=sanitized_name).first()
+        if existing_taxon:
+            return Response(
+                {"message": "Já existe um táxon com esse nome."},
+                status=status.HTTP_409_CONFLICT
+            )
+
+        # Busca no WoRMS antes de criar
         try:
-            taxon = Taxon.objects.get(name_iexact=taxon_name)
-            if taxon:
-                return Response(
-                    "Táxon com esse nome já existe.", status=status.HTTP_409_CONFLICT
-                )
-        except:
-            pass
-        serializer.save()
+            worms_url = f"https://www.marinespecies.org/rest/AphiaRecordsByName/{sanitized_name}?like=false&marine_only=true"
+            resp = requests.get(worms_url, timeout=5)
+            resp.raise_for_status()
+            worms_data = resp.json()
+        except Exception as e:
+            worms_data = None
+            # opcional: registrar log
 
+        if worms_data and len(worms_data) > 0:
+            record = worms_data[0]
+            status_w = record.get("status", "").lower()
+            aphia = record.get("AphiaID")
+
+            if status_w != "accepted":
+                valid_aphia = record.get("valid_AphiaID")
+                if valid_aphia:
+                    # tenta buscar táxon aceito
+                    valid_taxon = Taxon.objects.filter(aphia=valid_aphia).first()
+                    if not valid_taxon:
+                        # buscar dados do táxon aceito
+                        valid_url = f"https://www.marinespecies.org/rest/AphiaRecordByAphiaID/{valid_aphia}"
+                        try:
+                            vr = requests.get(valid_url, timeout=5)
+                            vr.raise_for_status()
+                            valid_data = vr.json()
+                        except Exception as e:
+                            valid_data = None
+
+                        if valid_data:
+                            valid_taxon = Taxon.objects.create(
+                                name=valid_data.get("scientificname"),
+                                aphia=valid_data.get("AphiaID"),
+                                rank=valid_data.get("rank"),
+                                authority=valid_data.get("authority"),
+                                status=valid_data.get("status"),
+                                is_valid=True,
+                                on_worms=True
+                            )
+                    if valid_taxon:
+                        return Response(
+                            {
+                                "message": f"Este táxon não é aceito no WoRMS. Usando o táxon aceito: {valid_taxon.name}.",
+                                "data": {"id": valid_taxon.id, "name": valid_taxon.name}
+                            },
+                            status=status.HTTP_200_OK
+                        )
+
+            # Se for aceito ou sem valid_aphia, prosseguir definindo os campos
+            request_data["aphia"] = aphia
+            request_data["rank"] = record.get("rank")
+            request_data["authority"] = record.get("authority")
+            request_data["status"] = record.get("status")
+            request_data["is_valid"] = (status_w == "accepted")
+            request_data["on_worms"] = True
+
+        serializer = TaxonSerializer(data=request_data)
+        if serializer.is_valid():
+            taxon = serializer.save()
+            return Response(
+                {"message": "Táxon adicionado com sucesso.", "data": serializer.data},
+                status=status.HTTP_201_CREATED
+            )
+        else:
+            return Response(
+                {"message": "Erro de validação", "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    except Exception as ex:
+        # captura erros imprevistos
         return Response(
-            {"message": "Táxon adicionado com sucesso", "data": serializer.data}
+            {"message": "Erro interno no servidor", "details": str(ex)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
-
-    return Response("Táxon com esse nome já existe.", status=status.HTTP_409_CONFLICT)
 
 
 @api_view(["POST"])

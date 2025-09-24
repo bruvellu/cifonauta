@@ -1,5 +1,6 @@
 import os
 from functools import reduce
+from itertools import chain
 from operator import or_
 
 from django.contrib import messages
@@ -1520,35 +1521,40 @@ def revision_media_details(request, media_id):
 @never_cache
 @editor_or_curator_required
 def my_curations_media_list(request):
+    person = request.user.person
     records_number = number_of_entries_per_page(request, "entries_media_from_curation")
 
-    # Instance current person
-    person = request.user.person
+    # Obter todas as curadorias do usuário (como editor ou curador)
+    curations = (person.curations_as_editor.all() | person.curations_as_curator.all()).distinct()
 
-    # Get unique list of curations as editor and curator
-    curations_as_editor = person.curations_as_editor.all()
-    curations_as_curator = person.curations_as_curator.all()
-    curations = curations_as_editor | curations_as_curator
-    curations = curations.distinct()
+    # Obter os táxons associados diretamente às curadorias
+    curated_taxa = Taxon.objects.filter(curations__in=curations).distinct()
 
-    # Get all taxa for every curation as a set
-    curations_taxa = set()
-    for curation in curations:
-        curations_taxa.update(curation.get_taxa())
+    # Obter todos os táxons descendentes (via método MPTT otimizado)
+    taxon_descendants = [
+        taxon.get_descendants(include_self=True).values_list("id", flat=True)
+        for taxon in curated_taxa
+    ]
+    all_taxa_ids = set(chain.from_iterable(taxon_descendants))
 
+    # Obter mídias relacionadas a qualquer desses táxons
     queryset = (
-        Media.objects.filter(Q(taxa__in=curations_taxa))
+        Media.objects.filter(taxa__in=all_taxa_ids)
         .exclude(status="loaded")
         .order_by("-id")
         .distinct()
+        .prefetch_related("taxa")  # Evita SELECT adicional dentro de loops
     )
 
+    # Processamento do POST (ações em lote ou mudança de número de entradas)
     if request.method == "POST":
-        action = request.POST["action"]
+        action = request.POST.get("action")
 
         if action == "entries_number":
             records_number = number_of_entries_per_page(
-                request, "entries_media_from_curation", request.POST["entries_number"]
+                request,
+                "entries_media_from_curation",
+                request.POST.get("entries_number"),
             )
         else:
             media_ids = request.POST.getlist("selected_media_ids")
@@ -1559,7 +1565,7 @@ def my_curations_media_list(request):
                 )
 
                 if form.is_valid():
-                    medias = Media.objects.filter(id__in=media_ids)
+                    medias = Media.objects.filter(id__in=media_ids).prefetch_related("taxa")
 
                     for media in medias:
                         if media.status != "published":
@@ -1576,11 +1582,9 @@ def my_curations_media_list(request):
                             )
                             return redirect("my_curations_media_list")
 
-                        is_media_curator = False
-                        for taxa in media.taxa.all():
-                            if taxa in curations_taxa:
-                                is_media_curator = True
-                                break
+                        # Verificar se o usuário é curador de algum táxon da mídia
+                        is_media_curator = any(t.id in all_taxa_ids for t in media.taxa.all())
+
                         if not is_media_curator:
                             messages.error(
                                 request,
@@ -1604,18 +1608,20 @@ def my_curations_media_list(request):
             else:
                 messages.warning(request, _("Nenhum registro foi selecionado"))
 
+    # Filtro aplicado via GET
     query_dict = request.GET.copy()
     filtered_queryset = filter_medias(queryset, query_dict, curations)
 
-    filter_form = DashboardFilterForm(query_dict, user_curations=curations)
-
-    queryset_paginator = Paginator(filtered_queryset, records_number)
+    # Paginação
+    paginator = Paginator(filtered_queryset, records_number)
     page_num = request.GET.get("page")
-    page = queryset_paginator.get_page(page_num)
+    page = paginator.get_page(page_num)
 
+    # Formulários
     form = BatchActionsForm(view_name="my_curations_media_list")
     taxa_form = AddTaxaForm()
     location_form = AddLocationForm()
+    filter_form = DashboardFilterForm(query_dict, user_curations=curations)
 
     context = {
         "records_number": records_number,
@@ -1631,6 +1637,7 @@ def my_curations_media_list(request):
     }
 
     return render(request, "my_curations_media_list.html", context)
+
 
 
 @never_cache

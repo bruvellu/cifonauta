@@ -1,15 +1,20 @@
 from django import template
 from django.utils.safestring import mark_safe
-from meta.models import Curation
+from meta.models import Curation, Taxon
 
 register = template.Library()
 
 
 @register.simple_tag
 def get_media_curations(media):
-  taxa = media.taxa.all()
-  curations = Curation.objects.filter(taxa__in=taxa).distinct()
-  return list(curations)
+    # Obter os táxons da mídia
+    taxa = media.taxa.all()
+
+    # Obter os ancestrais desses táxons
+    taxa_com_ancestrais = Taxon.get_taxon_and_parents(taxa)
+
+    # Buscar curadorias associadas a qualquer um desses táxons
+    return Curation.objects.filter(taxa__in=taxa_com_ancestrais).distinct()
 
   
 @register.simple_tag

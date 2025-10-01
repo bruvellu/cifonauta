@@ -3,7 +3,7 @@ wheel
 # Django itself, upgrade manually
 django==5.1.8
 #TODO: Update PostgreSQL library?
-psycopg2==2.9.6
+psycopg2==2.9.10
 # For taxon hierarchical tree
 django-mptt==0.16.0
 # For template translations
@@ -33,6 +33,6 @@ piexif==1.1.3
 #TODO: Revise API framework (needed?)
 djangorestframework==3.15.2
 # Language detector to help managing translations
-lingua-language-detector==2.0.2
+lingua-language-detector==2.1.0
 # Verify mimetype of uploaded files
 python-magic==0.4.27

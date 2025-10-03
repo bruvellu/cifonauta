@@ -784,9 +784,10 @@ class DashboardFilterForm(forms.Form):
         label=_("Filtrar por:"),
         widget=forms.TextInput(attrs={"placeholder": _("Digite palavra(s)-chave")}),
     )
+
     curations = forms.ModelMultipleChoiceField(
         required=False,
-        queryset=Curation.objects.all(),
+        queryset=Curation.objects.none(),  # será definido no __init__
         widget=forms.SelectMultiple(
             attrs={"class": "select2-curations", "multiple": "multiple"}
         ),
@@ -810,16 +811,15 @@ class DashboardFilterForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        # TODO: Update this field to person?
         user_curations = kwargs.pop("user_curations", None)
         is_editing_media_list = kwargs.pop("is_editing_media_list", None)
+
         super().__init__(*args, **kwargs)
 
-        if user_curations:
-            if not user_curations.filter(name="Sem táxon").exists():
-                self.fields["curations"].queryset = self.fields[
-                    "curations"
-                ].queryset.exclude(name="Sem táxon")
+        if user_curations is not None:
+            # Filtrar curadorias visíveis para o usuário
+            self.fields["curations"].queryset = user_curations.exclude(name="Sem táxon")
+
         if is_editing_media_list:
             del self.fields["status"]
 

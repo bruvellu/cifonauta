@@ -1,112 +1,111 @@
 class CreateEntry {
   constructor({ fieldName }) {
-      this.fieldSelect = document.querySelector(`#id_${fieldName}`)
-      this.fieldModalDiv = document.querySelector(`[data-modal="${fieldName}"]`)
-      this.fieldForm = this.fieldModalDiv.querySelector(`[data-form="${fieldName}"]`)
-      this.nameInput = this.fieldForm.querySelector(`[name="name"]`)
-      this.formSubmitter = this.fieldForm.querySelector(`[data-submitter="${fieldName}"]`)
-      this.responseMessage = this.fieldModalDiv.querySelector(`[data-response-message]`)
-      this.fieldName = fieldName
+    this.fieldSelect = document.querySelector(`#id_${fieldName}`);
+    this.fieldModalDiv = document.querySelector(`[data-modal="${fieldName}"]`);
+    this.fieldForm = this.fieldModalDiv.querySelector(`[data-form="${fieldName}"]`);
+    this.nameInput = this.fieldForm.querySelector(`[name="name"]`);
+    this.formSubmitter = this.fieldForm.querySelector(`[data-submitter="${fieldName}"]`);
+    this.responseMessage = this.fieldModalDiv.querySelector(`[data-response-message]`);
+    this.fieldName = fieldName;
 
-      this.initModal()
-      this.initEventListeners()
+    this.initModal();
+    this.initEventListeners();
   }
 
   initModal() {
-      this.modalClass = new Modal({
-          modalContent: this.fieldModalDiv,
-          modalTrigger: document.querySelector(`[data-open-modal="${this.fieldName}"]`),
-          modalClose: this.fieldModalDiv.querySelector(`[data-close-modal="${this.fieldName}"]`),
-          modalZIndex: 8,
-          onCloseCallback: this.clearFields.bind(this)
-      })
+    this.modalClass = new Modal({
+      modalContent: this.fieldModalDiv,
+      modalTrigger: document.querySelector(`[data-open-modal="${this.fieldName}"]`),
+      modalClose: this.fieldModalDiv.querySelector(`[data-close-modal="${this.fieldName}"]`),
+      modalZIndex: 8,
+      onCloseCallback: this.clearFields.bind(this)
+    });
   }
 
   initEventListeners() {
-      this.nameInput.addEventListener('input', () => {
-          this.formSubmitter.disabled = false
-      });
+    this.nameInput.addEventListener('input', () => {
+      this.formSubmitter.disabled = false;
+    });
 
-      this.fieldForm.addEventListener('submit', this.onSubmit.bind(this))
+    this.fieldForm.addEventListener('submit', this.onSubmit.bind(this));
   }
 
   async onSubmit(event) {
-      event.preventDefault()
-      if (this.formSubmitter.disabled) return
+    event.preventDefault();
+    if (this.formSubmitter.disabled) return;
 
-      this.responseMessage.innerHTML = ''
+    this.responseMessage.innerHTML = '';
 
-      if (this.nameInput.value === '') {
-          return this.onError('O campo não pode ser vazio');
-      }
+    const name = this.nameInput.value.trim();
 
-      this.formSubmitter.disabled = true
+    if (!name) {
+      return this.onError('O campo não pode ser vazio');
+    }
 
+    this.formSubmitter.disabled = true;
+
+    try {
       const response = await fetch(`${window.location.origin}/api/${this.fieldName}/`, {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              'X-CSRFToken': this.getCookie('csrftoken')
-          },
-          body: JSON.stringify({ name: this.nameInput.value })
-      })
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRFToken': this.getCookie('csrftoken')
+        },
+        body: JSON.stringify({ name: name })
+      });
 
-      try {
-          if (!response.ok) {
-              if (response.status === 409) {
-                  const error = await response.json()
-                  throw new Error(error)
-              }
+      const responseData = await response.json();
 
-              throw new Error('Ocorreu um erro')
-          }
-
-          const data = await response.json()
-          this.onSuccess(data)
-      } catch (error) {
-          this.onError(error.message)
+      if (!response.ok) {
+        if (responseData.errors) {
+          // Django Rest Framework - erros de validação do serializer
+          const messages = Object.values(responseData.errors).flat().join('<br>');
+          throw new Error(messages);
+        } else {
+          throw new Error(responseData.message || 'Ocorreu um erro desconhecido');
+        }
       }
+
+      this.onSuccess(responseData);
+    } catch (error) {
+      this.onError(error.message);
+    }
   }
 
   onSuccess(responseData) {
-      const { message, data } = responseData
+    const { data } = responseData;
 
-      const option = document.createElement('option')
-      option.value = data.id
-      option.innerText = data.name
-      option.selected = true
-      this.fieldSelect.append(option)
+    const option = document.createElement('option');
+    option.value = data.id;
+    option.innerText = data.name;
+    option.selected = true;
+    this.fieldSelect.append(option);
 
-      this.modalClass.closeModal()
+    this.modalClass.closeModal();
   }
 
   onError(message) {
-      const p = document.createElement('p')
-      p.innerText = message
-      p.classList.add('response-error')
+    const p = document.createElement('p');
+    p.innerHTML = message;
+    p.classList.add('response-error');
 
-      this.responseMessage.append(p)
+    this.responseMessage.innerHTML = '';
+    this.responseMessage.append(p);
+    this.formSubmitter.disabled = false;
   }
 
   clearFields() {
-      this.nameInput.value = ''
-      this.responseMessage.innerHTML = ''
-      this.formSubmitter.disabled = false
+    this.nameInput.value = '';
+    this.responseMessage.innerHTML = '';
+    this.formSubmitter.disabled = false;
   }
 
   getCookie(name) {
-      var cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-          var cookies = document.cookie.split(';');
-          for (var i = 0; i < cookies.length; i++) {
-              var cookie = jQuery.trim(cookies[i]);
-              if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                  break;
-              }
-          }
-      }
-      return cookieValue;
+    const cookieValue = document.cookie
+      .split('; ')
+      .find(row => row.startsWith(name + '='))
+      ?.split('=')[1];
+    return cookieValue ? decodeURIComponent(cookieValue) : null;
   }
 }

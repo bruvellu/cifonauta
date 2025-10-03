@@ -1,30 +1,31 @@
 # -*- coding: utf-8 -*-
-
 import random
 import re
 import string
 import uuid
-
 from django.conf import settings
 from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchVectorField, SearchVector
 from django.db import models
-from django.db.models import Q, Value
-from django.db.models.functions import Concat
-from django.urls import reverse
+from django.db.models import Value
+from utils.media import Metadata, resize_image, resize_video, extract_video_cover, probe_media_info
+from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse
+from django.core.exceptions import ValidationError
+from django.db.models import Q
 from mptt.models import MPTTModel, TreeForeignKey
-
-from utils.media import Metadata, resize_image, resize_video, extract_video_cover, probe_media_info
+from django.utils.crypto import get_random_string
+import requests
 
 
 class Curation(models.Model):
     name = models.CharField(max_length=50)
     slug = models.SlugField(_('slug'), max_length=64, default='', blank=True,
-            help_text=_('Slug do nome da curadoria.'))
+                            help_text=_('Slug do nome da curadoria.'))
     description = models.TextField(_('descrição'), default='', blank=True,
-            help_text=_('Descrição da curadoria.'))
+                                   help_text=_('Descrição da curadoria.'))
     taxa = models.ManyToManyField(
             'Taxon',
             related_name='curations',
@@ -49,22 +50,15 @@ class Curation(models.Model):
 
     def get_taxa(self):
         '''Get all descendants from ancestor taxa.'''
-        #TODO: Revise best way to perform this query
-        # Start from all taxa queryset
         taxa_set = set()
-        # Get current curated ancestor nodes
         curated_ancestors = self.taxa.all()
-        # Add ancestors to set
         taxa_set.update(curated_ancestors)
-        # Loop over curated ancestors for descendants
         for ancestor in curated_ancestors:
             taxa_set.update(ancestor.get_descendants())
-        # Convert set to queryset
-        taxa_queryset = Taxon.objects.filter(Q(name__in=taxa_set))
-        # Order and keep unique
-        taxa_queryset = taxa_queryset.order_by('name').distinct()
-        return taxa_queryset
 
+        # Corrigido: filtrando por ID, não por name
+        taxa_queryset = Taxon.objects.filter(pk__in=[t.pk for t in taxa_set])
+        return taxa_queryset.order_by('name').distinct()
 
 
 # Function that defines path for user upload directory
@@ -73,12 +67,12 @@ def user_upload_directory(instance, filename):
     return f'{settings.UPLOAD_ROOT}/{instance.user.id}/{filename}'
 
 
-#TODO: Remove after the official migration
+# TODO: Remove after the official migration
 def save_file(instance, filename):
     return f'{settings.UPLOAD_ROOT}/{instance.user.username}/{filename}'
 
 
-#TODO: Remove after the official migration
+# TODO: Remove after the official migration
 def save_cover(instance, filename):
     return f'{instance.user.username}/{filename}'
 
@@ -119,7 +113,7 @@ class Media(models.Model):
                             null=True,
                             help_text=_('Arquivo original carregado pelo usuário.'))
 
-    #TODO: Remove max_length after migrations
+    # TODO: Remove max_length after migrations
     file_large = models.FileField(upload_to=user_upload_directory,
                                   default=None,
                                   null=True,
@@ -127,9 +121,9 @@ class Media(models.Model):
                                   help_text=_('Arquivo processado tamanho grande.'))
 
     file_medium = models.FileField(upload_to=user_upload_directory,
-                                  default=None,
-                                  null=True,
-                                  help_text=_('Arquivo processado tamanho médio.'))
+                                   default=None,
+                                   null=True,
+                                   help_text=_('Arquivo processado tamanho médio.'))
 
     file_small = models.FileField(upload_to=user_upload_directory,
                                   default=None,
@@ -146,22 +140,21 @@ class Media(models.Model):
                                 choices=DATATYPE_CHOICES,
                                 help_text=_('Foto ou vídeo.'))
 
-    #TODO: Field to be deprecated
+    # TODO: Field to be deprecated
     sitepath = models.FileField(_('arquivo web'),
                                 default=None,
                                 help_text=_('Arquivo processado para a web.'))
 
-    #TODO: Field to be deprecated
+    # TODO: Field to be deprecated
     coverpath = models.ImageField(_('imagem de capa'),
                                   default=None,
                                   help_text=_('Imagem de capa para o arquivo processado.'))
 
-    #TODO: Field to be deprecated
+    # TODO: Field to be deprecated
     filepath = models.CharField(_('arquivo original'),
                                 max_length=200,
                                 blank=True,
                                 help_text=_('Caminho único para o arquivo original.'))
-
 
     # Fields related to authorship
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -178,23 +171,23 @@ class Media(models.Model):
                                      related_name='media_as_author')
 
     curators = models.ManyToManyField('Person',
-                                  blank=True,
-                                  verbose_name=_('curadores do arquivo'),
-                                  help_text=_('Curadores associados a este arquivo.'),
-                                  related_name='media_as_curator')
+                                      blank=True,
+                                      verbose_name=_('curadores do arquivo'),
+                                      help_text=_('Curadores associados a este arquivo.'),
+                                      related_name='media_as_curator')
 
     editors = models.ManyToManyField('Person',
-                                         blank=True,
-                                         verbose_name=_('editores associados'),
-                                         help_text=_('Editores associados a este arquivo.'),
-                                         related_name='media_as_editor')
+                                     blank=True,
+                                     verbose_name=_('editores associados'),
+                                     help_text=_('Editores associados a este arquivo.'),
+                                     related_name='media_as_editor')
 
     # TODO: Remove after migration
     specialists = models.ManyToManyField('Person',
-                                     blank=True,
-                                     verbose_name=_('especialistas associados'),
-                                     help_text=_('Especialistas associados a este arquivo.'),
-                                     related_name='media_as_specialist')
+                                         blank=True,
+                                         verbose_name=_('especialistas associados'),
+                                         help_text=_('Especialistas associados a este arquivo.'),
+                                         related_name='media_as_specialist')
 
     terms = models.BooleanField(_('termos'),
                                 default=False,
@@ -241,7 +234,7 @@ class Media(models.Model):
     date_uploaded = models.DateTimeField(_('data do upload'),
                                          auto_now_add=True,
                                          blank=True,
-                                         null=True, #TODO: eventually remove
+                                         null=True,  # TODO: eventually remove
                                          help_text=_('Data do upload do arquivo.'))
 
     # Date the image was last modified
@@ -249,7 +242,7 @@ class Media(models.Model):
     date_modified = models.DateTimeField(_('data de modificação'),
                                          auto_now=True,
                                          blank=True,
-                                         null=True, #TODO: eventually remove
+                                         null=True,  # TODO: eventually remove
                                          help_text=_('Data da última modificação do arquivo.'))
 
     # Date the image was made public in the website
@@ -272,9 +265,9 @@ class Media(models.Model):
                                help_text=_('Legenda da imagem.'))
 
     acknowledgments = models.TextField(_('agradecimentos'),
-                               default='',
-                               blank=True,
-                               help_text=_('Agradecimentos da imagem.'))
+                                       default='',
+                                       blank=True,
+                                       help_text=_('Agradecimentos da imagem.'))
 
     scale = models.CharField(_('escala da imagem'),
                              max_length=12,
@@ -320,9 +313,9 @@ class Media(models.Model):
                                   help_text=_('Quando o vídeo stream se inicia (e.g., 0.000000).'))
 
     duration = models.DurationField(_('duração do vídeo'),
-                                   null=True,
-                                   blank=True,
-                                   help_text=_('Duração do vídeo em segundos (e.g., 36.536500).'))
+                                    null=True,
+                                    blank=True,
+                                    help_text=_('Duração do vídeo em segundos (e.g., 36.536500).'))
 
     width = models.PositiveIntegerField(_('largura da mídia'),
                                         null=True,
@@ -330,15 +323,15 @@ class Media(models.Model):
                                         help_text=_('Largura da mídia em pixels (e.g., 720).'))
 
     height = models.PositiveIntegerField(_('altura da mídia'),
-                                        null=True,
-                                        blank=True,
-                                        help_text=_('Altura da mídia em pixels (e.g., 720).'))
+                                         null=True,
+                                         blank=True,
+                                         help_text=_('Altura da mídia em pixels (e.g., 720).'))
 
     sample_aspect_ratio = models.CharField(_('Proporção do píxel'),
-                                max_length=20,
-                                default='',
-                                blank=True,
-                                help_text=_('Proporção de aspecto dos píxels (e.g., 8:9).'))
+                                           max_length=20,
+                                           default='',
+                                           blank=True,
+                                           help_text=_('Proporção de aspecto dos píxels (e.g., 8:9).'))
 
     display_aspect_ratio = models.CharField(_('Proporção da tela'),
                                            max_length=20,
@@ -874,7 +867,6 @@ class Category(models.Model):
         verbose_name_plural = _('categorias')
         ordering = ['name']
 
-
 class Taxon(MPTTModel):
     name = models.CharField(_('nome'), max_length=256,
             help_text=_('Nome do táxon.'))
@@ -903,102 +895,129 @@ class Taxon(MPTTModel):
             blank=True, null=True, help_text=_('Data da última modificação do arquivo.'))
 
     def __str__(self):
-        if self.rank:
-            return f'{self.name} ({self.rank})'
-        else:
-            return f'{self.name}'
+        return f'{self.name} ({self.rank})' if self.rank else self.name
 
     def get_absolute_url(self):
         return reverse('taxon_url', args=[self.slug])
 
     def ensure_unique_slug(self):
-        """Ensure taxon has a unique slug."""
+        """Gera um slug único baseado no nome do táxon."""
         if not self.slug:
             self.slug = slugify(self.name)
-            
-        # Check uniqueness only if this is a new instance or slug changed
+
         if not self.pk or Taxon.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
             if self.aphia:
                 self.slug = f"{slugify(self.name)}-{self.aphia}"
             elif self.rank:
                 self.slug = f"{slugify(self.name)}-{slugify(self.rank)}"
             else:
-                from django.utils.crypto import get_random_string
                 self.slug = f"{slugify(self.name)}-{get_random_string(4)}"
 
-    def get_total_media_count(self):
-        '''Get the total media count the taxon and its descendants.'''
-        #TODO: Too costly to call every time, save as a field?
-        taxon_and_descendants = self.get_descendants(include_self=True)
-        media_count = Media.objects.filter(taxa__in=taxon_and_descendants).distinct().count()
-        return media_count
-
-    def get_curations(self):
-        '''Retrieve set of curations associated with ancestors.'''
-        ancestors = self.get_ancestors(include_self=True)
-        curations = Curation.objects.filter(taxa__in=ancestors).distinct()
-        return curations
+    def clean(self):
+        """Validação de duplicidade de táxons."""
+        super().clean()
+        if Taxon.objects.exclude(pk=self.pk).filter(
+            name__iexact=self.name.strip(),
+            rank__iexact=self.rank.strip() if self.rank else ''
+        ).exists():
+            raise ValidationError(_('Já existe um táxon com este nome e rank.'))
 
     def fetch_worms_data(self):
-        '''Fetch WoRMS metadata and apply for current taxon.'''
-        #TODO: Can't do that... circular import. Keep this in the view for now.
-        #taxon_updater = TaxonUpdater(self.name)
+        """Consulta WoRMS e preenche dados se necessário. Pode ser usada para:
+        - Atualizar táxons depois de criados
+	    - Usar no Django admin ou no shell
+	    - Fazer comandos automáticos de sincronização """
+
+        # TODO: Unificar interface com WoRMS
+
+        if self.aphia:
+            return
+
+        url = f"https://www.marinespecies.org/rest/AphiaRecordsByName/{self.name}?like=false&marine_only=true"
+        try:
+            response = requests.get(url, timeout=5)
+            response.raise_for_status()
+            data = response.json()
+
+            if data:
+                worms_record = data[0]
+                self.aphia = worms_record.get("AphiaID")
+                self.rank = worms_record.get("rank")
+                self.authority = worms_record.get("authority")
+                status = worms_record.get("status", "").lower()
+                self.status = status
+                self.is_valid = status == "accepted"
+                self.on_worms = True
+
+                # Verifica se é um táxon não aceito
+                if status == "unaccepted":
+                    valid_aphia = worms_record.get("valid_AphiaID")
+                    if valid_aphia:
+                        valid_taxon = Taxon.objects.filter(aphia=valid_aphia).first()
+                        if not valid_taxon:
+                            valid_url = f"https://www.marinespecies.org/rest/AphiaRecordByAphiaID/{valid_aphia}"
+                            valid_response = requests.get(valid_url, timeout=5)
+                            valid_response.raise_for_status()
+                            valid_data = valid_response.json()
+
+                            valid_taxon = Taxon.objects.create(
+                                name=valid_data.get("scientificname"),
+                                aphia=valid_data.get("AphiaID"),
+                                rank=valid_data.get("rank"),
+                                authority=valid_data.get("authority"),
+                                status=valid_data.get("status"),
+                                is_valid=True,
+                                on_worms=True
+                            )
+
+                        self.valid_taxon = valid_taxon
+
+        except Exception as e:
+            print(f"[WoRMS] Erro ao buscar dados para {self.name}: {e}")
 
     def update_on_worms_field(self):
-        '''Set boolean field for present/absent from WorMS.'''
-        if self.aphia:
-            self.on_worms = True
-        else:
-            self.on_worms = False
+        """Atualiza campo booleano on_worms."""
+        self.on_worms = bool(self.aphia)
 
     def needs_worms(self):
-        '''Check if taxon needs metadata from WoRMS.'''
-        if not self.aphia and not self.authority:
-            return True
-        else:
-            return False
+        """Retorna True se precisa buscar dados do WoRMS."""
+        return not self.aphia and not self.authority
+
+    def get_total_media_count(self):
+        '''Total de mídias relacionadas ao táxon e descendentes.'''
+        taxon_and_descendants = self.get_descendants(include_self=True)
+        return Media.objects.filter(taxa__in=taxon_and_descendants).distinct().count()
+
+    def get_curations(self):
+        '''Curadorias relacionadas ao táxon e ancestrais.'''
+        ancestors = self.get_ancestors(include_self=True)
+        return Curation.objects.filter(taxa__in=ancestors).distinct()
 
     def update_curations(self):
-        '''Add taxon to standard curations.
+        '''Atualiza curadorias padrões.'''
+        self.curations.add(1)  # Cifonauta
 
-        These are:
-            - id=1, 'Cifonauta'
-            - id=2, 'Sem táxons',
-            - id=3, 'Presente no WoRMS'
-            - id=4, 'Ausente do WoRMS',
-        '''
-
-        # Add every taxon to the "all taxa" curation Cifonauta
-        self.curations.add(1)
-
-        #TODO: These curations should be Taxon bool fields
-
-        # Add or remove from "not in WoRMS" curation
         if self.aphia:
-            self.curations.add(3)
-            self.curations.remove(4)
+            self.curations.add(3)  # Presente no WoRMS
+            self.curations.remove(4)  # Remove "ausente"
         else:
-            self.curations.add(4)
-            self.curations.remove(3)
+            self.curations.add(4)  # Ausente do WoRMS
+            self.curations.remove(3)  # Remove "presente"
 
     def synchronize_media_between_synonyms(self):
-        '''Synchronize media between valid and invalid taxa.'''
-
-        # Add valid media to invalid taxon
-        if self.is_valid and self.synonyms.all():
+        '''Sincroniza mídias entre válidos e sinônimos.'''
+        if self.is_valid and self.synonyms.exists():
             for invalid in self.synonyms.all():
                 invalid.media.add(*self.media.all())
-                print(f'Media from {self} (is_valid={self.is_valid}) to {invalid} (is_valid={invalid.is_valid})')
-
-        # Add invalid media to valid taxon
         elif not self.is_valid and self.valid_taxon:
             self.valid_taxon.media.add(*self.media.all())
-            print(f'Media from {self} (is_valid={self.is_valid}) to {self.valid_taxon} (is_valid={self.valid_taxon.is_valid})')
-
 
     @staticmethod
     def get_taxon_and_parents(qs):
-        '''Returns all parents and current taxon from a QuerySet of taxa.'''
+        '''Retorna táxons e seus ancestrais.'''
+
+        # TODO: Old method, needs revision
+
         tree_list = {}
         query = Q()
 
@@ -1006,15 +1025,33 @@ class Taxon(MPTTModel):
             if node.tree_id not in tree_list:
                 tree_list[node.tree_id] = []
 
-            parent = node.parent.pk if node.parent is not None else None,
+            parent = node.parent.pk if node.parent is not None else None
 
             if parent not in tree_list[node.tree_id]:
                 tree_list[node.tree_id].append(parent)
-
                 query |= Q(lft__lt=node.lft, rght__gt=node.rght, tree_id=node.tree_id)
+
             query |= Q(id=node.id)
+
         return Taxon.objects.filter(query)
-    
+
+    def save(self, *args, **kwargs):
+        self.ensure_unique_slug()
+
+        if self.needs_worms():
+            self.fetch_worms_data()
+
+        self.update_on_worms_field()
+
+        # Validação completa antes de salvar
+        self.full_clean()
+
+        super().save(*args, **kwargs)
+
+        # Atualizações pós-salvamento
+        self.update_curations()
+        self.synchronize_media_between_synonyms()
+
     class MPTTMeta:
         order_insertion_by = ['name']
 
@@ -1022,6 +1059,7 @@ class Taxon(MPTTModel):
         verbose_name = _('táxon')
         verbose_name_plural = _('táxons')
         ordering = ['name']
+
 
 
 class Location(models.Model):

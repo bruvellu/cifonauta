@@ -1,5 +1,6 @@
 import os
 from functools import reduce
+from itertools import chain
 from operator import or_
 
 from django.contrib import messages
@@ -16,6 +17,8 @@ from dotenv import load_dotenv
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+# TODO: Replace REST API interactions by AJAX
 
 from cifonauta.settings import (
     MEDIA_EXTENSIONS,
@@ -47,6 +50,13 @@ load_dotenv()
 
 import magic
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+
+from .models import Taxon
+from .serializers import TaxonSerializer
+
 
 @api_view(["POST"])
 def create_reference(request):
@@ -57,32 +67,109 @@ def create_reference(request):
         return Response("Referência já existe", status=status.HTTP_409_CONFLICT)
     return Response(serializer.data)
 
-
-@api_view(["POST"])
+@api_view(['POST'])
 def create_taxa(request):
-    request_data = request.data.copy()
-    # TODO: format_name function is tailored for people's names. Species' names have a different formatting, see TaxonUpdater.sanitize_name() method (applied below). Either call sanitize_name here or get sanitized taxon name from TaxonUpdater below and save to the serializer object.
-    # request_data['name'] = format_name(request_data['name'])
-    request_data["name"] = request_data["name"].strip().lower().capitalize()
 
-    serializer = TaxonSerializer(data=request_data)
-    if serializer.is_valid():
-        taxon_name = serializer.validated_data["name"]
+    # TODO: Unificar interface com WoRMS
+
+    try:
+        request_data = request.data.copy()
+
+        # Sanitização do nome
+        name = request_data.get("name", "").strip()
+        if not name:
+            return Response(
+                {"message": "Nome do táxon é obrigatório."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        sanitized_name = name.lower().capitalize()
+        request_data["name"] = sanitized_name
+
+        # Verifica duplicação exata (name + rank se quiser)
+        existing_taxon = Taxon.objects.filter(name__iexact=sanitized_name).first()
+        if existing_taxon:
+            return Response(
+                {"message": "Já existe um táxon com esse nome."},
+                status=status.HTTP_409_CONFLICT
+            )
+
+        # Busca no WoRMS antes de criar
         try:
-            taxon = Taxon.objects.get(name_iexact=taxon_name)
-            if taxon:
-                return Response(
-                    "Táxon com esse nome já existe.", status=status.HTTP_409_CONFLICT
-                )
-        except:
-            pass
-        serializer.save()
+            worms_url = f"https://www.marinespecies.org/rest/AphiaRecordsByName/{sanitized_name}?like=false&marine_only=true"
+            resp = requests.get(worms_url, timeout=5)
+            resp.raise_for_status()
+            worms_data = resp.json()
+        except Exception as e:
+            worms_data = None
+            # opcional: registrar log
 
+        if worms_data and len(worms_data) > 0:
+            record = worms_data[0]
+            status_w = record.get("status", "").lower()
+            aphia = record.get("AphiaID")
+
+            if status_w != "accepted":
+                valid_aphia = record.get("valid_AphiaID")
+                if valid_aphia:
+                    # tenta buscar táxon aceito
+                    valid_taxon = Taxon.objects.filter(aphia=valid_aphia).first()
+                    if not valid_taxon:
+                        # buscar dados do táxon aceito
+                        valid_url = f"https://www.marinespecies.org/rest/AphiaRecordByAphiaID/{valid_aphia}"
+                        try:
+                            vr = requests.get(valid_url, timeout=5)
+                            vr.raise_for_status()
+                            valid_data = vr.json()
+                        except Exception as e:
+                            valid_data = None
+
+                        if valid_data:
+                            valid_taxon = Taxon.objects.create(
+                                name=valid_data.get("scientificname"),
+                                aphia=valid_data.get("AphiaID"),
+                                rank=valid_data.get("rank"),
+                                authority=valid_data.get("authority"),
+                                status=valid_data.get("status"),
+                                is_valid=True,
+                                on_worms=True
+                            )
+                    if valid_taxon:
+                        return Response(
+                            {
+                                "message": f"Este táxon não é aceito no WoRMS. Usando o táxon aceito: {valid_taxon.name}.",
+                                "data": {"id": valid_taxon.id, "name": valid_taxon.name}
+                            },
+                            status=status.HTTP_200_OK
+                        )
+
+            # Se for aceito ou sem valid_aphia, prosseguir definindo os campos
+            request_data["aphia"] = aphia
+            request_data["rank"] = record.get("rank")
+            request_data["authority"] = record.get("authority")
+            request_data["status"] = record.get("status")
+            request_data["is_valid"] = (status_w == "accepted")
+            request_data["on_worms"] = True
+
+        serializer = TaxonSerializer(data=request_data)
+        if serializer.is_valid():
+            taxon = serializer.save()
+            return Response(
+                {"message": "Táxon adicionado com sucesso.", "data": serializer.data},
+                status=status.HTTP_201_CREATED
+            )
+        else:
+            return Response(
+                {"message": "Erro de validação", "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    except Exception as ex:
+        # captura erros imprevistos
         return Response(
-            {"message": "Táxon adicionado com sucesso", "data": serializer.data}
+            {"message": "Erro interno no servidor", "details": str(ex)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
-
-    return Response("Táxon com esse nome já existe.", status=status.HTTP_409_CONFLICT)
 
 
 @api_view(["POST"])
@@ -1439,35 +1526,40 @@ def revision_media_details(request, media_id):
 @never_cache
 @editor_or_curator_required
 def my_curations_media_list(request):
+    person = request.user.person
     records_number = number_of_entries_per_page(request, "entries_media_from_curation")
 
-    # Instance current person
-    person = request.user.person
+    # Obter todas as curadorias do usuário (como editor ou curador)
+    curations = (person.curations_as_editor.all() | person.curations_as_curator.all()).distinct()
 
-    # Get unique list of curations as editor and curator
-    curations_as_editor = person.curations_as_editor.all()
-    curations_as_curator = person.curations_as_curator.all()
-    curations = curations_as_editor | curations_as_curator
-    curations = curations.distinct()
+    # Obter os táxons associados diretamente às curadorias
+    curated_taxa = Taxon.objects.filter(curations__in=curations).distinct()
 
-    # Get all taxa for every curation as a set
-    curations_taxa = set()
-    for curation in curations:
-        curations_taxa.update(curation.get_taxa())
+    # Obter todos os táxons descendentes (via método MPTT otimizado)
+    taxon_descendants = [
+        taxon.get_descendants(include_self=True).values_list("id", flat=True)
+        for taxon in curated_taxa
+    ]
+    all_taxa_ids = set(chain.from_iterable(taxon_descendants))
 
+    # Obter mídias relacionadas a qualquer desses táxons
     queryset = (
-        Media.objects.filter(Q(taxa__in=curations_taxa))
+        Media.objects.filter(taxa__in=all_taxa_ids)
         .exclude(status="loaded")
         .order_by("-id")
         .distinct()
+        .prefetch_related("taxa")  # Evita SELECT adicional dentro de loops
     )
 
+    # Processamento do POST (ações em lote ou mudança de número de entradas)
     if request.method == "POST":
-        action = request.POST["action"]
+        action = request.POST.get("action")
 
         if action == "entries_number":
             records_number = number_of_entries_per_page(
-                request, "entries_media_from_curation", request.POST["entries_number"]
+                request,
+                "entries_media_from_curation",
+                request.POST.get("entries_number"),
             )
         else:
             media_ids = request.POST.getlist("selected_media_ids")
@@ -1478,7 +1570,7 @@ def my_curations_media_list(request):
                 )
 
                 if form.is_valid():
-                    medias = Media.objects.filter(id__in=media_ids)
+                    medias = Media.objects.filter(id__in=media_ids).prefetch_related("taxa")
 
                     for media in medias:
                         if media.status != "published":
@@ -1495,11 +1587,9 @@ def my_curations_media_list(request):
                             )
                             return redirect("my_curations_media_list")
 
-                        is_media_curator = False
-                        for taxa in media.taxa.all():
-                            if taxa in curations_taxa:
-                                is_media_curator = True
-                                break
+                        # Verificar se o usuário é curador de algum táxon da mídia
+                        is_media_curator = any(t.id in all_taxa_ids for t in media.taxa.all())
+
                         if not is_media_curator:
                             messages.error(
                                 request,
@@ -1523,18 +1613,20 @@ def my_curations_media_list(request):
             else:
                 messages.warning(request, _("Nenhum registro foi selecionado"))
 
+    # Filtro aplicado via GET
     query_dict = request.GET.copy()
     filtered_queryset = filter_medias(queryset, query_dict, curations)
 
-    filter_form = DashboardFilterForm(query_dict, user_curations=curations)
-
-    queryset_paginator = Paginator(filtered_queryset, records_number)
+    # Paginação
+    paginator = Paginator(filtered_queryset, records_number)
     page_num = request.GET.get("page")
-    page = queryset_paginator.get_page(page_num)
+    page = paginator.get_page(page_num)
 
+    # Formulários
     form = BatchActionsForm(view_name="my_curations_media_list")
     taxa_form = AddTaxaForm()
     location_form = AddLocationForm()
+    filter_form = DashboardFilterForm(query_dict, user_curations=curations)
 
     context = {
         "records_number": records_number,
@@ -1550,6 +1642,7 @@ def my_curations_media_list(request):
     }
 
     return render(request, "my_curations_media_list.html", context)
+
 
 
 @never_cache

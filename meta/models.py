@@ -927,6 +927,9 @@ class Taxon(MPTTModel):
         - Atualizar táxons depois de criados
 	    - Usar no Django admin ou no shell
 	    - Fazer comandos automáticos de sincronização """
+
+        # TODO: Unificar interface com WoRMS
+
         if self.aphia:
             return
 
@@ -1012,6 +1015,9 @@ class Taxon(MPTTModel):
     @staticmethod
     def get_taxon_and_parents(qs):
         '''Retorna táxons e seus ancestrais.'''
+
+        # TODO: Old method, needs revision
+
         tree_list = {}
         query = Q()
 

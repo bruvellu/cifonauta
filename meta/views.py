@@ -18,6 +18,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+# TODO: Replace REST API interactions by AJAX
+
 from cifonauta.settings import (
     MEDIA_EXTENSIONS,
     IMAGE_EXTENSIONS,
@@ -67,6 +69,9 @@ def create_reference(request):
 
 @api_view(['POST'])
 def create_taxa(request):
+
+    # TODO: Unificar interface com WoRMS
+
     try:
         request_data = request.data.copy()
 

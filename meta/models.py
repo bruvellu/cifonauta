@@ -718,11 +718,11 @@ class Media(models.Model):
         city = self.city
         if city != None:
             city = city.name
-        
+
         state = self.state
         if state != None:
             state = state.name
-        
+
         country = self.country
         if country != None:
             country = country.name
@@ -800,7 +800,7 @@ class Person(models.Model):
             while Person.objects.filter(slug=slug).exclude(pk=self.pk).exists():
                 slug = f"{base_slug}-{counter}"
                 counter += 1
-            
+
             self.slug = slug
 
         super().save(*args, **kwargs)
@@ -901,7 +901,7 @@ class Taxon(MPTTModel):
         return reverse('taxon_url', args=[self.slug])
 
     def ensure_unique_slug(self):
-        """Gera um slug único baseado no nome do táxon."""
+        """Generate unique slug based on the taxon name."""
         if not self.slug:
             self.slug = slugify(self.name)
 
@@ -914,7 +914,7 @@ class Taxon(MPTTModel):
                 self.slug = f"{slugify(self.name)}-{get_random_string(4)}"
 
     def clean(self):
-        """Validação de duplicidade de táxons."""
+        """Validation to avoid duplicated taxa."""
         super().clean()
         if Taxon.objects.exclude(pk=self.pk).filter(
             name__iexact=self.name.strip(),
@@ -923,10 +923,7 @@ class Taxon(MPTTModel):
             raise ValidationError(_('Já existe um táxon com este nome e rank.'))
 
     def fetch_worms_data(self):
-        """Consulta WoRMS e preenche dados se necessário. Pode ser usada para:
-        - Atualizar táxons depois de criados
-	    - Usar no Django admin ou no shell
-	    - Fazer comandos automáticos de sincronização """
+        """Fetch WoRMS data, if needed, for taxon that exists."""
 
         # TODO: Unificar interface com WoRMS
 
@@ -976,36 +973,41 @@ class Taxon(MPTTModel):
             print(f"[WoRMS] Erro ao buscar dados para {self.name}: {e}")
 
     def update_on_worms_field(self):
-        """Atualiza campo booleano on_worms."""
+        """Update boolean field on_worms."""
         self.on_worms = bool(self.aphia)
 
     def needs_worms(self):
-        """Retorna True se precisa buscar dados do WoRMS."""
+        """Return True if data must be fetched from WoRMS."""
         return not self.aphia and not self.authority
 
     def get_total_media_count(self):
-        '''Total de mídias relacionadas ao táxon e descendentes.'''
+        '''Count all the media linked to the taxon and its descendants.'''
         taxon_and_descendants = self.get_descendants(include_self=True)
         return Media.objects.filter(taxa__in=taxon_and_descendants).distinct().count()
 
     def get_curations(self):
-        '''Curadorias relacionadas ao táxon e ancestrais.'''
+        '''Get curations related to the taxon and its ancestors.'''
         ancestors = self.get_ancestors(include_self=True)
         return Curation.objects.filter(taxa__in=ancestors).distinct()
 
     def update_curations(self):
-        '''Atualiza curadorias padrões.'''
-        self.curations.add(1)  # Cifonauta
+        '''Update standard curations.'''
+        # Cifonauta
+        self.curations.add(1)
 
         if self.aphia:
-            self.curations.add(3)  # Presente no WoRMS
-            self.curations.remove(4)  # Remove "ausente"
+            # Presente no WoRMS
+            self.curations.add(3)
+            # Remove "ausente"
+            self.curations.remove(4)
         else:
-            self.curations.add(4)  # Ausente do WoRMS
-            self.curations.remove(3)  # Remove "presente"
+            # Ausente do WoRMS
+            self.curations.add(4)
+            # Remove "presente"
+            self.curations.remove(3)
 
     def synchronize_media_between_synonyms(self):
-        '''Sincroniza mídias entre válidos e sinônimos.'''
+        '''Synchronize media between valid synonym taxa.'''
         if self.is_valid and self.synonyms.exists():
             for invalid in self.synonyms.all():
                 invalid.media.add(*self.media.all())
@@ -1014,7 +1016,7 @@ class Taxon(MPTTModel):
 
     @staticmethod
     def get_taxon_and_parents(qs):
-        '''Retorna táxons e seus ancestrais.'''
+        '''Return taxon and its ancestors.'''
 
         # TODO: Old method, needs revision
 
@@ -1085,8 +1087,8 @@ class City(models.Model):
             help_text=_('Nome da cidade.'))
     slug = models.SlugField(_('slug'), max_length=64, blank=True,
             help_text=_('Slug do nome da cidade.'))
-    state = models.ForeignKey('State', on_delete=models.CASCADE, 
-            blank=True, null=True, 
+    state = models.ForeignKey('State', on_delete=models.CASCADE,
+            blank=True, null=True,
             verbose_name=_('estado'), help_text=_('Estado na qual a cidade pertence.'))
 
     def __str__(self):
@@ -1106,8 +1108,8 @@ class State(models.Model):
             help_text=_('Nome do estado.'))
     slug = models.SlugField(_('slug'), max_length=64, blank=True,
             help_text=_('Slug do nome do estado.'))
-    country = models.ForeignKey('Country', on_delete=models.CASCADE, 
-            blank=True, null=True, 
+    country = models.ForeignKey('Country', on_delete=models.CASCADE,
+            blank=True, null=True,
             verbose_name=_('país'), help_text=_('Pais na qual o estado pertence.'))
 
     def __str__(self):
@@ -1207,7 +1209,7 @@ class Tour(models.Model):
             verbose_name=_('arquivos'), help_text=_('Arquivos associados a este tour.'))
     references = models.ManyToManyField('Reference', blank=True,
             verbose_name=_('referências'), help_text=_('Referências associadas a este tour.'))
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, 
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
             verbose_name=_('criador'), help_text=_('Usuário criador do tour.'))
 
     def __str__(self):

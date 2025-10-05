@@ -1,0 +1,91 @@
+/* Ubuntu Regular and Italic */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/static/fonts/Ubuntu-R.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: italic;
+  font-weight: 400;
+  src: url('/static/fonts/Ubuntu-RI.woff2') format('woff2');
+}
+
+/* Ubuntu Light and Light Italic */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 300;
+  src: url('/static/fonts/Ubuntu-L.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: italic;
+  font-weight: 300;
+  src: url('/static/fonts/Ubuntu-LI.woff2') format('woff2');
+}
+
+/* Ubuntu Medium and Medium Italic */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/static/fonts/Ubuntu-M.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: italic;
+  font-weight: 500;
+  src: url('/static/fonts/Ubuntu-MI.woff2') format('woff2');
+}
+
+/* Ubuntu Bold and Bold Italic */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/static/fonts/Ubuntu-B.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: italic;
+  font-weight: 700;
+  src: url('/static/fonts/Ubuntu-BI.woff2') format('woff2');
+}
+
+/* Ubuntu Condensed */
+@font-face {
+  font-family: 'Ubuntu Condensed';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/static/fonts/Ubuntu-C.woff2') format('woff2');
+}
+
+/* Ubuntu Mono Regular and Italic */
+@font-face {
+  font-family: 'Ubuntu Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/static/fonts/UbuntuMono-R.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Ubuntu Mono';
+  font-style: italic;
+  font-weight: 400;
+  src: url('/static/fonts/UbuntuMono-RI.woff2') format('woff2');
+}
+
+/* Ubuntu Mono Bold and Bold Italic */
+@font-face {
+  font-family: 'Ubuntu Mono';
+  font-style: normal;
+  font-weight: 700;
+  src: url('/static/fonts/UbuntuMono-B.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Ubuntu Mono';
+  font-style: italic;
+  font-weight: 700;
+  src: url('/static/fonts/UbuntuMono-BI.woff2') format('woff2');
+}

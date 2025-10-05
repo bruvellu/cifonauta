@@ -3,53 +3,68 @@ import random
 import re
 import string
 import uuid
+
+import requests
 from django.conf import settings
 from django.contrib.postgres.indexes import GinIndex
-from django.contrib.postgres.search import SearchVectorField, SearchVector
+from django.contrib.postgres.search import SearchVector, SearchVectorField
+from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Value
-from utils.media import Metadata, resize_image, resize_video, extract_video_cover, probe_media_info
-from django.db import models
+from django.db.models import Q, Value
+from django.urls import reverse
+from django.utils.crypto import get_random_string
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from django.urls import reverse
-from django.core.exceptions import ValidationError
-from django.db.models import Q
 from mptt.models import MPTTModel, TreeForeignKey
-from django.utils.crypto import get_random_string
-import requests
+
+from utils.media import (
+    Metadata,
+    extract_video_cover,
+    probe_media_info,
+    resize_image,
+    resize_video,
+)
 
 
 class Curation(models.Model):
     name = models.CharField(max_length=50)
-    slug = models.SlugField(_('slug'), max_length=64, default='', blank=True,
-                            help_text=_('Slug do nome da curadoria.'))
-    description = models.TextField(_('descrição'), default='', blank=True,
-                                   help_text=_('Descrição da curadoria.'))
+    slug = models.SlugField(
+        _("slug"),
+        max_length=64,
+        default="",
+        blank=True,
+        help_text=_("Slug do nome da curadoria."),
+    )
+    description = models.TextField(
+        _("descrição"), default="", blank=True, help_text=_("Descrição da curadoria.")
+    )
     taxa = models.ManyToManyField(
-            'Taxon',
-            related_name='curations',
-            blank=True,
-            verbose_name=_('táxons'),
-            help_text=_('Táxons nesta curadoria.'))
+        "Taxon",
+        related_name="curations",
+        blank=True,
+        verbose_name=_("táxons"),
+        help_text=_("Táxons nesta curadoria."),
+    )
     curators = models.ManyToManyField(
-        'Person',
-        related_name='curations_as_curator',
+        "Person",
+        related_name="curations_as_curator",
         blank=True,
-        verbose_name=_('curadores'),
-        help_text=_('Curadores desta curadoria.'))
+        verbose_name=_("curadores"),
+        help_text=_("Curadores desta curadoria."),
+    )
     editors = models.ManyToManyField(
-        'Person',
-        related_name='curations_as_editor',
+        "Person",
+        related_name="curations_as_editor",
         blank=True,
-        verbose_name=_('editores'),
-        help_text=_('Editores desta curadoria.'))
+        verbose_name=_("editores"),
+        help_text=_("Editores desta curadoria."),
+    )
 
     def __str__(self):
-        return f'{self.name}'
+        return f"{self.name}"
 
     def get_taxa(self):
-        '''Get all descendants from ancestor taxa.'''
+        """Get all descendants from ancestor taxa."""
         taxa_set = set()
         curated_ancestors = self.taxa.all()
         taxa_set.update(curated_ancestors)
@@ -58,406 +73,506 @@ class Curation(models.Model):
 
         # Corrigido: filtrando por ID, não por name
         taxa_queryset = Taxon.objects.filter(pk__in=[t.pk for t in taxa_set])
-        return taxa_queryset.order_by('name').distinct()
+        return taxa_queryset.order_by("name").distinct()
 
 
 # Function that defines path for user upload directory
 # See: https://docs.djangoproject.com/en/4.2/ref/models/fields/#django.db.models.FileField.upload_to
 def user_upload_directory(instance, filename):
-    return f'{settings.UPLOAD_ROOT}/{instance.user.id}/{filename}'
+    return f"{settings.UPLOAD_ROOT}/{instance.user.id}/{filename}"
 
 
 # TODO: Remove after the official migration
 def save_file(instance, filename):
-    return f'{settings.UPLOAD_ROOT}/{instance.user.username}/{filename}'
+    return f"{settings.UPLOAD_ROOT}/{instance.user.username}/{filename}"
 
 
 # TODO: Remove after the official migration
 def save_cover(instance, filename):
-    return f'{instance.user.username}/{filename}'
+    return f"{instance.user.username}/{filename}"
 
 
 class Media(models.Model):
-    '''Table with metadata for photo and video files.'''
+    """Table with metadata for photo and video files."""
 
     # Pre-defined choices
-    STATUS_CHOICES = (('loaded', _('Carregado')),
-                      ('draft', _('Rascunho')),
-                      ('submitted', _('Submetido')),
-                      ('published', _('Publicado')))
+    STATUS_CHOICES = (
+        ("loaded", _("Carregado")),
+        ("draft", _("Rascunho")),
+        ("submitted", _("Submetido")),
+        ("published", _("Publicado")),
+    )
 
-    LICENSE_CHOICES = (('cc0', _('CC0 (Domínio Público)')),
-                       ('cc_by', _('CC BY (Atribuição)')),
-                       ('cc_by_sa', _('CC BY-SA (Atribuição-CompartilhaIgual)')),
-                       ('cc_by_nd', _('CC BY-ND (Atribuição-SemDerivações)')),
-                       ('cc_by_nc', _('CC BY-NC (Atribuição-NãoComercial)')),
-                       ('cc_by_nc_sa', _('CC BY-NC-SA (AtribuiçãoNãoComercial-CompartilhaIgual)')),
-                       ('cc_by_nc_nd', _('CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)')))
+    LICENSE_CHOICES = (
+        ("cc0", _("CC0 (Domínio Público)")),
+        ("cc_by", _("CC BY (Atribuição)")),
+        ("cc_by_sa", _("CC BY-SA (Atribuição-CompartilhaIgual)")),
+        ("cc_by_nd", _("CC BY-ND (Atribuição-SemDerivações)")),
+        ("cc_by_nc", _("CC BY-NC (Atribuição-NãoComercial)")),
+        ("cc_by_nc_sa", _("CC BY-NC-SA (AtribuiçãoNãoComercial-CompartilhaIgual)")),
+        ("cc_by_nc_nd", _("CC BY-NC-ND (Atribuição-SemDerivações-SemDerivados)")),
+    )
 
-    DATATYPE_CHOICES = (('photo', _('photo')),
-                        ('video', _('video')))
+    DATATYPE_CHOICES = (("photo", _("photo")), ("video", _("video")))
 
-    SCALE_CHOICES = (('micro', _('<0,1 mm')),
-                     ('tiny', _('0,1–1,0 mm')),
-                     ('visible', _('1,0–10 mm')),
-                     ('large', _('10–100 mm')),
-                     ('huge', _('>100 mm')))
+    SCALE_CHOICES = (
+        ("micro", _("<0,1 mm")),
+        ("tiny", _("0,1–1,0 mm")),
+        ("visible", _("1,0–10 mm")),
+        ("large", _("10–100 mm")),
+        ("huge", _(">100 mm")),
+    )
 
     # Fields related to file handling
-    uuid = models.UUIDField(_('identificador'),
-                            default=uuid.uuid4,
-                            help_text=_('Identificador único universal do arquivo.'))
+    uuid = models.UUIDField(
+        _("identificador"),
+        default=uuid.uuid4,
+        help_text=_("Identificador único universal do arquivo."),
+    )
 
-    file = models.FileField(upload_to=user_upload_directory,
-                            default=None,
-                            null=True,
-                            help_text=_('Arquivo original carregado pelo usuário.'))
+    file = models.FileField(
+        upload_to=user_upload_directory,
+        default=None,
+        null=True,
+        help_text=_("Arquivo original carregado pelo usuário."),
+    )
 
     # TODO: Remove max_length after migrations
-    file_large = models.FileField(upload_to=user_upload_directory,
-                                  default=None,
-                                  null=True,
-                                  max_length=200,
-                                  help_text=_('Arquivo processado tamanho grande.'))
+    file_large = models.FileField(
+        upload_to=user_upload_directory,
+        default=None,
+        null=True,
+        max_length=200,
+        help_text=_("Arquivo processado tamanho grande."),
+    )
 
-    file_medium = models.FileField(upload_to=user_upload_directory,
-                                   default=None,
-                                   null=True,
-                                   help_text=_('Arquivo processado tamanho médio.'))
+    file_medium = models.FileField(
+        upload_to=user_upload_directory,
+        default=None,
+        null=True,
+        help_text=_("Arquivo processado tamanho médio."),
+    )
 
-    file_small = models.FileField(upload_to=user_upload_directory,
-                                  default=None,
-                                  null=True,
-                                  help_text=_('Arquivo processado tamanho pequeno.'))
+    file_small = models.FileField(
+        upload_to=user_upload_directory,
+        default=None,
+        null=True,
+        help_text=_("Arquivo processado tamanho pequeno."),
+    )
 
-    file_cover = models.FileField(upload_to=user_upload_directory,
-                                  default=None,
-                                  null=True,
-                                  help_text=_('Imagem de capa do arquivo.'))
+    file_cover = models.FileField(
+        upload_to=user_upload_directory,
+        default=None,
+        null=True,
+        help_text=_("Imagem de capa do arquivo."),
+    )
 
-    datatype = models.CharField(_('tipo de mídia'),
-                                max_length=15,
-                                choices=DATATYPE_CHOICES,
-                                help_text=_('Foto ou vídeo.'))
+    datatype = models.CharField(
+        _("tipo de mídia"),
+        max_length=15,
+        choices=DATATYPE_CHOICES,
+        help_text=_("Foto ou vídeo."),
+    )
 
     # TODO: Field to be deprecated
-    sitepath = models.FileField(_('arquivo web'),
-                                default=None,
-                                help_text=_('Arquivo processado para a web.'))
+    sitepath = models.FileField(
+        _("arquivo web"), default=None, help_text=_("Arquivo processado para a web.")
+    )
 
     # TODO: Field to be deprecated
-    coverpath = models.ImageField(_('imagem de capa'),
-                                  default=None,
-                                  help_text=_('Imagem de capa para o arquivo processado.'))
+    coverpath = models.ImageField(
+        _("imagem de capa"),
+        default=None,
+        help_text=_("Imagem de capa para o arquivo processado."),
+    )
 
     # TODO: Field to be deprecated
-    filepath = models.CharField(_('arquivo original'),
-                                max_length=200,
-                                blank=True,
-                                help_text=_('Caminho único para o arquivo original.'))
+    filepath = models.CharField(
+        _("arquivo original"),
+        max_length=200,
+        blank=True,
+        help_text=_("Caminho único para o arquivo original."),
+    )
 
     # Fields related to authorship
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             null=True,
-                             on_delete=models.SET_NULL,
-                             verbose_name=_('usuário do arquivo'),
-                             help_text=_('Usuário que fez o upload do arquivo.'),
-                             related_name='uploaded_media')
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        on_delete=models.SET_NULL,
+        verbose_name=_("usuário do arquivo"),
+        help_text=_("Usuário que fez o upload do arquivo."),
+        related_name="uploaded_media",
+    )
 
-    authors = models.ManyToManyField('Person',
-                                     blank=True,
-                                     verbose_name=_('autores do arquivo'),
-                                     help_text=_('Autores associados a este arquivo.'),
-                                     related_name='media_as_author')
+    authors = models.ManyToManyField(
+        "Person",
+        blank=True,
+        verbose_name=_("autores do arquivo"),
+        help_text=_("Autores associados a este arquivo."),
+        related_name="media_as_author",
+    )
 
-    curators = models.ManyToManyField('Person',
-                                      blank=True,
-                                      verbose_name=_('curadores do arquivo'),
-                                      help_text=_('Curadores associados a este arquivo.'),
-                                      related_name='media_as_curator')
+    curators = models.ManyToManyField(
+        "Person",
+        blank=True,
+        verbose_name=_("curadores do arquivo"),
+        help_text=_("Curadores associados a este arquivo."),
+        related_name="media_as_curator",
+    )
 
-    editors = models.ManyToManyField('Person',
-                                     blank=True,
-                                     verbose_name=_('editores associados'),
-                                     help_text=_('Editores associados a este arquivo.'),
-                                     related_name='media_as_editor')
+    editors = models.ManyToManyField(
+        "Person",
+        blank=True,
+        verbose_name=_("editores associados"),
+        help_text=_("Editores associados a este arquivo."),
+        related_name="media_as_editor",
+    )
 
     # TODO: Remove after migration
-    specialists = models.ManyToManyField('Person',
-                                         blank=True,
-                                         verbose_name=_('especialistas associados'),
-                                         help_text=_('Especialistas associados a este arquivo.'),
-                                         related_name='media_as_specialist')
+    specialists = models.ManyToManyField(
+        "Person",
+        blank=True,
+        verbose_name=_("especialistas associados"),
+        help_text=_("Especialistas associados a este arquivo."),
+        related_name="media_as_specialist",
+    )
 
-    terms = models.BooleanField(_('termos'),
-                                default=False,
-                                help_text=_('Flag indicando que termos foram aceitos.'))
+    terms = models.BooleanField(
+        _("termos"),
+        default=False,
+        help_text=_("Flag indicando que termos foram aceitos."),
+    )
 
-    license = models.CharField(_('Licença'),
-                               max_length=60,
-                               choices=LICENSE_CHOICES,
-                               null=True,
-                               blank=True,
-                               help_text=_('Tipo de licença da mídia.'))
+    license = models.CharField(
+        _("Licença"),
+        max_length=60,
+        choices=LICENSE_CHOICES,
+        null=True,
+        blank=True,
+        help_text=_("Tipo de licença da mídia."),
+    )
 
     # Fields related to media status
-    metadata_error = models.BooleanField(_('Erro nos metadados'),
-                                         default=False,
-                                         help_text=_('Flag indicando problema nos metadados.'))
+    metadata_error = models.BooleanField(
+        _("Erro nos metadados"),
+        default=False,
+        help_text=_("Flag indicando problema nos metadados."),
+    )
 
-    status = models.CharField(_('status'),
-                              blank=True,
-                              max_length=13,
-                              choices=STATUS_CHOICES,
-                              default='loaded',
-                              help_text=_('Status da mídia.'))
+    status = models.CharField(
+        _("status"),
+        blank=True,
+        max_length=13,
+        choices=STATUS_CHOICES,
+        default="loaded",
+        help_text=_("Status da mídia."),
+    )
 
-    is_public = models.BooleanField(_('público'),
-                                    default=False,
-                                    help_text=_('Visível para visitantes.'))
+    is_public = models.BooleanField(
+        _("público"), default=False, help_text=_("Visível para visitantes.")
+    )
 
     # TODO: Add another field named is_cover
     # TODO: Rename this to is_highlight
-    highlight = models.BooleanField(_('destaque'),
-                                    default=False,
-                                    help_text=_('Imagem que merece destaque.'))
+    highlight = models.BooleanField(
+        _("destaque"), default=False, help_text=_("Imagem que merece destaque.")
+    )
 
     # Date the image was created (when the photo taken or the video recorded)
     # Imported from the file metadata or manually set
-    date_created = models.DateTimeField(_('data de criação'),
-                                        blank=True,
-                                        null=True,
-                                        help_text=_('Data de criação do arquivo.'))
+    date_created = models.DateTimeField(
+        _("data de criação"),
+        blank=True,
+        null=True,
+        help_text=_("Data de criação do arquivo."),
+    )
 
     # Date the image was uploaded to the website
     # Automatically set when Media instance is created
-    date_uploaded = models.DateTimeField(_('data do upload'),
-                                         auto_now_add=True,
-                                         blank=True,
-                                         null=True,  # TODO: eventually remove
-                                         help_text=_('Data do upload do arquivo.'))
+    date_uploaded = models.DateTimeField(
+        _("data do upload"),
+        auto_now_add=True,
+        blank=True,
+        null=True,  # TODO: eventually remove
+        help_text=_("Data do upload do arquivo."),
+    )
 
     # Date the image was last modified
     # Automatically updated every time Media.save() is called
-    date_modified = models.DateTimeField(_('data de modificação'),
-                                         auto_now=True,
-                                         blank=True,
-                                         null=True,  # TODO: eventually remove
-                                         help_text=_('Data da última modificação do arquivo.'))
+    date_modified = models.DateTimeField(
+        _("data de modificação"),
+        auto_now=True,
+        blank=True,
+        null=True,  # TODO: eventually remove
+        help_text=_("Data da última modificação do arquivo."),
+    )
 
     # Date the image was made public in the website
     # Set manually by logic in the publishing pipeline
-    date_published = models.DateTimeField(_('data de publicação'),
-                                          blank=True,
-                                          null=True,
-                                          help_text=_('Data da publicação do arquivo.'))
+    date_published = models.DateTimeField(
+        _("data de publicação"),
+        blank=True,
+        null=True,
+        help_text=_("Data da publicação do arquivo."),
+    )
 
     # Fields containing plain media metadata
-    title = models.CharField(_('título'),
-                             max_length=200,
-                             default='',
-                             blank=True,
-                             help_text=_('Título da imagem.'))
+    title = models.CharField(
+        _("título"),
+        max_length=200,
+        default="",
+        blank=True,
+        help_text=_("Título da imagem."),
+    )
 
-    caption = models.TextField(_('legenda'),
-                               default='',
-                               blank=True,
-                               help_text=_('Legenda da imagem.'))
+    caption = models.TextField(
+        _("legenda"), default="", blank=True, help_text=_("Legenda da imagem.")
+    )
 
-    acknowledgments = models.TextField(_('agradecimentos'),
-                                       default='',
-                                       blank=True,
-                                       help_text=_('Agradecimentos da imagem.'))
+    acknowledgments = models.TextField(
+        _("agradecimentos"),
+        default="",
+        blank=True,
+        help_text=_("Agradecimentos da imagem."),
+    )
 
-    scale = models.CharField(_('escala da imagem'),
-                             max_length=12,
-                             blank=True,
-                             choices=SCALE_CHOICES,
-                             help_text=_('Classes de escala.'))
+    scale = models.CharField(
+        _("escala da imagem"),
+        max_length=12,
+        blank=True,
+        choices=SCALE_CHOICES,
+        help_text=_("Classes de escala."),
+    )
 
     # Video information fields
-    format_name = models.CharField(_('formato da mídia'),
-                                   max_length=30,
-                                   default='',
-                                   blank=True,
-                                   help_text=_('Nome do formato da mídia (e.g., avi ou image2).'))
+    format_name = models.CharField(
+        _("formato da mídia"),
+        max_length=30,
+        default="",
+        blank=True,
+        help_text=_("Nome do formato da mídia (e.g., avi ou image2)."),
+    )
 
-    codec_name = models.CharField(_('codec da mídia'),
-                                  max_length=10,
-                                  default='',
-                                  blank=True,
-                                  help_text=_('Nome do codec da mídia (e.g., dvvideo ou mjpeg).'))
+    codec_name = models.CharField(
+        _("codec da mídia"),
+        max_length=10,
+        default="",
+        blank=True,
+        help_text=_("Nome do codec da mídia (e.g., dvvideo ou mjpeg)."),
+    )
 
-    size = models.CharField(_('tamanho do arquivo'),
-                            max_length=20,
-                            default='',
-                            blank=True,
-                            help_text=_('Tamanho do arquivo original em bytes (e.g., 138519976).'))
+    size = models.CharField(
+        _("tamanho do arquivo"),
+        max_length=20,
+        default="",
+        blank=True,
+        help_text=_("Tamanho do arquivo original em bytes (e.g., 138519976)."),
+    )
 
-    bit_rate = models.CharField(_('bitrate da mídia'),
-                                max_length=20,
-                                default='',
-                                blank=True,
-                                help_text=_('Bitrate da mídia em bits por segundo (e.g., 30330212).'))
+    bit_rate = models.CharField(
+        _("bitrate da mídia"),
+        max_length=20,
+        default="",
+        blank=True,
+        help_text=_("Bitrate da mídia em bits por segundo (e.g., 30330212)."),
+    )
 
-    pix_fmt = models.CharField(_('formato do pixel'),
-                               max_length=20,
-                               default='',
-                               blank=True,
-                               help_text=_('Formato do pixel da mídia (e.g., yuv411p).'))
+    pix_fmt = models.CharField(
+        _("formato do pixel"),
+        max_length=20,
+        default="",
+        blank=True,
+        help_text=_("Formato do pixel da mídia (e.g., yuv411p)."),
+    )
 
-    start_time = models.CharField(_('início do vídeo'),
-                                  max_length=20,
-                                  default='',
-                                  blank=True,
-                                  help_text=_('Quando o vídeo stream se inicia (e.g., 0.000000).'))
+    start_time = models.CharField(
+        _("início do vídeo"),
+        max_length=20,
+        default="",
+        blank=True,
+        help_text=_("Quando o vídeo stream se inicia (e.g., 0.000000)."),
+    )
 
-    duration = models.DurationField(_('duração do vídeo'),
-                                    null=True,
-                                    blank=True,
-                                    help_text=_('Duração do vídeo em segundos (e.g., 36.536500).'))
+    duration = models.DurationField(
+        _("duração do vídeo"),
+        null=True,
+        blank=True,
+        help_text=_("Duração do vídeo em segundos (e.g., 36.536500)."),
+    )
 
-    width = models.PositiveIntegerField(_('largura da mídia'),
-                                        null=True,
-                                        blank=True,
-                                        help_text=_('Largura da mídia em pixels (e.g., 720).'))
+    width = models.PositiveIntegerField(
+        _("largura da mídia"),
+        null=True,
+        blank=True,
+        help_text=_("Largura da mídia em pixels (e.g., 720)."),
+    )
 
-    height = models.PositiveIntegerField(_('altura da mídia'),
-                                         null=True,
-                                         blank=True,
-                                         help_text=_('Altura da mídia em pixels (e.g., 720).'))
+    height = models.PositiveIntegerField(
+        _("altura da mídia"),
+        null=True,
+        blank=True,
+        help_text=_("Altura da mídia em pixels (e.g., 720)."),
+    )
 
-    sample_aspect_ratio = models.CharField(_('Proporção do píxel'),
-                                           max_length=20,
-                                           default='',
-                                           blank=True,
-                                           help_text=_('Proporção de aspecto dos píxels (e.g., 8:9).'))
+    sample_aspect_ratio = models.CharField(
+        _("Proporção do píxel"),
+        max_length=20,
+        default="",
+        blank=True,
+        help_text=_("Proporção de aspecto dos píxels (e.g., 8:9)."),
+    )
 
-    display_aspect_ratio = models.CharField(_('Proporção da tela'),
-                                           max_length=20,
-                                           default='',
-                                           blank=True,
-                                           help_text=_('Proporção de aspecto da tela (e.g., 4:3).'))
+    display_aspect_ratio = models.CharField(
+        _("Proporção da tela"),
+        max_length=20,
+        default="",
+        blank=True,
+        help_text=_("Proporção de aspecto da tela (e.g., 4:3)."),
+    )
 
-    geolocation = models.CharField(_('geolocalização'),
-                                   default='',
-                                   max_length=25,
-                                   blank=True,
-                                   help_text=_('Geolocalização no formato sexagesimal (S 23°48\'45" W 45°24\'27").'))
+    geolocation = models.CharField(
+        _("geolocalização"),
+        default="",
+        max_length=25,
+        blank=True,
+        help_text=_(
+            "Geolocalização no formato sexagesimal (S 23°48'45\" W 45°24'27\")."
+        ),
+    )
 
-    latitude = models.CharField(_('latitude'),
-                                default='',
-                                max_length=25,
-                                blank=True,
-                                help_text=_('Latitude onde a imagem foi criada no formato decimal.'))
+    latitude = models.CharField(
+        _("latitude"),
+        default="",
+        max_length=25,
+        blank=True,
+        help_text=_("Latitude onde a imagem foi criada no formato decimal."),
+    )
 
-    longitude = models.CharField(_('longitude'),
-                                 default='',
-                                 max_length=25,
-                                 blank=True,
-                                 help_text=_('Longitude onde a imagem foi criada no formato decimal.'))
+    longitude = models.CharField(
+        _("longitude"),
+        default="",
+        max_length=25,
+        blank=True,
+        help_text=_("Longitude onde a imagem foi criada no formato decimal."),
+    )
 
     # Fields associated with other models using Many2Many
-    taxa = models.ManyToManyField('Taxon',
-                                  blank=True,
-                                  verbose_name=_('táxons da mídia'),
-                                  help_text=_('Grupos taxonômicos associados com esta mídia.'),
-                                  related_name='media')
+    taxa = models.ManyToManyField(
+        "Taxon",
+        blank=True,
+        verbose_name=_("táxons da mídia"),
+        help_text=_("Grupos taxonômicos associados com esta mídia."),
+        related_name="media",
+    )
 
-    tags = models.ManyToManyField('Tag',
-                                  blank=True,
-                                  verbose_name=_('marcadores da mídia'),
-                                  help_text=_('Marcadores associados com esta mídia.'),
-                                  related_name='media')
+    tags = models.ManyToManyField(
+        "Tag",
+        blank=True,
+        verbose_name=_("marcadores da mídia"),
+        help_text=_("Marcadores associados com esta mídia."),
+        related_name="media",
+    )
 
-    references = models.ManyToManyField('Reference',
-                                        blank=True,
-                                        verbose_name=_('referências da mídia'),
-                                        help_text=_('Referências bibliográficas associadas com esta mídia.'),
-                                        related_name='media')
+    references = models.ManyToManyField(
+        "Reference",
+        blank=True,
+        verbose_name=_("referências da mídia"),
+        help_text=_("Referências bibliográficas associadas com esta mídia."),
+        related_name="media",
+    )
 
     # Fields associated with other models using ForeignKey
-    location = models.ForeignKey('Location',
-                                 on_delete=models.SET_NULL,
-                                 null=True,
-                                 blank=True,
-                                 verbose_name=_('local'),
-                                 help_text=_('Localidade mostrada na imagem ou local de coleta.'))
+    location = models.ForeignKey(
+        "Location",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("local"),
+        help_text=_("Localidade mostrada na imagem ou local de coleta."),
+    )
 
-    city = models.ForeignKey('City',
-                             on_delete=models.SET_NULL,
-                             null=True,
-                             blank=True,
-                             verbose_name=_('cidade'),
-                             help_text=_('Cidade mostrada na imagem ou cidade de coleta.'))
+    city = models.ForeignKey(
+        "City",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("cidade"),
+        help_text=_("Cidade mostrada na imagem ou cidade de coleta."),
+    )
 
-    state = models.ForeignKey('State',
-                              on_delete=models.SET_NULL,
-                              null=True,
-                              blank=True,
-                              verbose_name=_('estado'),
-                              help_text=_('Estado mostrado na imagem ou estado de coleta.'))
+    state = models.ForeignKey(
+        "State",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("estado"),
+        help_text=_("Estado mostrado na imagem ou estado de coleta."),
+    )
 
-    country = models.ForeignKey('Country',
-                                on_delete=models.SET_NULL,
-                                null=True,
-                                blank=True,
-                                verbose_name=_('país'),
-                                help_text=_('País mostrado na imagem (ou país de coleta).'))
+    country = models.ForeignKey(
+        "Country",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("país"),
+        help_text=_("País mostrado na imagem (ou país de coleta)."),
+    )
 
     # Fields associated with full text search
-    search_vector = SearchVectorField(_('vetor de busca'),
-                                      null=True,
-                                      help_text=_('Campo que guarda o vetor de busca.'))
+    search_vector = SearchVectorField(
+        _("vetor de busca"),
+        null=True,
+        help_text=_("Campo que guarda o vetor de busca."),
+    )
 
     # Fields required for historical reasons
-    old_image = models.PositiveIntegerField(default=0,
-                                            blank=True,
-                                            help_text=_('ID da imagem no antigo modelo.'))
+    old_image = models.PositiveIntegerField(
+        default=0, blank=True, help_text=_("ID da imagem no antigo modelo.")
+    )
 
-    old_video = models.PositiveIntegerField(default=0,
-                                            blank=True,
-                                            help_text=_('ID do vídeo no antigo modelo.'))
+    old_video = models.PositiveIntegerField(
+        default=0, blank=True, help_text=_("ID do vídeo no antigo modelo.")
+    )
 
     def __str__(self):
-        return f'[{self.id}] [{self.datatype}] [{self.status}] {self.title}'
+        return f"[{self.id}] [{self.datatype}] [{self.status}] {self.title}"
 
     def get_absolute_url(self):
-        return reverse('media_url', args=[str(self.id)])
+        return reverse("media_url", args=[str(self.id)])
 
     def normalize_title(self, title):
-        '''Capitalize first letter, remove full stop from the end.'''
-        #TODO: Move function to utils
+        """Capitalize first letter, remove full stop from the end."""
+        # TODO: Move function to utils
         # Avoid None types in titles (shouldn't exist...)
         if title is None:
-            return ''
+            return ""
         # Strip extra white spaces
         stripped_title = title.strip()
         # In case len(title) < 2 or fails for some other reason
         try:
             # Capitalize first, remove full stop
-            return stripped_title[0].upper() + stripped_title[1:].rstrip('.')
+            return stripped_title[0].upper() + stripped_title[1:].rstrip(".")
         except:
             # Return the original title, but stripped
             return stripped_title
 
     def normalize_caption(self, caption):
-        '''Capitalize first letter, ensure full stop at the end.'''
-        #TODO: Move function to utils
+        """Capitalize first letter, ensure full stop at the end."""
+        # TODO: Move function to utils
         # Avoid None types in captions (shouldn't exist...)
         if caption is None:
-            return ''
+            return ""
         # Strip extra white spaces
         stripped_caption = caption.strip()
         # In case len(caption) < 2 or fails for some other reason
         try:
             # Capitalize first, add full stop
-            return stripped_caption[0].upper() + stripped_caption[1:].rstrip('.') + '.'
+            return stripped_caption[0].upper() + stripped_caption[1:].rstrip(".") + "."
         except:
             return stripped_caption
 
     def close_files(self):
-        '''Close open files to avoid too many open files error.'''
+        """Close open files to avoid too many open files error."""
         self.file.close()
         self.file_cover.close()
         self.file_large.close()
@@ -465,48 +580,48 @@ class Media(models.Model):
         self.file_small.close()
 
     def resize_files(self):
-        '''Calls for the resizing of media files.'''
-        self.create_resized_files('cover')
-        self.create_resized_files('large')
-        self.create_resized_files('medium')
-        self.create_resized_files('small')
+        """Calls for the resizing of media files."""
+        self.create_resized_files("cover")
+        self.create_resized_files("large")
+        self.create_resized_files("medium")
+        self.create_resized_files("small")
 
     def create_resized_files(self, size):
-        '''Resize media files to a pre-defined dimension.
+        """Resize media files to a pre-defined dimension.
 
         Options: large, medium, small, cover.
 
         See MEDIA_DEFAULTS for details.
-        '''
+        """
 
         # Delete file from resized field
-        field = getattr(self, f'file_{size}')
+        field = getattr(self, f"file_{size}")
         field.delete()
 
         # Get dimension and quality values
-        dimension = settings.MEDIA_DEFAULTS[self.datatype][size]['dimension']
-        quality = settings.MEDIA_DEFAULTS[self.datatype][size]['quality']
-        extension = settings.MEDIA_DEFAULTS[self.datatype]['extension']
+        dimension = settings.MEDIA_DEFAULTS[self.datatype][size]["dimension"]
+        quality = settings.MEDIA_DEFAULTS[self.datatype][size]["quality"]
+        extension = settings.MEDIA_DEFAULTS[self.datatype]["extension"]
 
         # Force photo extension for video cover image
-        if size == 'cover':
-            extension = settings.MEDIA_DEFAULTS['photo']['extension']
+        if size == "cover":
+            extension = settings.MEDIA_DEFAULTS["photo"]["extension"]
 
         # Save original file to resized field using new name
-        field.save(content=self.file, name=f'{self.uuid}_{size}.{extension}')
+        field.save(content=self.file, name=f"{self.uuid}_{size}.{extension}")
 
         # Resize media
-        if self.datatype == 'photo':
+        if self.datatype == "photo":
             resized = resize_image(field.path, dimension, quality)
-        elif self.datatype == 'video':
-            if size == 'cover':
+        elif self.datatype == "video":
+            if size == "cover":
                 resized = extract_video_cover(
                     self.file.path,
                     dimension,
                     self.width,
                     self.height,
                     self.sample_aspect_ratio,
-                    field.path
+                    field.path,
                 )
             else:
                 resized = resize_video(
@@ -515,14 +630,14 @@ class Media(models.Model):
                     quality,
                     self.height,
                     self.sample_aspect_ratio,
-                    field.path
+                    field.path,
                 )
 
         # Return True/False for convenience
         return resized
 
     def update_media_info(self):
-        '''Get media information and update related fields.
+        """Get media information and update related fields.
 
         Can be used for both images and videos. Since returned fields can be different, pass on the dictionary
         directly to the __dict__ update method. The alternative would be looping over attr (also not bad):
@@ -531,7 +646,7 @@ class Media(models.Model):
                 setattr(self, key, value)
 
         Fields are not saved! This needs to be done on the logic outside (to avoid over saving).
-        '''
+        """
 
         # Fetch media information using FFprobe
         info = probe_media_info(self.file.path)
@@ -540,10 +655,10 @@ class Media(models.Model):
             try:
                 # Only update fields that were fetched
                 self.__dict__.update(**info)
-                print('Success! Updated media information...')
+                print("Success! Updated media information...")
                 print(info)
             except Exception as e:
-                print('Error! Media info update failed')
+                print("Error! Media info update failed")
                 print(e)
 
             # try:
@@ -566,7 +681,7 @@ class Media(models.Model):
 
     @property
     def display_duration(self):
-        '''Format duration display tag for website.'''
+        """Format duration display tag for website."""
 
         seconds = self.duration.seconds
         minutes = seconds // 60
@@ -574,42 +689,42 @@ class Media(models.Model):
         if minutes > 0:
             seconds = seconds % 60
 
-        return f'{minutes:02d}:{seconds:02d}'
+        return f"{minutes:02d}:{seconds:02d}"
 
     @property
     def dimensions(self):
-        '''Display media dimensions in pixels.'''
+        """Display media dimensions in pixels."""
         if self.width and self.height:
-            return f'{self.width}x{self.height}'
+            return f"{self.width}x{self.height}"
         else:
-            return '0x0'
+            return "0x0"
 
     def get_ancestors_vector(self):
         taxa = self.taxa.all()
         if not taxa:
-            return ''
+            return ""
         ancestors = taxa[0].get_ancestors()
         for taxon in taxa:
             ancestors = ancestors | taxa.get_ancestors()
-        return ' '.join(ancestors.values_list('name', flat=True))
+        return " ".join(ancestors.values_list("name", flat=True))
 
     def get_field_name_or_empty_string(self, field):
         if field:
             name = field.name
         else:
-            name = ''
+            name = ""
         return name
 
     def update_search_vector(self):
-        '''Collect metadata and update the search vector field.'''
+        """Collect metadata and update the search vector field."""
 
         # Fetch associated authors, taxa, tags, curators, etc
-        authors = ' '.join(self.authors.values_list('name', flat=True))
-        curators = ' '.join(self.curators.values_list('name', flat=True))
-        editors = ' '.join(self.editors.values_list('name', flat=True))
-        taxa = ' '.join(self.taxa.values_list('name', flat=True))
-        tags_pt_br = ' '.join(self.tags.values_list('name_pt_br', flat=True))
-        tags_en = ' '.join(self.tags.values_list('name_en', flat=True))
+        authors = " ".join(self.authors.values_list("name", flat=True))
+        curators = " ".join(self.curators.values_list("name", flat=True))
+        editors = " ".join(self.editors.values_list("name", flat=True))
+        taxa = " ".join(self.taxa.values_list("name", flat=True))
+        tags_pt_br = " ".join(self.tags.values_list("name_pt_br", flat=True))
+        tags_en = " ".join(self.tags.values_list("name_en", flat=True))
 
         location = self.get_field_name_or_empty_string(self.location)
         city = self.get_field_name_or_empty_string(self.city)
@@ -620,34 +735,35 @@ class Media(models.Model):
 
         # Build SearchVectorField using Value (StringAgg or other approaches don't work)
         self.search_vector = (
-                SearchVector('title_pt_br', weight='A', config='portuguese_unaccent') +
-                SearchVector('title_en', weight='A', config='english') +
-                SearchVector('caption_pt_br', weight='A', config='portuguese_unaccent') +
-                SearchVector('caption_en', weight='A', config='english') +
-                SearchVector('acknowledgments_pt_br', weight='D', config='portuguese_unaccent') +
-                SearchVector('acknowledgments_en', weight='D', config='english') +
-                SearchVector(Value(authors), weight='B', config='portuguese_unaccent') +
-                SearchVector(Value(authors), weight='B', config='english') +
-                SearchVector(Value(curators), weight='C', config='portuguese_unaccent') +
-                SearchVector(Value(curators), weight='C', config='english') +
-                SearchVector(Value(editors), weight='D', config='portuguese_unaccent') +
-                SearchVector(Value(editors), weight='D', config='english') +
-                SearchVector(Value(taxa), weight='B', config='portuguese_unaccent') +
-                SearchVector(Value(taxa), weight='B', config='english') +
-                SearchVector(Value(ancestors), weight='C', config='portuguese_unaccent') +
-                SearchVector(Value(ancestors), weight='C', config='english') +
-                SearchVector(Value(tags_pt_br), weight='B', config='portuguese_unaccent') +
-                SearchVector(Value(tags_en), weight='B', config='english') +
-                SearchVector(Value(location), weight='C', config='portuguese_unaccent') +
-                SearchVector(Value(location), weight='C', config='english') +
-                SearchVector(Value(city), weight='C', config='portuguese_unaccent') +
-                SearchVector(Value(city), weight='C', config='english') +
-                SearchVector(Value(state), weight='D', config='portuguese_unaccent') +
-                SearchVector(Value(state), weight='D', config='english') +
-                SearchVector(Value(country), weight='D', config='portuguese_unaccent') +
-                SearchVector(Value(country), weight='D', config='english')
-                )
-
+            SearchVector("title_pt_br", weight="A", config="portuguese_unaccent")
+            + SearchVector("title_en", weight="A", config="english")
+            + SearchVector("caption_pt_br", weight="A", config="portuguese_unaccent")
+            + SearchVector("caption_en", weight="A", config="english")
+            + SearchVector(
+                "acknowledgments_pt_br", weight="D", config="portuguese_unaccent"
+            )
+            + SearchVector("acknowledgments_en", weight="D", config="english")
+            + SearchVector(Value(authors), weight="B", config="portuguese_unaccent")
+            + SearchVector(Value(authors), weight="B", config="english")
+            + SearchVector(Value(curators), weight="C", config="portuguese_unaccent")
+            + SearchVector(Value(curators), weight="C", config="english")
+            + SearchVector(Value(editors), weight="D", config="portuguese_unaccent")
+            + SearchVector(Value(editors), weight="D", config="english")
+            + SearchVector(Value(taxa), weight="B", config="portuguese_unaccent")
+            + SearchVector(Value(taxa), weight="B", config="english")
+            + SearchVector(Value(ancestors), weight="C", config="portuguese_unaccent")
+            + SearchVector(Value(ancestors), weight="C", config="english")
+            + SearchVector(Value(tags_pt_br), weight="B", config="portuguese_unaccent")
+            + SearchVector(Value(tags_en), weight="B", config="english")
+            + SearchVector(Value(location), weight="C", config="portuguese_unaccent")
+            + SearchVector(Value(location), weight="C", config="english")
+            + SearchVector(Value(city), weight="C", config="portuguese_unaccent")
+            + SearchVector(Value(city), weight="C", config="english")
+            + SearchVector(Value(state), weight="D", config="portuguese_unaccent")
+            + SearchVector(Value(state), weight="D", config="english")
+            + SearchVector(Value(country), weight="D", config="portuguese_unaccent")
+            + SearchVector(Value(country), weight="D", config="english")
+        )
 
         return self.search_vector
 
@@ -655,21 +771,21 @@ class Media(models.Model):
         # Blank fields if partial missing data
         # Avoids convert string to float error
         if not self.latitude or not self.longitude:
-            self.latitude = ''
-            self.longitude = ''
-            self.geolocation = ''
+            self.latitude = ""
+            self.longitude = ""
+            self.geolocation = ""
         else:
             # Convert values to float
             latitude_dec = float(self.latitude)
             longitude_dec = float(self.longitude)
 
             # Set default references
-            latitude_ref = 'N'
-            longitude_ref = 'E'
+            latitude_ref = "N"
+            longitude_ref = "E"
             if latitude_dec < 0:
-                latitude_ref = 'S'
+                latitude_ref = "S"
             if longitude_dec < 0:
-                longitude_ref = 'W'
+                longitude_ref = "W"
 
             # Get absolute latitude and longitude values
             latitude_dec = abs(latitude_dec)
@@ -680,19 +796,18 @@ class Media(models.Model):
             lat_min_dec = (latitude_dec - lat_deg) * 60
             lat_min = int(lat_min_dec)
             lat_sec = int((lat_min_dec - lat_min) * 60)
-            latitude_str = f'{latitude_ref} {lat_deg:02}°{lat_min:02}\'{lat_sec:02}"'
+            latitude_str = f"{latitude_ref} {lat_deg:02}°{lat_min:02}'{lat_sec:02}\""
 
             # Define longitude degrees, minutes, and seconds
             lon_deg = int(longitude_dec)
             lon_min_dec = (longitude_dec - lon_deg) * 60
             lon_min = int(lon_min_dec)
             lon_sec = int((lon_min_dec - lon_min) * 60)
-            longitude_str = f'{longitude_ref} {lon_deg:02}°{lon_min:02}\'{lon_sec:02}"'
+            longitude_str = f"{longitude_ref} {lon_deg:02}°{lon_min:02}'{lon_sec:02}\""
 
-            self.geolocation = f'{latitude_str} {longitude_str}'
+            self.geolocation = f"{latitude_str} {longitude_str}"
 
     def update_metadata(self):
-
         self.latlng_to_geo()
 
         tags = []
@@ -728,68 +843,95 @@ class Media(models.Model):
             country = country.name
 
         metadata = {
-            'headline': ', '.join(headlines),
-            'instructions': self.scale,
-            'source': ', '.join(sources),
-            'credit': ', '.join(credits),
-            'license': self.license,
-            'authors': ', '.join(authors),
-            'keywords': tags,
-            'description_pt': self.caption_pt_br,
-            'description_en': self.caption_en,
-            'title_pt': self.title_pt_br,
-            'title_en': self.title_en,
-            'city': city,
-            'state': state,
-            'country': country,
-            'gps': self.geolocation
-
+            "headline": ", ".join(headlines),
+            "instructions": self.scale,
+            "source": ", ".join(sources),
+            "credit": ", ".join(credits),
+            "license": self.license,
+            "authors": ", ".join(authors),
+            "keywords": tags,
+            "description_pt": self.caption_pt_br,
+            "description_en": self.caption_en,
+            "title_pt": self.title_pt_br,
+            "title_en": self.title_en,
+            "city": city,
+            "state": state,
+            "country": country,
+            "gps": self.geolocation,
         }
 
-        #TODO: Fix writing the metadata to videos
+        # TODO: Fix writing the metadata to videos
         # Workaround logic to prevent errors on publishing videos
-        if self.datatype == 'photo':
-            to_write = [self.file_large, self.file_medium, self.file_small,
-                        self.file_cover]
+        if self.datatype == "photo":
+            to_write = [
+                self.file_large,
+                self.file_medium,
+                self.file_small,
+                self.file_cover,
+            ]
             for file in to_write:
                 meta_instance = Metadata(file.path)
                 meta_instance.insert_metadata(metadata)
-        elif self.datatype == 'video':
+        elif self.datatype == "video":
             to_write = [self.file_cover]
             for file in to_write:
                 meta_instance = Metadata(file.path)
                 meta_instance.insert_metadata(metadata)
 
     class Meta:
-        verbose_name = _('arquivo')
-        verbose_name_plural = _('arquivos')
-        ordering = ['id']
-        indexes = (GinIndex(fields=['search_vector']),)
+        verbose_name = _("arquivo")
+        verbose_name_plural = _("arquivos")
+        ordering = ["id"]
+        indexes = (GinIndex(fields=["search_vector"]),)
 
 
 class ModifiedMedia(Media):
-    media = models.ForeignKey('Media', on_delete=models.CASCADE, related_name='modified_media',
-            verbose_name=_('mídia original'), help_text=_('Mídia original com metadados antes das modificações.'))
-    altered_by_author = models.BooleanField(_('alterada pelo autor'),
-            default=True,
-            help_text=_('Flag indicando quem fez a alteração na mídia.'))
-    modification_person = models.ForeignKey('Person', null=True, on_delete=models.CASCADE, related_name='modified_medias',
-            verbose_name=_('Pessoa da mídia modificada'), help_text=_('Pessoa que realizou alterações na mídia publicada'))
+    media = models.ForeignKey(
+        "Media",
+        on_delete=models.CASCADE,
+        related_name="modified_media",
+        verbose_name=_("mídia original"),
+        help_text=_("Mídia original com metadados antes das modificações."),
+    )
+    altered_by_author = models.BooleanField(
+        _("alterada pelo autor"),
+        default=True,
+        help_text=_("Flag indicando quem fez a alteração na mídia."),
+    )
+    modification_person = models.ForeignKey(
+        "Person",
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="modified_medias",
+        verbose_name=_("Pessoa da mídia modificada"),
+        help_text=_("Pessoa que realizou alterações na mídia publicada"),
+    )
 
     class Meta:
         verbose_name = _("mídia modificada")
         verbose_name_plural = _("mídias modificadas")
 
+
 class Person(models.Model):
-    name = models.CharField(_('nome'), max_length=200, blank=True,
-            help_text=_('Nome do autor.'))
-    slug = models.SlugField(_('slug'), max_length=200, unique=True, blank=True,
-            help_text=_('Slug do nome do autor.'))
-    orcid = models.CharField('Orcid', blank=True, null=True, max_length=16)
-    idlattes = models.CharField('IDLattes', blank=True, null=True, max_length=16)
-    email = models.EmailField(verbose_name='Email', blank=True, null=True)
-    user_cifonauta = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
-            verbose_name=_('Usuário relacionado'))
+    name = models.CharField(
+        _("nome"), max_length=200, blank=True, help_text=_("Nome do autor.")
+    )
+    slug = models.SlugField(
+        _("slug"),
+        max_length=200,
+        unique=True,
+        blank=True,
+        help_text=_("Slug do nome do autor."),
+    )
+    orcid = models.CharField("Orcid", blank=True, null=True, max_length=16)
+    idlattes = models.CharField("IDLattes", blank=True, null=True, max_length=16)
+    email = models.EmailField(verbose_name="Email", blank=True, null=True)
+    user_cifonauta = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        on_delete=models.SET_NULL,
+        verbose_name=_("Usuário relacionado"),
+    )
 
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -808,104 +950,178 @@ class Person(models.Model):
     def __str__(self):
         return self.name
 
-    #TODO: Revise the url methods
+    # TODO: Revise the url methods
     def get_absolute_url(self):
-        return reverse('author_url', args=[self.slug])
+        return reverse("author_url", args=[self.slug])
 
     def get_absolute_url_author(self):
-        return reverse('author_url', args=[self.slug])
+        return reverse("author_url", args=[self.slug])
 
     def get_absolute_url_curator(self):
-        return reverse('curator_url', args=[self.slug])
+        return reverse("curator_url", args=[self.slug])
 
     def get_absolute_url_editor(self):
-        return reverse('editor_url', args=[self.slug])
+        return reverse("editor_url", args=[self.slug])
 
     class Meta:
-        verbose_name = _('pessoa')
-        verbose_name_plural = _('pessoas')
-        ordering = ['name']
+        verbose_name = _("pessoa")
+        verbose_name_plural = _("pessoas")
+        ordering = ["name"]
 
 
 class Tag(models.Model):
-    name = models.CharField(_('nome'), max_length=64, unique=True,
-            help_text=_('Nome do marcador.'))
-    slug = models.SlugField(_('slug'), max_length=64, default='', blank=True,
-            help_text=_('Slug do nome do marcador.'))
-    description = models.TextField(_('descrição'), default='', blank=True,
-            help_text=_('Descrição do marcador.'))
-    category = models.ForeignKey('Category', on_delete=models.SET_NULL,
-            null=True, blank=True, related_name='tags',
-            verbose_name=_('categorias'),
-            help_text=_('Categoria associada a este marcador.'))
+    name = models.CharField(
+        _("nome"), max_length=64, unique=True, help_text=_("Nome do marcador.")
+    )
+    slug = models.SlugField(
+        _("slug"),
+        max_length=64,
+        default="",
+        blank=True,
+        help_text=_("Slug do nome do marcador."),
+    )
+    description = models.TextField(
+        _("descrição"), default="", blank=True, help_text=_("Descrição do marcador.")
+    )
+    category = models.ForeignKey(
+        "Category",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="tags",
+        verbose_name=_("categorias"),
+        help_text=_("Categoria associada a este marcador."),
+    )
 
     def __str__(self):
-        return f'{self.category}: {self.name}'
+        return f"{self.category}: {self.name}"
 
     def get_absolute_url(self):
-        return reverse('tag_url', args=[self.slug])
+        return reverse("tag_url", args=[self.slug])
 
     class Meta:
-        verbose_name = _('marcador')
-        verbose_name_plural = _('marcadores')
-        ordering = ['category', 'name']
+        verbose_name = _("marcador")
+        verbose_name_plural = _("marcadores")
+        ordering = ["category", "name"]
 
 
 class Category(models.Model):
-    name = models.CharField(_('nome'), max_length=64, unique=True,
-            help_text=_('Nome da categoria de marcadores.'))
-    slug = models.SlugField(_('slug'), max_length=64, default='', blank=True,
-            help_text=_('Slug do nome da categoria de marcadores.'))
-    description = models.TextField(_('descrição'), default='', blank=True,
-            help_text=_('Descrição da categoria de marcadores.'))
+    name = models.CharField(
+        _("nome"),
+        max_length=64,
+        unique=True,
+        help_text=_("Nome da categoria de marcadores."),
+    )
+    slug = models.SlugField(
+        _("slug"),
+        max_length=64,
+        default="",
+        blank=True,
+        help_text=_("Slug do nome da categoria de marcadores."),
+    )
+    description = models.TextField(
+        _("descrição"),
+        default="",
+        blank=True,
+        help_text=_("Descrição da categoria de marcadores."),
+    )
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = _('categoria')
-        verbose_name_plural = _('categorias')
-        ordering = ['name']
+        verbose_name = _("categoria")
+        verbose_name_plural = _("categorias")
+        ordering = ["name"]
+
 
 class Taxon(MPTTModel):
-    name = models.CharField(_('nome'), max_length=256,
-            help_text=_('Nome do táxon.'))
-    slug = models.SlugField(_('slug'), max_length=256, blank=True, unique=True,
-            help_text=_('Slug do nome do táxon.'))
-    rank = models.CharField(_('rank'), max_length=256, blank=True,
-            help_text=_('Ranking taxonômico do táxon.'))
-    aphia = models.PositiveIntegerField(null=True, blank=True, unique=True,
-            help_text=_('AphiaID, o identificador do táxon no WoRMS.'))
-    authority = models.CharField(_('autoridade'), max_length=256, blank=True, null=True,
-            help_text=_('Autoridade do táxon.'))
-    citation = models.TextField(_('citação'), default='', blank=True, help_text=_('Citação do táxon.'))
-    status = models.CharField(_('status'), max_length=256, blank=True, null=True,
-            help_text=_('Status do táxon.'))
-    is_valid = models.BooleanField(_('válido no WoRMS'), default=False,
-            help_text=_('Status do táxon no WoRMS.'))
-    parent = TreeForeignKey('self', on_delete=models.SET_NULL, blank=True,
-            null=True, related_name='children', verbose_name=_('pai'),
-            help_text=_('Táxon pai deste táxon.'))
-    valid_taxon = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True,
-            null=True, related_name='synonyms', verbose_name=_('táxon válido'),
-            help_text=_('Sinônimo válido deste táxon.'))
-    on_worms = models.BooleanField(_('presente no WoRMS'), default=False,
-            help_text=_('Indica se o táxon está presente no WoRMS.'))
-    timestamp = models.DateTimeField(_('data de modificação'), auto_now=True,
-            blank=True, null=True, help_text=_('Data da última modificação do arquivo.'))
+    name = models.CharField(_("nome"), max_length=256, help_text=_("Nome do táxon."))
+    slug = models.SlugField(
+        _("slug"),
+        max_length=256,
+        blank=True,
+        unique=True,
+        help_text=_("Slug do nome do táxon."),
+    )
+    rank = models.CharField(
+        _("rank"),
+        max_length=256,
+        blank=True,
+        help_text=_("Ranking taxonômico do táxon."),
+    )
+    aphia = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        unique=True,
+        help_text=_("AphiaID, o identificador do táxon no WoRMS."),
+    )
+    authority = models.CharField(
+        _("autoridade"),
+        max_length=256,
+        blank=True,
+        null=True,
+        help_text=_("Autoridade do táxon."),
+    )
+    citation = models.TextField(
+        _("citação"), default="", blank=True, help_text=_("Citação do táxon.")
+    )
+    status = models.CharField(
+        _("status"),
+        max_length=256,
+        blank=True,
+        null=True,
+        help_text=_("Status do táxon."),
+    )
+    is_valid = models.BooleanField(
+        _("válido no WoRMS"), default=False, help_text=_("Status do táxon no WoRMS.")
+    )
+    parent = TreeForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="children",
+        verbose_name=_("pai"),
+        help_text=_("Táxon pai deste táxon."),
+    )
+    valid_taxon = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="synonyms",
+        verbose_name=_("táxon válido"),
+        help_text=_("Sinônimo válido deste táxon."),
+    )
+    on_worms = models.BooleanField(
+        _("presente no WoRMS"),
+        default=False,
+        help_text=_("Indica se o táxon está presente no WoRMS."),
+    )
+    timestamp = models.DateTimeField(
+        _("data de modificação"),
+        auto_now=True,
+        blank=True,
+        null=True,
+        help_text=_("Data da última modificação do arquivo."),
+    )
 
     def __str__(self):
-        return f'{self.name} ({self.rank})' if self.rank else self.name
+        return f"{self.name} ({self.rank})" if self.rank else self.name
 
     def get_absolute_url(self):
-        return reverse('taxon_url', args=[self.slug])
+        return reverse("taxon_url", args=[self.slug])
 
     def ensure_unique_slug(self):
         """Generate unique slug based on the taxon name."""
         if not self.slug:
             self.slug = slugify(self.name)
 
-        if not self.pk or Taxon.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+        if (
+            not self.pk
+            or Taxon.objects.filter(slug=self.slug).exclude(pk=self.pk).exists()
+        ):
             if self.aphia:
                 self.slug = f"{slugify(self.name)}-{self.aphia}"
             elif self.rank:
@@ -916,11 +1132,15 @@ class Taxon(MPTTModel):
     def clean(self):
         """Validation to avoid duplicated taxa."""
         super().clean()
-        if Taxon.objects.exclude(pk=self.pk).filter(
-            name__iexact=self.name.strip(),
-            rank__iexact=self.rank.strip() if self.rank else ''
-        ).exists():
-            raise ValidationError(_('Já existe um táxon com este nome e rank.'))
+        if (
+            Taxon.objects.exclude(pk=self.pk)
+            .filter(
+                name__iexact=self.name.strip(),
+                rank__iexact=self.rank.strip() if self.rank else "",
+            )
+            .exists()
+        ):
+            raise ValidationError(_("Já existe um táxon com este nome e rank."))
 
     def fetch_worms_data(self):
         """Fetch WoRMS data, if needed, for taxon that exists."""
@@ -964,7 +1184,7 @@ class Taxon(MPTTModel):
                                 authority=valid_data.get("authority"),
                                 status=valid_data.get("status"),
                                 is_valid=True,
-                                on_worms=True
+                                on_worms=True,
                             )
 
                         self.valid_taxon = valid_taxon
@@ -981,17 +1201,17 @@ class Taxon(MPTTModel):
         return not self.aphia and not self.authority
 
     def get_total_media_count(self):
-        '''Count all the media linked to the taxon and its descendants.'''
+        """Count all the media linked to the taxon and its descendants."""
         taxon_and_descendants = self.get_descendants(include_self=True)
         return Media.objects.filter(taxa__in=taxon_and_descendants).distinct().count()
 
     def get_curations(self):
-        '''Get curations related to the taxon and its ancestors.'''
+        """Get curations related to the taxon and its ancestors."""
         ancestors = self.get_ancestors(include_self=True)
         return Curation.objects.filter(taxa__in=ancestors).distinct()
 
     def update_curations(self):
-        '''Update standard curations.'''
+        """Update standard curations."""
         # Cifonauta
         self.curations.add(1)
 
@@ -1007,7 +1227,7 @@ class Taxon(MPTTModel):
             self.curations.remove(3)
 
     def synchronize_media_between_synonyms(self):
-        '''Synchronize media between valid synonym taxa.'''
+        """Synchronize media between valid synonym taxa."""
         if self.is_valid and self.synonyms.exists():
             for invalid in self.synonyms.all():
                 invalid.media.add(*self.media.all())
@@ -1016,7 +1236,7 @@ class Taxon(MPTTModel):
 
     @staticmethod
     def get_taxon_and_parents(qs):
-        '''Return taxon and its ancestors.'''
+        """Return taxon and its ancestors."""
 
         # TODO: Old method, needs revision
 
@@ -1055,195 +1275,260 @@ class Taxon(MPTTModel):
         self.synchronize_media_between_synonyms()
 
     class MPTTMeta:
-        order_insertion_by = ['name']
+        order_insertion_by = ["name"]
 
     class Meta:
-        verbose_name = _('táxon')
-        verbose_name_plural = _('táxons')
-        ordering = ['name']
-
+        verbose_name = _("táxon")
+        verbose_name_plural = _("táxons")
+        ordering = ["name"]
 
 
 class Location(models.Model):
-    name = models.CharField(_('nome'), max_length=64,
-            help_text=_('Nome da localidade.'))
-    slug = models.SlugField(_('slug'), max_length=64, blank=True,
-            help_text=_('Slug do nome da localidade.'))
+    name = models.CharField(
+        _("nome"), max_length=64, help_text=_("Nome da localidade.")
+    )
+    slug = models.SlugField(
+        _("slug"), max_length=64, blank=True, help_text=_("Slug do nome da localidade.")
+    )
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('location_url', args=[self.slug])
+        return reverse("location_url", args=[self.slug])
 
     class Meta:
-        verbose_name = _('local')
-        verbose_name_plural = _('locais')
-        ordering = ['name']
+        verbose_name = _("local")
+        verbose_name_plural = _("locais")
+        ordering = ["name"]
 
 
 class City(models.Model):
-    name = models.CharField(_('nome'), max_length=64,
-            help_text=_('Nome da cidade.'))
-    slug = models.SlugField(_('slug'), max_length=64, blank=True,
-            help_text=_('Slug do nome da cidade.'))
-    state = models.ForeignKey('State', on_delete=models.CASCADE,
-            blank=True, null=True,
-            verbose_name=_('estado'), help_text=_('Estado na qual a cidade pertence.'))
+    name = models.CharField(_("nome"), max_length=64, help_text=_("Nome da cidade."))
+    slug = models.SlugField(
+        _("slug"), max_length=64, blank=True, help_text=_("Slug do nome da cidade.")
+    )
+    state = models.ForeignKey(
+        "State",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        verbose_name=_("estado"),
+        help_text=_("Estado na qual a cidade pertence."),
+    )
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('city_url', args=[self.slug])
+        return reverse("city_url", args=[self.slug])
 
     class Meta:
-        verbose_name = _('cidade')
-        verbose_name_plural = _('cidades')
-        ordering = ['name']
+        verbose_name = _("cidade")
+        verbose_name_plural = _("cidades")
+        ordering = ["name"]
 
 
 class State(models.Model):
-    name = models.CharField(_('nome'), max_length=64,
-            help_text=_('Nome do estado.'))
-    slug = models.SlugField(_('slug'), max_length=64, blank=True,
-            help_text=_('Slug do nome do estado.'))
-    country = models.ForeignKey('Country', on_delete=models.CASCADE,
-            blank=True, null=True,
-            verbose_name=_('país'), help_text=_('Pais na qual o estado pertence.'))
+    name = models.CharField(_("nome"), max_length=64, help_text=_("Nome do estado."))
+    slug = models.SlugField(
+        _("slug"), max_length=64, blank=True, help_text=_("Slug do nome do estado.")
+    )
+    country = models.ForeignKey(
+        "Country",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        verbose_name=_("país"),
+        help_text=_("Pais na qual o estado pertence."),
+    )
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('state_url', args=[self.slug])
+        return reverse("state_url", args=[self.slug])
 
     class Meta:
-        verbose_name = _('estado')
-        verbose_name_plural = _('estados')
-        ordering = ['name']
+        verbose_name = _("estado")
+        verbose_name_plural = _("estados")
+        ordering = ["name"]
 
 
 class Country(models.Model):
-    name = models.CharField(_('nome'), max_length=64,
-            help_text=_('Nome do país.'))
-    slug = models.SlugField(_('slug'), max_length=64, blank=True,
-            help_text=_('Slug do nome do país.'))
+    name = models.CharField(_("nome"), max_length=64, help_text=_("Nome do país."))
+    slug = models.SlugField(
+        _("slug"), max_length=64, blank=True, help_text=_("Slug do nome do país.")
+    )
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('country_url', args=[self.slug])
+        return reverse("country_url", args=[self.slug])
 
     class Meta:
-        verbose_name = _('país')
-        verbose_name_plural = _('países')
-        ordering = ['name']
+        verbose_name = _("país")
+        verbose_name_plural = _("países")
+        ordering = ["name"]
 
 
 class Reference(models.Model):
-    name = models.CharField(_('nome'), max_length=100, unique=True,
-            help_text=_('Nome chave no estilo bibkey (e.g., Vieira2012-nt).'))
-    slug = models.SlugField(_('slug'), max_length=100, blank=True,
-            help_text=_('Slug do nome chave da referência.'))
-    citation = models.TextField(_('citação'), blank=True,
-            help_text=_('Citação formatada da referência.'))
-    doi = models.CharField('doi', max_length=40, blank=True, help_text=_('DOI da referência'))
+    name = models.CharField(
+        _("nome"),
+        max_length=100,
+        unique=True,
+        help_text=_("Nome chave no estilo bibkey (e.g., Vieira2012-nt)."),
+    )
+    slug = models.SlugField(
+        _("slug"),
+        max_length=100,
+        blank=True,
+        help_text=_("Slug do nome chave da referência."),
+    )
+    citation = models.TextField(
+        _("citação"), blank=True, help_text=_("Citação formatada da referência.")
+    )
+    doi = models.CharField(
+        "doi", max_length=40, blank=True, help_text=_("DOI da referência")
+    )
 
     def __str__(self):
         if self.doi:
-            return f'{self.name} [DOI:{self.doi}]'
+            return f"{self.name} [DOI:{self.doi}]"
         else:
-            return f'{self.name} [sem DOI]'
+            return f"{self.name} [sem DOI]"
 
     def generate_name(self):
-        '''Generate name from APA-style citation.'''
+        """Generate name from APA-style citation."""
         if not self.citation:
-            return ''
+            return ""
 
         # Extract the last name of the first author
         # last_name_match = re.match(r'^([^,]+)', self.citation)
         # last_name_match = re.match(r'^([A-Za-z]+(?:[-\s][A-Za-z]+)*)', self.citation)
-        last_name_match = re.match(r'^([\wÀ-ÖØ-öø-ÿ]+(?:[-\s][\wÀ-ÖØ-öø-ÿ]+)*)', self.citation)
-        last_name = last_name_match.group(1) if last_name_match else ''
+        last_name_match = re.match(
+            r"^([\wÀ-ÖØ-öø-ÿ]+(?:[-\s][\wÀ-ÖØ-öø-ÿ]+)*)", self.citation
+        )
+        last_name = last_name_match.group(1) if last_name_match else ""
 
         # Extract the publication year
-        publication_year_match = re.search(r'\((\d{4})\)', self.citation)
-        publication_year = publication_year_match.group(1) if publication_year_match else ''
+        publication_year_match = re.search(r"\((\d{4})\)", self.citation)
+        publication_year = (
+            publication_year_match.group(1) if publication_year_match else ""
+        )
         # Stop if empty
         if not last_name or not publication_year:
-            return ''
+            return ""
 
         # Generate a two-letter random suffix
-        suffix = ''.join(random.choice(string.ascii_lowercase) for n in range(2))
+        suffix = "".join(random.choice(string.ascii_lowercase) for n in range(2))
 
         # Construct the bibkey-like name
-        bibkey = f'{last_name}{publication_year}-{suffix}'
-        bibkey = bibkey.replace(' ', '-')
+        bibkey = f"{last_name}{publication_year}-{suffix}"
+        bibkey = bibkey.replace(" ", "-")
         return bibkey
 
     def get_absolute_url(self):
-        return reverse('reference_url', args=[self.slug])
+        return reverse("reference_url", args=[self.slug])
 
     class Meta:
-        verbose_name = _('referência')
-        verbose_name_plural = _('referências')
-        ordering = ['name']
+        verbose_name = _("referência")
+        verbose_name_plural = _("referências")
+        ordering = ["name"]
 
 
 class Tour(models.Model):
-    name = models.CharField(_('nome'), max_length=100, unique=True,
-            help_text=_('Nome do tour.'))
-    slug = models.SlugField(_('slug'), max_length=100, blank=True,
-            help_text=_('Slug do nome do tour.'))
-    description = models.TextField(_('descrição'), blank=True,
-            help_text=_('Descrição do tour.'))
-    is_public = models.BooleanField(_('público'), default=False,
-            help_text=_('Informa se o tour está visível para visitantes anônimos.'))
-    pub_date = models.DateTimeField(_('data de publicação'), auto_now_add=True,
-            help_text=_('Data de publicação do tour no Cifonauta.'))
-    timestamp = models.DateTimeField(_('data de modificação'), auto_now=True,
-            help_text=_('Data da última modificação do tour.'))
-    media = models.ManyToManyField('Media', blank=True,
-            verbose_name=_('arquivos'), help_text=_('Arquivos associados a este tour.'))
-    references = models.ManyToManyField('Reference', blank=True,
-            verbose_name=_('referências'), help_text=_('Referências associadas a este tour.'))
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
-            verbose_name=_('criador'), help_text=_('Usuário criador do tour.'))
+    name = models.CharField(
+        _("nome"), max_length=100, unique=True, help_text=_("Nome do tour.")
+    )
+    slug = models.SlugField(
+        _("slug"), max_length=100, blank=True, help_text=_("Slug do nome do tour.")
+    )
+    description = models.TextField(
+        _("descrição"), blank=True, help_text=_("Descrição do tour.")
+    )
+    is_public = models.BooleanField(
+        _("público"),
+        default=False,
+        help_text=_("Informa se o tour está visível para visitantes anônimos."),
+    )
+    pub_date = models.DateTimeField(
+        _("data de publicação"),
+        auto_now_add=True,
+        help_text=_("Data de publicação do tour no Cifonauta."),
+    )
+    timestamp = models.DateTimeField(
+        _("data de modificação"),
+        auto_now=True,
+        help_text=_("Data da última modificação do tour."),
+    )
+    media = models.ManyToManyField(
+        "Media",
+        blank=True,
+        verbose_name=_("arquivos"),
+        help_text=_("Arquivos associados a este tour."),
+    )
+    references = models.ManyToManyField(
+        "Reference",
+        blank=True,
+        verbose_name=_("referências"),
+        help_text=_("Referências associadas a este tour."),
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name=_("criador"),
+        help_text=_("Usuário criador do tour."),
+    )
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('tour_url', args=[self.slug])
+        return reverse("tour_url", args=[self.slug])
 
     class Meta:
-        verbose_name = _('tour')
-        verbose_name_plural = _('tours')
-        ordering = ['name']
+        verbose_name = _("tour")
+        verbose_name_plural = _("tours")
+        ordering = ["name"]
 
 
 class Stats(models.Model):
-    '''Gather database statistics.'''
-    site = models.CharField(_('website'), max_length=100, unique=True,
-            help_text=_('Nome do sítio.'))
-    photos = models.PositiveIntegerField(default=0,
-            help_text=_('Número total de fotos públicas.'))
-    videos = models.PositiveIntegerField(default=0,
-            help_text=_('Número total de vídeos públicos.'))
-    tags = models.PositiveIntegerField(default=0,
-            help_text=_('Número total de marcadores.'))
-    species = models.PositiveIntegerField(default=0,
-            help_text=_('Número total de espécies.'))
-    locations = models.PositiveIntegerField(default=0,
-            help_text=_('Número total de localidades.'))
+    """Gather database statistics."""
+
+    site = models.CharField(
+        _("website"), max_length=100, unique=True, help_text=_("Nome do sítio.")
+    )
+    photos = models.PositiveIntegerField(
+        default=0, help_text=_("Número total de fotos públicas.")
+    )
+    videos = models.PositiveIntegerField(
+        default=0, help_text=_("Número total de vídeos públicos.")
+    )
+    tags = models.PositiveIntegerField(
+        default=0, help_text=_("Número total de marcadores.")
+    )
+    species = models.PositiveIntegerField(
+        default=0, help_text=_("Número total de espécies.")
+    )
+    locations = models.PositiveIntegerField(
+        default=0, help_text=_("Número total de localidades.")
+    )
 
     def __str__(self):
-        return '{}: {} fotos / {} vídeos / {} marcadores / {} espécies / {} locais'.format(
-                self.site, self.photos, self.videos, self.tags, self.species, self.locations)
+        return (
+            "{}: {} fotos / {} vídeos / {} marcadores / {} espécies / {} locais".format(
+                self.site,
+                self.photos,
+                self.videos,
+                self.tags,
+                self.species,
+                self.locations,
+            )
+        )
 
     class Meta:
-        verbose_name = _('estatísticas')
-        verbose_name_plural = _('estatísticas')
-
+        verbose_name = _("estatísticas")
+        verbose_name_plural = _("estatísticas")

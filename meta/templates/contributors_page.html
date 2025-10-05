@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% trans 'Contribuidores (autores, curadores e editores)' %} | {{ block.super }}{% endblock %}
 {% block meta-keywords %}{% trans 'autores, curadores, editores, biodiversidade, biologia marinha' %}{% endblock %}
 {% block meta-description %}{% trans 'Autores, curadores e editores incluídos no banco de imagens Cifonauta.' %}{% endblock %}
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/contributors_page.css">
+<link rel="stylesheet" href="{% static 'css/contributors_page.css' %}">
 <meta property="og:title" content="{% trans 'Autores, curadores e editores' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:description" content="{% trans 'Autores, curadores e editores incluídos no banco de imagens Cifonauta.' %}" />

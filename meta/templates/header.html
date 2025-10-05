@@ -1,20 +1,15 @@
 {% load i18n %}
+{% load static %}
 
 <a href="/">
   <hgroup id="logo-container" class="main">
-    <img id="logo" alt="cifonauta logo" src="{{ STATIC_URL }}logo.png">
+    <img id="logo" alt="cifonauta logo" src="{% static 'logo.png' %}">
     <div>
       <div id="maintitle">Cifonauta<sup id="title-version">2.0</sup></div>
       <div id="tagline" {% if LANGUAGE_CODE == 'en' %}style="letter-spacing: 1.6px;"{% endif %}>{% trans 'banco de imagens de biologia marinha' %}</div>
     </div>
   </hgroup>
 </a>
-
-{% comment %}
-<div id="stats-search">
-  <div class="quiet" id="stats"> {% show_stats %} </div>
-</div>
-{% endcomment %}
 
 <div id="home-search">
   {% if not request.GET %}{% search_box %}{% endif %}

@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% if meta %}{{ meta.name }}{% else %}{% trans 'Buscador' %}{% endif %} | {{ block.super }}{% endblock %}
 {% block meta-keywords %}<!--{{ keywords }}-->{% endblock %}
 {% block meta-description %}{% trans 'Buscador do banco de imagens Cifonauta.' %}{% endblock %}
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/search.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}css/gallery.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}css/pagination.css">
+<link rel="stylesheet" href="{% static 'css/search.css' %}">
+<link rel="stylesheet" href="{% static 'css/gallery.css' %}">
+<link rel="stylesheet" href="{% static 'css/pagination.css' %}">
 
-<script src="{{ STATIC_URL }}js/search.js" defer></script>
+<script src="{% static 'js/search.js' %}" defer></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <meta property="og:title" content="{% trans 'Buscador' %}" />
@@ -42,7 +42,7 @@
 
           <button class="more-filters-button" onClick="showCheckboxOptions(this, event)">
             <p>{% trans 'Mais filtros' %}</p>
-            <img class="first-dropdown-arrow" src="{{ STATIC_URL }}img/arrow-right.svg" alt="">
+            <img class="first-dropdown-arrow" src="{% static 'img/arrow-right.svg' %}" alt="">
           </button>
 
           <div class="more-filters">

@@ -1,8 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
-{% comment %}
-Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o regroup para criar objetos de cada categoria, usa o cycle para definir o span de cada coluna.
-{% endcomment %}
+{% load i18n static %}
 {% block title %}{% trans 'Marcadores' %} | {{ block.super }}{% endblock %}
 
 {% block meta-keywords %}{% trans 'marcadores, biodiversidade, biologia marinha' %}{% endblock %}
@@ -11,7 +8,7 @@ Página mostra os marcadores agrupados por categoria em quatro colunas. Usa o re
 
 {% block extra-head %}
 
-<link rel="stylesheet" href="{{ STATIC_URL }}css/tags_page.css">
+<link rel="stylesheet" href="{% static 'css/tags_page.css' %}">
 <meta property="og:title" content="{% trans 'Marcadores' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:description" content="{% trans 'Marcadores presentes no banco de imagens Cifonauta.' %}" />

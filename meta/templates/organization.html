@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% trans 'Organização do banco' %} | {{ block.super }}{% endblock %}
 
 {% block meta-keywords %}{% trans 'Organização do banco' %}{% endblock %}
@@ -8,7 +8,7 @@
 
 {% block extra-head %}
 
-<link rel="stylesheet" href="{{ STATIC_URL }}css/organization.css">
+<link rel="stylesheet" href="{% static 'css/organization.css' %}">
 <meta property="og:title" content="{% trans 'Organização do banco' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:type" content="article" />

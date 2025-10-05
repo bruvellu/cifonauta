@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{{ flatpage.title }} | {{ block.super }}{% endblock %}
 
 {% block meta-keywords %}{{ flatpage.title }}{% endblock %}
@@ -7,7 +7,7 @@
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 {% block extra-head %}
 
-<link rel="stylesheet" href="{{ STATIC_URL }}css/flatpage.css">
+<link rel="stylesheet" href="{% static 'css/flatpage.css' %}">
 <meta property="og:title" content="{{ flatpage.title }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:type" content="article" />

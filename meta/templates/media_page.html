@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n thumbnail %}
+{% load i18n thumbnail static %}
 {% get_current_language as LANGUAGE_CODE %}
 
 {% block title %}{{ media.title }} | {{ block.super }}{% endblock %}
@@ -8,9 +8,9 @@
 {% block meta-author %}{% show_set authors '' '' ', ' '' %}{% endblock %}
 
 {% block extra-head %}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/media_page.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}css/related.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}css/photo.css">
+<link rel="stylesheet" href="{% static 'css/media_page.css' %}">
+<link rel="stylesheet" href="{% static 'css/related.css' %}">
+<link rel="stylesheet" href="{% static 'css/photo.css' %}">
 <meta property="og:title" content="{{ media.title }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ MEDIA_URL }}{{ media.file_medium }}" />
@@ -24,7 +24,7 @@
 {% else %}
 <meta property="og:type" content="cifonauta:photo" />
 {% endif %}
-<link rel="stylesheet" href="{{ STATIC_URL }}js/videojs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
+<link rel="stylesheet" href="{% static 'js/videojs/video-js.css' %}" type="text/css" media="screen" title="Video JS" charset="utf-8">
 {% endblock %}
 
 {% block content %}

@@ -44,7 +44,7 @@
                 <input type="number" name="entries_number" value="{{ records_number }}" min="1" class="entries-number-form__input">
                 <span>registros</span>
                 <button type="submit" name="action" value="entries_number" data-entries-number-form-submit class="entries-number-form__submit">
-                    <img src="{{ STATIC_URL }}img/reload.svg" alt="">
+                    <img src="{% static 'img/reload.svg' %}" alt="">
                 </button>
             </div>
         </div>

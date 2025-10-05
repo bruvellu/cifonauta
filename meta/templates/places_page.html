@@ -1,13 +1,12 @@
 {% extends 'base.html' %}
-{% load i18n %}
-{% comment %} Mostra todas as localidades em 4 colunas. {% endcomment %}
+{% load i18n static %}
 {% block title %}{% trans 'Localidades' %} | {{ block.super }}{% endblock %}
 {% block meta-keywords %}{% trans 'locais, biologia marinha, biodiversidade' %}{% endblock %}
 {% block meta-description %}{% trans 'Localidades incluídas no banco de imagens Cifonauta.' %}{% endblock %}
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/places_page.css">
+<link rel="stylesheet" href="{% static 'css/places_page.css' %}">
 <meta property="og:title" content="{% trans 'Localidades' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:description" content="{% trans 'Localidades incluídas no banco de imagens Cifonauta.' %}" />

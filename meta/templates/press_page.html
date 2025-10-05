@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n thumbnail %}
+{% load i18n thumbnail static %}
 {% block title %}{% trans 'Imprensa' %} | {{ block.super }}{% endblock %}
 
 {% block meta-keywords %}{% trans 'imprensa, destaques, resumo' %}{% endblock %}
@@ -7,7 +7,7 @@
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/press_page.css">
+<link rel="stylesheet" href="{% static 'css/press_page.css' %}">
 <meta property="og:title" content="{% trans 'Imprensa' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:description" content="{% trans 'Kit imprensa do banco de imagens Cifonauta.' %}" />

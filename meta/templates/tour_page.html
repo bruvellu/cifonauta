@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n thumbnail %}
+{% load i18n thumbnail static %}
 
 {% block title %}
 {{ tour.name }} | {% trans 'Tour' %} | {{ block.super }}
@@ -22,7 +22,7 @@
 {% endblock %}
 
 {% block extra-head %}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/tour_page.css">
+<link rel="stylesheet" href="{% static 'css/tour_page.css' %}">
 <meta property="og:title" content="{{ tour.name }}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ MEDIA_URL }}{{ thumb }}" />
@@ -30,7 +30,7 @@
 <meta property="og:site_name" content="{% trans 'Cifonauta: Banco de Imagens de Biologia Marinha' %}" />
 <meta property="og:type" content="cifonauta:tour" />
 
-<link rel="stylesheet" href="{{ STATIC_URL }}js/videojs/video-js.css" type="text/css" media="screen" title="Video JS" charset="utf-8">
+<link rel="stylesheet" href="{% static 'js/videojs/video-js.css' %}" type="text/css" media="screen" title="Video JS" charset="utf-8">
 {% endblock %}
 
 {% block content %}
@@ -51,7 +51,7 @@
 <div class="tour-slides" id="slides">
 
   <div class="" id="slides-arrow-prev">
-    <a href="#" class="prev"><img src="{{ STATIC_URL }}js/slides/arrow-prev.png" width="24" height="43" alt="{% trans 'Anterior' %}"></a>
+    <a href="#" class="prev"><img src="{% static 'js/slides/arrow-prev.png' %}" width="24" height="43" alt="{% trans 'Anterior' %}"></a>
   </div>
 
   <div class="slides-container shadow">
@@ -125,7 +125,7 @@
   </div>
 
   <div class="" id="slides-arrow-next">
-    <a href="#" class="next"><img src="{{ STATIC_URL }}js/slides/arrow-next.png" width="24" height="43" alt="{% trans 'Próximo' %}"></a>
+    <a href="#" class="next"><img src="{% static 'js/slides/arrow-next.png' %}" width="24" height="43" alt="{% trans 'Próximo' %}"></a>
   </div>
 
 </div>

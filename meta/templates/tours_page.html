@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n static %}
 {% block title %}{% trans 'Tours' %} | {{ block.super }}{% endblock %}
 
 {% block meta-keywords %}{% trans 'tour, galeria, slideshow, apresentação' %}{% endblock %}
@@ -7,7 +7,7 @@
 {% block meta-author %}Alvaro E. Migotto, Bruno C. Vellutini{% endblock %}
 
 {% block extra-head %}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/tours_page.css">
+<link rel="stylesheet" href="{% static 'css/tours_page.css' %}">
 <meta property="og:title" content="{% trans 'Tours' %}" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:description" content="{% trans 'Tours educativos do banco de imagens Cifonauta.' %}" />
